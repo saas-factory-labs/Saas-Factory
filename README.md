@@ -51,7 +51,6 @@
   <h4>Purpose </h4>  
  </summary> 
 
-The ultimate purpose is to deploy the projects I have wanted to fullfill for a long time both personal and business related and to deploy software SaaS products that can help me get to financial freedom and escape the worry and stress of the dreaded 9-5 hamster wheel along with the incompetent leaders that run those corporations, so I can finally live on my own terms!
 
  </details>
  
@@ -76,7 +75,7 @@ The ultimate purpose is to deploy the projects I have wanted to fullfill for a l
 - Disaster recovery implementation
 - Automated documentation
 - Dev, QA (automated), staging, and production environment
-- Cloudagnostic (can easiliy be migrated to another cloud provider such as digialocean/linode/Cloudservers.dk/Render.com
+- Cloudagnostic (can easiliy be migrated to another cloud provider such as Digital Ocean/Hetzner/Linode/Render.com/Railway.com
 
 </details>
 
@@ -126,27 +125,10 @@ The ultimate purpose is to deploy the projects I have wanted to fullfill for a l
 
 ### 🔗 Related repositories 
 
-[Hosting](https://github.com/Trubador/Hosting)
-
-[Milan clean architecture](https://github.com/Trubador/milanjanovich-clean-architecture-course)
-
 [Didact](https://github.com/DidactHQ/didact-engine)
 
 [Blazor Diagrams](https://github.com/Blazor-Diagrams/Blazor.Diagrams)
 
-[K6 load testing](https://github.com/Trubador/K6-Loadtest)
-
-### 🔗 App Projects
-
-[File Discovery](https://github.com/Trubador/File-Discovery)
-
-[GroceryBot](https://github.com/Trubador/GroceryBot)
-
-[Cooligram](https://github.com/Trubador/Cooligram)
-
-[Free Dating](https://github.com/Trubador/Free-Dating)
-
-[Boligportal](https://github.com/Trubador/Boligportal)
 
 ### 🛠️  Prerequisites
 
@@ -193,10 +175,6 @@ A monorepo is a powerful way to organize a codebase, used by Google, Facebook, U
 │      ├─ Appblueprint.SharedKernel   # Shared code between all projects
 │      ├─ Appblueprint.UiKit          # Shared UI components
 │      ├─ Appblueprint.Tests          # Tests for all projects│  │   
-│─├─ [saas-scs]                      # [Your SCS] Create your SaaS product as a self-contained system
-│ └─ back-office                     # A self-contained system for operations and support (empty for now)
-├─ cloud-infrastructure               # Contains Bash and Bicep scripts (IaC) for Azure resources
-└─ development-cli                    # A .NET CLI tool for automating common developer tasks
 ```
 
 
@@ -464,4 +442,3 @@ A monorepo is a powerful way to organize a codebase, used by Google, Facebook, U
 
 https://themes.arctechonline.tech/export
 
-https://gitkraken.dev/launchpad?prs=github&issues=github
