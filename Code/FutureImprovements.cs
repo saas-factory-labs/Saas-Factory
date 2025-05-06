@@ -540,59 +540,5 @@
 
 // DISCARDED
 
-// <Project Sdk="Microsoft.NET.Sdk">
-//
-//     <PropertyGroup>
-//     <TargetFramework>net9.0</TargetFramework>
-//     <ImplicitUsings>enable</ImplicitUsings>
-//     <Nullable>enable</Nullable>
-//     </PropertyGroup>
-//
-//     <PropertyGroup Label="Nuget config">
-//     <PackageId>SaaS-Factory.AppBlueprint.B2B.Domain.Team</PackageId>
-//     <Description>A reusable shared class library with business logic for Team management  </Description>
-//     <PackageTags>B2B, Domain, Team</PackageTags>
-//     <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.B2B.Domain.Team/README.md</PackageProjectUrl>
-//     <Version>1.0.0</Version> <!-- Update version as needed -->        
-//     </PropertyGroup>
-//     
-//     </Project>
-
-//
-// <Project Sdk="Microsoft.NET.Sdk">
-//
-//     <PropertyGroup Label="Nuget config">
-//     <PackageId>SaaS-Factory.AppBlueprint.B2B.Domain.Tenants</PackageId>
-//     <Description>A reusable shared class library with business logic for Tenant management  </Description>
-//     <PackageTags>B2B, Domain, Team</PackageTags>
-//     <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.B2B.Domain.Tenant/README.md</PackageProjectUrl>
-//     <Version>1.0.0</Version> <!-- Update version as needed -->
-//     </PropertyGroup>
-//     
-//     <PropertyGroup>
-//     <TargetFramework>net9.0</TargetFramework>
-//     <ImplicitUsings>enable</ImplicitUsings>
-//     <Nullable>enable</Nullable>
-//     <RootNamespace>AppBlueprint.B2B.Domain.Tenants</RootNamespace>
-//     </PropertyGroup>
-//
-//     </Project>
 
 
-// <Project Sdk="Microsoft.NET.Sdk">
-//
-//     <PropertyGroup Label="Nuget config">
-//     <PackageId>SaaS-Factory.AppBlueprint.Baseline.Application</PackageId>
-//     <Description>A reusable shared class library with business logic for the application  </Description>
-//     <PackageTags>Baseline, Application</PackageTags>
-//     <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Application/README.md</PackageProjectUrl>
-//     <Version>1.0.0</Version> <!-- Update version as needed -->
-//     </PropertyGroup>
-//     
-//     <PropertyGroup>
-//     <TargetFramework>net9.0</TargetFramework>
-//     <ImplicitUsings>enable</ImplicitUsings>
-//     <Nullable>enable</Nullable>
-//     </PropertyGroup>
-//
-//     </Project>

@@ -288,7 +288,6 @@ ENTRYPOINT ["dotnet", "AppBlueprint.Web.dll"]
 ###### Build stage
 #####FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 #####ARG BUILD_CONFIGURATION=Release
-#####ARG GITHUB_TRUBADOR_PAT
 #####
 ###### Install SSL libraries for HTTPS
 #####RUN apt-get update && apt-get install -y libssl-dev
@@ -303,7 +302,6 @@ ENTRYPOINT ["dotnet", "AppBlueprint.Web.dll"]
 #####COPY NuGet.Config /root/.nuget/NuGet.Config
 #####
 ###### Replace the token placeholder in NuGet config
-#####RUN sed -i "s|%GITHUB_TRUBADOR_PAT%|$GITHUB_TRUBADOR_PAT|g" /root/.nuget/NuGet.Config
 #####
 ###### Copy project files
 #####COPY ["AppBlueprint.Web/AppBlueprint.Web.csproj", "AppBlueprint.Web/"]
@@ -353,14 +351,8 @@ ENTRYPOINT ["dotnet", "AppBlueprint.Web.dll"]
 ######COPY Directory.Packages.props ./
 ######
 ####### Authenticate with GitHub Packages (NuGet)
-######RUN echo "machine nuget.pkg.github.com\nlogin Trubador\npassword $GITHUB_TOKEN" > ~/.netrc
 ######
-####### Add GitHub NuGet source
-######RUN dotnet nuget add source "https://nuget.pkg.github.com/Trubador/index.json" \
-######    --name github \
-######    --username Trubador \
-######    --password $GITHUB_TOKEN \
-######    --store-password-in-clear-text
+
 ######
 ####### Test if NuGet can authenticate with GitHub Packages
 ######RUN dotnet nuget list source
@@ -409,12 +401,7 @@ ENTRYPOINT ["dotnet", "AppBlueprint.Web.dll"]
 ######## Copy the central package management file and other shared files
 #######COPY Directory.Packages.props ./
 #######
-######## Add GitHub NuGet source
-#######RUN dotnet nuget add source "https://nuget.pkg.github.com/Trubador/index.json" \
-#######    --name github \
-#######    --username Trubador \
-#######    --password $GITHUB_TOKEN \
-#######    --store-password-in-clear-text
+
 #######
 ######## Copy project files
 #######COPY ["AppBlueprint.Web/AppBlueprint.Web.csproj", "AppBlueprint.Web/"]

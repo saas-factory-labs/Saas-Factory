@@ -15,25 +15,25 @@
 
 <div align="center">
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=alert_status&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=alert_status&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=bugs&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=bugs&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=code_smells&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=code_smells&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=coverage&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=coverage&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=duplicated_lines_density&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=duplicated_lines_density&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=security_rating&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/component_measures?id=Trubador_SaaS-Factory&metric=Security)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=security_rating&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/component_measures?id=saas-factory-labs_SaaS-Factory&metric=Security)
 
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=reliability_rating&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/component_measures?id=Trubador_SaaS-Factory&metric=Reliability)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=reliability_rating&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/component_measures?id=saas-factory-labs_SaaS-Factory&metric=Reliability)
 
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=sqale_rating&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/component_measures?id=Trubador_SaaS-Factory&metric=Maintainability)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=sqale_rating&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/component_measures?id=saas-factory-labs_SaaS-Factory&metric=Maintainability)
 
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=vulnerabilities&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/project/issues?id=Trubador_SaaS-Factory&resolved=false&types=VULNERABILITY)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=vulnerabilities&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/project/issues?id=saas-factory-labs_SaaS-Factory&resolved=false&types=VULNERABILITY)
 
-[![Technical Debt ](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=sqale_index&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/component_measures?id=Trubador_SaaS-Factory&metric=squale_index)
+[![Technical Debt ](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=sqale_index&token=89f95cfc8e92f83ea5e918077e5da95e9b5a9754)](https://sonarcloud.io/component_measures?id=saas-factory-labs_SaaS-Factory&metric=squale_index)
 
 </div>
 
@@ -128,27 +128,27 @@ The ultimate purpose is to deploy the projects I have wanted to fullfill for a l
 
 ### 🔗 Related repositories 
 
-[Hosting](https://github.com/Trubador/Hosting)
+[Hosting](https://github.com/saas-factory-labs/Hosting)
 
-[Milan clean architecture](https://github.com/Trubador/milanjanovich-clean-architecture-course)
+[Milan clean architecture](https://github.com/saas-factory-labs/milanjanovich-clean-architecture-course)
 
 [Didact](https://github.com/DidactHQ/didact-engine)
 
 [Blazor Diagrams](https://github.com/Blazor-Diagrams/Blazor.Diagrams)
 
-[K6 load testing](https://github.com/Trubador/K6-Loadtest)
+[K6 load testing](https://github.com/saas-factory-labs/K6-Loadtest)
 
 ### 🔗 App Projects
 
-[File Discovery](https://github.com/Trubador/File-Discovery)
+[File Discovery](https://github.com/saas-factory-labs/File-Discovery)
 
-[GroceryBot](https://github.com/Trubador/GroceryBot)
+[GroceryBot](https://github.com/saas-factory-labs/GroceryBot)
 
-[Cooligram](https://github.com/Trubador/Cooligram)
+[Cooligram](https://github.com/saas-factory-labs/Cooligram)
 
-[Free Dating](https://github.com/Trubador/Free-Dating)
+[Free Dating](https://github.com/saas-factory-labs/Free-Dating)
 
-[Boligportal](https://github.com/Trubador/Boligportal)
+[Boligportal](https://github.com/saas-factory-labs/Boligportal)
 
 ### 🛠️  Prerequisites
 

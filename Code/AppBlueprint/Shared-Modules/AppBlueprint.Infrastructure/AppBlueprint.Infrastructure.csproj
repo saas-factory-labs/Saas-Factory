@@ -80,8 +80,8 @@
         <Authors>Casper Rubæk</Authors>
         <Description>Infrastructure library with database repositories and external services</Description>
         <PackageTags>infrastructure;database repositories;external services;</PackageTags>
-        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure/README.md</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 </Project>

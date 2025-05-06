@@ -42,5 +42,5 @@ jobs:
         working-directory: ${{ inputs.package-path }}
 
       - name: Publish to GitHub Packages
-        run: dotnet nuget push "./bin/Release/*.nupkg" --api-key ${{ inputs.api-key }} --source "https://nuget.pkg.github.com/Trubador/index.json" --skip-duplicate
+        run: dotnet nuget push "./bin/Release/*.nupkg" --api-key ${{ inputs.api-key }} --source "https://nuget.pkg.github.com/saas-factory-labs/Saas-Factory/index.json" --skip-duplicate
         working-directory: ${{ inputs.package-path }}

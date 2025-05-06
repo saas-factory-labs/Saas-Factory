@@ -27,7 +27,7 @@ It is very important not to commit any secrets to the code as these will be flag
 Please adhere to the [Code of Conduct](CODE_OF_CONDUCT.md) in all your interactions with the project.
 
 ## Reporting Issues
-Use the GitHub [issues](https://github.com/Trubador/SaaS-Factory/issues) to report bugs or suggest new features.
+Use the GitHub [issues](https://github.com/saas-factory-labs/SaaS-Factory/issues) to report bugs or suggest new features.
 
 
 

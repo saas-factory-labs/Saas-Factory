@@ -17,8 +17,8 @@
         <RepositoryUrl>https://github.com/yourrepo</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>microsoft kiota; rest api; client; blazor</PackageTags>
-        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Api.Client.Sdk/README.md</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Api.Client.Sdk/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <!-- Enable packaging the UiKit project to Nuget package file -->
         <IsPackable>true</IsPackable>

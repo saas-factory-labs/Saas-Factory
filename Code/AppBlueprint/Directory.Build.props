@@ -19,9 +19,9 @@
         <GeneratePackage>true</GeneratePackage>
         <Authors>Casper Rubæk</Authors>
         <Company>SaaS Factory</Company>
-        <Copyright>© SaaaS Factory</Copyright>
+        <Copyright>© SaaS Factory</Copyright>
         <Description>Shared .nuget packages for Appblueprint template from Shared-Modules folder</Description>
-        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
@@ -37,4 +37,3 @@
     </ItemGroup>
 
 </Project>
-

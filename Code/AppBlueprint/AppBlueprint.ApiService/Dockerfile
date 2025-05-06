@@ -58,10 +58,7 @@ ENTRYPOINT ["dotnet", "AppBlueprint.ApiService.dll"]
 ## Set default ports for production
 
 #
-## Build stage
-#FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-#ARG BUILD_CONFIGURATION=Release
-#ARG GITHUB_TRUBADOR_PAT
+
 #
 ## Install SSL libraries for HTTPS
 #RUN apt-get update && apt-get install -y libssl-dev
@@ -76,7 +73,6 @@ ENTRYPOINT ["dotnet", "AppBlueprint.ApiService.dll"]
 #COPY NuGet.Config /root/.nuget/NuGet.Config
 #
 ## Replace the token placeholder in NuGet config
-#RUN sed -i "s|%GITHUB_TRUBADOR_PAT%|$GITHUB_TRUBADOR_PAT|g" /root/.nuget/NuGet.Config
 #
 ## Copy the project files into the image
 #COPY ["AppBlueprint.ApiService/AppBlueprint.ApiService.csproj", "AppBlueprint.ApiService/"]

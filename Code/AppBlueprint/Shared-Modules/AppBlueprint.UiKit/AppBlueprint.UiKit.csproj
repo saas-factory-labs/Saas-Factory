@@ -19,8 +19,8 @@
         <Authors>Casper Rubæk</Authors>
         <Description>A reusable Razor Class Library for UI components</Description>
         <PackageTags>blazor;razor;components;mudblazor</PackageTags>
-        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.UiKit/README.md</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.UiKit/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/SaaS-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
 
@@ -119,8 +119,8 @@
         <!--        <Authors>Casper Rubæk</Authors>-->
         <!--        <Description>A reusable Razor Class Library for UI components</Description>-->
         <!--        <PackageTags>blazor;razor;components;mudblazor</PackageTags>-->
-        <!--        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.UiKit/README.md</PackageProjectUrl>-->
-        <!--        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>-->
+        <!--        <PackageProjectUrl>https://github.com/saas-factory-labs/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.UiKit/README.md</PackageProjectUrl>-->
+        <!--        <RepositoryUrl>https://github.com/saas-factory-labs/SaaS-Factory</RepositoryUrl>-->
         <!--        <RepositoryType>git</RepositoryType>-->
 
         <!--    </PropertyGroup>-->

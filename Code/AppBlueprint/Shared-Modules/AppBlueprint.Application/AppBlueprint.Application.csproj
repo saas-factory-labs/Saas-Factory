@@ -20,8 +20,8 @@
         <Authors>Casper Rubæk</Authors>
         <Description>A class library with application entities</Description>
         <PackageTags>application;use cases</PackageTags>
-        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Application/AppBlueprint.Application/README.md</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Application/AppBlueprint.Application/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 

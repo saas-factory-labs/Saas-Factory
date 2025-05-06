@@ -2,7 +2,7 @@
     "dotnet.defaultSolution": "SaaS-Factory.sln",
     "dotnet.preferCSharpExtension": false,
     "sonarlint.connectedMode.project": {
-        "connectionId": "trubador",
-        "projectKey": "Trubador_SaaS-Factory"
+        "connectionId": "saas-factory-labs/Saas-Factory",
+        "projectKey": "saas-factory-labs_Saas-Factory"
     }
 }

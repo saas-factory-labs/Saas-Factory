@@ -15,7 +15,7 @@ export default {
 		const url = new URL(request.url);
 
 		if (url.pathname === '/schema.sql') {
-			const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/Trubador/SaaS-Factory/main/schema.sql';
+			const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/saas-factory-labs/SaaS-Factory/main/schema.sql';
 			const GITHUB_TOKEN = env.GITHUB_TOKEN;
 
 

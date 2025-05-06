@@ -19,7 +19,7 @@
         <PackageId>SaaS-Factory.AppBlueprint.SharedKernel</PackageId>
         <Description>A reusable shared class library of entities, dbcontexts and other core components</Description>
         <PackageTags>blazor;razor;components;mudblazor</PackageTags>
-        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.SharedKernel/README.md</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.SharedKernel/README.md</PackageProjectUrl>
         <Version>1.0.2</Version> <!-- Update version as needed -->
         
     </PropertyGroup>

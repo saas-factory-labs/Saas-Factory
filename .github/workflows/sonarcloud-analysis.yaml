@@ -72,8 +72,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./.sonar/scanner/dotnet-sonarscanner begin \
-            /k:"Trubador_SaaS-Factory" \
-            /o:"trubador" \
+            /k:"saas-factory-labs_Saas-Factory" \
+            /o:"saas-factory-labs" \
             /d:sonar.token=$SONAR_TOKEN \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.inclusions="Code/AppBlueprint/**"

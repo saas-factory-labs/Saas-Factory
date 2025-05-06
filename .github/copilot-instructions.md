@@ -1,6 +1,6 @@
  # AI Rules
 
-This directory contains the rules for AI assistants to follow when working with this codebase from https://github.com/Trubador/SaaS-Factory
+This directory contains the rules for AI assistants to follow when working with this codebase from https://github.com/saas-factory-labs/Saas-Factory
 This directory contains specific guidance for AI assistants to follow when working with this codebase.
 
 ## AI Assistant Instructions
@@ -24,7 +24,7 @@ This directory contains specific guidance for AI assistants to follow when worki
 - Remove unnecessary using statements when adding or editing a file
 - Always provide clear warning to the user when deleting a file or folder such that they can assess the change
 - Focus on resolving errors - not warnings. If a warning is not relevant to the task at hand, ignore it.
-- If you are asked to check which issues are open in the repository, then use the `Github MCP server` to query the issues in the MVP Github project by using this query `{ "q": "repo:Trubador/SaaS-Factory is:issue state:open" }`
+- If you are asked to check which issues are open in the repository, then use the `Github MCP server` to query the issues in the MVP Github project by using this query `{ "q": "repo:saas-factory-labs/Saas-Factory is:issue state:open" }`
 - If a bug occurs that can't be resolved then create a bug issue in the MVP Github project for the repo with the exact details of the bug by using a `Github MCP server`
 - Create unit and integration tests when making additions and modifications
 - When running in Agent Mode in Copilot edit at most 3 files in total before asking me to confirm the changes so far so you can proceed with the changes to achieve the task you were given

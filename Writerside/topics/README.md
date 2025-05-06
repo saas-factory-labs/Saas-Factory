@@ -13,19 +13,19 @@ https://learn.microsoft.com/en-us/nuget/concepts/security-best-practices
 
 ## 🔢 Project status
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 **Quality Gate Status**
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=bugs)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 **Bugs**
 
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 **Code Smells**
 
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=coverage)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 **Coverage**
 
-[![Duplicated Lines](https://sonarcloud.io/api/project_badges/measure?project=Trubador_SaaS-Factory&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Trubador_SaaS-Factory)
+[![Duplicated Lines](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_SaaS-Factory&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_SaaS-Factory)
 **Duplicated Lines (%)**
 
 ## 📄 App Blueprint {collapsible="true"}
@@ -145,9 +145,9 @@ constraints.
 
 ## 🔗 Related Repositories
 
-[Hosting](https://github.com/Trubador/Hosting)
+[Hosting](https://github.com/saas-factory-labs/Hosting)
 
-[Milan Clean Architecture](https://github.com/Trubador/milanjanovich-clean-architecture-course)
+[Milan Clean Architecture](https://github.com/saas-factory-labs/milanjanovich-clean-architecture-course)
 
 [Didact](https://github.com/DidactHQ/didact-engine)
 
@@ -190,19 +190,19 @@ constraints.
 
 ## 🔗 App Projects
 
-[File Discovery](https://github.com/Trubador/File-Discovery)
+[File Discovery](https://github.com/saas-factory-labs/File-Discovery)
 
-[GroceryBot](https://github.com/Trubador/GroceryBot)
+[GroceryBot](https://github.com/saas-factory-labs/GroceryBot)
 
-[Cooligram](https://github.com/Trubador/Cooligram)
+[Cooligram](https://github.com/saas-factory-labs/Cooligram)
 
-[Honest dating](https://github.com/Trubador/Free-Dating)
+[Honest dating](https://github.com/saas-factory-labs/Free-Dating)
 
-[Better parking](https://github.com/Trubador/BetterParking)
+[Better parking](https://github.com/saas-factory-labs/BetterParking)
 
-[Probro](https://github.com/Trubador/Probro)
+[Probro](https://github.com/saas-factory-labs/Probro)
 
-[Boligportal](https://github.com/Trubador/Boligportal)
+[Boligportal](https://github.com/saas-factory-labs/Boligportal)
 
 
 

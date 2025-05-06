@@ -181,7 +181,7 @@
         &lt;Company&gt;SaaS Factory&lt;/Company&gt;
         &lt;Copyright&gt;© SaaaS Factory&lt;/Copyright&gt;
         &lt;Description&gt;Shared .nuget packages for Appblueprint template from Shared-Modules folder&lt;/Description&gt;        
-        &lt;RepositoryUrl&gt;https://github.com/Trubador/SaaS-Factory&lt;/RepositoryUrl&gt;
+        &lt;RepositoryUrl&gt;https://github.com/saas-factory-labs/SaaS-Factory&lt;/RepositoryUrl&gt;
         &lt;RepositoryType&gt;git&lt;/RepositoryType&gt;        
     &lt;/PropertyGroup&gt;
 
@@ -203,7 +203,7 @@
     &lt;packageSources&gt;
         &lt;add key=&quot;nuget.org&quot; value=&quot;https://api.nuget.org/v3/index.json&quot; protocolVersion=&quot;3&quot; /&gt;
         &lt;!-- &lt;add key=&quot;LocalNugetFeed&quot; value=&quot;C:\Development\LocalNugetFeed&quot; /&gt; --&gt;
-        &lt;add key=&quot;trubador-github&quot; value=&quot;https://nuget.pkg.github.com/Trubador/index.json&quot; /&gt;
+        &lt;add key=&quot;saas-factory-labs-github&quot; value=&quot;https://nuget.pkg.github.com/saas-factory-labs/index.json&quot; /&gt;
     &lt;/packageSources&gt;
 
     &lt;packageSourceMapping&gt;
@@ -213,7 +213,7 @@
         &lt;!-- &lt;packageSource key=&quot;LocalNugetFeed&quot;&gt; --&gt;
         &lt;!--     &lt;package pattern=&quot;*&quot; /&gt; --&gt;
         &lt;!-- &lt;/packageSource&gt; --&gt;
-        &lt;packageSource key=&quot;trubador-github&quot;&gt;
+        &lt;packageSource key=&quot;saas-factory-labs-github&quot;&gt;
             &lt;package pattern=&quot;AppBlueprint.*&quot; /&gt;
             &lt;package pattern=&quot;SaaS-Factory.*&quot; /&gt;
         &lt;/packageSource&gt;
@@ -224,10 +224,10 @@
     &lt;/config&gt;
 
     &lt;packageSourceCredentials&gt;
-        &lt;trubador-github&gt;
-            &lt;add key=&quot;Username&quot; value=&quot;Trubador&quot; /&gt;
-            &lt;add key=&quot;ClearTextPassword&quot; value=&quot;%GITHUB_TRUBADOR_PAT%&quot;  /&gt;
-        &lt;/trubador-github&gt;
+        &lt;saas-factory-labs-github&gt;
+            &lt;add key=&quot;Username&quot; value=&quot;saas-factory-labs&quot; /&gt;
+            &lt;add key=&quot;ClearTextPassword&quot; value=&quot;%GITHUB_saas-factory-labs_PAT%&quot;  /&gt;
+        &lt;/saas-factory-labs-github&gt;
     &lt;/packageSourceCredentials&gt;
 &lt;/configuration&gt;
 
@@ -270,7 +270,7 @@ EXPOSE 443
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
-ARG GITHUB_TRUBADOR_PAT
+ARG GITHUB_saas-factory-labs_PAT
 
 # Install SSL libraries for HTTPS
 RUN apt-get update &amp;&amp; apt-get install -y libssl-dev
@@ -282,7 +282,7 @@ COPY Directory.Packages.props ./
 COPY NuGet.Config /root/.nuget/NuGet.Config
 
 # Replace the token placeholder in NuGet config
-RUN sed -i &quot;s|%GITHUB_TRUBADOR_PAT%|$GITHUB_TRUBADOR_PAT|g&quot; /root/.nuget/NuGet.Config
+RUN sed -i &quot;s|%GITHUB_saas-factory-labs_PAT%|$GITHUB_saas-factory-labs_PAT|g&quot; /root/.nuget/NuGet.Config
 
 # Copy project files
 COPY [&quot;AppBlueprint.Web/AppBlueprint.Web.csproj&quot;, &quot;AppBlueprint.Web/&quot;]
@@ -308,7 +308,7 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT [&quot;dotnet&quot;, &quot;AppBlueprint.Web.dll&quot;]
 </div></section><section class="chapter"><h2 id="docker-compose" data-toc="docker-compose">Docker Compose</h2><p id="-4qetim_26">Location: Code/AppBlueprint/docker-compose.yml</p></section><section class="chapter"><h2 id="login-to-github-registry-on-coolify-vm" data-toc="login-to-github-registry-on-coolify-vm">Login to Github registry on Coolify VM</h2><div class="code-block" data-lang="bash">
-$: docker login ghcr.io -u Trubador
+$: docker login ghcr.io -u saas-factory-labs
 $: Password:
 $: WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
 $: Configure a credential helper to remove this warning. See

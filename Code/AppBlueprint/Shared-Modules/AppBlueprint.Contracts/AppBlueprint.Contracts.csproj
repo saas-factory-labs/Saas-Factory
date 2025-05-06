@@ -20,8 +20,8 @@
         <Authors>Casper Rubæk</Authors>
         <Description>A class library with API request/response contracts for usage by clients</Description>
         <PackageTags>contracts;request/response;api</PackageTags>
-        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Contracts/AppBlueprint.Contracts/README.md</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Contracts/AppBlueprint.Contracts/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
