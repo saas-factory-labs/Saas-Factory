@@ -1,0 +1,11 @@
+query {
+  getTask(id: "0x3") {
+    id
+    title
+    completed
+    user {
+      username
+      name
+    }
+  }
+}

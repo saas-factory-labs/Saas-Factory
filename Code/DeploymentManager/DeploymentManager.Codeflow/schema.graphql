@@ -1,0 +1,2698 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+enum ContainerAppEnvironmentHasFilter {
+    id
+    name
+    description
+    deployments
+}
+
+input DeploymentOrder {
+    asc: DeploymentOrderable
+    desc: DeploymentOrderable
+    then: DeploymentOrder
+}
+
+input AuthRule {
+    and: [AuthRule]
+    or: [AuthRule]
+    not: AuthRule
+    rule: String
+}
+
+type AddApplicationBlueprintPayload {
+    applicationBlueprint(filter: ApplicationBlueprintFilter order: ApplicationBlueprintOrder first: Int offset: Int): [ApplicationBlueprint]
+    numUids: Int
+}
+
+type InfrastructureProviderAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+input ClassDataPatch {
+    ClassId: Int
+    ClassName: String
+    Methods: [MethodRef]
+    Properties: [PropertyRef]
+    DependsOn: [ClassDataRef]
+}
+
+input MethodOrder {
+    asc: MethodOrderable
+    desc: MethodOrderable
+    then: MethodOrder
+}
+
+type SQLTable {
+    id: String
+    name: String
+}
+
+input IntRange {
+    min: Int!
+    max: Int!
+}
+
+enum JiraIssueHasFilter {
+    id
+    key
+    summary
+    description
+    deployments
+}
+
+enum SQLSchemaMigrationOrderable {
+    id
+    name
+}
+
+input AddDeploymentConfigurationInput {
+    key: String
+    value: String
+}
+
+input UseCasePatch {
+    id: String
+    name: String
+}
+
+type DeleteFeatureFlagPayload {
+    featureFlag(filter: FeatureFlagFilter order: FeatureFlagOrder first: Int offset: Int): [FeatureFlag]
+    msg: String
+    numUids: Int
+}
+
+type DeploymentConfigurationAggregateResult {
+    count: Int
+    keyMin: String
+    keyMax: String
+    valueMin: String
+    valueMax: String
+}
+
+type BuildAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    versionMin: Int
+    versionMax: Int
+    versionSum: Int
+    versionAvg: Float
+    startedAtMin: String
+    startedAtMax: String
+    finishedAtMin: String
+    finishedAtMax: String
+    statusMin: String
+    statusMax: String
+    sourceCommitMin: String
+    sourceCommitMax: String
+}
+
+type DeleteMethodPayload {
+    method(filter: MethodFilter order: MethodOrder first: Int offset: Int): [Method]
+    msg: String
+    numUids: Int
+}
+
+enum SQLTableHasFilter {
+    id
+    name
+}
+
+input ContainerAppEnvironmentRef {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input GitCommitPatch {
+    id: String
+    message: String
+}
+
+type Mutation {
+    addApp(input: [AddAppInput!]!): AddAppPayload
+    updateApp(input: UpdateAppInput!): UpdateAppPayload
+    deleteApp(filter: AppFilter!): DeleteAppPayload
+    addDeployment(input: [AddDeploymentInput!]!): AddDeploymentPayload
+    updateDeployment(input: UpdateDeploymentInput!): UpdateDeploymentPayload
+    deleteDeployment(filter: DeploymentFilter!): DeleteDeploymentPayload
+    addDeploymentConfiguration(input: [AddDeploymentConfigurationInput!]!): AddDeploymentConfigurationPayload
+    updateDeploymentConfiguration(input: UpdateDeploymentConfigurationInput!): UpdateDeploymentConfigurationPayload
+    deleteDeploymentConfiguration(filter: DeploymentConfigurationFilter!): DeleteDeploymentConfigurationPayload
+    addSQLSchemaMigration(input: [AddSQLSchemaMigrationInput!]!): AddSQLSchemaMigrationPayload
+    updateSQLSchemaMigration(input: UpdateSQLSchemaMigrationInput!): UpdateSQLSchemaMigrationPayload
+    deleteSQLSchemaMigration(filter: SQLSchemaMigrationFilter!): DeleteSQLSchemaMigrationPayload
+    addDockerImage(input: [AddDockerImageInput!]!): AddDockerImagePayload
+    updateDockerImage(input: UpdateDockerImageInput!): UpdateDockerImagePayload
+    deleteDockerImage(filter: DockerImageFilter!): DeleteDockerImagePayload
+    addDockerImageLayer(input: [AddDockerImageLayerInput!]!): AddDockerImageLayerPayload
+    updateDockerImageLayer(input: UpdateDockerImageLayerInput!): UpdateDockerImageLayerPayload
+    deleteDockerImageLayer(filter: DockerImageLayerFilter!): DeleteDockerImageLayerPayload
+    addBuild(input: [AddBuildInput!]!): AddBuildPayload
+    updateBuild(input: UpdateBuildInput!): UpdateBuildPayload
+    deleteBuild(filter: BuildFilter!): DeleteBuildPayload
+    addGitCommit(input: [AddGitCommitInput!]!): AddGitCommitPayload
+    updateGitCommit(input: UpdateGitCommitInput!): UpdateGitCommitPayload
+    deleteGitCommit(filter: GitCommitFilter!): DeleteGitCommitPayload
+    addFeatureFlag(input: [AddFeatureFlagInput!]!): AddFeatureFlagPayload
+    updateFeatureFlag(input: UpdateFeatureFlagInput!): UpdateFeatureFlagPayload
+    deleteFeatureFlag(filter: FeatureFlagFilter!): DeleteFeatureFlagPayload
+    addNugetPackage(input: [AddNugetPackageInput!]!): AddNugetPackagePayload
+    updateNugetPackage(input: UpdateNugetPackageInput!): UpdateNugetPackagePayload
+    deleteNugetPackage(filter: NugetPackageFilter!): DeleteNugetPackagePayload
+    addContainerAppEnvironment(input: [AddContainerAppEnvironmentInput!]!): AddContainerAppEnvironmentPayload
+    updateContainerAppEnvironment(input: UpdateContainerAppEnvironmentInput!): UpdateContainerAppEnvironmentPayload
+    deleteContainerAppEnvironment(filter: ContainerAppEnvironmentFilter!): DeleteContainerAppEnvironmentPayload
+    addPulumiProject(input: [AddPulumiProjectInput!]!): AddPulumiProjectPayload
+    updatePulumiProject(input: UpdatePulumiProjectInput!): UpdatePulumiProjectPayload
+    deletePulumiProject(filter: PulumiProjectFilter!): DeletePulumiProjectPayload
+    addContainerApp(input: [AddContainerAppInput!]!): AddContainerAppPayload
+    updateContainerApp(input: UpdateContainerAppInput!): UpdateContainerAppPayload
+    deleteContainerApp(filter: ContainerAppFilter!): DeleteContainerAppPayload
+    addSQLDatabase(input: [AddSQLDatabaseInput!]!): AddSQLDatabasePayload
+    updateSQLDatabase(input: UpdateSQLDatabaseInput!): UpdateSQLDatabasePayload
+    deleteSQLDatabase(filter: SQLDatabaseFilter!): DeleteSQLDatabasePayload
+    addSQLTable(input: [AddSQLTableInput!]!): AddSQLTablePayload
+    updateSQLTable(input: UpdateSQLTableInput!): UpdateSQLTablePayload
+    deleteSQLTable(filter: SQLTableFilter!): DeleteSQLTablePayload
+    addInfrastructureProvider(input: [AddInfrastructureProviderInput!]!): AddInfrastructureProviderPayload
+    updateInfrastructureProvider(input: UpdateInfrastructureProviderInput!): UpdateInfrastructureProviderPayload
+    deleteInfrastructureProvider(filter: InfrastructureProviderFilter!): DeleteInfrastructureProviderPayload
+    addJiraIssue(input: [AddJiraIssueInput!]!): AddJiraIssuePayload
+    updateJiraIssue(input: UpdateJiraIssueInput!): UpdateJiraIssuePayload
+    deleteJiraIssue(filter: JiraIssueFilter!): DeleteJiraIssuePayload
+    addCVEVulnerability(input: [AddCVEVulnerabilityInput!]!): AddCVEVulnerabilityPayload
+    updateCVEVulnerability(input: UpdateCVEVulnerabilityInput!): UpdateCVEVulnerabilityPayload
+    deleteCVEVulnerability(filter: CVEVulnerabilityFilter!): DeleteCVEVulnerabilityPayload
+    addApplicationBlueprint(input: [AddApplicationBlueprintInput!]!): AddApplicationBlueprintPayload
+    updateApplicationBlueprint(input: UpdateApplicationBlueprintInput!): UpdateApplicationBlueprintPayload
+    deleteApplicationBlueprint(filter: ApplicationBlueprintFilter!): DeleteApplicationBlueprintPayload
+    addExternalProvider(input: [AddExternalProviderInput!]!): AddExternalProviderPayload
+    updateExternalProvider(input: UpdateExternalProviderInput!): UpdateExternalProviderPayload
+    deleteExternalProvider(filter: ExternalProviderFilter!): DeleteExternalProviderPayload
+    addSourceCodeLicense(input: [AddSourceCodeLicenseInput!]!): AddSourceCodeLicensePayload
+    updateSourceCodeLicense(input: UpdateSourceCodeLicenseInput!): UpdateSourceCodeLicensePayload
+    deleteSourceCodeLicense(filter: SourceCodeLicenseFilter!): DeleteSourceCodeLicensePayload
+    addUseCase(input: [AddUseCaseInput!]!): AddUseCasePayload
+    updateUseCase(input: UpdateUseCaseInput!): UpdateUseCasePayload
+    deleteUseCase(filter: UseCaseFilter!): DeleteUseCasePayload
+    addMethod(input: [AddMethodInput!]!): AddMethodPayload
+    updateMethod(input: UpdateMethodInput!): UpdateMethodPayload
+    deleteMethod(filter: MethodFilter!): DeleteMethodPayload
+    addProperty(input: [AddPropertyInput!]!): AddPropertyPayload
+    updateProperty(input: UpdatePropertyInput!): UpdatePropertyPayload
+    deleteProperty(filter: PropertyFilter!): DeletePropertyPayload
+    addClassData(input: [AddClassDataInput!]!): AddClassDataPayload
+    updateClassData(input: UpdateClassDataInput!): UpdateClassDataPayload
+    deleteClassData(filter: ClassDataFilter!): DeleteClassDataPayload
+    addClassDataPayload(input: [AddClassDataPayloadInput!]!): AddClassDataPayloadPayload
+    updateClassDataPayload(input: UpdateClassDataPayloadInput!): UpdateClassDataPayloadPayload
+    deleteClassDataPayload(filter: ClassDataPayloadFilter!): DeleteClassDataPayloadPayload
+}
+
+type ApplicationBlueprint {
+    id: String
+    name: String
+    description: String
+    builds(filter: BuildFilter order: BuildOrder first: Int offset: Int): [Build]
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    buildsAggregate(filter: BuildFilter): BuildAggregateResult
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+type UseCase {
+    id: String
+    name: String
+}
+
+type SQLSchemaMigrationAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+}
+
+input ApplicationBlueprintOrder {
+    asc: ApplicationBlueprintOrderable
+    desc: ApplicationBlueprintOrderable
+    then: ApplicationBlueprintOrder
+}
+
+input CVEVulnerabilityFilter {
+    has: [CVEVulnerabilityHasFilter]
+    and: [CVEVulnerabilityFilter]
+    or: [CVEVulnerabilityFilter]
+    not: CVEVulnerabilityFilter
+}
+
+input DockerImageLayerFilter {
+    has: [DockerImageLayerHasFilter]
+    and: [DockerImageLayerFilter]
+    or: [DockerImageLayerFilter]
+    not: DockerImageLayerFilter
+}
+
+input FeatureFlagFilter {
+    has: [FeatureFlagHasFilter]
+    and: [FeatureFlagFilter]
+    or: [FeatureFlagFilter]
+    not: FeatureFlagFilter
+}
+
+input UpdateContainerAppInput {
+    filter: ContainerAppFilter!
+    set: ContainerAppPatch
+    remove: ContainerAppPatch
+}
+
+type ClassData {
+    ClassId: Int
+    ClassName: String
+    Methods(filter: MethodFilter order: MethodOrder first: Int offset: Int): [Method]
+    Properties(filter: PropertyFilter order: PropertyOrder first: Int offset: Int): [Property]
+    DependsOn(filter: ClassDataFilter order: ClassDataOrder first: Int offset: Int): [ClassData]
+    MethodsAggregate(filter: MethodFilter): MethodAggregateResult
+    PropertiesAggregate(filter: PropertyFilter): PropertyAggregateResult
+    DependsOnAggregate(filter: ClassDataFilter): ClassDataAggregateResult
+}
+
+type DeleteDeploymentConfigurationPayload {
+    deploymentConfiguration(filter: DeploymentConfigurationFilter order: DeploymentConfigurationOrder first: Int offset: Int): [DeploymentConfiguration]
+    msg: String
+    numUids: Int
+}
+
+input UpdateSQLDatabaseInput {
+    filter: SQLDatabaseFilter!
+    set: SQLDatabasePatch
+    remove: SQLDatabasePatch
+}
+
+input AddApplicationBlueprintInput {
+    id: String
+    name: String
+    description: String
+    builds: [BuildRef]
+    deployments: [DeploymentRef]
+}
+
+type SourceCodeLicenseAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+}
+
+enum ClassDataOrderable {
+    ClassId
+    ClassName
+}
+
+input AddDockerImageLayerInput {
+    id: String
+    digest: String
+    size: Int
+    architecture: String
+    os: String
+    created: String
+}
+
+input AddMethodInput {
+    MethodId: Int
+    MethodName: String
+    ClassId: Int
+}
+
+input BuildRef {
+    id: String
+    version: Int
+    startedAt: String
+    finishedAt: String
+    status: String
+    sourceCommit: String
+}
+
+input StringRange {
+    min: String!
+    max: String!
+}
+
+enum PulumiProjectHasFilter {
+    id
+    name
+    description
+    deployments
+}
+
+type ClassDataAggregateResult {
+    count: Int
+    ClassIdMin: Int
+    ClassIdMax: Int
+    ClassIdSum: Int
+    ClassIdAvg: Float
+    ClassNameMin: String
+    ClassNameMax: String
+}
+
+type UpdateClassDataPayload {
+    classData(filter: ClassDataFilter order: ClassDataOrder first: Int offset: Int): [ClassData]
+    numUids: Int
+}
+
+type UpdateInfrastructureProviderPayload {
+    infrastructureProvider(filter: InfrastructureProviderFilter order: InfrastructureProviderOrder first: Int offset: Int): [InfrastructureProvider]
+    numUids: Int
+}
+
+input ClassDataOrder {
+    asc: ClassDataOrderable
+    desc: ClassDataOrderable
+    then: ClassDataOrder
+}
+
+input UpdateAppInput {
+    filter: AppFilter!
+    set: AppPatch
+    remove: AppPatch
+}
+
+input UpdateDockerImageLayerInput {
+    filter: DockerImageLayerFilter!
+    set: DockerImageLayerPatch
+    remove: DockerImageLayerPatch
+}
+
+type AddBuildPayload {
+    build(filter: BuildFilter order: BuildOrder first: Int offset: Int): [Build]
+    numUids: Int
+}
+
+type AddJiraIssuePayload {
+    jiraIssue(filter: JiraIssueFilter order: JiraIssueOrder first: Int offset: Int): [JiraIssue]
+    numUids: Int
+}
+
+type DeleteDockerImagePayload {
+    dockerImage(filter: DockerImageFilter order: DockerImageOrder first: Int offset: Int): [DockerImage]
+    msg: String
+    numUids: Int
+}
+
+enum ClassDataHasFilter {
+    ClassId
+    ClassName
+    Methods
+    Properties
+    DependsOn
+}
+
+input AddSQLSchemaMigrationInput {
+    id: String
+    name: String
+}
+
+input BuildFilter {
+    has: [BuildHasFilter]
+    and: [BuildFilter]
+    or: [BuildFilter]
+    not: BuildFilter
+}
+
+input CVEVulnerabilityRef {
+    id: String
+    name: String
+    description: String
+    nugetPackages: [NugetPackageRef]
+}
+
+input DockerImageLayerRef {
+    id: String
+    digest: String
+    size: Int
+    architecture: String
+    os: String
+    created: String
+}
+
+type SQLSchemaMigration {
+    id: String
+    name: String
+}
+
+type AddContainerAppPayload {
+    containerApp(filter: ContainerAppFilter order: ContainerAppOrder first: Int offset: Int): [ContainerApp]
+    numUids: Int
+}
+
+input NugetPackageOrder {
+    asc: NugetPackageOrderable
+    desc: NugetPackageOrderable
+    then: NugetPackageOrder
+}
+
+input UpdateDeploymentConfigurationInput {
+    filter: DeploymentConfigurationFilter!
+    set: DeploymentConfigurationPatch
+    remove: DeploymentConfigurationPatch
+}
+
+input UpdateSQLTableInput {
+    filter: SQLTableFilter!
+    set: SQLTablePatch
+    remove: SQLTablePatch
+}
+
+input UpdateSourceCodeLicenseInput {
+    filter: SourceCodeLicenseFilter!
+    set: SourceCodeLicensePatch
+    remove: SourceCodeLicensePatch
+}
+
+input DockerImageRef {
+    name: String
+    tag: String
+    digest: String
+    size: Int
+    architecture: String
+    os: String
+    created: String
+    build: BuildRef
+    dockerImages: [DockerImageLayerRef!]
+}
+
+input InfrastructureProviderFilter {
+    has: [InfrastructureProviderHasFilter]
+    and: [InfrastructureProviderFilter]
+    or: [InfrastructureProviderFilter]
+    not: InfrastructureProviderFilter
+}
+
+input ContainerAppFilter {
+    has: [ContainerAppHasFilter]
+    and: [ContainerAppFilter]
+    or: [ContainerAppFilter]
+    not: ContainerAppFilter
+}
+
+input ExternalProviderRef {
+    id: String
+    name: String
+    description: String
+    builds: [BuildRef]
+    deployments: [DeploymentRef]
+}
+
+input SQLDatabaseRef {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input MethodInput {
+    MethodId: Int
+    MethodName: String
+    ClassId: Int
+}
+
+enum DeploymentHasFilter {
+    id
+    environment
+    startedAt
+    finishedAt
+    status
+    dockerImage
+    sqlSchemaMigration
+}
+
+type NugetPackageAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    versionMin: String
+    versionMax: String
+    descriptionMin: String
+    descriptionMax: String
+    totalDownloadsMin: Int
+    totalDownloadsMax: Int
+    totalDownloadsSum: Int
+    totalDownloadsAvg: Float
+}
+
+enum SQLDatabaseOrderable {
+    id
+    name
+    description
+}
+
+input FloatRange {
+    min: Float!
+    max: Float!
+}
+
+type AddDeploymentConfigurationPayload {
+    deploymentConfiguration(filter: DeploymentConfigurationFilter order: DeploymentConfigurationOrder first: Int offset: Int): [DeploymentConfiguration]
+    numUids: Int
+}
+
+"The Int64 scalar type represents a signed 64‐bit numeric non‐fractional value.\nInt64 can represent values in range [-(2^63),(2^63 - 1)]."
+scalar Int64
+
+type DockerImageAggregateResult {
+    count: Int
+    nameMin: String
+    nameMax: String
+    tagMin: String
+    tagMax: String
+    digestMin: String
+    digestMax: String
+    sizeMin: Int
+    sizeMax: Int
+    sizeSum: Int
+    sizeAvg: Float
+    architectureMin: String
+    architectureMax: String
+    osMin: String
+    osMax: String
+    createdMin: String
+    createdMax: String
+}
+
+input UpdateContainerAppEnvironmentInput {
+    filter: ContainerAppEnvironmentFilter!
+    set: ContainerAppEnvironmentPatch
+    remove: ContainerAppEnvironmentPatch
+}
+
+type FeatureFlag {
+    id: String
+    name: String
+    description: String
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+input UpdateExternalProviderInput {
+    filter: ExternalProviderFilter!
+    set: ExternalProviderPatch
+    remove: ExternalProviderPatch
+}
+
+type AddPulumiProjectPayload {
+    pulumiProject(filter: PulumiProjectFilter order: PulumiProjectOrder first: Int offset: Int): [PulumiProject]
+    numUids: Int
+}
+
+type ContainerAppEnvironmentAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+type UpdateSourceCodeLicensePayload {
+    sourceCodeLicense(filter: SourceCodeLicenseFilter order: SourceCodeLicenseOrder first: Int offset: Int): [SourceCodeLicense]
+    numUids: Int
+}
+
+input AddCVEVulnerabilityInput {
+    id: String
+    name: String
+    description: String
+    nugetPackages: [NugetPackageRef]
+}
+
+input BuildOrder {
+    asc: BuildOrderable
+    desc: BuildOrderable
+    then: BuildOrder
+}
+
+input PulumiProjectFilter {
+    has: [PulumiProjectHasFilter]
+    and: [PulumiProjectFilter]
+    or: [PulumiProjectFilter]
+    not: PulumiProjectFilter
+}
+
+input UpdateMethodInput {
+    filter: MethodFilter!
+    set: MethodPatch
+    remove: MethodPatch
+}
+
+enum Mode {
+    BATCH
+    SINGLE
+}
+
+type AddGitCommitPayload {
+    gitCommit(filter: GitCommitFilter order: GitCommitOrder first: Int offset: Int): [GitCommit]
+    numUids: Int
+}
+
+type FeatureFlagAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+enum DockerImageLayerOrderable {
+    id
+    digest
+    size
+    architecture
+    os
+    created
+}
+
+input AddDockerImageInput {
+    name: String
+    tag: String
+    digest: String
+    size: Int
+    architecture: String
+    os: String
+    created: String
+    build: BuildRef
+    dockerImages: [DockerImageLayerRef!]
+}
+
+input AddGitCommitInput {
+    id: String
+    message: String
+}
+
+input DeploymentConfigurationOrder {
+    asc: DeploymentConfigurationOrderable
+    desc: DeploymentConfigurationOrderable
+    then: DeploymentConfigurationOrder
+}
+
+input JiraIssuePatch {
+    id: String
+    key: String
+    summary: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input PropertyInput {
+    PropertyId: Int
+    PropertyName: String
+    ClassId: Int
+}
+
+type AddNugetPackagePayload {
+    nugetPackage(filter: NugetPackageFilter order: NugetPackageOrder first: Int offset: Int): [NugetPackage]
+    numUids: Int
+}
+
+input SQLTableOrder {
+    asc: SQLTableOrderable
+    desc: SQLTableOrderable
+    then: SQLTableOrder
+}
+
+input UpdatePulumiProjectInput {
+    filter: PulumiProjectFilter!
+    set: PulumiProjectPatch
+    remove: PulumiProjectPatch
+}
+
+enum AppOrderable {
+    id
+    name
+}
+
+enum DeploymentOrderable {
+    id
+    environment
+    startedAt
+    finishedAt
+    status
+}
+
+input AddAppInput {
+    id: String!
+    name: String
+    deployments: [DeploymentRef!]
+}
+
+input AddClassDataInput {
+    ClassId: Int
+    ClassName: String
+    Methods: [MethodRef]
+    Properties: [PropertyRef]
+    DependsOn: [ClassDataRef]
+}
+
+input AppFilter {
+    has: [AppHasFilter]
+    and: [AppFilter]
+    or: [AppFilter]
+    not: AppFilter
+}
+
+input NugetPackageRef {
+    id: String
+    name: String
+    version: String
+    description: String
+    authors: [String]
+    totalDownloads: Int
+}
+
+type CVEVulnerability {
+    id: String
+    name: String
+    description: String
+    nugetPackages(filter: NugetPackageFilter order: NugetPackageOrder first: Int offset: Int): [NugetPackage]
+    nugetPackagesAggregate(filter: NugetPackageFilter): NugetPackageAggregateResult
+}
+
+type AddSQLDatabasePayload {
+    sQLDatabase(filter: SQLDatabaseFilter order: SQLDatabaseOrder first: Int offset: Int): [SQLDatabase]
+    numUids: Int
+}
+
+input SQLDatabaseFilter {
+    has: [SQLDatabaseHasFilter]
+    and: [SQLDatabaseFilter]
+    or: [SQLDatabaseFilter]
+    not: SQLDatabaseFilter
+}
+
+type DeleteContainerAppEnvironmentPayload {
+    containerAppEnvironment(filter: ContainerAppEnvironmentFilter order: ContainerAppEnvironmentOrder first: Int offset: Int): [ContainerAppEnvironment]
+    msg: String
+    numUids: Int
+}
+
+type DeleteJiraIssuePayload {
+    jiraIssue(filter: JiraIssueFilter order: JiraIssueOrder first: Int offset: Int): [JiraIssue]
+    msg: String
+    numUids: Int
+}
+
+type UpdateContainerAppPayload {
+    containerApp(filter: ContainerAppFilter order: ContainerAppOrder first: Int offset: Int): [ContainerApp]
+    numUids: Int
+}
+
+type UpdateFeatureFlagPayload {
+    featureFlag(filter: FeatureFlagFilter order: FeatureFlagOrder first: Int offset: Int): [FeatureFlag]
+    numUids: Int
+}
+
+enum PulumiProjectOrderable {
+    id
+    name
+    description
+}
+
+enum UseCaseOrderable {
+    id
+    name
+}
+
+input IntersectsFilter {
+    polygon: PolygonRef
+    multiPolygon: MultiPolygonRef
+}
+
+input PolygonGeoFilter {
+    near: NearFilter
+    within: WithinFilter
+    contains: ContainsFilter
+    intersects: IntersectsFilter
+}
+
+input JiraIssueOrder {
+    asc: JiraIssueOrderable
+    desc: JiraIssueOrderable
+    then: JiraIssueOrder
+}
+
+input UpdateNugetPackageInput {
+    filter: NugetPackageFilter!
+    set: NugetPackagePatch
+    remove: NugetPackagePatch
+}
+
+input AddContainerAppEnvironmentInput {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input DockerImageLayerPatch {
+    id: String
+    digest: String
+    size: Int
+    architecture: String
+    os: String
+    created: String
+}
+
+input AddContainerAppInput {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input AddDeploymentInput {
+    id: String!
+    environment: String!
+    startedAt: String!
+    finishedAt: String!
+    status: String!
+    dockerImage: [DockerImageRef!]
+    sqlSchemaMigration: [SQLSchemaMigrationRef!]
+}
+
+input ClassDataRef {
+    ClassId: Int
+    ClassName: String
+    Methods: [MethodRef]
+    Properties: [PropertyRef]
+    DependsOn: [ClassDataRef]
+}
+
+type UpdateDockerImageLayerPayload {
+    dockerImageLayer(filter: DockerImageLayerFilter order: DockerImageLayerOrder first: Int offset: Int): [DockerImageLayer]
+    numUids: Int
+}
+
+type UpdateUseCasePayload {
+    useCase(filter: UseCaseFilter order: UseCaseOrder first: Int offset: Int): [UseCase]
+    numUids: Int
+}
+
+type DeleteClassDataPayloadPayload {
+    classDataPayload(filter: ClassDataPayloadFilter first: Int offset: Int): [ClassDataPayload]
+    msg: String
+    numUids: Int
+}
+
+type SQLTableAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+}
+
+enum AppHasFilter {
+    id
+    name
+    deployments
+}
+
+enum ApplicationBlueprintOrderable {
+    id
+    name
+    description
+}
+
+input ExternalProviderOrder {
+    asc: ExternalProviderOrderable
+    desc: ExternalProviderOrderable
+    then: ExternalProviderOrder
+}
+
+input FeatureFlagRef {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+type CVEVulnerabilityAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+input NugetPackageFilter {
+    has: [NugetPackageHasFilter]
+    and: [NugetPackageFilter]
+    or: [NugetPackageFilter]
+    not: NugetPackageFilter
+}
+
+input GitCommitOrder {
+    asc: GitCommitOrderable
+    desc: GitCommitOrderable
+    then: GitCommitOrder
+}
+
+input InfrastructureProviderOrder {
+    asc: InfrastructureProviderOrderable
+    desc: InfrastructureProviderOrderable
+    then: InfrastructureProviderOrder
+}
+
+type UpdateContainerAppEnvironmentPayload {
+    containerAppEnvironment(filter: ContainerAppEnvironmentFilter order: ContainerAppEnvironmentOrder first: Int offset: Int): [ContainerAppEnvironment]
+    numUids: Int
+}
+
+input AddClassDataPayloadInput {
+    classData: [ClassDataRef]
+}
+
+input UpdateApplicationBlueprintInput {
+    filter: ApplicationBlueprintFilter!
+    set: ApplicationBlueprintPatch
+    remove: ApplicationBlueprintPatch
+}
+
+type Query {
+    queryApp(filter: AppFilter order: AppOrder first: Int offset: Int): [App]
+    aggregateApp(filter: AppFilter): AppAggregateResult
+    queryDeployment(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    aggregateDeployment(filter: DeploymentFilter): DeploymentAggregateResult
+    queryDeploymentConfiguration(filter: DeploymentConfigurationFilter order: DeploymentConfigurationOrder first: Int offset: Int): [DeploymentConfiguration]
+    aggregateDeploymentConfiguration(filter: DeploymentConfigurationFilter): DeploymentConfigurationAggregateResult
+    querySQLSchemaMigration(filter: SQLSchemaMigrationFilter order: SQLSchemaMigrationOrder first: Int offset: Int): [SQLSchemaMigration]
+    aggregateSQLSchemaMigration(filter: SQLSchemaMigrationFilter): SQLSchemaMigrationAggregateResult
+    queryDockerImage(filter: DockerImageFilter order: DockerImageOrder first: Int offset: Int): [DockerImage]
+    aggregateDockerImage(filter: DockerImageFilter): DockerImageAggregateResult
+    queryDockerImageLayer(filter: DockerImageLayerFilter order: DockerImageLayerOrder first: Int offset: Int): [DockerImageLayer]
+    aggregateDockerImageLayer(filter: DockerImageLayerFilter): DockerImageLayerAggregateResult
+    queryBuild(filter: BuildFilter order: BuildOrder first: Int offset: Int): [Build]
+    aggregateBuild(filter: BuildFilter): BuildAggregateResult
+    queryGitCommit(filter: GitCommitFilter order: GitCommitOrder first: Int offset: Int): [GitCommit]
+    aggregateGitCommit(filter: GitCommitFilter): GitCommitAggregateResult
+    queryFeatureFlag(filter: FeatureFlagFilter order: FeatureFlagOrder first: Int offset: Int): [FeatureFlag]
+    aggregateFeatureFlag(filter: FeatureFlagFilter): FeatureFlagAggregateResult
+    queryNugetPackage(filter: NugetPackageFilter order: NugetPackageOrder first: Int offset: Int): [NugetPackage]
+    aggregateNugetPackage(filter: NugetPackageFilter): NugetPackageAggregateResult
+    queryContainerAppEnvironment(filter: ContainerAppEnvironmentFilter order: ContainerAppEnvironmentOrder first: Int offset: Int): [ContainerAppEnvironment]
+    aggregateContainerAppEnvironment(filter: ContainerAppEnvironmentFilter): ContainerAppEnvironmentAggregateResult
+    queryPulumiProject(filter: PulumiProjectFilter order: PulumiProjectOrder first: Int offset: Int): [PulumiProject]
+    aggregatePulumiProject(filter: PulumiProjectFilter): PulumiProjectAggregateResult
+    queryContainerApp(filter: ContainerAppFilter order: ContainerAppOrder first: Int offset: Int): [ContainerApp]
+    aggregateContainerApp(filter: ContainerAppFilter): ContainerAppAggregateResult
+    querySQLDatabase(filter: SQLDatabaseFilter order: SQLDatabaseOrder first: Int offset: Int): [SQLDatabase]
+    aggregateSQLDatabase(filter: SQLDatabaseFilter): SQLDatabaseAggregateResult
+    querySQLTable(filter: SQLTableFilter order: SQLTableOrder first: Int offset: Int): [SQLTable]
+    aggregateSQLTable(filter: SQLTableFilter): SQLTableAggregateResult
+    queryInfrastructureProvider(filter: InfrastructureProviderFilter order: InfrastructureProviderOrder first: Int offset: Int): [InfrastructureProvider]
+    aggregateInfrastructureProvider(filter: InfrastructureProviderFilter): InfrastructureProviderAggregateResult
+    queryJiraIssue(filter: JiraIssueFilter order: JiraIssueOrder first: Int offset: Int): [JiraIssue]
+    aggregateJiraIssue(filter: JiraIssueFilter): JiraIssueAggregateResult
+    queryCVEVulnerability(filter: CVEVulnerabilityFilter order: CVEVulnerabilityOrder first: Int offset: Int): [CVEVulnerability]
+    aggregateCVEVulnerability(filter: CVEVulnerabilityFilter): CVEVulnerabilityAggregateResult
+    queryApplicationBlueprint(filter: ApplicationBlueprintFilter order: ApplicationBlueprintOrder first: Int offset: Int): [ApplicationBlueprint]
+    aggregateApplicationBlueprint(filter: ApplicationBlueprintFilter): ApplicationBlueprintAggregateResult
+    queryExternalProvider(filter: ExternalProviderFilter order: ExternalProviderOrder first: Int offset: Int): [ExternalProvider]
+    aggregateExternalProvider(filter: ExternalProviderFilter): ExternalProviderAggregateResult
+    querySourceCodeLicense(filter: SourceCodeLicenseFilter order: SourceCodeLicenseOrder first: Int offset: Int): [SourceCodeLicense]
+    aggregateSourceCodeLicense(filter: SourceCodeLicenseFilter): SourceCodeLicenseAggregateResult
+    queryUseCase(filter: UseCaseFilter order: UseCaseOrder first: Int offset: Int): [UseCase]
+    aggregateUseCase(filter: UseCaseFilter): UseCaseAggregateResult
+    queryMethod(filter: MethodFilter order: MethodOrder first: Int offset: Int): [Method]
+    aggregateMethod(filter: MethodFilter): MethodAggregateResult
+    queryProperty(filter: PropertyFilter order: PropertyOrder first: Int offset: Int): [Property]
+    aggregateProperty(filter: PropertyFilter): PropertyAggregateResult
+    queryClassData(filter: ClassDataFilter order: ClassDataOrder first: Int offset: Int): [ClassData]
+    aggregateClassData(filter: ClassDataFilter): ClassDataAggregateResult
+    queryClassDataPayload(filter: ClassDataPayloadFilter first: Int offset: Int): [ClassDataPayload]
+    aggregateClassDataPayload(filter: ClassDataPayloadFilter): ClassDataPayloadAggregateResult
+}
+
+type ContainerAppEnvironment {
+    id: String
+    name: String
+    description: String
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+input DateTimeRange {
+    min: DateTime!
+    max: DateTime!
+}
+
+type SQLDatabase {
+    id: String
+    name: String
+    description: String
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+type AddDockerImageLayerPayload {
+    dockerImageLayer(filter: DockerImageLayerFilter order: DockerImageLayerOrder first: Int offset: Int): [DockerImageLayer]
+    numUids: Int
+}
+
+type UpdateCVEVulnerabilityPayload {
+    cVEVulnerability(filter: CVEVulnerabilityFilter order: CVEVulnerabilityOrder first: Int offset: Int): [CVEVulnerability]
+    numUids: Int
+}
+
+type App {
+    id: String!
+    name: String
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment!]
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+type Build {
+    id: String
+    version: Int
+    startedAt: String
+    finishedAt: String
+    status: String
+    sourceCommit: String
+}
+
+type DeleteCVEVulnerabilityPayload {
+    cVEVulnerability(filter: CVEVulnerabilityFilter order: CVEVulnerabilityOrder first: Int offset: Int): [CVEVulnerability]
+    msg: String
+    numUids: Int
+}
+
+type DeleteContainerAppPayload {
+    containerApp(filter: ContainerAppFilter order: ContainerAppOrder first: Int offset: Int): [ContainerApp]
+    msg: String
+    numUids: Int
+}
+
+type DeleteNugetPackagePayload {
+    nugetPackage(filter: NugetPackageFilter order: NugetPackageOrder first: Int offset: Int): [NugetPackage]
+    msg: String
+    numUids: Int
+}
+
+type DeletePulumiProjectPayload {
+    pulumiProject(filter: PulumiProjectFilter order: PulumiProjectOrder first: Int offset: Int): [PulumiProject]
+    msg: String
+    numUids: Int
+}
+
+enum SourceCodeLicenseHasFilter {
+    id
+    name
+}
+
+input AddInfrastructureProviderInput {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+type AddInfrastructureProviderPayload {
+    infrastructureProvider(filter: InfrastructureProviderFilter order: InfrastructureProviderOrder first: Int offset: Int): [InfrastructureProvider]
+    numUids: Int
+}
+
+type DeleteAppPayload {
+    app(filter: AppFilter order: AppOrder first: Int offset: Int): [App]
+    msg: String
+    numUids: Int
+}
+
+input ExternalProviderPatch {
+    id: String
+    name: String
+    description: String
+    builds: [BuildRef]
+    deployments: [DeploymentRef]
+}
+
+input ClassDataFilter {
+    has: [ClassDataHasFilter]
+    and: [ClassDataFilter]
+    or: [ClassDataFilter]
+    not: ClassDataFilter
+}
+
+input ContainerAppPatch {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input UseCaseRef {
+    id: String
+    name: String
+}
+
+type AddFeatureFlagPayload {
+    featureFlag(filter: FeatureFlagFilter order: FeatureFlagOrder first: Int offset: Int): [FeatureFlag]
+    numUids: Int
+}
+
+type AddMethodPayload {
+    method(filter: MethodFilter order: MethodOrder first: Int offset: Int): [Method]
+    numUids: Int
+}
+
+input GenerateQueryParams {
+    get: Boolean
+    query: Boolean
+    password: Boolean
+    aggregate: Boolean
+}
+
+type AddExternalProviderPayload {
+    externalProvider(filter: ExternalProviderFilter order: ExternalProviderOrder first: Int offset: Int): [ExternalProvider]
+    numUids: Int
+}
+
+type DeleteUseCasePayload {
+    useCase(filter: UseCaseFilter order: UseCaseOrder first: Int offset: Int): [UseCase]
+    msg: String
+    numUids: Int
+}
+
+type ExternalProviderAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+input JiraIssueRef {
+    id: String
+    key: String
+    summary: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input MethodFilter {
+    has: [MethodHasFilter]
+    and: [MethodFilter]
+    or: [MethodFilter]
+    not: MethodFilter
+}
+
+type DeploymentConfiguration {
+    key: String
+    value: String
+}
+
+type PulumiProject {
+    id: String
+    name: String
+    description: String
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+enum DeploymentConfigurationHasFilter {
+    key
+    value
+}
+
+enum NugetPackageHasFilter {
+    id
+    name
+    version
+    description
+    authors
+    totalDownloads
+}
+
+input DockerImageFilter {
+    has: [DockerImageHasFilter]
+    and: [DockerImageFilter]
+    or: [DockerImageFilter]
+    not: DockerImageFilter
+}
+
+input MethodPatch {
+    MethodId: Int
+    MethodName: String
+    ClassId: Int
+}
+
+type NugetPackage {
+    id: String
+    name: String
+    version: String
+    description: String
+    authors: [String]
+    totalDownloads: Int
+}
+
+type AppAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+}
+
+input AddJiraIssueInput {
+    id: String
+    key: String
+    summary: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input ContainerAppRef {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input PropertyPatch {
+    PropertyId: Int
+    PropertyName: String
+    ClassId: Int
+}
+
+input PointRef {
+    longitude: Float!
+    latitude: Float!
+}
+
+type MultiPolygon {
+    polygons: [Polygon!]!
+}
+
+input ExternalProviderFilter {
+    has: [ExternalProviderHasFilter]
+    and: [ExternalProviderFilter]
+    or: [ExternalProviderFilter]
+    not: ExternalProviderFilter
+}
+
+input UpdateClassDataPayloadInput {
+    filter: ClassDataPayloadFilter!
+    set: ClassDataPayloadPatch
+    remove: ClassDataPayloadPatch
+}
+
+enum DockerImageHasFilter {
+    name
+    tag
+    digest
+    size
+    architecture
+    os
+    created
+    build
+    dockerImages
+}
+
+input ContainerAppEnvironmentPatch {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input AddSQLTableInput {
+    id: String
+    name: String
+}
+
+input ClassDataPayloadPatch {
+    classData: [ClassDataRef]
+}
+
+input DeploymentPatch {
+    id: String
+    environment: String
+    startedAt: String
+    finishedAt: String
+    status: String
+    dockerImage: [DockerImageRef!]
+    sqlSchemaMigration: [SQLSchemaMigrationRef!]
+}
+
+input PropertyOrder {
+    asc: PropertyOrderable
+    desc: PropertyOrderable
+    then: PropertyOrder
+}
+
+enum ContainerAppHasFilter {
+    id
+    name
+    description
+    deployments
+}
+
+type UpdateDeploymentPayload {
+    deployment(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    numUids: Int
+}
+
+enum FeatureFlagHasFilter {
+    id
+    name
+    description
+    deployments
+}
+
+enum SourceCodeLicenseOrderable {
+    id
+    name
+}
+
+input GitCommitRef {
+    id: String
+    message: String
+}
+
+type AddAppPayload {
+    app(filter: AppFilter order: AppOrder first: Int offset: Int): [App]
+    numUids: Int
+}
+
+type AddSourceCodeLicensePayload {
+    sourceCodeLicense(filter: SourceCodeLicenseFilter order: SourceCodeLicenseOrder first: Int offset: Int): [SourceCodeLicense]
+    numUids: Int
+}
+
+input JiraIssueFilter {
+    has: [JiraIssueHasFilter]
+    and: [JiraIssueFilter]
+    or: [JiraIssueFilter]
+    not: JiraIssueFilter
+}
+
+input SourceCodeLicenseFilter {
+    has: [SourceCodeLicenseHasFilter]
+    and: [SourceCodeLicenseFilter]
+    or: [SourceCodeLicenseFilter]
+    not: SourceCodeLicenseFilter
+}
+
+type Deployment {
+    id: String!
+    environment: String!
+    startedAt: String!
+    finishedAt: String!
+    status: String!
+    dockerImage(filter: DockerImageFilter order: DockerImageOrder first: Int offset: Int): [DockerImage!]
+    sqlSchemaMigration(filter: SQLSchemaMigrationFilter order: SQLSchemaMigrationOrder first: Int offset: Int): [SQLSchemaMigration!]
+    dockerImageAggregate(filter: DockerImageFilter): DockerImageAggregateResult
+    sqlSchemaMigrationAggregate(filter: SQLSchemaMigrationFilter): SQLSchemaMigrationAggregateResult
+}
+
+input NearFilter {
+    distance: Float!
+    coordinate: PointRef!
+}
+
+type DeleteDockerImageLayerPayload {
+    dockerImageLayer(filter: DockerImageLayerFilter order: DockerImageLayerOrder first: Int offset: Int): [DockerImageLayer]
+    msg: String
+    numUids: Int
+}
+
+type UpdateBuildPayload {
+    build(filter: BuildFilter order: BuildOrder first: Int offset: Int): [Build]
+    numUids: Int
+}
+
+input CVEVulnerabilityPatch {
+    id: String
+    name: String
+    description: String
+    nugetPackages: [NugetPackageRef]
+}
+
+input SQLTableFilter {
+    has: [SQLTableHasFilter]
+    and: [SQLTableFilter]
+    or: [SQLTableFilter]
+    not: SQLTableFilter
+}
+
+input UpdateCVEVulnerabilityInput {
+    filter: CVEVulnerabilityFilter!
+    set: CVEVulnerabilityPatch
+    remove: CVEVulnerabilityPatch
+}
+
+input UpdatePropertyInput {
+    filter: PropertyFilter!
+    set: PropertyPatch
+    remove: PropertyPatch
+}
+
+type GitCommit {
+    id: String
+    message: String
+}
+
+type ContainerAppAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+type AddSQLTablePayload {
+    sQLTable(filter: SQLTableFilter order: SQLTableOrder first: Int offset: Int): [SQLTable]
+    numUids: Int
+}
+
+type DeleteApplicationBlueprintPayload {
+    applicationBlueprint(filter: ApplicationBlueprintFilter order: ApplicationBlueprintOrder first: Int offset: Int): [ApplicationBlueprint]
+    msg: String
+    numUids: Int
+}
+
+enum ClassDataPayloadHasFilter {
+    classData
+}
+
+input CVEVulnerabilityOrder {
+    asc: CVEVulnerabilityOrderable
+    desc: CVEVulnerabilityOrderable
+    then: CVEVulnerabilityOrder
+}
+
+input DeploymentConfigurationRef {
+    key: String
+    value: String
+}
+
+enum HTTPMethod {
+    GET
+    POST
+    PUT
+    PATCH
+    DELETE
+}
+
+type AddSQLSchemaMigrationPayload {
+    sQLSchemaMigration(filter: SQLSchemaMigrationFilter order: SQLSchemaMigrationOrder first: Int offset: Int): [SQLSchemaMigration]
+    numUids: Int
+}
+
+input DateTimeFilter {
+    eq: DateTime
+    in: [DateTime]
+    le: DateTime
+    lt: DateTime
+    ge: DateTime
+    gt: DateTime
+    between: DateTimeRange
+}
+
+enum ContainerAppOrderable {
+    id
+    name
+    description
+}
+
+input FeatureFlagOrder {
+    asc: FeatureFlagOrderable
+    desc: FeatureFlagOrderable
+    then: FeatureFlagOrder
+}
+
+input PulumiProjectRef {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input SQLDatabaseOrder {
+    asc: SQLDatabaseOrderable
+    desc: SQLDatabaseOrderable
+    then: SQLDatabaseOrder
+}
+
+type UpdateNugetPackagePayload {
+    nugetPackage(filter: NugetPackageFilter order: NugetPackageOrder first: Int offset: Int): [NugetPackage]
+    numUids: Int
+}
+
+enum UseCaseHasFilter {
+    id
+    name
+}
+
+input AddBuildInput {
+    id: String
+    version: Int
+    startedAt: String
+    finishedAt: String
+    status: String
+    sourceCommit: String
+}
+
+input AddPulumiProjectInput {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input MethodRef {
+    MethodId: Int
+    MethodName: String
+    ClassId: Int
+}
+
+type UpdateDockerImagePayload {
+    dockerImage(filter: DockerImageFilter order: DockerImageOrder first: Int offset: Int): [DockerImage]
+    numUids: Int
+}
+
+type UpdatePulumiProjectPayload {
+    pulumiProject(filter: PulumiProjectFilter order: PulumiProjectOrder first: Int offset: Int): [PulumiProject]
+    numUids: Int
+}
+
+input StringFullTextFilter {
+    alloftext: String
+    anyoftext: String
+}
+
+type DockerImageLayerAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    digestMin: String
+    digestMax: String
+    sizeMin: Int
+    sizeMax: Int
+    sizeSum: Int
+    sizeAvg: Float
+    architectureMin: String
+    architectureMax: String
+    osMin: String
+    osMax: String
+    createdMin: String
+    createdMax: String
+}
+
+type GitCommitAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    messageMin: String
+    messageMax: String
+}
+
+type UpdateMethodPayload {
+    method(filter: MethodFilter order: MethodOrder first: Int offset: Int): [Method]
+    numUids: Int
+}
+
+type UseCaseAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+}
+
+input ContainerAppEnvironmentFilter {
+    has: [ContainerAppEnvironmentHasFilter]
+    and: [ContainerAppEnvironmentFilter]
+    or: [ContainerAppEnvironmentFilter]
+    not: ContainerAppEnvironmentFilter
+}
+
+type SourceCodeLicense {
+    id: String
+    name: String
+}
+
+enum DgraphIndex {
+    int
+    int64
+    float
+    bool
+    hash
+    exact
+    term
+    fulltext
+    trigram
+    regexp
+    year
+    month
+    day
+    hour
+    geo
+    hnsw
+}
+
+enum MethodHasFilter {
+    MethodId
+    MethodName
+    ClassId
+}
+
+input AddExternalProviderInput {
+    id: String
+    name: String
+    description: String
+    builds: [BuildRef]
+    deployments: [DeploymentRef]
+}
+
+input AddUseCaseInput {
+    id: String
+    name: String
+}
+
+input AppPatch {
+    id: String
+    name: String
+    deployments: [DeploymentRef!]
+}
+
+input ClassDataPayloadFilter {
+    has: [ClassDataPayloadHasFilter]
+    and: [ClassDataPayloadFilter]
+    or: [ClassDataPayloadFilter]
+    not: ClassDataPayloadFilter
+}
+
+input UpdateBuildInput {
+    filter: BuildFilter!
+    set: BuildPatch
+    remove: BuildPatch
+}
+
+type DeleteInfrastructureProviderPayload {
+    infrastructureProvider(filter: InfrastructureProviderFilter order: InfrastructureProviderOrder first: Int offset: Int): [InfrastructureProvider]
+    msg: String
+    numUids: Int
+}
+
+type DeleteSQLDatabasePayload {
+    sQLDatabase(filter: SQLDatabaseFilter order: SQLDatabaseOrder first: Int offset: Int): [SQLDatabase]
+    msg: String
+    numUids: Int
+}
+
+input UpdateSQLSchemaMigrationInput {
+    filter: SQLSchemaMigrationFilter!
+    set: SQLSchemaMigrationPatch
+    remove: SQLSchemaMigrationPatch
+}
+
+input PropertyFilter {
+    has: [PropertyHasFilter]
+    and: [PropertyFilter]
+    or: [PropertyFilter]
+    not: PropertyFilter
+}
+
+input PointGeoFilter {
+    near: NearFilter
+    within: WithinFilter
+}
+
+input GenerateMutationParams {
+    add: Boolean
+    update: Boolean
+    delete: Boolean
+}
+
+type UpdateGitCommitPayload {
+    gitCommit(filter: GitCommitFilter order: GitCommitOrder first: Int offset: Int): [GitCommit]
+    numUids: Int
+}
+
+enum InfrastructureProviderHasFilter {
+    id
+    name
+    description
+    deployments
+}
+
+input BuildPatch {
+    id: String
+    version: Int
+    startedAt: String
+    finishedAt: String
+    status: String
+    sourceCommit: String
+}
+
+input DeploymentConfigurationPatch {
+    key: String
+    value: String
+}
+
+input SQLTablePatch {
+    id: String
+    name: String
+}
+
+input StringExactFilter {
+    eq: String
+    in: [String]
+    le: String
+    lt: String
+    ge: String
+    gt: String
+    between: StringRange
+}
+
+type UpdateExternalProviderPayload {
+    externalProvider(filter: ExternalProviderFilter order: ExternalProviderOrder first: Int offset: Int): [ExternalProvider]
+    numUids: Int
+}
+
+input SourceCodeLicenseRef {
+    id: String
+    name: String
+}
+
+input UpdateDeploymentInput {
+    filter: DeploymentFilter!
+    set: DeploymentPatch
+    remove: DeploymentPatch
+}
+
+input UpdateGitCommitInput {
+    filter: GitCommitFilter!
+    set: GitCommitPatch
+    remove: GitCommitPatch
+}
+
+type InfrastructureProvider {
+    id: String
+    name: String
+    description: String
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+type UpdateSQLDatabasePayload {
+    sQLDatabase(filter: SQLDatabaseFilter order: SQLDatabaseOrder first: Int offset: Int): [SQLDatabase]
+    numUids: Int
+}
+
+enum BuildOrderable {
+    id
+    version
+    startedAt
+    finishedAt
+    status
+    sourceCommit
+}
+
+enum FeatureFlagOrderable {
+    id
+    name
+    description
+}
+
+input PulumiProjectOrder {
+    asc: PulumiProjectOrderable
+    desc: PulumiProjectOrderable
+    then: PulumiProjectOrder
+}
+
+type Method {
+    MethodId: Int
+    MethodName: String
+    ClassId: Int
+}
+
+input Int64Range {
+    min: Int64!
+    max: Int64!
+}
+
+type PropertyAggregateResult {
+    count: Int
+    PropertyIdMin: Int
+    PropertyIdMax: Int
+    PropertyIdSum: Int
+    PropertyIdAvg: Float
+    PropertyNameMin: String
+    PropertyNameMax: String
+    ClassIdMin: Int
+    ClassIdMax: Int
+    ClassIdSum: Int
+    ClassIdAvg: Float
+}
+
+enum PropertyHasFilter {
+    PropertyId
+    PropertyName
+    ClassId
+}
+
+input SQLSchemaMigrationRef {
+    id: String
+    name: String
+}
+
+input UpdateFeatureFlagInput {
+    filter: FeatureFlagFilter!
+    set: FeatureFlagPatch
+    remove: FeatureFlagPatch
+}
+
+input StringTermFilter {
+    allofterms: String
+    anyofterms: String
+}
+
+type DeploymentAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    environmentMin: String
+    environmentMax: String
+    startedAtMin: String
+    startedAtMax: String
+    finishedAtMin: String
+    finishedAtMax: String
+    statusMin: String
+    statusMax: String
+}
+
+type MethodAggregateResult {
+    count: Int
+    MethodIdMin: Int
+    MethodIdMax: Int
+    MethodIdSum: Int
+    MethodIdAvg: Float
+    MethodNameMin: String
+    MethodNameMax: String
+    ClassIdMin: Int
+    ClassIdMax: Int
+    ClassIdSum: Int
+    ClassIdAvg: Float
+}
+
+input FeatureFlagPatch {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input InfrastructureProviderPatch {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input ClassDataInput {
+    ClassId: Int!
+    ClassName: String!
+    Methods: [MethodInput!]
+    Properties: [PropertyInput!]
+    DependsOn: [ClassDataInput!]
+}
+
+type JiraIssueAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    keyMin: String
+    keyMax: String
+    summaryMin: String
+    summaryMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+type AddPropertyPayload {
+    property(filter: PropertyFilter order: PropertyOrder first: Int offset: Int): [Property]
+    numUids: Int
+}
+
+type UpdateClassDataPayloadPayload {
+    classDataPayload(filter: ClassDataPayloadFilter first: Int offset: Int): [ClassDataPayload]
+    numUids: Int
+}
+
+enum PropertyOrderable {
+    PropertyId
+    PropertyName
+    ClassId
+}
+
+enum SQLDatabaseHasFilter {
+    id
+    name
+    description
+    deployments
+}
+
+input ApplicationBlueprintFilter {
+    has: [ApplicationBlueprintHasFilter]
+    and: [ApplicationBlueprintFilter]
+    or: [ApplicationBlueprintFilter]
+    not: ApplicationBlueprintFilter
+}
+
+input ContainerAppEnvironmentOrder {
+    asc: ContainerAppEnvironmentOrderable
+    desc: ContainerAppEnvironmentOrderable
+    then: ContainerAppEnvironmentOrder
+}
+
+type DockerImage {
+    name: String
+    tag: String
+    digest: String
+    size: Int
+    architecture: String
+    os: String
+    created: String
+    build(filter: BuildFilter): Build
+    dockerImages(filter: DockerImageLayerFilter order: DockerImageLayerOrder first: Int offset: Int): [DockerImageLayer!]
+    dockerImagesAggregate(filter: DockerImageLayerFilter): DockerImageLayerAggregateResult
+}
+
+input SQLSchemaMigrationFilter {
+    has: [SQLSchemaMigrationHasFilter]
+    and: [SQLSchemaMigrationFilter]
+    or: [SQLSchemaMigrationFilter]
+    not: SQLSchemaMigrationFilter
+}
+
+input FloatFilter {
+    eq: Float
+    in: [Float]
+    le: Float
+    lt: Float
+    ge: Float
+    gt: Float
+    between: FloatRange
+}
+
+type DeleteBuildPayload {
+    build(filter: BuildFilter order: BuildOrder first: Int offset: Int): [Build]
+    msg: String
+    numUids: Int
+}
+
+type UpdatePropertyPayload {
+    property(filter: PropertyFilter order: PropertyOrder first: Int offset: Int): [Property]
+    numUids: Int
+}
+
+enum SQLTableOrderable {
+    id
+    name
+}
+
+input DeploymentConfigurationFilter {
+    has: [DeploymentConfigurationHasFilter]
+    and: [DeploymentConfigurationFilter]
+    or: [DeploymentConfigurationFilter]
+    not: DeploymentConfigurationFilter
+}
+
+input PulumiProjectPatch {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+type ClassDataPayload {
+    classData(filter: ClassDataFilter order: ClassDataOrder first: Int offset: Int): [ClassData]
+    classDataAggregate(filter: ClassDataFilter): ClassDataAggregateResult
+}
+
+type PointList {
+    points: [Point!]!
+}
+
+input SQLSchemaMigrationOrder {
+    asc: SQLSchemaMigrationOrderable
+    desc: SQLSchemaMigrationOrderable
+    then: SQLSchemaMigrationOrder
+}
+
+input StringHashFilter {
+    eq: String
+    in: [String]
+}
+
+type AddCVEVulnerabilityPayload {
+    cVEVulnerability(filter: CVEVulnerabilityFilter order: CVEVulnerabilityOrder first: Int offset: Int): [CVEVulnerability]
+    numUids: Int
+}
+
+type AddDeploymentPayload {
+    deployment(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    numUids: Int
+}
+
+enum ContainerAppEnvironmentOrderable {
+    id
+    name
+    description
+}
+
+enum DockerImageOrderable {
+    name
+    tag
+    digest
+    size
+    architecture
+    os
+    created
+}
+
+enum GitCommitOrderable {
+    id
+    message
+}
+
+input ContainsFilter {
+    point: PointRef
+    polygon: PolygonRef
+}
+
+input SQLSchemaMigrationPatch {
+    id: String
+    name: String
+}
+
+input SourceCodeLicensePatch {
+    id: String
+    name: String
+}
+
+input ApplicationBlueprintPatch {
+    id: String
+    name: String
+    description: String
+    builds: [BuildRef]
+    deployments: [DeploymentRef]
+}
+
+input ClassDataPayloadRef {
+    classData: [ClassDataRef]
+}
+
+enum ApplicationBlueprintHasFilter {
+    id
+    name
+    description
+    builds
+    deployments
+}
+
+enum CVEVulnerabilityOrderable {
+    id
+    name
+    description
+}
+
+enum ExternalProviderHasFilter {
+    id
+    name
+    description
+    builds
+    deployments
+}
+
+input AppRef {
+    id: String
+    name: String
+    deployments: [DeploymentRef!]
+}
+
+input UpdateInfrastructureProviderInput {
+    filter: InfrastructureProviderFilter!
+    set: InfrastructureProviderPatch
+    remove: InfrastructureProviderPatch
+}
+
+type DeleteClassDataPayload {
+    classData(filter: ClassDataFilter order: ClassDataOrder first: Int offset: Int): [ClassData]
+    msg: String
+    numUids: Int
+}
+
+type DeleteSQLTablePayload {
+    sQLTable(filter: SQLTableFilter order: SQLTableOrder first: Int offset: Int): [SQLTable]
+    msg: String
+    numUids: Int
+}
+
+input DockerImageLayerOrder {
+    asc: DockerImageLayerOrderable
+    desc: DockerImageLayerOrderable
+    then: DockerImageLayerOrder
+}
+
+input DockerImageOrder {
+    asc: DockerImageOrderable
+    desc: DockerImageOrderable
+    then: DockerImageOrder
+}
+
+input DockerImagePatch {
+    name: String
+    tag: String
+    digest: String
+    size: Int
+    architecture: String
+    os: String
+    created: String
+    build: BuildRef
+    dockerImages: [DockerImageLayerRef!]
+}
+
+input UpdateUseCaseInput {
+    filter: UseCaseFilter!
+    set: UseCasePatch
+    remove: UseCasePatch
+}
+
+input CustomHTTP {
+    url: String!
+    method: HTTPMethod!
+    body: String
+    graphql: String
+    mode: Mode
+    forwardHeaders: [String!]
+    secretHeaders: [String!]
+    introspectionHeaders: [String!]
+    skipIntrospection: Boolean
+}
+
+type AddClassDataPayloadPayload {
+    classDataPayload(filter: ClassDataPayloadFilter first: Int offset: Int): [ClassDataPayload]
+    numUids: Int
+}
+
+type UpdateApplicationBlueprintPayload {
+    applicationBlueprint(filter: ApplicationBlueprintFilter order: ApplicationBlueprintOrder first: Int offset: Int): [ApplicationBlueprint]
+    numUids: Int
+}
+
+type AddContainerAppEnvironmentPayload {
+    containerAppEnvironment(filter: ContainerAppEnvironmentFilter order: ContainerAppEnvironmentOrder first: Int offset: Int): [ContainerAppEnvironment]
+    numUids: Int
+}
+
+type DeleteSourceCodeLicensePayload {
+    sourceCodeLicense(filter: SourceCodeLicenseFilter order: SourceCodeLicenseOrder first: Int offset: Int): [SourceCodeLicense]
+    msg: String
+    numUids: Int
+}
+
+type DeleteDeploymentPayload {
+    deployment(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    msg: String
+    numUids: Int
+}
+
+type PulumiProjectAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+type UpdateJiraIssuePayload {
+    jiraIssue(filter: JiraIssueFilter order: JiraIssueOrder first: Int offset: Int): [JiraIssue]
+    numUids: Int
+}
+
+type JiraIssue {
+    id: String
+    key: String
+    summary: String
+    description: String
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+type AddDockerImagePayload {
+    dockerImage(filter: DockerImageFilter order: DockerImageOrder first: Int offset: Int): [DockerImage]
+    numUids: Int
+}
+
+type UpdateSQLSchemaMigrationPayload {
+    sQLSchemaMigration(filter: SQLSchemaMigrationFilter order: SQLSchemaMigrationOrder first: Int offset: Int): [SQLSchemaMigration]
+    numUids: Int
+}
+
+type Property {
+    PropertyId: Int
+    PropertyName: String
+    ClassId: Int
+}
+
+type Polygon {
+    coordinates: [PointList!]!
+}
+
+type SQLDatabaseAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+input UpdateDockerImageInput {
+    filter: DockerImageFilter!
+    set: DockerImagePatch
+    remove: DockerImagePatch
+}
+
+type ClassDataPayloadAggregateResult {
+    count: Int
+}
+
+enum CVEVulnerabilityHasFilter {
+    id
+    name
+    description
+    nugetPackages
+}
+
+enum JiraIssueOrderable {
+    id
+    key
+    summary
+    description
+}
+
+input AddPropertyInput {
+    PropertyId: Int
+    PropertyName: String
+    ClassId: Int
+}
+
+input AddSQLDatabaseInput {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input UpdateClassDataInput {
+    filter: ClassDataFilter!
+    set: ClassDataPatch
+    remove: ClassDataPatch
+}
+
+input WithinFilter {
+    polygon: PolygonRef!
+}
+
+type AddUseCasePayload {
+    useCase(filter: UseCaseFilter order: UseCaseOrder first: Int offset: Int): [UseCase]
+    numUids: Int
+}
+
+input SQLDatabasePatch {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input AddFeatureFlagInput {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input PropertyRef {
+    PropertyId: Int
+    PropertyName: String
+    ClassId: Int
+}
+
+enum NugetPackageOrderable {
+    id
+    name
+    version
+    description
+    totalDownloads
+}
+
+input DeploymentFilter {
+    has: [DeploymentHasFilter]
+    and: [DeploymentFilter]
+    or: [DeploymentFilter]
+    not: DeploymentFilter
+}
+
+input InfrastructureProviderRef {
+    id: String
+    name: String
+    description: String
+    deployments: [DeploymentRef]
+}
+
+input Int64Filter {
+    eq: Int64
+    in: [Int64]
+    le: Int64
+    lt: Int64
+    ge: Int64
+    gt: Int64
+    between: Int64Range
+}
+
+enum DockerImageLayerHasFilter {
+    id
+    digest
+    size
+    architecture
+    os
+    created
+}
+
+input StringRegExpFilter {
+    regexp: String
+}
+
+type DeletePropertyPayload {
+    property(filter: PropertyFilter order: PropertyOrder first: Int offset: Int): [Property]
+    msg: String
+    numUids: Int
+}
+
+type DeleteSQLSchemaMigrationPayload {
+    sQLSchemaMigration(filter: SQLSchemaMigrationFilter order: SQLSchemaMigrationOrder first: Int offset: Int): [SQLSchemaMigration]
+    msg: String
+    numUids: Int
+}
+
+input SQLTableRef {
+    id: String
+    name: String
+}
+
+type Point {
+    longitude: Float!
+    latitude: Float!
+}
+
+type ExternalProvider {
+    id: String
+    name: String
+    description: String
+    builds(filter: BuildFilter order: BuildOrder first: Int offset: Int): [Build]
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    buildsAggregate(filter: BuildFilter): BuildAggregateResult
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+type DeleteExternalProviderPayload {
+    externalProvider(filter: ExternalProviderFilter order: ExternalProviderOrder first: Int offset: Int): [ExternalProvider]
+    msg: String
+    numUids: Int
+}
+
+type UpdateDeploymentConfigurationPayload {
+    deploymentConfiguration(filter: DeploymentConfigurationFilter order: DeploymentConfigurationOrder first: Int offset: Int): [DeploymentConfiguration]
+    numUids: Int
+}
+
+enum GitCommitHasFilter {
+    id
+    message
+}
+
+input NugetPackagePatch {
+    id: String
+    name: String
+    version: String
+    description: String
+    authors: [String]
+    totalDownloads: Int
+}
+
+enum MethodOrderable {
+    MethodId
+    MethodName
+    ClassId
+}
+
+input AppOrder {
+    asc: AppOrderable
+    desc: AppOrderable
+    then: AppOrder
+}
+
+input IntFilter {
+    eq: Int
+    in: [Int]
+    le: Int
+    lt: Int
+    ge: Int
+    gt: Int
+    between: IntRange
+}
+
+type UpdateAppPayload {
+    app(filter: AppFilter order: AppOrder first: Int offset: Int): [App]
+    numUids: Int
+}
+
+input ContainerAppOrder {
+    asc: ContainerAppOrderable
+    desc: ContainerAppOrderable
+    then: ContainerAppOrder
+}
+
+input SourceCodeLicenseOrder {
+    asc: SourceCodeLicenseOrderable
+    desc: SourceCodeLicenseOrderable
+    then: SourceCodeLicenseOrder
+}
+
+input UseCaseFilter {
+    has: [UseCaseHasFilter]
+    and: [UseCaseFilter]
+    or: [UseCaseFilter]
+    not: UseCaseFilter
+}
+
+"The DateTime scalar type represents date and time as a string in RFC3339 format.\nFor example: \"1985-04-12T23:20:50.52Z\" represents 20 mins 50.52 secs after the 23rd hour of Apr 12th 1985 in UTC."
+scalar DateTime
+
+enum BuildHasFilter {
+    id
+    version
+    startedAt
+    finishedAt
+    status
+    sourceCommit
+}
+
+input ApplicationBlueprintRef {
+    id: String
+    name: String
+    description: String
+    builds: [BuildRef]
+    deployments: [DeploymentRef]
+}
+
+input DeploymentRef {
+    id: String
+    environment: String
+    startedAt: String
+    finishedAt: String
+    status: String
+    dockerImage: [DockerImageRef!]
+    sqlSchemaMigration: [SQLSchemaMigrationRef!]
+}
+
+type DockerImageLayer {
+    id: String
+    digest: String
+    size: Int
+    architecture: String
+    os: String
+    created: String
+}
+
+input PointListRef {
+    points: [PointRef!]!
+}
+
+type DeleteGitCommitPayload {
+    gitCommit(filter: GitCommitFilter order: GitCommitOrder first: Int offset: Int): [GitCommit]
+    msg: String
+    numUids: Int
+}
+
+type UpdateSQLTablePayload {
+    sQLTable(filter: SQLTableFilter order: SQLTableOrder first: Int offset: Int): [SQLTable]
+    numUids: Int
+}
+
+enum ExternalProviderOrderable {
+    id
+    name
+    description
+}
+
+enum InfrastructureProviderOrderable {
+    id
+    name
+    description
+}
+
+input MultiPolygonRef {
+    polygons: [PolygonRef!]!
+}
+
+type ApplicationBlueprintAggregateResult {
+    count: Int
+    idMin: String
+    idMax: String
+    nameMin: String
+    nameMax: String
+    descriptionMin: String
+    descriptionMax: String
+}
+
+type AddClassDataPayload {
+    classData(filter: ClassDataFilter order: ClassDataOrder first: Int offset: Int): [ClassData]
+    numUids: Int
+}
+
+enum DeploymentConfigurationOrderable {
+    key
+    value
+}
+
+enum SQLSchemaMigrationHasFilter {
+    id
+    name
+}
+
+input AddNugetPackageInput {
+    id: String
+    name: String
+    version: String
+    description: String
+    authors: [String]
+    totalDownloads: Int
+}
+
+input AddSourceCodeLicenseInput {
+    id: String
+    name: String
+}
+
+input GitCommitFilter {
+    has: [GitCommitHasFilter]
+    and: [GitCommitFilter]
+    or: [GitCommitFilter]
+    not: GitCommitFilter
+}
+
+type ContainerApp {
+    id: String
+    name: String
+    description: String
+    deployments(filter: DeploymentFilter order: DeploymentOrder first: Int offset: Int): [Deployment]
+    deploymentsAggregate(filter: DeploymentFilter): DeploymentAggregateResult
+}
+
+input PolygonRef {
+    coordinates: [PointListRef!]!
+}
+
+input UpdateJiraIssueInput {
+    filter: JiraIssueFilter!
+    set: JiraIssuePatch
+    remove: JiraIssuePatch
+}
+
+input UseCaseOrder {
+    asc: UseCaseOrderable
+    desc: UseCaseOrderable
+    then: UseCaseOrder
+}
+
+directive @id(interface: Boolean) on FIELD_DEFINITION
+
+directive @secret(field: String! pred: String) on OBJECT | INTERFACE
+
+directive @search(by: [String!]) on FIELD_DEFINITION
+
+directive @auth(password: AuthRule query: AuthRule add: AuthRule update: AuthRule delete: AuthRule) on OBJECT | INTERFACE
+
+directive @custom(http: CustomHTTP dql: String) on FIELD_DEFINITION
+
+directive @cacheControl(maxAge: Int!) on QUERY
+
+directive @dgraph(type: String pred: String) on OBJECT | INTERFACE | FIELD_DEFINITION
+
+directive @withSubscription on OBJECT | INTERFACE | FIELD_DEFINITION
+
+directive @cascade(fields: [String]) on FIELD
+
+directive @lambda on FIELD_DEFINITION
+
+directive @lambdaOnMutate(add: Boolean update: Boolean delete: Boolean) on OBJECT | INTERFACE
+
+directive @embedding on FIELD_DEFINITION
+
+directive @remote on OBJECT | INTERFACE | UNION | INPUT_OBJECT | ENUM
+
+directive @remoteResponse(name: String) on FIELD_DEFINITION
+
+directive @generate(query: GenerateQueryParams mutation: GenerateMutationParams subscription: Boolean) on OBJECT | INTERFACE
+
+directive @hasInverse(field: String!) on FIELD_DEFINITION

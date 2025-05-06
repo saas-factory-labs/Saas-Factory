@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Casper Rubæk",
+  "classifications": [ "Request DTO" ],
+  "identity": "AppBlueprint.Template.RequestDto",
+  "name": "AppBlueprint API Controller",
+  "shortName": "appblueprint-request-dto",
+  "tags": {
+    "language": "C#",
+    "type": "item"
+  },
+  "sourceName": "BlueprintRequestDto",
+  "symbols": {
+    "ControllerName": {
+      "type": "parameter",
+      "datatype": "string",
+      "displayName": "Request DTO Name",
+      "description": "The name of the Request DTO to generate",      
+    }    
+  },
+  "defaultName": "BlueprintController"
+}

@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+
+        <!-- Suppress NU1008 from being treated as error -->
+        <WarningsNotAsErrors>NU1008</WarningsNotAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Azure.Storage.Blobs"/>
+        <PackageReference Include="Pulumi.AzureNative"/>
+        <PackageReference Include="Pulumi.Cloudflare"/>
+        <PackageReference Include="Aspire.Azure.Storage.Blobs"/>
+        <PackageReference Include="Aspire.Hosting.AppHost"/>
+        <PackageReference Include="Aspire.Hosting.Azure"/>
+        <PackageReference Include="Aspire.Hosting.Azure.Storage"/>
+        <PackageReference Include="Aspire.Hosting.SqlServer"/>
+        <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching"/>
+        <PackageReference Include="AspNetCore.HealthChecks.Uris"/>
+        <PackageReference Include="Azure.Security.KeyVault.Secrets"/>
+        <PackageReference Include="Bogus"/>
+        <PackageReference Include="coverlet.collector">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <!-- <PackageReference Include="FluentAssertions" /> -->
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
+        <PackageReference Include="Mapster"/>
+        <PackageReference Include="MediatR"/>
+        <PackageReference Include="Meziantou.Xunit.ParallelTestFramework"/>
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience"/>
+        <PackageReference Include="Microsoft.Extensions.ServiceDiscovery"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="NJsonSchema"/>
+        <PackageReference Include="NSubstitute"/>
+        <PackageReference Include="NUlid"/>
+        <PackageReference Include="OpenTelemetry"/>
+        <!-- <PackageReference Include="Scrutor" /> -->
+        <PackageReference Include="System.Text.Json"/>
+        <PackageReference Include="xunit"/>
+        <PackageReference Include="xunit.runner.visualstudio">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Yarp.ReverseProxy"/>
+    </ItemGroup>
+</Project>

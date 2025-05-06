@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Enable latest language version -->
+    <LangVersion>latest</LangVersion>
+    <!-- Do not treat warnings as errors -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <!-- Ensure code style does not block builds -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <!-- Enable/disable Roslyn analyzers -->
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+    <!-- Set warning level (default is 4, max is 5) -->
+    <WarningLevel>4</WarningLevel>
+    <!-- Define which warnings to suppress -->
+    <NoWarn>CS8618,CA1062,CA2007</NoWarn>
+    <!-- Add specific warnings you want to ignore -->
+  </PropertyGroup>
+  <ItemGroup>
+    <!--        Version="9.17.0.82934"-->
+    <!-- Include analyzers if needed -->
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.9.0.115408">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

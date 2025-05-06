@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Authentication and Security -->
+        <PackageReference Include="Microsoft.AspNetCore.Authorization"/>
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection"/>
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions"/>
+        
+        <!-- API and Documentation -->
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" /> 
+
+        <!-- Entity Framework and Database -->
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        
+        <!-- Configuration and Hosting -->
+        <PackageReference Include="Microsoft.Extensions.Configuration"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
+        <PackageReference Include="Microsoft.Extensions.Compliance.Redaction"/>
+        <PackageReference Include="Microsoft.Extensions.Compliance.Abstractions"/>
+        
+        <!-- Health Checks -->
+        <PackageReference Include="AspNetCore.HealthChecks.NpgSql"/>
+        <PackageReference Include="AspNetCore.HealthChecks.Redis"/>
+        <PackageReference Include="AspNetCore.HealthChecks.Uris"/>
+        
+        <!-- GraphQL and API Clients -->
+        <PackageReference Include="Microsoft.Kiota.Abstractions"/>
+        
+        <!-- Serialization and Data Handling -->
+        <PackageReference Include="Newtonsoft.Json"/>
+        
+        <!-- External Services -->
+        <PackageReference Include="Resend"/>
+        <PackageReference Include="Stripe.net"/>
+        <PackageReference Include="AWSSDK.S3"/>
+        
+        <!-- Testing and Data Generation -->
+        <PackageReference Include="AutoBogus"/>
+        <PackageReference Include="Bogus"/>
+
+        <!-- Browser Storage and Reverse Proxy -->
+        <PackageReference Include="Microsoft.AspNetCore.Components"/>
+        <PackageReference Include="Microsoft.JSInterop"/>
+        <PackageReference Include="Yarp.ReverseProxy"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="appsettings.Development.json">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <!-- Enable packaging the ApiModule project to Nuget package file -->
+        <IsPackable>true</IsPackable>
+        <!-- NuGet Configuration -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
+        <GeneratePackage>true</GeneratePackage>
+        <!--        <Version></Version> &lt;!&ndash; Update version as needed &ndash;&gt;-->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Infrastructure library with database repositories and external services</Description>
+        <PackageTags>infrastructure;database repositories;external services;</PackageTags>
+        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+</Project>

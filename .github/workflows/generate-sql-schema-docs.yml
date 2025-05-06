@@ -1,0 +1,61 @@
+name: Generate PostgreSQL Schema Dump
+
+on:
+  workflow_dispatch: # Allows manual trigger
+  push:
+    paths:
+      - "./Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Migrations"
+      - "!**.md"
+    branches:
+      - main    
+
+jobs:
+  generate-schema:
+    #  self-hosted
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install PostgreSQL client tools
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      # Step 3: Generate the SQL schema dump
+      - name: Generate schema dump
+        env:
+          PGPASSWORD: ${{ secrets.PG_PASSWORD }} # Database password from secrets env variable is used implicit in the pg_dump command
+        run: |
+          pg_dump --host=${{ secrets.PG_HOST }} \
+                  --port=${{ secrets.PG_PORT }} \
+                  --username=${{ secrets.PG_USER }} \
+                  --dbname=${{ secrets.PG_DB }} \
+                  --schema-only \
+                  --no-owner \
+                  --no-privileges \
+                  --file=schema.sql     
+
+     # - name: Generate azimutt export 
+     #   run: | 
+     #     npx azimutt export "postgresql://postgres:${{ secrets.PG_PASSWORD }}@{{ secrets.PG_HOST}}:40398/appblueprint-dev-db" > "schema.json"
+
+     # - name: Generate database analysis file
+     #   run: | 
+     #     npx azimutt analyze "postgresql://postgres:${{ secrets.PG_PASSWORD }}@{{ secrets.PG_HOST}}:40398/appblueprint-dev-db" > sql-analysis.txt
+
+       # Step 4: Commit and push the schema file
+      - name: Commit and push schema file
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add schema.sql
+          git add schema.json
+          git add sql-analysis.txt
+          git commit -m "Update sql documentation [Automated]"
+          git push
+  
+          

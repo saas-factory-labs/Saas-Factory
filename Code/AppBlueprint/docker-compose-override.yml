@@ -1,0 +1,440 @@
+version: '3.4'
+
+# This file is used to override the default settings in the docker-compose.yml file for development purposes.
+
+services:
+  web-service:
+    build:
+      context: .
+      dockerfile: AppBlueprint.Web/Dockerfile
+      target: dev
+    volumes:
+      - ./AppBlueprint.Web:/src/AppBlueprint.Web:delegated
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ASPNETCORE_URLS=http://+:80  # Ensures app listens inside the container on port 80
+      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+    command: [ "dotnet", "watch", "run", "--urls", "http://+:80" ]
+    ports:
+      - "8080:80"  # External 8080 -> Internal 80
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 5s
+
+  api-service:
+    build:
+      context: .
+      dockerfile: AppBlueprint.ApiService/Dockerfile
+      target: dev
+    volumes:
+      - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService:delegated
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - APPBLUEPRINT_RAILWAY_CONNECTIONSTRING
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ASPNETCORE_URLS=http://+:80  # Ensures app listens on 80 inside the container
+      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+    command: ["dotnet", "watch", "run", "--urls", "http://+:80"]
+    ports:
+      - "8081:80"  # Map 8081 (Host) -> 80 (Container)
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 5s
+
+  app-gateway-service:
+    build:
+      context: .
+      dockerfile: AppBlueprint.AppGateway/Dockerfile
+      target: dev
+    volumes:
+      - ./AppBlueprint.AppGateway:/src/AppBlueprint.AppGateway:delegated
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ASPNETCORE_URLS=http://+:80  # Ensures app listens on 80 inside the container
+      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+    command: ["dotnet", "watch", "run", "--urls", "http://+:80"]
+    ports:
+      - "8082:80"  # Map 8082 (Host) -> 80 (Container)
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 5s
+
+
+#version: '3.4'
+#
+#services:
+#  web-service:
+#    build:
+#      context: .
+#      dockerfile: AppBlueprint.Web/Dockerfile
+#      target: dev
+#    volumes:
+#      - ./AppBlueprint.Web:/src/AppBlueprint.Web:delegated
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - DOTNET_USE_POLLING_FILE_WATCHER=1      
+#      - ASPNETCORE_URLS=http://+:80  # App listens on 80 inside container
+#      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+#    command: ["dotnet", "watch", "run", "--urls", "http://+:8080"]
+#    ports:
+#      - "8080:80"  # Ensure external access
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 5s
+#
+#  api-service:
+#    build:
+#      context: .
+#      dockerfile: AppBlueprint.ApiService/Dockerfile
+#      target: dev
+#    volumes:
+#      - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService:delegated
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - APPBLUEPRINT_RAILWAY_CONNECTIONSTRING
+#      - DOTNET_USE_POLLING_FILE_WATCHER=1
+#      - ASPNETCORE_URLS=http://+:8081  # Bind to port 8081 only
+#      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+#    command: ["dotnet", "watch", "run", "--urls", "http://+:8081"]
+#    ports:
+#      - "8081:8081"  # Ensure external access
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 5s
+#
+#  app-gateway-service:
+#    build:
+#      context: .
+#      dockerfile: AppBlueprint.AppGateway/Dockerfile
+#      target: dev
+#    volumes:
+#      - ./AppBlueprint.AppGateway:/src/AppBlueprint.AppGateway:delegated
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - DOTNET_USE_POLLING_FILE_WATCHER=1
+#      - ASPNETCORE_URLS=http://+:8082  # Bind to port 8082 only
+#      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+#    command: ["dotnet", "watch", "run", "--urls", "http://+:8082"]
+#    ports:
+#      - "8082:8082"  # Ensure external access
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 5s
+#
+#
+##version: '3.4'
+##
+##services:
+##  web-service:
+##    build:
+##      context: .
+##      dockerfile: AppBlueprint.Web/Dockerfile
+##      target: dev
+##    volumes:
+##      - ./AppBlueprint.Web:/src/AppBlueprint.Web:delegated
+##    environment:
+##      - ASPNETCORE_ENVIRONMENT=Development
+##      - DOTNET_USE_POLLING_FILE_WATCHER=1
+##      - ASPNETCORE_URLS=http://+:80  # Use port 80
+##      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+##    command: ["dotnet", "watch", "run", "--urls", "http://+:80"]
+##    ports:
+##      - "8080:80"  # Map to 8080 for external access
+##    healthcheck:
+##      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+##      interval: 10s
+##      timeout: 5s
+##      retries: 3
+##      start_period: 5s
+##
+##  api-service:
+##    build:
+##      context: .
+##      dockerfile: AppBlueprint.ApiService/Dockerfile
+##      target: dev
+##    volumes:
+##      - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService:delegated
+##    environment:
+##      - ASPNETCORE_ENVIRONMENT=Development
+##      - APPBLUEPRINT_RAILWAY_CONNECTIONSTRING
+##      - DOTNET_USE_POLLING_FILE_WATCHER=1
+##      - ASPNETCORE_URLS=http://+:80  # Use port 80
+##      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+##    command: ["dotnet", "watch", "run", "--urls", "http://+:80"]
+##    ports:
+##      - "8081:80"  # Map to 8081 for external access
+##    healthcheck:
+##      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+##      interval: 10s
+##      timeout: 5s
+##      retries: 3
+##      start_period: 5s
+##
+##  app-gateway-service:
+##    build:
+##      context: .
+##      dockerfile: AppBlueprint.AppGateway/Dockerfile
+##      target: dev
+##    volumes:
+##      - ./AppBlueprint.AppGateway:/src/AppBlueprint.AppGateway:delegated
+##    environment:
+##      - ASPNETCORE_ENVIRONMENT=Development
+##      - DOTNET_USE_POLLING_FILE_WATCHER=1
+##      - ASPNETCORE_URLS=http://+:80  # Use port 80
+##      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+##    command: ["dotnet", "watch", "run", "--urls", "http://+:80"]
+##    ports:
+##      - "8082:80"  # Map to 8082 for external access
+##    healthcheck:
+##      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+##      interval: 10s
+##      timeout: 5s
+##      retries: 3
+##      start_period: 5s
+##
+##
+##
+###version: '3.4'
+###
+###services:
+###  web-service:
+###    build:
+###      context: .
+###      dockerfile: AppBlueprint.Web/Dockerfile
+###      target: dev
+###    volumes:
+###      - ./AppBlueprint.Web:/src/AppBlueprint.Web:delegated
+###    environment:
+###      - ASPNETCORE_ENVIRONMENT=Development
+###      - DOTNET_USE_POLLING_FILE_WATCHER=1
+###      - ASPNETCORE_URLS=http://+:5000  # Only HTTP
+###      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false  # Prevents HTTPS errors
+###    command: ["dotnet", "watch", "run", "--urls", "http://+:5000"]
+###    ports:
+###      - "5000:5000"  # Only expose HTTP
+###    healthcheck:
+###      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+###      interval: 10s
+###      timeout: 5s
+###      retries: 3
+###      start_period: 5s
+###
+###  api-service:
+###    build:
+###      context: .
+###      dockerfile: AppBlueprint.ApiService/Dockerfile
+###      target: dev
+###    volumes:
+###      - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService:delegated
+###    environment:
+###      - ASPNETCORE_ENVIRONMENT=Development
+###      - APPBLUEPRINT_RAILWAY_CONNECTIONSTRING
+###      - DOTNET_USE_POLLING_FILE_WATCHER=1
+###      - ASPNETCORE_URLS=http://+:6000  # Only HTTP
+###      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false  # Prevents HTTPS errors
+###    command: ["dotnet", "watch", "run", "--urls", "http://+:6000"]
+###    ports:
+###      - "6000:6000"  # Only expose HTTP
+###    healthcheck:
+###      test: ["CMD", "curl", "-f", "http://localhost:6000/health"]
+###      interval: 10s
+###      timeout: 5s
+###      retries: 3
+###      start_period: 5s
+###
+###  app-gateway-service:
+###    build:
+###      context: .
+###      dockerfile: AppBlueprint.AppGateway/Dockerfile
+###      target: dev
+###    volumes:
+###      - ./AppBlueprint.AppGateway:/src/AppBlueprint.AppGateway:delegated
+###    environment:
+###      - ASPNETCORE_ENVIRONMENT=Development
+###      - DOTNET_USE_POLLING_FILE_WATCHER=1
+###      - ASPNETCORE_URLS=http://+:7000  # Only HTTP
+###      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false  # Prevents HTTPS errors
+###    command: ["dotnet", "watch", "run", "--urls", "http://+:7000"]
+###    ports:
+###      - "7000:7000"  # Only expose HTTP
+###    healthcheck:
+###      test: ["CMD", "curl", "-f", "http://localhost:7000/health"]
+###      interval: 10s
+###      timeout: 5s
+###      retries: 3
+###      start_period: 5s
+###
+###
+####version: '3.4'
+####
+####services:
+####  web-service:
+####    build:
+####      context: .
+####      dockerfile: AppBlueprint.Web/Dockerfile
+####      target: dev
+####    volumes:
+####      - ./AppBlueprint.Web:/src/AppBlueprint.Web:delegated
+####    environment:
+####      - ASPNETCORE_ENVIRONMENT=Development
+####      - DOTNET_USE_POLLING_FILE_WATCHER=1
+####      - ASPNETCORE_URLS=http://+:80;https://+:443
+####      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+####    command: ["dotnet", "watch", "run", "--urls", "http://+:80;https://+:443"]
+####    ports:
+####      - "5000:80"
+####      - "5001:443"
+####    healthcheck:
+####      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+####      interval: 10s
+####      timeout: 5s
+####      retries: 3
+####      start_period: 5s
+####
+####  api-service:
+####    build:
+####      context: .
+####      dockerfile: AppBlueprint.ApiService/Dockerfile
+####      target: dev
+####    volumes:
+####      - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService:delegated
+####    environment:
+####      - ASPNETCORE_ENVIRONMENT=Development
+####      - APPBLUEPRINT_RAILWAY_CONNECTIONSTRING
+####      - DOTNET_USE_POLLING_FILE_WATCHER=1
+####      - ASPNETCORE_URLS=http://+:80;https://+:443
+####      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+####    command: ["dotnet", "watch", "run", "--urls", "http://+:80;https://+:443"]
+####    ports:
+####      - "6000:80"
+####      - "6001:443"
+####    healthcheck:
+####      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+####      interval: 10s
+####      timeout: 5s
+####      retries: 3
+####      start_period: 5s
+####
+####  app-gateway-service:
+####    build:
+####      context: .
+####      dockerfile: AppBlueprint.AppGateway/Dockerfile
+####      target: dev
+####    volumes:
+####      - ./AppBlueprint.AppGateway:/src/AppBlueprint.AppGateway:delegated
+####    environment:
+####      - ASPNETCORE_ENVIRONMENT=Development
+####      - DOTNET_USE_POLLING_FILE_WATCHER=1
+####      - ASPNETCORE_URLS=http://+:80;https://+:443
+####      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+####    command: ["dotnet", "watch", "run", "--urls", "http://+:80;https://+:443"]
+####    ports:
+####      - "7000:80"
+####      - "7001:443"
+####    healthcheck:
+####      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+####      interval: 10s
+####      timeout: 5s
+####      retries: 3
+####      start_period: 5s
+####
+####
+#####services:
+#####  web-service:
+#####    build:
+#####      context: .
+#####      dockerfile: AppBlueprint.Web/Dockerfile
+#####      target: dev
+#####    volumes:
+#####      - ./AppBlueprint.Web:/src/AppBlueprint.Web
+#####      - /src/AppBlueprint.Web/bin  # Exclude binary files
+#####      - /src/AppBlueprint.Web/obj  # Exclude object files
+#####    environment:
+#####      - ASPNETCORE_ENVIRONMENT=Development
+#####      - DOTNET_USE_POLLING_FILE_WATCHER=1
+#####      - ASPNETCORE_URLS=http://+:443;https://+:80
+#####      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+#####      #- DOTNET_DEV_CERTS_DIR=/root/.aspnet/https # Set certificate directory
+#####    command: ["dotnet", "watch", "run", "--urls", "http://+:8080;https://+:8081"]
+#####    ports:
+#####      - "5000:80"   # HTTP
+#####      - "5001:443"  # HTTPS
+#####    healthcheck:
+#####      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+#####      interval: 10s
+#####      timeout: 5s
+#####      retries: 3
+#####      start_period: 5s
+#####
+#####  api-service:
+#####    build:
+#####      context: .
+#####      dockerfile: AppBlueprint.ApiService/Dockerfile
+#####      target: dev
+#####    volumes:
+#####      - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService
+#####      - /src/AppBlueprint.ApiService/bin  # Exclude binary files
+#####      - /src/AppBlueprint.ApiService/obj  # Exclude object files
+#####    environment:
+#####      - ASPNETCORE_ENVIRONMENT=Development
+#####      - APPBLUEPRINT_RAILWAY_CONNECTIONSTRING
+#####      - DOTNET_USE_POLLING_FILE_WATCHER=1
+#####      - ASPNETCORE_URLS=http://+:443;https://+:80
+#####      - DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+#####      #- DOTNET_DEV_CERTS_DIR=/root/.aspnet/https # Set certificate directory
+#####    command: ["dotnet", "watch", "run", "--urls", "http://+:8080;https://+:8081"]
+#####    ports:
+#####      - "6000:80"   # HTTP
+#####      - "6001:443"  # HTTPS
+#####    healthcheck:
+#####      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+#####      interval: 10s
+#####      timeout: 5s
+#####      retries: 3
+#####      start_period: 5s
+#####
+#####  app-gateway-service:
+#####    build:
+#####      context: .
+#####      dockerfile: AppBlueprint.AppGateway/Dockerfile
+#####      target: dev
+#####    volumes:
+#####      - ./AppBlueprint.AppGateway:/src/AppBlueprint.AppGateway
+#####      - /src/AppBlueprint.AppGateway/bin  # Exclude binary files
+#####      - /src/AppBlueprint.AppGateway/obj  # Exclude object files
+#####    environment:
+#####      - ASPNETCORE_ENVIRONMENT=Development
+#####      - DOTNET_USE_POLLING_FILE_WATCHER=1
+#####      - ASPNETCORE_URLS=http://+:443;https://+:80
+#####      - DOTNET_DEV_CERTS_DIR=/root/.aspnet/https # Set certificate directory
+#####    command: ["dotnet", "watch", "run", "--urls", "http://+:8080;https://+:8081"]
+#####    ports:
+#####      - "7000:80"   # HTTP
+#####      - "7001:443"  # HTTPS
+#####    healthcheck:
+#####      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+#####      interval: 10s
+#####      timeout: 5s
+#####      retries: 3
+#####      start_period: 5s
+#####

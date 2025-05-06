@@ -1,0 +1,90 @@
+name: SonarQube Cloud
+on:  
+  workflow_dispatch:
+  push:
+    paths:
+      - "./Code/AppBlueprint/**"
+      - "!**.md"
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest  # Runs in GitHub cloud by default
+
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache SonarQube Cloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache SonarQube Cloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+          path: ./.sonar/scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+
+      # Install .NET 9.0 Preview manually
+      - name: Install .NET 9.0 Preview
+        run: |
+          curl -fsSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version latest --install-dir $HOME/.dotnet
+          echo "$HOME/.dotnet" >> $GITHUB_PATH
+          echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      # Set up .NET 9.0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0
+          dotnet-quality: preview
+
+      - name: Install SonarQube Cloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ./.sonar/scanner
+          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+
+      # Ensure SONAR_TOKEN is available
+      - name: Set Sonar Token
+        run: echo "SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Start SonarCloud analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          ./.sonar/scanner/dotnet-sonarscanner begin \
+            /k:"Trubador_SaaS-Factory" \
+            /o:"trubador" \
+            /d:sonar.token=$SONAR_TOKEN \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.inclusions="Code/AppBlueprint/**"
+
+      - name: Build the project (ignore errors)
+        continue-on-error: true
+        run: |
+          find Code/AppBlueprint -type f -name "*.csproj" -print0 | while IFS= read -r -d '' file; do
+            dotnet build "$file"
+          done
+
+      - name: End SonarCloud analysis
+        run: |
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token=$SONAR_TOKEN

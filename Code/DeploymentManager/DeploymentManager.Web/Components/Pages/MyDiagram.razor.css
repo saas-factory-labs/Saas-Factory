@@ -1,0 +1,47 @@
+﻿/*.diagram-container {
+        flex-grow: 1;
+        position: relative;
+        background-image:
+            radial-gradient(circle, black 1px, transparent 1px);
+        background-size: 20px 20px;  Controls the spacing between dots 
+        width: 100%;
+        height: 100%;  This is important to make the diagram fill the container - 2400 px 
+        overflow: hidden;
+}*/
+
+/*.diagram-container {
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: black;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100vh;*/ /* Full viewport height */
+/*overflow: hidden;
+}*/
+
+
+/*.diagram-container {
+    flex-grow: 1;
+    position: relative;
+    background-color: black;*/ /* Ensure the background is black */
+/*background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px);
+background-size: 20px 20px;*/ /* Controls the spacing between dots */
+/*width: 100%;
+height: 2400px;*/ /* Ensures the height */
+/*overflow: hidden;
+}*/
+
+
+/*.diagram-container {
+    flex-grow: 1;
+    position: relative;
+    background-color: black;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+    background-size: 20px 20px;*/ /* Controls the spacing between dots */
+/*width: 100%;
+height: 2400px;*/ /* Set height explicitly to 2400px */
+/*overflow: hidden;
+}*/

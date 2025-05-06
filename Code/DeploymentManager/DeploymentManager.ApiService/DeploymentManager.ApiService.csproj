@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+
+        <!-- Removed PackageVersion elements as versions are managed centrally -->
+
+    </ItemGroup>
+
+    <ItemGroup><!--<ProjectReference Include="..\\DeploymentManager.ServiceDefaults\\DeploymentManager.ServiceDefaults.csproj" />-->
+
+        <PackageReference Include="JetBrains.Annotations"/>
+        <!-- Add other PackageReference items without Version attribute here -->
+        <PackageReference Include="Aspire.Azure.Storage.Blobs"/>
+        <PackageReference Include="Aspire.Hosting.AppHost"/>
+        <PackageReference Include="Aspire.Hosting.Azure"/>
+        <PackageReference Include="Aspire.Hosting.Azure.Storage"/>
+        <PackageReference Include="Aspire.Hosting.SqlServer"/>
+        <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching"/>
+        <PackageReference Include="AspNetCore.HealthChecks.Uris"/>
+        <PackageReference Include="Azure.Security.KeyVault.Secrets"/>
+        <PackageReference Include="coverlet.collector"/>
+        <PackageReference Include="FluentAssertions"/>
+        <PackageReference Include="Lbrlabs.PulumiPackage.Grafana"/>
+        <PackageReference Include="Meziantou.Xunit.ParallelTestFramework"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"/>
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience"/>
+        <PackageReference Include="Microsoft.Extensions.ServiceDiscovery"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"/>
+        <PackageReference Include="NJsonSchema"/>
+        <PackageReference Include="NSubstitute"/>
+        <PackageReference Include="NUlid"/>
+        <PackageReference Include="OpenTelemetry"/>
+        <PackageReference Include="Pulumi.Automation"/>
+        <PackageReference Include="Pulumi.AzureAD"/>
+        <PackageReference Include="Pulumi.AzureNative"/>
+        <PackageReference Include="Pulumi.Cloudflare"/>
+        <PackageReference Include="Pulumi.Docker"/>
+        <PackageReference Include="Pulumi.ElasticCloud"/>
+        <PackageReference Include="Pulumi.Github"/>
+        <PackageReference Include="Pulumi.Kubernetes"/>
+        <PackageReference Include="Pulumi.Stripe"/>
+        <PackageReference Include="Scrutor"/>
+        <PackageReference Include="xunit"/>
+        <PackageReference Include="xunit.runner.visualstudio"/>
+        <PackageReference Include="Yarp.ReverseProxy"/>
+    </ItemGroup>
+
+</Project>

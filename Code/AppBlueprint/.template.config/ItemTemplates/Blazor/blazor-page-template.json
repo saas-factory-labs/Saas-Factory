@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Casper Rubæk",
+  "classifications": [ "Blazor Razor Page" ],
+  "identity": "AppBlueprint.Template.RazorPage",
+  "name": "AppBlueprint Web Razor Page",
+  "shortName": "appblueprint-razor-page",
+  "tags": {
+    "language": "C#",
+    "type": "item"
+  },
+  "sourceName": "RazorPage",
+  "symbols": {
+    "ProjectName": {
+      "type": "parameter",
+      "datatype": "string",
+      "displayName": "Name of Razor Page",
+      "description": "The name of Razor page)",
+      "defaultValue": "Page"
+    }
+  },
+  "defaultName": "Page"
+}

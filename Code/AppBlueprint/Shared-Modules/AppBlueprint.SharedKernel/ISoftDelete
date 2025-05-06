@@ -1,0 +1,7 @@
+namespace AppBlueprint.Infrastructure.DatabaseContexts;
+
+
+public interface ISoftDelete
+{
+    bool IsDeleted { get; }
+}

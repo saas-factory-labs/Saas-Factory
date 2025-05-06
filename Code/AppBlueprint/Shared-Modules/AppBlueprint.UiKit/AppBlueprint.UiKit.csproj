@@ -1,0 +1,175 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <Version>$(GITVERSION_SemVer)</Version>
+    </PropertyGroup>
+
+    <PropertyGroup>
+
+        <!-- Enable packaging the UiKit project to Nuget package file -->
+        <IsPackable>true</IsPackable>
+        <!-- NuGet Configuration -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
+        <GeneratePackage>true</GeneratePackage>
+        <Version>1.0.2</Version> <!-- Update version as needed -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+        <PackageId>SaaS-Factory.AppBlueprint.UiKit</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>A reusable Razor Class Library for UI components</Description>
+        <PackageTags>blazor;razor;components;mudblazor</PackageTags>
+        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.UiKit/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+
+
+        <!-- Disable incremental builds -->
+        <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+        <!--        <DisableIncrementalBuild>true</DisableIncrementalBuild>-->
+
+        <!-- Force Razor view/component recompilation -->
+        <RazorCompileOnBuild>true</RazorCompileOnBuild>
+        <RazorCompileOnPublish>true</RazorCompileOnPublish>
+        <!--        <UseRazorBuildServer>false</UseRazorBuildServer>-->
+
+        <!-- Ensure destination folders are cleaned before copying -->
+        <CleanDestinationFolderBeforeCopy>true</CleanDestinationFolderBeforeCopy>
+
+        <RootNamespace>AppBlueprint.UiKit</RootNamespace>
+
+        <UserSecretsId>9bca23ea-ec67-491d-96b7-769afe5d8ce6</UserSecretsId>
+
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+
+
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <RazorCompileOnBuild>true</RazorCompileOnBuild>
+        <RazorCompileOnPublish>true</RazorCompileOnPublish>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
+        <PackageReference Include="MudBlazor"/>
+        <PackageReference Include="MudBlazor.ThemeManager"/>
+    </ItemGroup>
+
+    <!--    <ItemGroup>-->
+    <!--        <Folder Include="obj\"/>-->
+    <!--    </ItemGroup>-->
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj"/>
+        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
+    </ItemGroup>
+
+
+    <!--        <EnableDefaultContentItems>false</EnableDefaultContentItems>-->
+
+
+    <!--        <RazorComponentIncludeFilesInItems>false</RazorComponentIncludeFilesInItems>-->
+    <!--        <EnableDefaultContentItems>false</EnableDefaultContentItems>-->
+    <!--        <RazorCompileOnBuild>true</RazorCompileOnBuild>-->
+    <!--        <RazorCompileOnPublish>true</RazorCompileOnPublish>-->
+
+
+    <ItemGroup>
+        <!--        <Content Include="Components\Pages\**\*.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\AccountSettings.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Checkout.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Error.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Login.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Pricing.razor" />-->
+    </ItemGroup>
+
+    <!--    <ItemGroup>-->
+    <!--      <AdditionalFiles Include="Components\Pages\AccountSettings.razor" />-->
+    <!--      <AdditionalFiles Include="Components\Pages\Checkout.razor" />-->
+    <!--      <AdditionalFiles Include="Components\Pages\Dashboard\AnalyticsDashboard.razor" />-->
+    <!--      <AdditionalFiles Include="Components\Pages\Dashboard\Dashboard.razor" />-->
+    <!--      <AdditionalFiles Include="Components\Pages\Dashboard\FintechDashboard.razor" />-->
+    <!--      <AdditionalFiles Include="Components\Pages\Error.razor" />-->
+    <!--      <AdditionalFiles Include="Components\Pages\Login.razor" />-->
+    <!--      <AdditionalFiles Include="Components\Pages\Pricing.razor" />-->
+    <!--    </ItemGroup>    -->
+
+</Project>
+
+
+        <!--<Project Sdk="Microsoft.NET.Sdk.Razor">-->
+
+        <!--    <PropertyGroup>-->
+        <!--        <TargetFramework>net9.0</TargetFramework>-->
+        <!--        <Nullable>enable</Nullable>-->
+        <!--        <ImplicitUsings>enable</ImplicitUsings>-->
+
+        <!--        <PackageId>SaaS-Factory.AppBlueprint.UiKit</PackageId>-->
+        <!--        <Authors>Casper Rubæk</Authors>-->
+        <!--        <Description>A reusable Razor Class Library for UI components</Description>-->
+        <!--        <PackageTags>blazor;razor;components;mudblazor</PackageTags>-->
+        <!--        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.UiKit/README.md</PackageProjectUrl>-->
+        <!--        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>-->
+        <!--        <RepositoryType>git</RepositoryType>-->
+
+        <!--    </PropertyGroup>-->
+
+
+        <!--    <ItemGroup>-->
+        <!--        <SupportedPlatform Include="browser"/>-->
+        <!--    </ItemGroup>-->
+
+        <!--    <ItemGroup>-->
+        <!--        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0"/>-->
+        <!--        <PackageReference Include="MudBlazor" Version="7.15.0"/>-->
+        <!--    </ItemGroup>-->
+
+        <!--&lt;!&ndash;    <ItemGroup>&ndash;&gt;-->
+        <!--&lt;!&ndash;        <Folder Include="Components\PageLayout\"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;    </ItemGroup>&ndash;&gt;-->
+
+        <!--    &lt;!&ndash;  <ItemGroup>&ndash;&gt;-->
+        <!--    &lt;!&ndash;    <AdditionalFiles Include="Components\PageLayout\NavigationComponents\AppBarComponents\Appbar.razor" />&ndash;&gt;-->
+        <!--    &lt;!&ndash;    <AdditionalFiles Include="Components\PageLayout\NavigationComponents\AppBarComponents\AppbarSearchDialog.razor" />&ndash;&gt;-->
+        <!--    &lt;!&ndash;    <AdditionalFiles Include="Components\PageLayout\NavigationComponents\NavigationMenu.razor" />&ndash;&gt;-->
+        <!--    &lt;!&ndash;    <AdditionalFiles Include="Components\PageLayout\NavigationComponents\SidePanelComponents\Sidebar.razor" />&ndash;&gt;-->
+        <!--    &lt;!&ndash;  </ItemGroup>&ndash;&gt;-->
+        <!--    &lt;!&ndash;    &ndash;&gt;-->
+
+        <!--&lt;!&ndash;    <ItemGroup>&ndash;&gt;-->
+        <!--&lt;!&ndash;        <Content Include="Components\**\*.razor"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;    </ItemGroup>&ndash;&gt;-->
+
+        <!--    &lt;!&ndash;  <ItemGroup>&ndash;&gt;-->
+        <!--    &lt;!&ndash;    <UpToDateCheckInput Remove="Cruip\NavigationMenu\NavigationMenu.razor" />&ndash;&gt;-->
+        <!--    &lt;!&ndash;    <UpToDateCheckInput Remove="Cruip\NavigationMenu\Sidebar\Sidebar.razor" />&ndash;&gt;-->
+        <!--    &lt;!&ndash;  </ItemGroup>&ndash;&gt;-->
+
+        <!--    &lt;!&ndash;    <ItemGroup>&ndash;&gt;-->
+        <!--    &lt;!&ndash;        <Content Include="Components\Cruip\NavigationMenu\Sidebar\Sidebar.razor">&ndash;&gt;-->
+        <!--    &lt;!&ndash;            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>&ndash;&gt;-->
+        <!--    &lt;!&ndash;            <RazorComponent>true</RazorComponent>&ndash;&gt;-->
+        <!--    &lt;!&ndash;        </Content>&ndash;&gt;-->
+        <!--    &lt;!&ndash;        <Content Include="Components\Cruip\NavigationMenu\NavigationMenu.razor">&ndash;&gt;-->
+        <!--    &lt;!&ndash;            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>&ndash;&gt;-->
+        <!--    &lt;!&ndash;            <RazorComponent>true</RazorComponent>&ndash;&gt;-->
+        <!--    &lt;!&ndash;        </Content>&ndash;&gt;-->
+        <!--    &lt;!&ndash;    </ItemGroup>&ndash;&gt;-->
+
+        <!--    &lt;!&ndash;    <ItemGroup>&ndash;&gt;-->
+        <!--    &lt;!&ndash;        <RazorComponent Include="**/*.razor" />&ndash;&gt;-->
+        <!--    &lt;!&ndash;    </ItemGroup>&ndash;&gt;-->
+
+
+        <!--</Project>-->

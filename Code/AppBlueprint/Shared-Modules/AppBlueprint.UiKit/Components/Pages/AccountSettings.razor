@@ -1,0 +1,86 @@
+@page "/account-settings"
+@using AppBlueprint.UiKit.Components.AccountSettings.BillingInvoices
+@using AppBlueprint.UiKit.Components.AccountSettings.Feedback
+@using AppBlueprint.UiKit.Components.AccountSettings.MyAccount
+@using AppBlueprint.UiKit.Components.AccountSettings.MyConnectedApps
+@using AppBlueprint.UiKit.Components.AccountSettings.MyNotifications
+@using AppBlueprint.UiKit.Components.AccountSettings.Plans
+
+<PageTitle> Account Settings - AppBlueprint</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto mt-5 p-4">
+    <MudGrid>
+        <MudItem xs="3">
+            <!-- Sidebar Navigation -- test -->
+            <MudPaper Class="p-2">
+                <MudList T="string">
+                    <MudListItem T="string" OnClick="@(() => SetSection("My Account"))"
+                                 Class="@(_selectedSection == "My Account" ? "mud-selected" : "")">
+                        My Account
+                    </MudListItem>
+                    <MudListItem T="string" OnClick="@(() => SetSection("My Notifications"))"
+                                 Class="@(_selectedSection == "My Notifications" ? "mud-selected" : "")">
+                        My Notifications
+                    </MudListItem>
+                    <MudListItem T="string" OnClick="@(() => SetSection("Connected Apps"))"
+                                 Class="@(_selectedSection == "Connected Apps" ? "mud-selected" : "")">
+                        Connected Apps
+                    </MudListItem>
+                    <MudListItem T="string" OnClick="@(() => SetSection("Plans"))"
+                                 Class="@(_selectedSection == "Plans" ? "mud-selected" : "")">
+                        Plans
+                    </MudListItem>
+                    <MudListItem T="string" OnClick="@(() => SetSection("Billing & Invoices"))"
+                                 Class="@(_selectedSection == "Billing & Invoices" ? "mud-selected" : "")">
+                        Billing & Invoices
+                    </MudListItem>
+                    <MudDivider/>
+                    <MudListItem T="string" OnClick="@(() => SetSection("Give Feedback"))"
+                                 Class="@(_selectedSection == "Give Feedback" ? "mud-selected" : "")">
+                        Give Feedback
+                    </MudListItem>
+                </MudList>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="9">
+            <!-- Account Settings Main Content -->
+            <MudPaper Class="pl-10 pt-10 pb-10 pr-10">
+                @if (_selectedSection == "My Account")
+                {
+                    <MyAccount></MyAccount>
+                }
+                else if (_selectedSection == "My Notifications")
+                {
+                    <MyNotifications></MyNotifications>
+                }
+                else if (_selectedSection == "Connected Apps")
+                {
+                    <MyConnectedApps></MyConnectedApps>
+                }
+                else if (_selectedSection == "Plans")
+                {
+                    <Plans></Plans>
+                }
+                else if (_selectedSection == "Billing & Invoices")
+                {
+                    <BillingInvoices></BillingInvoices>
+                }
+                else if (_selectedSection == "Give Feedback")
+                {
+                    <Feedback></Feedback>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private string _selectedSection = "My Account"; // Default to "My Account"
+
+    private void SetSection(string section)
+    {
+        _selectedSection = section;
+    }
+
+}

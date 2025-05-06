@@ -1,0 +1,68 @@
+<MudDrawer Open="@DrawerOpen" OpenChanged="DrawerOpenChanged" Elevation="2">
+    <MudImage Class="mt-4 ml-4" Src="http://logos-world.net/wp-content/uploads/2022/12/Stripe-Emblem.png" Alt="Logo"
+              Width="50"/>
+
+    <MudDrawerHeader>
+        <MudNavMenu>
+
+            @if (Links is not null)
+            {
+                foreach (var link in Links)
+                {
+                    <MudNavLink Href="@link.Href" Icon="@link.MudblazorIconPath"> @link.Name </MudNavLink>
+                }
+            }
+        </MudNavMenu>
+    </MudDrawerHeader>
+</MudDrawer>
+
+@code {
+    [CascadingParameter] public List<NavLinkMetadata> Links { get; set; } = new();
+
+    [Parameter] public bool DrawerOpen { get; set; }
+    [Parameter] public EventCallback<bool> DrawerOpenChanged { get; set; }
+    [Parameter] public MudImage Logo { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // if (Links is null) 
+        // {
+        //     Links = new List<NavLinkMetadata>();
+        // }
+
+        // Console.WriteLine($"Route links injected from Web project: {Links?.Count ?? 0}");
+        //
+        // Console.WriteLine($"Route link injected from UiKit library for Dashboard page: {Links?.Count ?? 0}");
+
+        // Check if a "Dashboard" link already exists before adding it
+        if (Links.All(link => link.Href != "/"))
+        {
+            Links.Insert(0, new NavLinkMetadata { Name = "Dashboard", Href = "/", MudblazorIconPath = "@Icons.Material.Filled.Home" });
+        }
+
+        foreach (var link in Links)
+        {
+            // Skip the "/" (Dashboard) link
+            if (link.Href is not "/")
+            {
+                Console.WriteLine($"Link: {link.Name} - {link.Href}");
+            }
+        }
+    }
+
+
+    // protected override void OnInitialized()
+    // {
+    //     Links.Insert(0, new NavLinkMetadata { Name = "Dashboard", Href = "/", MudblazorIconPath = "@Icons.Material.Filled.Home" });
+    //
+    //     Console.WriteLine($"UIKIT SIDEPANEL Links: {Links?.Count ?? 0}");
+    //
+    //     if (Links is not null)
+    //     {
+    //         foreach (var link in Links)
+    //         {
+    //             Console.WriteLine($"Link: {link.Name} - {link.Href}");
+    //         }
+    //     }        
+    // }
+}

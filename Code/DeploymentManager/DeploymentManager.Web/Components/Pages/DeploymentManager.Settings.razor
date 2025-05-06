@@ -1,0 +1,30 @@
+@using MudBlazor
+@inherits LayoutComponentBase
+
+@page "/deployment-manager/settings"
+
+<PageTitle>Deployment Manager Settings</PageTitle>
+
+<h1 class="py-4">Deployment Manager Settings </h1>
+
+
+<MudGrid>
+    <MudItem xs="12" sm="6" md="4">
+        <MudTextField @bind-Value="TextValue" Label="Set CPU Max DTU per App Production Environment"
+                      Variant="Variant.Text"></MudTextField>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    public string TextValue { get; set; }
+
+
+    private bool _hidePosition;
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+}

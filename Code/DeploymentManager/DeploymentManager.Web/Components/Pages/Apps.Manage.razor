@@ -1,0 +1,64 @@
+@using DeploymentManager.Web.Models
+@using MudBlazor
+@inherits LayoutComponentBase
+<MudDialogProvider/>
+@inject IDialogService DialogService
+
+@page "/apps/manage"
+
+<PageTitle>Manage Apps</PageTitle>
+
+<h1 class="py-8">Manage Apps </h1>
+
+<MudTable T="AppModel" Items="@_apps" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
+          LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        @foreach (var app in _apps)
+        {
+            <MudTd DataLabel="Id">@app.Id</MudTd>
+            <MudTd DataLabel="Name">@app.Name</MudTd>
+        }
+    </RowTemplate>
+</MudTable>
+
+<MudFab @onclick="OpenDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small"/>
+
+@code {
+
+    private async Task OpenDialog()
+    {
+        @* var parameters = new DialogParameters<Apps_Manage_CreateDialog>();
+parameters.Add("Apps", apps); *@
+
+        var dialog = await DialogService.ShowAsync<Apps_Manage_CreateDialog>("Create App");
+        var result = await dialog.Result;
+
+        // if (!result.Cancelled)
+        // {
+        //     @* <MudAlert Severity="Severity.Normal">The reactor type is RBMK-1000</MudAlert> *@
+
+        //     Console.WriteLine("App Created Successfully!");
+        // }
+
+        @* var options = new DialogOptions { CloseOnEscapeKey = true };
+DialogService.Show<Apps_Manage_CreateDialog>("Create new App", options); *@
+    }
+
+    private List<AppModel> _apps;
+
+    private bool _hidePosition;
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _apps = new List<AppModel>
+        {
+            new() { Id = 1, Name = "File Discovery" }
+        };
+    }
+
+}

@@ -1,0 +1,6 @@
+query QueryClassData {
+    queryClassData {
+        ClassId
+        ClassName
+    }
+}

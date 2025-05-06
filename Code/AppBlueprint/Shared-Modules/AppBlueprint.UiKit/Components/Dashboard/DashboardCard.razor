@@ -1,0 +1,22 @@
+<MudCard>
+    <MudCardMedia Image="@ImageUrl" Height="200"/>
+    <MudCardContent>
+        <MudText Typo="Typo.h5">@Title</MudText>
+        <MudText Typo="Typo.body2">@Body</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Text" Color="Color.Tertiary">Button</MudButton>
+        @foreach (var element in CustomElements)
+        {
+            @element
+        }
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter] public required string Title { get; set; }
+    [Parameter] public string? Body { get; set; }
+    [Parameter] public string? ImageUrl { get; set; }
+    [Parameter] public string? Link { get; set; }
+    [Parameter] public List<MudComponentBase> CustomElements { get; set; } = new();
+}

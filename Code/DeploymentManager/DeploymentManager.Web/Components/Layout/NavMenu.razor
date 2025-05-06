@@ -1,0 +1,171 @@
+﻿@using MudBlazor
+<MudNavMenu Class="mud-width-full">
+    <MudText Typo="Typo.h6" Class="px-4 ">Deployment Manager</MudText>
+    <MudText Typo="Typo.subtitle1" Class="px-4 mud-text-secondary">Command Center</MudText>
+    <MudText Typo="Typo.overline" Class="px-4 mud-text-secondary">Managed Solution</MudText>
+    <MudText Typo="Typo.body1" Class="px-4 mud-text-secondary font-italic">SaaS Factory</MudText>
+    <MudDivider Class="my-2"/>
+    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+    <MudNavGroup Title="Apps" Icon="@Icons.Material.Filled.Apps" Expanded="true">
+        <MudNavLink Href="/apps/manage" Icon="@Icons.Material.Filled.Construction">Manage Apps</MudNavLink>
+        <MudNavLink Href="/apps/settings" Icon="@Icons.Material.Filled.Build">Global App Settings</MudNavLink>
+        <MudNavGroup Title="File Discovery" Icon="@Icons.Material.Filled.Inventory" Expanded="true">
+            <MudNavLink Href="/apps/settings" Icon="@Icons.Material.Filled.Build">App Settings</MudNavLink>
+            <MudNavGroup Title="Environments" Icon="@Icons.Material.Filled.AllInbox" Expanded="true">
+                <MudNavGroup Title="Production" Icon="@Icons.Material.Filled.LiveTv" Expanded="true">
+                    <MudNavLink Href="/apps/infrastructure" Icon="@Icons.Material.Filled.Construction">Infrastucture
+                    </MudNavLink>
+                    <MudNavLink Href="/apps/environments/deployments" Icon="@Icons.Material.Filled.MoveToInbox">
+                        Deployments
+                    </MudNavLink>
+                    <MudNavLink Href="/apps/configuration" Icon="@Icons.Material.Filled.Build">Configuration
+                    </MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="Development" Icon="@Icons.Material.Filled.LogoDev" Expanded="false">
+                    <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.Construction">Infrastucture
+                    </MudNavLink>
+                    <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.MoveToInbox">Deployments
+                    </MudNavLink>
+                    <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.Build">Configuration
+                    </MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="Staging" Icon="@Icons.Material.Filled.Devices" Expanded="false">
+                    <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.Construction">Infrastucture
+                    </MudNavLink>
+                    <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.MoveToInbox">Deployments
+                    </MudNavLink>
+                    <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.Build">Configuration
+                    </MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="QA" Icon="@Icons.Material.Filled.Check" Expanded="false">
+                    <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.Construction">Infrastucture
+                    </MudNavLink>
+                    <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.MoveToInbox">Deployments
+                    </MudNavLink>
+                    <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.Build">Configuration
+                    </MudNavLink>
+                </MudNavGroup>
+            </MudNavGroup>
+        </MudNavGroup>
+    </MudNavGroup>
+    <MudNavLink Href="/customers" Icon="@Icons.Material.Filled.People">Customers</MudNavLink>
+    <MudNavLink Href="/dependency-map" Icon="@Icons.Material.Filled.Hub">Dependency Map</MudNavLink>
+    <MudNavLink Href="/cost-management" Icon="@Icons.Material.Filled.AttachMoney">Cost Management</MudNavLink>
+    <MudNavLink Href="/deployment-manager/settings" Icon="@Icons.Material.Filled.Build">Deployment Manager Settings
+    </MudNavLink>
+</MudNavMenu>
+
+@* Share
+Hub
+Diversity2
+DeviceHub *@
+
+
+@*Icon="" @Icons.Material.Filled.Home *@
+
+@* <MudNavLink Href="/deployment-manager/settings" Icon="@Icons.Material.Filled.Build">Deployment Manager Settings>
+<MudNavLink Href="/deployment-manager/settings" Icon="@Icons.Material.Filled.Build">Dependency Map>
+</MudNavLink> *@
+
+@* <MudNavLink Href="/billing" Icon="@Icons.Material.Filled.Receipt">Billing</MudNavLink> *@
+
+
+@* <MudNavMenu>
+<MudNavLink Href="" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+<MudNavLink Href="" Match="NavLinkMatch.All">Apps</MudNavLink>
+<MudNavLink Href="" Match="NavLinkMatch.All">Home</MudNavLink>
+<MudNavLink Href="" Match="NavLinkMatch.All">Home</MudNavLink>
+<MudNavLink Href="" Match="NavLinkMatch.All">Home</MudNavLink>
+<MudNavLink Href="" Match="NavLinkMatch.All">Home</MudNavLink>
+
+
+</MudNavMenu> *@
+
+@* <MudNavGroup Title="Boligportal" Icon="@Icons.Material.Filled.House" Expanded="true">
+<MudNavGroup Title="Environments" Icon="@Icons.Material.Filled.People" Expanded="true">
+<MudNavGroup Title="Production" Icon="@Icons.Material.Filled.Lock" Expanded="true">
+<MudNavLink Href="/delete" Icon="@Icons.Material.Filled.DeleteForever">Infrastucture
+</MudNavLink>
+<MudNavLink Href="/delete" Icon="@Icons.Material.Filled.DeleteForever">Deployments
+</MudNavLink>
+<MudNavLink Href="/delete" Icon="@Icons.Material.Filled.DeleteForever">Configuration
+</MudNavLink>
+</MudNavGroup>
+<MudNavGroup Title="Development" Icon="@Icons.Material.Filled.Lock" Expanded="true">
+<MudNavLink Href="/delete" Icon="@Icons.Material.Filled.DeleteForever">Infrastucture
+</MudNavLink>
+<MudNavLink Href="/delete" Icon="@Icons.Material.Filled.DeleteForever">Deployments
+</MudNavLink>
+</MudNavGroup>
+</MudNavGroup>
+</MudNavGroup>
+<MudNavGroup Title="Certificate Monitor" Icon="@Icons.Material.Filled.Badge" Expanded="true">
+<MudNavGroup Title="Environments" Icon="@Icons.Material.Filled.People" Expanded="true">
+<MudNavGroup Title="Production" Icon="@Icons.Material.Filled.Lock" Expanded="true">
+<MudNavLink Href="/delete" Icon="@Icons.Material.Filled.DeleteForever">Infrastucture
+</MudNavLink>
+<MudNavLink Href="/delete" Icon="@Icons.Material.Filled.DeleteForever">Deployments
+</MudNavLink>
+</MudNavGroup>
+</MudNavGroup>
+</MudNavGroup> *@
+
+
+@* <div class="top-row ps-3 navbar navbar-dark">
+<div class="container-fluid">
+<a class="navbar-brand" href="">Deployment-Portal</a>
+</div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+<nav class="flex-column">
+<div class="nav-item px-3">
+<NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+<span class="bi bi-house-door-fill" aria-hidden="true"></span> Dashboard
+</NavLink>
+</div>
+@* class="bi bi-plus-square-fill" *@
+@* <div class="nav-item px-3">
+<NavLink class="nav-link" href="counter">
+<span aria-hidden="true"></span> Apps (Projects)
+</NavLink>
+</div>
+
+<div class="nav-item px-3">
+<NavLink class="nav-link" href="counter">
+<span aria-hidden="true"></span> AppX => Infrastructure
+</NavLink>
+</div>
+
+<div class="nav-item px-3">
+<NavLink class="nav-link" href="counter">
+<span aria-hidden="true"></span> AppX => Environments
+</NavLink>
+</div>
+
+<div class="nav-item px-3">
+<NavLink class="nav-link" href="counter">
+<span aria-hidden="true"></span> AppX => Environments => Deployments
+</NavLink>
+</div>
+
+<div class="nav-item px-3">
+<NavLink class="nav-link" href="counter">
+<span aria-hidden="true"></span> AppX => Configuration
+</NavLink>
+</div>
+
+<div class="nav-item px-3">
+<NavLink class="nav-link" href="counter">
+<span aria-hidden="true"></span> AppX => Operational Status
+</NavLink>
+</div> *@
+
+@* <div class="nav-item px-3">
+<NavLink class="nav-link" href="weather">
+<span class="bi bi-list-nested" aria-hidden="true"></span> Weather
+</NavLink>
+</div> *@
+@* </nav> *@

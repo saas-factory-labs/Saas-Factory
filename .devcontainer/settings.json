@@ -1,0 +1,33 @@
+{
+  "editor.tabSize": 4,
+  "editor.formatOnSave": true,
+  "editor.fontSize": 14,
+  "terminal.integrated.fontSize": 12,
+  "editor.fontSize": 14,
+  "editor.cursorBlinking": "solid",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "python.pythonPath": "/usr/bin/python3",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.fontSize": 13,
+  "workbench.colorTheme": "Default Light+",
+  "workbench.iconTheme": "vs-seti",
+  "eslint.autoFixOnSave": true,
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "typescript.format.enable": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "mssql.connections": [
+    {
+      "server": "localhost",
+      "database": "master",
+      "user": "sa",
+      "password": "YourStrong!Passw0rd",
+      "port": 1433
+    }
+  ]
+}

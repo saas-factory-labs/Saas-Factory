@@ -1,0 +1,74 @@
+﻿@using System.Reflection
+@using AppBlueprint.UiKit.Models
+@using AppBlueprint.UiKit.Components
+@inherits LayoutComponentBase
+
+@inject NavigationManager NavManager
+@inject IConfiguration Configuration
+@inject List<NavLinkMetadata> Links
+
+@* The cascading value attribute passes the Links parameter to the Sidepanel component in UiKit library *@
+<CascadingValue Value="Links">
+    <Router AppAssembly="@typeof(Program).Assembly"
+            AdditionalAssemblies="@AdditionalAssemblies">
+        <Found Context="routeData">
+            @{
+                // Check if the current route should be protected
+                var requireAuth = ShouldRequireAuthentication(routeData);
+            }
+            
+            @if (requireAuth)
+            {
+                <RequireAuthentication>
+                    <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+                </RequireAuthentication>
+            }
+            else
+            {
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+            }
+        </Found>
+        <NotFound>
+            <MudText Typo="Typo.h6">Sorry, there's nothing here!</MudText>
+        </NotFound>
+    </Router>
+</CascadingValue>
+
+@code {
+    private Assembly[] AdditionalAssemblies { get; } = new[] { typeof(UiKit._Imports).Assembly };
+
+    // List of routes that don't require authentication
+    private readonly string[] _publicRoutes = new[]
+    {
+        "/login",       // Login page
+        "/register",    // If you have a registration page
+        "/forgot-password", // Password recovery
+        "/reset-password"   // Password reset
+    };
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine($"NavigationLinks injected in Routes.razor: {Links?.Count ?? 0}");
+
+        foreach (var link in Links)
+        {
+            Console.WriteLine($"Link: {link.Name} - {link.Href}");
+        }
+    }
+
+    // Determine if a route requires authentication
+    private bool ShouldRequireAuthentication(RouteData routeData)
+    {
+        var routeTemplate = routeData.PageType
+            .GetCustomAttributes(typeof(Microsoft.AspNetCore.Components.RouteAttribute), inherit: true)
+            .Cast<Microsoft.AspNetCore.Components.RouteAttribute>()
+            .FirstOrDefault()?.Template;
+
+        // If we can't determine the route, default to requiring authentication
+        if (string.IsNullOrEmpty(routeTemplate))
+            return true;
+
+        // Check if the route is in our list of public routes
+        return !_publicRoutes.Contains(routeTemplate.ToLowerInvariant());
+    }
+}

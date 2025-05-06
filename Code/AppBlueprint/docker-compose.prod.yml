@@ -1,0 +1,114 @@
+# This file is used to define the services that will be deployed in the production environment.
+
+services:
+  web-service:
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:443
+      - VIRTUAL_HOST=${WEB_DOMAIN}
+      - VIRTUAL_PORT=443
+    ports:
+      - "443:443"
+    volumes:
+      - ${SSL_CERTIFICATE_PATH}:/etc/ssl/certs/cert.pem:ro
+      - ${SSL_KEY_PATH}:/etc/ssl/private/key.pem:ro
+    networks:
+      - appblueprint-network
+      - proxy-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kf https://localhost:443/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  api-service:
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:443
+      - VIRTUAL_HOST=${API_DOMAIN}
+      - VIRTUAL_PORT=443
+    ports:
+      - "444:443"
+    volumes:
+      - ${SSL_CERTIFICATE_PATH}:/etc/ssl/certs/cert.pem:ro
+      - ${SSL_KEY_PATH}:/etc/ssl/private/key.pem:ro
+    networks:
+      - appblueprint-network
+      - proxy-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kf https://localhost:443/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  app-gateway-service:
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:443
+      - VIRTUAL_HOST=${GATEWAY_DOMAIN}
+      - VIRTUAL_PORT=443
+    ports:
+      - "445:443"
+    volumes:
+      - ${SSL_CERTIFICATE_PATH}:/etc/ssl/certs/cert.pem:ro
+      - ${SSL_KEY_PATH}:/etc/ssl/private/key.pem:ro
+    networks:
+      - appblueprint-network
+      - proxy-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kf https://localhost:443/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  database:
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db-prod-data:/var/lib/postgresql/data
+    networks:
+      - appblueprint-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  db-prod-data:
+    driver: local
+
+networks:
+  appblueprint-network:
+    driver: bridge
+  proxy-network:
+    external: true

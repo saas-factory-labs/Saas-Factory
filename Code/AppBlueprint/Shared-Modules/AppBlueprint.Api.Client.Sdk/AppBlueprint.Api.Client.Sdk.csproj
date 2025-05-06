@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latestmajor</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <!-- NuGet package metadata -->
+    <PropertyGroup>
+        <PackageId>SaaS-Factory.AppBlueprint.Api.Client.Sdk</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>A Blazor-friendly API client generated using Microsoft Kiota Cli.</Description>
+        <!--        <PackageLicenseExpression></PackageLicenseExpression>-->
+        <PackageProjectUrl>https://</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/yourrepo</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>microsoft kiota; rest api; client; blazor</PackageTags>
+        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Api.Client.Sdk/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <!-- Enable packaging the UiKit project to Nuget package file -->
+        <IsPackable>true</IsPackable>
+        <!-- NuGet Configuration -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
+        <GeneratePackage>true</GeneratePackage>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Kiota.Abstractions"/>
+        <PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary"/>
+        <PackageReference Include="Microsoft.Kiota.Serialization.Form"/>
+        <PackageReference Include="Microsoft.Kiota.Serialization.Json"/>
+        <PackageReference Include="Microsoft.Kiota.Serialization.Multipart"/>
+        <PackageReference Include="Microsoft.Kiota.Serialization.Text"/>
+    </ItemGroup>
+
+</Project>

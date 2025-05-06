@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UserSecretsId>b643575d-b458-404e-a015-5118d4172ad4</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>..\..</DockerfileContext>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"/>
+        <PackageReference Include="MudBlazor"/>
+        <PackageReference Include="MudBlazor.ThemeManager"/>
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Z.Blazor.Diagrams"/>
+        <PackageReference Include="Microsoft.OpenApi.Readers"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
+    </ItemGroup>
+</Project>

@@ -1,0 +1,209 @@
+﻿@inherits LayoutComponentBase
+
+@* Required for MudBlazor *@
+@* <MudThemeProvider Theme="_themeManager.Theme" /> *@
+
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+@* <MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))"/> *@
+@* <MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme"/> *@
+
+<MudThemeProvider Theme="MyCustomTheme" > </MudThemeProvider>
+
+<div class="layout-wrapper flex h-screen overflow-hidden">
+    <div class="sidebar-container transition-all duration-200 ease-in-out lg:w-64 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700" style="@(SidebarOpen ? "transform-none" : "-translate-x-full lg:translate-x-0")">
+        <NavigationMenu/>
+    </div>
+
+    <main class="content-container flex-1 bg-gray-100 dark:bg-gray-900 overflow-auto">
+        <div class="content px-4" style="height: calc(100vh - 64px); overflow-y: auto;">
+            @Body
+            <MudScrollToTop Position="Position.BottomRight" Size="Size.Large" Color="Color.Primary"/>
+        </div>
+    </main>
+</div>
+
+
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+
+    MudTheme MyCustomTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = Colors.DeepOrange.Default, // Ensure this is set
+            Secondary = Colors.Green.Accent4,
+            AppbarBackground = Colors.Red.Default,
+            DrawerBackground = Colors.LightGreen.Lighten5,
+            DrawerText = Colors.LightGreen.Darken4
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Primary = Colors.DeepOrange.Default, // Define the same color for dark mode
+            Secondary = Colors.Green.Accent4,
+            AppbarBackground = Colors.Red.Darken4,
+            DrawerBackground = Colors.LightGreen.Darken4,
+            DrawerText = Colors.LightGreen.Lighten3
+        }
+    };
+
+    private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
+    public bool _themeManagerOpen = false;
+
+    void OpenThemeManager(bool value)
+    {
+        _themeManagerOpen = value;
+    }
+
+    void UpdateTheme(ThemeManagerTheme value)
+    {
+        _themeManager = value;
+        StateHasChanged();
+    }
+
+    [Parameter] public bool SidebarOpen { get; set; } = true;
+
+    [Inject] private BreadcrumbService BreadcrumbService { get; set; } = default!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+        UpdateBreadcrumbs(NavigationManager.Uri);
+        StateHasChanged();
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        UpdateBreadcrumbs(e.Location);
+    }
+
+    private void UpdateBreadcrumbs(string uri)
+    {
+        BreadcrumbService.Breadcrumbs.Clear();
+        var segments = new Uri(uri).AbsolutePath.Trim('/').Split('/');
+        string path = "/";
+        foreach (var segment in segments)
+        {
+            if (string.IsNullOrEmpty(segment)) continue;
+            path += $"{segment}/";
+            BreadcrumbService.Breadcrumbs.Add(new BreadcrumbItem(segment, path));
+        }
+
+        BreadcrumbService.UpdateBreadcrumbs(BreadcrumbService.Breadcrumbs);
+    }
+
+    private void ToggleSidebar()
+    {
+        SidebarOpen = !SidebarOpen;
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+}
+
+
+@* @inherits LayoutComponentBase *@
+@* *@
+@* $1$ Required #1# *@
+@* <MudThemeProvider /> *@
+@* <MudPopoverProvider /> *@
+@* $1$ Needed for dialogs #1# *@
+@* <MudDialogProvider /> *@
+@* $1$ Needed for snackbars #1# *@
+@* <MudSnackbarProvider /> *@
+@* *@
+@* *@
+@* *@
+@* <div class="page"> *@
+@*     <div class="sidebar"> *@
+@*          *@
+@*         $1$ <combined Sidebar and Appbar /> - from Uikit using Mudblazor #1# *@
+@*         $1$ <AppBlueprint.UiKit.Components.NavigationMenu.NavigationMenu /> #1# *@
+@*          *@
+@*         $1$ <combined Sidebar and Appbar /> - from Uikit using Cruip Tailwind CSS template #1# *@
+@*         <AppBlueprint.UiKit.Components.Cruip.NavigationMenu.NavigationMenu /> *@
+@*          *@
+@*     </div> *@
+@* *@
+@*     <main> *@
+@*         <article class="content px-4" style="height: calc(100vh - 64px); overflow-y: auto;"> *@
+@*         $1$ <article class="content px-4"> #1# *@
+@*             $1$ <MudBreadcrumbs Items="BreadcrumbService.Breadcrumbs"></MudBreadcrumbs> #1# *@
+@*             $1$ <MudBreadcrumbs Items="BreadcrumbService.Breadcrumbs"></MudBreadcrumbs> - uikit #1# *@
+@*             @Body *@
+@*             <MudScrollToTop Position="Position.BottomRight" Size="Size.Large" Color="Color.Primary"/> *@
+@*         </article> *@
+@*     </main> *@
+@* </div> *@
+@* *@
+@* <div id="blazor-error-ui"> *@
+@*     An unhandled error has occurred. *@
+@*     <a href="" class="reload">Reload</a> *@
+@*     <a class="dismiss">🗙</a> *@
+@* </div> *@
+@* *@
+@* @code { *@
+@*      *@
+@*     [Inject] private BreadcrumbService BreadcrumbService { get; set; } = default!; *@
+@*     [Inject] private NavigationManager NavigationManager { get; set; } = default!; *@
+@*      *@
+@*     // private List<BreadcrumbItem> Breadcrumbs => BreadcrumbService.Breadcrumbs; *@
+@*      *@
+@*     protected override void OnInitialized() *@
+@*     { *@
+@*         NavigationManager.LocationChanged += OnLocationChanged; *@
+@*         UpdateBreadcrumbs(NavigationManager.Uri); *@
+@*     } *@
+@* *@
+@*     private void OnLocationChanged(object? sender, LocationChangedEventArgs e) *@
+@*     { *@
+@*         UpdateBreadcrumbs(e.Location); *@
+@*     } *@
+@* *@
+@*     private void UpdateBreadcrumbs(string uri) *@
+@*     { *@
+@*         BreadcrumbService.Breadcrumbs.Clear();     *@
+@*          *@
+@*         var segments = new Uri(uri).AbsolutePath.Trim('/').Split('/'); *@
+@*         *@
+@*         // var breadcrumbs = new List<BreadcrumbItem> *@
+@*         // { *@
+@*         //     new BreadcrumbItem("Dashboard", "/") *@
+@*         // }; *@
+@* *@
+@*         string path = "/"; *@
+@*         foreach (var segment in segments) *@
+@*         { *@
+@*             if (string.IsNullOrEmpty(segment)) continue; *@
+@*             path += $"{segment}/"; *@
+@*             BreadcrumbService.Breadcrumbs.Add(new BreadcrumbItem(segment, path)); *@
+@*         } *@
+@* *@
+@*         BreadcrumbService.UpdateBreadcrumbs(BreadcrumbService.Breadcrumbs); *@
+@*     } *@
+@* *@
+@*     public void Dispose() *@
+@*     { *@
+@*         NavigationManager.LocationChanged -= OnLocationChanged; *@
+@*     } *@
+@* } *@
+@* *@
+@* *@
+@* $1$ // { #1# *@
+@* $1$ //     // new BreadcrumbItem("Create", href: null, disabled: true, icon: Icons.Material.Filled.Create) #1# *@
+@* $1$ // // new BreadcrumbItem("Dashboard", href: "#", icon: Icons.Material.Filled.Home), #1# *@
+@* $1$ // // new BreadcrumbItem("Analytics", href: "#", icon: Icons.Material.Filled.VideoLibrary) #1# *@
+@* $1$ // }; #1# *@
+@* *@

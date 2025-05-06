@@ -1,0 +1,40 @@
+@using AppBlueprint.Uikit.Themes
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="CustomThemes.Superherotheme"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <NavigationMenu/>
+    <MudMainContent>
+        @Body @* <-- Ensures the page content is rendered inside the layout *@
+        <MudScrollToTop Position="Position.BottomRight" Size="Size.Large" Color="Color.Primary"/>
+    </MudMainContent>
+</MudLayout>
+
+<!-- Error Handling UI -->
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    [CascadingParameter] public List<NavLinkMetadata> Links { get; set; }
+
+// Sidebar state
+    [Parameter] public bool SidebarOpen { get; set; } = true;
+
+    private string SidebarStyle => SidebarOpen ? "transform-none" : "-translate-x-full lg:translate-x-0";
+
+// Toggle the sidebar
+    private void ToggleSidebar()
+    {
+        SidebarOpen = !SidebarOpen;
+    }
+
+}
+
+

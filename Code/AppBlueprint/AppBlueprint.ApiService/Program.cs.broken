@@ -1,0 +1,331 @@
+using AppBlueprint.Presentation.ApiModule.Extensions;
+using AppBlueprint.ServiceDefaults;
+using Asp.Versioning.ApiExplorer;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using NSwag;
+using NSwag.Generation.Processors.Security;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Metrics; // Added for Meter and Counter
+using AppBlueprint.Infrastructure; // Correct namespace for MigrationExtensions
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Threading.Tasks;
+using System;
+using Microsoft.AspNetCore.Builder; // Added for WebApplication
+
+// Add static ActivitySource and Meter for telemetry testing
+namespace AppBlueprint.ApiService;
+
+// Add instrumentation for tracing and metrics
+internal static class Instrumentation
+{
+    public static readonly ActivitySource ActivitySource = new("AppBlueprint.ApiService");
+    public static readonly Meter Meter = new("AppBlueprint.ApiService", "1.0.0");
+    public static readonly Counter<long> RequestCounter = Meter.CreateCounter<long>("appblueprint.api.requests.count", "Request", "The number of requests received");
+}
+
+internal partial class Program // Make partial for LoggerMessage source generation
+{
+    // --- START LoggerMessage Definitions ---
+    [LoggerMessage(
+        EventId = 1,
+        Level = LogLevel.Information,
+        Message = "[ApiService Startup] Using connection string from ConnectionStrings__PostgreSQL: {ConnectionString}")]
+    static partial void LogUsingAspireConnectionString(ILogger logger, string connectionString);
+
+    [LoggerMessage(
+        EventId = 2,
+        Level = LogLevel.Critical,
+        Message = "[ApiService Startup] CRITICAL ERROR: {ConnectionStringName} environment variable not found or empty. Aspire injection failed?")]
+    static partial void LogMissingConnectionStringError(ILogger logger, string connectionStringName);
+
+    [LoggerMessage(
+        EventId = 3,
+        Level = LogLevel.Information,
+        Message = "Applying database migrations...")]
+    static partial void LogApplyingMigrations(ILogger logger);
+
+    [LoggerMessage(
+        EventId = 4,
+        Level = LogLevel.Information,
+        Message = "Applying database seeding...")]
+    static partial void LogApplyingSeeding(ILogger logger);
+
+    [LoggerMessage(
+        EventId = 5,
+        Level = LogLevel.Information,
+        Message = "Database migrations and seeding completed.")]
+    static partial void LogMigrationAndSeedingCompleted(ILogger logger);
+
+    [LoggerMessage(
+        EventId = 6,
+        Level = LogLevel.Information,
+        Message = "Received request: {Path}")]
+    static partial void LogReceivedRequest(ILogger logger, string path);
+
+    [LoggerMessage(
+        EventId = 7,
+        Level = LogLevel.Error,
+        Message = "Error processing request")]
+    static partial void LogRequestError(ILogger logger, Exception ex);
+
+    [LoggerMessage(
+        EventId = 8,
+        Level = LogLevel.Debug,
+        Message = "This is a debug log from telemetry test")]
+    static partial void LogTelemetryTestDebug(ILogger logger);
+
+    [LoggerMessage(
+        EventId = 9,
+        Level = LogLevel.Information,
+        Message = "This is an info log from telemetry test")]
+    static partial void LogTelemetryTestInfo(ILogger logger);
+
+    [LoggerMessage(
+        EventId = 10,
+        Level = LogLevel.Warning,
+        Message = "This is a warning log from telemetry test")]
+    static partial void LogTelemetryTestWarning(ILogger logger);
+    // --- END LoggerMessage Definitions ---
+
+    public static async Task Main(string[] args)
+    {
+        // Explicitly set the environment to Development
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+        Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Development");
+
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+        Console.WriteLine($"OTEL_EXPORTER_OTLP_ENDPOINT: {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")}");
+
+
+        // Add service defaults & Aspire components BEFORE other services.
+        builder.AddServiceDefaults(); 
+
+        // --- START RIGOROUS CONNECTION STRING CORRECTION ---
+        // Get ILogger instance for logging during startup
+        using var loggerFactory = LoggerFactory.Create(logBuilder =>
+        {
+            logBuilder.AddConfiguration(builder.Configuration.GetSection("Logging"));
+            logBuilder.AddConsole();
+        });
+        var logger = loggerFactory.CreateLogger<Program>();
+
+        // Get the database connection string ONLY from the Aspire-injected environment variable
+        // Aspire injects connection strings named "ConnectionStrings__<ResourceName>"
+        const string expectedConnectionStringEnvVar = "ConnectionStrings__postgres-server"; 
+        string? databaseConnectionString = Environment.GetEnvironmentVariable(expectedConnectionStringEnvVar);
+
+        // Log the retrieved value (or lack thereof)
+        if (!string.IsNullOrEmpty(databaseConnectionString))
+        {
+            LogUsingAspireConnectionString(logger, databaseConnectionString);
+        }
+        else
+        {
+            // Log a critical error and throw an exception to prevent startup without a valid connection string
+            LogMissingConnectionStringError(logger, expectedConnectionStringEnvVar); // Pass the expected name for better logging
+            throw new InvalidOperationException($"Database connection string '{expectedConnectionStringEnvVar}' is missing or empty. Cannot start ApiService.");
+        }
+        // --- END RIGOROUS CONNECTION STRING CORRECTION ---
+
+        // Add connection string to configuration (now guaranteed not null/empty)
+        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            {"ConnectionStrings:DefaultConnection", databaseConnectionString}
+        });
+
+        // Force Development environment
+        builder.Environment.EnvironmentName = "Development";
+        builder.Host.UseEnvironment("Development");
+
+        builder.Host.UseDefaultServiceProvider(options =>
+        {
+            options.ValidateScopes = true;
+            options.ValidateOnBuild = true;
+        });
+
+        builder.Services.AddAppBlueprintServices();
+
+        // Add NSwag OpenAPI document generation
+        builder.Services.AddOpenApiDocument(config =>
+        {
+            config.DocumentName = "v1";
+            config.Title = "AppBlueprint API";
+            config.AddSecurity("BearerAuth", new OpenApiSecurityScheme
+            {
+                Type = OpenApiSecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Description = "JWT Authorization header using the Bearer scheme."
+            });
+            config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("BearerAuth"));
+        });
+
+        WebApplication app = builder.Build();
+
+        // Configure the HTTP request pipeline.        app.UseExceptionHandler(options => { }); // Add exception handler middleware
+        // app.UseMiddleware<ApiExceptionHandlingMiddleware>(); // Commented out - Class not found
+
+        // Add middleware to test telemetry
+        app.Use(async (context, next) =>
+        {
+            // Log every request
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            LogReceivedRequest(logger, context.Request.Path);
+            
+            // Track metrics
+            Instrumentation.RequestCounter.Add(1);
+            
+            // Create and track a span
+            using var activity = Instrumentation.ActivitySource.StartActivity("HandleRequest");
+            activity?.SetTag("http.path", context.Request.Path);
+            activity?.SetTag("http.method", context.Request.Method);
+            
+            try 
+            {
+                await next().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                LogRequestError(logger, ex);
+                activity?.SetTag("error", true);
+                activity?.SetTag("error.message", ex.Message);
+                throw;
+            }
+        });
+
+        // Add an endpoint to generate explicit telemetry
+        app.MapGet("/telemetry-test", () => 
+        {
+            var logger = app.Services.GetRequiredService<ILogger<Program>>();
+            
+            // Generate logs at different levels
+            LogTelemetryTestDebug(logger);
+            LogTelemetryTestInfo(logger);
+            LogTelemetryTestWarning(logger);
+            
+            // Generate metrics
+            Instrumentation.RequestCounter.Add(10);
+            
+            // Generate explicit trace
+            using var activity = Instrumentation.ActivitySource.StartActivity("TelemetryTest");
+            activity?.SetTag("test", "true");
+            activity?.SetTag("timestamp", DateTime.UtcNow.ToString("o"));
+            
+            // Generate child spans
+            using (var childActivity = Instrumentation.ActivitySource.StartActivity("TelemetryTestChild"))
+            {
+                childActivity?.SetTag("child", "true");
+                // Simulate work
+                System.Threading.Thread.Sleep(100);
+            }
+            
+            return "Telemetry data generated! Check your dashboard.";
+        });
+            
+            try 
+            {
+                await next().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                LogRequestError(logger, ex);
+                activity?.SetTag("error", true);
+                activity?.SetTag("error.message", ex.Message);
+                throw;
+            }
+        });
+            
+            try 
+            {
+                await next().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                LogRequestError(logger, ex);
+                activity?.SetTag("error", true);
+                activity?.SetTag("error.message", ex.Message);
+                throw;
+            }
+        });
+            activity?.SetTag("http.method", context.Request.Method);
+            
+            try 
+            {
+                await next().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error processing request");
+                LogRequestError(logger, ex);
+                activity?.SetTag("error", true);
+                activity?.SetTag("error.message", ex.Message);
+                throw;
+            }
+        });
+
+        // Add an endpoint to generate explicit telemetry
+        app.MapGet("/telemetry-test", () => 
+        {
+            var logger = app.Services.GetRequiredService<ILogger<Program>>();
+            
+            // Generate logs at different levels
+            logger.LogDebug("This is a debug log from telemetry test");
+            LogTelemetryTestDebug(logger);
+            
+            logger.LogInformation("This is an info log from telemetry test");
+            LogTelemetryTestInfo(logger);
+            
+            logger.LogWarning("This is a warning log from telemetry test");
+            LogTelemetryTestWarning(logger);
+            
+            // Generate metrics
+            Instrumentation.RequestCounter.Add(10);
+            
+            // Generate explicit trace
+            using var activity = Instrumentation.ActivitySource.StartActivity("TelemetryTest");
+            activity?.SetTag("test", "true");
+            activity?.SetTag("timestamp", DateTime.UtcNow.ToString("o"));
+            
+            // Generate child spans
+            using (var childActivity = Instrumentation.ActivitySource.StartActivity("TelemetryTestChild"))
+            {
+                childActivity?.SetTag("child", "true");
+                // Simulate work
+                System.Threading.Thread.Sleep(100);
+            }
+            
+            return "Telemetry data generated! Check your dashboard.";
+        });
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseOpenApi(); // Serve OpenAPI/Swagger documents
+            app.UseSwaggerUi(); // Serve Swagger UI
+        }
+
+        app.UseHttpsRedirection();
+        app.UseRouting();
+        app.UseCors();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapControllers();
+        app.MapDefaultEndpoints(); // Map health checks, etc.
+
+        // *** FIX MIGRATION/SEEDING CALLS ***
+        // Apply migrations and seed data separately
+        LogApplyingMigrations(logger);
+        await MigrationExtensions.ApplyMigrationsAsync(app).ConfigureAwait(false);
+        LogApplyingSeeding(logger);
+        await MigrationExtensions.ApplyDatabaseSeedingAsync(app).ConfigureAwait(false);
+        LogMigrationAndSeedingCompleted(logger);
+        // *** END FIX MIGRATION/SEEDING CALLS ***
+
+        await app.RunAsync().ConfigureAwait(false);
+    }
+}

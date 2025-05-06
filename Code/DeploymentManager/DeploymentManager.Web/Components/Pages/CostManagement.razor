@@ -1,0 +1,45 @@
+@page "/cost-management"
+@using MudBlazor
+
+<PageTitle> Cost Management</PageTitle>
+
+<h1>Cost Management</h1>
+
+<MudTable T="Cost" Items="@_costs" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
+          LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>App</MudTh>
+        <MudTh>Expense</MudTh>
+        <MudTh>Amount</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        @foreach (var cost in _costs)
+        {
+            <MudTd DataLabel="App">@cost.App</MudTd>
+            <MudTd DataLabel="Expense">@cost.Expense</MudTd>
+            <MudTd DataLabel="Amount">@cost.Amount</MudTd>
+        }
+    </RowTemplate>
+</MudTable>
+
+@code {
+
+    public class Cost
+    {
+        public int Id { get; set; }
+        public string App { get; set; }
+        public string Expense { get; set; }
+        public double Amount { get; set; }
+    }
+
+    private readonly List<Cost> _costs = new();
+
+    private bool _hidePosition;
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _costs.Add(new Cost { Id = 1, App = "File Discovery", Expense = "Azure Blob Storage GB", Amount = 108.00 });
+    }
+
+}

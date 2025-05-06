@@ -1,0 +1,111 @@
+@* all injections need to be at the top of the file or it wont work! *@
+@inject IDialogService DialogService
+@using AppBlueprint.Infrastructure.Authorization
+@using AppBlueprint.UiKit.Components.Authentication
+@inject IUserAuthenticationProvider AuthenticationProvider
+@inject NavigationManager NavigationManager
+
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
+
+<MudAppBar Elevation="1">
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer"/>
+    <MudSpacer/>
+
+    @* <!-- Search Button --> *@
+    <MudButton Class="mr-2" Size="Size.Medium" StartIcon="@Icons.Material.Filled.Search" OnClick="OpenDialogAsync"
+               Variant="Variant.Filled"></MudButton>
+
+    <!-- Notifications Menu -->
+    <MudMenu Class="mr-2" StartIcon="@Icons.Material.Filled.Notifications" Color="Color.Default"
+             Variant="Variant.Filled" IconColor="Color.Primary">
+        <MudMenuItem>Notification 1</MudMenuItem>
+        <MudMenuItem>Notification 2</MudMenuItem>
+        <MudMenuItem>Notification 3</MudMenuItem>
+    </MudMenu>
+
+    <!-- Info Menu -->
+    <MudMenu Class="mr-2" StartIcon="@Icons.Material.Filled.Info" Color="Color.Default" Variant="Variant.Filled"
+             IconColor="Color.Default">
+        <MudMenuItem>Documentation</MudMenuItem>
+        <MudMenuItem>Support Site</MudMenuItem>
+        <MudMenuItem>Contact Us</MudMenuItem>
+    </MudMenu>
+
+    <!-- Theme Toggle Button -->
+    <MudButton StartIcon="@(_isDarkMode ? Icons.Material.Filled.WbSunny : Icons.Material.Filled.Nightlight)"
+               OnClick="ChangeTheme" Color="Color.Inherit" Variant="Variant.Text">
+    </MudButton>
+
+    @if (IsAuthenticated)
+    {
+        <MudMenu StartIcon="@Icons.Material.Filled.Person" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Label="Account"
+                Color="Color.Primary" Variant="Variant.Filled" IconColor="Color.Default">
+            <MudMenuItem>
+                <MudNavLink Href="/account-settings" Icon="@Icons.Material.Filled.Settings">Account Settings
+                </MudNavLink>
+            </MudMenuItem>
+            <MudMenuItem OnClick="HandleLogout">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Class="mr-2" />
+                    Sign Out
+                </div>
+            </MudMenuItem>
+        </MudMenu>
+    }
+    else
+    {
+        <MudButton Href="/login" Variant="Variant.Filled" Color="Color.Primary">Login</MudButton>
+    }
+
+    @ChildContent
+
+</MudAppBar>
+
+@code{
+    [Parameter] public EventCallback OnToggleDrawer { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    
+    [CascadingParameter]
+    private AuthProvider Auth { get; set; }
+
+    private bool _isDarkMode = true; // Default to dark mode
+    
+    private bool IsAuthenticated => Auth?.IsAuthenticated ?? AuthenticationProvider.IsAuthenticated();
+
+    private void ToggleDrawer()
+    {
+        if (OnToggleDrawer.HasDelegate)
+        {
+            // Invoke the parent's method to toggle the Sidebar
+            OnToggleDrawer.InvokeAsync();
+        }
+    }
+
+    private Task OpenDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        return DialogService.ShowAsync<AppbarSearchDialog>("Search Dialog", options);
+    }
+
+    private MudTheme _theme = new();
+
+    private void ChangeTheme()
+    {
+        _isDarkMode = !_isDarkMode; // Toggle the dark mode state
+        Console.WriteLine($"Theme toggled. IsDarkMode: {_isDarkMode}");
+    }
+
+    // Handle logout action
+    private async Task HandleLogout()
+    {
+        if (Auth != null)
+        {
+            await Auth.LogoutAsync();
+        }
+        else 
+        {
+            await AuthenticationProvider.LogoutAsync();
+            NavigationManager.NavigateTo("/login", true);
+        }
+    }
+}

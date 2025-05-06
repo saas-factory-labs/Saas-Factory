@@ -1,0 +1,9 @@
+query: {
+  all_apps(func: type(App)) {
+    uid
+    recurse {
+      uid
+      expand(_all_)
+    }
+  }
+}

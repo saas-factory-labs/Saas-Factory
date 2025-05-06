@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latestmajor</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <!-- Enable packaging the ApiModule project to Nuget package file -->
+        <IsPackable>true</IsPackable>
+        <!-- NuGet Configuration -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
+        <GeneratePackage>true</GeneratePackage>
+        <!--        <Version></Version> &lt;!&ndash; Update version as needed &ndash;&gt;-->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>SaaS-Factory.AppBlueprint.Contracts</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>A class library with API request/response contracts for usage by clients</Description>
+        <PackageTags>contracts;request/response;api</PackageTags>
+        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Contracts/AppBlueprint.Contracts/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Folder Include="Admin\"/>
+        <Folder Include="B2B\"/>
+        <Folder Include="B2C\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj"/>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,37 @@
+//OnModelCreatingPartial(modelBuilder);
+
+
+// modelBuilder.HasPostgresEnum<Language>("language");
+//
+// modelBuilder.HasPerformanceLevel(PerformanceLevel.Low);
+//
+// modelBuilder.HasDefaultSchema("public");
+//
+// modelBuilder.HasDatabaseMaxSize("10 GB");
+
+// modelBuilder.SharedTypeEntity<EmailAddressModel>("EmailAddress", b =>
+// {
+//     b.Property<int>("Id");
+//     b.Property<int>("UserId");
+//     b.Property<string>("Address");
+//     b.Property<bool>("IsVerified");
+//     b.Property<bool>("IsPrimary");
+//     b.Property<DateTimeOffset>("CreatedAt");
+//     b.Property<DateTimeOffset>("UpdatedAt");
+//     b.HasKey("Id");
+//     b.HasIndex("Id").IsUnique();
+// }); 
+
+
+//modelBuilder.HasCollation("en_US", locale: "en-US", provider: "icu", deterministic: true);
+
+//modelBuilder.HasChangeTrackingStrategy(ChangeTrackingStrategy.Snapshot);
+
+
+//modelBuilder.HasDbFunction(() => GeoDistance(0, 0, 0, 0))
+//    .HasName("ST_DistanceSphere");
+
+
+//modelBuilder.UsePropertyAccessMode(PropertyAccessMode.Property);
+
+// public DbSet<GroupModel> Groups { get; set; } // like in active directory

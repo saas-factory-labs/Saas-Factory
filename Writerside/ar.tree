@@ -1,0 +1,2774 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="ar"
+                  name="API-Reference" start-page="API_Reference.md">
+
+    <toc-element topic="README.md">
+        <toc-element toc-title="Use cases"/>
+        <toc-element topic="Use-Cases.md">
+            <toc-element topic="User-Signup-Use-Case.md"/>
+            <toc-element topic="User-Login-Use-Case.md"/>
+        </toc-element>
+        <toc-element toc-title="AppBlueprint">
+            <toc-element topic="Code_README.md"/>
+            <toc-element toc-title="Shared-Modules">
+                <toc-element toc-title="AppBlueprint.Baseline.Application">
+                    <toc-element topic="AppBlueprint.Baseline.Application_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.Baseline.Core">
+                    <toc-element topic="AppBlueprint.Baseline.Core_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.Baseline.Domain.Auditing">
+                    <toc-element topic="AppBlueprint.Baseline.Domain.Auditing_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.Baseline.Domain.Integrations">
+                    <toc-element topic="AppBlueprint.Baseline.Domain.Integrations_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.Baseline.Domain.Logging">
+                    <toc-element topic="AppBlueprint.Baseline.Domain.Logging_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.Baseline.Domain.Security">
+                    <toc-element topic="AppBlueprint.Baseline.Domain.Security_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.Baseline.Domain.Subscriptions">
+                    <toc-element topic="AppBlueprint.Baseline.Domain.Subscriptions_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.Infrastructure">
+                    <toc-element topic="AppBlueprint.Infrastructure_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.Presentation.ApiModule">
+                    <toc-element topic="AppBlueprint.Presentation.ApiModule_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.SharedKernel">
+                    <toc-element topic="AppBlueprint.SharedKernel_README.md"/>
+                </toc-element>
+                <toc-element toc-title="AppBlueprint.UiKit">
+                    <toc-element topic="AppBlueprint.UiKit_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="AppBlueprint.ServiceDefaults">
+                <toc-element topic="AppBlueprint.ServiceDefaults_README.md"/>
+            </toc-element>
+            <toc-element toc-title="cloudflare-worker">
+                <toc-element topic="cloudflare-worker_README.md"/>
+                <toc-element toc-title="diagram-hosting-proxy">
+                    <toc-element topic="diagram-hosting-proxy_README.md"/>
+                    <toc-element toc-title="node_modules">
+                        <toc-element toc-title="@cloudflare">
+                            <toc-element toc-title="kv-asset-handler">
+                                <toc-element topic="@cloudflare_kv-asset-handler_README.md"/>
+                            </toc-element>
+                            <toc-element toc-title="vitest-pool-workers">
+                                <toc-element topic="vitest-pool-workers_README.md"/>
+                            </toc-element>
+                            <toc-element toc-title="workerd-windows-64">
+                                <toc-element topic="@cloudflare_workerd-windows-64_README.md"/>
+                            </toc-element>
+                            <toc-element toc-title="workers-types">
+                                <toc-element topic="@cloudflare_workers-types_README.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="@cspotcode">
+                            <toc-element toc-title="source-map-support">
+                                <toc-element topic="@cspotcode_source-map-support_README.md"/>
+                                <toc-element topic="@cspotcode_source-map-support_LICENSE.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="@esbuild">
+                            <toc-element toc-title="win32-x64">
+                                <toc-element topic="@esbuild_win32-x64_README.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="@fastify">
+                            <toc-element toc-title="busboy">
+                                <toc-element topic="@fastify_busboy_README.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="@jridgewell">
+                            <toc-element toc-title="resolve-uri">
+                                <toc-element topic="@jridgewell_resolve-uri_README.md"/>
+                            </toc-element>
+                            <toc-element toc-title="sourcemap-codec">
+                                <toc-element topic="@jridgewell_sourcemap-codec_README1.md"/>
+                            </toc-element>
+                            <toc-element toc-title="trace-mapping">
+                                <toc-element topic="@jridgewell_trace-mapping_README.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="@rollup">
+                            <toc-element toc-title="rollup-win32-x64-msvc">
+                                <toc-element topic="rollup-win32-x64-msvc_README.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="@types">
+                            <toc-element toc-title="estree">
+                                <toc-element topic="estree_README.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="@vitest">
+                            <toc-element toc-title="expect">
+                                <toc-element topic="expect_README.md"/>
+                            </toc-element>
+                            <toc-element toc-title="mocker">
+                                <toc-element topic="mocker_README.md"/>
+                            </toc-element>
+                            <toc-element toc-title="runner">
+                                <toc-element topic="runner_README.md"/>
+                            </toc-element>
+                            <toc-element toc-title="snapshot">
+                                <toc-element topic="snapshot_README.md"/>
+                            </toc-element>
+                            <toc-element toc-title="spy">
+                                <toc-element topic="spy_README.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="acorn">
+                            <toc-element topic="node_modules_acorn_README.md"/>
+                            <toc-element topic="node_modules_acorn_CHANGELOG.md"/>
+                        </toc-element>
+                        <toc-element toc-title="acorn-walk">
+                            <toc-element topic="node_modules_acorn-walk_README.md"/>
+                            <toc-element topic="node_modules_acorn-walk_CHANGELOG.md"/>
+                        </toc-element>
+                        <toc-element toc-title="as-table">
+                            <toc-element topic="node_modules_as-table_README.md"/>
+                            <toc-element topic="node_modules_as-table_CHANGELOG.md"/>
+                        </toc-element>
+                        <toc-element toc-title="assertion-error">
+                            <toc-element topic="assertion-error_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="birpc">
+                            <toc-element topic="birpc_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="blake3-wasm">
+                            <toc-element topic="node_modules_blake3-wasm_readme.md"/>
+                            <toc-element topic="blake3-wasm_changelog.md"/>
+                        </toc-element>
+                        <toc-element toc-title="cac">
+                            <toc-element topic="cac_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="capnp-ts">
+                            <toc-element topic="node_modules_capnp-ts_README.md"/>
+                            <toc-element topic="node_modules_capnp-ts_CHANGELOG.md"/>
+                            <toc-element toc-title="src">
+                                <toc-element toc-title="std">
+                                    <toc-element topic="src_std_README.md"/>
+                                </toc-element>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="chai">
+                            <toc-element topic="ReleaseNotes.md"/>
+                            <toc-element topic="chai_README.md"/>
+                            <toc-element topic="chai_History.md"/>
+                            <toc-element topic="CONTRIBUTING.md"/>
+                            <toc-element topic="CODE_OF_CONDUCT.md"/>
+                        </toc-element>
+                        <toc-element toc-title="check-error">
+                            <toc-element topic="check-error_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="cjs-module-lexer">
+                            <toc-element topic="cjs-module-lexer_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="confbox">
+                            <toc-element topic="node_modules_confbox_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="cookie">
+                            <toc-element topic="node_modules_cookie_SECURITY.md"/>
+                            <toc-element topic="node_modules_cookie_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="data-uri-to-buffer">
+                            <toc-element topic="node_modules_data-uri-to-buffer_README.md"/>
+                            <toc-element topic="data-uri-to-buffer_History.md"/>
+                        </toc-element>
+                        <toc-element toc-title="debug">
+                            <toc-element topic="node_modules_debug_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="deep-eql">
+                            <toc-element topic="deep-eql_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="defu">
+                            <toc-element topic="node_modules_defu_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="devalue">
+                            <toc-element topic="devalue_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="es-module-lexer">
+                            <toc-element topic="es-module-lexer_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="esbuild">
+                            <toc-element topic="node_modules_esbuild_README.md"/>
+                            <toc-element topic="node_modules_esbuild_LICENSE.md"/>
+                        </toc-element>
+                        <toc-element toc-title="escape-string-regexp">
+                            <toc-element topic="node_modules_escape-string-regexp_readme.md"/>
+                        </toc-element>
+                        <toc-element toc-title="estree-walker">
+                            <toc-element topic="node_modules_estree-walker_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="exit-hook">
+                            <toc-element topic="node_modules_exit-hook_readme.md"/>
+                        </toc-element>
+                        <toc-element toc-title="expect-type">
+                            <toc-element topic="expect-type_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="get-source">
+                            <toc-element topic="node_modules_get-source_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="glob-to-regexp">
+                            <toc-element topic="node_modules_glob-to-regexp_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="loupe">
+                            <toc-element topic="loupe_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="magic-string">
+                            <toc-element topic="node_modules_magic-string_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="mime">
+                            <toc-element topic="node_modules_mime_README.md"/>
+                            <toc-element topic="node_modules_mime_CHANGELOG.md"/>
+                        </toc-element>
+                        <toc-element toc-title="miniflare">
+                            <toc-element topic="node_modules_miniflare_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="mlly">
+                            <toc-element topic="node_modules_mlly_README.md"/>
+                            <toc-element toc-title="node_modules">
+                                <toc-element toc-title="pathe">
+                                    <toc-element topic="node_modules_pathe_README3.md"/>
+                                </toc-element>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="ms">
+                            <toc-element topic="node_modules_ms_readme.md"/>
+                            <toc-element topic="ms_license.md"/>
+                        </toc-element>
+                        <toc-element toc-title="mustache">
+                            <toc-element topic="node_modules_mustache_README.md"/>
+                            <toc-element topic="node_modules_mustache_CHANGELOG.md"/>
+                        </toc-element>
+                        <toc-element toc-title="nanoid">
+                            <toc-element topic="nanoid_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="ohash">
+                            <toc-element topic="node_modules_ohash_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="path-to-regexp">
+                            <toc-element topic="node_modules_path-to-regexp_Readme.md"/>
+                        </toc-element>
+                        <toc-element toc-title="pathe">
+                            <toc-element topic="node_modules_pathe_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="pathval">
+                            <toc-element topic="pathval_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="picocolors">
+                            <toc-element topic="picocolors_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="pkg-types">
+                            <toc-element topic="node_modules_pkg-types_README.md"/>
+                            <toc-element toc-title="node_modules">
+                                <toc-element toc-title="pathe">
+                                    <toc-element topic="node_modules_pathe_README4.md"/>
+                                </toc-element>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="postcss">
+                            <toc-element topic="postcss_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="printable-characters">
+                            <toc-element topic="node_modules_printable-characters_README.md"/>
+                            <toc-element topic="node_modules_printable-characters_CHANGELOG.md"/>
+                        </toc-element>
+                        <toc-element toc-title="rollup">
+                            <toc-element topic="rollup_README.md"/>
+                            <toc-element topic="rollup_LICENSE.md"/>
+                        </toc-element>
+                        <toc-element toc-title="rollup-plugin-inject">
+                            <toc-element topic="node_modules_rollup-plugin-inject_README.md"/>
+                            <toc-element topic="node_modules_rollup-plugin-inject_CHANGELOG.md"/>
+                            <toc-element toc-title="node_modules">
+                                <toc-element toc-title="estree-walker">
+                                    <toc-element topic="node_modules_estree-walker_README1.md"/>
+                                    <toc-element topic="node_modules_estree-walker_CHANGELOG.md"/>
+                                </toc-element>
+                                <toc-element toc-title="magic-string">
+                                    <toc-element topic="node_modules_magic-string_README1.md"/>
+                                </toc-element>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="rollup-plugin-node-polyfills">
+                            <toc-element topic="node_modules_rollup-plugin-node-polyfills_readme.md"/>
+                            <toc-element topic="node_modules_rollup-plugin-node-polyfills_LICENSE.md"/>
+                        </toc-element>
+                        <toc-element toc-title="rollup-pluginutils">
+                            <toc-element topic="node_modules_rollup-pluginutils_README.md"/>
+                            <toc-element topic="node_modules_rollup-pluginutils_CHANGELOG.md"/>
+                            <toc-element toc-title="node_modules">
+                                <toc-element toc-title="estree-walker">
+                                    <toc-element topic="node_modules_estree-walker_README2.md"/>
+                                    <toc-element topic="node_modules_estree-walker_CHANGELOG1.md"/>
+                                </toc-element>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="semver">
+                            <toc-element topic="semver_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="siginfo">
+                            <toc-element topic="siginfo_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="source-map">
+                            <toc-element topic="node_modules_source-map_README.md"/>
+                            <toc-element topic="node_modules_source-map_CHANGELOG.md"/>
+                        </toc-element>
+                        <toc-element toc-title="source-map-js">
+                            <toc-element topic="source-map-js_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="sourcemap-codec">
+                            <toc-element topic="node_modules_sourcemap-codec_README.md"/>
+                            <toc-element topic="node_modules_sourcemap-codec_CHANGELOG.md"/>
+                        </toc-element>
+                        <toc-element toc-title="stackback">
+                            <toc-element topic="stackback_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="stacktracey">
+                            <toc-element topic="node_modules_stacktracey_README.md"/>
+                            <toc-element topic="node_modules_stacktracey_CHANGELOG.md"/>
+                        </toc-element>
+                        <toc-element toc-title="std-env">
+                            <toc-element topic="std-env_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="stoppable">
+                            <toc-element topic="node_modules_stoppable_readme.md"/>
+                        </toc-element>
+                        <toc-element toc-title="tinybench">
+                            <toc-element topic="tinybench_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="tinyexec">
+                            <toc-element topic="tinyexec_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="tinypool">
+                            <toc-element topic="tinypool_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="tinyrainbow">
+                            <toc-element topic="tinyrainbow_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="tinyspy">
+                            <toc-element topic="tinyspy_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="tslib">
+                            <toc-element topic="node_modules_tslib_SECURITY.md"/>
+                            <toc-element topic="node_modules_tslib_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="typescript">
+                            <toc-element topic="typescript_SECURITY.md"/>
+                            <toc-element topic="typescript_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="ufo">
+                            <toc-element topic="node_modules_ufo_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="undici">
+                            <toc-element topic="node_modules_undici_README.md"/>
+                            <toc-element toc-title="docs">
+                                <toc-element toc-title="api">
+                                    <toc-element topic="api_WebSocket.md"/>
+                                    <toc-element topic="api_RetryHandler.md"/>
+                                    <toc-element topic="api_ProxyAgent.md"/>
+                                    <toc-element topic="api_PoolStats.md"/>
+                                    <toc-element topic="api_Pool.md"/>
+                                    <toc-element topic="api_MockPool.md"/>
+                                    <toc-element topic="api_MockErrors.md"/>
+                                    <toc-element topic="api_MockClient.md"/>
+                                    <toc-element topic="api_MockAgent.md"/>
+                                    <toc-element topic="api_Fetch.md"/>
+                                    <toc-element topic="api_Errors.md"/>
+                                    <toc-element topic="api_DispatchInterceptor.md"/>
+                                    <toc-element topic="api_Dispatcher.md"/>
+                                    <toc-element topic="api_DiagnosticsChannel.md"/>
+                                    <toc-element topic="api_Cookies.md"/>
+                                    <toc-element topic="api_ContentType.md"/>
+                                    <toc-element topic="api_Connector.md"/>
+                                    <toc-element topic="api_Client.md"/>
+                                    <toc-element topic="api_CacheStorage.md"/>
+                                    <toc-element topic="api_BalancedPool.md"/>
+                                    <toc-element topic="api_api-lifecycle.md"/>
+                                    <toc-element topic="api_Agent.md"/>
+                                </toc-element>
+                                <toc-element toc-title="best-practices">
+                                    <toc-element topic="best-practices_writing-tests.md"/>
+                                    <toc-element topic="best-practices_proxy.md"/>
+                                    <toc-element topic="best-practices_mocking-request.md"/>
+                                    <toc-element topic="best-practices_client-certificate.md"/>
+                                </toc-element>
+                            </toc-element>
+                            <toc-element toc-title="types">
+                                <toc-element topic="undici_types_README.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="unenv">
+                            <toc-element topic="node_modules_unenv_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="vite">
+                            <toc-element topic="vite_README.md"/>
+                            <toc-element topic="vite_LICENSE.md"/>
+                            <toc-element toc-title="node_modules">
+                                <toc-element toc-title="@esbuild">
+                                    <toc-element toc-title="win32-x64">
+                                        <toc-element topic="@esbuild_win32-x64_README1.md"/>
+                                    </toc-element>
+                                </toc-element>
+                                <toc-element toc-title="esbuild">
+                                    <toc-element topic="node_modules_esbuild_README1.md"/>
+                                    <toc-element topic="node_modules_esbuild_LICENSE1.md"/>
+                                </toc-element>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="vite-node">
+                            <toc-element topic="vite-node_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="vitest">
+                            <toc-element topic="vitest_README.md"/>
+                            <toc-element topic="vitest_LICENSE.md"/>
+                        </toc-element>
+                        <toc-element toc-title="why-is-node-running">
+                            <toc-element topic="why-is-node-running_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="workerd">
+                            <toc-element topic="node_modules_workerd_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="wrangler">
+                            <toc-element topic="node_modules_wrangler_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="ws">
+                            <toc-element topic="node_modules_ws_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="youch">
+                            <toc-element topic="node_modules_youch_README.md"/>
+                            <toc-element topic="node_modules_youch_LICENSE.md"/>
+                        </toc-element>
+                        <toc-element toc-title="zod">
+                            <toc-element topic="node_modules_zod_README.md"/>
+                        </toc-element>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="node_modules">
+                    <toc-element toc-title="@asteasolutions">
+                        <toc-element toc-title="zod-to-openapi">
+                            <toc-element topic="zod-to-openapi_README.md"/>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="@cloudflare">
+                        <toc-element toc-title="kv-asset-handler">
+                            <toc-element topic="kv-asset-handler_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="workerd-windows-64">
+                            <toc-element topic="workerd-windows-64_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="workers-types">
+                            <toc-element topic="workers-types_README.md"/>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="@cspotcode">
+                        <toc-element toc-title="source-map-support">
+                            <toc-element topic="source-map-support_README.md"/>
+                            <toc-element topic="source-map-support_LICENSE.md"/>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="@esbuild">
+                        <toc-element toc-title="win32-x64">
+                            <toc-element topic="win32-x64_README.md"/>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="@fastify">
+                        <toc-element toc-title="busboy">
+                            <toc-element topic="busboy_README.md"/>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="@jridgewell">
+                        <toc-element toc-title="resolve-uri">
+                            <toc-element topic="resolve-uri_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="sourcemap-codec">
+                            <toc-element topic="@jridgewell_sourcemap-codec_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="trace-mapping">
+                            <toc-element topic="trace-mapping_README.md"/>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="@types">
+                        <toc-element toc-title="node">
+                            <toc-element topic="node_README.md"/>
+                        </toc-element>
+                        <toc-element toc-title="service-worker-mock">
+                            <toc-element topic="service-worker-mock_README.md"/>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="acorn">
+                        <toc-element topic="acorn_README.md"/>
+                        <toc-element topic="acorn_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="acorn-walk">
+                        <toc-element topic="acorn-walk_README.md"/>
+                        <toc-element topic="acorn-walk_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="argparse">
+                        <toc-element topic="argparse_README.md"/>
+                        <toc-element topic="argparse_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="as-table">
+                        <toc-element topic="as-table_README.md"/>
+                        <toc-element topic="as-table_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="blake3-wasm">
+                        <toc-element topic="blake3-wasm_readme.md"/>
+                        <toc-element topic="changelog.md"/>
+                    </toc-element>
+                    <toc-element toc-title="capnp-ts">
+                        <toc-element topic="capnp-ts_README.md"/>
+                        <toc-element topic="capnp-ts_CHANGELOG.md"/>
+                        <toc-element toc-title="src">
+                            <toc-element toc-title="std">
+                                <toc-element topic="std_README.md"/>
+                            </toc-element>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="chanfana">
+                        <toc-element topic="chanfana_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="confbox">
+                        <toc-element topic="confbox_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="cookie">
+                        <toc-element topic="cookie_SECURITY.md"/>
+                        <toc-element topic="cookie_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="data-uri-to-buffer">
+                        <toc-element topic="data-uri-to-buffer_README.md"/>
+                        <toc-element topic="History.md"/>
+                    </toc-element>
+                    <toc-element toc-title="debug">
+                        <toc-element topic="debug_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="defu">
+                        <toc-element topic="defu_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="esbuild">
+                        <toc-element topic="esbuild_README.md"/>
+                        <toc-element topic="esbuild_LICENSE.md"/>
+                    </toc-element>
+                    <toc-element toc-title="escape-string-regexp">
+                        <toc-element topic="escape-string-regexp_readme.md"/>
+                    </toc-element>
+                    <toc-element toc-title="estree-walker">
+                        <toc-element topic="estree-walker_README.md"/>
+                        <toc-element topic="estree-walker_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="exit-hook">
+                        <toc-element topic="exit-hook_readme.md"/>
+                    </toc-element>
+                    <toc-element toc-title="get-source">
+                        <toc-element topic="get-source_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="glob-to-regexp">
+                        <toc-element topic="glob-to-regexp_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="hono">
+                        <toc-element topic="hono_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="js-yaml">
+                        <toc-element topic="js-yaml_README.md"/>
+                        <toc-element topic="js-yaml_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="magic-string">
+                        <toc-element topic="magic-string_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="mime">
+                        <toc-element topic="mime_README.md"/>
+                        <toc-element topic="mime_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="miniflare">
+                        <toc-element topic="miniflare_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="mlly">
+                        <toc-element topic="mlly_README.md"/>
+                        <toc-element toc-title="node_modules">
+                            <toc-element toc-title="pathe">
+                                <toc-element topic="node_modules_pathe_README1.md"/>
+                            </toc-element>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="ms">
+                        <toc-element topic="ms_readme.md"/>
+                        <toc-element topic="license.md"/>
+                    </toc-element>
+                    <toc-element toc-title="mustache">
+                        <toc-element topic="mustache_README.md"/>
+                        <toc-element topic="mustache_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="ohash">
+                        <toc-element topic="ohash_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="openapi3-ts">
+                        <toc-element topic="openapi3-ts_README.md"/>
+                        <toc-element topic="Changelog.md"/>
+                    </toc-element>
+                    <toc-element toc-title="path-to-regexp">
+                        <toc-element topic="path-to-regexp_Readme.md"/>
+                    </toc-element>
+                    <toc-element toc-title="pathe">
+                        <toc-element topic="pathe_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="pkg-types">
+                        <toc-element topic="pkg-types_README.md"/>
+                        <toc-element toc-title="node_modules">
+                            <toc-element toc-title="pathe">
+                                <toc-element topic="node_modules_pathe_README2.md"/>
+                            </toc-element>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="printable-characters">
+                        <toc-element topic="printable-characters_README.md"/>
+                        <toc-element topic="printable-characters_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="rollup-plugin-inject">
+                        <toc-element topic="rollup-plugin-inject_README.md"/>
+                        <toc-element topic="rollup-plugin-inject_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="rollup-plugin-node-polyfills">
+                        <toc-element topic="rollup-plugin-node-polyfills_readme.md"/>
+                        <toc-element topic="rollup-plugin-node-polyfills_LICENSE.md"/>
+                    </toc-element>
+                    <toc-element toc-title="rollup-pluginutils">
+                        <toc-element topic="rollup-pluginutils_README.md"/>
+                        <toc-element topic="rollup-pluginutils_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="source-map">
+                        <toc-element topic="source-map_README.md"/>
+                        <toc-element topic="source-map_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="sourcemap-codec">
+                        <toc-element topic="sourcemap-codec_README.md"/>
+                        <toc-element topic="sourcemap-codec_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="stacktracey">
+                        <toc-element topic="stacktracey_README.md"/>
+                        <toc-element topic="stacktracey_CHANGELOG.md"/>
+                    </toc-element>
+                    <toc-element toc-title="stoppable">
+                        <toc-element topic="stoppable_readme.md"/>
+                    </toc-element>
+                    <toc-element toc-title="tslib">
+                        <toc-element topic="tslib_SECURITY.md"/>
+                        <toc-element topic="tslib_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="ufo">
+                        <toc-element topic="ufo_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="undici">
+                        <toc-element topic="undici_README.md"/>
+                        <toc-element toc-title="docs">
+                            <toc-element toc-title="api">
+                                <toc-element topic="WebSocket.md"/>
+                                <toc-element topic="RetryHandler.md"/>
+                                <toc-element topic="ProxyAgent.md"/>
+                                <toc-element topic="PoolStats.md"/>
+                                <toc-element topic="Pool.md"/>
+                                <toc-element topic="MockPool.md"/>
+                                <toc-element topic="MockErrors.md"/>
+                                <toc-element topic="MockClient.md"/>
+                                <toc-element topic="MockAgent.md"/>
+                                <toc-element topic="Fetch.md"/>
+                                <toc-element topic="Errors.md"/>
+                                <toc-element topic="DispatchInterceptor.md"/>
+                                <toc-element topic="Dispatcher.md"/>
+                                <toc-element topic="DiagnosticsChannel.md"/>
+                                <toc-element topic="Cookies.md"/>
+                                <toc-element topic="ContentType.md"/>
+                                <toc-element topic="Connector.md"/>
+                                <toc-element topic="Client.md"/>
+                                <toc-element topic="CacheStorage.md"/>
+                                <toc-element topic="BalancedPool.md"/>
+                                <toc-element topic="api-lifecycle.md"/>
+                                <toc-element topic="Agent.md"/>
+                            </toc-element>
+                            <toc-element toc-title="best-practices">
+                                <toc-element topic="writing-tests.md"/>
+                                <toc-element topic="proxy.md"/>
+                                <toc-element topic="mocking-request.md"/>
+                                <toc-element topic="client-certificate.md"/>
+                            </toc-element>
+                        </toc-element>
+                        <toc-element toc-title="types">
+                            <toc-element topic="types_README.md"/>
+                        </toc-element>
+                    </toc-element>
+                    <toc-element toc-title="unenv">
+                        <toc-element topic="unenv_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="workerd">
+                        <toc-element topic="workerd_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="wrangler">
+                        <toc-element topic="wrangler_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="ws">
+                        <toc-element topic="ws_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="yaml">
+                        <toc-element topic="yaml_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="youch">
+                        <toc-element topic="youch_README.md"/>
+                        <toc-element topic="youch_LICENSE.md"/>
+                    </toc-element>
+                    <toc-element toc-title="zod">
+                        <toc-element topic="zod_README.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="AppBlueprint.Web">
+                <toc-element topic="AppBlueprint.Web_README.md"/>
+            </toc-element>
+            <toc-element toc-title="AppBlueprint.Tests">
+                <toc-element topic="AppBlueprint.Tests_README.md"/>
+            </toc-element>
+            <toc-element toc-title="AppBlueprint.DeveloperCli">
+                <toc-element topic="AppBlueprint.DeveloperCli_README.md"/>
+            </toc-element>
+            <toc-element toc-title="AppBlueprint.ArchitectureTests">
+                <toc-element topic="AppBlueprint.ArchitectureTests_README.md"/>
+            </toc-element>
+            <toc-element toc-title="AppBlueprint.AppHost">
+                <toc-element topic="AppBlueprint.AppHost_README.md"/>
+            </toc-element>
+            <toc-element toc-title="AppBlueprint.AppGateway">
+                <toc-element topic="AppBlueprint.AppGateway_README.md"/>
+            </toc-element>
+            <toc-element toc-title="AppBlueprint.ApiService">
+                <toc-element topic="AppBlueprint.ApiService_README.md"/>
+            </toc-element>
+            <toc-element topic="API_Reference.md">
+                <toc-element topic="api_webhooks_Webhook_POST.md"/>
+                <toc-element topic="api_users_id_DELETE.md"/>
+                <toc-element topic="api_users_id_PUT.md"/>
+                <toc-element topic="api_users_id_GET.md"/>
+                <toc-element topic="api_users_POST.md"/>
+                <toc-element topic="api_users_GET.md"/>
+                <toc-element topic="api_users_me_GET.md"/>
+                <toc-element topic="api_tenants_id_DELETE.md"/>
+                <toc-element topic="api_tenants_id_PUT.md"/>
+                <toc-element topic="api_tenants_id_GET.md"/>
+                <toc-element topic="api_tenants_POST.md"/>
+                <toc-element topic="api_tenants_GET.md"/>
+                <toc-element topic="api_teams_id_PUT.md"/>
+                <toc-element topic="api_teams_id_GET.md"/>
+                <toc-element topic="api_teams_POST.md"/>
+                <toc-element topic="api_teams_GET.md"/>
+                <toc-element topic="api_subscriptions_id_PUT.md"/>
+                <toc-element topic="api_subscriptions_id_GET.md"/>
+                <toc-element topic="api_subscriptions_GET.md"/>
+                <toc-element topic="api_search_id_DELETE.md"/>
+                <toc-element topic="api_search_id_PUT.md"/>
+                <toc-element topic="api_search_id_GET.md"/>
+                <toc-element topic="api_search_POST.md"/>
+                <toc-element topic="api_search_GET.md"/>
+                <toc-element topic="api_roles_id_DELETE.md"/>
+                <toc-element topic="api_roles_id_PUT.md"/>
+                <toc-element topic="api_roles_id_GET.md"/>
+                <toc-element topic="api_roles_POST.md"/>
+                <toc-element topic="api_roles_GET.md"/>
+                <toc-element topic="api_payment_cancel_subscription_POST.md"/>
+                <toc-element topic="api_payment_create_subscription_POST.md"/>
+                <toc-element topic="api_payment_get_subscriptions_GET.md"/>
+                <toc-element topic="api_organizations_id_PUT.md"/>
+                <toc-element topic="api_organizations_POST.md"/>
+                <toc-element topic="api_organizations_GET.md"/>
+                <toc-element topic="api_notifications_GetNotification_id_DELETE.md"/>
+                <toc-element topic="api_notifications_GetNotifications_GET.md"/>
+                <toc-element topic="api_metrics_subscriptions_GET.md"/>
+                <toc-element topic="api_metrics_users_GET.md"/>
+                <toc-element topic="api_metrics_overview_GET.md"/>
+                <toc-element topic="api_integrations_DeleteIntegration_id_DELETE.md"/>
+                <toc-element topic="api_integrations_UpdateIntegration_id_PUT.md"/>
+                <toc-element topic="api_integrations_CreateIntegration_POST.md"/>
+                <toc-element topic="api_integrations_GetIntegration_id_GET.md"/>
+                <toc-element topic="api_integrations_GetIntegrations_GET.md"/>
+                <toc-element topic="api_Files_DeleteFile_id_DELETE.md"/>
+                <toc-element topic="api_Files_UpdateFile_id_PUT.md"/>
+                <toc-element topic="api_Files_CreateFile_POST.md"/>
+                <toc-element topic="api_Files_GetFile_id_GET.md"/>
+                <toc-element topic="api_Files_GetFiles_GET.md"/>
+                <toc-element topic="api_demo_id_DELETE.md"/>
+                <toc-element topic="api_demo_id_PUT.md"/>
+                <toc-element topic="api_demo_id_GET.md"/>
+                <toc-element topic="api_demo_POST.md"/>
+                <toc-element topic="api_demo_GET.md"/>
+                <toc-element topic="api_data_exports_GetDataExport_id_DELETE.md"/>
+                <toc-element topic="api_data_exports_CreateDataExport_POST.md"/>
+                <toc-element topic="api_data_exports_GetDataExports_GET.md"/>
+                <toc-element topic="api_credits_id_DELETE.md"/>
+                <toc-element topic="api_credits_id_PUT.md"/>
+                <toc-element topic="api_credits_id_GET.md"/>
+                <toc-element topic="api_credits_POST.md"/>
+                <toc-element topic="api_credits_GET.md"/>
+                <toc-element topic="api_Authentication_VerifyMFA_POST.md"/>
+                <toc-element topic="api_Authentication_SetupMFA_POST.md"/>
+                <toc-element topic="api_Authentication_ResetPassword_POST.md"/>
+                <toc-element topic="api_Authentication_Login_POST.md"/>
+                <toc-element topic="api_Authentication_Register_POST.md"/>
+                <toc-element topic="api_AuditLogs_GetAuditLog_id_GET.md"/>
+                <toc-element topic="api_AuditLogs_GetAuditLogs_GET.md"/>
+                <toc-element topic="AppProject_DeleteAppProject_id_DELETE.md"/>
+                <toc-element topic="AppProject_UpdateAppProject_id_PUT.md"/>
+                <toc-element topic="AppProject_CreateAppProject_POST.md"/>
+                <toc-element topic="AppProject_GetAppProject_id_GET.md"/>
+                <toc-element topic="AppProject_GetAppProjects_GET.md"/>
+                <toc-element topic="api_api_keys_id_PUT.md"/>
+                <toc-element topic="api_api_keys_id_GET.md"/>
+                <toc-element topic="api_api_keys_GetApiKeys_GET.md"/>
+                <toc-element topic="Admin_id_DELETE.md"/>
+                <toc-element topic="Admin_id_PUT.md"/>
+                <toc-element topic="Admin_id_GET.md"/>
+                <toc-element topic="Admin_POST.md"/>
+                <toc-element topic="Admin_GET.md"/>
+                <toc-element topic="Get_Accounts.md"/>
+                <toc-element topic="Account_DeleteAccount_id_DELETE.md"/>
+                <toc-element topic="Account_UpdateAccount_id_PUT.md"/>
+                <toc-element topic="Account_CreateAccount_POST.md"/>
+                <toc-element topic="Account_GetAccount_id_GET.md"/>
+            </toc-element>
+        </toc-element>
+        <toc-element toc-title="DeploymentManager">
+        </toc-element>
+    </toc-element>    
+    <toc-element toc-title="Code">
+        <toc-element topic="CHANGELOG.md"/>
+        <toc-element toc-title="AppBlueprint">
+            <toc-element topic="AppBlueprint_README.md"/>
+            <toc-element toc-title="packages">
+                <toc-element toc-title="asp.versioning.abstractions">
+                    <toc-element toc-title="8.1.0">
+                        <toc-element topic="asp.versioning.abstractions_8.1.0_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="asp.versioning.http">
+                    <toc-element toc-title="8.1.0">
+                        <toc-element topic="asp.versioning.http_8.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="asp.versioning.mvc">
+                    <toc-element toc-title="8.1.0">
+                        <toc-element topic="asp.versioning.mvc_8.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="asp.versioning.mvc.apiexplorer">
+                    <toc-element toc-title="8.1.0">
+                        <toc-element topic="asp.versioning.mvc.apiexplorer_8.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="aspnetcore.healthchecks.npgsql">
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="aspnetcore.healthchecks.npgsql_9.0.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="fluentvalidation">
+                    <toc-element toc-title="11.11.0">
+                        <toc-element topic="fluentvalidation_11.11.0_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.aspnetcore.authentication.jwtbearer">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.aspnetcore.authentication.jwtbearer_9.0.1_PACKAGE.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.aspnetcore.openapi">
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="microsoft.aspnetcore.openapi_9.0.0_PACKAGE.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.build.framework">
+                    <toc-element toc-title="17.8.3">
+                        <toc-element topic="microsoft.build.framework_17.8.3_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.codeanalysis.analyzers">
+                    <toc-element toc-title="3.3.4">
+                        <toc-element toc-title="documentation">
+                            <toc-element topic="documentation_Microsoft.CodeAnalysis.Analyzers.md"/>
+                            <toc-element topic="documentation_Analyzer Configuration.md"/>
+                        </toc-element>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.entityframeworkcore">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.entityframeworkcore_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.entityframeworkcore.abstractions">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.entityframeworkcore.abstractions_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.entityframeworkcore.analyzers">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element toc-title="docs">
+                            <toc-element topic="9.0.1_docs_PACKAGE1.md"/>
+                        </toc-element>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.entityframeworkcore.design">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.entityframeworkcore.design_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.entityframeworkcore.relational">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.entityframeworkcore.relational_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.ambientmetadata.application">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.ambientmetadata.application_9.1.0_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.caching.abstractions">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.caching.abstractions_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.caching.memory">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.caching.memory_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.compliance.abstractions">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.compliance.abstractions_9.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.compliance.redaction">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.compliance.redaction_9.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.configuration">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="microsoft.extensions.configuration_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="microsoft.extensions.configuration_9.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.configuration_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.configuration.abstractions">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="microsoft.extensions.configuration.abstractions_8.0.0_PACKAGE.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.configuration.abstractions_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.configuration.binder">
+                    <toc-element toc-title="8.0.2">
+                        <toc-element topic="microsoft.extensions.configuration.binder_8.0.2_PACKAGE.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.configuration.binder_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.configuration.commandline">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.configuration.commandline_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.configuration.environmentvariables">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.configuration.environmentvariables_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.configuration.fileextensions">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.configuration.fileextensions_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.configuration.json">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.configuration.json_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.configuration.usersecrets">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.configuration.usersecrets_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.dependencyinjection">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.dependencyinjection_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.dependencyinjection.abstractions">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="microsoft.extensions.dependencyinjection.abstractions_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="8.0.2">
+                        <toc-element topic="microsoft.extensions.dependencyinjection.abstractions_8.0.2_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="microsoft.extensions.dependencyinjection.abstractions_9.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.dependencyinjection.abstractions_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.dependencyinjection.autoactivation">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.dependencyinjection.autoactivation_9.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.dependencymodel">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.dependencymodel_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.diagnostics.exceptionsummarization">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.diagnostics.exceptionsummarization_9.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.fileproviders.abstractions">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.fileproviders.abstractions_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.fileproviders.physical">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.fileproviders.physical_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.filesystemglobbing">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.filesystemglobbing_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.hosting">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.hosting_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.hosting.abstractions">
+                    <toc-element toc-title="8.0.1">
+                        <toc-element topic="microsoft.extensions.hosting.abstractions_8.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="microsoft.extensions.hosting.abstractions_9.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.hosting.abstractions_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.http">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="microsoft.extensions.http_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="8.0.1">
+                        <toc-element topic="microsoft.extensions.http_8.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.http_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.http.diagnostics">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.http.diagnostics_9.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.http.resilience">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.http.resilience_9.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.logging">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="microsoft.extensions.logging_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="8.0.1">
+                        <toc-element topic="microsoft.extensions.logging_8.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.logging_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.logging.abstractions">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="microsoft.extensions.logging.abstractions_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="8.0.2">
+                        <toc-element topic="microsoft.extensions.logging.abstractions_8.0.2_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="microsoft.extensions.logging.abstractions_9.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.logging.abstractions_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.logging.console">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.logging.console_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.logging.debug">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.logging.debug_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.options">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="microsoft.extensions.options_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="8.0.2">
+                        <toc-element topic="microsoft.extensions.options_8.0.2_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="microsoft.extensions.options_9.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.options_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.options.configurationextensions">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="microsoft.extensions.options.configurationextensions_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.options.configurationextensions_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.primitives">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="microsoft.extensions.primitives_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="microsoft.extensions.primitives_9.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="microsoft.extensions.primitives_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.resilience">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.resilience_9.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.servicediscovery">
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="microsoft.extensions.servicediscovery_9.0.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.servicediscovery.abstractions">
+                    <toc-element toc-title="9.0.0">
+                        <toc-element topic="microsoft.extensions.servicediscovery.abstractions_9.0.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.telemetry">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.telemetry_9.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.extensions.telemetry.abstractions">
+                    <toc-element toc-title="9.1.0">
+                        <toc-element topic="microsoft.extensions.telemetry.abstractions_9.1.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.identitymodel.abstractions">
+                    <toc-element toc-title="8.3.1">
+                        <toc-element topic="microsoft.identitymodel.abstractions_8.3.1_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.identitymodel.jsonwebtokens">
+                    <toc-element toc-title="8.3.1">
+                        <toc-element topic="microsoft.identitymodel.jsonwebtokens_8.3.1_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.identitymodel.logging">
+                    <toc-element toc-title="8.3.1">
+                        <toc-element topic="microsoft.identitymodel.logging_8.3.1_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.identitymodel.tokens">
+                    <toc-element toc-title="8.3.1">
+                        <toc-element topic="microsoft.identitymodel.tokens_8.3.1_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.openapi">
+                    <toc-element toc-title="1.6.17">
+                        <toc-element topic="microsoft.openapi_1.6.17_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="1.6.22">
+                        <toc-element topic="microsoft.openapi_1.6.22_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="microsoft.visualstudio.azure.containers.tools.targets">
+                    <toc-element toc-title="1.21.0">
+                        <toc-element topic="1.21.0_EULA.md"/>
+                        <toc-element topic="microsoft.visualstudio.azure.containers.tools.targets_1.21.0_CHANGELOG.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="mongodb.bson">
+                    <toc-element toc-title="2.30.0">
+                        <toc-element topic="mongodb.bson_2.30.0_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="mongodb.driver.core">
+                    <toc-element toc-title="2.30.0">
+                        <toc-element topic="mongodb.driver.core_2.30.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="mono.texttemplating">
+                    <toc-element toc-title="3.0.0">
+                        <toc-element topic="mono.texttemplating_3.0.0_readme.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="newtonsoft.json">
+                    <toc-element toc-title="13.0.3">
+                        <toc-element topic="newtonsoft.json_13.0.3_README.md"/>
+                        <toc-element topic="newtonsoft.json_13.0.3_LICENSE.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="npgsql">
+                    <toc-element toc-title="8.0.3">
+                        <toc-element topic="npgsql_8.0.3_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.2">
+                        <toc-element topic="npgsql_9.0.2_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="npgsql.entityframeworkcore.postgresql">
+                    <toc-element toc-title="9.0.3">
+                        <toc-element topic="npgsql.entityframeworkcore.postgresql_9.0.3_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="opentelemetry">
+                    <toc-element toc-title="1.11.1">
+                        <toc-element topic="opentelemetry_1.11.1_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="opentelemetry.api">
+                    <toc-element toc-title="1.11.1">
+                        <toc-element topic="opentelemetry.api_1.11.1_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="opentelemetry.api.providerbuilderextensions">
+                    <toc-element toc-title="1.11.1">
+                        <toc-element topic="opentelemetry.api.providerbuilderextensions_1.11.1_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="opentelemetry.exporter.opentelemetryprotocol">
+                    <toc-element toc-title="1.11.1">
+                        <toc-element topic="opentelemetry.exporter.opentelemetryprotocol_1.11.1_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="opentelemetry.extensions.hosting">
+                    <toc-element toc-title="1.11.1">
+                        <toc-element topic="opentelemetry.extensions.hosting_1.11.1_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="polly.core">
+                    <toc-element toc-title="8.4.2">
+                        <toc-element topic="polly.core_8.4.2_package-readme.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="polly.extensions">
+                    <toc-element toc-title="8.4.2">
+                        <toc-element topic="polly.extensions_8.4.2_package-readme1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="polly.ratelimiting">
+                    <toc-element toc-title="8.4.2">
+                        <toc-element topic="polly.ratelimiting_8.4.2_package-readme1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="scalar.aspnetcore">
+                    <toc-element toc-title="1.2.75">
+                        <toc-element topic="scalar.aspnetcore_1.2.75_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="serilog">
+                    <toc-element toc-title="4.2.0">
+                        <toc-element topic="serilog_4.2.0_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="stripe.net">
+                    <toc-element toc-title="47.2.0">
+                        <toc-element topic="stripe.net_47.2.0_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="swashbuckle.aspnetcore.filters">
+                    <toc-element toc-title="8.0.2">
+                        <toc-element topic="swashbuckle.aspnetcore.filters_8.0.2_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="swashbuckle.aspnetcore.filters.abstractions">
+                    <toc-element toc-title="8.0.2">
+                        <toc-element topic="swashbuckle.aspnetcore.filters.abstractions_8.0.2_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="swashbuckle.aspnetcore.swagger">
+                    <toc-element toc-title="7.2.0">
+                        <toc-element topic="swashbuckle.aspnetcore.swagger_7.2.0_package-readme1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="swashbuckle.aspnetcore.swaggergen">
+                    <toc-element toc-title="7.2.0">
+                        <toc-element topic="swashbuckle.aspnetcore.swaggergen_7.2.0_package-readme.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="swashbuckle.aspnetcore.swaggerui">
+                    <toc-element toc-title="7.2.0">
+                        <toc-element topic="swashbuckle.aspnetcore.swaggerui_7.2.0_package-readme1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="system.collections.immutable">
+                    <toc-element toc-title="7.0.0">
+                        <toc-element topic="system.collections.immutable_7.0.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="system.configuration.configurationmanager">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="system.configuration.configurationmanager_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="system.diagnostics.eventlog">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="system.diagnostics.eventlog_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="system.diagnostics.eventlog_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="system.identitymodel.tokens.jwt">
+                    <toc-element toc-title="8.3.1">
+                        <toc-element topic="system.identitymodel.tokens.jwt_8.3.1_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="system.io.hashing">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="system.io.hashing_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="system.io.pipelines">
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="system.io.pipelines_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="system.reflection.metadata">
+                    <toc-element toc-title="7.0.0">
+                        <toc-element topic="system.reflection.metadata_7.0.0_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="system.security.cryptography.protecteddata">
+                    <toc-element toc-title="8.0.0">
+                        <toc-element topic="system.security.cryptography.protecteddata_8.0.0_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="system.text.json">
+                    <toc-element toc-title="7.0.3">
+                        <toc-element topic="system.text.json_7.0.3_README.md"/>
+                    </toc-element>
+                    <toc-element toc-title="9.0.1">
+                        <toc-element topic="system.text.json_9.0.1_PACKAGE1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="yarp.reverseproxy">
+                    <toc-element toc-title="2.2.0">
+                        <toc-element topic="yarp.reverseproxy_2.2.0_README.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+        </toc-element>
+        <toc-element toc-title="node_modules">
+            <toc-element toc-title="pg">
+                <toc-element topic="pg_README.md"/>
+            </toc-element>
+            <toc-element toc-title="pg-cloudflare">
+                <toc-element topic="pg-cloudflare_README.md"/>
+            </toc-element>
+            <toc-element toc-title="pg-connection-string">
+                <toc-element topic="pg-connection-string_README.md"/>
+            </toc-element>
+            <toc-element toc-title="pg-int8">
+                <toc-element topic="pg-int8_README.md"/>
+            </toc-element>
+            <toc-element toc-title="pg-pool">
+                <toc-element topic="pg-pool_README.md"/>
+            </toc-element>
+            <toc-element toc-title="pg-protocol">
+                <toc-element topic="pg-protocol_README.md"/>
+            </toc-element>
+            <toc-element toc-title="pg-types">
+                <toc-element topic="pg-types_README.md"/>
+            </toc-element>
+            <toc-element toc-title="pgpass">
+                <toc-element topic="pgpass_README.md"/>
+            </toc-element>
+            <toc-element toc-title="postgres-array">
+                <toc-element topic="readme.md"/>
+            </toc-element>
+            <toc-element toc-title="postgres-bytea">
+                <toc-element topic="postgres-bytea_readme.md"/>
+            </toc-element>
+            <toc-element toc-title="postgres-date">
+                <toc-element topic="postgres-date_readme.md"/>
+            </toc-element>
+            <toc-element toc-title="postgres-interval">
+                <toc-element topic="postgres-interval_readme.md"/>
+            </toc-element>
+            <toc-element toc-title="split2">
+                <toc-element topic="split2_README.md"/>
+            </toc-element>
+            <toc-element toc-title="xtend">
+                <toc-element topic="xtend_README.md"/>
+            </toc-element>
+        </toc-element>
+        <toc-element toc-title="packages">
+            <toc-element toc-title="asp.versioning.abstractions">
+                <toc-element toc-title="8.1.0">
+                    <toc-element topic="8.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="asp.versioning.http">
+                <toc-element toc-title="8.1.0">
+                    <toc-element topic="asp.versioning.http_8.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="asp.versioning.mvc">
+                <toc-element toc-title="8.1.0">
+                    <toc-element topic="asp.versioning.mvc_8.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="asp.versioning.mvc.apiexplorer">
+                <toc-element toc-title="8.1.0">
+                    <toc-element topic="asp.versioning.mvc.apiexplorer_8.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.azure.storage.blobs">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="8.0.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.hosting">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="aspire.hosting_8.0.1_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="aspire.hosting_9.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.hosting.apphost">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="aspire.hosting.apphost_8.0.1_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="9.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.hosting.azure">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="aspire.hosting.azure_8.0.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.hosting.azure.storage">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="aspire.hosting.azure.storage_8.0.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.hosting.postgresql">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="aspire.hosting.postgresql_9.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.hosting.redis">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="aspire.hosting.redis_9.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.hosting.sqlserver">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="aspire.hosting.sqlserver_8.0.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.stackexchange.redis">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="aspire.stackexchange.redis_8.0.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspire.stackexchange.redis.outputcaching">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="aspire.stackexchange.redis.outputcaching_8.0.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspnetcore.healthchecks.azure.storage.blobs">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="aspnetcore.healthchecks.azure.storage.blobs_8.0.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="aspnetcore.healthchecks.npgsql">
+                <toc-element toc-title="8.0.2">
+                    <toc-element topic="8.0.2_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="aspnetcore.healthchecks.npgsql_9.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.core">
+                <toc-element toc-title="1.37.0">
+                    <toc-element topic="1.37.0_README.md"/>
+                    <toc-element topic="1.37.0_CHANGELOG.md"/>
+                </toc-element>
+                <toc-element toc-title="1.38.0">
+                    <toc-element topic="1.38.0_README.md"/>
+                    <toc-element topic="1.38.0_CHANGELOG.md"/>
+                </toc-element>
+                <toc-element toc-title="1.39.0">
+                    <toc-element topic="1.39.0_README.md"/>
+                    <toc-element topic="1.39.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.identity">
+                <toc-element toc-title="1.11.0">
+                    <toc-element topic="1.11.0_README.md"/>
+                    <toc-element topic="1.11.0_CHANGELOG.md"/>
+                </toc-element>
+                <toc-element toc-title="1.11.2">
+                    <toc-element topic="1.11.2_README.md"/>
+                    <toc-element topic="1.11.2_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.provisioning">
+                <toc-element toc-title="0.2.0">
+                    <toc-element topic="0.2.0_README.md"/>
+                    <toc-element topic="0.2.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.provisioning.keyvault">
+                <toc-element toc-title="0.1.0">
+                    <toc-element topic="0.1.0_README.md"/>
+                    <toc-element topic="0.1.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.provisioning.resources">
+                <toc-element toc-title="0.1.0">
+                    <toc-element topic="azure.provisioning.resources_0.1.0_README.md"/>
+                    <toc-element topic="azure.provisioning.resources_0.1.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.provisioning.storage">
+                <toc-element toc-title="0.1.0">
+                    <toc-element topic="azure.provisioning.storage_0.1.0_README.md"/>
+                    <toc-element topic="azure.provisioning.storage_0.1.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.resourcemanager">
+                <toc-element toc-title="1.11.0">
+                    <toc-element topic="azure.resourcemanager_1.11.0_README.md"/>
+                    <toc-element topic="azure.resourcemanager_1.11.0_CHANGELOG.md"/>
+                </toc-element>
+                <toc-element toc-title="1.11.1">
+                    <toc-element topic="1.11.1_README.md"/>
+                    <toc-element topic="1.11.1_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.resourcemanager.authorization">
+                <toc-element toc-title="1.1.1">
+                    <toc-element topic="1.1.1_README.md"/>
+                    <toc-element topic="1.1.1_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.resourcemanager.keyvault">
+                <toc-element toc-title="1.2.1">
+                    <toc-element topic="1.2.1_README.md"/>
+                    <toc-element topic="1.2.1_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.resourcemanager.managedserviceidentities">
+                <toc-element toc-title="1.2.1">
+                    <toc-element topic="azure.resourcemanager.managedserviceidentities_1.2.1_README.md"/>
+                    <toc-element topic="azure.resourcemanager.managedserviceidentities_1.2.1_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.resourcemanager.resources">
+                <toc-element toc-title="1.7.1">
+                    <toc-element topic="1.7.1_README.md"/>
+                    <toc-element topic="1.7.1_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.resourcemanager.storage">
+                <toc-element toc-title="1.2.1">
+                    <toc-element topic="azure.resourcemanager.storage_1.2.1_README.md"/>
+                    <toc-element topic="azure.resourcemanager.storage_1.2.1_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.security.keyvault.secrets">
+                <toc-element toc-title="4.6.0">
+                    <toc-element topic="4.6.0_README.md"/>
+                    <toc-element topic="4.6.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.storage.blobs">
+                <toc-element toc-title="12.19.1">
+                    <toc-element topic="12.19.1_README.md"/>
+                    <toc-element topic="12.19.1_CHANGELOG.md"/>
+                </toc-element>
+                <toc-element toc-title="12.20.0">
+                    <toc-element topic="12.20.0_README.md"/>
+                    <toc-element topic="12.20.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="azure.storage.common">
+                <toc-element toc-title="12.19.0">
+                    <toc-element topic="12.19.0_README.md"/>
+                    <toc-element topic="12.19.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="ben.demystifier">
+                <toc-element toc-title="0.4.1">
+                    <toc-element topic="0.4.1_readme.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="castle.core">
+                <toc-element toc-title="5.1.1">
+                    <toc-element topic="5.1.1_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="coverlet.collector">
+                <toc-element toc-title="6.0.2">
+                    <toc-element topic="VSTestIntegration.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="fluentvalidation">
+                <toc-element toc-title="11.11.0">
+                    <toc-element topic="11.11.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="11.9.1">
+                    <toc-element topic="fluentvalidation_11.9.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="fluentvalidation.dependencyinjectionextensions">
+                <toc-element toc-title="11.9.1">
+                    <toc-element topic="11.9.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="fractions">
+                <toc-element toc-title="7.3.0">
+                    <toc-element topic="Readme.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="grpc.aspnetcore">
+                <toc-element toc-title="2.60.0">
+                    <toc-element topic="grpc.aspnetcore_2.60.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.66.0">
+                    <toc-element topic="grpc.aspnetcore_2.66.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="grpc.aspnetcore.server">
+                <toc-element toc-title="2.60.0">
+                    <toc-element topic="2.60.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.66.0">
+                    <toc-element topic="2.66.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="grpc.core.api">
+                <toc-element toc-title="2.52.0">
+                    <toc-element topic="2.52.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.60.0">
+                    <toc-element topic="grpc.core.api_2.60.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.66.0">
+                    <toc-element topic="grpc.core.api_2.66.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="grpc.net.client">
+                <toc-element toc-title="2.52.0">
+                    <toc-element topic="grpc.net.client_2.52.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.60.0">
+                    <toc-element topic="grpc.net.client_2.60.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.66.0">
+                    <toc-element topic="grpc.net.client_2.66.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="grpc.net.clientfactory">
+                <toc-element toc-title="2.60.0">
+                    <toc-element topic="grpc.net.clientfactory_2.60.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.66.0">
+                    <toc-element topic="grpc.net.clientfactory_2.66.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="grpc.tools">
+                <toc-element toc-title="2.60.0">
+                    <toc-element topic="grpc.tools_2.60.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.66.0">
+                    <toc-element topic="grpc.tools_2.66.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.67.0">
+                    <toc-element topic="2.67.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="json.more.net">
+                <toc-element toc-title="2.0.1.2">
+                    <toc-element topic="2.0.1.2_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="jsonpatch.net">
+                <toc-element toc-title="3.1.1">
+                    <toc-element topic="3.1.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="jsonpointer.net">
+                <toc-element toc-title="5.0.2">
+                    <toc-element topic="5.0.2_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="meziantou.xunit.paralleltestframework">
+                <toc-element toc-title="2.1.0">
+                    <toc-element topic="2.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.aspnetcore.authentication.jwtbearer">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.aspnetcore.openapi">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="9.0.0_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.bcl.timeprovider">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="8.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.build.framework">
+                <toc-element toc-title="17.8.3">
+                    <toc-element topic="17.8.3_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.codeanalysis.analyzers">
+                <toc-element toc-title="3.3.4">
+                    <toc-element toc-title="documentation">
+                        <toc-element topic="Microsoft.CodeAnalysis.Analyzers.md"/>
+                        <toc-element topic="Analyzer Configuration.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.entityframeworkcore">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.entityframeworkcore_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.entityframeworkcore_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.entityframeworkcore.abstractions">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.entityframeworkcore.abstractions_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.entityframeworkcore.abstractions_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.entityframeworkcore.analyzers">
+                <toc-element toc-title="9.0.0">
+                    <toc-element toc-title="docs">
+                        <toc-element topic="docs_PACKAGE.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element toc-title="docs">
+                        <toc-element topic="9.0.1_docs_PACKAGE.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.entityframeworkcore.design">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.entityframeworkcore.design_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.entityframeworkcore.design_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.entityframeworkcore.relational">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.entityframeworkcore.relational_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.entityframeworkcore.relational_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.ambientmetadata.application">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.ambientmetadata.application_9.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.azure">
+                <toc-element toc-title="1.7.3">
+                    <toc-element topic="1.7.3_README.md"/>
+                    <toc-element topic="1.7.3_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.caching.abstractions">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.caching.abstractions_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.caching.abstractions_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.caching.memory">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.caching.memory_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.caching.memory_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.compliance.abstractions">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.extensions.compliance.abstractions_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.compliance.abstractions_9.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="microsoft.extensions.compliance.abstractions_9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.compliance.redaction">
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="microsoft.extensions.compliance.redaction_9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.configuration">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.configuration_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.configuration_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.configuration_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.configuration.abstractions">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.abstractions_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.configuration.abstractions_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.configuration.binder">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.binder_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="microsoft.extensions.configuration.binder_8.0.1_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.2">
+                    <toc-element topic="8.0.2_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.binder_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.configuration.binder_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.configuration.commandline">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.commandline_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.commandline_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.configuration.commandline_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.configuration.environmentvariables">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.environmentvariables_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.environmentvariables_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.configuration.environmentvariables_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.configuration.fileextensions">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.fileextensions_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.fileextensions_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.configuration.fileextensions_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.configuration.json">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.json_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.json_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.configuration.json_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.configuration.usersecrets">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.usersecrets_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.configuration.usersecrets_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.configuration.usersecrets_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.dependencyinjection">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.dependencyinjection_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.dependencyinjection_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.dependencyinjection_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.dependencyinjection.abstractions">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.dependencyinjection.abstractions_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="microsoft.extensions.dependencyinjection.abstractions_8.0.1_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.2">
+                    <toc-element topic="microsoft.extensions.dependencyinjection.abstractions_8.0.2_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.dependencyinjection.abstractions_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.dependencyinjection.abstractions_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.dependencyinjection.autoactivation">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.extensions.dependencyinjection.autoactivation_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.dependencyinjection.autoactivation_9.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="microsoft.extensions.dependencyinjection.autoactivation_9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.dependencymodel">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.dependencymodel_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.dependencymodel_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.diagnostics.exceptionsummarization">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.extensions.diagnostics.exceptionsummarization_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.diagnostics.exceptionsummarization_9.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="microsoft.extensions.diagnostics.exceptionsummarization_9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.fileproviders.abstractions">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.fileproviders.abstractions_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.fileproviders.abstractions_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.fileproviders.abstractions_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.fileproviders.physical">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.fileproviders.physical_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.fileproviders.physical_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.fileproviders.physical_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.filesystemglobbing">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.filesystemglobbing_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.filesystemglobbing_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.filesystemglobbing_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.hosting">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.hosting_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="microsoft.extensions.hosting_8.0.1_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.hosting_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.hosting_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.hosting.abstractions">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.hosting.abstractions_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="microsoft.extensions.hosting.abstractions_8.0.1_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.hosting.abstractions_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.hosting.abstractions_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.http">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.http_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="microsoft.extensions.http_8.0.1_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.http_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.http_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.http.diagnostics">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.extensions.http.diagnostics_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.http.diagnostics_9.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="microsoft.extensions.http.diagnostics_9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.http.resilience">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.extensions.http.resilience_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.http.resilience_9.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="microsoft.extensions.http.resilience_9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.logging">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.logging_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="microsoft.extensions.logging_8.0.1_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.logging_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.logging_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.logging.abstractions">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.logging.abstractions_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="microsoft.extensions.logging.abstractions_8.0.1_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.2">
+                    <toc-element topic="microsoft.extensions.logging.abstractions_8.0.2_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.logging.abstractions_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.logging.abstractions_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.logging.console">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.logging.console_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.logging.console_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.logging.console_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.logging.debug">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.logging.debug_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.logging.debug_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.logging.debug_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.options">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.options_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.2">
+                    <toc-element topic="microsoft.extensions.options_8.0.2_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.options_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.options_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.options.configurationextensions">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.options.configurationextensions_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.options.configurationextensions_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.options.configurationextensions_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.primitives">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="microsoft.extensions.primitives_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.primitives_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="microsoft.extensions.primitives_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.resilience">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.extensions.resilience_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.resilience_9.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="microsoft.extensions.resilience_9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.servicediscovery">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="microsoft.extensions.servicediscovery_8.0.1_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.servicediscovery_9.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.servicediscovery.abstractions">
+                <toc-element toc-title="8.0.1">
+                    <toc-element topic="microsoft.extensions.servicediscovery.abstractions_8.0.1_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.servicediscovery.abstractions_9.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.telemetry">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.extensions.telemetry_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.telemetry_9.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="microsoft.extensions.telemetry_9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.extensions.telemetry.abstractions">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.extensions.telemetry.abstractions_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="microsoft.extensions.telemetry.abstractions_9.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.1.0">
+                    <toc-element topic="microsoft.extensions.telemetry.abstractions_9.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.identity.client">
+                <toc-element toc-title="4.60.3">
+                    <toc-element topic="4.60.3_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.identitymodel.abstractions">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.identitymodel.abstractions_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="8.3.1">
+                    <toc-element topic="8.3.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.identitymodel.jsonwebtokens">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.identitymodel.jsonwebtokens_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="8.3.1">
+                    <toc-element topic="microsoft.identitymodel.jsonwebtokens_8.3.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.identitymodel.logging">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.identitymodel.logging_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="8.3.1">
+                    <toc-element topic="microsoft.identitymodel.logging_8.3.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.identitymodel.tokens">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="microsoft.identitymodel.tokens_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="8.3.1">
+                    <toc-element topic="microsoft.identitymodel.tokens_8.3.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.io.recyclablememorystream">
+                <toc-element toc-title="3.0.0">
+                    <toc-element topic="3.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.openapi">
+                <toc-element toc-title="1.6.17">
+                    <toc-element topic="1.6.17_README.md"/>
+                </toc-element>
+                <toc-element toc-title="1.6.22">
+                    <toc-element topic="1.6.22_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="microsoft.visualstudio.azure.containers.tools.targets">
+                <toc-element toc-title="1.21.0">
+                    <toc-element topic="EULA.md"/>
+                    <toc-element topic="1.21.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="mongodb.bson">
+                <toc-element toc-title="2.30.0">
+                    <toc-element topic="2.30.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="mongodb.driver.core">
+                <toc-element toc-title="2.30.0">
+                    <toc-element topic="mongodb.driver.core_2.30.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="mono.texttemplating">
+                <toc-element toc-title="3.0.0">
+                    <toc-element topic="3.0.0_readme.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="mudblazor">
+                <toc-element toc-title="7.0.0">
+                    <toc-element topic="7.0.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="7.15.0">
+                    <toc-element topic="7.15.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="mudblazor.thememanager">
+                <toc-element toc-title="2.1.0">
+                    <toc-element topic="mudblazor.thememanager_2.1.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="newtonsoft.json">
+                <toc-element toc-title="13.0.1">
+                    <toc-element topic="LICENSE.md"/>
+                </toc-element>
+                <toc-element toc-title="13.0.3">
+                    <toc-element topic="13.0.3_README.md"/>
+                    <toc-element topic="13.0.3_LICENSE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="npgsql">
+                <toc-element toc-title="8.0.3">
+                    <toc-element topic="8.0.3_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.2">
+                    <toc-element topic="npgsql_9.0.2_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="npgsql.entityframeworkcore.postgresql">
+                <toc-element toc-title="9.0.2">
+                    <toc-element topic="9.0.2_README.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.3">
+                    <toc-element topic="9.0.3_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="nulid">
+                <toc-element toc-title="1.7.2">
+                    <toc-element topic="1.7.2_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="opentelemetry">
+                <toc-element toc-title="1.10.0">
+                    <toc-element topic="opentelemetry_1.10.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="1.11.1">
+                    <toc-element topic="opentelemetry_1.11.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="opentelemetry.api">
+                <toc-element toc-title="1.10.0">
+                    <toc-element topic="opentelemetry.api_1.10.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="1.11.1">
+                    <toc-element topic="opentelemetry.api_1.11.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="opentelemetry.api.providerbuilderextensions">
+                <toc-element toc-title="1.10.0">
+                    <toc-element topic="1.10.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="1.11.1">
+                    <toc-element topic="opentelemetry.api.providerbuilderextensions_1.11.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="opentelemetry.exporter.opentelemetryprotocol">
+                <toc-element toc-title="1.10.0">
+                    <toc-element topic="opentelemetry.exporter.opentelemetryprotocol_1.10.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="1.11.1">
+                    <toc-element topic="opentelemetry.exporter.opentelemetryprotocol_1.11.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="opentelemetry.extensions.hosting">
+                <toc-element toc-title="1.10.0">
+                    <toc-element topic="opentelemetry.extensions.hosting_1.10.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="1.11.1">
+                    <toc-element topic="opentelemetry.extensions.hosting_1.11.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="polly.core">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="package-readme.md"/>
+                </toc-element>
+                <toc-element toc-title="8.3.1">
+                    <toc-element topic="8.3.1_package-readme.md"/>
+                </toc-element>
+                <toc-element toc-title="8.4.2">
+                    <toc-element topic="8.4.2_package-readme.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="polly.extensions">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="8.3.0_package-readme.md"/>
+                </toc-element>
+                <toc-element toc-title="8.4.2">
+                    <toc-element topic="polly.extensions_8.4.2_package-readme.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="polly.ratelimiting">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="polly.ratelimiting_8.3.0_package-readme.md"/>
+                </toc-element>
+                <toc-element toc-title="8.4.2">
+                    <toc-element topic="polly.ratelimiting_8.4.2_package-readme.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="prometheus-net">
+                <toc-element toc-title="8.2.1">
+                    <toc-element topic="8.2.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="scalar.aspnetcore">
+                <toc-element toc-title="1.2.75">
+                    <toc-element topic="1.2.75_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="serilog">
+                <toc-element toc-title="4.2.0">
+                    <toc-element topic="4.2.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="stripe.net">
+                <toc-element toc-title="47.2.0">
+                    <toc-element topic="47.2.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="swashbuckle.aspnetcore">
+                <toc-element toc-title="7.2.0">
+                    <toc-element toc-title="docs">
+                        <toc-element topic="docs_package-readme.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="swashbuckle.aspnetcore.filters">
+                <toc-element toc-title="8.0.2">
+                    <toc-element topic="swashbuckle.aspnetcore.filters_8.0.2_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="swashbuckle.aspnetcore.filters.abstractions">
+                <toc-element toc-title="8.0.2">
+                    <toc-element topic="swashbuckle.aspnetcore.filters.abstractions_8.0.2_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="swashbuckle.aspnetcore.swagger">
+                <toc-element toc-title="7.2.0">
+                    <toc-element topic="swashbuckle.aspnetcore.swagger_7.2.0_package-readme.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="swashbuckle.aspnetcore.swaggergen">
+                <toc-element toc-title="7.2.0">
+                    <toc-element topic="7.2.0_package-readme.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="swashbuckle.aspnetcore.swaggerui">
+                <toc-element toc-title="7.2.0">
+                    <toc-element topic="swashbuckle.aspnetcore.swaggerui_7.2.0_package-readme.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.clientmodel">
+                <toc-element toc-title="1.0.0">
+                    <toc-element topic="1.0.0_README.md"/>
+                    <toc-element topic="1.0.0_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.collections.immutable">
+                <toc-element toc-title="7.0.0">
+                    <toc-element topic="system.collections.immutable_7.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.configuration.configurationmanager">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="system.configuration.configurationmanager_8.0.0_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.diagnostics.eventlog">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="system.diagnostics.eventlog_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="system.diagnostics.eventlog_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="system.diagnostics.eventlog_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.identitymodel.tokens.jwt">
+                <toc-element toc-title="8.3.0">
+                    <toc-element topic="system.identitymodel.tokens.jwt_8.3.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="8.3.1">
+                    <toc-element topic="system.identitymodel.tokens.jwt_8.3.1_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.io.hashing">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="system.io.hashing_8.0.0_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.io.pipelines">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="system.io.pipelines_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="system.io.pipelines_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.memory.data">
+                <toc-element toc-title="1.0.2">
+                    <toc-element topic="1.0.2_README.md"/>
+                    <toc-element topic="1.0.2_CHANGELOG.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.reflection.metadata">
+                <toc-element toc-title="7.0.0">
+                    <toc-element topic="system.reflection.metadata_7.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.security.cryptography.protecteddata">
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="system.security.cryptography.protecteddata_8.0.0_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.text.encodings.web">
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="system.text.encodings.web_9.0.0_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="system.text.json">
+                <toc-element toc-title="7.0.3">
+                    <toc-element topic="7.0.3_README.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.0">
+                    <toc-element topic="system.text.json_8.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="8.0.3">
+                    <toc-element topic="8.0.3_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.0">
+                    <toc-element topic="system.text.json_9.0.0_PACKAGE.md"/>
+                </toc-element>
+                <toc-element toc-title="9.0.1">
+                    <toc-element topic="system.text.json_9.0.1_PACKAGE.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="xunit">
+                <toc-element toc-title="2.8.0">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.8.0__content_README5.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="2.9.3">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.9.3__content_README4.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="xunit.analyzers">
+                <toc-element toc-title="1.13.0">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="_content_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="1.18.0">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="1.18.0__content_README.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="xunit.assert">
+                <toc-element toc-title="2.8.0">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.8.0__content_README.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="2.9.3">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.9.3__content_README.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="xunit.core">
+                <toc-element toc-title="2.8.0">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.8.0__content_README1.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="2.9.3">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.9.3__content_README1.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="xunit.extensibility.core">
+                <toc-element toc-title="2.8.0">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.8.0__content_README2.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="2.9.3">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.9.3__content_README2.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="xunit.extensibility.execution">
+                <toc-element toc-title="2.8.0">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.8.0__content_README3.md"/>
+                    </toc-element>
+                </toc-element>
+                <toc-element toc-title="2.9.3">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.9.3__content_README3.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="xunit.runner.visualstudio">
+                <toc-element toc-title="2.8.0">
+                    <toc-element toc-title="_content">
+                        <toc-element topic="2.8.0__content_README4.md"/>
+                    </toc-element>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="yamldotnet">
+                <toc-element toc-title="16.0.0">
+                    <toc-element topic="16.0.0_README.md"/>
+                </toc-element>
+            </toc-element>
+            <toc-element toc-title="yarp.reverseproxy">
+                <toc-element toc-title="2.1.0">
+                    <toc-element topic="yarp.reverseproxy_2.1.0_README.md"/>
+                </toc-element>
+                <toc-element toc-title="2.2.0">
+                    <toc-element topic="2.2.0_README.md"/>
+                </toc-element>
+            </toc-element>
+        </toc-element>
+    </toc-element>
+    <toc-element toc-title=".github">
+        <toc-element topic="SECURITY.md"/>
+        <toc-element topic="PULL_REQUEST_TEMPLATE.md"/>
+    </toc-element>
+    <toc-element toc-title="Documentation">
+        <toc-element topic="Documentation_README.md"/>
+    </toc-element>
+    <toc-element toc-title="Writerside">
+        <toc-element toc-title="topics">
+            <toc-element toc-title="swagger.json">
+                <toc-element topic="swagger.json_Get_Accounts.md"/>
+                <toc-element topic="swagger.json_AppProject_UpdateAppProject_id_PUT.md"/>
+                <toc-element topic="swagger.json_AppProject_GetAppProject_id_GET.md"/>
+                <toc-element topic="swagger.json_AppProject_GetAppProjects_GET.md"/>
+                <toc-element topic="swagger.json_AppProject_DeleteAppProject_id_DELETE.md"/>
+                <toc-element topic="swagger.json_AppProject_CreateAppProject_POST.md"/>
+                <toc-element topic="swagger.json_api_webhooks_Webhook_POST.md"/>
+                <toc-element topic="swagger.json_api_users_POST.md"/>
+                <toc-element topic="swagger.json_api_users_me_GET.md"/>
+                <toc-element topic="swagger.json_api_users_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_users_id_GET.md"/>
+                <toc-element topic="swagger.json_api_users_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_users_GET.md"/>
+                <toc-element topic="swagger.json_api_tenants_POST.md"/>
+                <toc-element topic="swagger.json_api_tenants_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_tenants_id_GET.md"/>
+                <toc-element topic="swagger.json_api_tenants_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_tenants_GET.md"/>
+                <toc-element topic="swagger.json_api_teams_POST.md"/>
+                <toc-element topic="swagger.json_api_teams_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_teams_id_GET.md"/>
+                <toc-element topic="swagger.json_api_teams_GET.md"/>
+                <toc-element topic="swagger.json_api_subscriptions_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_subscriptions_id_GET.md"/>
+                <toc-element topic="swagger.json_api_subscriptions_GET.md"/>
+                <toc-element topic="swagger.json_api_search_POST.md"/>
+                <toc-element topic="swagger.json_api_search_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_search_id_GET.md"/>
+                <toc-element topic="swagger.json_api_search_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_search_GET.md"/>
+                <toc-element topic="swagger.json_api_roles_POST.md"/>
+                <toc-element topic="swagger.json_api_roles_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_roles_id_GET.md"/>
+                <toc-element topic="swagger.json_api_roles_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_roles_GET.md"/>
+                <toc-element topic="swagger.json_API_Reference.md"/>
+                <toc-element topic="swagger.json_api_payment_get_subscriptions_GET.md"/>
+                <toc-element topic="swagger.json_api_payment_create_subscription_POST.md"/>
+                <toc-element topic="swagger.json_api_payment_cancel_subscription_POST.md"/>
+                <toc-element topic="swagger.json_api_organizations_POST.md"/>
+                <toc-element topic="swagger.json_api_organizations_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_organizations_GET.md"/>
+                <toc-element topic="swagger.json_api_notifications_GetNotification_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_notifications_GetNotifications_GET.md"/>
+                <toc-element topic="swagger.json_api_metrics_users_GET.md"/>
+                <toc-element topic="swagger.json_api_metrics_subscriptions_GET.md"/>
+                <toc-element topic="swagger.json_api_metrics_overview_GET.md"/>
+                <toc-element topic="swagger.json_api_integrations_UpdateIntegration_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_integrations_GetIntegration_id_GET.md"/>
+                <toc-element topic="swagger.json_api_integrations_GetIntegrations_GET.md"/>
+                <toc-element topic="swagger.json_api_integrations_DeleteIntegration_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_integrations_CreateIntegration_POST.md"/>
+                <toc-element topic="swagger.json_api_Files_UpdateFile_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_Files_GetFile_id_GET.md"/>
+                <toc-element topic="swagger.json_api_Files_GetFiles_GET.md"/>
+                <toc-element topic="swagger.json_api_Files_DeleteFile_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_Files_CreateFile_POST.md"/>
+                <toc-element topic="swagger.json_api_demo_POST.md"/>
+                <toc-element topic="swagger.json_api_demo_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_demo_id_GET.md"/>
+                <toc-element topic="swagger.json_api_demo_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_demo_GET.md"/>
+                <toc-element topic="swagger.json_api_data_exports_GetDataExport_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_data_exports_GetDataExports_GET.md"/>
+                <toc-element topic="swagger.json_api_data_exports_CreateDataExport_POST.md"/>
+                <toc-element topic="swagger.json_api_credits_POST.md"/>
+                <toc-element topic="swagger.json_api_credits_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_credits_id_GET.md"/>
+                <toc-element topic="swagger.json_api_credits_id_DELETE.md"/>
+                <toc-element topic="swagger.json_api_credits_GET.md"/>
+                <toc-element topic="swagger.json_api_Authentication_VerifyMFA_POST.md"/>
+                <toc-element topic="swagger.json_api_Authentication_SetupMFA_POST.md"/>
+                <toc-element topic="swagger.json_api_Authentication_ResetPassword_POST.md"/>
+                <toc-element topic="swagger.json_api_Authentication_Register_POST.md"/>
+                <toc-element topic="swagger.json_api_Authentication_Login_POST.md"/>
+                <toc-element topic="swagger.json_api_AuditLogs_GetAuditLog_id_GET.md"/>
+                <toc-element topic="swagger.json_api_AuditLogs_GetAuditLogs_GET.md"/>
+                <toc-element topic="swagger.json_api_api_keys_id_PUT.md"/>
+                <toc-element topic="swagger.json_api_api_keys_id_GET.md"/>
+                <toc-element topic="swagger.json_api_api_keys_GetApiKeys_GET.md"/>
+                <toc-element topic="swagger.json_Admin_POST.md"/>
+                <toc-element topic="swagger.json_Admin_id_PUT.md"/>
+                <toc-element topic="swagger.json_Admin_id_GET.md"/>
+                <toc-element topic="swagger.json_Admin_id_DELETE.md"/>
+                <toc-element topic="swagger.json_Admin_GET.md"/>
+                <toc-element topic="swagger.json_Account_UpdateAccount_id_PUT.md"/>
+                <toc-element topic="swagger.json_Account_GetAccount_id_GET.md"/>
+                <toc-element topic="swagger.json_Account_DeleteAccount_id_DELETE.md"/>
+                <toc-element topic="swagger.json_Account_CreateAccount_POST.md"/>
+            </toc-element>
+        </toc-element>
+    </toc-element>
+    <toc-element topic="Notes.md"/>
+    <toc-element topic="Code_AppBlueprint_README.md"/>    
+</instance-profile>

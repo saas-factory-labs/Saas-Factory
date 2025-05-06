@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Casper Rubæk",
+  "classifications": [
+    "Rest API",
+    "Clean Architecture",
+    "Boilerplate",
+    "ASP.NET Core",
+    "Starter Kit",
+    "Cloud",
+    "SaaS",
+    "DDD",
+    "API",
+    "Application Gateway"
+  ],
+  "tags": {
+    "language": "C#",
+    "type": "project",
+    "frontend": "Blazor"
+  },
+  "identity": "SaaS-Factory.Appblueprint",
+  "name": "SaaS-Factory Appblueprint",
+  "defaultName": "NewSaaSApp",
+  "preferNameDirectory": true,
+  "description": "A template for creating new SaaS projects using AppBlueprint best practices.",
+  "shortName": "saas-fac-appblueprint-template",
+  "sourceName": "saas-fac.appblueprint",
+  "symbols": {
+    "ProjectName": {
+      "type": "parameter",
+      "displayName": "Project Name",
+      "datatype": "string",
+      "description": "The name of your new project.",
+      "defaultValue": "MySaaSApp"
+    },
+    "UseLogging": {
+      "type": "parameter",
+      "displayName": "Use Logging",
+      "datatype": "bool",
+      "description": "Include default logging setup?",
+      "defaultValue": true
+    },
+    "IncludeRateLimiting": {
+      "type": "parameter",
+      "displayName": "Include Rate Limiting",
+      "datatype": "bool",
+      "description": "Include rate limiting setup in AppGateway?",
+      "defaultValue": false
+    },
+    "DatabaseProvider": {
+      "type": "parameter",
+      "description": "Choose the database provider",
+      "datatype": "choice",
+      "defaultValue": "SqlServer",
+      "choices": [
+        {
+          "choice": "PostgreSQL",
+          "description": "PostgreSQL"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "source": "./",
+      "target": "./",
+      "exclude": [
+        "**/[Bb]in/**",
+        "**/[Oo]bj/**",
+        "Shared-Modules/**",
+        ".template.config/**",
+        ".idea/**",
+        ".vscode/**",
+        ".vs/**",
+        ".github/**",
+        "templates/**/*",
+        "**/*.filelist",
+        "**/*.user",
+        "**/images",
+        "**/*.lock.json",
+        "*.nuspec"
+      ],
+      "rename": {
+        "README-template.md": "README.md"
+      }
+    }
+  ],
+  "primaryOutputs": [
+    {
+      "path": "src/$ProjectName$/$ProjectName$.csproj"
+    }
+  ],
+  "postActions": [    
+    {
+      "actionId": "DotnetRestore",
+      "description": "Restore NuGet packages",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore' to install dependencies."
+        }
+      ],
+      "continueOnError": true
+    }
+  ]
+}
+
+

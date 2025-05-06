@@ -1,0 +1,46 @@
+name: Publish NuGet Package
+
+on:
+  workflow_call:
+    inputs:
+      package-path:
+        description: 'The path to the package directory'
+        required: true
+        type: string
+      api-key:
+        description: 'The API key for NuGet publishing'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0
+
+      - name: Clean build directories
+        run: |
+          rm -rf obj bin
+        working-directory: ${{ inputs.package-path }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ${{ inputs.package-path }}
+
+      - name: Build the project
+        run: dotnet build --configuration Release
+        working-directory: ${{ inputs.package-path }}
+
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release
+        working-directory: ${{ inputs.package-path }}
+
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "./bin/Release/*.nupkg" --api-key ${{ inputs.api-key }} --source "https://nuget.pkg.github.com/Trubador/index.json" --skip-duplicate
+        working-directory: ${{ inputs.package-path }}

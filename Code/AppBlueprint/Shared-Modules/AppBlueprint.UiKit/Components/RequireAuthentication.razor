@@ -1,0 +1,42 @@
+@using AppBlueprint.Infrastructure.Authorization
+@using AppBlueprint.UiKit.Components.Authentication
+@inject NavigationManager NavigationManager
+
+@if (_isAuthenticated)
+{
+    @ChildContent
+}
+else
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    
+    [CascadingParameter]
+    private AuthProvider Auth { get; set; }
+
+    private bool _isAuthenticated;
+
+    protected override void OnInitialized()
+    {
+        if (Auth is null)
+        {
+            // No AuthProvider available, redirect to login
+            Console.Error.WriteLine("Error: AuthProvider could not be found.");
+            NavigationManager.NavigateTo("/login", false);
+            return;
+        }
+        
+        // Check if user is authenticated
+        _isAuthenticated = Auth.IsAuthenticated;
+        
+        // If not authenticated, redirect to login page
+        if (!_isAuthenticated)
+        {
+            NavigationManager.NavigateTo("/login", false);
+        }
+    }
+}

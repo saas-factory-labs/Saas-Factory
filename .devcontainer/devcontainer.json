@@ -1,0 +1,69 @@
+{
+  "name": "Fullstack Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "postCreateCommand": [
+    // "dotnet restore",∏
+    // "npm run build"
+  ],
+  "remoteUser": "vscode",
+  "forwardPorts": [
+    3000, // JavaScript/TypeScript frontend default port 
+    5000, // .NET Core backend default HTTP port
+    5001, // .NET Core backend default HTTPS port
+    1433, // SQL Server default port
+    5432, // PostGreSQL default port 5432
+    10000, // Blob service (Azurite) default port
+    10001, // Queue service (Azurite) default port
+    10002 // Table service (Azurite) default port
+  ],
+  "remoteEnv": {
+    "ASPNETCORE_URLS": [
+      "http://+:5000",
+      "https://+:5001"
+    ],
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.10"
+    }
+  },
+  "runArgs": [
+    "--init"
+  ], // Additional Docker run arguments if needed
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.fontSize": 14,
+        "editor.cursorBlinking": "solid",
+        "python.pythonPath": "/usr/bin/python3",
+        "editor.formatOnSave": true,
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "msjsdiag.debugger-for-chrome",
+        "esbenp.prettier-vscode",
+        "GitHub.codespaces",
+        "ms-dotnettools.csharp",
+        "ms-python.python",
+        "dbaeumer.vscode-eslint",
+        "eamodio.gitlens",
+        "ms-vscode.vscode-typescript-tslint-plugin",
+        "Postman.postman-for-vscode",
+        "ms-mssql.mssql",
+        "GitHub.copilot"
+      ]
+    }
+  }
+}

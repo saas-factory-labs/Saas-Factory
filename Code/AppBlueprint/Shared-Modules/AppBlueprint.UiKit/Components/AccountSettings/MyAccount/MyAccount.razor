@@ -1,0 +1,115 @@
+@using System.Text.RegularExpressions
+<MudText Typo="Typo.h5">My Account</MudText>
+<MudDivider Class="my-4"/>
+
+<!-- Profile Picture Section -->
+<MudGrid>
+    <MudItem xs="12" sm="4">
+
+        @* @Avatar *@
+
+        <MudAvatar Size="Size.Large" Icon="@Icons.Material.Filled.AccountCircle" Class="mb-2">
+            <MudImage Src="https://miro.medium.com/v2/resize:fit:2400/1*oLFF9mcdiV4qtl5JuSATNA.jpeg">
+            </MudImage>
+        </MudAvatar>
+        <MudButton Variant="Variant.Text" Color="Color.Primary">Change</MudButton>
+    </MudItem>
+</MudGrid>
+
+<MudText Typo="Typo.h6" Class="mt-4">Personal Information</MudText>
+
+<MudText Typo="Typo.body1" T="string" Label="First Name" Class="mt-2"> First name</MudText>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mt-2"></MudTextField>
+
+<MudText Typo="Typo.body1" T="string" Label="First Name" Class="mt-2"> Last name</MudText>
+<MudTextField T="string" Variant="Variant.Outlined" Class="mt-2"></MudTextField>
+
+<MudText Typo="Typo.body1" T="string" Label="Phone number" Class="mt-2"> Phone number</MudText>
+<MudTextField
+    @bind-Value="_phoneNumber"
+    Placeholder="e.g., (123) 456-7890"
+    For="@(() => _phoneNumber)"
+    Immediate="false"
+    ErrorText="Invalid phone number format"
+    Error="_phoneError"
+    OnBlur="ValidatePhoneNumber" Class="mt-2"/>
+
+<MudText Typo="Typo.body1" T="string" Class="mt-2"> Email</MudText>
+
+<MudTextField @bind-Value="_emailAddress"
+              Placeholder="e.g., example@domain.com"
+              For="@(() => _emailAddress)"
+              Immediate="false"
+              ErrorText="Invalid email format"
+              Error="_emailError"
+              OnBlur="ValidateEmailAddress"/>
+
+<MudDivider Class="my-4"/>
+
+<!-- Business Profile Section -->
+<MudText Typo="Typo.h6">Business Profile</MudText>
+<MudTextField T="string" Label="Business Name" Class="mt-2"/>
+<MudTextField T="string" Label="Business ID" Class="mt-2" Adornment="Adornment.End"
+              AdornmentIcon="@Icons.Material.Filled.ContentCopy"/>
+
+<MudDivider Class="my-4"/>
+
+<!-- Email Section -->
+<MudText Typo="Typo.h6">Email</MudText>
+<MudTextField T="string" Label="Email" Class="mt-2" Adornment="Adornment.End"
+              AdornmentIcon="@Icons.Material.Filled.ContentCopy"/>
+
+<MudDivider Class="my-4"/>
+
+<!-- Password Section -->
+<MudText Typo="Typo.h6">Password</MudText>
+<MudText Typo="Typo.body2">You can set a permanent password if you don't want to use temporary login codes.</MudText>
+<MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="mt-2">Set New Password</MudButton>
+
+<MudDivider Class="my-4"/>
+
+<!-- Action Buttons -->
+<MudGrid Class="mt-4">
+    <MudItem>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">Save Changes</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="ml-2">Cancel</MudButton>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    [Parameter] public MudAvatar Avatar { get; set; }
+
+    private string _phoneNumber;
+    private bool _phoneError;
+
+    private string _emailAddress;
+    private bool _emailError;
+
+    private void ValidatePhoneNumber()
+    {
+        _phoneError = !IsValidPhoneNumber(_phoneNumber);
+    }
+
+    private void ValidateEmailAddress()
+    {
+        _emailError = !IsValidEmail(_emailAddress);
+    }
+
+    private bool IsValidPhoneNumber(string phoneNumber)
+    {
+        if (string.IsNullOrWhiteSpace(phoneNumber)) return false;
+
+        var regex = @"^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$"; // Example: (123) 456-7890
+        return Regex.IsMatch(phoneNumber, regex);
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email)) return false;
+
+        var regex = @"^[^@\s]+@[^@\s]+\.[^@\s]+$"; // Basic email validation
+        return Regex.IsMatch(email, regex);
+    }
+
+}

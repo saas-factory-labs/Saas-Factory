@@ -1,0 +1,63 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#307FFF"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2025-04-21T10:07:49.059605192"><title>👨&zwj;💻 Development workflow | API-Reference</title><script type="application/json" id="virtual-toc-data">[{"id":"components","level":0,"title":"⚙️ Components","anchor":"#components"},{"id":"port-mappings","level":0,"title":"🛜 Port mappings","anchor":"#port-mappings"},{"id":"prerequisites","level":0,"title":"🛠️ Prerequisites","anchor":"#prerequisites"},{"id":"run-github-action-workflows-locally","level":0,"title":"Run Github Action workflows locally","anchor":"#run-github-action-workflows-locally"},{"id":"recommended-optional-tools","level":0,"title":"🛠️ Recommended optional tools","anchor":"#recommended-optional-tools"},{"id":"applying-migrations-to-database","level":0,"title":"Applying migrations to database","anchor":"#applying-migrations-to-database"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.10.0-b575/app.css" rel="stylesheet"><meta name="msapplication-TileColor" content="#000000"><link rel="apple-touch-icon" sizes="180x180" href="https://jetbrains.com/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://jetbrains.com/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://jetbrains.com/favicon-16x16.png"><meta name="msapplication-TileImage" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-144x144.png"><meta name="msapplication-square70x70logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-70x70.png"><meta name="msapplication-square150x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-150x150.png"><meta name="msapplication-wide310x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x150.png"><meta name="msapplication-square310x310logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x310.png"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="👨&zwj;💻 Development workflow | API-Reference"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="API-Reference Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/code-readme.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="👨&zwj;💻 Development workflow | API-Reference"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/code-readme.html#webpage",
+    "url": "writerside-documentation/code-readme.html",
+    "name": "👨&zwj;💻 Development workflow | API-Reference",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "API-Reference Help"
+}</script><!-- End Schema.org --></head><body data-id="Code_README" data-main-title="👨‍💻 Development workflow" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="README.md|🏗️ SaaS Factory///AppBlueprint"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>API-Reference  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="Code_README" id="Code_README.md">👨‍💻 Development workflow</h1><section class="chapter"><h2 id="components" data-toc="components">⚙️ Components</h2><ul class="list _bullet" id="-phz1sh_9"><li class="list__item" id="-phz1sh_10"><p>Swagger API UI</p></li><li class="list__item" id="-phz1sh_11"><p>NuGet.Config</p></li><li class="list__item" id="-phz1sh_12"><p>Directory.Build.props</p></li><li class="list__item" id="-phz1sh_13"><p>Directory.Packages.props</p></li></ul></section><section class="chapter"><h2 id="port-mappings" data-toc="port-mappings">🛜 Port mappings</h2><div class="table-wrapper"><table class="wide" id="-phz1sh_14"><thead><tr class="ijRowHead" id="-phz1sh_22"><th id="-phz1sh_27"><p>Project</p></th><th id="-phz1sh_28"><p>Url</p></th></tr></thead><tbody><tr id="-phz1sh_23"><td id="-phz1sh_29"><p>AppHost</p></td><td id="-phz1sh_30"><p>https://localhost:17298</p></td></tr><tr id="-phz1sh_24"><td id="-phz1sh_31"><p>Web</p></td><td id="-phz1sh_32"><p>https://localhost:8083, http://localhost:8082</p></td></tr><tr id="-phz1sh_25"><td id="-phz1sh_33"><p>Api</p></td><td id="-phz1sh_34"><p>https://localhost:8081/api, http://localhost:8080/api</p></td></tr><tr id="-phz1sh_26"><td id="-phz1sh_35"><p>Gateway</p></td><td id="-phz1sh_36"><p>https://localhost:8085/gw/health, http://localhost:8084/gw/health</p></td></tr></tbody></table></div><figure id="-phz1sh_15"><img alt="swagger-ui.png" src="images/swagger-ui.png" title="swagger-ui.png" width="1239" height="1258"></figure><p id="-phz1sh_16"><span class="emphasis" id="-phz1sh_37">https://localhost:8081/index.html</span></p><p id="-phz1sh_17">Swagger json file:</p><figure id="-phz1sh_18"><img alt="swagger-json.png" src="images/swagger-json.png" title="swagger-json.png" width="969" height="555"></figure><p id="-phz1sh_19"><span class="emphasis" id="-phz1sh_38">https://localhost:8081/swagger/v1/swagger.json</span></p><p id="-phz1sh_20"><span class="control" id="-phz1sh_39">Port mappings are determined in order of this precendence from highest to lowest:</span></p><ul class="list _bullet" id="-phz1sh_21"><li class="list__item" id="-phz1sh_40"><p id="-phz1sh_44">Command-line arguments (eg. dotnet run --urls &quot;http://localhost:5000&quot;)</p></li><li class="list__item" id="-phz1sh_41"><p id="-phz1sh_45">Code-level configuration (eg. builder.WebHost.ConfigureKestrel(...))</p></li><li class="list__item" id="-phz1sh_42"><p id="-phz1sh_46">Launchsettings.json / Environment variables (eg. ASPNETCORE_URLS)</p></li><li class="list__item" id="-phz1sh_43"><p id="-phz1sh_47">Appsettings.json files (eg. appsettings.json/appsettings..json)</p></li></ul></section><section class="chapter"><h2 id="prerequisites" data-toc="prerequisites">🛠️ Prerequisites</h2><section class="chapter"><h3 id="install-prerequisites-on-windows" data-toc="install-prerequisites-on-windows">Install Prerequisites on Windows</h3><ol class="list _decimal" id="-phz1sh_49" type="1"><li class="list__item" id="-phz1sh_54"><p>Open PowerShell as Administrator:</p></li></ol><div class="code-block" data-lang="powershell">
+   wsl --install
+</div><p id="-phz1sh_51">Then restart the computer.</p><ol class="list _decimal" id="-phz1sh_52" type="1" start="2"><li class="list__item" id="-phz1sh_55"><p>Install required tools:</p></li></ol><div class="code-block" data-lang="powershell">
+
+@(
+    &quot;Microsoft.DotNet.SDK.9&quot;,
+    &quot;Git.Git&quot;,
+    &quot;Docker.DockerDesktop&quot;,
+    &quot;OpenJS.NodeJS&quot;,
+    &quot;GitHub.cli&quot;
+) | ForEach-Object { winget install --accept-package-agreements --accept-source-agreements --id $_ }      
+</div></section></section><section class="chapter"><h2 id="run-github-action-workflows-locally" data-toc="run-github-action-workflows-locally">Run Github Action workflows locally</h2><div class="code-block" data-lang="powershell">
+# run all workflows
+act -P self-hosted=ghcr.io/catthehacker/ubuntu:medium
+# run specific workflow &quot;publish-packages&quot;
+act -P self-hosted=ghcr.io/catthehacker/ubuntu:medium -j publish-packages
+</div><p id="-phz1sh_57">dokumenter hvordan jeg k&oslash;rer jobs og specifikt job med act kommand lokalt samt at agent type skal v&aelig;re ubuntu-latest i stedet for self hosted f&oslash;r det virker s&aring; jeg skal sende agent type ind med en parameter i stedet for at bruge self hosted</p><p id="-phz1sh_58">hvis en af workflows har en syntax fejl vil act kommando ikke virke s&aring; selvom det job/workflow man vil k&oslash;re ikke har fejl s&aring; skal alle andre workflows ogs&aring; v&aelig;re korrekte</p></section><section class="chapter"><h2 id="recommended-optional-tools" data-toc="recommended-optional-tools">🛠️ Recommended optional tools</h2><div class="code-block" data-lang="powershell">
+   @(
+       &quot;xxx&quot;,
+   ) | ForEach-Object { winget install --accept-package-agreements --accept-source-agreements --id $_ }      
+</div></section><section class="chapter"><h2 id="applying-migrations-to-database" data-toc="applying-migrations-to-database">Applying migrations to database</h2><p id="-phz1sh_60"><span class="emphasis" id="-phz1sh_67">The commands need to be executed in the AppBlueprint.Infrastructure module since the entity framework database contexts reside there.</span></p><div class="code-block" data-lang="powershell">
+
+# Get information about a database context and its status 
+dotnet-ef dbcontext info --context &quot;ApplicationDBContext&quot;
+# Apply migrations to a database context
+dotnet ef migrations add InitialMigration --context ApplicationDBContext
+# Update a database context
+dotnet ef database update --context ApplicationDBContext --verbose
+</div><p id="-phz1sh_62">Null reference validation in the code:</p><div class="code-block" data-lang="none">
+
+await _dbContext.GetUser(user.Id) ?? throw new ArgumentNullException(nameof(value));
+
+if (user is null)
+{
+    throw new ArgumentNullException(nameof(value));
+}
+
+if (user is not null)
+{
+throw new ArgumentNullException(nameof(value));
+}
+
+</div><p id="-phz1sh_64">Reduce size of VHD file for WSL Docker Desktop ubuntu server:</p><div class="code-block" data-lang="powershell">
+
+# Run as Administrator
+Optimize-VHD -Path &quot;$env:USERPROFILE\AppData\Local\Docker\wsl\data\ext4.vhdx&quot; -Mode Full
+
+</div><p id="-phz1sh_66">Fluent human readable regex nuget package: https://github.com/bcwood/FluentRegex</p></section><div class="last-modified">Last modified: 27 February 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="user-login-use-case.html" class="navigation-links__prev">Use Case: User Login</a><a href="appblueprint-baseline-application-readme.html" class="navigation-links__next">Appblueprint.Application module</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.10.0-b575/app.js"></script></body></html>

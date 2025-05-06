@@ -1,0 +1,12 @@
+**/.env
+**/.git
+**/.gitignore
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/out
+**/.toolstarget
+**/*.user
+**/*.dbmdl
+**/*.jfm

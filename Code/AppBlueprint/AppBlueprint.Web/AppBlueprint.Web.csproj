@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <!-- Disable incremental builds -->
+        <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+        <DisableIncrementalBuild>true</DisableIncrementalBuild>
+
+        <!-- Force Razor view/component recompilation -->
+        <RazorCompileOnBuild>true</RazorCompileOnBuild>
+        <RazorCompileOnPublish>true</RazorCompileOnPublish>
+        <UseRazorBuildServer>false</UseRazorBuildServer>
+        <DebugSymbols>true</DebugSymbols>
+
+        <!-- Ensure destination folders are cleaned before copying -->
+        <CleanDestinationFolderBeforeCopy>true</CleanDestinationFolderBeforeCopy>
+    </PropertyGroup>
+
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UserSecretsId>c5bbe413-4aa6-4190-944c-bf90912749a1</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>..\..</DockerfileContext>
+    </PropertyGroup>
+
+    <ItemGroup>
+
+        <ProjectReference Include="../AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj"/>
+
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Api.Client.Sdk\AppBlueprint.Api.Client.Sdk.csproj"/>
+
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj"/>
+
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
+
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj"/>
+        <!--  <ProjectReference Include="../AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj" /> -->
+
+        <!--        Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit-->
+        <!--        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit/AppBlueprint.UiKit.csproj" />-->
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj"/>
+
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj"/>
+
+        <!--        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />-->
+
+        <!--        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj">-->
+        <!--            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>-->
+        <!--        </ProjectReference>-->
+
+
+        <!--        Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj-->
+
+    </ItemGroup>
+
+    <ItemGroup>       
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"/>
+        <PackageReference Include="MudBlazor"/>
+        <PackageReference Include="MudBlazor.ThemeManager"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        <PackageReference Include="StrawberryShake"/>
+        <PackageReference Include="StrawberryShake.Transport.Http"/>
+        <PackageReference Include="StrawberryShake.Transport.WebSockets"/>
+        <PackageReference Include="Microsoft.Kiota.Authentication.Azure"/>
+        <PackageReference Include="Microsoft.Kiota.Bundle"/>
+        <PackageReference Include="Newtonsoft.Json"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--      <Folder Include="obj\Debug\" />-->
+    </ItemGroup>
+
+    <!--    <ItemGroup>-->
+    <!--      <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\AnalyticsDashboard.razor" />-->
+    <!--      <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\Dashboard.razor" />-->
+    <!--      <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\FintechDashboard.razor" />-->
+    <!--    </ItemGroup>-->
+
+    <ItemGroup><!--      <AdditionalFiles Include="Components\Pages\AccountSettings.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Checkout.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Dashboard.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Dashboard\AnalyticsDashboard.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Dashboard\FintechDashboard.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Error.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Login.razor" />-->
+        <!--      <AdditionalFiles Include="Components\Pages\Pricing.razor" />-->
+
+        <!--      <AdditionalFiles Include="Components\Pages\Dashboard\Dashboard.razor" />-->
+    </ItemGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\AnalyticsDashboard.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\Dashboard.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\FintechDashboard.razor"/>
+    </ItemGroup>
+
+    <!--  <ItemGroup>-->
+    <!--    <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />-->
+    <!--    <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />-->
+    <!--  </ItemGroup>-->
+
+    <!--  <ItemGroup>-->
+    <!--    <Folder Include="Components\Pages\Cruip\" />-->
+    <!--  </ItemGroup>-->
+
+</Project>

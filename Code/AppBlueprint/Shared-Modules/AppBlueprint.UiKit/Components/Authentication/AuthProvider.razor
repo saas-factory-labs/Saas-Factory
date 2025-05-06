@@ -1,0 +1,59 @@
+@using AppBlueprint.Infrastructure.Authorization
+@implements IDisposable
+@inject ITokenStorageService TokenStorage
+@inject IUserAuthenticationProvider AuthenticationService
+@inject NavigationManager NavigationManager
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>
+    /// Event raised when authentication state changes
+    /// </summary>
+    public event Action? OnAuthStateChanged;
+    
+    /// <summary>
+    /// Checks if the user is currently authenticated
+    /// </summary>
+    public bool IsAuthenticated => AuthenticationService.IsAuthenticated();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        // The initialization from storage should already be handled by the AuthenticationService
+        // No need to explicitly call InitializeFromStorageAsync
+    }
+    
+    /// <summary>
+    /// Attempt to log in with email and password
+    /// </summary>
+    public async Task<bool> LoginAsync(string email, string password)
+    {
+        bool result = await AuthenticationService.LoginAsync(email, password);
+        if (result)
+        {
+            OnAuthStateChanged?.Invoke();
+        }
+        return result;
+    }
+    
+    /// <summary>
+    /// Logs the user out and clears authentication state
+    /// </summary>
+    public async Task LogoutAsync()
+    {
+        await AuthenticationService.LogoutAsync();
+        OnAuthStateChanged?.Invoke();
+        NavigationManager.NavigateTo("/login");
+    }
+
+    public void Dispose()
+    {
+        // Perform any cleanup needed
+    }
+}

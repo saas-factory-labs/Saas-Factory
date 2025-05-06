@@ -1,0 +1,3 @@
+name: saas-deployment-manager
+runtime: dotnet
+description: SaaS deployment manager to quickly spin up boilerplate infrastructure and code for a new SaaS project

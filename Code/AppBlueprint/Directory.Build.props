@@ -1,0 +1,40 @@
+<!-- This file is used to define the common properties for all projects in the solution -->
+<Project>
+    <PropertyGroup>
+
+        <Targetframework>net9.0</Targetframework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- Enable source code analysis using sonar nuget package -->
+        <AnalysisLevel>latest</AnalysisLevel>
+        <AnalysisMode>All</AnalysisMode>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+        <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+
+        <!-- Enable packaging the shared projects to Nuget package files -->
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <GeneratePackage>true</GeneratePackage>
+        <Authors>Casper Rubæk</Authors>
+        <Company>SaaS Factory</Company>
+        <Copyright>© SaaaS Factory</Copyright>
+        <Description>Shared .nuget packages for Appblueprint template from Shared-Modules folder</Description>
+        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+    <!-- Enable source code analysis using sonar nuget package across all projects except docker projects eg. .dcproj -->
+    <ItemGroup Condition="'$(MSBuildProjectExtension)' != '.dcproj'">
+        <!--        Version="*"-->
+        <!--        <PackageReference Include="SonarAnalyzer.CSharp" >-->
+        <!--            <PrivateAssets>all</PrivateAssets>-->
+        <!--            <IncludeAssets>-->
+        <!--                runtime; build; native; contentfiles; analyzers; buildtransitive-->
+        <!--            </IncludeAssets>-->
+        <!--        </PackageReference>-->
+    </ItemGroup>
+
+</Project>
+

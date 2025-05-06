@@ -1,0 +1,253 @@
+# Baseline Docker Compose file for the AppBlueprint project
+
+services:
+  web-service:
+    build:
+      context: .
+      dockerfile: AppBlueprint.Web/Dockerfile      
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    volumes:
+      - ./AppBlueprint.Web:/src/AppBlueprint.Web
+      - ./AppBlueprint.ServiceDefaults:/src/AppBlueprint.ServiceDefaults
+      - ./Shared-Modules:/src/Shared-Modules
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ASPNETCORE_URLS=http://+:80  # Internal only inside the container
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    command: ["dotnet", "watch", "run", "--project", "AppBlueprint.Web.csproj", "--urls", "http://+:80"]
+    depends_on:
+      - api-service
+    networks:
+      - appblueprint-network
+  
+  api-service:
+    build:
+      context: .
+      dockerfile: AppBlueprint.ApiService/Dockerfile      
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    volumes:
+      - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService
+      - ./AppBlueprint.ServiceDefaults:/src/AppBlueprint.ServiceDefaults
+      - ./Shared-Modules:/src/Shared-Modules
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ASPNETCORE_URLS=http://+:80  # Internal only inside the container
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - APPBLUEPRINT_RAILWAY_CONNECTIONSTRING=${APPBLUEPRINT_RAILWAY_CONNECTIONSTRING}  # Passed as a secret
+    command: ["dotnet", "watch", "run", "--project", "AppBlueprint.ApiService.csproj", "--urls", "http://+:80"]
+    networks:
+      - appblueprint-network
+    
+
+#  app-gateway-service:
+#    build:
+#      context: .
+#      dockerfile: AppBlueprint.AppGateway/Dockerfile
+#      args:
+#        GITHUB_TOKEN: ${GITHUB_TOKEN}
+#    volumes:
+#      - ./AppBlueprint.AppGateway:/src/AppBlueprint.AppGateway
+#      - ./AppBlueprint.ServiceDefaults:/src/AppBlueprint.ServiceDefaults
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - DOTNET_USE_POLLING_FILE_WATCHER=1
+#      - ASPNETCORE_URLS=http://+:80  # Internal only inside the container
+#      - GITHUB_TOKEN=${GITHUB_TOKEN}
+#    command: ["dotnet", "watch", "run", "--project", "AppBlueprint.AppGateway.csproj", "--urls", "http://+:80"]
+#    depends_on:
+#      - api-service
+#    networks:
+#      - appblueprint-network
+  
+  
+
+networks:
+  appblueprint-network:
+    driver: bridge
+
+
+
+#
+#
+### Purpose: Baseline Docker Compose file for the AppBlueprint project.
+#
+#version: '3.4'
+#
+#services:
+#  web-service:
+#    build:
+#      context: .
+#      dockerfile: AppBlueprint.Web/Dockerfile
+#      target: dev
+#      args:
+#        GITHUB_TOKEN: ${GITHUB_TOKEN}
+#    volumes:
+#      - ./AppBlueprint.Web:/src/AppBlueprint.Web
+#      - ./AppBlueprint.ServiceDefaults:/src/AppBlueprint.ServiceDefaults
+#      - ./Shared-Modules:/src/Shared-Modules
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - DOTNET_USE_POLLING_FILE_WATCHER=1
+#      - ASPNETCORE_URLS=http://+:80  # Internal only inside the container
+#      - GITHUB_TOKEN=${GITHUB_TOKEN}
+#    command: ["dotnet", "watch", "run", "--project", "AppBlueprint.Web.csproj", "--urls", "http://+:80"]
+#    depends_on:
+#      - api-service
+#    networks:
+#      - appblueprint-network   
+#
+#  api-service:
+#    build:
+#      context: .
+#      dockerfile: AppBlueprint.ApiService/Dockerfile
+#      target: dev
+#      args:
+#        GITHUB_TOKEN: ${GITHUB_TOKEN}
+#    volumes:
+#      - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService
+#      - ./AppBlueprint.ServiceDefaults:/src/AppBlueprint.ServiceDefaults
+#      - ./Shared-Modules:/src/Shared-Modules
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - DOTNET_USE_POLLING_FILE_WATCHER=1
+#      - ASPNETCORE_URLS=http://+:80  # Internal only inside the container
+#      - GITHUB_TOKEN=${GITHUB_TOKEN}
+#    command: ["dotnet", "watch", "run", "--project", "AppBlueprint.ApiService.csproj", "--urls", "http://+:80"]   
+#    networks:
+#      - appblueprint-network
+#   
+#  app-gateway-service:
+#    build:
+#      context: .
+#      dockerfile: AppBlueprint.AppGateway/Dockerfile
+#      target: dev
+#      args:
+#        GITHUB_TOKEN: ${GITHUB_TOKEN}
+#    volumes:
+#      - ./AppBlueprint.AppGateway:/src/AppBlueprint.AppGateway
+#      - ./AppBlueprint.ServiceDefaults:/src/AppBlueprint.ServiceDefaults
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - DOTNET_USE_POLLING_FILE_WATCHER=1
+#      - ASPNETCORE_URLS=http://+:80  # Internal only inside the container
+#      - GITHUB_TOKEN=${GITHUB_TOKEN}
+#    command: ["dotnet", "watch", "run", "--project", "AppBlueprint.AppGateway.csproj", "--urls", "http://+:80"]
+#    depends_on:
+#      - api-service
+#    networks:
+#      - appblueprint-network  
+#
+#networks:
+#  appblueprint-network:
+#    driver: bridge
+#
+#
+#
+##
+##services:
+##  web-service:
+##    build:
+##      context: .
+##      dockerfile: AppBlueprint.Web/Dockerfile
+##      target: dev
+##      args:
+##        GITHUB_TOKEN: ${GITHUB_TOKEN}
+##    volumes:
+##      - ./AppBlueprint.Web:/src/AppBlueprint.Web
+##      - ./AppBlueprint.ServiceDefaults:/src/AppBlueprint.ServiceDefaults
+##      - ./Shared-Modules:/src/Shared-Modules
+##      - /src/AppBlueprint.Web/bin
+##      - /src/AppBlueprint.Web/obj
+##    ports:      
+##      - "8081:8081"
+##    environment:
+##      - ASPNETCORE_ENVIRONMENT=Development
+##      - DOTNET_USE_POLLING_FILE_WATCHER=1
+##      - ASPNETCORE_URLS=https://+:8081
+##      - GITHUB_TOKEN=${GITHUB_TOKEN}
+##    command: ["dotnet", "watch", "run", "--project", "AppBlueprint.Web.csproj", "--urls", "https://+:8081"]
+##    depends_on:
+##      - api-service
+##    networks:
+##      - appblueprint-network
+##
+##  api-service:
+##    build:
+##      context: .
+##      dockerfile: AppBlueprint.ApiService/Dockerfile
+##      target: dev
+##      args:
+##        GITHUB_TOKEN: ${GITHUB_TOKEN}
+##    volumes:
+##      - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService
+##      - ./AppBlueprint.ServiceDefaults:/src/AppBlueprint.ServiceDefaults
+##      - ./Shared-Modules:/src/Shared-Modules
+##      - /src/AppBlueprint.ApiService/bin
+##      - /src/AppBlueprint.ApiService/obj
+##    ports:
+##      - "8083:8083"
+##    environment:
+##      - ASPNETCORE_ENVIRONMENT=Development
+##      - DOTNET_USE_POLLING_FILE_WATCHER=1
+##      - ASPNETCORE_URLS=https://+:8083
+##      - GITHUB_TOKEN=${GITHUB_TOKEN}
+##    command: ["dotnet", "watch", "run", "--project", "AppBlueprint.ApiService.csproj", "--urls", "https://+:8083"]
+##    depends_on:
+##      - database
+##    networks:
+##      - appblueprint-network
+##
+##  app-gateway-service:
+##    build:
+##      context: .
+##      dockerfile: AppBlueprint.AppGateway/Dockerfile
+##      target: dev
+##      args:
+##        GITHUB_TOKEN: ${GITHUB_TOKEN}
+##    volumes:
+##      - ./AppBlueprint.AppGateway:/src/AppBlueprint.AppGateway
+##      - ./AppBlueprint.ServiceDefaults:/src/AppBlueprint.ServiceDefaults
+##      - /src/AppBlueprint.AppGateway/bin
+##      - /src/AppBlueprint.AppGateway/obj
+##    ports:
+##      - "8085:8085"
+##    environment:
+##      - ASPNETCORE_ENVIRONMENT=Development
+##      - DOTNET_USE_POLLING_FILE_WATCHER=1
+##      - ASPNETCORE_URLS=https://+:8085
+##      - GITHUB_TOKEN=${GITHUB_TOKEN}
+##    command: ["dotnet", "watch", "run", "--project", "AppBlueprint.AppGateway.csproj", "--urls", "https://+:8085"]
+##    depends_on:
+##      - api-service
+##    networks:
+##      - appblueprint-network
+##
+##  database:
+##    image: postgres:15
+##    restart: always
+##    environment:
+##      - POSTGRES_DB=appblueprint
+##      - POSTGRES_USER=${DB_USER:-dbuser}
+##      - POSTGRES_PASSWORD=${DB_PASSWORD:-dbpassword}
+##    ports:
+##      - "5433:5433"
+##    volumes:
+##      - db-data:/var/lib/postgresql/data
+##    networks:
+##      - appblueprint-network
+##    healthcheck:
+##      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dbuser} -d appblueprint"]
+##      interval: 10s
+##      retries: 5
+##      start_period: 10s
+##
+##volumes:
+##  db-data:
+##
+##networks:
+##  appblueprint-network:
+##    driver: bridge

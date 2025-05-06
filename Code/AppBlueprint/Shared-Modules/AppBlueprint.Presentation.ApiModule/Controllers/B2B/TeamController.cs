@@ -1,0 +1,175 @@
+using AppBlueprint.Contracts.B2B.Contracts.Team.Requests;
+using AppBlueprint.Contracts.B2B.Contracts.Team.Responses;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.UnitOfWork;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
+
+[Authorize]
+[ApiController]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/teams")]
+[Produces("application/json")]
+public class TeamController : BaseController
+{
+    private readonly IConfiguration _configuration;
+    private readonly ITeamRepository _teamRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public TeamController(
+        IConfiguration configuration,
+        ITeamRepository teamRepository,
+        IUnitOfWork unitOfWork) : base(configuration)
+    {
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _teamRepository = teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+    }
+
+    /// <summary>
+    ///     Gets all teams.
+    /// </summary>
+    /// <returns>List of teams</returns>
+    [HttpGet(ApiEndpoints.Teams.GetAll)]
+    [ProducesResponseType(typeof(IEnumerable<TeamResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult<IEnumerable<TeamResponse>>> GetTeams(CancellationToken cancellationToken)
+    {
+        IEnumerable<TeamEntity> teams = await _teamRepository.GetAllAsync();
+        if (!teams.Any()) return NotFound(new { Message = "No teams found." });
+
+        // var response = teams.Select(team => new TeamResponse
+        // {
+        //     Id = team.Id,
+        //     Name = team.Name,
+        //     Description = team.Description,
+        //     Members = team.TeamMembers?.Select(m => new TeamMemberResponse
+        //     {
+        //         Id = m.Id,
+        //         UserId = m.UserId,
+        //         Role = m.Role,
+        //         JoinedAt = m.JoinedAt
+        //     }).ToList()
+        // });
+
+        // return Ok(response);
+        return Ok();
+    }
+
+    /// <summary>
+    ///     Gets a team by ID.
+    /// </summary>
+    /// <param name="id">Team ID.</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <returns>Team details</returns>
+    [HttpGet(ApiEndpoints.Teams.GetById)]
+    [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult<TeamResponse>> GetTeam(int id, CancellationToken cancellationToken)
+    {
+        TeamEntity? team = await _teamRepository.GetByIdAsync(id);
+        if (team is null) return NotFound(new { Message = $"Team with ID {id} not found." });
+
+        var response = new TeamResponse(team.TeamMembers?.Select(m => new TeamMemberResponse
+        {
+            // Id = m.Id,
+            // UserId = m.UserId,
+            // Role = m.Role,
+            // JoinedAt = m.JoinedAt
+        }).ToList())
+        {
+            Id = team.Id,
+            Name = team.Name,
+            Description = team.Description,
+        };
+
+        return Ok(response);
+    }
+
+    /// <summary>
+    ///     Creates a new team.
+    /// </summary>
+    /// <param name="teamDto">Team data transfer object.</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <returns>Created team.</returns>
+    [HttpPost(ApiEndpoints.Teams.Create)]
+    [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> CreateTeam([FromBody] CreateTeamRequest teamDto,
+        CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var newTeam = new TeamEntity
+        {
+            Name = teamDto.Name,
+            Description = teamDto.Description
+        };
+
+        await _teamRepository.AddAsync(newTeam);
+        await _unitOfWork.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetTeam), new { id = newTeam.Id }, new TeamResponse(new List<TeamMemberResponse>())
+        {
+            Id = newTeam.Id,
+            Name = newTeam.Name,
+            Description = newTeam.Description,
+        });
+    }
+
+    /// <summary>
+    ///     Updates an existing team.
+    /// </summary>
+    /// <param name="id">Team ID.</param>
+    /// <param name="teamDto">Team data transfer object.</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <returns>No content.</returns>
+    [HttpPut(ApiEndpoints.Teams.UpdateById)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> UpdateTeam(int id, [FromBody] UpdateTeamRequest teamDto,
+        CancellationToken cancellationToken)
+    {
+        TeamEntity? existingTeam = await _teamRepository.GetByIdAsync(id);
+        if (existingTeam is null) return NotFound(new { Message = $"Team with ID {id} not found." });
+
+        if (teamDto.Name != null)
+            existingTeam.Name = teamDto.Name;
+        if (teamDto.Description != null)
+            existingTeam.Description = teamDto.Description;
+
+        _teamRepository.Update(existingTeam);
+        await _unitOfWork.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    /// <summary>
+    ///     Deletes a team by ID.
+    /// </summary>
+    /// <param name="id">Team ID.</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <returns>No content.</returns>
+    [HttpDelete(ApiEndpoints.Teams.DeleteById)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> DeleteTeam(int id, CancellationToken cancellationToken)
+    {
+        TeamEntity? existingTeam = await _teamRepository.GetByIdAsync(id);
+        if (existingTeam is null) return NotFound(new { Message = $"Team with ID {id} not found." });
+
+        _teamRepository.Delete(existingTeam.Id);
+        await _unitOfWork.SaveChangesAsync();
+
+        return NoContent();
+    }
+}

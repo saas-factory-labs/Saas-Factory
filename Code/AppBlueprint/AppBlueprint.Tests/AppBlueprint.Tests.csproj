@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Testcontainers.Redis" />
+        <PackageReference Include="bunit" />
+        <PackageReference Include="Testcontainers" />
+        <PackageReference Include="Testcontainers.Container.Abstractions" />
+        <PackageReference Include="Testcontainers.PostgreSql" />
+        <PackageReference Include="Aspire.Hosting.Testing" />
+        <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="Moq" />
+        <PackageReference Include="MudBlazor" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="xunit.runner.visualstudio" />
+        <PackageReference Include="System.Text.Json" />
+        <PackageReference Include="TUnit" />
+        <PackageReference Include="TUnit.Assertions" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.AppHost\AppBlueprint.AppHost.csproj" />
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Presentation.ApiModule\AppBlueprint.Presentation.ApiModule.csproj" />
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+        <ProjectReference Include="..\AppBlueprint.ApiService\AppBlueprint.ApiService.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Aspire.Hosting.Testing" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:15068",      "environmentVariables": {        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_ENVIRONMENT": "Development",
+        "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
+        "ASPIRE_DASHBOARD_PORT": "15068",
+        "DOTNET_WEB_SERVICE_ENDPOINT_URL": "http://localhost:8092",
+        "DOTNET_API_SERVICE_ENDPOINT_URL": "http://localhost:8090",
+        "DOTNET_GATEWAY_SERVICE_ENDPOINT_URL": "http://localhost:8094",
+        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:21250",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:18889",
+        "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
+        "OTEL_SERVICE_NAME": "appblueprint",
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "http://localhost:22273"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,      "applicationUrl": "https://localhost:8443",
+      "environmentVariables": {        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_ENVIRONMENT": "Development",
+        "ASPIRE_DASHBOARD_PORT": "15068",
+        "DOTNET_WEB_SERVICE_ENDPOINT_URL": "https://localhost:8093",
+        "DOTNET_API_SERVICE_ENDPOINT_URL": "https://localhost:8091",
+        "DOTNET_GATEWAY_SERVICE_ENDPOINT_URL": "https://localhost:8095",
+        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21250",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "https://localhost:18889",
+        "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
+        "OTEL_SERVICE_NAME": "appblueprint",
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:8090"
+      }
+    }
+  }
+}

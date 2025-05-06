@@ -1,0 +1,31 @@
+name: Export OpenTelemetry Trace for Github Action workflows
+
+on:
+  workflow_run:
+    workflows:
+      - "Create diagram"      
+      - "Bytebase SQL Review"
+      - "Codespaces Prebuilds"
+      - "Dependabot Updates"
+      - "Docker Scout Vulnerability scan"
+      - "Generate PostgreSQL Schema Dump"
+      - "Generate SBOM"
+      - "GitGuardian secret scan"
+      - "Manual Database Migration with Rollback"
+      - "Publish Container Image to GitHub Registry"
+      - "Publish NuGet Package to GitHub Packages"
+      - "SonarQube Cloud"      
+    types: [completed] # Exports the Github Action workflow steps as a trace to a remote Open Telemetry collector
+
+jobs:
+  otel-export-trace:
+    name: OpenTelemetry Export Trace
+    runs-on: ubuntu-latest
+    steps:
+      - name: Export Workflow Trace
+        uses: corentinmusard/otel-cicd-action@v1
+        with:
+          otlpEndpoint: "https://otlp.eu01.nr-data.net/v1/traces"
+          otlpHeaders: "api-key=${{ secrets.NEW_RELIC_OPEN_TELEMETRY_API_KEY }}"
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          runId: ${{ github.event.workflow_run.id }}

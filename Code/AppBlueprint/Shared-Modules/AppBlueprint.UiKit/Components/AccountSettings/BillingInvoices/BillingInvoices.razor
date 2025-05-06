@@ -1,0 +1,89 @@
+<MudText Typo="Typo.h5">Billing & Invoices</MudText>
+<MudText Typo="Typo.body2" Class="mb-4">
+    This workspace's Basic Plan is set to $34 per month and will renew on July 9, 2024.
+</MudText>
+
+<MudText Typo="Typo.h6">Billing Information</MudText>
+<MudGrid Class="mb-4">
+    <MudItem xs="6">
+        <MudText Typo="Typo.subtitle2">Payment Method</MudText>
+    </MudItem>
+    <MudItem xs="6" Class="text-end">
+        <MudText Typo="Typo.body2">Mastercard ending 9282</MudText>
+        <MudLink Href="#" Class="ml-2">Edit</MudLink>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudText Typo="Typo.subtitle2">Billing Interval</MudText>
+    </MudItem>
+    <MudItem xs="6" Class="text-end">
+        <MudText Typo="Typo.body2">Annually</MudText>
+        <MudLink Href="#" Class="ml-2">Edit</MudLink>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudText Typo="Typo.subtitle2">VAT/GST Number</MudText>
+    </MudItem>
+    <MudItem xs="6" Class="text-end">
+        <MudText Typo="Typo.body2">UK849700927</MudText>
+        <MudLink Href="#" Class="ml-2">Edit</MudLink>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudText Typo="Typo.subtitle2">Your Address</MudText>
+    </MudItem>
+    <MudItem xs="6" Class="text-end">
+        <MudText Typo="Typo.body2">34 Savoy Street, London, UK, 24E8X</MudText>
+        <MudLink Href="#" Class="ml-2">Edit</MudLink>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudText Typo="Typo.subtitle2">Billing Address</MudText>
+    </MudItem>
+    <MudItem xs="6" Class="text-end">
+        <MudText Typo="Typo.body2">hello@cruip.com</MudText>
+        <MudLink Href="#" Class="ml-2">Edit</MudLink>
+    </MudItem>
+</MudGrid>
+
+<MudText Typo="Typo.h6">Invoices</MudText>
+<MudTable T="string" Class="mb-4">
+    <HeaderContent>
+        <MudTh>Year</MudTh>
+        <MudTh>Plan</MudTh>
+        <MudTh>Amount</MudTh>
+        <MudTh>Invoice</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Year">2024</MudTd>
+        <MudTd DataLabel="Plan">Basic Plan - Annually</MudTd>
+        <MudTd DataLabel="Amount">$349.00</MudTd>
+        <MudTd DataLabel="Invoice">
+            <MudLink Href="#">HTML</MudLink>
+            |
+            <MudLink Href="#">PDF</MudLink>
+        </MudTd>
+    </RowTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Year">2024</MudTd>
+        <MudTd DataLabel="Plan">Basic Plan - Annually</MudTd>
+        <MudTd DataLabel="Amount">$349.00</MudTd>
+        <MudTd DataLabel="Invoice">
+            <MudLink Href="#">HTML</MudLink>
+            |
+            <MudLink Href="#">PDF</MudLink>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+<!-- Action Buttons -->
+<MudGrid Class="mt-4">
+    <MudItem>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">Save Changes</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="ml-2">Cancel</MudButton>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+}

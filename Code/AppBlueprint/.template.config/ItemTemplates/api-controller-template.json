@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Casper Rubæk",
+  "classifications": [ "Rest API Controller", "API Controller" ],
+  "identity": "AppBlueprint.Template.ApiController",
+  "name": "AppBlueprint API Controller",
+  "shortName": "appblueprint-api-controller",
+  "tags": {
+    "language": "C#",
+    "type": "item"
+  },
+  "sourceName": "BlueprintController",
+  "symbols": {
+    "ControllerName": {
+      "type": "parameter",
+      "datatype": "string",
+      "displayName": "Controller Name",
+      "description": "The name of the API Controller to generate",
+      "replaces": "BlueprintController",
+      "defaultValue": "BlueprintController"
+    },
+    "ProjectName": {
+      "type": "parameter",
+      "datatype": "string",
+      "displayName": "Project Name",
+      "description": "The name of the project (namespace)",
+      "defaultValue": "NewSaaSApp.Api"
+    }
+  },
+  "defaultName": "BlueprintController"
+}

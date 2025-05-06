@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>AppBlueprint.Domain</RootNamespace>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latestmajor</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <!-- Enable packaging the ApiModule project to Nuget package file -->
+        <IsPackable>true</IsPackable>
+        <!-- NuGet Configuration -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
+        <GeneratePackage>true</GeneratePackage>
+        <!--        <Version></Version> &lt;!&ndash; Update version as needed &ndash;&gt;-->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>SaaS-Factory.AppBlueprint.Domain</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>A class library with domain entities</Description>
+        <PackageTags>domain;</PackageTags>
+        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Domain/AppBlueprint.Domain/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Trubador/SaaS-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Folder Include="Accounts\"/>
+        <Folder Include="Enums\"/>
+        <Folder Include="Users\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+    </ItemGroup>
+</Project>

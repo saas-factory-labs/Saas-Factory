@@ -1,0 +1,3 @@
+.azure
+!/AppBlueprint.ApiService/appsettings.Development.json
+/AppBlueprint.ApiService/appsettings.Development.json

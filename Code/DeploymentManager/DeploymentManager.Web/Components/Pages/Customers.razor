@@ -1,0 +1,65 @@
+@using MudBlazor
+@inherits LayoutComponentBase
+
+@page "/customers"
+
+<PageTitle>Customers</PageTitle>
+
+<h1 class="py-8">Customers </h1>
+
+
+<MudTable T="Customer" Items="@_customers" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
+          LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Firstname</MudTh>
+        <MudTh>Lastname</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Phone</MudTh>
+        <MudTh>AssociatedApp</MudTh>
+        <MudTh>IsPayingCustomer</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        @foreach (var customer in _customers)
+        {
+            <MudTd DataLabel="Firstname">@customer.FirstName</MudTd>
+            <MudTd DataLabel="Firstname">@customer.LastName</MudTd>
+            <MudTd DataLabel="Lastname">@customer.Email</MudTd>
+            <MudTd DataLabel="Lastname">@customer.Phone</MudTd>
+            <MudTd DataLabel="Lastname">@customer.AssociatedApp</MudTd>
+            <MudTd DataLabel="Lastname">@customer.IsPayingCustomer</MudTd>
+        }
+    </RowTemplate>
+</MudTable>
+
+@code {
+
+    public class Customer
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string AssociatedApp { get; set; }
+        public bool IsPayingCustomer { get; set; }
+    }
+
+    private List<Customer> _customers;
+
+    private bool _hidePosition;
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _customers = new List<Customer>
+        {
+            new()
+            {
+                Id = 1, FirstName = "John", LastName = "Doe", Email = "test@doe.com", Phone = "1234567890", AssociatedApp
+                    = "FileDiscovery",
+                IsPayingCustomer = true
+            }
+        };
+    }
+
+}

@@ -1,0 +1,58 @@
+@* @using MudBlazor
+
+<MudPaper Class="doc-section-component-container">
+    <MudChart ChartType="ChartType.Bar"
+              ChartSeries="_series"
+              XAxisLabels="_xAxisLabels"
+              @bind-SelectedIndex="_index"
+              Width="_width"
+              Height="_height"
+              ChartOptions="_chartOptions" />
+</MudPaper>
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudText Typo="Typo.body1" Class="py-3">
+            Selected: @(_index < 0 ? "None" : _series[_index].Name)
+        </MudText>
+    </MudItem>
+
+    <MudItem md="6" xs="12">
+        <MudCheckBox @bind-Value="_chartOptions.MatchBoundsToSize"
+                     Label="MatchBoundsToSize"
+                     Color="Color.Primary" />
+    </MudItem>
+
+    <MudItem md="6" xs="12">
+        <MudTextField @bind-Value="_width" Label="Chart Width" />
+    </MudItem>
+
+    <MudItem md="6" xs="12">
+        <MudTextField @bind-Value="_height" Label="Chart Height" />
+    </MudItem>
+
+    <MudItem md="6" xs="12">
+        <MudStack>
+            <MudText Typo="Typo.body1">XAxis Label Rotation</MudText>
+            <MudSlider @bind-Value="_chartOptions.XAxisLabelRotation"
+                       Min="0" Max="90" Step="15" />
+        </MudStack>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private int _index = -1;
+    private string _width = "650px";
+    private string _height = "350px";
+    private ChartOptions _chartOptions = new();
+
+    private readonly List<ChartSeries> _series =
+    [
+        new() { Name = "United States", Data = [ 40, 20, 25, 27, 46, 60, 48, 80, 15 ] },
+        new() { Name = "Germany",       Data = [ 19, 24, 35, 13, 28, 15, 13, 16, 31 ] },
+        new() { Name = "Sweden",        Data = [  8,  6, 11, 13,  4, 16, 10, 16, 18 ] }
+    ];
+
+    private readonly string[] _xAxisLabels =
+        [ "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep" ];
+} *@

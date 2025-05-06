@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Casper Rubæk",
+  "classifications": [ "Service"],
+  "identity": "AppBlueprint.Template.Service",
+  "name": "AppBlueprint Service",
+  "shortName": "appblueprint-service",
+  "tags": {
+    "language": "C#",
+    "type": "item"
+  },
+  "sourceName": "BlueprintService",
+  "symbols": {
+    "ServiceName": {
+      "type": "parameter",
+      "datatype": "string",
+      "displayName": "Service Name",
+      "description": "The name of the service to generate",
+      "replaces": "BlueprintService",
+      "defaultValue": "BlueprintService"
+    },
+    "ProjectName": {
+      "type": "parameter",
+      "datatype": "string",
+      "displayName": "Project Name",
+      "description": "The name of the project (namespace)",
+      "defaultValue": "NewSaaSApp.Service"
+    }
+  },
+  "defaultName": "BlueprintService"
+}

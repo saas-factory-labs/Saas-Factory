@@ -1,0 +1,21 @@
+<MudContainer Class="mt-14 px-8" MaxWidth="MaxWidth.False"
+              Style="padding-top: 64px; height: calc(100vh - 64px); overflow-y: auto;">
+    <MudGrid Spacing="@Spacing" Justify="Justify.Center">
+        <MudItem xs="3" sm="6" md="4">
+            <DashboardCard ImageUrl="" Link="" Title="Title"
+                           Body="Nulla ultrices lacus elit, imperdiet placerat ex lacinia sed. Sed sit amet arcu auctor, euismod ipsum eu, volutpat arcu"/>
+        </MudItem>
+        <MudItem xs="3" sm="6" md="4">
+            <DashboardCard ImageUrl="" Link="" Title="Title"
+                           Body="Nulla ultrices lacus elit, imperdiet placerat ex lacinia sed. Sed sit amet arcu auctor, euismod ipsum eu, volutpat arcu"/>
+        </MudItem>
+        <MudItem xs="3" sm="6" md="4">
+            <DashboardCard ImageUrl="" Link="" Title="Title"
+                           Body="Nulla ultrices lacus elit, imperdiet placerat ex lacinia sed. Sed sit amet arcu auctor, euismod ipsum eu, volutpat arcu"/>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    public int Spacing { get; set; } = 6;
+}

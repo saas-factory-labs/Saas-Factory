@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Casper Rubæk",
+  "classifications": [ "Gateway", "API Gateway" ],
+  "identity": "AppBlueprint.Template.AppGateway",
+  "name": "AppBlueprint Gateway",
+  "shortName": "appblueprint-gateway",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "BlueprintGateway",
+  "symbols": {
+    "GatewayName": {
+      "type": "parameter",
+      "datatype": "string",
+      "displayName": "Gateway Name",
+      "description": "The name of the Gateway to generate",
+      "replaces": "BlueprintGateway",
+      "defaultValue": "BlueprintGateway"
+    },
+    "ProjectName": {
+      "type": "parameter",
+      "datatype": "string",
+      "displayName": "Project Name",
+      "description": "The name of the project (namespace)",
+      "defaultValue": "NewSaaSApp.Gateway"
+    }
+  },
+  "defaultName": "BlueprintGateway"
+}

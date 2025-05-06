@@ -1,0 +1,43 @@
+# System files
+**/.DS_Store
+**/.classpath
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+
+# Project-specific files
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/azds.yaml
+
+# Build and dependency directories
+**/bin
+**/charts
+**/docker-compose*
+**/compose*
+**/Dockerfile*
+**/node_modules
+**/npm-debug.log
+**/obj
+
+# Environment and configuration files
+**/secrets.dev.yaml
+**/values.dev.yaml
+
+# License and README
+LICENSE
+README.md
+
+# Exceptions for Git tracking
+!**/.gitignore
+!.git/HEAD
+!.git/config
+!.git/packed-refs
+!.git/refs/heads/**

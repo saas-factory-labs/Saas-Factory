@@ -1,0 +1,72 @@
+name: Publish All NuGet Packages
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["v*.*.*"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  publish-packages:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package-name:
+          - "AppBlueprint.Presentation.ApiModule"
+          - "AppBlueprint.UiKit"
+          - "AppBlueprint.SharedKernel"         
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0
+
+      - name: Install GitVersion
+        run: dotnet tool install --global GitVersion.Tool
+
+      - name: Debug GitVersion Output
+        run: |
+          dotnet-gitversion /output json || echo "GitVersion failed!"
+
+      - name: Determine Version
+        id: gitversion
+        run: |
+          RAW_VERSION=$(dotnet-gitversion /output json 2>/dev/null || echo '{}')
+          echo "Raw GitVersion Output: $RAW_VERSION"
+          VERSION=$(echo "$RAW_VERSION" | jq -r '.SemVer // empty')
+          
+          if [[ -z "$VERSION" ]]; then
+            echo "GitVersion failed to generate a version. Check Git tags and branch naming."
+            exit 1
+          fi
+          
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Clean build directories
+        run: rm -rf obj bin
+        working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
+
+      - name: Build the project
+        run: dotnet build --configuration Release
+        working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
+
+      - name: Pack NuGet package with versioning
+        run: dotnet pack --configuration Release --output ./bin/Release --p:Version=${{ env.VERSION }}
+        working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
+
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "./bin/Release/*.nupkg" --api-key ${{ secrets.TRUBADOR_GITHUB_PAT }} --source "https://nuget.pkg.github.com/Trubador/index.json" --skip-duplicate
+        working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}

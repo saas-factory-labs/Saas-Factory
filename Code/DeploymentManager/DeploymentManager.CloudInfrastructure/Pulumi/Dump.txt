@@ -1,0 +1,540 @@
+
+
+
+
+
+
+
+
+
+
+
+
+// 22-02-2025
+
+ public static IServiceCollection AddSwaggerServices(this IServiceCollection services)
+    {
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(options =>
+        {
+            var document = new OpenApiDocument
+            {
+                Info = new OpenApiInfo
+                {
+                    Title = "AppBlueprint API",
+                    Description = "API for AppBlueprint services",
+                    Version = "1.0"
+                },
+                Servers = new List<OpenApiServer>
+                {
+                    new() { Url = "/" }
+                }
+            };
+            // document.Extensions.Add("swagger", "2.0");
+            
+            // document.Extensions.Add("swagger", new Microsoft.OpenApi.Any.OpenApiString("2.0"));
+
+            options.SwaggerDoc("v1", document.Info);
+
+            // Add Bearer token authentication
+            options.AddSecurityDefinition("BearerAuth", new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.Http,
+                Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+                Scheme = "bearer",
+                BearerFormat = "JWT"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "BearerAuth"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
+
+        return services;
+    }
+
+
+// using Asp.Versioning.ApiExplorer;
+// using Microsoft.Extensions.DependencyInjection;
+// using Microsoft.Extensions.Options;
+// using Microsoft.OpenApi.Models;
+// using Swashbuckle.AspNetCore.SwaggerGen;
+//
+// namespace AppBlueprint.Presentation.ApiModule.OpenApi;
+//
+// public sealed class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
+// {
+//     private readonly IApiVersionDescriptionProvider _provider;
+//
+//     public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
+//     {
+//         _provider = provider;
+//     }
+//
+//     public void Configure(SwaggerGenOptions options)
+//     {
+//         foreach (ApiVersionDescription description in _provider.ApiVersionDescriptions)
+//         {
+//             // options.SwaggerDoc(description.GroupName, new Microsoft.OpenApi.Models.OpenApiInfo
+//             // {
+//             //     Title = $"My API {description.ApiVersion}",
+//             //     Version = description.ApiVersion.ToString(),
+//             //     Description = "API with versioning"
+//             // });
+//             
+//             // options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "My API", Version = "v1" });
+//             // options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "My API", Version = "v2" });
+//
+//
+//             
+//             // options.SwaggerDoc(description.GroupName, CreateVersionInfo(description, Version = new Version(
+//             // {
+//             //     
+//             // })));
+//         }
+//     }
+//
+//     public void Configure(string? name, SwaggerGenOptions options)
+//     {
+//         Configure(options);
+//     }
+//     
+//     private static OpenApiInfo CreateVersionInfo(ApiVersionDescription apiVersionDescription)
+//     {
+//         var openApiInfo = new OpenApiInfo
+//         {
+//             Title = $"Appblueprint.Api v{apiVersionDescription.ApiVersion}",
+//             Version = apiVersionDescription.ApiVersion.ToString(),
+//             Description = "API documentation for Appblueprint",
+//             TermsOfService = new Uri("https://example.com/terms"),
+//             Contact = new OpenApiContact
+//             {
+//                 Name = "Support",
+//                 Email = "support@example.com",
+//                 Url = new Uri("https://example.com/contact")
+//             },
+//             License = new OpenApiLicense
+//             {
+//                 Name = "API License",
+//                 Url = new Uri("https://example.com/license")
+//             }
+//         };
+//
+//         if (apiVersionDescription.IsDeprecated)
+//         {
+//             openApiInfo.Description += " This API version has been deprecated.";
+//         }
+//
+//         // Set OpenAPI version explicitly to 3.0.1
+//         openApiInfo.Extensions.Add("x-openapi-version", new Microsoft.OpenApi.Any.OpenApiString("3.0.1"));
+//
+//         return openApiInfo;
+//     }
+//
+//
+//     // private static OpenApiInfo CreateVersionInfo(ApiVersionDescription apiVersionDescription)
+//     // {
+//     //     var openApiInfo = new OpenApiInfo
+//     //     {
+//     //         Title = $"Appblueprint.Api v{apiVersionDescription.ApiVersion}",
+//     //         Version = apiVersionDescription.ApiVersion.ToString(),
+//     //     };
+//     //
+//     //     if (apiVersionDescription.IsDeprecated)
+//     //     {
+//     //         openApiInfo.Description += " This API version has been deprecated.";
+//     //     }
+//     //     
+//     //     apiVersionDescription.ApiVersion = 
+//     //
+//     //     return openApiInfo;
+//     // }
+// }
+
+
+// namespace AppBlueprint.Presentation.ApiModule.Extensions;
+//
+// using Microsoft.OpenApi.Models;
+// using Swashbuckle.AspNetCore.SwaggerGen;
+//
+// public class SetOpenApiVersionFilter : IDocumentFilter
+// {
+//     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+//     {
+//         swaggerDoc.OpenApi = "3.1.0"; // Force OpenAPI 3.1.0
+//     }
+// }
+
+// using Microsoft.AspNetCore.Builder;
+// using Microsoft.AspNetCore.Http;
+//
+// namespace AppBlueprint.Presentation.ApiModule.Middleware;
+//
+// public class OpenApiVersionMiddleware
+// {
+//     private readonly RequestDelegate _next;
+//
+//     public OpenApiVersionMiddleware(RequestDelegate next)
+//     {
+//         _next = next;
+//     }
+//
+//     public async Task InvokeAsync(HttpContext context)
+//     {
+//         ArgumentNullException.ThrowIfNull(context);
+//
+//         if (context.Request.Path.StartsWithSegments("/swagger", StringComparison.OrdinalIgnoreCase))
+//         {
+//             Stream originalBodyStream = context.Response.Body;
+//             using MemoryStream memoryStream = new();
+//             context.Response.Body = memoryStream;
+//
+//             await _next(context);
+//
+//             memoryStream.Position = 0;
+//             string responseBody;
+//             using (StreamReader reader = new(memoryStream))
+//             {
+//                 responseBody = await reader.ReadToEndAsync();
+//             }
+//
+//             // Check if this is a Swagger JSON response
+//             if (context.Response.ContentType?.Contains("application/json", StringComparison.OrdinalIgnoreCase) == true)
+//             {
+//                 // Add OpenAPI version if not present
+//                 if (!responseBody.Contains("\"openapi\"", StringComparison.OrdinalIgnoreCase))
+//                 {
+//                     responseBody = responseBody.Insert(1, "\"openapi\":\"3.0.0\",");
+//                 }
+//             }
+//
+//             byte[] modifiedBody = System.Text.Encoding.UTF8.GetBytes(responseBody);
+//             context.Response.ContentLength = modifiedBody.Length;
+//             
+//             memoryStream.Position = 0;
+//             memoryStream.SetLength(0);
+//             await memoryStream.WriteAsync(modifiedBody);
+//             
+//             memoryStream.Position = 0;
+//             await memoryStream.CopyToAsync(originalBodyStream);
+//             context.Response.Body = originalBodyStream;
+//         }
+//         else
+//         {
+//             await _next(context);
+//         }
+//     }
+// }
+
+// using Microsoft.OpenApi.Models;
+// using Swashbuckle.AspNetCore.SwaggerGen;
+//
+// namespace AppBlueprint.Presentation.ApiModule.OpenApi;
+//
+// public class OpenApiVersionFilter : IDocumentFilter
+// {
+//     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+//     {
+//         ArgumentNullException.ThrowIfNull(swaggerDoc);
+//         
+//         // Set OpenAPI version explicitly at the root level using compatible version
+//         if (!swaggerDoc.Extensions.ContainsKey("openapi"))
+//         {
+//             swaggerDoc.Extensions.Add("openapi", new Microsoft.OpenApi.Any.OpenApiString("3.0.0"));
+//         }
+//         
+//         // Ensure API version is set
+//         swaggerDoc.Info.Version = "1.0";
+//         
+//         // Add server URL if not present, without /api prefix
+//         if (swaggerDoc.Serversis null || swaggerDoc.Servers.Count == 0)
+//         {
+//             swaggerDoc.Servers = new List<OpenApiServer>
+//             {
+//                 new() { Url = "/" }
+//             };
+//         }
+//     }
+// }
+
+// using Microsoft.OpenApi.Models;
+// using Swashbuckle.AspNetCore.SwaggerGen;
+//
+// namespace AppBlueprint.Presentation.ApiModule.OpenApi;
+//
+// public class SchemaFilter : ISchemaFilter
+// {
+//     public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+//     {
+//         ArgumentNullException.ThrowIfNull(schema);
+//         ArgumentNullException.ThrowIfNull(context);
+//
+//         // Ensure all schemas are compatible with OpenAPI 3.0
+//         if (schema.Type == "object" && schema.AdditionalPropertiesis null)
+//         {
+//             schema.AdditionalProperties = new OpenApiSchema { Type = "object" };
+//         }
+//     }
+// }
+
+// namespace AppBlueprint.Presentation.ApiModule.Extensions;
+//
+// using System.IO;
+// using System.Text;
+// using System.Threading.Tasks;
+// using Microsoft.AspNetCore.Http;
+//
+// public class SwaggerVersionMiddleware
+// {
+//     private readonly RequestDelegate _next;
+//
+//     public SwaggerVersionMiddleware(RequestDelegate next)
+//     {
+//         _next = next;
+//     }
+//
+//     public async Task Invoke(HttpContext context)
+//     {
+//         // context.Request.Path.StartsWithSegments("/swagger/v3.1/swagger.json"
+//         // Check if this is a request for the Swagger JSON endpoint we want to modify
+//         if (context.Request.Path.StartsWithSegments("/swagger/v1/swagger.json"))
+//         {
+//             // Swap out the response stream with a temporary memory stream
+//             var originalBodyStream = context.Response.Body;
+//             using var memoryStream = new MemoryStream();
+//             context.Response.Body = memoryStream;
+//
+//             // Let the downstream Swagger middleware write the response
+//             await _next(context);
+//
+//             // Read the generated JSON
+//             memoryStream.Seek(0, SeekOrigin.Begin);
+//             string json = await new StreamReader(memoryStream).ReadToEndAsync();
+//
+//             // Replace the "openapi" version string.
+//             // Adjust the value to match the actual generated version if needed.
+//             json = json.Replace("\"openapi\":\"3.0.4\"", "\"openapi\":\"3.1.0\"");
+//
+//             // Write the modified JSON back to the original response stream
+//             var modifiedBytes = Encoding.UTF8.GetBytes(json);
+//             context.Response.Body = originalBodyStream;
+//             context.Response.ContentLength = modifiedBytes.Length;
+//             await context.Response.Body.WriteAsync(modifiedBytes, 0, modifiedBytes.Length);
+//         }
+//         else
+//         {
+//             await _next(context);
+//         }
+//     }
+// }
+
+
+///////////////////////
+
+// var appServicePlan = new AppServicePlan("saasdplmgr-prod-asp-", new AppServicePlanArgs
+// {
+//     ResourceGroupName = resourceGroup.Name,
+//     Location = resourceGroup.Location,
+//     Sku = new SkuDescriptionArgs
+//     {
+//         Name = "F1",
+//         Tier = "Free",
+//         Size = "F1",
+//         Family = "F",
+//         Capacity = 1
+//     }
+// });
+
+// run blazor deployment server (non containerized)
+// var appService = new WebApp("saasdplmgr-prod-app-", new WebAppArgs
+// {
+//     ResourceGroupName = resourceGroup.Name,
+//     Location = resourceGroup.Location,
+//     ServerFarmId = appServicePlan.Id,
+//     HttpsOnly = true,
+// });
+
+// var appServiceUrl = Output.Format($"https://{appService.DefaultHostName}");
+
+//var postgreSqlServer = new Pulumi.AzureNative.DBforPostgreSQL.Server("saasdplmgr-pgsql-srv-", new()
+//{
+//    ResourceGroupName = resourceGroup.Name,
+//    Properties = new Pulumi.AzureNative.DBforPostgreSQL.Inputs.ServerPropertiesForDefaultCreateArgs
+//    {
+//        AdministratorLogin = "deploymentmanagerdbadmin",
+//        AdministratorLoginPassword = postsqdbadminpassword,
+//        CreateMode = "Default",
+//        MinimalTlsVersion = "TLS1_2",
+//        SslEnforcement = Pulumi.AzureNative.DBforPostgreSQL.SslEnforcementEnum.Enabled,
+//        StorageProfile = new Pulumi.AzureNative.DBforPostgreSQL.Inputs.StorageProfileArgs
+//        {
+//            BackupRetentionDays = 7,
+//            GeoRedundantBackup = "Disabled",
+//            StorageMB = 5120,
+//        },
+//    }
+//});
+
+//ServerName = postgreSqlServer.Name;
+//AdministratorLogin = postgreSqlServer.AdministratorLogin;
+
+//var saasdeploymentmanagerdb = new Database("saasdplmgr-prod-db", new()
+//{
+//    Charset = "UTF8",
+//    DatabaseName = "saasdplmgr-prod-db",
+//    ResourceGroupName = resourceGroup.Name,
+//    ServerName = postgreSqlServer.Name,
+//});
+
+
+
+
+
+
+
+
+
+// projectName = Deployment.Instance.ProjectName;
+
+// resourcePrefixName = projectName + stackName;
+
+
+// var logAnalyticsWorkspace = new Workspace(resourcePrefixName + "LogAnalytics", new WorkspaceArgs
+// {
+//     ResourceGroupName = resourceGroup.Name,
+//     Sku = new WorkspaceSkuArgs { Name = "PerGB2018" },
+//     RetentionInDays = 30,
+// });
+
+// var workspaceSharedKeys = Output.Tuple(resourceGroup.Name, logAnalyticsWorkspace.Name).Apply(items =>
+//            GetSharedKeys.InvokeAsync(new GetSharedKeysArgs
+//            {
+//                ResourceGroupName = items.Item1,
+//                WorkspaceName = items.Item2,
+//            }));
+
+
+
+// Define the identity for the Web App
+// var systemAssignedIdentity = new ManagedServiceIdentityArgs
+// {
+//     Type = "SystemAssigned",
+// };
+
+
+
+// var identity = new AppServiceIdentity("my-app-service-identity", new AppServiceIdentityArgs
+// {
+//     ResourceGroupName = "my-resource-group",
+//     Location = "eastus",
+//     AppServiceName = appService.Name,
+//     PrincipalType = "SystemAssigned",
+// });
+
+// appService.Identity = identity.Apply(id => new AppServiceIdentityArgs
+// {
+//     Type = "SystemAssigned",
+//     IdentityIds = new InputList<string> { id.PrincipalId },
+// });
+
+// // Enable the system-assigned managed identity for the App Service.
+// var identityArgs = new AppServiceIdentityArgs
+// {
+//     ResourceGroupName = resourceGroup.Name,
+//     Identity = new ManagedServiceIdentityArgs
+//     {
+//         Type = "SystemAssigned"
+//     },
+// };
+// var identity = new AppServiceIdentity(appService.Name, identityArgs);
+
+// var appServiceUserAssignedIdentity = new AzureNative.ManagedIdentity.UserAssignedIdentity("appServiceUserAssignedIdentity", new()
+// {
+//     Location = resourceGroup.Location,
+//     ResourceGroupName = resourceGroup.Name,
+//     ResourceName = appService.Name,
+// });
+
+
+
+
+
+// var vault = new Vault("saasdplmgr-prod-kv", new VaultArgs
+// {
+//     ResourceGroupName = resourceGroup.Name,
+//     VaultName = "saasdplmgr-prod-kv",
+//     Location = resourceGroup.Location,
+//     Properties = new VaultPropertiesArgs
+//     {
+//         TenantId = azureTenantId,
+//         Sku = new SkuArgs
+//         {
+//             Family = "A",
+//             Name = Pulumi.AzureNative.KeyVault.SkuName.Standard
+//         },
+//         // AccessPolicies = new[]
+//         // {
+//         //     new AzureNative.KeyVault.Inputs.AccessPolicyEntryArgs
+//         //     {
+//         //         // ObjectId = appService.Identity.Apply(i => i.PrincipalId),
+//         //         ObjectId = appServiceUserAssignedIdentity.Id.Apply(i => i),
+//         //         Permissions = new AzureNative.KeyVault.Inputs.PermissionsArgs
+//         //         {
+//         //             Secrets = new()
+//         //             {
+//         //               "get",
+//         //               "list",
+//         //             },
+//         //         },
+//         //         TenantId = azureTenantId,
+//         //     },
+//         // },
+//     }
+// });
+
+// VaultUri = vault.Properties.Apply(p => p.VaultUri);
+
+
+//var postgreSqlServer = new Pulumi.AzureNative.DBforPostgreSQL.Server("saasdplmgr-pgsql-srv-", new()
+//{
+//    ResourceGroupName = resourceGroup.Name,
+//    Properties = new Pulumi.AzureNative.DBforPostgreSQL.Inputs.ServerPropertiesForDefaultCreateArgs
+//    {
+//        AdministratorLogin = "deploymentmanagerdbadmin",
+//        AdministratorLoginPassword = postsqdbadminpassword,
+//        CreateMode = "Default",
+//        MinimalTlsVersion = "TLS1_2",
+//        SslEnforcement = Pulumi.AzureNative.DBforPostgreSQL.SslEnforcementEnum.Enabled,
+//        StorageProfile = new Pulumi.AzureNative.DBforPostgreSQL.Inputs.StorageProfileArgs
+//        {
+//            BackupRetentionDays = 7,
+//            GeoRedundantBackup = "Disabled",
+//            StorageMB = 5120,
+//        },
+//    }
+//});
+
+//ServerName = postgreSqlServer.Name;
+//AdministratorLogin = postgreSqlServer.AdministratorLogin;
+
+//var saasdeploymentmanagerdb = new Database("saasdplmgr-prod-db", new()
+//{
+//    Charset = "UTF8",
+//    DatabaseName = "saasdplmgr-prod-db",
+//    ResourceGroupName = resourceGroup.Name,
+//    ServerName = postgreSqlServer.Name,
+//});
+
+
+

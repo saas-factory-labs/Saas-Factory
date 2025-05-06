@@ -1,0 +1,33 @@
+@namespace DeploymentManager.Web.Pages
+
+@page "/diagram"
+@using Blazor.Diagrams.Components
+@using Blazor.Diagrams.Components.Widgets
+
+@* background-color: #2E2E2E; /* Dark grey background */
+    background-image: radial-gradient(circle, rgba(211, 211, 211, 0.4) 1px, transparent 1px); /* Light grey small dots */
+    background-size: 40px 40px; /* Dot spacing */    
+ *@
+<!--WORKS-->
+<div class="diagram-container" style="
+    width: 100vw;
+    height: 100vh;
+    position: relative;    
+    border-radius: 12px; /* Smooth rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+    padding: 10px; /* Add inner spacing for a cleaner look */
+    overflow: hidden;">
+    <CascadingValue Value="Diagram" IsFixed="true">
+        <DiagramCanvas>
+            <Widgets>
+                <GridWidget Size="40" Mode="GridMode.Point" BackgroundColor="White"/>
+            </Widgets>
+        </DiagramCanvas>
+    </CascadingValue>
+</div>
+
+<nav>
+    <ul>
+        <li><a href="/architecture-diagram">Architecture Diagram</a></li>
+    </ul>
+</nav>

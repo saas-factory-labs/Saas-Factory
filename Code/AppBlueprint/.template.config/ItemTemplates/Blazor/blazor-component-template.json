@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Casper Rubæk",
+  "classifications": [ "Blazor Razor Component" ],
+  "identity": "AppBlueprint.Template.RazorComponent",
+  "name": "AppBlueprint Web Razor Component",
+  "shortName": "appblueprint-razor-component",
+  "tags": {
+    "language": "C#",
+    "type": "item"
+  },
+  "sourceName": "BlazorComponent",
+  "symbols": {
+    "ComponentName": {
+      "type": "parameter",
+      "datatype": "string",
+      "displayName": "Blazor Razor Component Name",
+      "description": "The name of the blazor razor component",
+      "defaultValue": "BlazorComponent"
+    }
+  },
+  "defaultName": "BlazorComponent"
+}

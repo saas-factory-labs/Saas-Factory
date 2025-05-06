@@ -1,0 +1,48 @@
+﻿using System.ComponentModel.DataAnnotations;
+using AppBlueprint.Application.Attributes;
+using AppBlueprint.Application.Enums;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel.Enums;
+
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
+
+public class AccountEntity
+{
+    [Key] public int AccountId { get; set; }
+    public CustomerType CustomerType { get; set; } // B2B / B2C / Government
+
+    public required string
+        Name
+    {
+        get;
+        set;
+    } // B2B (company name), Government ( government institution name), B2C (first name and last name of personal customer)
+
+    [DataClassification(GDPRType.DirectlyIdentifiable)]
+    public required string Email { get; set; } // GDPR data    
+
+    public string? Role { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+
+    public required UserEntity Owner { get; set; }
+    public string UserId { get; set; }
+
+    public bool IsSoftDeleted { get; set; }
+
+    public string Slug => GenerateSlug();
+
+    private string GenerateSlug()
+    {
+        // Generate slug based on account name
+        // use regex to remove special characters
+
+        // customertype
+        // B2B - company name
+
+        string slug = CustomerType.ToString().ToLower() + "-" + Name.ToLower();
+
+        return slug;
+    }
+}

@@ -1,0 +1,97 @@
+@inject ApiClient ApiClient
+@inject UserAuthenticationProvider AuthProvider
+
+@page "/sample-page"
+@using AppBlueprint.Api.Client.Sdk
+@using AppBlueprint.Api.Client.Sdk.Models
+@using AppBlueprint.Infrastructure.Authorization
+
+<PageTitle>Sample Page</PageTitle>
+
+<h1>Sample Page</h1>
+
+@if (!string.IsNullOrEmpty(loginError))
+{
+    <p style="color: red;">@loginError</p>
+}
+@if (data is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in data)
+        {
+            <li>@item.Name</li>
+        }
+    </ul>
+}
+
+@code {
+    private IEnumerable<AccountEntity> data;
+    private string loginError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Log in using preset credentials.
+        // Adjust "user@example.com" and "UserPassword" to your valid credentials.
+        var loggedIn = await AuthProvider.LoginAsync("deltacaspi@gmail.com", "12345678");
+        if (!loggedIn)
+        {
+            loginError = "Login failed. Please check your credentials.";
+            return;
+        }
+
+        // If login is successful, call the API to get the data.
+        try
+        {
+            data = await ApiClient.Api.V1.Account.GetAccounts.GetAsync();
+        }
+        catch (Exception ex)
+        {
+            loginError = $"Error calling API: {ex.Message}";
+        }
+    }
+
+}
+
+
+@* @using AppBlueprint.Api.Client.Sdk *@
+@* @using AppBlueprint.Api.Client.Sdk.Models *@
+@* @inject ApiClient ApiClient *@
+@* *@
+@* *@
+@* @page "/sample-page" *@
+@* *@
+@* <PageTitle> Sample Page</PageTitle> *@
+@* *@
+@* <h1>Sample Page</h1> *@
+@* *@
+@* *@
+@* <h3>Data from API</h3> *@
+@* *@
+@* @if (data is null) *@
+@* { *@
+@*     <p>Loading...</p> *@
+@* } *@
+@* else *@
+@* { *@
+@*     <ul> *@
+@*         @foreach (var item in data) *@
+@*         { *@
+@*             <li>@item.Name</li> *@
+@*         } *@
+@*     </ul> *@
+@* } *@
+@* *@
+@* @code { *@
+@*      *@
+@*     private IEnumerable<AccountEntity> data; *@
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         // Call one of the generated methods from your API client. *@
+@*         data = await ApiClient.Api.V1.Account.GetAccounts.GetAsync(); *@
+@*     }     *@
+@* } *@

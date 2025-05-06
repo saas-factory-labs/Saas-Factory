@@ -1,0 +1,52 @@
+<MudText Typo="Typo.h5">Connected Apps</MudText>
+<MudDivider Class="my-2"/>
+
+<MudGrid>
+    @for (var i = 0; i < 6; i++)
+    {
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard Class="mb-4">
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">MaterialStack</MudText>
+                    <MudText Typo="Typo.body2">Lorem ipsum dolor sit amet, eiusmod sed do eiusmod tempor.</MudText>
+                    @* <MudChip T="string" Label="Connected" Color="Color.Success" Variant="Variant.Outlined" /> *@
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
+
+<MudText Typo="Typo.subtitle1" Class="mt-4">Trending Categories</MudText>
+<MudGrid>
+    <MudItem xs="12" sm="4">
+        <MudCard Class="mb-2">
+            <MudCardContent>
+                <MudText Typo="Typo.h6">Programming</MudText>
+                <MudText Typo="Typo.body2">400+ Apps</MudText>
+                <MudLink Href="#">Explore</MudLink>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="4">
+        <MudCard Class="mb-2">
+            <MudCardContent>
+                <MudText Typo="Typo.h6">Digital Marketing</MudText>
+                <MudText Typo="Typo.body2">320+ Apps</MudText>
+                <MudLink Href="#">Explore</MudLink>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="4">
+        <MudCard Class="mb-2">
+            <MudCardContent>
+                <MudText Typo="Typo.h6">Music & Audio</MudText>
+                <MudText Typo="Typo.body2">270+ Apps</MudText>
+                <MudLink Href="#">Explore</MudLink>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+}

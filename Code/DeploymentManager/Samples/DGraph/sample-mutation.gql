@@ -1,0 +1,20 @@
+mutation MyMutation {
+	addBuild(input:{id: "fd-build-1", version: "1.0", status:"success", sourceCommit:"c-8918175"})
+
+  addApp(input: {id: "fd-1", deployments: 
+    {id: "fd-dp-1", environment: "prod", status: "success", startedAt: "12-02-2024T 15:45:90.919Z", finishedAt: "12-02-2024T 16:45:90.919Z", 
+      dockerImage: 
+      [
+        {name: "api-svc-image", tag: "1.0"}, 
+        {name: "web-svc-image", tag: "1.0"}, 
+        {name: "batch-svc-image", tag: "1.0"}
+      ],
+			sqlSchemaMigration: [
+        {id:"sql-migration-1", name: "addUserEntity"}
+      ],
+    }
+
+    
+  }
+  )
+}

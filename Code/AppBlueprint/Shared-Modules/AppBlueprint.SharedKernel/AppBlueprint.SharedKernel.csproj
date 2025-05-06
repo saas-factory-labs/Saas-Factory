@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+
+        <!-- Enable packaging the SharedKernel project to Nuget package file -->
+        <!--        <IsPackable>true</IsPackable>-->
+
+        <LangVersion>12.0</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UserSecretsId>c5bbe413-4aa6-4190-944c-bf90912749a1</UserSecretsId>
+        <!--<EnableMicrosoftExtensionsConfigurationBinderSourceGenerator>true</EnableMicrosoftExtensionsConfigurationBinderSourceGenerator>-->
+    </PropertyGroup>
+
+    <PropertyGroup Label="Nuget config">
+
+        <PackageId>SaaS-Factory.AppBlueprint.SharedKernel</PackageId>
+        <Description>A reusable shared class library of entities, dbcontexts and other core components</Description>
+        <PackageTags>blazor;razor;components;mudblazor</PackageTags>
+        <PackageProjectUrl>https://github.com/Trubador/SaaS-Factory/blob/main/Code/AppBlueprint/AppBlueprint.SharedKernel/README.md</PackageProjectUrl>
+        <Version>1.0.2</Version> <!-- Update version as needed -->
+        
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.FeatureManagement"/>
+        <PackageReference Include="AutoBogus"/>
+        <PackageReference Include="Bogus"/>
+        <PackageReference Include="FluentValidation"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Configuration"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
+        <PackageReference Include="MongoDB.Driver.Core"/>
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Stripe.net"/>        
+    </ItemGroup>
+</Project>

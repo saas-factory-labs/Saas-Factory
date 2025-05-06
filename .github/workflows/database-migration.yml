@@ -1,0 +1,52 @@
+name: Manual Database Migration with Rollback
+
+on:
+  workflow_dispatch:    
+    inputs:
+      action: # Allow specifying the action: migrate or rollback
+        description: 'Specify the action (migrate/rollback)'
+        required: true
+        default: migrate
+      target_migration: # Specify the target migration for rollback
+        description: 'Target migration for rollback (only for rollback action)'
+        required: false
+
+jobs:
+  run-migrations:
+    name: Run Database Migrations
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0'
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build Project
+      run: dotnet build --no-restore
+
+    - name: Perform Action
+      env:
+        DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+        DOTNET_ENVIRONMENT: ${{ secrets.DOTNET_ENVIRONMENT }}
+      run: |
+        if [[ "${{ github.event.inputs.action }}" == "migrate" ]]; then
+          echo "Running migrations..."
+          dotnet ef database update --connection "$DB_CONNECTION_STRING"
+        elif [[ "${{ github.event.inputs.action }}" == "rollback" ]]; then
+          if [[ -z "${{ github.event.inputs.target_migration }}" ]]; then
+            echo "Error: Target migration must be specified for rollback."
+            exit 1
+          fi
+          echo "Rolling back to migration ${{ github.event.inputs.target_migration }}..."
+          dotnet ef database update ${{ github.event.inputs.target_migration }} --connection "$DB_CONNECTION_STRING"
+        else
+          echo "Invalid action specified. Use 'migrate' or 'rollback'."
+          exit 1
+        fi

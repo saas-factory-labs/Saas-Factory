@@ -1,0 +1,24 @@
+@using AppBlueprint.UiKit.Components.PageLayout.NavigationComponents.AppBarComponents
+@using AppBlueprint.UiKit.Components.PageLayout.NavigationComponents.SidePanelComponents
+@using AppBlueprint.Infrastructure.Authorization
+@inject IUserAuthenticationProvider AuthenticationProvider
+
+<MudLayout Class="mb-20">
+    <Appbar OnToggleDrawer="ToggleDrawer" />
+    <SidePanel DrawerOpen="_drawerOpen"/>
+</MudLayout>
+
+@code {
+    private bool _drawerOpen = false; // State to control Sidebar visibility
+    
+    // Toggle the state of the Drawer
+    private void ToggleDrawer()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void SetDrawerOpen(bool open)
+    {
+        _drawerOpen = open;
+    }
+}

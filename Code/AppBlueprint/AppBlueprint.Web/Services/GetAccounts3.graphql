@@ -1,0 +1,6 @@
+query GetAccounts3 {
+    accounts {
+        accountId,
+        email
+    }
+}
