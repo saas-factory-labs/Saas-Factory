@@ -1,8 +1,0 @@
-# Netscape HTTP Cookie File
-# https://curl.haxx.se/rfc/cookie_spec.html
-# This is a generated file! Do not edit.
-
-.youtube.com	TRUE	/	TRUE	0	YSC	RaFwpfq4qpE
-.youtube.com	TRUE	/	TRUE	1765403355	__Secure-YEC	CgtLak9BdElMOFJWZyje1MS5BjIiCgJESxIcEhgSFhMLFBUWFwwYGRobHB0eHw4PIBAREiEgSQ%3D%3D
-.youtube.com	TRUE	/	TRUE	1765403358	VISITOR_PRIVACY_METADATA	CgJESxIcEhgSFhMLFBUWFwwYGRobHB0eHw4PIBAREiEgSQ%3D%3D
-.youtube.com	TRUE	/	TRUE	1765835362	PREF	tz=Europe.Copenhagen&f6=40000000&f7=100
