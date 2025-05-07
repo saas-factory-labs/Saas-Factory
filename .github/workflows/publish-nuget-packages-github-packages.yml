@@ -1,8 +1,7 @@
-name: Publish All NuGet Packages
+name: Publish All NuGet Packages to NuGet.org
 
 permissions:
   contents: read
-  packages: write
 
 on:
   push:
@@ -59,18 +58,6 @@ jobs:
         run: rm -rf obj bin
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
-      - name: Add GitHub NuGet source
-        run: |
-          dotnet nuget remove source github || true
-          dotnet nuget add source \
-            --username ${{ github.actor }} \
-            --password ${{ secrets.GITHUB_TOKEN }} \
-            --store-password-in-clear-text \
-            --name github "https://nuget.pkg.github.com/saas-factory-labs/index.json"
-
-      - name: List NuGet sources (debug)
-        run: dotnet nuget list source
-
       - name: Restore dependencies
         run: dotnet restore
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
@@ -83,11 +70,11 @@ jobs:
         run: dotnet pack --configuration Release --output ./bin/Release --p:Version=${{ env.VERSION }}
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
-      - name: Push to GitHub Packages
+      - name: Publish to NuGet.org
         run: |
-          echo "Pushing as ${{ github.actor }} to GitHub Packages..."
-          dotnet nuget push "./bin/Release/*.nupkg" \
-            --api-key ${{ secrets.GITHUB_TOKEN }} \
-            --source "https://nuget.pkg.github.com/saas-factory-labs/index.json" \
-            --skip-duplicate || echo "::error ::dotnet nuget push failed"
+          echo "Pushing to NuGet.org as version ${{ env.VERSION }}"
+          dotnet nuget push ./bin/Release/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
