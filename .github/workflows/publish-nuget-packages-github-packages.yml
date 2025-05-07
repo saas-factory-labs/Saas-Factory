@@ -68,5 +68,5 @@ jobs:
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
       - name: Publish to GitHub Packages
-        run: dotnet nuget push "./bin/Release/*.nupkg" --api-key ${{ secrets.GITHUB_PAT }} --source "https://nuget.pkg.github.com/saas-factory-labs/Saas-Factory/index.json" --skip-duplicate
+        run: dotnet nuget push "./bin/Release/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/saas-factory-labs/Saas-Factory/index.json" --skip-duplicate
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
