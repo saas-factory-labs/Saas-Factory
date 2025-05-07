@@ -1,4 +1,4 @@
-name: Publish All NuGet Packages to NuGet.org
+name: Publish NuGet Packages to NuGet.org
 
 permissions:
   contents: read
@@ -7,8 +7,6 @@ on:
   push:
     branches: ["main"]
     tags: ["v*.*.*"]
-  pull_request:
-    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -35,22 +33,16 @@ jobs:
       - name: Install GitVersion
         run: dotnet tool install --global GitVersion.Tool
 
-      - name: Debug GitVersion Output
-        run: |
-          dotnet-gitversion /output json || echo "GitVersion failed!"
-
       - name: Determine Version
         id: gitversion
         run: |
           RAW_VERSION=$(dotnet-gitversion /output json 2>/dev/null || echo '{}')
           echo "Raw GitVersion Output: $RAW_VERSION"
           VERSION=$(echo "$RAW_VERSION" | jq -r '.SemVer // empty')
-          
           if [[ -z "$VERSION" ]]; then
-            echo "GitVersion failed to generate a version. Check Git tags and branch naming."
+            echo "GitVersion failed to generate a version. Check tags and naming."
             exit 1
           fi
-          
           echo "VERSION=$VERSION" >> $GITHUB_ENV
         shell: bash
 
@@ -70,9 +62,9 @@ jobs:
         run: dotnet pack --configuration Release --output ./bin/Release --p:Version=${{ env.VERSION }}
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
-      - name: Publish to NuGet.org
+      - name: Push to NuGet.org
         run: |
-          echo "Pushing to NuGet.org as version ${{ env.VERSION }}"
+          echo "Pushing ${{ matrix.package-name }} to NuGet.org..."
           dotnet nuget push ./bin/Release/*.nupkg \
             --api-key ${{ secrets.NUGET_API_KEY }} \
             --source https://api.nuget.org/v3/index.json \
