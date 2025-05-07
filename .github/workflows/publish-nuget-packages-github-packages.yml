@@ -60,7 +60,16 @@ jobs:
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
       - name: Add GitHub NuGet source
-        run: dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/saas-factory-labs/index.json"
+        run: |
+          dotnet nuget remove source github || true
+          dotnet nuget add source \
+            --username ${{ github.actor }} \
+            --password ${{ secrets.GITHUB_TOKEN }} \
+            --store-password-in-clear-text \
+            --name github "https://nuget.pkg.github.com/saas-factory-labs/index.json"
+
+      - name: List NuGet sources (debug)
+        run: dotnet nuget list source
 
       - name: Restore dependencies
         run: dotnet restore
@@ -74,6 +83,11 @@ jobs:
         run: dotnet pack --configuration Release --output ./bin/Release --p:Version=${{ env.VERSION }}
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
-      - name: Publish to GitHub Packages
-        run: dotnet nuget push "./bin/Release/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/saas-factory-labs/index.json" --skip-duplicate
+      - name: Push to GitHub Packages
+        run: |
+          echo "Pushing as ${{ github.actor }} to GitHub Packages..."
+          dotnet nuget push "./bin/Release/*.nupkg" \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --source "https://nuget.pkg.github.com/saas-factory-labs/index.json" \
+            --skip-duplicate || echo "::error ::dotnet nuget push failed"
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
