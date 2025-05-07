@@ -20,8 +20,8 @@ jobs:
         package-name:
           - "AppBlueprint.Presentation.ApiModule"
           - "AppBlueprint.UiKit"
-          - "AppBlueprint.SharedKernel"         
-    
+          - "AppBlueprint.SharedKernel"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -59,6 +59,13 @@ jobs:
         run: rm -rf obj bin
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
+      - name: Add GitHub NuGet source
+        run: dotnet nuget add source \
+              --username ${{ github.actor }} \
+              --password ${{ secrets.GITHUB_TOKEN }} \
+              --store-password-in-clear-text \
+              --name github "https://nuget.pkg.github.com/saas-factory-labs/index.json"
+
       - name: Restore dependencies
         run: dotnet restore
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
@@ -72,5 +79,8 @@ jobs:
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
       - name: Publish to GitHub Packages
-        run: dotnet nuget push "./bin/Release/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/saas-factory-labs/index.json" --skip-duplicate
+        run: dotnet nuget push "./bin/Release/*.nupkg" \
+              --api-key ${{ secrets.GITHUB_TOKEN }} \
+              --source "https://nuget.pkg.github.com/saas-factory-labs/index.json" \
+              --skip-duplicate
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
