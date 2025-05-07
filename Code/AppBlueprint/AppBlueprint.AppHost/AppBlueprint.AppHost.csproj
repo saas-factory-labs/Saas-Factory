@@ -10,24 +10,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\\AppBlueprint.ApiService\\AppBlueprint.ApiService.csproj" /> <!-- Add reference to ApiService -->
-    <ProjectReference Include="..\\AppBlueprint.AppGateway\\AppBlueprint.AppGateway.csproj" /> <!-- Add reference to AppGateway -->
-    <ProjectReference Include="..\\AppBlueprint.Web\\AppBlueprint.Web.csproj" />
+    <ProjectReference Include="..\\AppBlueprint.ApiService\\AppBlueprint.ApiService.csproj" /> 
+    <ProjectReference Include="..\\AppBlueprint.AppGateway\\AppBlueprint.AppGateway.csproj" /> 
     <ProjectReference Include="..\\Shared-Modules\\AppBlueprint.Infrastructure\\AppBlueprint.Infrastructure.csproj" IsAspireProjectResource="false" />
-  </ItemGroup>
-
-  <ItemGroup>
-        <!-- brings in the dashboard & OTLP receiver -->    
-    <PackageReference Include="Aspire.Hosting.AppHost" />
+  </ItemGroup>  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.2.1" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="Aspire.Hosting.Redis" />
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.PostgreSQL.Extensions" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
   </ItemGroup>
 </Project>
