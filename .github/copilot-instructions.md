@@ -9,7 +9,7 @@ You are an architect and senior dotnet developer with expertise in clean archite
 
 ## AI Assistant Instructions
 
-* When formulating a plan start by reading the relevant instructions from the following:
+**When formulating a plan start by reading the relevant instructions from the following:**
 
 - AppBlueprint Directory.Packages.props file at `/Code/AppBlueprint/Directory.Packages.props`
 - Directory.Build.props file at `/Code/AppBlueprint/Directory.Build.props`
