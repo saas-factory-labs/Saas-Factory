@@ -36,11 +36,16 @@ internal class TokenEndpointAuthenticationProvider(
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
     }
 
-    public Task AuthenticateRequestAsync(RequestInformation request,
+    public async Task AuthenticateRequestAsync(
+        RequestInformation request,
         Dictionary<string, object>? additionalAuthenticationContext = null,
         CancellationToken cancellationToken = new())
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(request);
+
+        await EnsureAccessTokenAsync().ConfigureAwait(false);
+
+        request.Headers.Add("Authorization", $"Bearer {_accessToken}");
     }
 
 
