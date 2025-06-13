@@ -2,7 +2,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorizati
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.EntityConfigurations;
 
 public class ResourcePermissionEntityConfiguration : IEntityTypeConfiguration<ResourcePermissionEntity>
 {
@@ -18,3 +18,4 @@ public class ResourcePermissionEntityConfiguration : IEntityTypeConfiguration<Re
             .HasForeignKey(rp => rp.UserId);
     }
 }
+

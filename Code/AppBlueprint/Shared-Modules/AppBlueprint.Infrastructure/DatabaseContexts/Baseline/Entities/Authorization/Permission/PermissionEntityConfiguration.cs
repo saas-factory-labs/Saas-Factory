@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.EntityConfigurations;
 
 public class PermissionEntityConfiguration : IEntityTypeConfiguration<PermissionEntity>
 {
@@ -12,13 +12,12 @@ public class PermissionEntityConfiguration : IEntityTypeConfiguration<Permission
         // Define table name (if it needs to be different from default)
         builder.ToTable("Permissions");
 
-        // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        builder.HasKey(e => e.Id);
 
         // Define properties
         builder.Property(e => e.Name)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100); // Example max length
+            .IsRequired()
+            .HasMaxLength(100);
 
         // Define relationships
         // Add relationships as needed, for example:

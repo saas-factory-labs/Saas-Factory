@@ -2,7 +2,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorizati
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.EntityConfigurations;
 
 public class ResourcePermissionTypeEntityConfiguration : IEntityTypeConfiguration<ResourcePermissionTypeEntity>
 {
@@ -11,10 +11,6 @@ public class ResourcePermissionTypeEntityConfiguration : IEntityTypeConfiguratio
         builder.ToTable("ResourcePermissionTypes");
 
         builder.HasKey(e => e.Id);
-
-        // builder.HasIndex(e => new { e.ResourcePermissionId, e.Permission })
-        //        .IsUnique();
-
-        // Add additional property/relationship configs here as needed
     }
 }
+
