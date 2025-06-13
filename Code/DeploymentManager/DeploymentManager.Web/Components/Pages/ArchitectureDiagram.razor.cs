@@ -17,7 +17,7 @@ public partial class ArchitectureDiagram
 {
     public BlazorDiagram Diagram { get; set; } = null!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         var options = new BlazorDiagramOptions
         {
@@ -39,10 +39,10 @@ public partial class ArchitectureDiagram
 
         Diagram = new BlazorDiagram(options);
 
-        LoadDiagram();
+        await LoadDiagram();
     }
 
-    private async void LoadDiagram()
+    private async Task LoadDiagram()
     {
         // Get Open Api controllers 
         //ExtractApiControllers();

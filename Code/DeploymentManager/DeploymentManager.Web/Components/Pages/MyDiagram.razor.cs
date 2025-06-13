@@ -17,7 +17,7 @@ public partial class MyDiagram
 
     public BlazorDiagram Diagram { get; set; } = null!;
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         var options = new BlazorDiagramOptions
         {
