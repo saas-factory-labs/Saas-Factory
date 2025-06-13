@@ -2,7 +2,7 @@
 
 <!-- <h1 align="center">  🏗️ SaaS Factory </h1> -->
 
-<h4> Blueprint for deploying any type of B2B/B2B SaaS to massively accelarate development speed and time to market of a new SaaS web application by reducing the to create boilerplate code and infrastructure.
+<h4> Blueprint for deploying any type of B2B/B2C SaaS to massively accelerate development speed and time to market of a new SaaS web application by reducing the to create boilerplate code and infrastructure.
  </h4>
 
  <h5 align="center">
