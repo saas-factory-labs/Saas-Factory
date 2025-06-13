@@ -35,7 +35,7 @@ public class OrganizationEntityConfiguration : IEntityTypeConfiguration<Organiza
         // Relationships (Optional)
         builder.HasOne(e => e.Owner)
             .WithMany()
-            .HasForeignKey(e => e.Owner)
+            .HasForeignKey("OwnerId")
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

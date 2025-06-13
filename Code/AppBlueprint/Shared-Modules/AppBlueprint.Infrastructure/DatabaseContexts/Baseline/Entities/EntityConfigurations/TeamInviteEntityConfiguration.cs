@@ -30,7 +30,7 @@ public class TeamInviteEntityConfiguration : IEntityTypeConfiguration<TeamInvite
 
         builder.HasOne(e => e.Owner)
             .WithMany()
-            .HasForeignKey(e => e.Owner)
+            .HasForeignKey("OwnerId")
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
