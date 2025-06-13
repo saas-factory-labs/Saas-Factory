@@ -10,9 +10,7 @@ public class PermissionEntityConfiguration : IEntityTypeConfiguration<Permission
         ArgumentNullException.ThrowIfNull(builder);
 
         // Define table name (if it needs to be different from default)
-        // builder.ToTable("Permissions");
-
-        builder.ToTable("RolePermissions");
+        builder.ToTable("Permissions");
 
         // Define primary key
         builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
