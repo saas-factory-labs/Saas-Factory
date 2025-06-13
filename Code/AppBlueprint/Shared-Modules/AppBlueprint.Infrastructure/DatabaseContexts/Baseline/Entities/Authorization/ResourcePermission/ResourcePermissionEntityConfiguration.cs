@@ -13,9 +13,8 @@ public class ResourcePermissionEntityConfiguration : IEntityTypeConfiguration<Re
         builder.HasKey(e => e.Id);
 
         // Relationships
-        builder.HasOne(rp => rp.User);
-        // If needed:
-        // .WithMany(u => u.ResourcePermissions)
-        // .HasForeignKey(rp => rp.UserId);
+        builder.HasOne(rp => rp.User)
+            .WithMany(u => u.ResourcePermissions)
+            .HasForeignKey(rp => rp.UserId);
     }
 }

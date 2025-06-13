@@ -11,7 +11,7 @@ public class FileEntity
     [DataClassification(GDPRType.IndirectlyIdentifiable)]
     public string FileName { get; set; }
 
-    public string FileSize { get; set; }
+    public long FileSize { get; set; }
     public string FileExtension { get; set; }
     public string FilePath { get; set; }
     public DateTime CreatedAt { get; set; }

@@ -689,7 +689,7 @@ namespace AppBlueprint.SharedKernel.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.ToTable("Citys", (string)null);
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.ContactPersonEntity", b =>
@@ -775,7 +775,7 @@ namespace AppBlueprint.SharedKernel.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Countrys", (string)null);
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.CountryRegionEntity", b =>
@@ -1228,7 +1228,7 @@ namespace AppBlueprint.SharedKernel.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RolePermissions", (string)null);
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.PhoneNumberEntity", b =>
@@ -1356,12 +1356,9 @@ namespace AppBlueprint.SharedKernel.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("UserId1")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("ResourcePermissions", (string)null);
                 });
@@ -1381,7 +1378,7 @@ namespace AppBlueprint.SharedKernel.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("RolePermissions", (string)null);
                 });
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.SessionEntity", b =>
@@ -1988,7 +1985,7 @@ namespace AppBlueprint.SharedKernel.Migrations
                 {
                     b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.UserEntity", "User")
                         .WithMany("ResourcePermissions")
-                        .HasForeignKey("UserId1")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

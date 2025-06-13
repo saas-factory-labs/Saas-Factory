@@ -8,7 +8,7 @@ public class CityEntityConfiguration : IEntityTypeConfiguration<CityEntity>
     public void Configure(EntityTypeBuilder<CityEntity> builder)
     {
         // Define table name (if it needs to be different from default)
-        builder.ToTable("Citys");
+        builder.ToTable("Cities");
 
         // Define primary key
         builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
