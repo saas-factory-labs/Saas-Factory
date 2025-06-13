@@ -227,4 +227,6 @@
     <PackageVersion Include="Spectre.Console.Cli" Version="0.50.0" />
     <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0-alpha.22272.1" />
 
-    </ItemGroup>
+  </ItemGroup>
+
+</Project>

@@ -32,15 +32,17 @@ internal class TokenEndpointAuthenticationProvider(
         CancellationToken cancellationToken = new())
     {
         ArgumentNullException.ThrowIfNull(request);
-        await EnsureAccessTokenAsync();
+        await EnsureAccessTokenAsync().ConfigureAwait(false);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
     }
 
-    public Task AuthenticateRequestAsync(RequestInformation request,
+    public async Task AuthenticateRequestAsync(RequestInformation request,
         Dictionary<string, object>? additionalAuthenticationContext = null,
         CancellationToken cancellationToken = new())
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(request);
+        await EnsureAccessTokenAsync().ConfigureAwait(false);
+        request.Headers.Add("Authorization", $"Bearer {_accessToken}");
     }
 
 
@@ -48,13 +50,13 @@ internal class TokenEndpointAuthenticationProvider(
     {
         if (DateTime.UtcNow < _tokenExpiration) return; // Token is still valid
 
-        await _semaphore.WaitAsync();
+        await _semaphore.WaitAsync().ConfigureAwait(false);
         try
         {
             if (DateTime.UtcNow < _tokenExpiration) // Double-check inside lock
                 return;
 
-            TokenResponse? tokenResponse = await RequestNewAccessTokenAsync();
+            TokenResponse? tokenResponse = await RequestNewAccessTokenAsync().ConfigureAwait(false);
             _accessToken = tokenResponse.AccessToken;
             _tokenExpiration = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn - 30); // Buffer before expiry
         }
@@ -74,10 +76,10 @@ internal class TokenEndpointAuthenticationProvider(
                 { "grant_type", "client_credentials" },
                 { "scope", _scope }
             });
-        HttpResponseMessage response = await _httpClient.PostAsync(new Uri(_tokenEndpoint), content);
+        HttpResponseMessage response = await _httpClient.PostAsync(new Uri(_tokenEndpoint), content).ConfigureAwait(false);
 
         response.EnsureSuccessStatusCode();
-        TokenResponse? tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        TokenResponse? tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>().ConfigureAwait(false);
         return tokenResponse ?? throw new InvalidOperationException("Failed to deserialize token response");
     }
 
