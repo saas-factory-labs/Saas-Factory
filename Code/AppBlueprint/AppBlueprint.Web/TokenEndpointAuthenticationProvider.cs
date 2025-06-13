@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 
@@ -27,38 +28,39 @@ internal class TokenEndpointAuthenticationProvider(
         GC.SuppressFinalize(this);
     }
 
-    public async Task AuthenticateRequestAsync(HttpRequestMessage request,
+    public async Task AuthenticateRequestAsync(
+        HttpRequestMessage request,
         Dictionary<string, object>? additionalAuthenticationContext = null,
         CancellationToken cancellationToken = new())
     {
         ArgumentNullException.ThrowIfNull(request);
-        await EnsureAccessTokenAsync().ConfigureAwait(false);
+        await EnsureAccessTokenAsync(cancellationToken).ConfigureAwait(false);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
     }
 
-    public async Task AuthenticateRequestAsync(RequestInformation request,
+    public async Task AuthenticateRequestAsync(
+        RequestInformation request,
         Dictionary<string, object>? additionalAuthenticationContext = null,
         CancellationToken cancellationToken = new())
     {
         ArgumentNullException.ThrowIfNull(request);
-        await EnsureAccessTokenAsync().ConfigureAwait(false);
-        request.Headers.Add("Authorization", $"Bearer {_accessToken}");
+        await EnsureAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+        request.Headers.TryAdd("Authorization", $"Bearer {_accessToken}");
     }
 
-
-    private async Task EnsureAccessTokenAsync()
+    private async Task EnsureAccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        if (DateTime.UtcNow < _tokenExpiration) return; // Token is still valid
+        if (DateTime.UtcNow < _tokenExpiration) return;
 
-        await _semaphore.WaitAsync().ConfigureAwait(false);
+        await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            if (DateTime.UtcNow < _tokenExpiration) // Double-check inside lock
+            if (DateTime.UtcNow < _tokenExpiration)
                 return;
 
-            TokenResponse? tokenResponse = await RequestNewAccessTokenAsync().ConfigureAwait(false);
+            var tokenResponse = await RequestNewAccessTokenAsync(cancellationToken).ConfigureAwait(false);
             _accessToken = tokenResponse.AccessToken;
-            _tokenExpiration = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn - 30); // Buffer before expiry
+            _tokenExpiration = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn - 30);
         }
         finally
         {
@@ -66,7 +68,7 @@ internal class TokenEndpointAuthenticationProvider(
         }
     }
 
-    private async Task<TokenResponse> RequestNewAccessTokenAsync()
+    private async Task<TokenResponse> RequestNewAccessTokenAsync(CancellationToken cancellationToken)
     {
         using var content = new FormUrlEncodedContent(
             new Dictionary<string, string>
@@ -76,10 +78,17 @@ internal class TokenEndpointAuthenticationProvider(
                 { "grant_type", "client_credentials" },
                 { "scope", _scope }
             });
-        HttpResponseMessage response = await _httpClient.PostAsync(new Uri(_tokenEndpoint), content).ConfigureAwait(false);
+
+        HttpResponseMessage response = await _httpClient
+            .PostAsync(new Uri(_tokenEndpoint), content, cancellationToken)
+            .ConfigureAwait(false);
 
         response.EnsureSuccessStatusCode();
-        TokenResponse? tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>().ConfigureAwait(false);
+
+        TokenResponse? tokenResponse = await response.Content
+            .ReadFromJsonAsync<TokenResponse>(cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
         return tokenResponse ?? throw new InvalidOperationException("Failed to deserialize token response");
     }
 
@@ -88,14 +97,12 @@ internal class TokenEndpointAuthenticationProvider(
         if (disposing)
         {
             _semaphore?.Dispose();
-            _httpClient?.Dispose();
         }
     }
-
 
     private sealed class TokenResponse
     {
         public required string AccessToken { get; set; }
-        public required int ExpiresIn { get; set; } // Expiry time in seconds
+        public required int ExpiresIn { get; set; }
     }
 }

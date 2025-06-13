@@ -1,6 +1,6 @@
 <h1 align="center">  🏗️ SaaS Factory </h1>
 
-<h4> Blueprint for deploying any type of B2B/B2B SaaS to massively accelerate development speed and time to market of a new SaaS web application by reducing the to create boilerplate code and infrastructure.
+<h4> Blueprint for deploying any type of B2B/B2C SaaS to massively accelerate development speed and time to market of a new SaaS web application by reducing the to create boilerplate code and infrastructure.
  </h4>
 
  <h5 align="center">
@@ -75,7 +75,7 @@
 - Disaster recovery implementation
 - Automated documentation
 - Dev, QA (automated), staging, and production environment
-- Cloudagnostic (can easiliy be migrated to another cloud provider such as Digital Ocean/Hetzner/Linode/Render.com/Railway.com
+- Cloudagnostic (can easily be migrated to another cloud provider such as Digital Ocean/Hetzner/Linode/Render.com/Railway.com
 
 </details>
 
