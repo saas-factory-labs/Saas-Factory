@@ -92,7 +92,7 @@ internal class TokenEndpointAuthenticationProvider(
         if (disposing)
         {
             _semaphore?.Dispose();
-            _httpClient?.Dispose();
+            // HttpClient is provided by the host and should not be disposed here
         }
     }
 

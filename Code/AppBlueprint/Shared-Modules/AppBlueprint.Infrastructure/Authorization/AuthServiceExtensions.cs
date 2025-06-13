@@ -16,14 +16,15 @@ public static class AuthServiceExtensions
         services.AddScoped<ITokenStorageService, TokenStorageService>();
         
         // Register HttpClient for authentication
-        services.AddHttpClient();
+        const string clientName = "authClient";
+        services.AddHttpClient(clientName);
         
         // Register UserAuthenticationProvider with the auth endpoint
         services.AddScoped<IUserAuthenticationProvider>(sp => 
         {
             var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
             var tokenStorage = sp.GetRequiredService<ITokenStorageService>();
-            var httpClient = httpClientFactory.CreateClient("Auth");
+            var httpClient = httpClientFactory.CreateClient(clientName);
             
             return new UserAuthenticationProvider(httpClient, authEndpoint, tokenStorage);
         });
