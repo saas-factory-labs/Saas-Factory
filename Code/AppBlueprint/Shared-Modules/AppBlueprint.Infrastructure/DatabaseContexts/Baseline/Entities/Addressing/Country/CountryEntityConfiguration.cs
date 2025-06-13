@@ -8,7 +8,7 @@ public class CountryEntityConfiguration : IEntityTypeConfiguration<CountryEntity
     public void Configure(EntityTypeBuilder<CountryEntity> builder)
     {
         // Define table name (if it needs to be different from default)
-        builder.ToTable("Countrys");
+        builder.ToTable("Countries");
 
         // Define primary key
         builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property

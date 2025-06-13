@@ -14,9 +14,7 @@ public class CustomerOnboardingEntityConfiguration : IEntityTypeConfiguration<Cu
         builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
 
         // Define properties
-        builder.Property(e => e)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100); // Example max length
+        // Add property configurations when the entity is extended
 
         // Define relationships
         // Add relationships as needed, for example:
