@@ -75,7 +75,7 @@
 - Disaster recovery implementation
 - Automated documentation
 - Dev, QA (automated), staging, and production environment
-- Cloudagnostic (can easiliy be migrated to another cloud provider such as Digital Ocean/Hetzner/Linode/Render.com/Railway.com
+- Cloudagnostic (can easily be migrated to another cloud provider such as Digital Ocean/Hetzner/Linode/Render.com/Railway.com
 
 </details>
 

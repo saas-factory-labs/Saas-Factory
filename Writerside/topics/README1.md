@@ -76,7 +76,7 @@ The ultimate purpose is to deploy the projects I have wanted to fullfill for a l
 - Disaster recovery implementation
 - Automated documentation
 - Dev, QA (automated), staging, and production environment
-- Cloudagnostic (can easiliy be migrated to another cloud provider such as digialocean/linode/Cloudservers.dk/Render.com
+- Cloudagnostic (can easily be migrated to another cloud provider such as digialocean/linode/Cloudservers.dk/Render.com
 
 </details>
 
