@@ -13,13 +13,13 @@ public sealed class CustomerOnboardingEntityConfiguration : IEntityTypeConfigura
         ArgumentNullException.ThrowIfNull(builder);
 
         // Define table name
-        builder.ToTable("CustomerOnboardings");
-
-        // Define primary key
+        builder.ToTable("CustomerOnboardings");        // Define primary key
         builder.HasKey(e => e.Id);
 
-        // Indexes for performance
-        builder.HasIndex(e => e.Id).IsUnique();
+        // Performance indexes with standardized naming
+        builder.HasIndex(e => e.Id)
+            .IsUnique()
+            .HasDatabaseName("IX_CustomerOnboardings_Id");
 
         // Self-referencing relationship (if needed based on the CustomerOnboarding property)
         // This seems to be a circular reference that might need to be removed or properly configured

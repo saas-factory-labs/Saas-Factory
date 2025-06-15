@@ -61,5 +61,15 @@ namespace AppBlueprint.Tests.Infrastructure
             // Assert
             _jsRuntimeMock.Verify(js => js.InvokeVoidAsync("localStorage.removeItem", StorageKey), Times.Once);
         }
+
+        [Test]
+        public async Task StoreTokenAsync_ShouldThrowArgumentNullException_WhenTokenIsNull()
+        {
+            // Act
+            Func<Task> act = () => _tokenStorageService.StoreTokenAsync(null!);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentNullException>();
+        }
     }
 }

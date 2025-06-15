@@ -19,6 +19,8 @@ public class FileEntityConfiguration : IEntityTypeConfiguration<FileEntity>
             .HasMaxLength(255) // Example max length
             .HasAnnotation("SensitiveData", true); // Handle SensitiveData attribute
 
+        builder.Property(e => e.FileSize);
+
         // Define relationships
         // Add relationships as needed, for example:
         // builder.HasMany(e => e.RelatedEntities)
