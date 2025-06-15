@@ -36,16 +36,17 @@
 
 
     <ItemGroup>
-
-        <PackageReference Include="NSwag.AspNetCore"/>
+          <PackageReference Include="NSwag.AspNetCore"/>
         <PackageReference Include="Microsoft.Extensions.Compliance.Redaction"/>
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>        
         <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore"/>
-        <PackageReference Include="Microsoft.IdentityModel.Tokens"/>        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        <PackageReference Include="Microsoft.IdentityModel.Tokens"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />        
+        <PackageReference Include="Npgsql" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
         <PackageReference Include="Scalar.AspNetCore"/>
         <PackageReference Include="Serilog"/>
         <PackageReference Include="OpenTelemetry.Extensions.Hosting"/>

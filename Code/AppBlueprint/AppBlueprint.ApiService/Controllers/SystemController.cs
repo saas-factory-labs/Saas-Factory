@@ -7,7 +7,7 @@ namespace AppBlueprint.ApiService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SystemController : ControllerBase
+internal class SystemController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly ILogger<SystemController> _logger;
@@ -31,14 +31,14 @@ public class SystemController : ControllerBase
             _logger.LogInformation("Manually applying database migrations...");
             
             // Check database connection
-            if (await _dbContext.Database.CanConnectAsync())
+            if (await _dbContext.Database.CanConnectAsync().ConfigureAwait(false))
             {
-                await _dbContext.Database.MigrateAsync();
+                await _dbContext.Database.MigrateAsync().ConfigureAwait(false);
                 _logger.LogInformation("Migrations applied successfully");
                 
                 // Call the seeder as well
                 var dataSeeder = new DataSeeder(_dbContext);
-                await dataSeeder.SeedDatabaseAsync();
+                await dataSeeder.SeedDatabaseAsync().ConfigureAwait(false);
                 _logger.LogInformation("Database seeding completed successfully");
                 
                 return Ok(new { success = true, message = "Migrations applied successfully" });
@@ -61,7 +61,7 @@ public class SystemController : ControllerBase
     {
         try
         {
-            var canConnect = await _dbContext.Database.CanConnectAsync();
+            var canConnect = await _dbContext.Database.CanConnectAsync().ConfigureAwait(false);
             var connectionString = _dbContext.Database.GetConnectionString();
             
             // Mask the password in the connection string for security
@@ -72,7 +72,7 @@ public class SystemController : ControllerBase
             if (canConnect)
             {
                 // Check if there are pending migrations
-                var pendingMigrations = await _dbContext.Database.GetPendingMigrationsAsync();
+                var pendingMigrations = await _dbContext.Database.GetPendingMigrationsAsync().ConfigureAwait(false);
                 response = new 
                 {
                     canConnect,

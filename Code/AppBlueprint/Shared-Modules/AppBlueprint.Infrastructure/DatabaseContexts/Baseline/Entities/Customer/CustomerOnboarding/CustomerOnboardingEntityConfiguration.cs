@@ -3,26 +3,33 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.CustomerOnboarding;
 
-public class CustomerOnboardingEntityConfiguration : IEntityTypeConfiguration<CustomerOnboardingEntity>
+/// <summary>
+/// Entity configuration for CustomerOnboardingEntity defining table structure, relationships, and constraints.
+/// </summary>
+public sealed class CustomerOnboardingEntityConfiguration : IEntityTypeConfiguration<CustomerOnboardingEntity>
 {
     public void Configure(EntityTypeBuilder<CustomerOnboardingEntity> builder)
     {
-        // Define table name (if it needs to be different from default)
+        ArgumentNullException.ThrowIfNull(builder);
+
+        // Define table name
         builder.ToTable("CustomerOnboardings");
 
         // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        builder.HasKey(e => e.Id);
 
-        // Define properties
-        builder.Property(e => e)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100); // Example max length
+        // Indexes for performance
+        builder.HasIndex(e => e.Id).IsUnique();
 
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.CustomerOnboardingEntity)
-        //        .HasForeignKey(re => re.CustomerOnboardingEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        // Self-referencing relationship (if needed based on the CustomerOnboarding property)
+        // This seems to be a circular reference that might need to be removed or properly configured
+        // For now, commenting out until the entity design is clarified
+        
+        // Define relationships as needed based on actual entity requirements
+        // Example: if there are relationships to Customer or User entities
+        // builder.HasOne(e => e.Customer)
+        //     .WithMany()
+        //     .HasForeignKey(e => e.CustomerId)
+        //     .OnDelete(DeleteBehavior.Restrict);
     }
 }

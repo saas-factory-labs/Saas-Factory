@@ -42,7 +42,7 @@ public class IntegrationController : BaseController
     public async Task<ActionResult<IEnumerable<IntegrationResponse>>> GetIntegrations(
         CancellationToken cancellationToken)
     {
-        IEnumerable<IntegrationEntity> integrations = await _integrationRepository.GetAllAsync(cancellationToken);
+        IEnumerable<IntegrationEntity> integrations = await _integrationRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
         if (!integrations.Any()) return NotFound(new { Message = "No integrations found." });
 
         IEnumerable<IntegrationResponse> response = integrations.Select(integration => new IntegrationResponse
@@ -68,7 +68,7 @@ public class IntegrationController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(int id, CancellationToken cancellationToken)
     {
-        IntegrationEntity? integration = await _integrationRepository.GetByIdAsync(id, cancellationToken);
+        IntegrationEntity? integration = await _integrationRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
         if (integration is null) return NotFound(new { Message = $"Integration with ID {id} not found." });
 
         // var response = new IntegrationResponse
@@ -105,8 +105,8 @@ public class IntegrationController : BaseController
             // Status = integrationDto.Status
         };
 
-        await _integrationRepository.AddAsync(newIntegration, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _integrationRepository.AddAsync(newIntegration, cancellationToken).ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
         var response = new IntegrationResponse
         {
@@ -158,11 +158,11 @@ public class IntegrationController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        IntegrationEntity? existingIntegration = await _integrationRepository.GetByIdAsync(id, cancellationToken);
+        IntegrationEntity? existingIntegration = await _integrationRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
         if (existingIntegration is null) return NotFound(new { Message = $"Integration with ID {id} not found." });
 
-        await _integrationRepository.DeleteAsync(existingIntegration.Id, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _integrationRepository.DeleteAsync(existingIntegration.Id, cancellationToken).ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
         return NoContent();
     }

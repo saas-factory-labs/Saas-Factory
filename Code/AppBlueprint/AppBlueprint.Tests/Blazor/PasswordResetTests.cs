@@ -1,34 +1,33 @@
 using AppBlueprint.Domain.Baseline.Users;
 using AppBlueprint.UiKit.Components.Pages;
 using Bunit;
+using static Bunit.ComponentParameterFactory; // Added for Parameter()
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
 using Moq;
-using TUnit;
 
 namespace AppBlueprint.Tests.Blazor
 {
-    public class PasswordResetTests : BunitContext
+    internal class PasswordResetTests : Bunit.TestContext // Changed to internal
     {
         private readonly Mock<IUserService> _userServiceMock;
-        private readonly Mock<ISnackbar> _snackbarMock;
 
         public PasswordResetTests()
         {
             _userServiceMock = new Mock<IUserService>();
-            _snackbarMock = new Mock<ISnackbar>();
+            var snackbarMock = new Mock<ISnackbar>(); // Made local
 
             Services.AddSingleton(_userServiceMock.Object);
-            Services.AddSingleton(_snackbarMock.Object);
+            Services.AddSingleton(snackbarMock.Object); // Use local mock
             Services.AddMudServices();
         }
 
-        [Test]
+        [Test] // Changed from [TUnit.Core.Test]
         public void ForgotPasswordShouldRender()
         {
             // Act
-            var cut = Render<ForgotPassword>();
+            var cut = RenderComponent<ForgotPassword>(); // No parameters
 
             // Assert
             cut.MarkupMatches("*Forgot Password*");
@@ -36,12 +35,13 @@ namespace AppBlueprint.Tests.Blazor
             cut.MarkupMatches("*Reset Password*");
         }
 
-        [Test]
+        [Test] // Changed from [TUnit.Core.Test]
         public void ResetPasswordShouldRender()
         {
             // Act
-            var cut = Render<ResetPassword>(parameters => parameters
-                .Add(p => p.Token, "test-token"));
+            var cut = RenderComponent<ResetPassword>( // Using ComponentParameterFactory.Parameter
+                Parameter(nameof(ResetPassword.Token), "test-token")
+            );
 
             // Assert
             cut.MarkupMatches("*Reset Password*");
@@ -50,7 +50,7 @@ namespace AppBlueprint.Tests.Blazor
             cut.MarkupMatches("*Confirm Password*");
         }
 
-        [Test]
+        [Test] // Changed from [TUnit.Core.Test]
         public void EmailVerificationShouldRender()
         {
             // Arrange
@@ -58,9 +58,10 @@ namespace AppBlueprint.Tests.Blazor
                 .ReturnsAsync(true);
 
             // Act
-            var cut = Render<EmailVerification>(parameters => parameters
-                .Add(p => p.Token, "test-token")
-                .Add(p => p.UserId, 1));
+            var cut = RenderComponent<EmailVerification>( // Using ComponentParameterFactory.Parameter
+                Parameter(nameof(EmailVerification.Token), "test-token"),
+                Parameter(nameof(EmailVerification.UserId), 1)
+            );
 
             // Assert - initially should show loading
             cut.MarkupMatches("*Verifying your email*");

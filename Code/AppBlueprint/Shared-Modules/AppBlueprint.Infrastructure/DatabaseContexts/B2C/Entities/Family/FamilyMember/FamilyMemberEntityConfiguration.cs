@@ -3,15 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyMember;
 
-public class FamilyMemberEntityConfiguration : IEntityTypeConfiguration<FamilyMemberEntity>
+/// <summary>
+/// Entity configuration for FamilyMemberEntity defining table structure, relationships, and constraints.
+/// </summary>
+public sealed class FamilyMemberEntityConfiguration : IEntityTypeConfiguration<FamilyMemberEntity>
 {
     public void Configure(EntityTypeBuilder<FamilyMemberEntity> builder)
     {
-        // Define table name (if it needs to be different from default)
-        builder.ToTable("FamilyMembers");
+        ArgumentNullException.ThrowIfNull(builder);
 
-        // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        // Define table name
         builder.ToTable("FamilyMembers");
 
         // Primary Key
@@ -22,7 +23,15 @@ public class FamilyMemberEntityConfiguration : IEntityTypeConfiguration<FamilyMe
             .HasMaxLength(100);
 
         builder.Property(fm => fm.IsActive)
-            .IsRequired();
+            .IsRequired();        // Configure FirstName property (GDPR classification handled by data attribute)
+        builder.Property(fm => fm.FirstName)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        // Configure LastName property (GDPR classification handled by data attribute)
+        builder.Property(fm => fm.LastName)
+            .IsRequired()
+            .HasMaxLength(100);
 
         // Relationships
         builder.HasOne(fm => fm.User)
@@ -35,25 +44,9 @@ public class FamilyMemberEntityConfiguration : IEntityTypeConfiguration<FamilyMe
             .HasForeignKey(fm => fm.FamilyId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Indexes
-        builder.HasIndex(fm => fm.Id).IsUnique();
-
-        // Define properties
-        builder.Property(e => e)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100) // Example max length
-            .HasAnnotation("SensitiveData", true); // Handle SensitiveData attribute
-
-        builder.Property(e => e.LastName)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100) // Example max length
-            .HasAnnotation("SensitiveData", true); // Handle SensitiveData attribute
-
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.FamilyMemberEntity)
-        //        .HasForeignKey(re => re.FamilyMemberEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        // Indexes for performance and constraints
+        builder.HasIndex(fm => fm.UserId);
+        builder.HasIndex(fm => fm.FamilyId);
+        builder.HasIndex(fm => new { fm.FamilyId, fm.UserId }).IsUnique(); // Ensure unique family member per family
     }
 }

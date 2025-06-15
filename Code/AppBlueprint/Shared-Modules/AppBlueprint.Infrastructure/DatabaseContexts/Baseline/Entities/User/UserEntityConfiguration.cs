@@ -8,11 +8,25 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 {
     public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
-        builder.ToTable("Users");
-
-        // Primary key and unique index
+        builder.ToTable("Users");        // Primary key and indexes with standardized naming
         builder.HasKey(u => u.Id);
-        builder.HasIndex(u => u.Id).IsUnique();
+        builder.HasIndex(u => u.Id)
+            .IsUnique()
+            .HasDatabaseName("IX_Users_Id");
+
+        // Unique constraint on UserName for performance and data integrity
+        builder.HasIndex(u => u.UserName)
+            .IsUnique()
+            .HasDatabaseName("IX_Users_UserName");
+
+        // Email uniqueness constraint (addressing missing email uniqueness from analysis)
+        builder.HasIndex(u => u.Email)
+            .IsUnique()
+            .HasDatabaseName("IX_Users_Email");
+
+        // Performance index on IsActive for filtering
+        builder.HasIndex(u => u.IsActive)
+            .HasDatabaseName("IX_Users_IsActive");
 
         // Properties
         builder.Property(u => u.UserName)

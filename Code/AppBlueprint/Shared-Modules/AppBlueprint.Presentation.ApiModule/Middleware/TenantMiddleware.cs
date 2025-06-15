@@ -10,7 +10,7 @@ public class TenantMiddleware(RequestDelegate next)
             if (string.IsNullOrEmpty(tenantId))
             {
                 context.Response.StatusCode = 400; // Bad Request
-                await context.Response.WriteAsync("Tenant ID is required.");
+                await context.Response.WriteAsync("Tenant ID is required.").ConfigureAwait(false);
                 return;
             }
 

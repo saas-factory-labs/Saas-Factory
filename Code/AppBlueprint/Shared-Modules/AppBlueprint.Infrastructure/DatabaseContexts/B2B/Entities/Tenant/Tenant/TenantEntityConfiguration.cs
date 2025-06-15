@@ -48,30 +48,46 @@ public class TenantEntityConfiguration : IEntityTypeConfiguration<TenantEntity>
         builder.Property(e => e.CreatedAt)
             .IsRequired();
 
-        builder.Property(e => e.LastUpdatedAt);
-
-        // Relationships
+        builder.Property(e => e.LastUpdatedAt);        // Relationships with proper foreign key constraints
         builder.HasMany(e => e.ContactPersons)
             .WithOne()
             .HasForeignKey("TenantId")
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_ContactPersons_Tenants_TenantId");
 
         builder.HasOne(e => e.Customer)
             .WithOne()
-            .HasForeignKey<TenantEntity>("Id")
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey<TenantEntity>("CustomerId")
+            .OnDelete(DeleteBehavior.Restrict)
+            .HasConstraintName("FK_Tenants_Customers_CustomerId");
 
         builder.HasMany(e => e.Users)
-            .WithOne()
+            .WithOne(u => u.Tenant)
             .HasForeignKey("TenantId")
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_Users_Tenants_TenantId");
 
         builder.HasMany(e => e.Teams)
-            .WithOne()
-            .HasForeignKey("TenantId")
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithOne(t => t.Tenant)
+            .HasForeignKey(t => t.TenantId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_Teams_Tenants_TenantId");
 
-        builder.HasIndex(e => e.Name);
-        builder.HasIndex(e => e.Email).IsUnique();
+        // Performance indexes with standardized naming
+        builder.HasIndex(e => e.Name)
+            .HasDatabaseName("IX_Tenants_Name");
+            
+        builder.HasIndex(e => e.Email)
+            .IsUnique()
+            .HasDatabaseName("IX_Tenants_Email");
+            
+        builder.HasIndex(e => e.IsActive)
+            .HasDatabaseName("IX_Tenants_IsActive");
+            
+        builder.HasIndex(e => e.VatNumber)
+            .HasDatabaseName("IX_Tenants_VatNumber");
+            
+        builder.HasIndex(e => e.Country)
+            .HasDatabaseName("IX_Tenants_Country");
     }
 }

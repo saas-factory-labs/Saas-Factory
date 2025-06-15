@@ -13,7 +13,7 @@
         <PackageReference Include="System.CommandLine"/>
         <PackageReference Include="System.CommandLine.NamingConventionBinder"/>
         <PackageReference Include="System.CommandLine.Hosting"/>
-        <PackageReference Include="Spectre.Console"/>
+        <PackageReference Include="Spectre.Console" Version="0.50.0" />
         <PackageReference Include="Spectre.Console.Cli"/>
         <PackageReference Include="Npgsql"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
@@ -24,3 +24,4 @@
     </ItemGroup>
 
 </Project>
+

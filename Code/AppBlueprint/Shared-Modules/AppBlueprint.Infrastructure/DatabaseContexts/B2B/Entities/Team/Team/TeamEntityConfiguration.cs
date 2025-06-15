@@ -7,6 +7,8 @@ public class TeamEntityConfiguration : IEntityTypeConfiguration<TeamEntity>
 {
     public void Configure(EntityTypeBuilder<TeamEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         // Table mapping
         builder.ToTable("Teams");
 
@@ -27,29 +29,33 @@ public class TeamEntityConfiguration : IEntityTypeConfiguration<TeamEntity>
         builder.Property(t => t.CreatedAt)
             .IsRequired();
 
-        builder.Property(t => t.LastUpdatedAt);
-
-        // Relationships
-        // builder.HasOne(t => t.Owner)
-        //     .WithMany()
-        //     .HasForeignKey(t => t.OwnerId)
-        //     .OnDelete(DeleteBehavior.Restrict);
-
+        builder.Property(t => t.LastUpdatedAt);        // Relationships with proper foreign key constraints
         builder.HasOne(t => t.Tenant)
-            .WithMany()
+            .WithMany(tenant => tenant.Teams)
             .HasForeignKey(t => t.TenantId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_Teams_Tenants_TenantId");
 
         builder.HasMany(t => t.TeamMembers)
-            .WithOne()
+            .WithOne(tm => tm.Team)
             .HasForeignKey(tm => tm.TeamId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_TeamMembers_Teams_TeamId");
 
         builder.HasMany(t => t.TeamInvites)
             .WithOne()
-            .HasForeignKey(ti => ti.TeamId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasForeignKey("TeamId")
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_TeamInvites_Teams_TeamId");
 
-        builder.HasIndex(t => t.Name);
+        // Performance indexes with standardized naming
+        builder.HasIndex(t => t.Name)
+            .HasDatabaseName("IX_Teams_Name");
+            
+        builder.HasIndex(t => t.TenantId)
+            .HasDatabaseName("IX_Teams_TenantId");
+            
+        builder.HasIndex(t => t.IsActive)
+            .HasDatabaseName("IX_Teams_IsActive");
     }
 }

@@ -1,19 +1,13 @@
-using System;
-using System.Threading.Tasks;
 using AppBlueprint.Infrastructure;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.Presentation.ApiModule.Middleware;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
 
 namespace AppBlueprint.ApiService;
 
-public static class Program // Make class static
+internal static class Program // Make class static
 {
     public static async Task Main(string[] args) // Make Main static
     {

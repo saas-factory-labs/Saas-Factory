@@ -16,9 +16,9 @@ public class DataSeeder(ApplicationDbContext dbContext)
 {
     public async Task SeedDatabaseAsync(CancellationToken cancellationToken = default)
     {
-        await DeleteAllRowsFromAllTablesAsync(cancellationToken);
+        await DeleteAllRowsFromAllTablesAsync(cancellationToken).ConfigureAwait(false);
 
-        if (await AreAllEntitiesSeededAsync(cancellationToken))
+        if (await AreAllEntitiesSeededAsync(cancellationToken).ConfigureAwait(false))
         {
             Console.WriteLine("Database already seeded.");
             return;
@@ -114,7 +114,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
 
     private async Task SeedLanguagesAsync(CancellationToken cancellationToken)
     {
-        if (await dbContext.Languages.AnyAsync(cancellationToken)) return;
+        if (await dbContext.Languages.AnyAsync(cancellationToken).ConfigureAwait(false)) return;
 
         var languages = new List<LanguageEntity>
         {
@@ -124,14 +124,14 @@ public class DataSeeder(ApplicationDbContext dbContext)
             new() { Name = "French", Code = "fr" }
         };
 
-        await dbContext.Languages.AddRangeAsync(languages, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.Languages.AddRangeAsync(languages, cancellationToken).ConfigureAwait(false);
+        await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         Console.WriteLine("Languages seeded.");
     }
 
     private async Task SeedCountriesAsync(CancellationToken cancellationToken)
     {
-        if (await dbContext.Countries.AnyAsync(cancellationToken)) return;
+        if (await dbContext.Countries.AnyAsync(cancellationToken).ConfigureAwait(false)) return;
 
         var countries = new List<CountryEntity>
         {
@@ -141,28 +141,28 @@ public class DataSeeder(ApplicationDbContext dbContext)
             }
         };
 
-        await dbContext.Countries.AddRangeAsync(countries, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.Countries.AddRangeAsync(countries, cancellationToken).ConfigureAwait(false);
+        await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         Console.WriteLine("Countries seeded.");
     }
 
     private async Task SeedAccountsAsync(CancellationToken cancellationToken)
     {
-        if (await dbContext.Accounts.AnyAsync(cancellationToken)) return;
+        if (await dbContext.Accounts.AnyAsync(cancellationToken).ConfigureAwait(false)) return;
 
         Faker<AccountEntity> faker = new Faker<AccountEntity>()
             .RuleFor(a => a.Email, f => f.Internet.Email())
             .RuleFor(a => a.CustomerType, f => CustomerType.Business);
 
         List<AccountEntity> accounts = faker.Generate(10);
-        await dbContext.Accounts.AddRangeAsync(accounts, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.Accounts.AddRangeAsync(accounts, cancellationToken).ConfigureAwait(false);
+        await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         Console.WriteLine("Accounts seeded.");
     }
 
     private async Task SeedSubscriptionsAsync(CancellationToken cancellationToken)
     {
-        if (await dbContext.Subscriptions.AnyAsync(cancellationToken)) return;
+        if (await dbContext.Subscriptions.AnyAsync(cancellationToken).ConfigureAwait(false)) return;
 
         Faker<SubscriptionEntity> faker = new Faker<SubscriptionEntity>()
             .RuleFor(s => s.CreatedAt, f => f.Date.Past())
@@ -170,8 +170,8 @@ public class DataSeeder(ApplicationDbContext dbContext)
             .RuleFor(s => s.Name, f => f.Random.AlphaNumeric(8));
 
         List<SubscriptionEntity> subscriptions = faker.Generate(5);
-        await dbContext.Subscriptions.AddRangeAsync(subscriptions, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.Subscriptions.AddRangeAsync(subscriptions, cancellationToken).ConfigureAwait(false);
+        await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         Console.WriteLine("Subscriptions seeded.");
     }
 
@@ -192,12 +192,12 @@ public class DataSeeder(ApplicationDbContext dbContext)
 
     private async Task SeedRolesAsync(CancellationToken cancellationToken)
     {
-        if (await dbContext.Roles.AnyAsync(cancellationToken)) return;
+        if (await dbContext.Roles.AnyAsync(cancellationToken).ConfigureAwait(false)) return;
 
         var roles = new List<RoleEntity> { new() { Name = "Admin" }, new() { Name = "User" } };
 
-        await dbContext.Roles.AddRangeAsync(roles, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.Roles.AddRangeAsync(roles, cancellationToken).ConfigureAwait(false);
+        await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         Console.WriteLine("Roles seeded.");
     }
 
@@ -217,10 +217,10 @@ public class DataSeeder(ApplicationDbContext dbContext)
 
     private async Task<bool> AreAllEntitiesSeededAsync(CancellationToken cancellationToken)
     {
-        return await dbContext.Languages.AnyAsync(cancellationToken)
-               && await dbContext.Countries.AnyAsync(cancellationToken)
-               && await dbContext.Accounts.AnyAsync(cancellationToken)
-               && await dbContext.Subscriptions.AnyAsync(cancellationToken);
+        return await dbContext.Languages.AnyAsync(cancellationToken).ConfigureAwait(false)
+               && await dbContext.Countries.AnyAsync(cancellationToken).ConfigureAwait(false)
+               && await dbContext.Accounts.AnyAsync(cancellationToken).ConfigureAwait(false)
+               && await dbContext.Subscriptions.AnyAsync(cancellationToken).ConfigureAwait(false);
         //    && await dbContext.Organizations.AnyAsync(cancellationToken)
         //    && await dbContext.Roles.AnyAsync(cancellationToken)
         //    && await dbContext.ApiKeys.AnyAsync(cancellationToken);

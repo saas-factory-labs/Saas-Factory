@@ -4,26 +4,36 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class TenantUserRoleEntityConfiguration : IEntityTypeConfiguration<AccountEntity>
+/// <summary>
+/// Entity configuration for AccountEntity defining table structure, relationships, and constraints.
+/// Provides proper indexing, constraints, and standardized table naming conventions.
+/// </summary>
+public sealed class AccountEntityConfiguration : IEntityTypeConfiguration<AccountEntity>
 {
     public void Configure(EntityTypeBuilder<AccountEntity> builder)
     {
-        // Define table name (if it needs to be different from default)
+        ArgumentNullException.ThrowIfNull(builder);
+
+        // Define table name with standardized naming convention
         builder.ToTable("Accounts");
 
         // Define primary key
-        builder.HasKey(e => e.AccountId); // Assuming the entity has an "Id" property
+        builder.HasKey(e => e.AccountId);
 
-        // Define properties
-        builder.Property(e => e.IsActive) // Example property
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100); // Example max length
+        // Properties with proper constraints and defaults
+        builder.Property(e => e.IsActive)
+            .IsRequired()
+            .HasDefaultValue(true);
 
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.AccountEntity)
-        //        .HasForeignKey(re => re.AccountEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        // Performance indexes with standardized naming
+        builder.HasIndex(e => e.AccountId)
+            .IsUnique()
+            .HasDatabaseName("IX_Accounts_AccountId");
+        
+        builder.HasIndex(e => e.IsActive)
+            .HasDatabaseName("IX_Accounts_IsActive");
+            
+        // Additional indexes can be added based on AccountEntity properties
+        // Foreign key relationships will be configured as AccountEntity structure evolves
     }
 }

@@ -54,7 +54,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Team.GetTeam.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.TeamResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.TeamResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.TeamResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.TeamResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets a team by ID.

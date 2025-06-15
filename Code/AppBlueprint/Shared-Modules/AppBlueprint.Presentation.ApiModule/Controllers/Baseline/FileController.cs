@@ -37,7 +37,7 @@ public class FileController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(CancellationToken cancellationToken)
     {
-        IEnumerable<FileEntity> files = await _fileRepository.GetAllAsync(cancellationToken);
+        IEnumerable<FileEntity> files = await _fileRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
         if (!files.Any()) return NotFound(new { Message = "No files found." });
 
         IEnumerable<FileResponse> response = files.Select(file => new FileResponse());
@@ -55,7 +55,7 @@ public class FileController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(int id, CancellationToken cancellationToken)
     {
-        FileEntity? file = await _fileRepository.GetByIdAsync(id, cancellationToken);
+        FileEntity? file = await _fileRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
         if (file is null) return NotFound(new { Message = $"File with ID {id} not found." });
 
         var response = new FileResponse
@@ -83,8 +83,8 @@ public class FileController : BaseController
             FileName = fileDto.FileName
         };
 
-        await _fileRepository.AddAsync(newFile, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _fileRepository.AddAsync(newFile, cancellationToken).ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
         return CreatedAtAction(nameof(Get), new { id = newFile.Id }, newFile);
     }
@@ -107,8 +107,8 @@ public class FileController : BaseController
         existingFile.FileName = fileDto.FileName;
 
 
-        await _fileRepository.UpdateAsync(existingFile, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _fileRepository.UpdateAsync(existingFile, cancellationToken).ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
         return NoContent();
     }
@@ -123,11 +123,11 @@ public class FileController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken);
+        FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
         if (existingFile is null) return NotFound(new { Message = $"File with ID {id} not found." });
 
-        _fileRepository.DeleteAsync(existingFile, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _fileRepository.DeleteAsync(existingFile, cancellationToken).ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
         return NoContent();
     }

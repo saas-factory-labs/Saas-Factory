@@ -21,8 +21,6 @@
         <PackageReference Include="coverlet.collector" />
         <PackageReference Include="Moq" />
         <PackageReference Include="MudBlazor" />
-        <PackageReference Include="xunit" />
-        <PackageReference Include="xunit.runner.visualstudio" />
         <PackageReference Include="System.Text.Json" />
         <PackageReference Include="TUnit" />
         <PackageReference Include="TUnit.Assertions" />
