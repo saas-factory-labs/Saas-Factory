@@ -3,10 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Account;
 
-public class AccountEntityConfiguration : IEntityTypeConfiguration<AccountEntity>
+/// <summary>
+/// Entity configuration for AccountEntity defining table structure, relationships, and constraints.
+/// Manages customer account information and billing details.
+/// </summary>
+public sealed class AccountEntityConfiguration : IEntityTypeConfiguration<AccountEntity>
 {
     public void Configure(EntityTypeBuilder<AccountEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         // Table Mapping
         builder.ToTable("Accounts");
 

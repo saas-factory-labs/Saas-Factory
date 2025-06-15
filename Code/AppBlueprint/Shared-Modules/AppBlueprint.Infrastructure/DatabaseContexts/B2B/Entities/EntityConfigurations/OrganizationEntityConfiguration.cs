@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.EntityConfigurations;
 
-public class OrganizationEntityConfiguration : IEntityTypeConfiguration<OrganizationEntity>
-{
-    public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
+public sealed class OrganizationEntityConfiguration : IEntityTypeConfiguration<OrganizationEntity>
+{    public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ToTable("Organizations"); // Corrected table name
         builder.HasKey(o => o.Id);
 

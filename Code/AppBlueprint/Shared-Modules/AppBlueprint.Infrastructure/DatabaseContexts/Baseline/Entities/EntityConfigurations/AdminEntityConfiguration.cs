@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class AdminEntityConfiguration : IEntityTypeConfiguration<AdminEntity>
+public sealed class AdminEntityConfiguration : IEntityTypeConfiguration<AdminEntity>
 {
     public void Configure(EntityTypeBuilder<AdminEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ToTable("Admins");
         builder.HasKey(e => e.AccountId);
 

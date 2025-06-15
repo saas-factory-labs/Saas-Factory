@@ -3,29 +3,58 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement.EntityConfigurations;
 
-public class FileEntityConfiguration : IEntityTypeConfiguration<FileEntity>
+/// <summary>
+/// Entity configuration for FileEntity defining table structure, relationships, and constraints.
+/// </summary>
+public sealed class FileEntityConfiguration : IEntityTypeConfiguration<FileEntity>
 {
     public void Configure(EntityTypeBuilder<FileEntity> builder)
     {
-        // Define table name (if it needs to be different from default)
+        ArgumentNullException.ThrowIfNull(builder);
+
+        // Table mapping with standardized naming
         builder.ToTable("Files");
 
-        // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        // Primary key
+        builder.HasKey(e => e.Id);
 
-        // Define properties
-        builder.Property(e => e.FileName) // Example property
-            .IsRequired() // Example property requirement
-            .HasMaxLength(255) // Example max length
-            .HasAnnotation("SensitiveData", true); // Handle SensitiveData attribute
+        // Properties with validation and GDPR compliance
+        builder.Property(e => e.FileName)
+            .IsRequired()
+            .HasMaxLength(255)
+            .HasAnnotation("SensitiveData", true);
 
-        builder.Property(e => e.FileSize);
+        builder.Property(e => e.FileSize)
+            .IsRequired();
 
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.FileEntity)
-        //        .HasForeignKey(re => re.FileEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        builder.Property(e => e.FileExtension)
+            .IsRequired()
+            .HasMaxLength(10);
+
+        builder.Property(e => e.FilePath)
+            .IsRequired()
+            .HasMaxLength(500);
+
+        builder.Property(e => e.OwnerId)
+            .IsRequired();
+
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.UpdatedAt)
+            .IsRequired();
+
+        // Performance indexes with standardized naming
+        builder.HasIndex(e => e.FileName)
+            .HasDatabaseName("IX_Files_FileName");
+
+        builder.HasIndex(e => e.OwnerId)
+            .HasDatabaseName("IX_Files_OwnerId");
+
+        builder.HasIndex(e => e.FileExtension)
+            .HasDatabaseName("IX_Files_FileExtension");
+
+        builder.HasIndex(e => e.CreatedAt)
+            .HasDatabaseName("IX_Files_CreatedAt");
     }
 }

@@ -3,10 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailInvite;
 
-public class EmailInviteEntityConfiguration : IEntityTypeConfiguration<EmailInviteEntity>
+/// <summary>
+/// Entity configuration for EmailInviteEntity defining table structure, relationships, and constraints.
+/// Manages email invitation system and token validation.
+/// </summary>
+public sealed class EmailInviteEntityConfiguration : IEntityTypeConfiguration<EmailInviteEntity>
 {
     public void Configure(EntityTypeBuilder<EmailInviteEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ToTable("EmailInvites");
 
         builder.HasKey(e => e.Id);

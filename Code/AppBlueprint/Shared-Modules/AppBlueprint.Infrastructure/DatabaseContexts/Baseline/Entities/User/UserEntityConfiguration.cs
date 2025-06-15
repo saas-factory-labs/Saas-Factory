@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
-{
-    public void Configure(EntityTypeBuilder<UserEntity> builder)
+public sealed class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
+{    public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
-        builder.ToTable("Users");        // Primary key and indexes with standardized naming
+        ArgumentNullException.ThrowIfNull(builder);
+
+        builder.ToTable("Users");// Primary key and indexes with standardized naming
         builder.HasKey(u => u.Id);
         builder.HasIndex(u => u.Id)
             .IsUnique()

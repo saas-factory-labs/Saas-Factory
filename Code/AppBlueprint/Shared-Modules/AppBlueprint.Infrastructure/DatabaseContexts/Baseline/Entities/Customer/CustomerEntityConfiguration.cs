@@ -3,33 +3,75 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 
-public class CustomerEntityConfiguration : IEntityTypeConfiguration<CustomerEntity>
+/// <summary>
+/// Entity configuration for CustomerEntity defining table structure, relationships, and constraints.
+/// </summary>
+public sealed class CustomerEntityConfiguration : IEntityTypeConfiguration<CustomerEntity>
 {
     public void Configure(EntityTypeBuilder<CustomerEntity> builder)
     {
-        // Define table name (if it needs to be different from default)
+        ArgumentNullException.ThrowIfNull(builder);
+
+        // Table mapping with standardized naming
         builder.ToTable("Customers");
 
-        // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        // Primary key
+        builder.HasKey(e => e.Id);
 
-        // Define properties
+        // Properties with validation
         builder.Property(e => e.Type)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100); // Example max length
+            .HasMaxLength(50);
 
-        // Handle SensitiveData attribute
         builder.Property(e => e.VatNumber)
-            .HasAnnotation("SensitiveData", true);
+            .HasMaxLength(50);
 
-        // builder.HasIndex(e => e.); // Example index
-        // builder.hasIndex(e => e.PhoneNumber);
 
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.CustomerEntity)
-        //        .HasForeignKey(re => re.CustomerEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        builder.Property(e => e.VatId)
+            .HasMaxLength(50);
+            
+
+        builder.Property(e => e.Country)
+            .HasMaxLength(100);
+
+        builder.Property(e => e.StripeCustomerId)
+            .HasMaxLength(100);
+
+        builder.Property(e => e.StripeSubscriptionId)
+            .HasMaxLength(100);
+
+        builder.Property(e => e.CurrentlyAtOnboardingFlowStep)
+            .IsRequired();
+
+        // Enum configuration
+        builder.Property(e => e.CustomerType)
+            .HasConversion<int>()
+            .IsRequired();
+
+        // Relationships
+        builder.HasMany(c => c.Tenants)
+            .WithOne(t => t.Customer)
+            .HasForeignKey("CustomerId")
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_Tenants_Customers_CustomerId");
+
+        builder.HasMany(c => c.ContactPersons)
+            .WithOne()
+            .HasForeignKey("CustomerId")
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_ContactPersons_Customers_CustomerId");
+
+        // Performance indexes with standardized naming
+        builder.HasIndex(e => e.CustomerType)
+            .HasDatabaseName("IX_Customers_CustomerType");
+
+        builder.HasIndex(e => e.Type)
+            .HasDatabaseName("IX_Customers_Type");
+
+        builder.HasIndex(e => e.StripeCustomerId)
+            .IsUnique()
+            .HasDatabaseName("IX_Customers_StripeCustomerId");
+
+        builder.HasIndex(e => e.VatNumber)
+            .HasDatabaseName("IX_Customers_VatNumber");
     }
 }

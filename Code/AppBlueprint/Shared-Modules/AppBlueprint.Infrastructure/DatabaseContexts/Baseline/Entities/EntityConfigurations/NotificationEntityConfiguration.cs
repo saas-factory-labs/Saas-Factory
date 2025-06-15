@@ -3,26 +3,61 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class NotificationEntityConfiguration : IEntityTypeConfiguration<NotificationEntity>
+/// <summary>
+/// Entity configuration for NotificationEntity defining table structure, relationships, and constraints.
+/// </summary>
+public sealed class NotificationEntityConfiguration : IEntityTypeConfiguration<NotificationEntity>
 {
     public void Configure(EntityTypeBuilder<NotificationEntity> builder)
     {
-        // Define table name (if it needs to be different from default)
+        ArgumentNullException.ThrowIfNull(builder);
+
+        // Table mapping with standardized naming
         builder.ToTable("Notifications");
 
-        // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        // Primary key
+        builder.HasKey(e => e.Id);
 
-        // Define properties
+        // Properties with validation
         builder.Property(e => e.Title)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100); // Example max length
+            .IsRequired()
+            .HasMaxLength(200);
 
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.NotificationEntity)
-        //        .HasForeignKey(re => re.NotificationEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        builder.Property(e => e.Message)
+            .IsRequired()
+            .HasMaxLength(1000);
+
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.IsRead)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(e => e.OwnerId)
+            .IsRequired();
+
+        builder.Property(e => e.UserId)
+            .IsRequired();
+
+        // Relationships
+        builder.HasOne(n => n.User)
+            .WithMany()
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_Notifications_Users_UserId");
+
+        // Performance indexes with standardized naming
+        builder.HasIndex(e => e.UserId)
+            .HasDatabaseName("IX_Notifications_UserId");
+
+        builder.HasIndex(e => e.OwnerId)
+            .HasDatabaseName("IX_Notifications_OwnerId");
+
+        builder.HasIndex(e => e.IsRead)
+            .HasDatabaseName("IX_Notifications_IsRead");
+
+        builder.HasIndex(e => e.CreatedAt)
+            .HasDatabaseName("IX_Notifications_CreatedAt");
     }
 }

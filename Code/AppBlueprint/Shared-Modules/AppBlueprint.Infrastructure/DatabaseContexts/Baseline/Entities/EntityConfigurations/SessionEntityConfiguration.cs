@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Session.EntityConfigurations;
 
-public class SessionEntityConfiguration : IEntityTypeConfiguration<SessionEntity>
+public sealed class SessionEntityConfiguration : IEntityTypeConfiguration<SessionEntity>
 {
     public void Configure(EntityTypeBuilder<SessionEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ToTable("Sessions");
         builder.HasKey(e => e.Id);
 

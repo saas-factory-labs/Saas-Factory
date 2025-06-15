@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 
-public class TeamEntityConfiguration : IEntityTypeConfiguration<TeamEntity>
+public sealed class TeamEntityConfiguration : IEntityTypeConfiguration<TeamEntity>
 {
     public void Configure(EntityTypeBuilder<TeamEntity> builder)
     {

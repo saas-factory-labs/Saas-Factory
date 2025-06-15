@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 
-public class TenantEntityConfiguration : IEntityTypeConfiguration<TenantEntity>
+public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantEntity>
 {
     public void Configure(EntityTypeBuilder<TenantEntity> builder)
     {

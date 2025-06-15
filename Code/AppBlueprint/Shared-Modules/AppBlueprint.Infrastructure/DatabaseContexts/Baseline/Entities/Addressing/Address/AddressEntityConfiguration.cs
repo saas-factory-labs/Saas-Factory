@@ -3,10 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.EntityConfigurations;
 
-public class AddressEntityConfiguration : IEntityTypeConfiguration<AddressEntity>
+/// <summary>
+/// Entity configuration for AddressEntity defining table structure, relationships, and constraints.
+/// Manages address information with geographic and postal data.
+/// </summary>
+public sealed class AddressEntityConfiguration : IEntityTypeConfiguration<AddressEntity>
 {
     public void Configure(EntityTypeBuilder<AddressEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         // Table Mapping
         builder.ToTable("Addresses");
 

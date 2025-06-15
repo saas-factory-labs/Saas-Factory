@@ -3,28 +3,45 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class PermissionEntityConfiguration : IEntityTypeConfiguration<PermissionEntity>
+/// <summary>
+/// Entity configuration for PermissionEntity defining authorization permission schema and constraints.
+/// </summary>
+public sealed class PermissionEntityConfiguration : IEntityTypeConfiguration<PermissionEntity>
 {
     public void Configure(EntityTypeBuilder<PermissionEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Define table name (if it needs to be different from default)
+        // Table mapping with standardized naming
         builder.ToTable("Permissions");
 
-        // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        // Primary key
+        builder.HasKey(e => e.Id)
+            .HasName("PK_Permissions");
 
-        // Define properties
+        // Properties with validation
         builder.Property(e => e.Name)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100); // Example max length
+            .IsRequired()
+            .HasMaxLength(100)
+            .HasComment("The permission name (e.g., 'read:users', 'write:documents')");
 
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.PermissionEntity)
-        //        .HasForeignKey(re => re.PermissionEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        builder.Property(e => e.Description)
+            .HasMaxLength(500)
+            .HasComment("Optional description of what this permission allows");
+
+        builder.Property(e => e.CreatedAt)
+            .IsRequired()
+            .HasComment("Timestamp when the permission was created");
+
+        builder.Property(e => e.LastUpdatedAt)
+            .HasComment("Timestamp when the permission was last modified");
+
+        // Performance indexes with standardized naming
+        builder.HasIndex(e => e.Name)
+            .IsUnique()
+            .HasDatabaseName("IX_Permissions_Name");
+
+        builder.HasIndex(e => e.CreatedAt)
+            .HasDatabaseName("IX_Permissions_CreatedAt");
     }
 }

@@ -3,10 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
 
-public class ProfileEntityConfiguration : IEntityTypeConfiguration<ProfileEntity>
+/// <summary>
+/// Entity configuration for ProfileEntity defining table structure, relationships, and constraints.
+/// Manages user profile information and personal data.
+/// </summary>
+public sealed class ProfileEntityConfiguration : IEntityTypeConfiguration<ProfileEntity>
 {
     public void Configure(EntityTypeBuilder<ProfileEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ToTable("Profiles");
 
         builder.HasKey(e => e.Id);

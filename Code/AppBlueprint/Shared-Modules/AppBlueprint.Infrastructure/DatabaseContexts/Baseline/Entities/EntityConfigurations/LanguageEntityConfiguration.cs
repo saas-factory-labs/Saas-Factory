@@ -3,37 +3,37 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class LanguageEntityConfiguration : IEntityTypeConfiguration<LanguageEntity>
+/// <summary>
+/// Entity configuration for LanguageEntity defining table structure, relationships, and constraints.
+/// </summary>
+public sealed class LanguageEntityConfiguration : IEntityTypeConfiguration<LanguageEntity>
 {
     public void Configure(EntityTypeBuilder<LanguageEntity> builder)
     {
-        // Define table name (if it needs to be different from default)
+        ArgumentNullException.ThrowIfNull(builder);
+
+        // Table mapping with standardized naming
         builder.ToTable("Languages");
 
-        // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        // Primary key
+        builder.HasKey(e => e.Id);
 
-        // Define properties
+        // Properties with validation
         builder.Property(e => e.Name)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(200); // Example max length
+            .IsRequired()
+            .HasMaxLength(200);
 
         builder.Property(e => e.Code)
             .IsRequired()
             .HasMaxLength(20);
 
-        builder.HasIndex(e => e.Code) // Example index
-            .IsUnique();
+        // Performance indexes with standardized naming and uniqueness constraints
+        builder.HasIndex(e => e.Code)
+            .IsUnique()
+            .HasDatabaseName("IX_Languages_Code");
 
-        builder.HasIndex(e => e.Name) // Example index
-            .IsUnique();
-
-
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.LanguageEntity)
-        //        .HasForeignKey(re => re.LanguageEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        builder.HasIndex(e => e.Name)
+            .IsUnique()
+            .HasDatabaseName("IX_Languages_Name");
     }
 }

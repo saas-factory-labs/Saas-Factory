@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class TeamInviteEntityConfiguration : IEntityTypeConfiguration<TeamInviteEntity>
-{
-    public void Configure(EntityTypeBuilder<TeamInviteEntity> builder)
+public sealed class TeamInviteEntityConfiguration : IEntityTypeConfiguration<TeamInviteEntity>
+{    public void Configure(EntityTypeBuilder<TeamInviteEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         // Table Mapping
         builder.ToTable("TeamInvites");
 

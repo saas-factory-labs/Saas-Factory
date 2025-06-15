@@ -3,10 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Organization;
 
-public class OrganizationEntityConfiguration : IEntityTypeConfiguration<OrganizationEntity>
+/// <summary>
+/// Entity configuration for baseline OrganizationEntity defining table structure, relationships, and constraints.
+/// Manages baseline customer organization information.
+/// </summary>
+public sealed class OrganizationEntityConfiguration : IEntityTypeConfiguration<OrganizationEntity>
 {
     public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         // Table Mapping
         builder.ToTable("Organizations");
 

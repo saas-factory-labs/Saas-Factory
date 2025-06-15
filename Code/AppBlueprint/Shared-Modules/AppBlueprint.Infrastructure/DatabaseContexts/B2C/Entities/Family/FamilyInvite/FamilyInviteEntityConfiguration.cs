@@ -4,10 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Family.FamilyInvite;
 
-public class FamilyInviteEntityConfiguration : IEntityTypeConfiguration<FamilyInviteEntity>
+/// <summary>
+/// Entity configuration for FamilyInviteEntity defining table structure, relationships, and constraints.
+/// Manages family invitation system for B2C scenarios.
+/// </summary>
+public sealed class FamilyInviteEntityConfiguration : IEntityTypeConfiguration<FamilyInviteEntity>
 {
     public void Configure(EntityTypeBuilder<FamilyInviteEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         // Table Mapping
         builder.ToTable("FamilyInvites");
 

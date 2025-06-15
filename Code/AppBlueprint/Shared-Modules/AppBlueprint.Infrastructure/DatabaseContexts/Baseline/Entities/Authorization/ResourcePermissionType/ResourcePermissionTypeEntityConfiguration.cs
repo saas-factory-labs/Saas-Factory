@@ -4,10 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class ResourcePermissionTypeEntityConfiguration : IEntityTypeConfiguration<ResourcePermissionTypeEntity>
+/// <summary>
+/// Entity configuration for ResourcePermissionTypeEntity defining table structure, relationships, and constraints.
+/// Manages resource permission type definitions and authorization rules.
+/// </summary>
+public sealed class ResourcePermissionTypeEntityConfiguration : IEntityTypeConfiguration<ResourcePermissionTypeEntity>
 {
     public void Configure(EntityTypeBuilder<ResourcePermissionTypeEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ToTable("ResourcePermissionTypes");
 
         builder.HasKey(e => e.Id);

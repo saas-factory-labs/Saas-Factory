@@ -4,10 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.EntityConfigurations;
 
-public class FamilyEntityConfiguration : IEntityTypeConfiguration<FamilyEntity>
+/// <summary>
+/// Entity configuration for FamilyEntity defining table structure, relationships, and constraints.
+/// Supports B2C family management and organization.
+/// </summary>
+public sealed class FamilyEntityConfiguration : IEntityTypeConfiguration<FamilyEntity>
 {
     public void Configure(EntityTypeBuilder<FamilyEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         // Table mapping
         builder.ToTable("Families");
 

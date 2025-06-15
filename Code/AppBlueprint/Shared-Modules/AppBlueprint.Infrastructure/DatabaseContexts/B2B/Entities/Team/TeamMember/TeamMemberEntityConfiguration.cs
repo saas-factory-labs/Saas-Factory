@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
 
-public class TeamMemberEntityConfiguration : IEntityTypeConfiguration<TeamMemberEntity>
-{
-    public void Configure(EntityTypeBuilder<TeamMemberEntity> builder)
+public sealed class TeamMemberEntityConfiguration : IEntityTypeConfiguration<TeamMemberEntity>
+{    public void Configure(EntityTypeBuilder<TeamMemberEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         // Primary Key
         builder.HasKey(e => e.Id);
 

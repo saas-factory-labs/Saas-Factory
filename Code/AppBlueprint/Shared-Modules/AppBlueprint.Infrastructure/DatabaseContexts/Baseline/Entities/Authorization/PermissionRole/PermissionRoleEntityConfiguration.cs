@@ -3,26 +3,45 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class PermissionRoleEntityConfiguration : IEntityTypeConfiguration<PermissionRoleEntity>
+public sealed class PermissionRoleEntityConfiguration : IEntityTypeConfiguration<PermissionRoleEntity>
 {
     public void Configure(EntityTypeBuilder<PermissionRoleEntity> builder)
     {
-        // Define table name (if it needs to be different from default)
+        ArgumentNullException.ThrowIfNull(builder);
+
+        // Table mapping with standardized naming
         builder.ToTable("PermissionRoles");
 
-        // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        // Primary key
+        builder.HasKey(e => e.Id);
 
-        // Define properties
-        // builder.Property(e => e.)
-        //     .IsRequired()           // Example property requirement
-        //     .HasMaxLength(100);     // Example max length
+        // Properties with validation
+        builder.Property(e => e.RoleId)
+            .IsRequired();
 
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.PermissionRoleEntity)
-        //        .HasForeignKey(re => re.PermissionRoleEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        // Relationships for many-to-many Permission-Role mapping
+        builder.HasOne(pr => pr.Permission)
+            .WithMany()
+            .HasForeignKey("PermissionId")
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_PermissionRoles_Permissions_PermissionId");
+
+        builder.HasOne(pr => pr.Role)
+            .WithMany()
+            .HasForeignKey(pr => pr.RoleId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_PermissionRoles_Roles_RoleId");
+
+        // Performance indexes with standardized naming
+        builder.HasIndex("PermissionId")
+            .HasDatabaseName("IX_PermissionRoles_PermissionId");
+
+        builder.HasIndex(pr => pr.RoleId)
+            .HasDatabaseName("IX_PermissionRoles_RoleId");
+
+        // Unique constraint to prevent duplicate permission-role assignments
+        builder.HasIndex(new string[] { "PermissionId", "RoleId" })
+            .IsUnique()
+            .HasDatabaseName("UX_PermissionRoles_PermissionId_RoleId");
     }
 }
