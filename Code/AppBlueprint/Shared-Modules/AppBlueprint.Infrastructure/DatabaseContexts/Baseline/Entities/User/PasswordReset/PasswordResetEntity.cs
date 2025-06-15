@@ -1,10 +1,13 @@
+using AppBlueprint.Application.Attributes;
+using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
-public class PasswordResetEntity
+public sealed class PasswordResetEntity
 {
     public int Id { get; set; }
+    
     public required string Token { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? LastUpdatedAt { get; set; }

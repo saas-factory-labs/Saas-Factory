@@ -1,10 +1,17 @@
-﻿namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+﻿using AppBlueprint.Application.Attributes;
+using AppBlueprint.Application.Enums;
 
-public class SessionEntity
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+
+public sealed class SessionEntity
 {
     public int Id { get; set; }
 
-    public string SessionKey { get; set; }
-    public string SessionData { get; set; }
+    [DataClassification(GDPRType.Sensitive)]
+    public required string SessionKey { get; set; }
+    
+    [DataClassification(GDPRType.Sensitive)]
+    public required string SessionData { get; set; }
+    
     public DateTime ExpireDate { get; set; }
 }

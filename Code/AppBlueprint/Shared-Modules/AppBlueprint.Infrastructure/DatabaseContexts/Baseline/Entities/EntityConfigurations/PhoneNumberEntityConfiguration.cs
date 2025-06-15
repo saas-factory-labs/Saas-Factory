@@ -1,12 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public class PhoneNumberEntityConfiguration : IEntityTypeConfiguration<PhoneNumberEntity>
+public sealed class PhoneNumberEntityConfiguration : IEntityTypeConfiguration<PhoneNumberEntity>
 {
     public void Configure(EntityTypeBuilder<PhoneNumberEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ToTable("PhoneNumbers");
 
         builder.HasKey(e => e.Id);

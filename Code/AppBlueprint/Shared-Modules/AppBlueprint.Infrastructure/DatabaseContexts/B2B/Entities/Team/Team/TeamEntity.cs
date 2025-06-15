@@ -23,9 +23,6 @@ public class TeamEntity
     public DateTime CreatedAt { get; set; }
     public DateTime? LastUpdatedAt { get; set; }
 
-    // Owner relationship
-
-
     // Team Members and Invites
     public List<TeamMemberEntity>? TeamMembers { get; }
     public List<TeamInviteEntity>? TeamInvites { get; }
@@ -33,4 +30,7 @@ public class TeamEntity
     // Tenant relationship
     public TenantEntity? Tenant { get; set; }
     public int TenantId { get; set; } // Assuming TenantId as FK
+
+    // Organization relationship - Add OrganizationId for B2B scenarios
+    public int? OrganizationId { get; set; }
 }

@@ -28,18 +28,20 @@ public class CustomerEntity
     public int CurrentlyAtOnboardingFlowStep { get; set; }
 
     //public int TenantId { get; set; }
-    public List<TenantEntity> Tenants { get; set; }
-    public string Type { get; set; } // Personal/Company
+    public List<TenantEntity> Tenants { get; set; }    public string? Type { get; set; } // Personal/Company
 
-    public string VatNumber { get; set; }
+    public string? VatNumber { get; set; }
 
-    public string Country { get; set; }
+    public string? Country { get; set; }
 
     public List<ContactPersonEntity> ContactPersons { get; set; }
 
-    public string StripeCustomerId { get; set; }
-    public string StripeSubscriptionId { get; set; }
+    public string? StripeCustomerId { get; set; }
+    public string? StripeSubscriptionId { get; set; }
 
     // Vat/Tax Id
-    public string VatId { get; set; }
+    public string? VatId { get; set; }
+
+    // Organization relationship for B2B scenarios
+    public int? OrganizationId { get; set; }
 }

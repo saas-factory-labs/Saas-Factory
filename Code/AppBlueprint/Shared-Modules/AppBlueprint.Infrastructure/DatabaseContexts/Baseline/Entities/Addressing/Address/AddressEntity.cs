@@ -11,9 +11,7 @@ public class AddressEntity
     {
         Home,
         Office
-    }
-
-    public AddressEntity()
+    }    public AddressEntity()
     {
         City = new CityEntity
         {
@@ -25,7 +23,19 @@ public class AddressEntity
             }
         };
         Country = new CountryEntity();
-        Street = new StreetEntity();
+        Street = new StreetEntity
+        {
+            Name = "Street",
+            City = new CityEntity
+            {
+                Name = "City",
+                PostalCode = "0000",
+                Country = new CountryEntity
+                {
+                    Name = "Country"
+                }
+            }
+        };
         State = string.Empty;
         PostalCode = string.Empty;
         Floor = string.Empty;

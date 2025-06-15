@@ -3,27 +3,52 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Person;
 
-public class PersonEntityConfiguration : IEntityTypeConfiguration<
-    PersonEntity>
+/// <summary>
+/// Entity configuration for PersonEntity defining table structure, relationships, and constraints.
+/// Supports shared person information model used across User and Customer contexts.
+/// </summary>
+public sealed class PersonEntityConfiguration : IEntityTypeConfiguration<PersonEntity>
 {
     public void Configure(EntityTypeBuilder<PersonEntity> builder)
     {
-        // Define table name (if it needs to be different from default)
+        ArgumentNullException.ThrowIfNull(builder);
+
+        // Table mapping with standardized naming
         builder.ToTable("Persons");
 
-        // Define primary key
-        builder.HasKey(e => e.Id); // Assuming the entity has an "Id" property
+        // Primary key
+        builder.HasKey(e => e.Id);
 
-        // Define properties
+        // Properties with validation
         builder.Property(e => e.FirstName)
-            .IsRequired() // Example property requirement
-            .HasMaxLength(100); // Example max length
+            .IsRequired()
+            .HasMaxLength(100);
 
-        // Define relationships
-        // Add relationships as needed, for example:
-        // builder.HasMany(e => e.RelatedEntities)
-        //        .WithOne(re => re.PersonEntity)
-        //        .HasForeignKey(re => re.PersonEntityId)
-        //        .OnDelete(DeleteBehavior.Cascade);
+        builder.Property(e => e.LastName)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        // Relationships to shared entities
+        builder.HasMany(e => e.Addresses)
+            .WithOne()
+            .HasForeignKey("PersonId")
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_PersonAddresses_Persons_PersonId");
+
+        builder.HasMany(e => e.Emails)
+            .WithOne()
+            .HasForeignKey("PersonId")
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_PersonEmails_Persons_PersonId");
+
+        // Performance indexes with standardized naming
+        builder.HasIndex(e => new { e.FirstName, e.LastName })
+            .HasDatabaseName("IX_Persons_FirstName_LastName");
+
+        builder.HasIndex(e => e.FirstName)
+            .HasDatabaseName("IX_Persons_FirstName");
+
+        builder.HasIndex(e => e.LastName)
+            .HasDatabaseName("IX_Persons_LastName");
     }
 }

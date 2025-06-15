@@ -6,8 +6,7 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Chat.Models;
 
 public class ChatModel
 {
-    public ChatModel()
-    {
+    public ChatModel()    {
         Owner = new UserEntity
         {
             Email = "test@test.com",

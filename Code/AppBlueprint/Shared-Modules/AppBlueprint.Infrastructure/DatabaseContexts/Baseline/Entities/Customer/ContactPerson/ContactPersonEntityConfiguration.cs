@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 
-public class ContactPersonEntityConfiguration : IEntityTypeConfiguration<ContactPersonEntity>
+public sealed class ContactPersonEntityConfiguration : IEntityTypeConfiguration<ContactPersonEntity>
 {
     public void Configure(EntityTypeBuilder<ContactPersonEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ToTable("ContactPersons");
 
         builder.HasKey(c => c.Id);
@@ -14,12 +16,12 @@ public class ContactPersonEntityConfiguration : IEntityTypeConfiguration<Contact
 
         builder.HasMany(c => c.PhoneNumbers)
             .WithOne(t => t.ContactPerson)
-            .HasForeignKey(t => t.Id)
+            .HasForeignKey("ContactPersonId")
             .HasPrincipalKey(c => c.Id);
 
         builder.HasMany(c => c.EmailAddresses)
             .WithOne(t => t.ContactPerson)
-            .HasForeignKey(t => t.Id)
+            .HasForeignKey("ContactPersonId")
             .HasPrincipalKey(c => c.Id);
 
         builder.Property(c => c.FirstName)

@@ -4,11 +4,11 @@ public class StreetEntity
 {
     public StreetEntity()
     {
+        Name = string.Empty;
         City = new CityEntity
         {
             Name = "City",
             PostalCode = "0000",
-
             Country = new CountryEntity
             {
                 Name = "Country"
@@ -17,10 +17,7 @@ public class StreetEntity
     }
 
     public int Id { get; set; }
-    public string Name { get; set; }
-    public CityEntity City { get; set; }
+    public required string Name { get; set; }
+    public required CityEntity City { get; set; }
     public int CityId { get; set; }
-
-    public CityEntity Country { get; set; }
-    public int CountryId { get; set; }
 }

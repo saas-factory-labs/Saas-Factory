@@ -1,8 +1,12 @@
 ﻿namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
-public class ApiLogEntity
+public sealed class ApiLogEntity
 {
-    public required SessionEntity SessionEntity { get; set; } = new();
+    public required SessionEntity SessionEntity { get; set; } = new() 
+    { 
+        SessionKey = string.Empty, 
+        SessionData = string.Empty 
+    };
 
     public int Id { get; set; }
     public required string ApiKeyId { get; set; }
