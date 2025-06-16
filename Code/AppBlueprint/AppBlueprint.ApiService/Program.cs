@@ -50,12 +50,9 @@ internal static class Program // Make class static
             config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("BearerAuth"));
         });
 
-        builder.Services.AddControllers();
-
-        var app = builder.Build();
+        builder.Services.AddControllers();        var app = builder.Build();
 
         app.UseCustomMiddlewares();
-        app.UseMiddleware<TenantMiddleware>();
 
         if (app.Environment.IsDevelopment())
         {
@@ -66,13 +63,19 @@ internal static class Program // Make class static
             await MigrationExtensions.ApplyDatabaseSeedingAsync(app).ConfigureAwait(false);
         }
 
+        // Add TenantMiddleware AFTER OpenAPI/Swagger middleware to allow access to documentation
+        app.UseMiddleware<TenantMiddleware>();
+
         // Configure the HTTP request pipeline.
         app.UseExceptionHandler();
+        
+        // Redirect root path to Swagger UI for easier access from Aspire dashboard
+        app.MapGet("/", () => Results.Redirect("/swagger"));
 
         app.MapDefaultEndpoints();
         app.MapControllers();
 
-        app.Run();
+        await app.RunAsync().ConfigureAwait(false);
     }
 }
 

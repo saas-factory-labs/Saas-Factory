@@ -1,24 +1,12 @@
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
 public static class MiddlewareExtensions
-{
-    public static IApplicationBuilder UseCustomMiddlewares(this IApplicationBuilder app)
+{    public static IApplicationBuilder UseCustomMiddlewares(this IApplicationBuilder app)
     {
         app.UseStaticFiles();
 
-        app.UseSwagger(options =>
-        {
-            // options.RouteTemplate = "swagger/{documentName}/swagger.json";
-            // options.RouteTemplate = "swagger/v3.1/swagger.json";
-            options.RouteTemplate = "swagger/v1/swagger.json";
-        });
-
-        app.UseSwaggerUI(options =>
-        {
-            // options.SwaggerEndpoint("/swagger/v3.1/swagger.json", "API v1");
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-            options.RoutePrefix = string.Empty; // Serve Swagger UI at root `/`
-        });
+        // Note: OpenAPI/Swagger middleware is configured in Program.cs using NSwag
+        // app.UseOpenApi() and app.UseSwaggerUi() should be called in Program.cs instead
 
         app.UseAuthentication();
         app.UseAuthorization();

@@ -1,3 +1,5 @@
+using Aspire.Hosting.ApplicationModel;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgresPassword = Environment.GetEnvironmentVariable("POSTGRES_DEV_PASSWORD");
@@ -13,7 +15,11 @@ var AppGw = builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw");
 
 
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
-.WithReference(postgresServer);
+    .WithReference(postgresServer)
+    .WithExternalHttpEndpoints()
+    .WithEnvironment("ASPNETCORE_URLS", "http://localhost:8090")
+    .WithEnvironment("SwaggerPath", "/swagger")
+    .WithEndpoint(port: 8090, scheme: "http", name: "swagger");
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithExternalHttpEndpoints()

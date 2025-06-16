@@ -1,6 +1,7 @@
 using System.Text;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using Asp.Versioning;
+using Asp.Versioning.Routing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,12 +24,11 @@ public static class ApplicationBuilderExtensions
         LoggerMessage.Define<string>(
             LogLevel.Information,
             new EventId(2, nameof(LogConnectionString)),
-            "Connection String: {ConnectionString}");
-
-    private static void AddDbContext(IServiceCollection serviceCollection, IConfiguration configuration)
+            "Connection String: {ConnectionString}");    private static void AddDbContext(IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        // Get connection string from IConfiguration (set by ApiService/Program.cs)
-        string? databaseConnectionString = configuration.GetConnectionString("DefaultConnection");
+        // Get connection string from IConfiguration - try Aspire resource name first, then DefaultConnection as fallback
+        string? databaseConnectionString = configuration.GetConnectionString("postgres-server") ?? 
+                                         configuration.GetConnectionString("DefaultConnection");
 
         Console.WriteLine($"[AddDbContext] Database Connection String from IConfiguration: {databaseConnectionString}"); // Added logging
 
@@ -67,20 +67,25 @@ public static class ApplicationBuilderExtensions
         {
             builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
         }));
-    }
-
-    private static void ConfigureApiVersioning(IServiceCollection services)
+    }    private static void ConfigureApiVersioning(IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
-        services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         
-        // Add API versioning services
+        // Add API versioning services with URL path support
         services.AddApiVersioning(options =>
         {
             options.ReportApiVersions = true;
             options.AssumeDefaultVersionWhenUnspecified = true;
             options.DefaultApiVersion = new ApiVersion(1, 0);
+            
+            // Configure to read API version from URL path
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new UrlSegmentApiVersionReader(),
+                new QueryStringApiVersionReader("apiVersion"),
+                new HeaderApiVersionReader("X-Version")
+            );
         })
+        .AddMvc() // This registers the apiVersion route constraint
         .AddApiExplorer(options =>
         {
             options.GroupNameFormat = "'v'VVV";
