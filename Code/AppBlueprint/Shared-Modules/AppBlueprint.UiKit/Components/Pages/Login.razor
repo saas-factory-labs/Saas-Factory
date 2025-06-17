@@ -4,200 +4,322 @@
 @using Microsoft.JSInterop
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JS               
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Login - AppBlueprint</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="pa-4">
     <MudPaper Elevation="3" Class="pa-4">
-        <MudTabs @bind-ActivePanelIndex="_activeTabIndex">
-            <!-- ─────────────────────────────  LOGIN  ───────────────────────────── -->
-            <MudTabPanel Text="Login">
-                @* Dashlane hint: form with login attributes *@
+        <MudTabs @bind-ActivePanelIndex="_activeTabIndex">            <!-- ─────────────────────────────  LOGIN  ───────────────────────────── -->            <MudTabPanel Text="Login">
+                @* Standard HTML form optimized for password managers *@
                 <form id="login-form"
                       method="post"
-                      data-form-type="login"
-                      class="login-form"
-                      @onsubmit="HandleLoginSubmit">
+                      action="/login"
+                      @onsubmit="HandleLoginSubmit"
+                      @onsubmit:preventDefault="true"
+                      autocomplete="on">
+                    
+                    <div class="login-form-container">
+                        <!-- Email Field -->
+                        <div class="input-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" 
+                                   id="login-email"
+                                   name="email" 
+                                   autocomplete="username"
+                                   required
+                                   class="form-input" />
+                        </div>
 
-                    <MudForm Class="mt-4">
-                        <input type="hidden" name="action" value="login" />
+                        <!-- Password Field -->
+                        <div class="input-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" 
+                                   id="login-password"
+                                   name="password" 
+                                   autocomplete="current-password"
+                                   required
+                                   class="form-input" />
+                        </div>
 
-                        <!-- USERNAME / EMAIL -->
-                        @* Cope with silent autofill *@
-                        <MudTextField @bind-Value="_loginEmail"
-                                      @bind-Value:event="onchange"
-                                      Label="Email"
-                                      Required="true" RequiredError="Email is required"
-                                      InputType="InputType.Email"
-                                      InputId="username"
-                                      InputAttributes="@(new Dictionary<string, object>
-                                      {
-                                          ["autocomplete"]   = "username",
-                                          ["name"]           = "username",
-                                          ["data-form-type"] = "username,email"
-                                      })" />
+                        <!-- Remember Me -->
+                        <div class="remember-me-container">
+                            <label class="remember-me-label">
+                                <input type="checkbox" 
+                                       name="remember-me"
+                                       class="remember-me-checkbox" />
+                                <span>Remember me</span>
+                            </label>
+                        </div>                        <!-- Actions -->
+                        <div class="login-actions">
+                            <MudLink Href="/forgot-password" Class="forgot-password-link">Forgot password?</MudLink>
 
-                        <!-- PASSWORD -->
-                        <MudTextField @bind-Value="_loginPassword"
-                                      @bind-Value:event="onchange"
-                                      Label="Password"
-                                      Required="true" RequiredError="Password is required"
-                                      InputType="InputType.Password"
-                                      InputId="password"
-                                      InputAttributes="@(new Dictionary<string, object>
-                                      {
-                                          ["autocomplete"]   = "current-password",
-                                          ["name"]           = "password",
-                                          ["data-form-type"] = "password"
-                                      })" />
-
-                        <MudCheckBox T="bool" @bind-Checked="_rememberMe"
-                                     Label="Remember me"
-                                     Color="Color.Primary"
-                                     Class="mt-2" />
-
-                        <div class="d-flex justify-space-between align-center mt-6">
-                            <MudLink Href="/forgot-password">Forgot password?</MudLink>
-
-                            <MudButton ButtonType="ButtonType.Submit"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       DisableElevation="true"
-                                       Disabled="_isLoading">
+                            <button type="submit"
+                                    class="login-submit-button"
+                                    disabled="@_isLoading">
                                 @if (_isLoading)
                                 {
-                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                                    <span class="ms-2">Signing in…</span>
+                                    <span>Signing in…</span>
                                 }
                                 else
                                 {
                                     <span>Sign In</span>
                                 }
-                            </MudButton>
+                            </button>
                         </div>
-                    </MudForm>
+                    </div>
                 </form>
-            </MudTabPanel>
 
-            <!-- ───────────────────────────  REGISTER  ──────────────────────────── -->
+                <script>
+                    window.getFormValue = function(id) {
+                        const element = document.getElementById(id);
+                        return element ? element.value : '';
+                    };
+                </script><style>
+                    .login-form-container {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 24px;
+                        margin-top: 16px;
+                    }
+
+                    .input-group {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                    }
+
+                    .input-group label {
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: rgba(0, 0, 0, 0.87);
+                        margin-bottom: 4px;
+                    }
+
+                    .form-input {
+                        width: 100%;
+                        height: 56px;
+                        padding: 16px 14px;
+                        border: 1px solid rgba(0, 0, 0, 0.23);
+                        border-radius: 4px;
+                        font-size: 16px;
+                        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+                        background: white;
+                        transition: border-color 0.2s ease;
+                    }
+
+                    .form-input:focus {
+                        outline: none;
+                        border-color: #594ae2;
+                        border-width: 2px;
+                    }
+
+                    .remember-me-container {
+                        margin: 8px 0;
+                    }
+
+                    .remember-me-label {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        font-size: 14px;
+                        cursor: pointer;
+                    }
+
+                    .remember-me-checkbox {
+                        width: 18px;
+                        height: 18px;
+                        accent-color: #594ae2;
+                    }
+
+                    .login-actions {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-top: 24px;
+                    }
+
+                    .forgot-password-link {
+                        color: #594ae2;
+                        text-decoration: none;
+                        font-size: 14px;
+                    }
+
+                    .forgot-password-link:hover {
+                        text-decoration: underline;
+                    }
+
+                    .login-submit-button {
+                        background-color: #594ae2;
+                        color: white;
+                        border: none;
+                        border-radius: 4px;
+                        padding: 8px 22px;
+                        min-width: 64px;
+                        font-size: 0.875rem;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background-color 0.2s ease;
+                    }
+
+                    .login-submit-button:hover:not(:disabled) {
+                        background-color: #4c3ed7;
+                    }
+
+                    .login-submit-button:disabled {
+                        background-color: rgba(0, 0, 0, 0.12);
+                        color: rgba(0, 0, 0, 0.26);
+                        cursor: not-allowed;
+                    }
+                </style>
+            </MudTabPanel>            <!-- ───────────────────────────  REGISTER  ──────────────────────────── -->
             <MudTabPanel Text="Register">
+                @* Standard HTML form optimized for password managers *@
                 <form id="register-form"
                       method="post"
-                      data-form-type="signup"
-                      @onsubmit="HandleRegisterSubmit">
+                      action="/register"
+                      @onsubmit="HandleRegisterSubmit"
+                      @onsubmit:preventDefault="true"
+                      autocomplete="on">
+                    
+                    <div class="register-form-container">
+                        <!-- Name Field -->
+                        <div class="input-group">
+                            <label for="register-name">Full Name</label>
+                            <input type="text" 
+                                   id="register-name"
+                                   name="name" 
+                                   autocomplete="name"
+                                   required
+                                   class="form-input" />
+                        </div>
 
-                    <MudForm Class="mt-4">
-                        <MudTextField @bind-Value="_registerName"
-                                      Label="Name"
-                                      Required="true" RequiredError="Name is required"
-                                      InputId="name"
-                                      InputAttributes="@(new Dictionary<string, object>
-                                      {
-                                          ["autocomplete"]   = "name",
-                                          ["name"]           = "name"
-                                      })" />
+                        <!-- Email Field -->
+                        <div class="input-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" 
+                                   id="register-email"
+                                   name="email" 
+                                   autocomplete="username"
+                                   required
+                                   class="form-input" />
+                        </div>
 
-                        <MudTextField @bind-Value="_registerEmail"
-                                      Label="Email"
-                                      Required="true" RequiredError="Email is required"
-                                      InputType="InputType.Email"
-                                      InputId="register-email"
-                                      InputAttributes="@(new Dictionary<string, object>
-                                      {
-                                          ["autocomplete"]   = "email",
-                                          ["name"]           = "register-email",
-                                          ["data-form-type"] = "username,email"
-                                      })" />
+                        <!-- Password Field -->
+                        <div class="input-group">
+                            <label for="register-password">Password</label>
+                            <input type="password" 
+                                   id="register-password"
+                                   name="password" 
+                                   autocomplete="new-password"
+                                   required
+                                   class="form-input" />
+                        </div>
 
-                        <MudTextField @bind-Value="_registerPassword"
-                                      Label="Password"
-                                      Required="true" RequiredError="Password is required"
-                                      InputType="InputType.Password"
-                                      InputId="register-password"
-                                      InputAttributes="@(new Dictionary<string, object>
-                                      {
-                                          ["autocomplete"]   = "new-password",
-                                          ["name"]           = "register-password",
-                                          ["data-form-type"] = "password,new"
-                                      })" />
+                        <!-- Confirm Password Field -->
+                        <div class="input-group">
+                            <label for="register-confirm-password">Confirm Password</label>
+                            <input type="password" 
+                                   id="register-confirm-password"
+                                   name="confirm-password" 
+                                   autocomplete="new-password"
+                                   required
+                                   class="form-input" />
+                        </div>
 
-                        <MudTextField @bind-Value="_registerConfirmPassword"
-                                      Label="Confirm Password"
-                                      Required="true" RequiredError="Please confirm password"
-                                      InputType="InputType.Password"
-                                      InputId="confirm-password"
-                                      InputAttributes="@(new Dictionary<string, object>
-                                      {
-                                          ["autocomplete"]   = "new-password",
-                                          ["name"]           = "confirm-password",
-                                          ["data-form-type"] = "password,confirmation"
-                                      })" />
-
-                        <div class="d-flex justify-end mt-6">
-                            <MudButton ButtonType="ButtonType.Submit"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       DisableElevation="true"
-                                       Disabled="_isLoading">
+                        <!-- Submit Button -->
+                        <div class="register-actions">
+                            <button type="submit"
+                                    class="register-submit-button"
+                                    disabled="@_isLoading">
                                 @if (_isLoading)
                                 {
-                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                                    <span class="ms-2">Registering…</span>
+                                    <span>Registering…</span>
                                 }
                                 else
                                 {
                                     <span>Register</span>
                                 }
-                            </MudButton>
+                            </button>
                         </div>
-                    </MudForm>
-                </form>
+                    </div>
+                </form>                <style>
+                    .register-form-container {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 24px;
+                        margin-top: 16px;
+                    }
+
+                    .register-actions {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 24px;
+                    }
+
+                    .register-submit-button {
+                        background-color: #594ae2;
+                        color: white;
+                        border: none;
+                        border-radius: 4px;
+                        padding: 8px 22px;
+                        min-width: 64px;
+                        font-size: 0.875rem;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background-color 0.2s ease;
+                    }
+
+                    .register-submit-button:hover:not(:disabled) {
+                        background-color: #4c3ed7;
+                    }
+
+                    .register-submit-button:disabled {
+                        background-color: rgba(0, 0, 0, 0.12);
+                        color: rgba(0, 0, 0, 0.26);
+                        cursor: not-allowed;
+                    }
+                </style>
             </MudTabPanel>
         </MudTabs>
     </MudPaper>
 </MudContainer>
 
 @code {
-    [CascadingParameter] private AuthProvider Auth { get; set; }
+    [CascadingParameter] private AuthProvider Auth { get; set; } = default!;
 
     private int _activeTabIndex;
-    private string _loginEmail               = string.Empty;
-    private string _loginPassword            = string.Empty;
-    private bool   _rememberMe;
-    private string _registerName             = string.Empty;
-    private string _registerEmail            = string.Empty;
-    private string _registerPassword         = string.Empty;
-    private string _registerConfirmPassword  = string.Empty;
-    private bool   _isLoading;
+    private bool _isLoading;
+    private bool _showRegistration = false;
 
     protected override void OnInitialized()
     {
         if (Auth?.IsAuthenticated == true)
             NavigationManager.NavigateTo("/");
-    }
-
-    /* ─────────────  LOGIN  ───────────── */
-    private void HandleLoginSubmit() => HandleLogin();
-
-    private async Task HandleLogin()
+    }/* ─────────────  LOGIN  ───────────── */
+    private async Task HandleLoginSubmit() => await HandleLogin();    private async Task HandleLogin()
     {
-        /* fallback in case Dashlane filled the input without raising 'input' */
-        _loginEmail    = await JS.InvokeAsync<string>("eval", "document.getElementById('username')?.value")  ?? _loginEmail;
-        _loginPassword = await JS.InvokeAsync<string>("eval", "document.getElementById('password')?.value") ?? _loginPassword;
-
-        if (string.IsNullOrWhiteSpace(_loginEmail) || string.IsNullOrWhiteSpace(_loginPassword))
-        {
-            Snackbar.Add("Please enter both email and password", Severity.Warning);
-            return;
-        }
-
         try
         {
+            // Read form values directly from DOM
+            var email = await JSRuntime.InvokeAsync<string>("getFormValue", "login-email");
+            var password = await JSRuntime.InvokeAsync<string>("getFormValue", "login-password");
+            
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                Snackbar.Add("Please enter both email and password", Severity.Warning);
+                return;
+            }
+
             _isLoading = true;
-            if (await Auth.LoginAsync(_loginEmail, _loginPassword))
+            StateHasChanged();
+            
+            if (await Auth.LoginAsync(email, password))
             {
                 Snackbar.Add("Login successful!", Severity.Success);
+                
+                // Small delay to allow password managers to detect successful login
+                await Task.Delay(500);
                 NavigationManager.NavigateTo("/");
             }
             else
@@ -212,57 +334,183 @@
         finally
         {
             _isLoading = false;
+            StateHasChanged();
         }
-    }
-
-    /* ────────────  REGISTER  ──────────── */
-    private void HandleRegisterSubmit() => HandleRegister();
-
-    private async Task HandleRegister()
+    }/* ────────────  REGISTER  ──────────── */
+    private async Task HandleRegisterSubmit() => await HandleRegister();    private async Task HandleRegister()
     {
-        if (string.IsNullOrWhiteSpace(_registerName))
-        {
-            Snackbar.Add("Please enter your name", Severity.Warning); return;
-        }
-        if (string.IsNullOrWhiteSpace(_registerEmail))
-        {
-            Snackbar.Add("Please enter your email", Severity.Warning); return;
-        }
-        if (string.IsNullOrWhiteSpace(_registerPassword))
-        {
-            Snackbar.Add("Please enter a password", Severity.Warning); return;
-        }
-        if (_registerPassword != _registerConfirmPassword)
-        {
-            Snackbar.Add("Passwords do not match", Severity.Warning); return;
-        }
-
         try
         {
-            _isLoading = true;
+            // Read form values directly from DOM
+            var name = await JSRuntime.InvokeAsync<string>("getFormValue", "register-name");
+            var email = await JSRuntime.InvokeAsync<string>("getFormValue", "register-email");
+            var password = await JSRuntime.InvokeAsync<string>("getFormValue", "register-password");
+            var confirmPassword = await JSRuntime.InvokeAsync<string>("getFormValue", "register-confirm-password");
+            
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Snackbar.Add("Please enter your name", Severity.Warning);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                Snackbar.Add("Please enter your email", Severity.Warning);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                Snackbar.Add("Please enter a password", Severity.Warning);
+                return;
+            }
+            if (password != confirmPassword)
+            {
+                Snackbar.Add("Passwords do not match", Severity.Warning);
+                return;
+            }
 
-            bool loginSuccess = await Auth.LoginAsync(_registerEmail, _registerPassword);  // replace with real API
+            _isLoading = true;
+            StateHasChanged();
+            
+            bool loginSuccess = await Auth.LoginAsync(email, password);  // replace with real API
 
             if (loginSuccess)
             {
                 Snackbar.Add("Registration successful! You're now logged in.", Severity.Success);
+                
+                // Small delay to allow password managers to detect successful registration
+                await Task.Delay(500);
                 NavigationManager.NavigateTo("/");
             }
             else
             {
                 Snackbar.Add("Registration successful, but automatic login failed. Please log in manually.", Severity.Warning);
                 _activeTabIndex = 0;
-                _loginEmail     = _registerEmail;
-                _loginPassword  = string.Empty;
             }
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex)        {
             Snackbar.Add($"Registration failed: {ex.Message}", Severity.Error);
         }
         finally
         {
             _isLoading = false;
+            StateHasChanged();
         }
     }
 }
+
+<script>
+    window.getFormValue = function(id) {
+        const element = document.getElementById(id);
+        return element ? element.value : '';
+    };
+</script>
+
+<style>
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        margin-top: 16px;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .input-group label {
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.87);
+        margin-bottom: 4px;
+    }
+
+    .form-input {
+        width: 100%;
+        height: 56px;
+        padding: 16px 14px;
+        border: 1px solid rgba(0, 0, 0, 0.23);
+        border-radius: 4px;
+        font-size: 16px;
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        background: white;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #594ae2;
+        border-width: 2px;
+    }
+
+    .form-header {
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .switch-form-button {
+        margin-top: 8px;
+        font-size: 14px;
+    }
+
+    .remember-me-container {
+        margin: 8px 0;
+    }
+
+    .remember-me-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .remember-me-checkbox {
+        width: 18px;
+        height: 18px;
+        accent-color: #594ae2;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 24px;
+        gap: 16px;
+    }
+
+    .forgot-password-link {
+        color: #594ae2;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .forgot-password-link:hover {
+        text-decoration: underline;
+    }
+
+    .submit-button {
+        background-color: #594ae2;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 22px;
+        min-width: 64px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .submit-button:hover:not(:disabled) {
+        background-color: #4c3ed7;
+    }
+
+    .submit-button:disabled {
+        background-color: rgba(0, 0, 0, 0.12);
+        color: rgba(0, 0, 0, 0.26);
+        cursor: not-allowed;
+    }
+</style>

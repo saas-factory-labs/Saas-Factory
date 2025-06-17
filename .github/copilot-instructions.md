@@ -52,7 +52,7 @@ When we learn new things that deviate from the existing rules, suggest making ch
 
 ## Project Structure
 
-** The AppHost project is the entry point. Do NOT RUN THIS as it's likely already running in watch mode. 
+** The AppHost project is the entry point. Do NOT RUN THIS as it's likely already running in watch mode - only build projects to ensure they compile correctly. **
 The project structure is in the Writerside documentation at `/Writerside/topic/README.md`
 
 ## Final instructions
