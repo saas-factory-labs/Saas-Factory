@@ -53,7 +53,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Demos.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken).ConfigureAwait(false);
+            await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets a specific demo value by ID.
@@ -76,7 +76,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Demos.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendPrimitiveAsync<string>(requestInfo, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendPrimitiveAsync<string>(requestInfo, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Updates an existing demo value by ID.
@@ -102,7 +102,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Demos.Item
                 { "400", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken).ConfigureAwait(false);
+            await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Deletes a demo value by ID.

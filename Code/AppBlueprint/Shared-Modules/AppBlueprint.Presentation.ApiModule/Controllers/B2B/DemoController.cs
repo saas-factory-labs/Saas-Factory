@@ -11,6 +11,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 public class DemoController : BaseController
 {
     private readonly IConfiguration _configuration;
+    private static readonly string[] DemoValues = { "value1", "value2" };
 
     public DemoController(IConfiguration configuration) : base(configuration)
     {
@@ -25,7 +26,7 @@ public class DemoController : BaseController
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
     public ActionResult<IEnumerable<string>> Get()
     {
-        return Ok(new[] { "value1", "value2" });
+        return Ok(DemoValues);
     }
 
     /// <summary>

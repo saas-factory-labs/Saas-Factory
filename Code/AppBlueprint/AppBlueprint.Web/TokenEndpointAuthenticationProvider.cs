@@ -34,7 +34,7 @@ internal class TokenEndpointAuthenticationProvider(
         CancellationToken cancellationToken = new())
     {
         ArgumentNullException.ThrowIfNull(request);
-        await EnsureAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+        await EnsureAccessTokenAsync(cancellationToken);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
     }
 
@@ -44,7 +44,7 @@ internal class TokenEndpointAuthenticationProvider(
         CancellationToken cancellationToken = new())
     {
         ArgumentNullException.ThrowIfNull(request);
-        await EnsureAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+        await EnsureAccessTokenAsync(cancellationToken);
         request.Headers.TryAdd("Authorization", $"Bearer {_accessToken}");
     }
 
@@ -52,13 +52,13 @@ internal class TokenEndpointAuthenticationProvider(
     {
         if (DateTime.UtcNow < _tokenExpiration) return;
 
-        await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+        await _semaphore.WaitAsync(cancellationToken);
         try
         {
             if (DateTime.UtcNow < _tokenExpiration)
                 return;
 
-            var tokenResponse = await RequestNewAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+            var tokenResponse = await RequestNewAccessTokenAsync(cancellationToken);
             _accessToken = tokenResponse.AccessToken;
             _tokenExpiration = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn - 30);
         }
@@ -81,13 +81,13 @@ internal class TokenEndpointAuthenticationProvider(
 
         HttpResponseMessage response = await _httpClient
             .PostAsync(new Uri(_tokenEndpoint), content, cancellationToken)
-            .ConfigureAwait(false);
+            ;
 
         response.EnsureSuccessStatusCode();
 
         TokenResponse? tokenResponse = await response.Content
             .ReadFromJsonAsync<TokenResponse>(cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
+            ;
 
         return tokenResponse ?? throw new InvalidOperationException("Failed to deserialize token response");
     }

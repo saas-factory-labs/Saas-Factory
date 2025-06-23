@@ -299,7 +299,7 @@ namespace GraphQLClientNS
         public async global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IQueryClassDataResult>> ExecuteAsync(global::System.Threading.CancellationToken cancellationToken = default)
         {
             var request = CreateRequest();
-            return await _operationExecutor.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
+            return await _operationExecutor.ExecuteAsync(request, cancellationToken);
         }
 
         public global::System.IObservable<global::StrawberryShake.IOperationResult<IQueryClassDataResult>> Watch(global::StrawberryShake.ExecutionStrategy? strategy = null)

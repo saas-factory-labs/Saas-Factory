@@ -54,7 +54,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Auditlog.GetAuditLog.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.AuditLogResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.AuditLogResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.AuditLogResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.AuditLogResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets an audit log by ID.

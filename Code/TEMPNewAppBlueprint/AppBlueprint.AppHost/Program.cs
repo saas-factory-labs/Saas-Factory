@@ -33,7 +33,7 @@ internal sealed class Program
             .WithReference(postgres, "PostgreSQL")
             .WithTelemetryDefaults("AppBlueprint-Web");
 
-        await builder.Build().RunAsync().ConfigureAwait(false);
+        await builder.Build().RunAsync();
     }
 
     private static void ConfigureOpenTelemetry()

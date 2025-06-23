@@ -54,7 +54,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.Subscriptions.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.SubscriptionResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.SubscriptionResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.SubscriptionResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.SubscriptionResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Updates an existing subscription.
@@ -78,7 +78,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.Subscriptions.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken).ConfigureAwait(false);
+            await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets a subscription by ID.

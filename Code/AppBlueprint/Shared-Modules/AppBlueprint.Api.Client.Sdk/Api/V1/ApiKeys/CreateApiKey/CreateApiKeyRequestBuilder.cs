@@ -56,7 +56,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.ApiKeys.CreateApiKey
             {
                 { "400", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.ApiKeyResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.ApiKeyResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.ApiKeyResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.ApiKeyResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Creates a new API key.

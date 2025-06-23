@@ -51,7 +51,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.DataExports.CreateDataExport
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
             var requestInfo = ToPostRequestInformation(body, requestConfiguration);
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto.CreateFromDiscriminatorValue, default, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto.CreateFromDiscriminatorValue, default, cancellationToken);
         }
         /// <summary>
         /// Creates a new data export.

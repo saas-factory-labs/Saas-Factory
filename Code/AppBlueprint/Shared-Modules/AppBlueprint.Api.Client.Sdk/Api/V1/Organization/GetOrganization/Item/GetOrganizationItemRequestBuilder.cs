@@ -54,7 +54,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Organization.GetOrganization.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.OrganizationResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.OrganizationResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.OrganizationResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.OrganizationResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets an organization by ID.

@@ -59,8 +59,8 @@ internal static class Program // Make class static
             app.UseOpenApi();
             app.UseSwaggerUi();
 
-            await MigrationExtensions.ApplyMigrationsAsync(app).ConfigureAwait(false);
-            await MigrationExtensions.ApplyDatabaseSeedingAsync(app).ConfigureAwait(false);
+            await MigrationExtensions.ApplyMigrationsAsync(app);
+            await MigrationExtensions.ApplyDatabaseSeedingAsync(app);
         }
 
         // Add TenantMiddleware AFTER OpenAPI/Swagger middleware to allow access to documentation
@@ -75,7 +75,7 @@ internal static class Program // Make class static
         app.MapDefaultEndpoints();
         app.MapControllers();
 
-        await app.RunAsync().ConfigureAwait(false);
+        await app.RunAsync();
     }
 }
 

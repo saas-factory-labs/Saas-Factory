@@ -102,4 +102,5 @@ dotnet_diagnostic.CA1034.severity = none
 # Disable ConfigureAwait warnings since it is not applicable in .NET 6 and later
 [*.{cs}]
 dotnet_diagnostic.VSTHRD200.severity = none
+dotnet_diagnostic.CA2007.severity = none
 

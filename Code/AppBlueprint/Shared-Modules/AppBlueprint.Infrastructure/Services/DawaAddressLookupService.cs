@@ -28,11 +28,11 @@ public class DawaAddressLookupService
         try
         {
             // Send GET-forespørgsel
-            HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
             response.EnsureSuccessStatusCode();
 
             // Læs responsen som JSON
-            string responseBody = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            string responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
             // Print resultatet
             Console.WriteLine("API Response:");

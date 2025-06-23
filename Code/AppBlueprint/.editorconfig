@@ -1,0 +1,13 @@
+root = false
+
+# Inherit from parent .editorconfig files
+# This file adds AppBlueprint-specific rules
+
+[*.cs]
+
+# CA2007: ConfigureAwait is not needed in .NET 6+ ASP.NET Core applications
+# Microsoft guidance: Don't use ConfigureAwait(false) in modern web applications
+dotnet_diagnostic.CA2007.severity = none
+
+# Already configured in root config but ensuring it's applied here too
+dotnet_diagnostic.VSTHRD200.severity = none

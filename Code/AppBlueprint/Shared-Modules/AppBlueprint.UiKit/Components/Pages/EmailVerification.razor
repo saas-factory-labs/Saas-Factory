@@ -81,7 +81,7 @@
     {
         try
         {
-            var result = await UserService.VerifyEmailAsync(UserId, Token, CancellationToken.None);
+            var result = await UserService.VerifyEmailAsync(UserId.ToString(), Token, CancellationToken.None);
             _isVerified = result;
             
             if (!_isVerified)
@@ -107,7 +107,7 @@
             _isResending = true;
             
             // Generate a new verification token
-            await UserService.GenerateEmailVerificationTokenAsync(UserId, CancellationToken.None);
+            await UserService.GenerateEmailVerificationTokenAsync(UserId.ToString(), CancellationToken.None);
             
             Snackbar.Add("A new verification email has been sent to your email address.", Severity.Success);
         }

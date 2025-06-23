@@ -73,7 +73,7 @@ internal sealed class Program
             // Count the page view
             pageViewCounter.Add(1);
             
-            await next().ConfigureAwait(false);
+            await next();
         });
 
         if (!app.Environment.IsDevelopment())
@@ -95,6 +95,6 @@ internal sealed class Program
 
         app.MapDefaultEndpoints();
 
-        await app.RunAsync().ConfigureAwait(false);
+        await app.RunAsync();
     }
 }

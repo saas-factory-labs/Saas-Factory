@@ -31,14 +31,14 @@ internal class SystemController : ControllerBase
             _logger.LogInformation("Manually applying database migrations...");
             
             // Check database connection
-            if (await _dbContext.Database.CanConnectAsync().ConfigureAwait(false))
+            if (await _dbContext.Database.CanConnectAsync())
             {
-                await _dbContext.Database.MigrateAsync().ConfigureAwait(false);
+                await _dbContext.Database.MigrateAsync();
                 _logger.LogInformation("Migrations applied successfully");
                 
                 // Call the seeder as well
                 var dataSeeder = new DataSeeder(_dbContext);
-                await dataSeeder.SeedDatabaseAsync().ConfigureAwait(false);
+                await dataSeeder.SeedDatabaseAsync();
                 _logger.LogInformation("Database seeding completed successfully");
                 
                 return Ok(new { success = true, message = "Migrations applied successfully" });
@@ -61,18 +61,18 @@ internal class SystemController : ControllerBase
     {
         try
         {
-            var canConnect = await _dbContext.Database.CanConnectAsync().ConfigureAwait(false);
+            var canConnect = await _dbContext.Database.CanConnectAsync();
             var connectionString = _dbContext.Database.GetConnectionString();
             
             // Mask the password in the connection string for security
-            var maskedConnectionString = connectionString?.Replace(";Password=", ";Password=*****");
+            var maskedConnectionString = connectionString?.Replace(";Password=", ";Password=*****", StringComparison.OrdinalIgnoreCase);
             
             object response;
             
             if (canConnect)
             {
                 // Check if there are pending migrations
-                var pendingMigrations = await _dbContext.Database.GetPendingMigrationsAsync().ConfigureAwait(false);
+                var pendingMigrations = await _dbContext.Database.GetPendingMigrationsAsync();
                 response = new 
                 {
                     canConnect,

@@ -51,7 +51,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V2.Account.CreateAccount
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
             var requestInfo = ToPostRequestInformation(body, requestConfiguration);
-            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.AccountEntity>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.AccountEntity.CreateFromDiscriminatorValue, default, cancellationToken).ConfigureAwait(false);
+            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.AccountEntity>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.AccountEntity.CreateFromDiscriminatorValue, default, cancellationToken);
             return collectionResult?.AsList();
         }
         /// <summary>

@@ -38,14 +38,14 @@ public class TenantMiddleware(RequestDelegate next)
             {
                 context.Response.StatusCode = 400; // Bad Request
                 context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync("{\"error\":\"Tenant ID is required\",\"message\":\"Please provide a valid tenant-id header.\"}").ConfigureAwait(false);
+                await context.Response.WriteAsync("{\"error\":\"Tenant ID is required\",\"message\":\"Please provide a valid tenant-id header.\"}");
                 return;
             }
 
             context.Items["TenantId"] = tenantId;
         }
 
-        await next(context).ConfigureAwait(false);
+        await next(context);
     }    private static bool ShouldBypassTenantValidation(string requestPath)
     {
         // Check if path is in the excluded list (case-insensitive)

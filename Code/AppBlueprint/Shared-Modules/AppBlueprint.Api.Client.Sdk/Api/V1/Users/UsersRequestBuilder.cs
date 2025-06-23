@@ -86,7 +86,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Users
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.UserResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.UserResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.UserResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.UserResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
             return collectionResult?.AsList();
         }
         /// <summary>
@@ -107,7 +107,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Users
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
             var requestInfo = ToPostRequestInformation(body, requestConfiguration);
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.UserResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.UserResponseDto.CreateFromDiscriminatorValue, default, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.UserResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.UserResponseDto.CreateFromDiscriminatorValue, default, cancellationToken);
         }
         /// <summary>
         /// Gets all users.

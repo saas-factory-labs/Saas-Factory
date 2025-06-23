@@ -54,7 +54,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.DataExports.GetDataExport.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets a data export by ID.

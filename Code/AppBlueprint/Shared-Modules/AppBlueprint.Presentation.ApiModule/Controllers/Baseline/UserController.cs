@@ -47,7 +47,7 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V2)]
     public async Task<ActionResult> GetLoggedInUser(CancellationToken cancellationToken)
     {
-        IEnumerable<UserEntity>? users = await _userRepository.GetAllAsync().ConfigureAwait(false);
+        IEnumerable<UserEntity>? users = await _userRepository.GetAllAsync();
         if (!users.Any()) return NotFound(new { Message = "No users found." });
 
         IEnumerable<UserResponse>? response = users.Select(user => new UserResponse
@@ -73,7 +73,7 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V2)]
     public async Task<ActionResult> GetUsers(CancellationToken cancellationToken)
     {
-        IEnumerable<UserEntity>? users = await _userRepository.GetAllAsync().ConfigureAwait(false);
+        IEnumerable<UserEntity>? users = await _userRepository.GetAllAsync();
         if (!users.Any()) return NotFound(new { Message = "No users found." });
 
         IEnumerable<UserResponse>? response = users.Select(user => new UserResponse
@@ -100,7 +100,7 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V1)]    [MapToApiVersion(ApiVersions.V2)]
     public async Task<ActionResult> GetUser(string id, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(id).ConfigureAwait(false);
+        UserEntity? user = await _userRepository.GetByIdAsync(id);
         if (user is null) return NotFound(new { Message = $"User with ID {id} not found." });
 
         var response = new UserResponse
@@ -145,8 +145,8 @@ public class UserController : BaseController
             }
         };
 
-        await _userRepository.AddAsync(newUser).ConfigureAwait(false);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _userRepository.AddAsync(newUser);
+        await _unitOfWork.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
     }
@@ -165,14 +165,14 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V2)]    public async Task<ActionResult> UpdateUser(string id, [FromBody] CreateUserRequest createUser,
         CancellationToken cancellationToken)
     {
-        UserEntity? existingUser = await _userRepository.GetByIdAsync(id).ConfigureAwait(false);
+        UserEntity? existingUser = await _userRepository.GetByIdAsync(id);
         if (existingUser is null) return NotFound(new { Message = $"User with ID {id} not found." });
 
         existingUser.UserName = createUser.Name;
         existingUser.Email = createUser.Email;
 
         _userRepository.Update(existingUser);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }
@@ -189,11 +189,11 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V1)]    [MapToApiVersion(ApiVersions.V2)]
     public async Task<ActionResult> DeleteUser(string id, CancellationToken cancellationToken)
     {
-        UserEntity? existingUser = await _userRepository.GetByIdAsync(id).ConfigureAwait(false);
+        UserEntity? existingUser = await _userRepository.GetByIdAsync(id);
         if (existingUser is null) return NotFound(new { Message = $"User with ID {id} not found." });
 
         _userRepository.Delete(existingUser.Id);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }

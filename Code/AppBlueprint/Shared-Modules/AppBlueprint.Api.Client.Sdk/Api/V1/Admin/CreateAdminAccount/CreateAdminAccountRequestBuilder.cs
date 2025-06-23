@@ -51,7 +51,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Admin.CreateAdminAccount
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
             var requestInfo = ToPostRequestInformation(body, requestConfiguration);
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.AccountResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.AccountResponseDto.CreateFromDiscriminatorValue, default, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.AccountResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.AccountResponseDto.CreateFromDiscriminatorValue, default, cancellationToken);
         }
         /// <summary>
         /// Creates a new admin account.

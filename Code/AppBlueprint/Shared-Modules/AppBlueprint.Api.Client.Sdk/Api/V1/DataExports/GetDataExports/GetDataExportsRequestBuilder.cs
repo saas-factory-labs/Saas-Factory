@@ -54,7 +54,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.DataExports.GetDataExports
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.DataExportResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
             return collectionResult?.AsList();
         }
         /// <summary>

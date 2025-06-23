@@ -44,7 +44,7 @@ internal class TodoController(
         CancellationToken cancellationToken)
     {
         // call TodoService instead of repository here
-        IEnumerable<AccountEntity?> accounts = await _accountRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
+        IEnumerable<AccountEntity?> accounts = await _accountRepository.GetAllAsync(cancellationToken);
 
         _logger.LogInformation("running GetTodosV1");
 
@@ -77,7 +77,7 @@ internal class TodoController(
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         // await _unitOfWork.AccountRepository.AddAsync(account, cancellationToken);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync();
 
         // return CreatedAtAction(nameof(GetAccountsV1), new { id = account.AccountId }, account);
         return Ok();
@@ -101,7 +101,7 @@ internal class TodoController(
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         // await _unitOfWork.AccountRepository.UpdateAsync(account, cancellationToken);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }
@@ -118,8 +118,8 @@ internal class TodoController(
     public async Task<ActionResult> DeleteAccount(string id, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _unitOfWork.AccountRepository.DeleteAsync(id, cancellationToken).ConfigureAwait(false);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _unitOfWork.AccountRepository.DeleteAsync(id, cancellationToken);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }

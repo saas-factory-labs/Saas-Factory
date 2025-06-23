@@ -54,7 +54,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.Integrations.GetIntegration.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.IntegrationResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.IntegrationResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.IntegrationResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.IntegrationResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets an integration by ID.

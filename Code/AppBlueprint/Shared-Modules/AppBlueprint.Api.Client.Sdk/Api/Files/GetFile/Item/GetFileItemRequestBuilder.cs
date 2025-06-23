@@ -54,7 +54,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.Files.GetFile.Item
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.FileResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.FileResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.FileResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.FileResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets a file by ID.

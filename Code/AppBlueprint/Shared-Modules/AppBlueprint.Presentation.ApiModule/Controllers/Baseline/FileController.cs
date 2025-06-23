@@ -31,13 +31,14 @@ public class FileController : BaseController
     /// <summary>
     ///     Gets all files.
     /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>List of files</returns>
     [HttpGet("GetFiles")]
     [ProducesResponseType(typeof(IEnumerable<FileResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(CancellationToken cancellationToken)
     {
-        IEnumerable<FileEntity> files = await _fileRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
+        IEnumerable<FileEntity> files = await _fileRepository.GetAllAsync(cancellationToken);
         if (!files.Any()) return NotFound(new { Message = "No files found." });
 
         IEnumerable<FileResponse> response = files.Select(file => new FileResponse());
@@ -46,15 +47,17 @@ public class FileController : BaseController
     }
 
     /// <summary>
-    ///     Gets a file by ID.    /// </summary>
+    ///     Gets a file by ID.
+    /// </summary>
     /// <param name="id">File ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>File</returns>
     [HttpGet("GetFile/{id}")]
     [ProducesResponseType(typeof(FileResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(string id, CancellationToken cancellationToken)
     {
-        FileEntity? file = await _fileRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
+        FileEntity? file = await _fileRepository.GetByIdAsync(id, cancellationToken);
         if (file is null) return NotFound(new { Message = $"File with ID {id} not found." });
 
         var response = new FileResponse
@@ -70,6 +73,7 @@ public class FileController : BaseController
     ///     Creates a new file.
     /// </summary>
     /// <param name="fileDto">File data transfer object.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Created file.</returns>
     [HttpPost("CreateFile")]
     [ProducesResponseType(typeof(FileResponse), StatusCodes.Status201Created)]
@@ -82,8 +86,8 @@ public class FileController : BaseController
             FileName = fileDto.FileName
         };
 
-        await _fileRepository.AddAsync(newFile, cancellationToken).ConfigureAwait(false);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _fileRepository.AddAsync(newFile, cancellationToken);
+        await _unitOfWork.SaveChangesAsync();
 
         return CreatedAtAction(nameof(Get), new { id = newFile.Id }, newFile);
     }
@@ -93,6 +97,7 @@ public class FileController : BaseController
     /// </summary>
     /// <param name="id">File ID.</param>
     /// <param name="fileDto">File data transfer object.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>No content.</returns>
     [HttpPut("UpdateFile/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -105,8 +110,8 @@ public class FileController : BaseController
         existingFile.FileName = fileDto.FileName;
 
 
-        await _fileRepository.UpdateAsync(existingFile, cancellationToken).ConfigureAwait(false);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _fileRepository.UpdateAsync(existingFile, cancellationToken);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }
@@ -114,17 +119,19 @@ public class FileController : BaseController
     /// <summary>
     ///     Deletes a file by ID.
     /// </summary>
-    /// <param name="id">File ID.</param>    /// <returns>No content.</returns>
+    /// <param name="id">File ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>No content.</returns>
     [HttpDelete("DeleteFile/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
     {
-        FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
+        FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken);
         if (existingFile is null) return NotFound(new { Message = $"File with ID {id} not found." });
 
-        await _fileRepository.DeleteAsync(existingFile, cancellationToken).ConfigureAwait(false);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _fileRepository.DeleteAsync(existingFile, cancellationToken);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }

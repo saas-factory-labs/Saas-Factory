@@ -64,7 +64,7 @@ public class AccountController(
         CancellationToken cancellationToken)
     {
         // call accountService instead of repository here
-        IEnumerable<AccountEntity>? accounts = await _accountRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
+        IEnumerable<AccountEntity>? accounts = await _accountRepository.GetAllAsync(cancellationToken);
         if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });        // ContractMapping.MapToAccountResponse();
 
         var accountDtOs = accounts.Select(account => new
@@ -86,7 +86,7 @@ public class AccountController(
     public async Task<ActionResult> GetAccountsV2([FromHeader(Name = "Authorization")] string authorizationHeader,
         CancellationToken cancellationToken)
     {
-        IEnumerable<AccountEntity>? accounts = await _accountRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
+        IEnumerable<AccountEntity>? accounts = await _accountRepository.GetAllAsync(cancellationToken);
         if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });        // map to dto
         var accountDtOs = accounts.Select(account => new
         {
@@ -111,8 +111,8 @@ public class AccountController(
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _unitOfWork.AccountRepository.AddAsync(account, cancellationToken).ConfigureAwait(false);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _unitOfWork.AccountRepository.AddAsync(account, cancellationToken);
+        await _unitOfWork.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetAccountsV1), new { id = account.Id }, account);
     }
@@ -134,8 +134,8 @@ public class AccountController(
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _unitOfWork.AccountRepository.UpdateAsync(account, cancellationToken).ConfigureAwait(false);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _unitOfWork.AccountRepository.UpdateAsync(account, cancellationToken);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }
@@ -152,8 +152,8 @@ public class AccountController(
     public async Task<ActionResult> DeleteAccount(string id, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _unitOfWork.AccountRepository.DeleteAsync(id, cancellationToken).ConfigureAwait(false);
-        await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        await _unitOfWork.AccountRepository.DeleteAsync(id, cancellationToken);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }

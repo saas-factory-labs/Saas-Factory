@@ -56,7 +56,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Tenant.CreateTenant
             {
                 { "400", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.TenantResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.TenantResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.TenantResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.TenantResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Creates a new tenant.

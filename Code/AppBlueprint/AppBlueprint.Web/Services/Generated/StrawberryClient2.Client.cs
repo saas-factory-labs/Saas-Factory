@@ -502,7 +502,7 @@ namespace StrawberryClient2NS
         public async global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IGetAccounts2Result>> ExecuteAsync(global::System.Threading.CancellationToken cancellationToken = default)
         {
             var request = CreateRequest();
-            return await _operationExecutor.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
+            return await _operationExecutor.ExecuteAsync(request, cancellationToken);
         }
 
         public global::System.IObservable<global::StrawberryShake.IOperationResult<IGetAccounts2Result>> Watch(global::StrawberryShake.ExecutionStrategy? strategy = null)
@@ -661,7 +661,7 @@ namespace StrawberryClient2NS
         public async global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IGetAccounts3Result>> ExecuteAsync(global::System.Threading.CancellationToken cancellationToken = default)
         {
             var request = CreateRequest();
-            return await _operationExecutor.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
+            return await _operationExecutor.ExecuteAsync(request, cancellationToken);
         }
 
         public global::System.IObservable<global::StrawberryShake.IOperationResult<IGetAccounts3Result>> Watch(global::StrawberryShake.ExecutionStrategy? strategy = null)

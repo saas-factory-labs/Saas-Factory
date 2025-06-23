@@ -51,7 +51,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V2.Account.GetAccounts
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.AccountEntity>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.AccountEntity.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.AccountEntity>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.AccountEntity.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
             return collectionResult?.AsList();
         }
         /// <returns>A <see cref="RequestInformation"/></returns>

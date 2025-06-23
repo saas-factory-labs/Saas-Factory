@@ -70,7 +70,7 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
     {
         context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
         await context.HttpContext.Response.WriteAsync("Rate limit exceeded. Try again later.",
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken);
     };
 });
 

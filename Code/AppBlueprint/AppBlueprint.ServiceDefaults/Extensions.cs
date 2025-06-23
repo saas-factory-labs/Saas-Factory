@@ -17,6 +17,8 @@ namespace Microsoft.Extensions.Hosting
 {
     public static class Extensions
     {
+        private static readonly string[] LiveTags = { "live" };
+
         public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
         {
             ArgumentNullException.ThrowIfNull(builder, nameof(builder));
@@ -115,7 +117,7 @@ namespace Microsoft.Extensions.Hosting
         public static IHostApplicationBuilder AddDefaultHealthChecks(this IHostApplicationBuilder builder)
         {
             ArgumentNullException.ThrowIfNull(builder, nameof(builder));
-            builder.Services.AddHealthChecks().AddCheck("self", () => HealthCheckResult.Healthy(), new[] { "live" });
+            builder.Services.AddHealthChecks().AddCheck("self", () => HealthCheckResult.Healthy(), LiveTags);
             return builder;
         }
 

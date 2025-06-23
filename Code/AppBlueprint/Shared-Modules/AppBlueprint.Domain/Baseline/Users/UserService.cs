@@ -95,9 +95,9 @@ public class UserService : IUserService
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(tokenBytes);
         string token = Convert.ToBase64String(tokenBytes)
-            .Replace("/", "_")
-            .Replace("+", "-")
-            .Replace("=", "");
+            .Replace("/", "_", StringComparison.Ordinal)
+            .Replace("+", "-", StringComparison.Ordinal)
+            .Replace("=", "", StringComparison.Ordinal);
 
         // Create email verification record
         var emailVerification = new EmailVerificationEntity
@@ -179,9 +179,9 @@ public class UserService : IUserService
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(tokenBytes);
         string token = Convert.ToBase64String(tokenBytes)
-            .Replace("/", "_")
-            .Replace("+", "-")
-            .Replace("=", "");        // Create password reset record
+            .Replace("/", "_", StringComparison.Ordinal)
+            .Replace("+", "-", StringComparison.Ordinal)
+            .Replace("=", "", StringComparison.Ordinal);        // Create password reset record
         var passwordReset = new PasswordResetEntity
         {
             Token = token,

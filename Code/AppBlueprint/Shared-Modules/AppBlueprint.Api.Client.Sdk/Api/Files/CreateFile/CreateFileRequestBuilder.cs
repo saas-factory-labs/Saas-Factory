@@ -51,7 +51,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.Files.CreateFile
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
             var requestInfo = ToPostRequestInformation(body, requestConfiguration);
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.FileResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.FileResponseDto.CreateFromDiscriminatorValue, default, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.FileResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.FileResponseDto.CreateFromDiscriminatorValue, default, cancellationToken);
         }
         /// <summary>
         /// Creates a new file.

@@ -80,7 +80,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.Subscriptions
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.SubscriptionResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.SubscriptionResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.SubscriptionResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.SubscriptionResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
             return collectionResult?.AsList();
         }
         /// <summary>

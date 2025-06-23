@@ -75,7 +75,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Demos
         {
 #endif
             var requestInfo = ToGetRequestInformation(requestConfiguration);
-            var collectionResult = await RequestAdapter.SendPrimitiveCollectionAsync<string>(requestInfo, default, cancellationToken).ConfigureAwait(false);
+            var collectionResult = await RequestAdapter.SendPrimitiveCollectionAsync<string>(requestInfo, default, cancellationToken);
             return collectionResult?.AsList();
         }
         /// <summary>
@@ -100,7 +100,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1.Demos
             {
                 { "400", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken).ConfigureAwait(false);
+            await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets a list of demo values.

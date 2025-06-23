@@ -69,7 +69,7 @@ internal sealed class Program
         using (var scope = app.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            await dbContext.Database.EnsureCreatedAsync().ConfigureAwait(false);
+            await dbContext.Database.EnsureCreatedAsync();
         }
 
         // Configure the HTTP request pipeline.
@@ -93,12 +93,12 @@ internal sealed class Program
             // Count the request
             requestCounter.Add(1);
             
-            await next().ConfigureAwait(false);
+            await next();
         });
 
         app.MapGet("/weatherforecast", async (ApplicationDbContext db) =>
         {
-            return await db.WeatherForecasts.ToListAsync().ConfigureAwait(false);
+            return await db.WeatherForecasts.ToListAsync();
         })
         .WithName("GetWeatherForecast")
         .WithOpenApi();
@@ -107,6 +107,6 @@ internal sealed class Program
         app.MapDefaultEndpoints();
 
         // Run the application with ConfigureAwait to prevent awaiter context issues
-        await app.RunAsync().ConfigureAwait(false);
+        await app.RunAsync();
     }
 }

@@ -80,7 +80,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.Roles
             {
                 { "404", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.RoleResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.RoleResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            var collectionResult = await RequestAdapter.SendCollectionAsync<global::AppBlueprint.Api.Client.Sdk.Models.RoleResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.RoleResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
             return collectionResult?.AsList();
         }
         /// <summary>
@@ -106,7 +106,7 @@ namespace AppBlueprint.Api.Client.Sdk.Api.Roles
             {
                 { "400", global::AppBlueprint.Api.Client.Sdk.Models.ProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.RoleResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.RoleResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::AppBlueprint.Api.Client.Sdk.Models.RoleResponseDto>(requestInfo, global::AppBlueprint.Api.Client.Sdk.Models.RoleResponseDto.CreateFromDiscriminatorValue, errorMapping, cancellationToken);
         }
         /// <summary>
         /// Gets all roles.
