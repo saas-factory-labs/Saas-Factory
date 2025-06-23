@@ -1,4 +1,4 @@
-using AppBlueprint.Domain.Baseline.Users;
+using AppBlueprint.Infrastructure.Services.Users;
 using AppBlueprint.UiKit.Components.Pages;
 using Bunit;
 using static Bunit.ComponentParameterFactory; // Added for Parameter()

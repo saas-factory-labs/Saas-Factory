@@ -1,6 +1,6 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 
-namespace AppBlueprint.Domain.Baseline.Users;
+namespace AppBlueprint.Application.Services.Users;
 
 public interface IUserService
 {

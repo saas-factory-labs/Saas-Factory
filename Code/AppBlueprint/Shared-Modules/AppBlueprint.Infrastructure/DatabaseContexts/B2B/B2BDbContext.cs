@@ -37,8 +37,10 @@ public partial class B2BDbContext : BaselineDbContext
 
         OnModelCreating_Team(modelBuilder);
         OnModelCreating_Tenant(modelBuilder);
+        OnModelCreating_Todo(modelBuilder);
     }
 
     partial void OnModelCreating_Tenant(ModelBuilder modelBuilder);
     partial void OnModelCreating_Team(ModelBuilder modelBuilder);
+    partial void OnModelCreating_Todo(ModelBuilder modelBuilder);
 }

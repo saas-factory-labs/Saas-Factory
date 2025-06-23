@@ -36,9 +36,11 @@
         <PackageReference Include="Fluent-Regex"/>
     </ItemGroup>
 
-    <ItemGroup><!--      <ProjectReference Include="..\..\..\..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj" />-->
+    <ItemGroup>
+        <!--      <ProjectReference Include="..\..\..\..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj" />-->
         <!--      <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />-->
 
         <ProjectReference Include="..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj"/>
+        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
     </ItemGroup>
 </Project>

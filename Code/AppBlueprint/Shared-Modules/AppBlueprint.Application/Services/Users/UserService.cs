@@ -8,7 +8,7 @@ using AppBlueprint.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
-namespace AppBlueprint.Domain.Baseline.Users;
+namespace AppBlueprint.Application.Services.Users;
 
 public class UserService : IUserService
 {

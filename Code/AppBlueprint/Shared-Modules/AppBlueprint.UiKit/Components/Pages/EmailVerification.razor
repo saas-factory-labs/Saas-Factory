@@ -1,5 +1,5 @@
 @page "/verify-email/{Token}/{UserId:int}"
-@using AppBlueprint.Domain.Baseline.Users
+@using AppBlueprint.Infrastructure.Services.Users
 @inject IUserService UserService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager

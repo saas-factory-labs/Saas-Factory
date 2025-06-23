@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>AppBlueprint.TodoAppKernel</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Entity Framework and Database -->
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+        
+        <!-- ASP.NET Core -->
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" />
+        <PackageReference Include="Microsoft.AspNetCore.Authorization" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+        
+        <!-- API Versioning -->
+        <PackageReference Include="Asp.Versioning.Mvc" />
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+        <!-- Note: Removed Infrastructure reference to avoid circular dependency -->
+        <!-- TodoAppKernel is self-contained and Infrastructure will reference it instead -->
+    </ItemGroup>
+
+    <PropertyGroup>
+        <!-- Enable packaging -->
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>SaaS-Factory.AppBlueprint.TodoAppKernel</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Todo App Kernel module for AppBlueprint - contains todo-specific domain entities, infrastructure, and controllers</Description>
+        <PackageTags>todo;domain;infrastructure;controllers;</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+</Project>

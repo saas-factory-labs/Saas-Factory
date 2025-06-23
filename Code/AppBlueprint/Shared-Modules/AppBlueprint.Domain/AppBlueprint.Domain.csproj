@@ -32,7 +32,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
-        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+        <!-- Removed Infrastructure reference to fix circular dependency -->
+        <!-- Domain should not depend on Infrastructure layer -->
     </ItemGroup>
 </Project>
