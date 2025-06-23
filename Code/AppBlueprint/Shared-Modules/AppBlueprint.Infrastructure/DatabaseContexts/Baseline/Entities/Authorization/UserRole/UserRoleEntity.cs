@@ -1,12 +1,14 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
-public class UserRoleEntity
+public class UserRoleEntity : BaseEntity
 {
     public UserRoleEntity()
     {
+        Id = PrefixedUlid.Generate("user-role");
         User = new UserEntity
         {
             FirstName = string.Empty,
@@ -19,15 +21,13 @@ public class UserRoleEntity
         Role = new RoleEntity
         {
             Name = string.Empty,
-            Description = string.Empty,
-            CreatedAt = DateTime.Now,
-            LastUpdatedAt = DateTime.Now
+            Description = string.Empty
         };
-    }    public int Id { get; set; }
-    
-    public int UserId { get; set; }
+    }
+
+    public string UserId { get; set; }
     public UserEntity User { get; set; }
 
-    public int RoleId { get; set; }
+    public string RoleId { get; set; }
     public RoleEntity Role { get; set; }
 }

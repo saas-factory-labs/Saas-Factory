@@ -1,4 +1,5 @@
 ﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 
 // using Shared.Models;
 
@@ -13,7 +14,7 @@ public class ChatMessageModel
             Email = "test@test.com",
             FirstName = "John",
             LastName = "Doe",
-            Id = 1,
+            Id = PrefixedUlid.Generate("user"),
             CreatedAt = DateTime.Now,
             IsActive = true,
             UserName = "johndoe",
@@ -23,8 +24,8 @@ public class ChatMessageModel
         Chat = new ChatModel();
     }
 
-    public int Id { get; set; }
-    public string Name { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     public bool IsActive { get; set; }
     public string? Description { get; set; }
@@ -36,5 +37,5 @@ public class ChatMessageModel
     public UserEntity Sender { get; set; }
 
     public UserEntity Owner { get; set; }
-    public int OwnerId { get; set; }
+    public string OwnerId { get; set; } = string.Empty;
 }

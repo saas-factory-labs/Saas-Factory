@@ -17,8 +17,22 @@ public sealed class CityEntityConfiguration : IEntityTypeConfiguration<CityEntit
         // Table mapping with standardized naming
         builder.ToTable("Cities");
 
-        // Primary key
+        // Primary key - ULID as string
         builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Properties with validation
         builder.Property(e => e.Name)
@@ -30,10 +44,12 @@ public sealed class CityEntityConfiguration : IEntityTypeConfiguration<CityEntit
             .HasMaxLength(20);
 
         builder.Property(e => e.CountryId)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(40);
 
         builder.Property(e => e.StateId)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(40);
 
         // Relationships - Geographic hierarchy
         builder.HasOne(e => e.Country)
@@ -60,6 +76,10 @@ public sealed class CityEntityConfiguration : IEntityTypeConfiguration<CityEntit
 
         builder.HasIndex(e => e.PostalCode)
             .HasDatabaseName("IX_Cities_PostalCode");
+
+        // Indexes for BaseEntity properties
+        builder.HasIndex(e => e.IsSoftDeleted)
+            .HasDatabaseName("IX_Cities_IsSoftDeleted");
 
         // Unique constraint for postal code within state
         builder.HasIndex(e => new { e.StateId, e.PostalCode })

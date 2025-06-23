@@ -56,13 +56,12 @@ public class ApiKeyController : BaseController
     ///     Gets an API key by ID.
     /// </summary>
     /// <param name="id">API key ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>API key</returns>
+    /// <param name="cancellationToken">Cancellation Token</param>    /// <returns>API key</returns>
     [HttpGet("GetApiKey/{id}")]
     [ProducesResponseType(typeof(ApiKeyResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult<ApiKeyResponse>> GetApiKey(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiKeyResponse>> GetApiKey(string id, CancellationToken cancellationToken)
     {
         ApiKeyEntity? apiKey = await _apiKeyRepository.GetByIdAsync(id);
         if (apiKey is null) return NotFound(new { Message = $"API key with ID {id} not found." });
@@ -89,12 +88,11 @@ public class ApiKeyController : BaseController
     public async Task<ActionResult> CreateApiKey([FromBody] CreateApiKeyRequest apiKeyDto,
         CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        var newApiKey = new ApiKeyEntity
+        if (!ModelState.IsValid) return BadRequest(ModelState);        var newApiKey = new ApiKeyEntity
         {
             Name = apiKeyDto.Name,
             SecretRef = "adad",
+            TenantId = "tenant_placeholder", // TODO: Get from tenant context
             Owner = new UserEntity
             {
                 Email = "test@test.com",
@@ -121,8 +119,7 @@ public class ApiKeyController : BaseController
     [HttpPut(ApiEndpoints.ApiKeys.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> UpdateApiKey(int id, [FromBody] UpdateApiKeyRequest apiKeyDto,
+    [MapToApiVersion(ApiVersions.V1)]    public async Task<ActionResult> UpdateApiKey(string id, [FromBody] UpdateApiKeyRequest apiKeyDto,
         CancellationToken cancellationToken)
     {
         ApiKeyEntity? existingApiKey = await _apiKeyRepository.GetByIdAsync(id);
@@ -141,17 +138,16 @@ public class ApiKeyController : BaseController
     /// </summary>
     /// <param name="id">API key ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
-    [HttpDelete(ApiEndpoints.ApiKeys.DeleteById)]
+    /// <returns>No content.</returns>    [HttpDelete(ApiEndpoints.ApiKeys.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> DeleteApiKey(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> DeleteApiKey(string id, CancellationToken cancellationToken)
     {
         ApiKeyEntity? existingApiKey = await _apiKeyRepository.GetByIdAsync(id);
         if (existingApiKey is null) return NotFound(new { Message = $"API key with ID {id} not found." });
 
-        _apiKeyRepository.Delete(existingApiKey.UserId);
+        _apiKeyRepository.Delete(existingApiKey.Id);
         await _unitOfWork.SaveChangesAsync();
 
         return NoContent();

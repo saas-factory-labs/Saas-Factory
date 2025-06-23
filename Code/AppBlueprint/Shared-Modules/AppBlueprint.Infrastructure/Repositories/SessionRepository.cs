@@ -17,9 +17,7 @@ public class SessionRepository : ISessionRepository
     public async Task<IEnumerable<SessionEntity>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.Set<SessionEntity>().ToListAsync(cancellationToken);
-    }
-
-    public async Task<SessionEntity> GetByIdAsync(int id, CancellationToken cancellationToken)
+    }    public async Task<SessionEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _context.Set<SessionEntity>().FindAsync(new object[] { id }, cancellationToken);
     }
@@ -40,7 +38,7 @@ public class SessionRepository : ISessionRepository
         _context.Set<SessionEntity>().Update(session);
     }
 
-    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
         SessionEntity? session = await _context.Set<SessionEntity>().FindAsync(new object[] { id }, cancellationToken);
         if (session is not null) _context.Set<SessionEntity>().Remove(session);

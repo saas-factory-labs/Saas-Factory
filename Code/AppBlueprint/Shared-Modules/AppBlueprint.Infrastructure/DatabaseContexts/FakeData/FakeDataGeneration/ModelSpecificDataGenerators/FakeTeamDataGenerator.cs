@@ -1,4 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.SharedKernel;
 using Bogus;
 
 // using Shared.Models;
@@ -20,7 +21,7 @@ public class FakeTeamDataGenerator
 
         fakeTeam.Name = _faker.Company.CompanyName();
         fakeTeam.CreatedAt = _faker.Date.Past();
-        fakeTeam.Id = _faker.Random.Int(1, 1000);
+        fakeTeam.Id = PrefixedUlid.Generate("team");
         fakeTeam.Description = _faker.Lorem.Sentence();
         fakeTeam.IsActive = _faker.Random.Bool();
         // fakeTeam.OwnerId = _faker.Random.Int(1, 1000);

@@ -18,14 +18,32 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
         // Define table name
         builder.ToTable("AuditLogs");
 
-        // Define primary key
-        builder.HasKey(e => e.Id)
-            .HasName("PK_AuditLogs");
-
-        // Configure Id property
-        builder.Property(e => e.Id)
-            .ValueGeneratedOnAdd()
+        // Configure ID as ULID string
+        builder.HasKey(a => a.Id);
+        builder.Property(a => a.Id)
+            .IsRequired()
+            .HasMaxLength(40)
+            .ValueGeneratedNever()
             .HasComment("Primary key for audit log entry");
+
+        // Configure BaseEntity properties
+        builder.Property(a => a.CreatedAt)
+            .IsRequired()
+            .HasDefaultValueSql("NOW()");
+
+        builder.Property(a => a.LastUpdatedAt)
+            .IsRequired()
+            .HasDefaultValueSql("NOW()");
+
+        builder.Property(a => a.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        // Configure TenantId for multi-tenancy
+        builder.Property(a => a.TenantId)
+            .IsRequired()
+            .HasMaxLength(40)
+            .HasComment("Foreign key to the tenant where the action occurred");
 
         // Configure Action property with GDPR compliance
         builder.Property(e => e.Action)
@@ -62,11 +80,8 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
         // Configure foreign key properties
         builder.Property(e => e.UserId)
             .IsRequired()
+            .HasMaxLength(40)
             .HasComment("Foreign key to the user who performed the action");
-
-        builder.Property(e => e.TenantId)
-            .IsRequired()
-            .HasComment("Foreign key to the tenant where the action occurred");
 
         // Configure relationship to User (who performed the action)
         builder.HasOne(al => al.User)
@@ -89,13 +104,19 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
             .OnDelete(DeleteBehavior.Restrict) // Preserve audit trail even if tenant is deleted
             .HasConstraintName("FK_AuditLogs_Tenants_TenantId");
 
+        // Add indexes
+        builder.HasIndex(a => a.TenantId)
+            .HasDatabaseName("IX_AuditLogs_TenantId");
+
+        builder.HasIndex(a => a.IsSoftDeleted)
+            .HasDatabaseName("IX_AuditLogs_IsSoftDeleted");
+
+        builder.HasIndex(a => new { a.TenantId, a.IsSoftDeleted })
+            .HasDatabaseName("IX_AuditLogs_TenantId_IsSoftDeleted");
+
         // Create indexes for performance and compliance queries
         builder.HasIndex(al => al.UserId)
             .HasDatabaseName("IX_AuditLogs_UserId")
-            .HasFilter(null);
-
-        builder.HasIndex(al => al.TenantId)
-            .HasDatabaseName("IX_AuditLogs_TenantId")
             .HasFilter(null);
 
         builder.HasIndex(al => al.ModifiedAt)
@@ -118,5 +139,8 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
         builder.HasIndex(al => new { al.Category, al.ModifiedAt })
             .HasDatabaseName("IX_AuditLogs_Category_ModifiedAt")
             .HasFilter($"{nameof(AuditLogEntity.Category)} IS NOT NULL");
+
+        // Configure query filter for soft delete and tenant scoping
+        builder.HasQueryFilter(a => !a.IsSoftDeleted);
     }
 }

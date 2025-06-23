@@ -19,15 +19,35 @@ public sealed class FamilyInviteEntityConfiguration : IEntityTypeConfiguration<F
 
         // Primary Key
         builder.HasKey(fi => fi.Id);
+        
+        // Configure ULID ID
+        builder.Property(fi => fi.Id)
+            .HasMaxLength(40)
+            .IsRequired();
+
+        // Configure BaseEntity properties
+        builder.Property(fi => fi.CreatedAt)
+            .IsRequired();
+
+        builder.Property(fi => fi.LastUpdatedAt);
+
+        builder.Property(fi => fi.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Properties
+        builder.Property(fi => fi.FamilyId)
+            .HasMaxLength(40)
+            .IsRequired();
+
+        builder.Property(fi => fi.UserId)
+            .HasMaxLength(40)
+            .IsRequired();
+
         builder.Property(fi => fi.ExpireAt)
             .IsRequired();
 
         builder.Property(fi => fi.IsActive)
-            .IsRequired();
-
-        builder.Property(fi => fi.CreatedAt)
             .IsRequired();
 
         // Relationships
@@ -36,12 +56,18 @@ public sealed class FamilyInviteEntityConfiguration : IEntityTypeConfiguration<F
             .HasForeignKey(fi => fi.FamilyId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // builder.HasOne(fi => fi.User)
-        //     .WithMany()
-        //     .HasForeignKey(fi => fi.UserId)
-        //     .OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(fi => fi.Owner)
+            .WithMany()
+            .HasForeignKey(fi => fi.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Indexes
         builder.HasIndex(fi => fi.Id).IsUnique();
+        builder.HasIndex(fi => fi.FamilyId);
+        builder.HasIndex(fi => fi.UserId);
+        builder.HasIndex(fi => fi.IsSoftDeleted);
+        
+        // Query filter for soft delete
+        builder.HasQueryFilter(fi => !fi.IsSoftDeleted);
     }
 }

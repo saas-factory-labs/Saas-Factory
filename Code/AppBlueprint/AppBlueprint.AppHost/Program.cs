@@ -23,9 +23,7 @@ var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservic
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithExternalHttpEndpoints()
-    .WithReference(apiService)
-    .WithEnvironment("ASPNETCORE_URLS", "http://localhost:5000")
-    .WithEndpoint(port: 5000, scheme: "http", name: "frontend");
+    .WithReference(apiService);
 
 string[] keys = new[]
 {

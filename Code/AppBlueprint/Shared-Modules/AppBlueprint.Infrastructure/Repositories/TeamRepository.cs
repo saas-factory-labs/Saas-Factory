@@ -19,7 +19,7 @@ public class TeamRepository : ITeamRepository
         return await _context.Set<TeamEntity>().ToListAsync();
     }
 
-    public async Task<TeamEntity> GetByIdAsync(int id)
+    public async Task<TeamEntity> GetByIdAsync(string id)
     {
         return await _context.Set<TeamEntity>().FindAsync(id);
     }
@@ -32,9 +32,7 @@ public class TeamRepository : ITeamRepository
     public void Update(TeamEntity team)
     {
         _context.Set<TeamEntity>().Update(team);
-    }
-
-    public void Delete(int id)
+    }    public void Delete(string id)
     {
         TeamEntity? team = _context.Set<TeamEntity>().Find(id);
         if (team is not null) _context.Set<TeamEntity>().Remove(team);

@@ -17,9 +17,7 @@ public class PermissionRepository : IPermissionRepository
     public async Task<IEnumerable<PermissionEntity>> GetAllAsync()
     {
         return await _context.Set<PermissionEntity>().ToListAsync();
-    }
-
-    public async Task<PermissionEntity> GetByIdAsync(int id)
+    }    public async Task<PermissionEntity> GetByIdAsync(string id)
     {
         return await _context.Set<PermissionEntity>().FindAsync(id);
     }
@@ -34,7 +32,7 @@ public class PermissionRepository : IPermissionRepository
         _context.Set<PermissionEntity>().Update(permission);
     }
 
-    public void Delete(int id)
+    public void Delete(string id)
     {
         PermissionEntity? permission = _context.Set<PermissionEntity>().Find(id);
         if (permission is not null) _context.Set<PermissionEntity>().Remove(permission);

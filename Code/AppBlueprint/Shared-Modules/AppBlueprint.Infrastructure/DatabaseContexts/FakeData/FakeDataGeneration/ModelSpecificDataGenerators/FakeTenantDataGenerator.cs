@@ -1,4 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
+using AppBlueprint.SharedKernel;
 using Bogus;
 
 // using Shared.Models;
@@ -20,7 +21,7 @@ public class FakeTenantDataGenerator
 
         fakeTenant.Name = _faker.Company.CompanyName();
         fakeTenant.CreatedAt = _faker.Date.Past();
-        fakeTenant.Id = _faker.Random.Int(1, 1000);
+        fakeTenant.Id = PrefixedUlid.Generate("tenant");
         fakeTenant.Description = _faker.Lorem.Sentence();
         fakeTenant.IsActive = _faker.Random.Bool();
         fakeTenant.LastUpdatedAt = _faker.Date.Past();

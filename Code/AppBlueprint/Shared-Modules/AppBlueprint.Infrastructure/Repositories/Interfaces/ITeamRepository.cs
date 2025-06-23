@@ -5,8 +5,8 @@ namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 public interface ITeamRepository
 {
     Task<IEnumerable<TeamEntity>> GetAllAsync();
-    Task<TeamEntity> GetByIdAsync(int id);
+    Task<TeamEntity> GetByIdAsync(string id);
     Task AddAsync(TeamEntity team);
     void Update(TeamEntity team);
-    void Delete(int id);
+    void Delete(string id);
 }

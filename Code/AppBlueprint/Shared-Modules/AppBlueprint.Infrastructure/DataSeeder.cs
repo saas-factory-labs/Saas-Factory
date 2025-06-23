@@ -162,11 +162,9 @@ public class DataSeeder(ApplicationDbContext dbContext)
 
     private async Task SeedSubscriptionsAsync(CancellationToken cancellationToken)
     {
-        if (await dbContext.Subscriptions.AnyAsync(cancellationToken).ConfigureAwait(false)) return;
-
-        Faker<SubscriptionEntity> faker = new Faker<SubscriptionEntity>()
+        if (await dbContext.Subscriptions.AnyAsync(cancellationToken).ConfigureAwait(false)) return;        Faker<SubscriptionEntity> faker = new Faker<SubscriptionEntity>()
             .RuleFor(s => s.CreatedAt, f => f.Date.Past())
-            .RuleFor(s => s.UpdatedAt, f => f.Date.Past())
+            .RuleFor(s => s.LastUpdatedAt, f => f.Date.Past())
             .RuleFor(s => s.Name, f => f.Random.AlphaNumeric(8));
 
         List<SubscriptionEntity> subscriptions = faker.Generate(5);

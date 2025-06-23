@@ -2,24 +2,22 @@ using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 
-public class TenantEntity
-{
-    public TenantEntity()
+public class TenantEntity : BaseEntity
+{    public TenantEntity()
     {
+        Id = PrefixedUlid.Generate("tenant");
         ContactPersons = new List<ContactPersonEntity>();
         Customer = new CustomerEntity();
         Users = new List<UserEntity>();
         Teams = new List<TeamEntity>();
     }
 
-    public int Id { get; set; }
     public string Name { get; set; }
     public string? Description { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastUpdatedAt { get; set; }
     public bool IsActive { get; set; }
     public bool IsPrimary { get; set; }
     public string Email { get; set; }

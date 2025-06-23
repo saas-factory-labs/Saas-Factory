@@ -111,12 +111,11 @@ internal class TodoController(
     /// </summary>
     /// <param name="id">Account ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
-    /// DELETE: /account/1
+    /// <returns>No content.</returns>    /// DELETE: /account/1
     // [HttpDelete(ApiEndpoints.Todos.DeleteById)]
     [ProducesResponseType(typeof(IEnumerable<TodoEntity>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> DeleteAccount(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> DeleteAccount(string id, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         await _unitOfWork.AccountRepository.DeleteAsync(id, cancellationToken).ConfigureAwait(false);

@@ -4,11 +4,10 @@ namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 
 public interface ICreditRepository
 {
-    Task<IEnumerable<CreditEntity>> GetAllAsync(CancellationToken cancellationToken);
-    Task<CreditEntity> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<IEnumerable<CreditEntity>> GetAllAsync(CancellationToken cancellationToken);    Task<CreditEntity> GetByIdAsync(string id, CancellationToken cancellationToken);
     Task AddAsync(CreditEntity credit, CancellationToken cancellationToken);
     Task UpdateAsync(CreditEntity credit, CancellationToken cancellationToken);
-    Task DeleteAsync(int id, CancellationToken cancellationToken);
-    Task<decimal> GetRemainingCreditAsync(int id, CancellationToken cancellationToken);
-    Task UpdateRemainingCreditAsync(int id, decimal amount, CancellationToken cancellationToken);
+    Task DeleteAsync(string id, CancellationToken cancellationToken);
+    Task<decimal> GetRemainingCreditAsync(string id, CancellationToken cancellationToken);
+    Task UpdateRemainingCreditAsync(string id, decimal amount, CancellationToken cancellationToken);
 }

@@ -4,16 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 
 public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantEntity>
-{
-    public void Configure(EntityTypeBuilder<TenantEntity> builder)
+{    public void Configure(EntityTypeBuilder<TenantEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-
+        
         // Table and Primary Key
         builder.ToTable("Tenants");
         builder.HasKey(e => e.Id);
 
-        // builder.HasQueryFilter(x => x.Id == 19158);
+        // Configure ULID ID with proper length for prefixed ULID (prefix + underscore + 26 char ULID)
+        builder.Property(e => e.Id)
+            .HasMaxLength(40)
+            .IsRequired();
 
         // Indexes
         builder.HasIndex(e => e.Id).IsUnique();
@@ -37,18 +39,21 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantE
             .IsRequired();
 
         builder.Property(e => e.Type)
+            .HasMaxLength(50);        builder.Property(e => e.VatNumber)
             .HasMaxLength(50);
-
-        builder.Property(e => e.VatNumber)
-            .HasMaxLength(50);
-
+            
         builder.Property(e => e.Country)
             .HasMaxLength(100);
 
+        // BaseEntity properties
         builder.Property(e => e.CreatedAt)
             .IsRequired();
 
-        builder.Property(e => e.LastUpdatedAt);        // Relationships with proper foreign key constraints
+        builder.Property(e => e.LastUpdatedAt);        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+            
+        // Relationships with proper foreign key constraints
         builder.HasMany(e => e.ContactPersons)
             .WithOne()
             .HasForeignKey("TenantId")
@@ -76,18 +81,21 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantE
         // Performance indexes with standardized naming
         builder.HasIndex(e => e.Name)
             .HasDatabaseName("IX_Tenants_Name");
-            
+
         builder.HasIndex(e => e.Email)
             .IsUnique()
             .HasDatabaseName("IX_Tenants_Email");
-            
+
         builder.HasIndex(e => e.IsActive)
             .HasDatabaseName("IX_Tenants_IsActive");
-            
+
         builder.HasIndex(e => e.VatNumber)
-            .HasDatabaseName("IX_Tenants_VatNumber");
-            
-        builder.HasIndex(e => e.Country)
-            .HasDatabaseName("IX_Tenants_Country");
+            .HasDatabaseName("IX_Tenants_VatNumber");        builder.HasIndex(e => e.Country)
+            .HasDatabaseName("IX_Tenants_Country");        // Add index for soft delete filtering
+        builder.HasIndex(e => e.IsSoftDeleted)
+            .HasDatabaseName("IX_Tenants_IsSoftDeleted");
+
+        // TODO: Update this query filter to use proper string-based tenant filtering
+        // builder.HasQueryFilter(x => x.Id == "tenant_01ARZ3NDEKTSV4RRFFQ69G5FAV");
     }
 }

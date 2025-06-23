@@ -5,8 +5,8 @@ namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 public interface ITenantRepository
 {
     Task<IEnumerable<TenantEntity>> GetAllAsync();
-    Task<TenantEntity> GetByIdAsync(int id);
+    Task<TenantEntity?> GetByIdAsync(string id);
     Task AddAsync(TenantEntity tenant);
     void Update(TenantEntity tenant);
-    void Delete(int id);
+    void Delete(string id);
 }

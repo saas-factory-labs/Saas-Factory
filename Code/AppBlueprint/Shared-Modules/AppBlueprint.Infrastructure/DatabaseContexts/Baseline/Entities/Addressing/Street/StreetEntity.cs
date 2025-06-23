@@ -1,9 +1,12 @@
+using AppBlueprint.SharedKernel;
+
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 
-public class StreetEntity
+public class StreetEntity : BaseEntity
 {
     public StreetEntity()
     {
+        Id = PrefixedUlid.Generate("street");
         Name = string.Empty;
         City = new CityEntity
         {
@@ -16,8 +19,7 @@ public class StreetEntity
         };
     }
 
-    public int Id { get; set; }
     public required string Name { get; set; }
     public required CityEntity City { get; set; }
-    public int CityId { get; set; }
+    public string CityId { get; set; }
 }

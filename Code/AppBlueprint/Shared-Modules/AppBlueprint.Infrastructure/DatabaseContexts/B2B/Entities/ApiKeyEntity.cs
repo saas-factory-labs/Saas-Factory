@@ -1,17 +1,16 @@
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 
-public sealed class ApiKeyEntity
+public sealed class ApiKeyEntity : BaseEntity, ITenantScoped
 {
     public ApiKeyEntity()
     {
-        CreatedAt = DateTime.Now;
+        Id = PrefixedUlid.Generate("api");
     }
-
-    public int Id { get; set; }
 
     public required UserEntity Owner { get; set; }
     public required string Name { get; set; }
@@ -19,7 +18,7 @@ public sealed class ApiKeyEntity
     
     public required string SecretRef { get; set; } // saved in azure keyvault
 
-    public int UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
 
-    public DateTime CreatedAt { get; set; }
+    public required string TenantId { get; set; }
 }

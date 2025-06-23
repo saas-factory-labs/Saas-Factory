@@ -4,9 +4,8 @@ namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 
 public interface IPermissionRepository
 {
-    Task<IEnumerable<PermissionEntity>> GetAllAsync();
-    Task<PermissionEntity> GetByIdAsync(int id);
+    Task<IEnumerable<PermissionEntity>> GetAllAsync();    Task<PermissionEntity> GetByIdAsync(string id);
     Task AddAsync(PermissionEntity permission);
     void Update(PermissionEntity permission);
-    void Delete(int id);
+    void Delete(string id);
 }

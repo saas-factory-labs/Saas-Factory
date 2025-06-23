@@ -1,36 +1,31 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
+﻿using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 
-public class TeamEntity
+public class TeamEntity : BaseEntity, ITenantScoped
 {
     public TeamEntity()
     {
+        Id = PrefixedUlid.Generate("team");
         TeamMembers = new List<TeamMemberEntity>();
         TeamInvites = new List<TeamInviteEntity>();
     }
 
-    public int Id { get; set; }
-
-    public UserEntity? Owner { get; set; }
-
     public string? Name { get; set; }
     public bool IsActive { get; set; }
     public string? Description { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastUpdatedAt { get; set; }
 
-    // Team Members and Invites
-    public List<TeamMemberEntity>? TeamMembers { get; }
-    public List<TeamInviteEntity>? TeamInvites { get; }
-
-    // Tenant relationship
+    public string TenantId { get; set; }
     public TenantEntity? Tenant { get; set; }
-    public int TenantId { get; set; } // Assuming TenantId as FK
 
-    // Organization relationship - Add OrganizationId for B2B scenarios
-    public int? OrganizationId { get; set; }
+    public UserEntity? Owner { get; set; }
+
+    public List<TeamMemberEntity> TeamMembers { get; }
+    public List<TeamInviteEntity> TeamInvites { get; }
+
+    public string? OrganizationId { get; set; }
 }

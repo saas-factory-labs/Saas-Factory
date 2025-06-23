@@ -6,7 +6,7 @@ namespace AppBlueprint.Contracts.Baseline.AuditLog.Responses;
 
 public class AuditLogResponse
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     // create new user, update user, delete user, etc.
     // create new customer, update customer, delete customer, etc.

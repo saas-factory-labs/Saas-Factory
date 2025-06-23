@@ -17,9 +17,7 @@ public class AuditLogRepository : IAuditLogRepository
     public async Task<IEnumerable<AuditLogEntity>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.Set<AuditLogEntity>().ToListAsync(cancellationToken);
-    }
-
-    public async Task<AuditLogEntity> GetByIdAsync(int id, CancellationToken cancellationToken)
+    }    public async Task<AuditLogEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _context.Set<AuditLogEntity>().FindAsync(new object[] { id }, cancellationToken);
     }
@@ -32,9 +30,7 @@ public class AuditLogRepository : IAuditLogRepository
     public void Update(AuditLogEntity auditLog, CancellationToken cancellationToken)
     {
         _context.Set<AuditLogEntity>().Update(auditLog);
-    }
-
-    public void Delete(int id, CancellationToken cancellationToken)
+    }    public void Delete(string id, CancellationToken cancellationToken)
     {
         AuditLogEntity? auditLog = _context.Set<AuditLogEntity>().Find(id);
         if (auditLog is not null) _context.Set<AuditLogEntity>().Remove(auditLog);

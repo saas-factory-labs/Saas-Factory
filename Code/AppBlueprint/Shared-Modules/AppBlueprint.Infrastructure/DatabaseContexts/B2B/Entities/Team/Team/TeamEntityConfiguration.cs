@@ -7,15 +7,15 @@ public sealed class TeamEntityConfiguration : IEntityTypeConfiguration<TeamEntit
 {
     public void Configure(EntityTypeBuilder<TeamEntity> builder)
     {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        // Table mapping
         builder.ToTable("Teams");
 
-        // Primary key
         builder.HasKey(t => t.Id);
 
-        // Properties
+        // Configure ULID ID with proper length for prefixed ULID (prefix + underscore + 26 char ULID)
+        builder.Property(t => t.Id)
+            .HasMaxLength(40)
+            .IsRequired();
+
         builder.Property(t => t.Name)
             .IsRequired()
             .HasMaxLength(100);
@@ -24,12 +24,21 @@ public sealed class TeamEntityConfiguration : IEntityTypeConfiguration<TeamEntit
             .HasMaxLength(500);
 
         builder.Property(t => t.IsActive)
-            .IsRequired();
-
+            .IsRequired();    // BaseEntity properties from BaseEntity
         builder.Property(t => t.CreatedAt)
             .IsRequired();
 
-        builder.Property(t => t.LastUpdatedAt);        // Relationships with proper foreign key constraints
+        builder.Property(t => t.LastUpdatedAt);
+
+        builder.Property(t => t.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        // ITenantScoped property
+        builder.Property(t => t.TenantId)
+            .IsRequired()
+            .HasMaxLength(40);
+
         builder.HasOne(t => t.Tenant)
             .WithMany(tenant => tenant.Teams)
             .HasForeignKey(t => t.TenantId)
@@ -48,13 +57,14 @@ public sealed class TeamEntityConfiguration : IEntityTypeConfiguration<TeamEntit
             .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("FK_TeamInvites_Teams_TeamId");
 
-        // Performance indexes with standardized naming
         builder.HasIndex(t => t.Name)
             .HasDatabaseName("IX_Teams_Name");
-            
+
         builder.HasIndex(t => t.TenantId)
-            .HasDatabaseName("IX_Teams_TenantId");
-            
+            .HasDatabaseName("IX_Teams_TenantId");    // Add index for soft delete filtering
+        builder.HasIndex(t => t.IsSoftDeleted)
+            .HasDatabaseName("IX_Teams_IsSoftDeleted");
+
         builder.HasIndex(t => t.IsActive)
             .HasDatabaseName("IX_Teams_IsActive");
     }

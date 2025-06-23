@@ -3,10 +3,11 @@ using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
-public class AuditLogEntity
+public class AuditLogEntity : BaseEntity, ITenantScoped
 {
     public AuditLogEntity()
     {
@@ -21,8 +22,6 @@ public class AuditLogEntity
         Tenant = new TenantEntity();
     }
 
-    public int Id { get; set; }
-
     // create new user, update user, delete user, etc.
     // create new customer, update customer, delete customer, etc.
     // create new tenant, update tenant, delete tenant, etc.
@@ -35,7 +34,7 @@ public class AuditLogEntity
     // create new contact person, update contact person, delete contact person, etc.    
 
     //public string EntityName { get; set; }
-    //public int EntityId { get; set; }
+    //public string EntityId { get; set; }
 
     [DataClassification(GDPRType.Sensitive)]
     public required string Action { get; set; } // GDPR
@@ -48,9 +47,9 @@ public class AuditLogEntity
     [Required] public required UserEntity ModifiedBy { get; set; }
     public DateTime ModifiedAt { get; set; }
 
-    public int TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
     public required TenantEntity Tenant { get; set; }
 
-    public int UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
     public required UserEntity User { get; set; }
 }

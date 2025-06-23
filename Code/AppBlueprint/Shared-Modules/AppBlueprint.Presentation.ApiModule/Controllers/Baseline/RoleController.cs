@@ -51,13 +51,12 @@ public class RoleController : BaseController
     /// <summary>
     ///     Gets a role by ID.
     /// </summary>
-    /// <param name="id">Role ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <param name="id">Role ID.</param>    /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns>Role</returns>
     [HttpGet(ApiEndpoints.Roles.GetById)]
     [ProducesResponseType(typeof(RoleResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<RoleResponse>> Get(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<RoleResponse>> Get(string id, CancellationToken cancellationToken)
     {
         RoleEntity? role = await _roleRepository.GetByIdAsync(id);
         if (role is null) return NotFound(new { Message = $"Role with ID {id} not found." });
@@ -104,8 +103,7 @@ public class RoleController : BaseController
     /// <returns>No content.</returns>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Put(int id, [FromBody] UpdateRoleRequest request,
+    [ProducesResponseType(StatusCodes.Status404NotFound)]    public async Task<ActionResult> Put(string id, [FromBody] UpdateRoleRequest request,
         CancellationToken cancellationToken)
     {
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
@@ -121,14 +119,13 @@ public class RoleController : BaseController
 
     /// <summary>
     ///     Deletes a role by ID.
-    /// </summary>
-    /// <param name="id">Role ID.</param>
+    /// </summary>    /// <param name="id">Role ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns>No content.</returns>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
     {
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
         if (existingRole is null) return NotFound(new { Message = $"Role with ID {id} not found." });

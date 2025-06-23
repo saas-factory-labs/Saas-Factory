@@ -10,17 +10,31 @@ public sealed class RolePermissionEntityConfiguration : IEntityTypeConfiguration
 {
     public void Configure(EntityTypeBuilder<RolePermissionEntity> builder)
     {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        // Table mapping with standardized naming
+        ArgumentNullException.ThrowIfNull(builder);        // Table mapping with standardized naming
         builder.ToTable("RolePermissions");
 
-        // Primary key
+        // Primary key - ULID as string
         builder.HasKey(e => e.Id);
+
+        builder.Property(e => e.Id)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Properties with validation
         builder.Property(e => e.RoleId)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(40);
 
         // Relationships
         builder.HasOne(rp => rp.Role)

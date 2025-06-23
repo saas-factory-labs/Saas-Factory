@@ -58,9 +58,8 @@ public class AuditLogController : BaseController
     /// <returns>Audit log</returns>
     [HttpGet(ApiEndpoints.AuditLogs.GetById)]
     [ProducesResponseType(typeof(AuditLogResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> GetAuditLog(int id, CancellationToken cancellationToken)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> GetAuditLog(string id, CancellationToken cancellationToken)
     {
         AuditLogEntity? auditLog = await _auditLogRepository.GetByIdAsync(id, cancellationToken);
         if (auditLog is null) return NotFound(new { Message = $"Audit log with ID {id} not found." });
@@ -109,8 +108,7 @@ public class AuditLogController : BaseController
     [HttpPut(ApiEndpoints.AuditLogs.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> UpdateAuditLog(int id, [FromBody] UpdateAuditLogRequest auditLogDto,
+    [MapToApiVersion(ApiVersions.V1)]    public async Task<ActionResult> UpdateAuditLog(string id, [FromBody] UpdateAuditLogRequest auditLogDto,
         CancellationToken cancellationToken)
     {
         AuditLogEntity? existingAuditLog = await _auditLogRepository.GetByIdAsync(id, cancellationToken);
@@ -132,9 +130,8 @@ public class AuditLogController : BaseController
     /// <returns>No content.</returns>
     [HttpDelete(ApiEndpoints.AuditLogs.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> DeleteAuditLog(int id, CancellationToken cancellationToken)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> DeleteAuditLog(string id, CancellationToken cancellationToken)
     {
         AuditLogEntity? existingAuditLog = await _auditLogRepository.GetByIdAsync(id, cancellationToken);
         if (existingAuditLog is null) return NotFound(new { Message = $"Audit log with ID {id} not found." });

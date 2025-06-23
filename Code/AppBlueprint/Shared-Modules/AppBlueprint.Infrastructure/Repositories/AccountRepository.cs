@@ -21,26 +21,24 @@ public class AccountRepository : IAccountRepository
     {
         List<AccountEntity>? accounts = await _context.Accounts.ToListAsync(cancellationToken);
         return accounts;
-    }
-
-    public async Task<AccountEntity> GetByIdAsync(int id, CancellationToken cancellationToken)
+    }    public async Task<AccountEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {        return await _context.Accounts.FindAsync(id, cancellationToken) ?? new AccountEntity
         {
             Name = "Not Found",
             IsActive = false,
             CreatedAt = DateTime.Now,
             Email = "Not Found",
+            TenantId = "not-found",
             Owner = CreateNotFoundUserEntity()
         };
-    }
-
-    public async Task<AccountEntity> GetBySlugAsync(string slug, CancellationToken cancellationToken)
+    }    public async Task<AccountEntity> GetBySlugAsync(string slug, CancellationToken cancellationToken)
     {        return await _context.Accounts.FindAsync(slug, cancellationToken) ?? new AccountEntity
         {
             Name = "Not Found",
             IsActive = false,
             CreatedAt = DateTime.Now,
             Email = "Not Found",
+            TenantId = "not-found",
             Owner = CreateNotFoundUserEntity()
         };
     }
@@ -48,15 +46,23 @@ public class AccountRepository : IAccountRepository
     public async Task AddAsync(AccountEntity account, CancellationToken cancellationToken)
     {
         await _context.Accounts.AddAsync(account, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task UpdateAsync(AccountEntity account, CancellationToken cancellationToken)
     {
         _context.Accounts.Update(account);
-    }    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
-        AccountEntity? account = await _context.Accounts.FindAsync(id, cancellationToken);
-        if (account is not null) _context.Accounts.Remove(account);
+        var account = await _context.Accounts.FindAsync(id, cancellationToken);
+        if (account is not null)
+        {
+            _context.Accounts.Remove(account);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }    private static UserEntity CreateNotFoundUserEntity()
     {
         // Create a dummy user first to satisfy ProfileEntity requirement

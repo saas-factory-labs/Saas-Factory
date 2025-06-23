@@ -46,14 +46,13 @@ public class FileController : BaseController
     }
 
     /// <summary>
-    ///     Gets a file by ID.
-    /// </summary>
+    ///     Gets a file by ID.    /// </summary>
     /// <param name="id">File ID.</param>
     /// <returns>File</returns>
     [HttpGet("GetFile/{id}")]
     [ProducesResponseType(typeof(FileResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Get(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> Get(string id, CancellationToken cancellationToken)
     {
         FileEntity? file = await _fileRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
         if (file is null) return NotFound(new { Message = $"File with ID {id} not found." });
@@ -97,8 +96,7 @@ public class FileController : BaseController
     /// <returns>No content.</returns>
     [HttpPut("UpdateFile/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Put(int id, [FromBody] UpdateFileRequest fileDto,
+    [ProducesResponseType(StatusCodes.Status404NotFound)]    public async Task<ActionResult> Put(string id, [FromBody] UpdateFileRequest fileDto,
         CancellationToken cancellationToken)
     {
         FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken);
@@ -116,12 +114,11 @@ public class FileController : BaseController
     /// <summary>
     ///     Deletes a file by ID.
     /// </summary>
-    /// <param name="id">File ID.</param>
-    /// <returns>No content.</returns>
+    /// <param name="id">File ID.</param>    /// <returns>No content.</returns>
     [HttpDelete("DeleteFile/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
     {
         FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
         if (existingFile is null) return NotFound(new { Message = $"File with ID {id} not found." });

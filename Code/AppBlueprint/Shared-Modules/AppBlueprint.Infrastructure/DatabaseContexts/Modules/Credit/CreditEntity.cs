@@ -1,7 +1,9 @@
-﻿namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
+﻿using AppBlueprint.SharedKernel;
 
-public class CreditEntity
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
+
+public class CreditEntity : BaseEntity, ITenantScoped
 {
-    public int Id { get; set; }
     public decimal CreditRemaining { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }

@@ -1,26 +1,25 @@
 ﻿using AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyMember;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family;
 
-public class FamilyEntity
+public class FamilyEntity : BaseEntity
 {
     public FamilyEntity()
     {
+        Id = PrefixedUlid.Generate("fam");
         FamilyMembers = new List<FamilyMemberEntity>();
         FamilyInvites = new List<FamilyInviteEntity>();
     }
 
-    public int Id { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; }
-    public string Description { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastUpdatedAt { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     // Owner relationship
-    public int OwnerId { get; set; }
+    public string OwnerId { get; set; } = string.Empty;
     public UserEntity Owner { get; set; }
 
     // Family Members and Invites

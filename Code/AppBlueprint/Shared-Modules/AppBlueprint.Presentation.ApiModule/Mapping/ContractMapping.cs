@@ -18,7 +18,6 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AccountResponse = AppBlueprint.Contracts.Baseline.Account.Responses.AccountResponse;
 using CreateAccountRequest = AppBlueprint.Contracts.Baseline.Account.Requests.CreateAccountRequest;
-using AppBlueprint.Contracts.Baseline.Role.Responses;
 using AppBlueprint.Contracts.Baseline.EmailAddress.Responses;
 using AppBlueprint.Contracts.Baseline.Address.Responses;
 using AppBlueprint.Contracts.Baseline.PhoneNumber.Responses;
@@ -35,7 +34,7 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping
 
             return new AccountResponse
             {
-                Id = account.AccountId,
+                Id = account.Id,
                 Slug = account.Slug,
                 Email = account.Email
             };
@@ -87,14 +86,14 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping
 namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
 {
     public static class AccountsExtensions
-    {
-        public static AccountEntity MapToAccount(this CreateAccountRequest request)
+    {        public static AccountEntity MapToAccount(this CreateAccountRequest request, string tenantId)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
             return new AccountEntity
             {
                 Name = request.Name,
+                TenantId = tenantId,
                 Owner = new UserEntity
                 {
                     Email = string.Empty,
@@ -123,7 +122,7 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
         {
             return new AccountResponse
             {
-                Id = request.AccountId,
+                Id = request.Id,
                 Slug = request.Slug,
                 Email = request.Email
             };

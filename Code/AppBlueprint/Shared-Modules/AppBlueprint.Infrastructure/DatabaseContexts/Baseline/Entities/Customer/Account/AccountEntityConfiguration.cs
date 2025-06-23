@@ -14,10 +14,8 @@ public sealed class AccountEntityConfiguration : IEntityTypeConfiguration<Accoun
         ArgumentNullException.ThrowIfNull(builder);
 
         // Table Mapping
-        builder.ToTable("Accounts");
-
-        // Primary Key        
-        builder.HasKey(e => e.AccountId);
+        builder.ToTable("Accounts");        // Primary Key        
+        builder.HasKey(e => e.Id);
 
         // Properties
         builder.Property(e => e.Email)

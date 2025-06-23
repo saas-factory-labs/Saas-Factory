@@ -13,29 +13,80 @@ public sealed class TeamInviteEntityConfiguration : IEntityTypeConfiguration<Tea
     {
         ArgumentNullException.ThrowIfNull(builder);
 
+        builder.ToTable("TeamInvites");
+
         // Primary Key
-        builder.HasKey(ti => ti.Id);        // Unique Index
-        builder.HasIndex(ti => ti.Id).IsUnique();
+        builder.HasKey(ti => ti.Id);
 
-        // Relationships
-        builder.HasOne(ti => ti.Team)
-            .WithMany(t => t.TeamInvites)
-            .HasForeignKey(ti => ti.TeamId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // Configure ULID ID with proper length for prefixed ULID (prefix + underscore + 26 char ULID)
+        builder.Property(ti => ti.Id)
+            .HasMaxLength(40)
+            .IsRequired();
 
-        // builder.HasOne(ti => ti.User)
-        //     .WithMany()
-        //     .HasForeignKey(ti => ti.UserId)
-        //     .OnDelete(DeleteBehavior.Restrict);
+        // BaseEntity properties
+        builder.Property(ti => ti.CreatedAt)
+            .IsRequired();
 
-        // Properties
+        builder.Property(ti => ti.LastUpdatedAt);
+
+        builder.Property(ti => ti.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        // ITenantScoped property
+        builder.Property(ti => ti.TenantId)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        // Entity-specific properties
+        builder.Property(ti => ti.TeamId)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        builder.Property(ti => ti.OwnerId)
+            .IsRequired()
+            .HasMaxLength(40);
+
         builder.Property(ti => ti.ExpireAt)
             .IsRequired();
 
         builder.Property(ti => ti.IsActive)
             .IsRequired();
 
-        builder.Property(ti => ti.CreatedAt)
-            .IsRequired();
+        // Relationships
+        builder.HasOne(ti => ti.Team)
+            .WithMany(t => t.TeamInvites)
+            .HasForeignKey(ti => ti.TeamId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_TeamInvites_Teams_TeamId");
+
+        builder.HasOne(ti => ti.Owner)
+            .WithMany()
+            .HasForeignKey(ti => ti.OwnerId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .HasConstraintName("FK_TeamInvites_Users_OwnerId");
+
+        // Indexes
+        builder.HasIndex(ti => ti.Id)
+            .IsUnique()
+            .HasDatabaseName("IX_TeamInvites_Id");
+
+        builder.HasIndex(ti => ti.TenantId)
+            .HasDatabaseName("IX_TeamInvites_TenantId");
+
+        builder.HasIndex(ti => ti.TeamId)
+            .HasDatabaseName("IX_TeamInvites_TeamId");
+
+        builder.HasIndex(ti => ti.OwnerId)
+            .HasDatabaseName("IX_TeamInvites_OwnerId");
+
+        builder.HasIndex(ti => ti.IsActive)
+            .HasDatabaseName("IX_TeamInvites_IsActive");
+
+        builder.HasIndex(ti => ti.IsSoftDeleted)
+            .HasDatabaseName("IX_TeamInvites_IsSoftDeleted");
+
+        builder.HasIndex(ti => ti.ExpireAt)
+            .HasDatabaseName("IX_TeamInvites_ExpireAt");
     }
 }

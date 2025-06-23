@@ -141,8 +141,7 @@ public class AuthenticationController : BaseController
     [Authorize]
     [HttpPost(ApiEndpoints.Authentication.DeactivateProfile)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeactivateProfile(int userId, CancellationToken cancellationToken)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]    public async Task<IActionResult> DeactivateProfile(string userId, CancellationToken cancellationToken)
     {
         try
         {

@@ -61,12 +61,11 @@ public class OrganizationController : BaseController
     /// </summary>
     /// <param name="id">Organization ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Organization details</returns>
-    [HttpGet(ApiEndpoints.Organizations.GetById)]
+    /// <returns>Organization details</returns>    [HttpGet(ApiEndpoints.Organizations.GetById)]
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult<OrganizationResponse>> GetOrganization(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<OrganizationResponse>> GetOrganization(string id, CancellationToken cancellationToken)
     {
         // OrganizationEntity? org = await _organizationRepository.GetByIdAsync(id);
         // if (org is null) return NotFound(new { Message = $"Organization with ID {id} not found." });
@@ -146,14 +145,13 @@ public class OrganizationController : BaseController
     /// <summary>
     ///     Deletes an organization by ID.
     /// </summary>
-    /// <param name="id">Organization ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <param name="id">Organization ID.</param>    /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns>No content.</returns>
     [HttpDelete(ApiEndpoints.Organizations.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> DeleteOrganization(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> DeleteOrganization(string id, CancellationToken cancellationToken)
     {
         // OrganizationEntity? existingOrg = await _organizationRepository.GetByIdAsync(id);
         // if (existingOrg is null) return NotFound(new { Message = $"Organization with ID {id} not found." });

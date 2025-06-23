@@ -17,9 +17,7 @@ public class IntegrationRepository : IIntegrationRepository
     public async Task<IEnumerable<IntegrationEntity>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.Set<IntegrationEntity>().ToListAsync(cancellationToken);
-    }
-
-    public async Task<IntegrationEntity> GetByIdAsync(int id, CancellationToken cancellationToken)
+    }    public async Task<IntegrationEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _context.Set<IntegrationEntity>().FindAsync(new object[] { id }, cancellationToken);
     }
@@ -34,7 +32,7 @@ public class IntegrationRepository : IIntegrationRepository
         _context.Set<IntegrationEntity>().Update(integration);
     }
 
-    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
         IntegrationEntity? integration =
             await _context.Set<IntegrationEntity>().FindAsync(new object[] { id }, cancellationToken);

@@ -17,9 +17,7 @@ public class NotificationRepository : INotificationRepository
     public async Task<IEnumerable<NotificationEntity>> GetAllAsync()
     {
         return await _context.Set<NotificationEntity>().ToListAsync();
-    }
-
-    public async Task<NotificationEntity> GetByIdAsync(int id)
+    }    public async Task<NotificationEntity> GetByIdAsync(string id)
     {
         return await _context.Set<NotificationEntity>().FindAsync(id);
     }

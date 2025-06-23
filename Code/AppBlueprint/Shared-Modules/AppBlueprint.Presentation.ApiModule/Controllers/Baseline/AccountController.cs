@@ -65,13 +65,11 @@ public class AccountController(
     {
         // call accountService instead of repository here
         IEnumerable<AccountEntity>? accounts = await _accountRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
-        if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });
-
-        // ContractMapping.MapToAccountResponse();
+        if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });        // ContractMapping.MapToAccountResponse();
 
         var accountDtOs = accounts.Select(account => new
         {
-            Id = account.AccountId,
+            Id = account.Id,
             account.Email
         }).ToList();
 
@@ -89,12 +87,10 @@ public class AccountController(
         CancellationToken cancellationToken)
     {
         IEnumerable<AccountEntity>? accounts = await _accountRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
-        if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });
-
-        // map to dto
+        if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });        // map to dto
         var accountDtOs = accounts.Select(account => new
         {
-            Id = account.AccountId,
+            Id = account.Id,
             account.Email
         }).ToList();
 
@@ -118,7 +114,7 @@ public class AccountController(
         await _unitOfWork.AccountRepository.AddAsync(account, cancellationToken).ConfigureAwait(false);
         await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
-        return CreatedAtAction(nameof(GetAccountsV1), new { id = account.AccountId }, account);
+        return CreatedAtAction(nameof(GetAccountsV1), new { id = account.Id }, account);
     }
 
     /// <summary>
@@ -146,15 +142,14 @@ public class AccountController(
 
     /// <summary>
     ///     Deletes an account by ID.
-    /// </summary>
-    /// <param name="id">Account ID.</param>
+    /// </summary>    /// <param name="id">Account ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns>No content.</returns>
     /// DELETE: /account/1
     [HttpDelete(ApiEndpoints.Accounts.DeleteById)]
     [ProducesResponseType(typeof(IEnumerable<AccountEntity>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> DeleteAccount(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> DeleteAccount(string id, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         await _unitOfWork.AccountRepository.DeleteAsync(id, cancellationToken).ConfigureAwait(false);

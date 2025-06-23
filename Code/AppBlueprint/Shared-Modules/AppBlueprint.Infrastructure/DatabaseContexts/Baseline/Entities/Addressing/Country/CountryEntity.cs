@@ -1,4 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 
@@ -8,22 +9,16 @@ public enum IsoCode
     Us
 }
 
-public class CountryEntity
+public class CountryEntity : BaseEntity
 {
     public CountryEntity()
     {
+        Id = PrefixedUlid.Generate("country");
         Cities = new List<CityEntity>();
         GlobalRegion = new GlobalRegionEntity();
     }
 
-    public int Id { get; set; }
-
-    public string
-        Name
-    {
-        get;
-        set;
-    } // Denmark, United States of America - populate from dictionary created from database at startup
+    public string Name { get; set; } // Denmark, United States of America - populate from dictionary created from database at startup
 
     public IsoCode IsoCode { get; set; }
 
@@ -31,5 +26,5 @@ public class CountryEntity
     public string CityId { get; set; }
 
     public GlobalRegionEntity GlobalRegion { get; set; }
-    public int GlobalRegionId { get; set; }
+    public string GlobalRegionId { get; set; }
 }

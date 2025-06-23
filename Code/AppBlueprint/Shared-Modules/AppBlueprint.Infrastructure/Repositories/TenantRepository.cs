@@ -17,9 +17,7 @@ public class TenantRepository : ITenantRepository
     public async Task<IEnumerable<TenantEntity>> GetAllAsync()
     {
         return await _context.Set<TenantEntity>().ToListAsync();
-    }
-
-    public async Task<TenantEntity> GetByIdAsync(int id)
+    }    public async Task<TenantEntity?> GetByIdAsync(string id)
     {
         return await _context.Set<TenantEntity>().FindAsync(id);
     }
@@ -34,7 +32,7 @@ public class TenantRepository : ITenantRepository
         _context.Set<TenantEntity>().Update(tenant);
     }
 
-    public void Delete(int id)
+    public void Delete(string id)
     {
         TenantEntity? tenant = _context.Set<TenantEntity>().Find(id);
         if (tenant is not null) _context.Set<TenantEntity>().Remove(tenant);

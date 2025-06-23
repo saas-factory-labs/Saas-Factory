@@ -6,16 +6,14 @@ namespace AppBlueprint.Infrastructure.Services;
 public class TenantProvider
 {
     private const string TenantIdHeaderName = "X-TenantId";
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public int GetTenantId()
+    private readonly IHttpContextAccessor _httpContextAccessor;    public string GetTenantId()
     {
         StringValues? tenantIdHeader = _httpContextAccessor.HttpContext?.Request.Headers[TenantIdHeaderName];
 
-        if (!tenantIdHeader.HasValue || !int.TryParse(tenantIdHeader.Value, out int tenantId))
-            // TODO: also rememter to add check to check if the tenant id actually exist in the tenant catalog database
+        if (!tenantIdHeader.HasValue || string.IsNullOrWhiteSpace(tenantIdHeader.Value))
+            // TODO: also remember to add check to check if the tenant id actually exist in the tenant catalog database
             throw new ApplicationException("Tenant Id is not present");
 
-        return tenantId;
+        return tenantIdHeader.Value.ToString();
     }
 }

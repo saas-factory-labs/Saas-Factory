@@ -56,12 +56,11 @@ public class DataExportController : BaseController
     /// </summary>
     /// <param name="id">Data export ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Data export</returns>
-    [HttpGet(ApiEndpoints.DataExports.GetById)]
+    /// <returns>Data export</returns>    [HttpGet(ApiEndpoints.DataExports.GetById)]
     [ProducesResponseType(typeof(DataExportResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult<DataExportResponse>> GetDataExport(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<DataExportResponse>> GetDataExport(string id, CancellationToken cancellationToken)
     {
         DataExportEntity? dataExport = await _dataExportRepository.GetByIdAsync(id, cancellationToken);
         if (dataExport is null) return NotFound(new { Message = $"Data export with ID {id} not found." });
@@ -112,8 +111,7 @@ public class DataExportController : BaseController
     [HttpPut(ApiEndpoints.DataExports.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> UpdateDataExport(int id, [FromBody] UpdateDataExportRequest dataExportDto,
+    [MapToApiVersion(ApiVersions.V1)]    public async Task<ActionResult> UpdateDataExport(string id, [FromBody] UpdateDataExportRequest dataExportDto,
         CancellationToken cancellationToken)
     {
         DataExportEntity? existingDataExport = await _dataExportRepository.GetByIdAsync(id, cancellationToken);
@@ -131,14 +129,13 @@ public class DataExportController : BaseController
     /// <summary>
     ///     Deletes a data export by ID.
     /// </summary>
-    /// <param name="id">Data export ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <param name="id">Data export ID.</param>    /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns>No content.</returns>
     [HttpDelete(ApiEndpoints.DataExports.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> DeleteDataExport(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> DeleteDataExport(string id, CancellationToken cancellationToken)
     {
         DataExportEntity? existingDataExport = await _dataExportRepository.GetByIdAsync(id, cancellationToken);
         if (existingDataExport is null) return NotFound(new { Message = $"Data export with ID {id} not found." });

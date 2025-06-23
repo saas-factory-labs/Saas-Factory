@@ -19,7 +19,7 @@ public class AdminRepository : IAdminRepository
         return await _context.Set<AdminEntity>().ToListAsync();
     }
 
-    public async Task<AdminEntity> GetByIdAsync(int id)
+    public async Task<AdminEntity> GetByIdAsync(string id)
     {
         return await _context.Set<AdminEntity>().FindAsync(id);
     }

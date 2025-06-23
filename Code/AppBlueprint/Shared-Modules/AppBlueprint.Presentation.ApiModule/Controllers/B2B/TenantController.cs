@@ -41,8 +41,7 @@ public class TenantController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult<IEnumerable<TenantResponse>>> GetTenants(CancellationToken cancellationToken)
     {
-        IEnumerable<TenantEntity> tenants = await _tenantRepository.GetAllAsync();
-        if (!tenants.Any()) return NotFound(new { Message = "No tenants found." });
+        IEnumerable<TenantEntity> tenants = await _tenantRepository.GetAllAsync();        if (!tenants.Any()) return NotFound(new { Message = "No tenants found." });
 
         IEnumerable<TenantResponse> response = tenants.Select(tenant => new TenantResponse
         {
@@ -50,7 +49,7 @@ public class TenantController : BaseController
             Name = tenant.Name,
             Description = tenant.Description,
             CreatedAt = tenant.CreatedAt,
-            UpdatedAt = tenant.LastUpdatedAt
+            LastUpdatedAt = tenant.LastUpdatedAt
         });
 
         return Ok(response);
@@ -66,7 +65,7 @@ public class TenantController : BaseController
     [ProducesResponseType(typeof(TenantResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult<TenantResponse>> GetTenant(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<TenantResponse>> GetTenant(string id, CancellationToken cancellationToken)
     {
         TenantEntity? tenant = await _tenantRepository.GetByIdAsync(id);
         if (tenant is null) return NotFound(new { Message = $"Tenant with ID {id} not found." });
@@ -77,7 +76,7 @@ public class TenantController : BaseController
             Name = tenant.Name,
             Description = tenant.Description,
             CreatedAt = tenant.CreatedAt,
-            UpdatedAt = tenant.LastUpdatedAt
+            LastUpdatedAt = tenant.LastUpdatedAt
         };
 
         return Ok(response);
@@ -106,15 +105,13 @@ public class TenantController : BaseController
         };
 
         await _tenantRepository.AddAsync(newTenant);
-        await _unitOfWork.SaveChangesAsync();
-
-        var response = new TenantResponse
+        await _unitOfWork.SaveChangesAsync();        var response = new TenantResponse
         {
             Id = newTenant.Id,
             Name = newTenant.Name,
             Description = newTenant.Description,
             CreatedAt = newTenant.CreatedAt,
-            UpdatedAt = newTenant.LastUpdatedAt
+            LastUpdatedAt = newTenant.LastUpdatedAt
         };
 
         return CreatedAtAction(nameof(GetTenant), new { id = newTenant.Id }, response);
@@ -129,9 +126,8 @@ public class TenantController : BaseController
     /// <returns>No content.</returns>
     [HttpPut(ApiEndpoints.Tenants.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> UpdateTenant(int id, [FromBody] UpdateTenantRequest tenantDto,
+    [ProducesResponseType(StatusCodes.Status404NotFound)]    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> UpdateTenant(string id, [FromBody] UpdateTenantRequest tenantDto,
         CancellationToken cancellationToken)
     {
         TenantEntity? existingTenant = await _tenantRepository.GetByIdAsync(id);
@@ -159,7 +155,7 @@ public class TenantController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> DeleteTenant(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> DeleteTenant(string id, CancellationToken cancellationToken)
     {
         TenantEntity? existingTenant = await _tenantRepository.GetByIdAsync(id);
         if (existingTenant is null) return NotFound(new { Message = $"Tenant with ID {id} not found." });

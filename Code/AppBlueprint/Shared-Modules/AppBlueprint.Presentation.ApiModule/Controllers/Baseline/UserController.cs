@@ -97,9 +97,8 @@ public class UserController : BaseController
     [HttpGet(ApiEndpoints.Users.GetById)]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]
-    [MapToApiVersion(ApiVersions.V2)]
-    public async Task<ActionResult> GetUser(int id, CancellationToken cancellationToken)
+    [MapToApiVersion(ApiVersions.V1)]    [MapToApiVersion(ApiVersions.V2)]
+    public async Task<ActionResult> GetUser(string id, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(id).ConfigureAwait(false);
         if (user is null) return NotFound(new { Message = $"User with ID {id} not found." });
@@ -163,8 +162,7 @@ public class UserController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    [MapToApiVersion(ApiVersions.V2)]
-    public async Task<ActionResult> UpdateUser(int id, [FromBody] CreateUserRequest createUser,
+    [MapToApiVersion(ApiVersions.V2)]    public async Task<ActionResult> UpdateUser(string id, [FromBody] CreateUserRequest createUser,
         CancellationToken cancellationToken)
     {
         UserEntity? existingUser = await _userRepository.GetByIdAsync(id).ConfigureAwait(false);
@@ -188,9 +186,8 @@ public class UserController : BaseController
     [HttpDelete(ApiEndpoints.Users.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]
-    [MapToApiVersion(ApiVersions.V2)]
-    public async Task<ActionResult> DeleteUser(int id, CancellationToken cancellationToken)
+    [MapToApiVersion(ApiVersions.V1)]    [MapToApiVersion(ApiVersions.V2)]
+    public async Task<ActionResult> DeleteUser(string id, CancellationToken cancellationToken)
     {
         UserEntity? existingUser = await _userRepository.GetByIdAsync(id).ConfigureAwait(false);
         if (existingUser is null) return NotFound(new { Message = $"User with ID {id} not found." });

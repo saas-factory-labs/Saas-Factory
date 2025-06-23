@@ -16,8 +16,22 @@ public sealed class CountryEntityConfiguration : IEntityTypeConfiguration<Countr
         // Table mapping with standardized naming
         builder.ToTable("Countries");
 
-        // Primary key
+        // Primary key - ULID as string
         builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Properties with proper validation
         builder.Property(e => e.Name)
@@ -30,6 +44,10 @@ public sealed class CountryEntityConfiguration : IEntityTypeConfiguration<Countr
 
         builder.Property(e => e.CityId)
             .HasMaxLength(1024);
+
+        builder.Property(e => e.GlobalRegionId)
+            .IsRequired()
+            .HasMaxLength(40);
 
         // Geographic hierarchy relationships
         builder.HasOne(e => e.GlobalRegion)
@@ -55,5 +73,9 @@ public sealed class CountryEntityConfiguration : IEntityTypeConfiguration<Countr
 
         builder.HasIndex(e => e.GlobalRegionId)
             .HasDatabaseName("IX_Countries_GlobalRegionId");
+
+        // Indexes for BaseEntity properties
+        builder.HasIndex(e => e.IsSoftDeleted)
+            .HasDatabaseName("IX_Countries_IsSoftDeleted");
     }
 }

@@ -1,11 +1,16 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
-public class RolePermissionEntity
+public class RolePermissionEntity : BaseEntity
 {
-    public int Id { get; set; }
-    public int RoleId { get; set; }
+    public RolePermissionEntity()
+    {
+        Id = PrefixedUlid.Generate("role_perm");
+    }
+
+    public string RoleId { get; set; }
     public RoleEntity Role { get; set; }
 
     // public Guid? ResourceId { get; set; }

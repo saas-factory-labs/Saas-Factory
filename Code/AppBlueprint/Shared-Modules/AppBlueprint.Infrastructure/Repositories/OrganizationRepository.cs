@@ -17,9 +17,7 @@ public class OrganizationRepository : IOrganizationRepository
     public async Task<IEnumerable<OrganizationEntity>> GetAllAsync()
     {
         return await _context.Set<OrganizationEntity>().ToListAsync();
-    }
-
-    public async Task<OrganizationEntity> GetByIdAsync(int id)
+    }    public async Task<OrganizationEntity> GetByIdAsync(string id)
     {
         return await _context.Set<OrganizationEntity>().FindAsync(id);
     }

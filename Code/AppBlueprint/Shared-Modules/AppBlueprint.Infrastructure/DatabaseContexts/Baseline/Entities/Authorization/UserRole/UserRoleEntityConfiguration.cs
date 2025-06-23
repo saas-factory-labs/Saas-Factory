@@ -10,22 +10,40 @@ public sealed class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserR
 {
     public void Configure(EntityTypeBuilder<UserRoleEntity> builder)
     {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        // Define table name
+        ArgumentNullException.ThrowIfNull(builder);        // Define table name
         builder.ToTable("UserRoles");
 
-        // Define primary key
+        // Define primary key - ULID as string
         builder.HasKey(e => e.Id);
 
-        // Properties
-        builder.Property(ur => ur.RoleId)
+        builder.Property(e => e.Id)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
             .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        // Properties
+        builder.Property(ur => ur.UserId)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        builder.Property(ur => ur.RoleId)
+            .IsRequired()
+            .HasMaxLength(40);
 
         // Relationships
         builder.HasOne(ur => ur.User)
             .WithMany(u => u.UserRoles)
-            .HasForeignKey("UserId") // Need to add UserId property to UserRoleEntity
+            .HasForeignKey(ur => ur.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(ur => ur.Role)

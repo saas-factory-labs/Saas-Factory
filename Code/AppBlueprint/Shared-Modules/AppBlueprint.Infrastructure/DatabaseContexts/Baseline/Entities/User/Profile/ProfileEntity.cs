@@ -1,14 +1,20 @@
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 
-public sealed class ProfileEntity
-{
-    public int Id { get; set; }
+public sealed class ProfileEntity : BaseEntity
+{    public ProfileEntity()
+    {
+        Id = PrefixedUlid.Generate("profile");
+        UserId = string.Empty;
+    }
 
     [DataClassification(GDPRType.IndirectlyIdentifiable)]
-    public string? PhoneNumber { get; set; }    [DataClassification(GDPRType.IndirectlyIdentifiable)]
+    public string? PhoneNumber { get; set; }
+
+    [DataClassification(GDPRType.IndirectlyIdentifiable)]
     public string? Bio { get; set; }
     
     public Uri? AvatarUrl { get; set; }
@@ -17,8 +23,6 @@ public sealed class ProfileEntity
     public string? Language { get; set; }
     public string? Country { get; set; }
 
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastUpdatedAt { get; set; }
-      public int UserId { get; set; }
-    public UserEntity User { get; set; } = null!;
+    public string UserId { get; set; }
+    public UserEntity? User { get; set; }
 }

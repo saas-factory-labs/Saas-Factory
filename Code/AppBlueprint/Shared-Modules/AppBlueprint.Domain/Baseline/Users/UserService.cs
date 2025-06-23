@@ -56,9 +56,7 @@ public class UserService : IUserService
         await _unitOfWork.SaveChangesAsync();
 
         return user;
-    }
-
-    public async Task<UserEntity> GetByIdAsync(int id, CancellationToken cancellationToken)
+    }    public async Task<UserEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _userRepository.GetByIdAsync(id);
     }
@@ -66,9 +64,7 @@ public class UserService : IUserService
     public async Task<UserEntity> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return await _userRepository.GetByEmailAsync(email);
-    }
-
-    public async Task UpdateProfileAsync(int userId, string firstName, string lastName, string? phoneNumber, string? bio, CancellationToken cancellationToken)
+    }    public async Task UpdateProfileAsync(string userId, string firstName, string lastName, string? phoneNumber, string? bio, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(userId) 
             ?? throw new InvalidOperationException("User not found");
@@ -81,9 +77,7 @@ public class UserService : IUserService
 
         _userRepository.Update(user);
         await _unitOfWork.SaveChangesAsync();
-    }
-
-    public async Task DeactivateUserAsync(int userId, CancellationToken cancellationToken)
+    }    public async Task DeactivateUserAsync(string userId, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(userId)
             ?? throw new InvalidOperationException("User not found");
@@ -91,9 +85,7 @@ public class UserService : IUserService
         user.IsActive = false;
         _userRepository.Update(user);
         await _unitOfWork.SaveChangesAsync();
-    }
-
-    public async Task<string> GenerateEmailVerificationTokenAsync(int userId, CancellationToken cancellationToken)
+    }    public async Task<string> GenerateEmailVerificationTokenAsync(string userId, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(userId) 
             ?? throw new InvalidOperationException("User not found");
@@ -141,9 +133,7 @@ public class UserService : IUserService
         }
 
         return token;
-    }
-
-    public async Task<bool> VerifyEmailAsync(int userId, string token, CancellationToken cancellationToken)
+    }    public async Task<bool> VerifyEmailAsync(string userId, string token, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(userId)
             ?? throw new InvalidOperationException("User not found");
@@ -184,18 +174,14 @@ public class UserService : IUserService
             // For security reasons, don't reveal that the email doesn't exist
             // Just return a dummy token that won't work
             return Guid.NewGuid().ToString();
-        }
-
-        // Generate a secure random token
+        }        // Generate a secure random token
         byte[] tokenBytes = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(tokenBytes);
         string token = Convert.ToBase64String(tokenBytes)
             .Replace("/", "_")
             .Replace("+", "-")
-            .Replace("=", "");
-
-        // Create password reset record
+            .Replace("=", "");        // Create password reset record
         var passwordReset = new PasswordResetEntity
         {
             Token = token,
@@ -203,7 +189,8 @@ public class UserService : IUserService
             ExpireAt = DateTime.UtcNow.AddHours(1), // Token valid for 1 hour
             IsUsed = false,
             User = user,
-            UserId = user.Id
+            UserId = user.Id,
+            TenantId = user.TenantId
         };
 
         // Save password reset record
@@ -246,9 +233,7 @@ public class UserService : IUserService
         if (user is null)
         {
             return false;
-        }
-
-        // Find the reset record
+        }        // Find the reset record
         PasswordResetEntity? resetRecord = await _dbContext.Set<PasswordResetEntity>()
             .FirstOrDefaultAsync(r => 
                 r.UserId == user.Id && 

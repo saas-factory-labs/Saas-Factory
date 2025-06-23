@@ -17,9 +17,7 @@ public class UserRepository : IUserRepository
     public async Task<IEnumerable<UserEntity>> GetAllAsync()
     {
         return await _context.Set<UserEntity>().ToListAsync();
-    }
-
-    public async Task<UserEntity> GetByIdAsync(int id)
+    }    public async Task<UserEntity> GetByIdAsync(string id)
     {
         return await _context.Set<UserEntity>().FindAsync(id);
     }
@@ -37,9 +35,7 @@ public class UserRepository : IUserRepository
     public void Update(UserEntity user)
     {
         _context.Set<UserEntity>().Update(user);
-    }
-
-    public void Delete(int id)
+    }    public void Delete(string id)
     {
         UserEntity? user = _context.Set<UserEntity>().Find(id);
         if (user is not null) _context.Set<UserEntity>().Remove(user);

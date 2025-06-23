@@ -1,9 +1,15 @@
+using AppBlueprint.SharedKernel;
+
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
 
-public class IntegrationEntity
+public class IntegrationEntity : BaseEntity
 {
-    public int Id { get; set; }
-    public int OwnerId { get; set; }
+    public IntegrationEntity()
+    {
+        Id = PrefixedUlid.Generate("integ");
+    }
+
+    public string OwnerId { get; set; }
 
     public string Name { get; set; }
 
@@ -11,6 +17,4 @@ public class IntegrationEntity
     public string ServiceName { get; set; }
     public string? Description { get; set; }
     public string ApiKeySecretReference { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastUpdatedAt { get; set; }
 }

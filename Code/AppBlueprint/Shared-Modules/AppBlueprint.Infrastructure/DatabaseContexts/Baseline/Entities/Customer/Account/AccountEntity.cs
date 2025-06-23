@@ -3,12 +3,12 @@ using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel.Enums;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 
-public class AccountEntity
+public class AccountEntity : BaseEntity, ITenantScoped
 {
-    [Key] public int AccountId { get; set; }
     public CustomerType CustomerType { get; set; } // B2B / B2C / Government
 
     public required string
@@ -24,12 +24,14 @@ public class AccountEntity
     public string? Role { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-
-    public required UserEntity Owner { get; set; }
+    public DateTime UpdatedAt { get; set; }    public required UserEntity Owner { get; set; }
     public string UserId { get; set; }
+    public required string TenantId { get; set; }
 
-    public bool IsSoftDeleted { get; set; }
+    public AccountEntity()
+    {
+        Id = PrefixedUlid.Generate("acc");
+    }
 
     public string Slug => GenerateSlug();
 

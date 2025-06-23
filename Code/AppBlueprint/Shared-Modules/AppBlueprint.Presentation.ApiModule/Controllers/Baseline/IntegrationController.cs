@@ -61,12 +61,11 @@ public class IntegrationController : BaseController
     ///     Gets an integration by ID.
     /// </summary>
     /// <param name="id">Integration ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Integration</returns>
+    /// <param name="cancellationToken">Cancellation Token</param>    /// <returns>Integration</returns>
     [HttpGet(ApiEndpoints.Integrations.GetById)]
     [ProducesResponseType(typeof(IntegrationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Get(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> Get(string id, CancellationToken cancellationToken)
     {
         IntegrationEntity? integration = await _integrationRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
         if (integration is null) return NotFound(new { Message = $"Integration with ID {id} not found." });
@@ -151,12 +150,11 @@ public class IntegrationController : BaseController
     ///     Deletes an integration by ID.
     /// </summary>
     /// <param name="id">Integration ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="cancellationToken">Cancellation Token</param>    /// <returns>No content.</returns>
     [HttpDelete(ApiEndpoints.Integrations.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
     {
         IntegrationEntity? existingIntegration = await _integrationRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
         if (existingIntegration is null) return NotFound(new { Message = $"Integration with ID {id} not found." });

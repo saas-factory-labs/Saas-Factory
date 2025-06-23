@@ -66,12 +66,11 @@ public class TeamController : BaseController
     /// </summary>
     /// <param name="id">Team ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Team details</returns>
-    [HttpGet(ApiEndpoints.Teams.GetById)]
+    /// <returns>Team details</returns>    [HttpGet(ApiEndpoints.Teams.GetById)]
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult<TeamResponse>> GetTeam(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<TeamResponse>> GetTeam(string id, CancellationToken cancellationToken)
     {
         TeamEntity? team = await _teamRepository.GetByIdAsync(id);
         if (team is null) return NotFound(new { Message = $"Team with ID {id} not found." });
@@ -134,8 +133,7 @@ public class TeamController : BaseController
     [HttpPut(ApiEndpoints.Teams.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> UpdateTeam(int id, [FromBody] UpdateTeamRequest teamDto,
+    [MapToApiVersion(ApiVersions.V1)]    public async Task<ActionResult> UpdateTeam(string id, [FromBody] UpdateTeamRequest teamDto,
         CancellationToken cancellationToken)
     {
         TeamEntity? existingTeam = await _teamRepository.GetByIdAsync(id);
@@ -156,13 +154,12 @@ public class TeamController : BaseController
     ///     Deletes a team by ID.
     /// </summary>
     /// <param name="id">Team ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="cancellationToken">Cancellation Token</param>    /// <returns>No content.</returns>
     [HttpDelete(ApiEndpoints.Teams.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> DeleteTeam(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> DeleteTeam(string id, CancellationToken cancellationToken)
     {
         TeamEntity? existingTeam = await _teamRepository.GetByIdAsync(id);
         if (existingTeam is null) return NotFound(new { Message = $"Team with ID {id} not found." });

@@ -15,8 +15,22 @@ public sealed class EmailAddressEntityConfiguration : IEntityTypeConfiguration<E
         // Table mapping with standardized naming
         builder.ToTable("EmailAddresses");
 
-        // Primary key
+        // Primary key - ULID as string
         builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Properties with validation and GDPR compliance
         builder.Property(e => e.Address)
@@ -25,7 +39,14 @@ public sealed class EmailAddressEntityConfiguration : IEntityTypeConfiguration<E
             .HasAnnotation("SensitiveData", true);
 
         builder.Property(e => e.UserId)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(40);
+
+        builder.Property(e => e.CustomerId)
+            .HasMaxLength(40);
+
+        builder.Property(e => e.TenantId)
+            .HasMaxLength(40);
 
         // Relationships
         builder.HasOne(e => e.User)
@@ -58,5 +79,12 @@ public sealed class EmailAddressEntityConfiguration : IEntityTypeConfiguration<E
 
         builder.HasIndex(e => e.TenantId)
             .HasDatabaseName("IX_EmailAddresses_TenantId");
+
+        // Indexes for BaseEntity properties
+        builder.HasIndex(e => e.IsSoftDeleted)
+            .HasDatabaseName("IX_EmailAddresses_IsSoftDeleted");
+
+        builder.HasIndex(e => new { e.TenantId, e.IsSoftDeleted })
+            .HasDatabaseName("IX_EmailAddresses_TenantId_IsSoftDeleted");
     }
 }

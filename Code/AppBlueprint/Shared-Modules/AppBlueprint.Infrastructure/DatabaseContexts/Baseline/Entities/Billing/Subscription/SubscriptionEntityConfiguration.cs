@@ -22,10 +22,35 @@ public sealed class SubscriptionEntityConfiguration : IEntityTypeConfiguration<S
         builder.ToTable("Subscriptions");
         builder.HasKey(e => e.Id);
 
-        // Primary key configuration
+        // Primary key configuration - ULID as string
         builder.Property(e => e.Id)
-            .ValueGeneratedOnAdd()
+            .IsRequired()
+            .HasMaxLength(40)
             .HasComment("Unique identifier for the subscription plan");
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        // ITenantScoped property
+        builder.Property(e => e.TenantId)
+            .HasMaxLength(40);
+
+        // Properties with string ID validation
+        builder.Property(e => e.CreatedBy)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        builder.Property(e => e.UpdatedBy)
+            .IsRequired()
+            .HasMaxLength(40);
 
         // Subscription name (required)
         builder.Property(e => e.Name)
@@ -57,10 +82,7 @@ public sealed class SubscriptionEntityConfiguration : IEntityTypeConfiguration<S
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .HasComment("Timestamp when the subscription was created");
 
-        builder.Property(e => e.UpdatedAt)
-            .IsRequired()
-            .HasDefaultValueSql("CURRENT_TIMESTAMP")
-            .HasComment("Timestamp when the subscription was last updated");
+
 
         builder.Property(e => e.CreatedBy)
             .IsRequired()

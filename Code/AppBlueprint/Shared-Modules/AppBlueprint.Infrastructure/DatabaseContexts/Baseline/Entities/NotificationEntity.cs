@@ -1,11 +1,13 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
-public class NotificationEntity
+public class NotificationEntity : BaseEntity
 {
     public NotificationEntity()
     {
+        Id = PrefixedUlid.Generate("notif");
         User = new UserEntity
         {
             FirstName = "FirstName",
@@ -16,15 +18,13 @@ public class NotificationEntity
         };
     }
 
-    public int Id { get; set; }
-    public int OwnerId { get; set; }
+    public string OwnerId { get; set; }
 
     public string Title { get; set; }
     public string Message { get; set; }
-    public DateTime CreatedAt { get; set; }
     public bool IsRead { get; set; }
 
     // Navigation properties
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public UserEntity User { get; set; }
 }

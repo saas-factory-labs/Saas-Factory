@@ -4,7 +4,7 @@ namespace AppBlueprint.Contracts.Baseline.Role.Responses;
 
 public class RoleResponse(IReadOnlyList<PermissionResponse> permissions)
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public string? Name { get; set; }
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; }

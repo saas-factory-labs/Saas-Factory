@@ -1,11 +1,15 @@
 ﻿using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
-public sealed class SessionEntity
+public sealed class SessionEntity : BaseEntity
 {
-    public int Id { get; set; }
+    public SessionEntity()
+    {
+        Id = PrefixedUlid.Generate("session");
+    }
 
     [DataClassification(GDPRType.Sensitive)]
     public required string SessionKey { get; set; }

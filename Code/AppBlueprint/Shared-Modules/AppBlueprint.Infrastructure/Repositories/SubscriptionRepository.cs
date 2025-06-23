@@ -19,7 +19,7 @@ public class SubscriptionRepository : ISubscriptionRepository
         return await _context.Subscriptions.ToListAsync(cancellationToken);
     }
 
-    public async Task<SubscriptionEntity?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<SubscriptionEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _context.Subscriptions.FindAsync(new object[] { id }, cancellationToken);
     }
@@ -38,9 +38,7 @@ public class SubscriptionRepository : ISubscriptionRepository
 
         _context.Subscriptions.Update(subscription);
         await _context.SaveChangesAsync(cancellationToken);
-    }
-
-    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+    }    public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
         SubscriptionEntity? subscription =
             await _context.Subscriptions.FindAsync(new object[] { id }, cancellationToken);

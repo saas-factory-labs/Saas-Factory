@@ -1,24 +1,25 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
+using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Enums;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 
-public class CustomerEntity
-{
-    public CustomerEntity()
+public class CustomerEntity : BaseEntity
+{    public CustomerEntity()
     {
+        Id = PrefixedUlid.Generate("customer");
         Tenants = new List<TenantEntity>();
         ContactPersons = new List<ContactPersonEntity>();
+        Type = string.Empty;
+        Country = string.Empty;
     }
-
-    public int Id { get; set; }
 
     public CustomerType CustomerType { get; set; }
 
     // if customer is private person
     //public PersonModel Person { get; set; }
-    //public int PersonId { get; set; }
+    //public string PersonId { get; set; }
 
     // if customer is a company
 
@@ -27,8 +28,10 @@ public class CustomerEntity
     // 1, 2, 3, 4 ... 10
     public int CurrentlyAtOnboardingFlowStep { get; set; }
 
-    //public int TenantId { get; set; }
-    public List<TenantEntity> Tenants { get; set; }    public string? Type { get; set; } // Personal/Company
+    //public string TenantId { get; set; }
+    public List<TenantEntity> Tenants { get; set; }
+
+    public string? Type { get; set; } // Personal/Company
 
     public string? VatNumber { get; set; }
 
@@ -43,5 +46,5 @@ public class CustomerEntity
     public string? VatId { get; set; }
 
     // Organization relationship for B2B scenarios
-    public int? OrganizationId { get; set; }
+    public string? OrganizationId { get; set; }
 }

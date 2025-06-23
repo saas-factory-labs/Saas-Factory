@@ -1,12 +1,17 @@
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 
-public class FileEntity
+public class FileEntity : BaseEntity
 {
-    public int Id { get; set; }
-    public int OwnerId { get; set; }
+    public FileEntity()
+    {
+        Id = PrefixedUlid.Generate("file");
+    }
+
+    public string OwnerId { get; set; }
 
     [DataClassification(GDPRType.IndirectlyIdentifiable)]
     public string FileName { get; set; }
@@ -14,6 +19,4 @@ public class FileEntity
     public long FileSize { get; set; }
     public string FileExtension { get; set; }
     public string FilePath { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
 }

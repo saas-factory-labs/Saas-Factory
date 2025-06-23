@@ -15,8 +15,23 @@ public sealed class NotificationEntityConfiguration : IEntityTypeConfiguration<N
         // Table mapping with standardized naming
         builder.ToTable("Notifications");
 
-        // Primary key
+        // Primary key - ULID as string
         builder.HasKey(e => e.Id);
+
+        builder.Property(e => e.Id)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Properties with validation
         builder.Property(e => e.Title)
@@ -27,8 +42,13 @@ public sealed class NotificationEntityConfiguration : IEntityTypeConfiguration<N
             .IsRequired()
             .HasMaxLength(1000);
 
-        builder.Property(e => e.CreatedAt)
-            .IsRequired();
+        builder.Property(e => e.OwnerId)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        builder.Property(e => e.UserId)
+            .IsRequired()
+            .HasMaxLength(40);
 
         builder.Property(e => e.IsRead)
             .IsRequired()

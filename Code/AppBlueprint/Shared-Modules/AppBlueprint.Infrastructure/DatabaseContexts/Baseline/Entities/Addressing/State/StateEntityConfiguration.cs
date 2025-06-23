@@ -17,8 +17,22 @@ public sealed class StateEntityConfiguration : IEntityTypeConfiguration<StateEnt
         // Table mapping with standardized naming
         builder.ToTable("States");
 
-        // Primary key
+        // Primary key - ULID as string
         builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Properties with validation
         builder.Property(e => e.Name)
@@ -29,7 +43,8 @@ public sealed class StateEntityConfiguration : IEntityTypeConfiguration<StateEnt
             .HasMaxLength(10);
 
         builder.Property(e => e.CountryId)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(40);
 
         // Relationships - Country→State hierarchy
         builder.HasOne(e => e.Country)
@@ -47,6 +62,10 @@ public sealed class StateEntityConfiguration : IEntityTypeConfiguration<StateEnt
 
         builder.HasIndex(e => e.IsoCode)
             .HasDatabaseName("IX_States_IsoCode");
+
+        // Indexes for BaseEntity properties
+        builder.HasIndex(e => e.IsSoftDeleted)
+            .HasDatabaseName("IX_States_IsSoftDeleted");
 
         // Unique constraint for ISO code within country
         builder.HasIndex(e => new { e.CountryId, e.IsoCode })
