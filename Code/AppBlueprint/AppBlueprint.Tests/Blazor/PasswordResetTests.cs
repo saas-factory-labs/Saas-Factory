@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.Services.Users;
+using AppBlueprint.Application.Services.Users;
 using AppBlueprint.UiKit.Components.Pages;
 using Bunit;
 using static Bunit.ComponentParameterFactory; // Added for Parameter()
@@ -54,7 +54,7 @@ namespace AppBlueprint.Tests.Blazor
         public void EmailVerificationShouldRender()
         {
             // Arrange
-            _userServiceMock.Setup(x => x.VerifyEmailAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _userServiceMock.Setup(x => x.VerifyEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
             // Act

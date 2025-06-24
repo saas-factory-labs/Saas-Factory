@@ -1,11 +1,7 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.Services;
-using AppBlueprint.Infrastructure.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
+using AppBlueprint.Domain.Entities.User;
+using AppBlueprint.Domain.Interfaces.Repositories;
+using AppBlueprint.Domain.Interfaces.Services;
+using AppBlueprint.Domain.Interfaces.UnitOfWork;
 using System.Security.Cryptography;
 
 namespace AppBlueprint.Application.Services.Users;
@@ -14,25 +10,28 @@ public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
-    private readonly ApplicationDbContext _dbContext;
-    private readonly TransactionEmailService _emailService;
+    private readonly IEmailVerificationRepository _emailVerificationRepository;
+    private readonly IPasswordResetRepository _passwordResetRepository;
+    private readonly IEmailService _emailService;
 
     public UserService(
         IUnitOfWork unitOfWork,
         IUserRepository userRepository,
-        ApplicationDbContext dbContext,
-        TransactionEmailService emailService)
+        IEmailVerificationRepository emailVerificationRepository,
+        IPasswordResetRepository passwordResetRepository,
+        IEmailService emailService)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _emailVerificationRepository = emailVerificationRepository ?? throw new ArgumentNullException(nameof(emailVerificationRepository));
+        _passwordResetRepository = passwordResetRepository ?? throw new ArgumentNullException(nameof(passwordResetRepository));
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
     }
 
     public async Task<UserEntity> RegisterAsync(string firstName, string lastName, string email, string userName, CancellationToken cancellationToken)
     {
         // Validate email doesn't already exist
-        UserEntity? existingUser = await _userRepository.GetByEmailAsync(email);
+        UserEntity? existingUser = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (existingUser is not null)
         {
             throw new InvalidOperationException("Email is already registered");
@@ -52,42 +51,54 @@ public class UserService : IUserService
             }
         };
 
-        await _userRepository.AddAsync(user);
-        await _unitOfWork.SaveChangesAsync();
+        await _userRepository.AddAsync(user, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return user;
-    }    public async Task<UserEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
-    {
-        return await _userRepository.GetByIdAsync(id);
     }
 
-    public async Task<UserEntity> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<UserEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
-        return await _userRepository.GetByEmailAsync(email);
-    }    public async Task UpdateProfileAsync(string userId, string firstName, string lastName, string? phoneNumber, string? bio, CancellationToken cancellationToken)
+        return await _userRepository.GetByIdAsync(id, cancellationToken);
+    }
+
+    public async Task<UserEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(userId) 
+        return await _userRepository.GetByEmailAsync(email, cancellationToken);
+    }
+
+    public async Task UpdateProfileAsync(string userId, string firstName, string lastName, string? phoneNumber, string? bio, CancellationToken cancellationToken)
+    {
+        UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken) 
             ?? throw new InvalidOperationException("User not found");
 
         user.FirstName = firstName;
         user.LastName = lastName;
-        user.Profile.PhoneNumber = phoneNumber;
-        user.Profile.Bio = bio;
-        user.Profile.LastUpdatedAt = DateTime.UtcNow;
+        
+        if (user.Profile is not null)
+        {
+            user.Profile.PhoneNumber = phoneNumber;
+            user.Profile.Bio = bio;
+            user.Profile.LastUpdatedAt = DateTime.UtcNow;
+        }
 
-        _userRepository.Update(user);
-        await _unitOfWork.SaveChangesAsync();
-    }    public async Task DeactivateUserAsync(string userId, CancellationToken cancellationToken)
+        await _userRepository.UpdateAsync(user, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeactivateUserAsync(string userId, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(userId)
+        UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken)
             ?? throw new InvalidOperationException("User not found");
 
         user.IsActive = false;
-        _userRepository.Update(user);
-        await _unitOfWork.SaveChangesAsync();
-    }    public async Task<string> GenerateEmailVerificationTokenAsync(string userId, CancellationToken cancellationToken)
+        await _userRepository.UpdateAsync(user, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<string> GenerateEmailVerificationTokenAsync(string userId, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(userId) 
+        UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken) 
             ?? throw new InvalidOperationException("User not found");
 
         // Generate a secure random token
@@ -102,18 +113,19 @@ public class UserService : IUserService
         // Create email verification record
         var emailVerification = new EmailVerificationEntity
         {
+            Email = user.Email,
             Token = token,
             CreatedAt = DateTime.UtcNow,
-            ExpireAt = DateTime.UtcNow.AddHours(24), // Token valid for 24 hours
+            ExpiresAt = DateTime.UtcNow.AddHours(24), // Token valid for 24 hours
             HasBeenOpened = false,
             HasBeenVerified = false,
-            UserEntityId = userId,
+            UserId = userId,
             User = user
         };
 
         // Save verification record
-        await _dbContext.Set<EmailVerificationEntity>().AddAsync(emailVerification, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _emailVerificationRepository.AddAsync(emailVerification, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // In a real-world implementation, we would send an email with the verification link
         // For now, we'll just return the token to the caller
@@ -122,31 +134,29 @@ public class UserService : IUserService
             await _emailService.SendSignUpWelcomeEmail(
                 "noreply@saas-factory.com",
                 user.Email,
-                "SaaS Factory"
+                "SaaS Factory",
+                cancellationToken
             );
         }
-        catch (Exception ex)
+        catch (InvalidOperationException)
         {
             // Log the error but don't fail the operation
             // A proper implementation would use a logger
-            Console.WriteLine($"Failed to send verification email: {ex.Message}");
         }
 
         return token;
-    }    public async Task<bool> VerifyEmailAsync(string userId, string token, CancellationToken cancellationToken)
+    }
+
+    public async Task<bool> VerifyEmailAsync(string userId, string token, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(userId)
+        UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken)
             ?? throw new InvalidOperationException("User not found");
 
         // Find the verification record
-        EmailVerificationEntity? verification = await _dbContext.Set<EmailVerificationEntity>()
-            .FirstOrDefaultAsync(v => 
-                v.UserEntityId == userId && 
-                v.Token == token && 
-                v.ExpireAt > DateTime.UtcNow, 
-                cancellationToken);
+        EmailVerificationEntity? verification = await _emailVerificationRepository
+            .GetByUserIdAndTokenAsync(userId, token, cancellationToken);
 
-        if (verification is null)
+        if (verification is null || verification.ExpiresAt <= DateTime.UtcNow)
         {
             return false; // Invalid or expired token
         }
@@ -156,11 +166,8 @@ public class UserService : IUserService
         verification.HasBeenOpened = true;
         verification.LastUpdatedAt = DateTime.UtcNow;
 
-        // Update user's verification status if needed
-        // Typically, your UserEntity would have a property like 'IsEmailVerified'
-        // But we don't see this in the current model, so we'll just update the verification record
-
-        await _unitOfWork.SaveChangesAsync();
+        await _emailVerificationRepository.UpdateAsync(verification, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
     }
 
@@ -168,24 +175,27 @@ public class UserService : IUserService
     {
         ArgumentNullException.ThrowIfNull(email);
 
-        UserEntity? user = await _userRepository.GetByEmailAsync(email);
+        UserEntity? user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user is null)
         {
             // For security reasons, don't reveal that the email doesn't exist
             // Just return a dummy token that won't work
             return Guid.NewGuid().ToString();
-        }        // Generate a secure random token
+        }
+
+        // Generate a secure random token
         byte[] tokenBytes = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(tokenBytes);
         string token = Convert.ToBase64String(tokenBytes)
             .Replace("/", "_", StringComparison.Ordinal)
             .Replace("+", "-", StringComparison.Ordinal)
-            .Replace("=", "", StringComparison.Ordinal);        // Create password reset record
+            .Replace("=", "", StringComparison.Ordinal);
+
+        // Create password reset record
         var passwordReset = new PasswordResetEntity
         {
             Token = token,
-            CreatedAt = DateTime.UtcNow,
             ExpireAt = DateTime.UtcNow.AddHours(1), // Token valid for 1 hour
             IsUsed = false,
             User = user,
@@ -194,8 +204,8 @@ public class UserService : IUserService
         };
 
         // Save password reset record
-        await _dbContext.Set<PasswordResetEntity>().AddAsync(passwordReset, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _passwordResetRepository.AddAsync(passwordReset, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // In a real-world implementation, we would send an email with the reset link
         // Since we're not implementing the actual email sending, we'll just return the token
@@ -206,13 +216,15 @@ public class UserService : IUserService
             await _emailService.SendSignUpWelcomeEmail(
                 "noreply@saas-factory.com",
                 user.Email,
-                "Password Reset"
+                "Password Reset",
+                cancellationToken
             );
         }
-        catch (Exception ex)
+        catch (InvalidOperationException)
         {
             // Log the error but don't fail the operation
-            Console.WriteLine($"Failed to send password reset email: {ex.Message}");
+            // A proper implementation would use a logger
+            // For now, we'll silently continue
         }
 
         return token;
@@ -229,20 +241,17 @@ public class UserService : IUserService
             return false;
         }
 
-        UserEntity? user = await _userRepository.GetByEmailAsync(email);
+        UserEntity? user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user is null)
         {
             return false;
-        }        // Find the reset record
-        PasswordResetEntity? resetRecord = await _dbContext.Set<PasswordResetEntity>()
-            .FirstOrDefaultAsync(r => 
-                r.UserId == user.Id && 
-                r.Token == token && 
-                r.ExpireAt > DateTime.UtcNow && 
-                !r.IsUsed, 
-                cancellationToken);
+        }
 
-        if (resetRecord is null)
+        // Find the reset record
+        PasswordResetEntity? resetRecord = await _passwordResetRepository
+            .GetByUserIdAndTokenAsync(user.Id, token, cancellationToken);
+
+        if (resetRecord is null || resetRecord.ExpireAt <= DateTime.UtcNow || resetRecord.IsUsed)
         {
             return false; // Invalid, expired, or already used token
         }
@@ -251,11 +260,13 @@ public class UserService : IUserService
         resetRecord.IsUsed = true;
         resetRecord.LastUpdatedAt = DateTime.UtcNow;
 
+        await _passwordResetRepository.UpdateAsync(resetRecord, cancellationToken);
+
         // We're not implementing actual password hashing as per instructions
         // In a real application, the password would be hashed here
         // For this exercise, we're assuming the authentication is handled externally by Supabase
 
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
     }
 }

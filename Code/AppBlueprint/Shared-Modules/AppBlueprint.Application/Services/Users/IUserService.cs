@@ -1,12 +1,12 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Domain.Entities.User;
 
 namespace AppBlueprint.Application.Services.Users;
 
 public interface IUserService
 {
     Task<UserEntity> RegisterAsync(string firstName, string lastName, string email, string userName, CancellationToken cancellationToken);
-    Task<UserEntity> GetByIdAsync(string id, CancellationToken cancellationToken);
-    Task<UserEntity> GetByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<UserEntity?> GetByIdAsync(string id, CancellationToken cancellationToken);
+    Task<UserEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken);
     Task UpdateProfileAsync(string userId, string firstName, string lastName, string? phoneNumber, string? bio, CancellationToken cancellationToken);
     Task DeactivateUserAsync(string userId, CancellationToken cancellationToken);
     

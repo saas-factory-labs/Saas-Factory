@@ -1,7 +1,7 @@
 using AppBlueprint.Contracts.Baseline.Auth.Requests;
 using AppBlueprint.Contracts.Baseline.Auth.Responses;
-using AppBlueprint.Infrastructure.Services.Users;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Application.Services.Users;
+using AppBlueprint.Domain.Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

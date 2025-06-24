@@ -38,7 +38,8 @@
 
     <ItemGroup>
         <!--      <ProjectReference Include="..\..\..\..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj" />-->
-        <!--      <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />-->
+        <!-- Infrastructure reference removed to avoid circular dependency -->
+        <!-- TODO: Use proper Domain entities instead of Infrastructure entities -->
 
         <ProjectReference Include="..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj"/>
         <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
