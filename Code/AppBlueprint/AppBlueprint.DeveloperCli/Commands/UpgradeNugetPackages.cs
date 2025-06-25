@@ -7,13 +7,15 @@ internal static class UpgradeNugetPacckagesCommand
     public static Command Create()
     {
         // implementer et tool i min developer cli til at opdatere nuget pakker i den centrale pacakges fil hvor den så rent faktisk tjekker version numre og om pakken eksisterer og så ændrer filen først derefter
+        var connectionStringOption = new Option<string>("--connection-string", "The connection string for the database.") { IsRequired = true };
+
         var command = new Command("upgrade-nuget-packages",
             "Upgrade nuget packages for the app solution in the Directory.Packages.props file..")
         {
-            new Option<string>("--connection-string", "The connection string for the database.")
+            connectionStringOption
         };
 
-        command.Handler = CommandHandler.Create<string>(connectionString =>
+        command.SetHandler((string connectionString) =>
         {
             AnsiConsole.MarkupLine($"[green]Migrating database with connection string: {connectionString}...[/]");
 
@@ -22,7 +24,7 @@ internal static class UpgradeNugetPacckagesCommand
 
             CliUtilities.RunShellCommand($"dotnet ef database update --connection \"{connectionString}\"",
                 "Database migrated successfully!", "Failed to migrate database.");
-        });
+        }, connectionStringOption);
 
         return command;
     }

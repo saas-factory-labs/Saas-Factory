@@ -16,6 +16,7 @@ internal static class CommandFactory
         rootCommand.AddCommand(DatabaseCommand.Create());
         rootCommand.AddCommand(GitHubCommand.Create());
         rootCommand.AddCommand(GithubActionWorkflowCommand.Create());
+        rootCommand.AddCommand(RouteCommand.Create());
 
         return rootCommand;
     }

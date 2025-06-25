@@ -1,0 +1,27 @@
+[ApiController]
+[Route("dev/routes")]
+[ApiExplorerSettings(IgnoreApi = true)] // hide from Swagger
+public class RouteDebugController : ControllerBase
+{
+    private readonly EndpointDataSource _endpoints;
+
+    public RouteDebugController(EndpointDataSource endpoints)
+    {
+        _endpoints = endpoints;
+    }
+
+    [HttpGet]
+    public IActionResult Get()
+    {
+        var routes = _endpoints.Endpoints
+            .OfType<RouteEndpoint>()
+            .Select(e => new
+            {
+                Method = e.Metadata.OfType<HttpMethodMetadata>().FirstOrDefault()?.HttpMethods.FirstOrDefault(),
+                Route = e.RoutePattern.RawText,
+                Handler = e.DisplayName
+            });
+
+        return Ok(routes);
+    }
+}

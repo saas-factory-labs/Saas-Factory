@@ -12,6 +12,7 @@ internal static class MainMenu
             "Create a new project in the solution",
             "Create a new item (e.g., API controller, DTO, Service)",
             "Migrate database",
+            "Scan API routes",
             "Clone a GitHub repository",
             "Validate PostGreSQL Password",
             "Manage Environment Variable",
@@ -45,12 +46,12 @@ internal static class MainMenu
                 break;
             case "Migrate database":
                 AnsiConsole.MarkupLine("[yellow]Migrating database...[/]");
-                Command command = DatabaseCommand.Create();
-
-                command.Handler?.Invoke(
-                    new InvocationContext(command.Parse()));
+                DatabaseCommand.ExecuteInteractive();
                 break;
-
+            case "Scan API routes":
+                AnsiConsole.MarkupLine("[yellow]Scanning API routes...[/]");
+                RouteCommand.ExecuteInteractive();
+                break;
             case "Clone a GitHub repository":
                 AnsiConsole.MarkupLine("[yellow]Cloning GitHub repository...[/]");
                 GitHubCommand.ExecuteInteractive();

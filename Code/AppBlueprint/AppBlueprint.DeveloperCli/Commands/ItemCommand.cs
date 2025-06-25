@@ -6,20 +6,23 @@ internal static class ItemCommand
 {
     public static Command Create()
     {
+        var nameOption = new Option<string>("--name", "The name of the item.") { IsRequired = true };
+        var templateOption = new Option<string>("--template", "The item template to use.") { IsRequired = true };
+        var locationOption = new Option<string>("--location", "The location to create the item.") { IsRequired = true };
+
         var command = new Command("create-item", "Create a new item in the SaaS app solution.")
         {
-            new Option<string>("--name", "The name of the item."),
-            new Option<string>("--template", "The item template to use."),
-            new Option<string>("--location", "The location to create the item.")
+            nameOption,
+            templateOption,
+            locationOption
         };
 
-        command.Handler = CommandHandler.Create<string, string, string>(
-            (name, template, location) =>
-            {
-                AnsiConsole.MarkupLine($"[green]Creating item: {name} at {location} using template {template}...[/]");
-                CliUtilities.RunShellCommand($"dotnet new {template} -o {location}/{name}",
-                    "Item created successfully!", "Failed to create item.");
-            });
+        command.SetHandler((string name, string template, string location) =>
+        {
+            AnsiConsole.MarkupLine($"[green]Creating item: {name} at {location} using template {template}...[/]");
+            CliUtilities.RunShellCommand($"dotnet new {template} -o {location}/{name}",
+                "Item created successfully!", "Failed to create item.");
+        }, nameOption, templateOption, locationOption);
 
         return command;
     }
@@ -33,3 +36,4 @@ internal static class ItemCommand
             "Failed to create item.");
     }
 }
+

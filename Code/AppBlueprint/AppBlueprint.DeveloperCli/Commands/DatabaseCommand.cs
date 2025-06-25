@@ -83,4 +83,39 @@ internal static class DatabaseCommand
 
         return command;
     }
+
+    public static void ExecuteInteractive()
+    {
+        AnsiConsole.MarkupLine("[yellow]🟡 Entering the database migration handler...[/]");
+
+        // Get connection string from env variable or prompt the user
+        string connectionString =
+            Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING",
+                EnvironmentVariableTarget.User)
+            ?? AnsiConsole.Ask<string>("[green]Enter the database connection string:[/]");
+
+        AnsiConsole.MarkupLine($"[gray]Using connection string: {connectionString}[/]");
+
+        // Both EF project and startup project paths
+        string efProject =
+            @"C:\Development\Development-Projects\SaaS-Factory\Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure";
+        string startupProject =
+            @"C:\Development\Development-Projects\SaaS-Factory\Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure";
+
+        AnsiConsole.MarkupLine($"[gray]EF Project: {efProject}[/]");
+        AnsiConsole.MarkupLine($"[gray]Startup Project: {startupProject}[/]");
+
+        // Execute migration commands
+        CliUtilities.RunShellCommand(
+            $"dotnet ef migrations add 'migration-{DateTime.Now:yyyy-MM-dd-HH-mm-ss}' --project \"{efProject}\" --startup-project \"{startupProject}\" --connection \"{connectionString}\"",
+            "Migration added successfully!",
+            "Failed to add migration.");
+
+        CliUtilities.RunShellCommand(
+            $"dotnet ef database update --project \"{efProject}\" --startup-project \"{startupProject}\" --connection \"{connectionString}\"",
+            "Database updated successfully!",
+            "Failed to update database.");
+
+        AnsiConsole.MarkupLine("[green]🎉 Migration process completed![/]");
+    }
 }

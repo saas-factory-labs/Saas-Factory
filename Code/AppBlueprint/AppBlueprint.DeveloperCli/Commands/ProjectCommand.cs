@@ -6,19 +6,21 @@ internal static class ProjectCommand
 {
     public static Command Create()
     {
+        var nameOption = new Option<string>("--name", "The name of the project.") { IsRequired = true };
+        var templateOption = new Option<string>("--template", "The project template to use.") { IsRequired = true };
+
         var command = new Command("create-project", "Create a new project in the SaaS app solution.")
         {
-            new Option<string>("--name", "The name of the project."),
-            new Option<string>("--template", "The project template to use.")
+            nameOption,
+            templateOption
         };
 
-        command.Handler = CommandHandler.Create<string, string>(
-            (name, template) =>
-            {
-                AnsiConsole.MarkupLine($"[green]Creating project: {name} using template {template}...[/]");
-                CliUtilities.RunShellCommand($"dotnet new {template} -o {name}", "Project created successfully!",
-                    "Failed to create project.");
-            });
+        command.SetHandler((string name, string template) =>
+        {
+            AnsiConsole.MarkupLine($"[green]Creating project: {name} using template {template}...[/]");
+            CliUtilities.RunShellCommand($"dotnet new {template} -o {name}", "Project created successfully!",
+                "Failed to create project.");
+        }, nameOption, templateOption);
 
         return command;
     }
