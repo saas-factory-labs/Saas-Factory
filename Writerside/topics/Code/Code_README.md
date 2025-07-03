@@ -98,6 +98,18 @@ Then restart the computer.
 ) | ForEach-Object { winget install --accept-package-agreements --accept-source-agreements --id $_ }      
    ```
 
+# Upgrade to latest .Net Aspire version
+
+https://learn.microsoft.com/en-us/dotnet/aspire/get-started/upgrade-to-aspire-9?pivots=dotnet-cli
+
+````powershell
+
+# Install upgrade assistant
+https://learn.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-install
+
+upgrade-assistant upgrade
+````
+
 # Run Github Action workflows locally
 
 ```powershell
