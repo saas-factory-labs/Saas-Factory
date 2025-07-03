@@ -1,4 +1,4 @@
-using AppBlueprint.Domain.B2B.Todos;
+using AppBlueprint.TodoAppKernel.Domain;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using FluentAssertions;
@@ -10,7 +10,7 @@ namespace AppBlueprint.Tests.Domain.B2B.Todos;
 public class TodoEntityTests
 {
     [TestMethod]
-    public void CreateTodoEntity_WithValidData_ShouldInitializeCorrectly()
+    public void CreateTodoEntityWithValidDataShouldInitializeCorrectly()
     {
         // Arrange
         var title = "Complete project documentation";
@@ -35,7 +35,7 @@ public class TodoEntityTests
     }
 
     [TestMethod]
-    public void MarkAsCompleted_WhenNotCompleted_ShouldCompleteTask()
+    public void MarkAsCompletedWhenNotCompletedShouldCompleteTask()
     {
         // Arrange
         var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
@@ -52,7 +52,7 @@ public class TodoEntityTests
     }
 
     [TestMethod]
-    public void MarkAsCompleted_WhenAlreadyCompleted_ShouldNotChangeState()
+    public void MarkAsCompletedWhenAlreadyCompletedShouldNotChangeState()
     {
         // Arrange
         var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
@@ -70,7 +70,7 @@ public class TodoEntityTests
     }
 
     [TestMethod]
-    public void MarkAsIncomplete_WhenCompleted_ShouldMarkIncomplete()
+    public void MarkAsIncompleteWhenCompletedShouldMarkIncomplete()
     {
         // Arrange
         var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
@@ -86,7 +86,7 @@ public class TodoEntityTests
     }
 
     [TestMethod]
-    public void UpdateDetails_WithValidData_ShouldUpdateProperties()
+    public void UpdateDetailsWithValidDataShouldUpdateProperties()
     {
         // Arrange
         var todo = new TodoEntity("Original task", "Original description", "tenant_123", "user_123");
@@ -107,7 +107,7 @@ public class TodoEntityTests
     }
 
     [TestMethod]
-    public void AssignTo_WithValidUserId_ShouldUpdateAssignment()
+    public void AssignToWithValidUserIdShouldUpdateAssignment()
     {
         // Arrange
         var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
@@ -122,7 +122,7 @@ public class TodoEntityTests
     }
 
     [TestMethod]
-    public void AssignTo_WithNullUserId_ShouldThrowArgumentException()
+    public void AssignToWithNullUserIdShouldThrowArgumentException()
     {
         // Arrange
         var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
@@ -134,7 +134,7 @@ public class TodoEntityTests
     }
 
     [TestMethod]
-    public void TodoPriority_EnumValues_ShouldBeCorrect()
+    public void TodoPriorityEnumValuesShouldBeCorrect()
     {
         // Assert
         ((int)TodoPriority.Low).Should().Be(0);

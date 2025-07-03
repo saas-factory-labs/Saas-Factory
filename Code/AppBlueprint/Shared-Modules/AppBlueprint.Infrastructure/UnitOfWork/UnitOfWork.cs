@@ -1,14 +1,24 @@
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog;
 using AppBlueprint.Infrastructure.Repositories;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 
 namespace AppBlueprint.Infrastructure.UnitOfWork;
 
-public class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
+public class UnitOfWork : IUnitOfWork
 {
-    private readonly ApplicationDbContext _applicationDbContext = context;
+    private readonly ApplicationDbContext _applicationDbContext;
+
+    public UnitOfWork(ApplicationDbContext context)
+    {
+        _applicationDbContext = context;
     
+    }
+
     private IAdminRepository? __adminRepository;    
     private IAccountRepository? _accountRepository;    
     private IApiKeyRepository? _apiKeyRepository;
@@ -122,8 +132,50 @@ public class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
         }
     }
 
-    public async Task SaveChangesAsync()
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _applicationDbContext.SaveChangesAsync();
+        return await _applicationDbContext.SaveChangesAsync(cancellationToken);
+    }
+    
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        await _applicationDbContext.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return _applicationDbContext.Database.CurrentTransaction?
+            .CommitAsync(cancellationToken) ?? Task.CompletedTask;
+    }
+
+    public Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return _applicationDbContext.Database.CurrentTransaction?
+            .RollbackAsync(cancellationToken) ?? Task.CompletedTask;
+    }
+    
+    // Dispose pattern: dispose managed resources and suppress finalization
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Core dispose method.
+    /// </summary>
+    /// <param name="disposing">True if called from Dispose, false if called from finalizer.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _applicationDbContext.Dispose();
+        }
+    }
+
+    // Finalizer calls Dispose(false)
+    ~UnitOfWork()
+    {
+        Dispose(false);
     }
 }

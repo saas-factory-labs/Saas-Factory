@@ -2,7 +2,7 @@ using AppBlueprint.Contracts.Baseline.AuditLog.Requests;
 using AppBlueprint.Contracts.Baseline.AuditLog.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +18,16 @@ public class AuditLogController : BaseController
 {
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly IConfiguration _configuration;
-    private readonly IUnitOfWork _unitOfWork;
+    // Removed IUnitOfWork dependency for repository DI pattern
 
-    public AuditLogController(IConfiguration configuration, IAuditLogRepository auditLogRepository,
-        IUnitOfWork unitOfWork) : base(configuration)
+    public AuditLogController(
+        IConfiguration configuration,
+        IAuditLogRepository auditLogRepository)
+        : base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _auditLogRepository = auditLogRepository ?? throw new ArgumentNullException(nameof(auditLogRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -117,7 +119,7 @@ public class AuditLogController : BaseController
         // existingAuditLog.Action = auditLogDto.Action      
 
         _auditLogRepository.Update(existingAuditLog, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }
@@ -137,7 +139,7 @@ public class AuditLogController : BaseController
         if (existingAuditLog is null) return NotFound(new { Message = $"Audit log with ID {id} not found." });
 
         _auditLogRepository.Delete(existingAuditLog.Id, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

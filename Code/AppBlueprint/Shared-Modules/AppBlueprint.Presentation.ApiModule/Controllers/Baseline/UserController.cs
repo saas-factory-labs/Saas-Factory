@@ -2,7 +2,7 @@ using AppBlueprint.Contracts.Baseline.User.Requests;
 using AppBlueprint.Contracts.Baseline.User.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,19 +19,19 @@ public class UserController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<AccountController> _logger;
-    private readonly IUnitOfWork _unitOfWork;
+    // Removed IUnitOfWork dependency for repository DI pattern
     private readonly IUserRepository _userRepository;
 
     public UserController(
         ILogger<AccountController> logger,
         IConfiguration configuration,
-        IUserRepository userRepository,
-        IUnitOfWork unitOfWork) : base(configuration)
+        IUserRepository userRepository)
+        : base(configuration)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -146,7 +146,7 @@ public class UserController : BaseController
         };
 
         await _userRepository.AddAsync(newUser);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
     }
@@ -172,7 +172,7 @@ public class UserController : BaseController
         existingUser.Email = createUser.Email;
 
         _userRepository.Update(existingUser);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }
@@ -193,7 +193,7 @@ public class UserController : BaseController
         if (existingUser is null) return NotFound(new { Message = $"User with ID {id} not found." });
 
         _userRepository.Delete(existingUser.Id);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

@@ -10,7 +10,7 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="Azure.Storage.Blobs"/>
+        <!-- Azure.Storage.Blobs version managed centrally -->
         <PackageReference Include="Aspire.Hosting.AppHost"/>
         <PackageReference Include="Aspire.Hosting.Azure"/>
         <PackageReference Include="Aspire.Hosting.Azure.Storage"/>

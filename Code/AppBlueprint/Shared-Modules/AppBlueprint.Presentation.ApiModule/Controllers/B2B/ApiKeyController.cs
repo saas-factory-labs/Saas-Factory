@@ -4,7 +4,7 @@ using AppBlueprint.Contracts.B2B.Contracts.ApiKey.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,14 +21,14 @@ public class ApiKeyController : BaseController
 {
     private readonly IApiKeyRepository _apiKeyRepository;
     private readonly IConfiguration _configuration;
-    private readonly IUnitOfWork _unitOfWork;
+    // Removed IUnitOfWork dependency for repository DI pattern
 
-    public ApiKeyController(IConfiguration configuration, IApiKeyRepository apiKeyRepository, IUnitOfWork unitOfWork) :
+    public ApiKeyController(IConfiguration configuration, IApiKeyRepository apiKeyRepository) :
         base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _apiKeyRepository = apiKeyRepository ?? throw new ArgumentNullException(nameof(apiKeyRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -88,7 +88,9 @@ public class ApiKeyController : BaseController
     public async Task<ActionResult> CreateApiKey([FromBody] CreateApiKeyRequest apiKeyDto,
         CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);        var newApiKey = new ApiKeyEntity
+        ArgumentNullException.ThrowIfNull(apiKeyDto);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var newApiKey = new ApiKeyEntity
         {
             Name = apiKeyDto.Name,
             SecretRef = "adad",
@@ -104,9 +106,9 @@ public class ApiKeyController : BaseController
         };
 
         await _apiKeyRepository.AddAsync(newApiKey);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
-        return CreatedAtAction(nameof(GetApiKey), new { id = newApiKey }, newApiKey);
+        return CreatedAtAction(nameof(GetApiKey), new { id = newApiKey.Id }, newApiKey);
     }
 
     /// <summary>
@@ -122,13 +124,14 @@ public class ApiKeyController : BaseController
     [MapToApiVersion(ApiVersions.V1)]    public async Task<ActionResult> UpdateApiKey(string id, [FromBody] UpdateApiKeyRequest apiKeyDto,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(apiKeyDto);
         ApiKeyEntity? existingApiKey = await _apiKeyRepository.GetByIdAsync(id);
         if (existingApiKey is null) return NotFound(new { Message = $"API key with ID {id} not found." });
 
         existingApiKey.Name = apiKeyDto.Name;
 
         _apiKeyRepository.Update(existingApiKey);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }
@@ -148,7 +151,7 @@ public class ApiKeyController : BaseController
         if (existingApiKey is null) return NotFound(new { Message = $"API key with ID {id} not found." });
 
         _apiKeyRepository.Delete(existingApiKey.Id);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

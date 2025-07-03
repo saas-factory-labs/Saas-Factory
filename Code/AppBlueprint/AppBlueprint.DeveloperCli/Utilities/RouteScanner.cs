@@ -1,24 +1,29 @@
 using System.Text.Json;
+using Spectre.Console;
 
 namespace AppBlueprint.DeveloperCli.Utilities;
 
 internal static class RouteScanner
 {
-    private static readonly HttpClient _httpClient = new();
     private static readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
 
+    private const string DefaultBaseUrl = "https://localhost:7001";
+    private const string TodoControllerName = "TodoController";
+
     public static async Task<List<RouteInfo>> GetAllRoutesAsync(string? baseUrl = null)
     {
+        using var httpClient = new HttpClient();
+        
         try
         {
             // Default to localhost development URL if not provided
-            baseUrl ??= "https://localhost:7001"; // Adjust port as needed
+            baseUrl ??= DefaultBaseUrl;
             
             var uri = new Uri($"{baseUrl}/dev/routes");
-            var response = await _httpClient.GetAsync(uri);
+            var response = await httpClient.GetAsync(uri);
             
             if (response.IsSuccessStatusCode)
             {
@@ -29,7 +34,7 @@ internal static class RouteScanner
                 {
                     Method = r.Method ?? "UNKNOWN",
                     Path = r.Route ?? "UNKNOWN",
-                    Controller = r.Handler ?? "UNKNOWN"
+                    Controller = r.Handler ?? TodoControllerName ?? "UNKNOWN"
                 }).ToList() ?? new List<RouteInfo>();
             }
             else
@@ -58,17 +63,17 @@ internal static class RouteScanner
 
     public static List<RouteInfo> GetAllRoutes(string? baseUrl = null)
     {
-        return GetAllRoutesAsync(baseUrl).GetAwaiter().GetResult();
+        return Task.Run(async () => await GetAllRoutesAsync(baseUrl)).GetAwaiter().GetResult();
     }
 
     private static List<RouteInfo> GetFallbackRoutes()
     {
         return new List<RouteInfo>
         {
-            new RouteInfo { Method = "GET", Path = "/api/todo", Controller = "TodoController" },
-            new RouteInfo { Method = "POST", Path = "/api/todo", Controller = "TodoController" },
-            new RouteInfo { Method = "PUT", Path = "/api/todo/{id}", Controller = "TodoController" },
-            new RouteInfo { Method = "DELETE", Path = "/api/todo/{id}", Controller = "TodoController" }
+            new RouteInfo { Method = "GET", Path = "/api/todo", Controller = TodoControllerName },
+            new RouteInfo { Method = "POST", Path = "/api/todo", Controller = TodoControllerName },
+            new RouteInfo { Method = "PUT", Path = "/api/todo/{id}", Controller = TodoControllerName },
+            new RouteInfo { Method = "DELETE", Path = "/api/todo/{id}", Controller = TodoControllerName }
         };
     }
 }

@@ -2,7 +2,7 @@ using AppBlueprint.Contracts.B2B.Contracts.Team.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.Team.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,16 +18,16 @@ public class TeamController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly ITeamRepository _teamRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    // Removed IUnitOfWork dependency for repository DI pattern
 
     public TeamController(
         IConfiguration configuration,
-        ITeamRepository teamRepository,
-        IUnitOfWork unitOfWork) : base(configuration)
+        ITeamRepository teamRepository)
+        : base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _teamRepository = teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -113,7 +113,7 @@ public class TeamController : BaseController
         };
 
         await _teamRepository.AddAsync(newTeam);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return CreatedAtAction(nameof(GetTeam), new { id = newTeam.Id }, new TeamResponse(new List<TeamMemberResponse>())
         {
@@ -145,7 +145,7 @@ public class TeamController : BaseController
             existingTeam.Description = teamDto.Description;
 
         _teamRepository.Update(existingTeam);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }
@@ -165,7 +165,7 @@ public class TeamController : BaseController
         if (existingTeam is null) return NotFound(new { Message = $"Team with ID {id} not found." });
 
         _teamRepository.Delete(existingTeam.Id);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

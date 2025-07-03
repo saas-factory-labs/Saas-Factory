@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageVersion Include="AutoBogus" Version="2.13.1" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
-    <PackageVersion Include="bunit" Version="2.0.33-preview" />
+    <PackageVersion Include="bunit" Version="1.26.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime;build;native;contentfiles;analyzers;buildtransitive</IncludeAssets>
@@ -19,6 +19,8 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageVersion Include="Moq" Version="4.20.72" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="3.9.3" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.9.3" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="Testcontainers" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.Redis" Version="4.4.0" />
@@ -37,42 +39,42 @@
   <!-- ═════════ CONFIGURATION • HOSTING • PLATFORM ════════════════════ -->
   <ItemGroup>
     <!-- Aspire -->
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.2.1" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.1" />
     <PackageVersion Include="Aspire.Hosting.Azure" Version="9.2.1" />
     <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.2.1" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.3.1" />
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.2.1" />
     <PackageVersion Include="Aspire.Hosting.Testing" Version="9.2.1" />
     <PackageVersion Include="Aspire.StackExchange.Redis.OutputCaching" Version="9.2.1" />
     <PackageVersion Include="CommunityToolkit.Aspire.Hosting.PostgreSQL.Extensions" Version="9.4.0" />
     <!-- Microsoft.Extensions 9.x -->
-    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resiliency" Version="9.1.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.EventLog" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.EventSource" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.EventLog" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.EventSource" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Compliance.Abstractions" Version="9.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Compliance.Redaction" Version="9.2.0" />
@@ -85,7 +87,7 @@
     <PackageVersion Include="Pulumi.Cloudflare" Version="5.49.0" />
     <PackageVersion Include="Scrutor" Version="4.2.2" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
-    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.4" />
+    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.6" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.2.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
   </ItemGroup>
@@ -120,7 +122,8 @@
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.2.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />    <PackageVersion Include="Asp.Versioning.Http" Version="8.1.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />
+    <PackageVersion Include="Asp.Versioning.Http" Version="8.1.0" />
     <PackageVersion Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
   </ItemGroup>
@@ -136,7 +139,7 @@
   <!-- ═══════════ SERIALISATION & DATA ════════════════════════════════ -->
   <ItemGroup>
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.4" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
   <!-- ═══════════ UI & FRONT-END ══════════════════════════════════════ -->
   <ItemGroup>
@@ -205,6 +208,7 @@
     <PackageVersion Include="Microsoft.FeatureManagement" Version="4.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.50.0" />    <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0-alpha.22272.1" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.50.0" />
+    <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0-alpha.22272.1" />
   </ItemGroup>
 </Project>

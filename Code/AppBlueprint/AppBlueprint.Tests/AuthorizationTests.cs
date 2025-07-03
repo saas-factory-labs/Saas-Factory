@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using AppBlueprint.ApiService;
+// using AppBlueprint.Tests.Infrastructure; // Removed duplicate
 using AppBlueprint.Tests.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -12,13 +12,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AppBlueprint.Tests;
 
+
 internal sealed class AuthorizationTests : IDisposable
 {
     internal const string AdminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
     internal const string UserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
     internal const string TenantAToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
     private bool _disposed;
-    private WebApplicationFactory<Program>? _factory;
+    private WebApplicationFactory<TestStartup>? _factory;
     private HttpClient? _http;
 
     public void Dispose()
@@ -36,7 +37,7 @@ internal sealed class AuthorizationTests : IDisposable
         }
 
         // Create a test factory for the API service
-        _factory = new WebApplicationFactory<Program>()
+        _factory = new WebApplicationFactory<TestStartup>()
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -177,7 +178,7 @@ internal sealed class AuthorizationTests : IDisposable
     public void ShouldRequireAuthorizationOnAllControllers()
     {
         // Arrange
-        Type[] controllerTypes = typeof(Program).Assembly
+        Type[] controllerTypes = typeof(TestStartup).Assembly
             .GetTypes()
             .Where(t => t.IsSubclassOf(typeof(ControllerBase)) && !t.IsAbstract)
             .ToArray();

@@ -3,7 +3,7 @@ using AppBlueprint.Contracts.Baseline.Role.Requests;
 using AppBlueprint.Contracts.Baseline.Role.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,14 +17,14 @@ public class RoleController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly IRoleRepository _roleRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    // Removed IUnitOfWork dependency for repository DI pattern
 
-    public RoleController(IConfiguration configuration, IRoleRepository roleRepository, IUnitOfWork unitOfWork) :
+    public RoleController(IConfiguration configuration, IRoleRepository roleRepository) :
         base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _roleRepository = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public class RoleController : BaseController
         };
 
         await _roleRepository.AddAsync(newRole);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return CreatedAtAction(nameof(Get), new { id = newRole.Id }, newRole);
     }
@@ -112,7 +112,7 @@ public class RoleController : BaseController
         existingRole.Name = request.Name;
 
         _roleRepository.Update(existingRole);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
@@ -12,6 +15,8 @@
     <ItemGroup>
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="MSTest.TestAdapter" />
+        <PackageReference Include="MSTest.TestFramework" />
         <PackageReference Include="Testcontainers.Redis" />
         <PackageReference Include="bunit" />
         <PackageReference Include="Testcontainers" />

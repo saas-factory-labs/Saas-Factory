@@ -4,6 +4,8 @@ namespace AppBlueprint.DeveloperCli.Commands;
 
 internal static class DatabaseCommand
 {
+    private const string InfrastructureProjectPath = @"C:\Development\Development-Projects\SaaS-Factory\Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure";
+
     public static Command Create()
     {
         var command = new Command("migrate-database", "Migrate the database for the SaaS app solution.");
@@ -23,10 +25,8 @@ internal static class DatabaseCommand
             AnsiConsole.MarkupLine($"[gray]Using connection string: {connectionString}[/]");
 
             // Both EF project and startup project paths
-            string efProject =
-                @"C:\Development\Development-Projects\SaaS-Factory\Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure";
-            string startupProject =
-                @"C:\Development\Development-Projects\SaaS-Factory\Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure";
+            string efProject = InfrastructureProjectPath;
+            string startupProject = InfrastructureProjectPath;
 
             // List migrations with explicit context and startup project
             string listCommand =
@@ -97,10 +97,8 @@ internal static class DatabaseCommand
         AnsiConsole.MarkupLine($"[gray]Using connection string: {connectionString}[/]");
 
         // Both EF project and startup project paths
-        string efProject =
-            @"C:\Development\Development-Projects\SaaS-Factory\Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure";
-        string startupProject =
-            @"C:\Development\Development-Projects\SaaS-Factory\Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure";
+        string efProject = InfrastructureProjectPath;
+        string startupProject = InfrastructureProjectPath;
 
         AnsiConsole.MarkupLine($"[gray]EF Project: {efProject}[/]");
         AnsiConsole.MarkupLine($"[gray]Startup Project: {startupProject}[/]");

@@ -16,7 +16,7 @@
 
         <PackageReference Include="JetBrains.Annotations"/>
         <!-- Add other PackageReference items without Version attribute here -->
-        <PackageReference Include="Aspire.Azure.Storage.Blobs"/>
+        <!-- Aspire.Azure.Storage.Blobs version managed centrally -->
         <PackageReference Include="Aspire.Hosting.AppHost"/>
         <PackageReference Include="Aspire.Hosting.Azure"/>
         <PackageReference Include="Aspire.Hosting.Azure.Storage"/>

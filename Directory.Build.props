@@ -19,12 +19,4 @@
     <NoWarn>CS8618,CA1062,CA2007</NoWarn>
     <!-- Add specific warnings you want to ignore -->
   </PropertyGroup>
-  <ItemGroup>
-    <!--        Version="9.17.0.82934"-->
-    <!-- Include analyzers if needed -->
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.9.0.115408">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@ using AppBlueprint.Contracts.Baseline.DataExport.Requests;
 using AppBlueprint.Contracts.Baseline.DataExport.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +18,16 @@ public class DataExportController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly IDataExportRepository _dataExportRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    // Removed IUnitOfWork dependency for repository DI pattern
 
-    public DataExportController(IConfiguration configuration, IDataExportRepository dataExportRepository,
-        IUnitOfWork unitOfWork) : base(configuration)
+    public DataExportController(
+        IConfiguration configuration,
+        IDataExportRepository dataExportRepository)
+        : base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _dataExportRepository = dataExportRepository ?? throw new ArgumentNullException(nameof(dataExportRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -96,7 +98,7 @@ public class DataExportController : BaseController
         };
 
         // await _dataExportRepository.AddAsync(newDataExport);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return CreatedAtAction(nameof(GetDataExport), new { id = newDataExport.Id }, newDataExport);
     }
@@ -121,7 +123,7 @@ public class DataExportController : BaseController
         // existingDataExport. = dataExportDto.Type;
 
         await _dataExportRepository.UpdateAsync(existingDataExport, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }
@@ -141,7 +143,7 @@ public class DataExportController : BaseController
         if (existingDataExport is null) return NotFound(new { Message = $"Data export with ID {id} not found." });
 
         // _dataExportRepository.Delete(existingDataExport.Id);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

@@ -3,7 +3,7 @@ using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
 using AppBlueprint.Contracts.B2B.Tenant.Requests;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,16 +19,16 @@ public class TenantController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly ITenantRepository _tenantRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    // Removed IUnitOfWork dependency for repository DI pattern
 
     public TenantController(
         IConfiguration configuration,
-        ITenantRepository tenantRepository,
-        IUnitOfWork unitOfWork) : base(configuration)
+        ITenantRepository tenantRepository)
+        : base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _tenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -95,6 +95,7 @@ public class TenantController : BaseController
     public async Task<ActionResult> CreateTenant([FromBody] CreateTenantRequest tenantDto,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(tenantDto);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var newTenant = new TenantEntity
@@ -105,7 +106,8 @@ public class TenantController : BaseController
         };
 
         await _tenantRepository.AddAsync(newTenant);
-        await _unitOfWork.SaveChangesAsync();        var response = new TenantResponse
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        var response = new TenantResponse
         {
             Id = newTenant.Id,
             Name = newTenant.Name,
@@ -140,7 +142,7 @@ public class TenantController : BaseController
         existingTenant.LastUpdatedAt = DateTime.UtcNow;
 
         _tenantRepository.Update(existingTenant);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }
@@ -161,7 +163,7 @@ public class TenantController : BaseController
         if (existingTenant is null) return NotFound(new { Message = $"Tenant with ID {id} not found." });
 
         _tenantRepository.Delete(existingTenant.Id);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

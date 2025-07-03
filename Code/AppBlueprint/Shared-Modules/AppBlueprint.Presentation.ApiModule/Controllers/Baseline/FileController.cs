@@ -2,7 +2,7 @@ using AppBlueprint.Contracts.Baseline.File.Requests;
 using AppBlueprint.Contracts.Baseline.File.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +18,13 @@ public class FileController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly IFileRepository _fileRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    // Removed IUnitOfWork dependency for repository DI pattern
 
-    public FileController(IFileRepository fileRepository, IUnitOfWork unitOfWork, IConfiguration configuration)
+    public FileController(IFileRepository fileRepository, IConfiguration configuration)
         : base(configuration)
     {
         _fileRepository = fileRepository ?? throw new ArgumentNullException(nameof(fileRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        // Removed IUnitOfWork assignment
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
@@ -87,7 +87,7 @@ public class FileController : BaseController
         };
 
         await _fileRepository.AddAsync(newFile, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return CreatedAtAction(nameof(Get), new { id = newFile.Id }, newFile);
     }
@@ -111,7 +111,7 @@ public class FileController : BaseController
 
 
         await _fileRepository.UpdateAsync(existingFile, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }
@@ -131,7 +131,7 @@ public class FileController : BaseController
         if (existingFile is null) return NotFound(new { Message = $"File with ID {id} not found." });
 
         await _fileRepository.DeleteAsync(existingFile, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

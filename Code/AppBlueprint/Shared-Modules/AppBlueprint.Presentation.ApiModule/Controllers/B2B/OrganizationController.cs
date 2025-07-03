@@ -5,7 +5,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,15 +22,16 @@ public class OrganizationController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly IOrganizationRepository _organizationRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    // Removed IUnitOfWork dependency for repository DI pattern
 
-    public OrganizationController(IConfiguration configuration, IOrganizationRepository organizationRepository,
-        IUnitOfWork unitOfWork) : base(configuration)
+    public OrganizationController(
+        IConfiguration configuration,
+        IOrganizationRepository organizationRepository)
+        : base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        _organizationRepository =
-            organizationRepository ?? throw new ArgumentNullException(nameof(organizationRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _organizationRepository = organizationRepository ?? throw new ArgumentNullException(nameof(organizationRepository));
+        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -109,7 +110,7 @@ public class OrganizationController : BaseController
         };
 
         // await _organizationRepository.AddAsync(newOrg);
-        await _unitOfWork.SaveChangesAsync();
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return CreatedAtAction(nameof(GetOrganization), new { id = newOrg.Id }, new OrganizationResponse
         {

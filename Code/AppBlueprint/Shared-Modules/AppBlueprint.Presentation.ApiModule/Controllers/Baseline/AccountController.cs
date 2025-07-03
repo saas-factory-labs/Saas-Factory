@@ -1,6 +1,6 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,22 +13,22 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [ApiVersion(ApiVersions.V2)]
 [Route("api/v{version:apiVersion}/account")]
 [Produces("application/json")]
-public class AccountController(
-    ILogger<AccountController> logger,
-    IAccountRepository accountRepository,
-    IUnitOfWork unitOfWork,
-    IConfiguration configuration)
-    : BaseController(configuration)
+public class AccountController : BaseController
 {
-    private readonly IAccountRepository _accountRepository =
-        accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
+    private readonly IAccountRepository _accountRepository;
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<AccountController> _logger;
 
-    private readonly IConfiguration _configuration =
-        configuration ?? throw new ArgumentNullException(nameof(configuration));
-
-    private readonly ILogger<AccountController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-    private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+    public AccountController(
+        ILogger<AccountController> logger,
+        IAccountRepository accountRepository,
+        IConfiguration configuration)
+        : base(configuration)
+    {
+        _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
     // private readonly IFeatureManager _featureManager = featureManager ?? throw new ArgumentNullException(nameof(featureManager));
 
     // [HttpGet(ApiEndpoints.Accounts.GetById)]    
@@ -109,10 +109,11 @@ public class AccountController(
     [ProducesResponseType(typeof(IEnumerable<AccountEntity>), StatusCodes.Status201Created)]
     public async Task<ActionResult> CreateAccount([FromBody] AccountEntity account, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(account);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _unitOfWork.AccountRepository.AddAsync(account, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _accountRepository.AddAsync(account, cancellationToken);
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return CreatedAtAction(nameof(GetAccountsV1), new { id = account.Id }, account);
     }
@@ -134,8 +135,8 @@ public class AccountController(
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _unitOfWork.AccountRepository.UpdateAsync(account, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _accountRepository.UpdateAsync(account, cancellationToken);
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }
@@ -152,8 +153,8 @@ public class AccountController(
     public async Task<ActionResult> DeleteAccount(string id, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _unitOfWork.AccountRepository.DeleteAsync(id, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _accountRepository.DeleteAsync(id, cancellationToken);
+        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

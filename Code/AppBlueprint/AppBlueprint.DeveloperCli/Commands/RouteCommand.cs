@@ -19,33 +19,7 @@ internal static class RouteCommand
         
         listCommand.SetHandler(async (string baseUrl) =>
         {
-            AnsiConsole.MarkupLine($"[blue]Scanning routes from: {baseUrl}[/]");
-            AnsiConsole.MarkupLine("[gray]Fetching routes from /dev/routes endpoint...[/]");
-            
-            var endpoints = await RouteScanner.GetAllRoutesAsync(baseUrl);
-            
-            if (endpoints.Count == 0)
-            {
-                AnsiConsole.MarkupLine("[yellow]No routes found.[/]");
-                return;
-            }
-            
-            var table = new Table()
-                .AddColumn("[green]Method[/]")
-                .AddColumn("[blue]Path[/]")
-                .AddColumn("[yellow]Handler[/]");
-
-            foreach (var route in endpoints.OrderBy(r => r.Path).ThenBy(r => r.Method))
-            {
-                table.AddRow(
-                    $"[bold {GetMethodColor(route.Method)}]{route.Method}[/]", 
-                    route.Path, 
-                    route.Controller);
-            }
-
-            AnsiConsole.Write(table);
-            AnsiConsole.MarkupLine($"[green]Found {endpoints.Count} route(s)[/]");
-            
+            await DisplayRoutesAsync(baseUrl);
         }, urlOption);
 
         routeCommand.AddCommand(listCommand);
@@ -53,27 +27,18 @@ internal static class RouteCommand
         return routeCommand;
     }
     
-    private static string GetMethodColor(string method)
+    private static async Task DisplayRoutesAsync(string baseUrl)
     {
-        return method.ToUpperInvariant() switch
-        {
-            "GET" => "green",
-            "POST" => "blue",
-            "PUT" => "yellow",
-            "DELETE" => "red",
-            "PATCH" => "purple",
-            _ => "gray"
-        };
-    }
-
-    public static void ExecuteInteractive()
-    {
-        string baseUrl = AnsiConsole.Ask<string>("[green]Enter the base URL of your API:[/]", "https://localhost:7001");
-        
         AnsiConsole.MarkupLine($"[blue]Scanning routes from: {baseUrl}[/]");
+        AnsiConsole.MarkupLine("[gray]Fetching routes from /dev/routes endpoint...[/]");
         
-        var endpoints = RouteScanner.GetAllRoutes(baseUrl);
+        var endpoints = await RouteScanner.GetAllRoutesAsync(baseUrl);
         
+        DisplayRoutes(endpoints);
+    }
+    
+    private static void DisplayRoutes(List<RouteInfo> endpoints)
+    {
         if (endpoints.Count == 0)
         {
             AnsiConsole.MarkupLine("[yellow]No routes found.[/]");
@@ -95,6 +60,30 @@ internal static class RouteCommand
 
         AnsiConsole.Write(table);
         AnsiConsole.MarkupLine($"[green]Found {endpoints.Count} route(s)[/]");
+    }
+
+    private static string GetMethodColor(string method)
+    {
+        return method.ToUpperInvariant() switch
+        {
+            "GET" => "green",
+            "POST" => "blue",
+            "PUT" => "yellow",
+            "DELETE" => "red",
+            "PATCH" => "purple",
+            _ => "gray"
+        };
+    }
+
+    public static void ExecuteInteractive()
+    {
+        string baseUrl = AnsiConsole.Ask<string>("[green]Enter the base URL of your API:[/]", "https://localhost:7001");
+        
+        AnsiConsole.MarkupLine($"[blue]Scanning routes from: {baseUrl}[/]");
+        
+        var endpoints = RouteScanner.GetAllRoutes(baseUrl);
+        
+        DisplayRoutes(endpoints);
     }
 }
 

@@ -2,7 +2,7 @@ using AppBlueprint.Contracts.Baseline.Integrations.Requests;
 using AppBlueprint.Contracts.Baseline.Integrations.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

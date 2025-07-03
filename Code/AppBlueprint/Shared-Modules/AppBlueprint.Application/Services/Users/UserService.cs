@@ -8,6 +8,11 @@ namespace AppBlueprint.Application.Services.Users;
 
 public class UserService : IUserService
 {
+    private const string EmailFromAddress = "noreply@saas-factory.com";
+    private const string SiteName = "SaaS Factory";
+    private static readonly TimeSpan EmailTokenValidity = TimeSpan.FromHours(24);
+    private static readonly TimeSpan ResetTokenValidity = TimeSpan.FromHours(1);
+
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
     private readonly IEmailVerificationRepository _emailVerificationRepository;
@@ -116,7 +121,7 @@ public class UserService : IUserService
             Email = user.Email,
             Token = token,
             CreatedAt = DateTime.UtcNow,
-            ExpiresAt = DateTime.UtcNow.AddHours(24), // Token valid for 24 hours
+            ExpiresAt = DateTime.UtcNow.Add(EmailTokenValidity),
             HasBeenOpened = false,
             HasBeenVerified = false,
             UserId = userId,
@@ -132,9 +137,9 @@ public class UserService : IUserService
         try
         {
             await _emailService.SendSignUpWelcomeEmail(
-                "noreply@saas-factory.com",
+                EmailFromAddress,
                 user.Email,
-                "SaaS Factory",
+                SiteName,
                 cancellationToken
             );
         }
@@ -149,7 +154,7 @@ public class UserService : IUserService
 
     public async Task<bool> VerifyEmailAsync(string userId, string token, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken)
+        _ = await _userRepository.GetByIdAsync(userId, cancellationToken)
             ?? throw new InvalidOperationException("User not found");
 
         // Find the verification record
@@ -196,7 +201,7 @@ public class UserService : IUserService
         var passwordReset = new PasswordResetEntity
         {
             Token = token,
-            ExpireAt = DateTime.UtcNow.AddHours(1), // Token valid for 1 hour
+            ExpireAt = DateTime.UtcNow.Add(ResetTokenValidity),
             IsUsed = false,
             User = user,
             UserId = user.Id,
@@ -214,7 +219,7 @@ public class UserService : IUserService
             // Use transaction email service to send reset email
             // This would typically include the token in a reset link
             await _emailService.SendSignUpWelcomeEmail(
-                "noreply@saas-factory.com",
+                EmailFromAddress,
                 user.Email,
                 "Password Reset",
                 cancellationToken
