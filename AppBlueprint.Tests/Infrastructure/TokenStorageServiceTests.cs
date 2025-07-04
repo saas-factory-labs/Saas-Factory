@@ -8,6 +8,11 @@ namespace AppBlueprint.Tests.Infrastructure;
 
 public class TokenStorageServiceTests
 {
+    private const string TestToken = "test_token";
+    private const string AuthTokenKey = "auth_token";
+    private const string AuthExpirationKey = "auth_expiration";
+    private const string LocalStorageGetItem = "localStorage.getItem";
+    
     private readonly IJSRuntime _jsRuntimeMock;
     private readonly TokenStorageService _tokenStorageService;
 
@@ -21,23 +26,23 @@ public class TokenStorageServiceTests
     public async Task SaveTokenAsync_ShouldStoreTokenAndExpiration()
     {
         // Arrange
-        string testToken = "test_token";
+        string testToken = TestToken;
         DateTime expiration = DateTime.UtcNow.AddHours(1);
 
         // Act
         await _tokenStorageService.SaveTokenAsync(testToken, expiration);
 
         // Assert
-        await _jsRuntimeMock.Received(1).InvokeVoidAsync("localStorage.setItem", "auth_token", testToken);
-        await _jsRuntimeMock.Received(1).InvokeVoidAsync("localStorage.setItem", "auth_expiration", expiration.ToString("O"));
+        await _jsRuntimeMock.Received(1).InvokeVoidAsync("localStorage.setItem", AuthTokenKey, testToken);
+        await _jsRuntimeMock.Received(1).InvokeVoidAsync("localStorage.setItem", AuthExpirationKey, expiration.ToString("O"));
     }
 
     [Fact]
     public async Task GetTokenAsync_ShouldRetrieveStoredToken()
     {
         // Arrange
-        string expectedToken = "test_token";
-        _jsRuntimeMock.InvokeAsync<string?>("localStorage.getItem", "auth_token")
+        string expectedToken = TestToken;
+        _jsRuntimeMock.InvokeAsync<string?>(LocalStorageGetItem, AuthTokenKey)
             .Returns(ValueTask.FromResult<string?>(expectedToken));
 
         // Act
@@ -45,7 +50,7 @@ public class TokenStorageServiceTests
 
         // Assert
         Assert.Equal(expectedToken, token);
-        await _jsRuntimeMock.Received(1).InvokeAsync<string?>("localStorage.getItem", "auth_token");
+        await _jsRuntimeMock.Received(1).InvokeAsync<string?>(LocalStorageGetItem, AuthTokenKey);
     }
 
     [Fact]
@@ -54,7 +59,7 @@ public class TokenStorageServiceTests
         // Arrange
         DateTime expectedExpiration = DateTime.UtcNow.AddHours(1);
         string expirationString = expectedExpiration.ToString("O", CultureInfo.InvariantCulture);
-        _jsRuntimeMock.InvokeAsync<string?>("localStorage.getItem", "auth_expiration")
+        _jsRuntimeMock.InvokeAsync<string?>(LocalStorageGetItem, AuthExpirationKey)
             .Returns(ValueTask.FromResult<string?>(expirationString));
 
         // Act
@@ -63,7 +68,7 @@ public class TokenStorageServiceTests
         // Assert
         Assert.NotNull(expiration);
         Assert.Equal(expectedExpiration, expiration);
-        await _jsRuntimeMock.Received(1).InvokeAsync<string?>("localStorage.getItem", "auth_expiration");
+        await _jsRuntimeMock.Received(1).InvokeAsync<string?>(LocalStorageGetItem, AuthExpirationKey);
     }
 
     [Fact]
@@ -73,21 +78,21 @@ public class TokenStorageServiceTests
         await _tokenStorageService.ClearTokenAsync();
 
         // Assert
-        await _jsRuntimeMock.Received(1).InvokeVoidAsync("localStorage.removeItem", "auth_token");
-        await _jsRuntimeMock.Received(1).InvokeVoidAsync("localStorage.removeItem", "auth_expiration");
+        await _jsRuntimeMock.Received(1).InvokeVoidAsync("localStorage.removeItem", AuthTokenKey);
+        await _jsRuntimeMock.Received(1).InvokeVoidAsync("localStorage.removeItem", AuthExpirationKey);
     }
 
     [Fact]
     public async Task IsTokenValidAsync_ShouldReturnTrueForValidToken()
     {
         // Arrange
-        string testToken = "test_token";
+        string testToken = TestToken;
         DateTime expiration = DateTime.UtcNow.AddHours(1);
         string expirationString = expiration.ToString("O", CultureInfo.InvariantCulture);
         
-        _jsRuntimeMock.InvokeAsync<string?>("localStorage.getItem", "auth_token")
+        _jsRuntimeMock.InvokeAsync<string?>(LocalStorageGetItem, AuthTokenKey)
             .Returns(ValueTask.FromResult<string?>(testToken));
-        _jsRuntimeMock.InvokeAsync<string?>("localStorage.getItem", "auth_expiration")
+        _jsRuntimeMock.InvokeAsync<string?>(LocalStorageGetItem, AuthExpirationKey)
             .Returns(ValueTask.FromResult<string?>(expirationString));
 
         // Act
@@ -101,13 +106,13 @@ public class TokenStorageServiceTests
     public async Task IsTokenValidAsync_ShouldReturnFalseForExpiredToken()
     {
         // Arrange
-        string testToken = "test_token";
+        string testToken = TestToken;
         DateTime expiration = DateTime.UtcNow.AddHours(-1); // Expired token
         string expirationString = expiration.ToString("O", CultureInfo.InvariantCulture);
         
-        _jsRuntimeMock.InvokeAsync<string?>("localStorage.getItem", "auth_token")
+        _jsRuntimeMock.InvokeAsync<string?>(LocalStorageGetItem, AuthTokenKey)
             .Returns(ValueTask.FromResult<string?>(testToken));
-        _jsRuntimeMock.InvokeAsync<string?>("localStorage.getItem", "auth_expiration")
+        _jsRuntimeMock.InvokeAsync<string?>(LocalStorageGetItem, AuthExpirationKey)
             .Returns(ValueTask.FromResult<string?>(expirationString));
 
         // Act
@@ -121,7 +126,7 @@ public class TokenStorageServiceTests
     public async Task IsTokenValidAsync_ShouldReturnFalseForMissingToken()
     {
         // Arrange
-        _jsRuntimeMock.InvokeAsync<string?>("localStorage.getItem", "auth_token")
+        _jsRuntimeMock.InvokeAsync<string?>(LocalStorageGetItem, AuthTokenKey)
             .Returns(ValueTask.FromResult<string?>(null));
 
         // Act

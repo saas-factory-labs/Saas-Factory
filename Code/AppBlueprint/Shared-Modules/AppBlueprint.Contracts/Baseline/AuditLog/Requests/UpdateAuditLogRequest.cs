@@ -19,7 +19,7 @@ public class UpdateAuditLogRequest
     // create new phone number, update phone number, delete phone number, etc.
     // create new contact person, update contact person, delete contact person, etc.
 
-    public int Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     [DataClassification(GDPRType.IndirectlyIdentifiable)]
     public string? Action { get; set; }

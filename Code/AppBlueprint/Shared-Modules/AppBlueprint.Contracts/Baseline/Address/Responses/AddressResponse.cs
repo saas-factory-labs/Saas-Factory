@@ -25,17 +25,17 @@ public class AddressResponse
     //     Street = new StreetEntity();
     // }
 
-    public int Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
 
     // Geographic details
-    public int CityId { get; set; }
+    public string CityId { get; set; } = string.Empty;
     // public CityEntity City { get; set; }
 
-    public int CountryId { get; set; }
+    public string CountryId { get; set; } = string.Empty;
     // public CountryEntity Country { get; set; }
 
-    public int StreetId { get; set; }
+    public string StreetId { get; set; } = string.Empty;
     // public StreetEntity Street { get; set; }
 
     public bool IsPrimary { get; set; }
@@ -50,13 +50,13 @@ public class AddressResponse
     [DataClassification(GDPRType.DirectlyIdentifiable)]
     public string? UnitNumber { get; set; } // Apartment or unit number
 
-    public string State { get; set; }
-    public string PostalCode { get; set; }
+    public string State { get; set; } = string.Empty;
+    public string PostalCode { get; set; } = string.Empty;
 
     // Relationships
-    public int? CustomerId { get; set; }
-    public CustomerResponse Customer { get; set; }
+    public string? CustomerId { get; set; }
+    public CustomerResponse? Customer { get; set; }
 
-    public int? TenantId { get; set; }
-    public TenantResponse Tenant { get; set; }
+    public string? TenantId { get; set; }
+    public TenantResponse? Tenant { get; set; }
 }

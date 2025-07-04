@@ -9,6 +9,9 @@ namespace AppBlueprint.Tests.Domain.B2B.Todos;
 [TestClass]
 public class TodoEntityTests
 {
+    private const string TestTaskTitle = "Test task";
+    private const string TestTenantId = "tenant_123";
+    private const string TestUserId = "user_123";
     [TestMethod]
     public void CreateTodoEntity_WithValidData_ShouldInitializeCorrectly()
     {
@@ -38,7 +41,7 @@ public class TodoEntityTests
     public void MarkAsCompleted_WhenNotCompleted_ShouldCompleteTask()
     {
         // Arrange
-        var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
+        var todo = new TodoEntity(TestTaskTitle, null, TestTenantId, TestUserId);
         var initialUpdateTime = todo.LastUpdatedAt;
 
         // Act
@@ -55,7 +58,7 @@ public class TodoEntityTests
     public void MarkAsCompleted_WhenAlreadyCompleted_ShouldNotChangeState()
     {
         // Arrange
-        var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
+        var todo = new TodoEntity(TestTaskTitle, null, TestTenantId, TestUserId);
         todo.MarkAsCompleted();
         var originalCompletedAt = todo.CompletedAt;
         var originalLastUpdated = todo.LastUpdatedAt;
@@ -73,7 +76,7 @@ public class TodoEntityTests
     public void MarkAsIncomplete_WhenCompleted_ShouldMarkIncomplete()
     {
         // Arrange
-        var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
+        var todo = new TodoEntity(TestTaskTitle, null, TestTenantId, TestUserId);
         todo.MarkAsCompleted();
 
         // Act
@@ -89,7 +92,7 @@ public class TodoEntityTests
     public void UpdateDetails_WithValidData_ShouldUpdateProperties()
     {
         // Arrange
-        var todo = new TodoEntity("Original task", "Original description", "tenant_123", "user_123");
+        var todo = new TodoEntity("Original task", "Original description", TestTenantId, TestUserId);
         var newTitle = "Updated task";
         var newDescription = "Updated description";
         var newPriority = TodoPriority.High;
@@ -110,7 +113,7 @@ public class TodoEntityTests
     public void AssignTo_WithValidUserId_ShouldUpdateAssignment()
     {
         // Arrange
-        var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
+        var todo = new TodoEntity(TestTaskTitle, null, TestTenantId, TestUserId);
         var newAssigneeId = "user_456";
 
         // Act
@@ -125,7 +128,7 @@ public class TodoEntityTests
     public void AssignTo_WithNullUserId_ShouldThrowArgumentException()
     {
         // Arrange
-        var todo = new TodoEntity("Test task", null, "tenant_123", "user_123");
+        var todo = new TodoEntity(TestTaskTitle, null, TestTenantId, TestUserId);
 
         // Act & Assert
         var action = () => todo.AssignTo(null!);

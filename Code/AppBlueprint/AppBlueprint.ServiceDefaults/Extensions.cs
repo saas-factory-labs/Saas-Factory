@@ -18,6 +18,8 @@ namespace Microsoft.Extensions.Hosting
     public static class Extensions
     {
         private static readonly string[] LiveTags = { "live" };
+        private const string OtelExporterOtlpEndpoint = "OTEL_EXPORTER_OTLP_ENDPOINT";
+        private const string OtelExporterOtlpProtocol = "OTEL_EXPORTER_OTLP_PROTOCOL";
 
         public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
         {
@@ -43,21 +45,21 @@ namespace Microsoft.Extensions.Hosting
             string? dashboard = Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
             if (!string.IsNullOrEmpty(dashboard))
             {
-                Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", dashboard);
+                Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, dashboard);
             }
             else
             {
-                string? endpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+                string? endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
                 if (string.IsNullOrEmpty(endpoint))
                 {
-                    Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:18889");
+                    Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, "http://localhost:18889");
                 }
             }
 
-            string? proto = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL");
+            string? proto = Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol);
             if (string.IsNullOrEmpty(proto))
             {
-                Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
+                Environment.SetEnvironmentVariable(OtelExporterOtlpProtocol, "http/protobuf");
             }
 
             if (Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS") == null)
@@ -79,8 +81,8 @@ namespace Microsoft.Extensions.Hosting
                 log.IncludeScopes = true;
                 log.IncludeFormattedMessage = true;
 
-                string endpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")!;
-                bool grpc = string.Equals(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL"), "grpc", StringComparison.OrdinalIgnoreCase);
+                string endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint)!;
+                bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
                 log.AddOtlpExporter(opt => { opt.Endpoint = new Uri(endpoint); opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; });
             });
 
@@ -95,8 +97,8 @@ namespace Microsoft.Extensions.Hosting
                     metrics.AddHttpClientInstrumentation();
                     metrics.AddRuntimeInstrumentation();
 
-                    string endpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")!;
-                    bool grpc = string.Equals(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL"), "grpc", StringComparison.OrdinalIgnoreCase);
+                    string endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint)!;
+                    bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
                     metrics.AddOtlpExporter(opt => { opt.Endpoint = new Uri(endpoint); opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; });
                 })
                 .WithTracing(tracing =>
@@ -106,8 +108,8 @@ namespace Microsoft.Extensions.Hosting
                     tracing.AddAspNetCoreInstrumentation(options => options.RecordException = true);
                     tracing.AddHttpClientInstrumentation(options => { options.RecordException = true; options.FilterHttpRequestMessage = _ => true; });
 
-                    string endpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")!;
-                    bool grpc = string.Equals(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL"), "grpc", StringComparison.OrdinalIgnoreCase);
+                    string endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint)!;
+                    bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
                     tracing.AddOtlpExporter(opt => { opt.Endpoint = new Uri(endpoint); opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; });
                 });
 

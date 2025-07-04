@@ -18,6 +18,15 @@ internal sealed class AuthorizationTests : IDisposable
     internal const string AdminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
     internal const string UserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
     internal const string TenantAToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+    
+    private const string AdminSecretEndpoint = "/api/admin/secret";
+    private const string UsersEndpoint = "/api/users";
+    private const string TenantsOtherResourceEndpoint = "/api/tenants/other-tenant/resource";
+    private const string DeletedUserEndpoint = "/api/users/deleted-user-id";
+    private const string BearerScheme = "Bearer";
+    private const string AuthorizationText = "Authorization";
+    private const string ForbiddenText = "Forbidden";
+    
     private bool _disposed;
     private WebApplicationFactory<TestStartup>? _factory;
     private HttpClient? _http;
@@ -80,11 +89,11 @@ internal sealed class AuthorizationTests : IDisposable
         _http!.DefaultRequestHeaders.Authorization = null;
 
         // Act
-        HttpResponseMessage response = await _http.GetAsync(new Uri("/api/admin/secret", UriKind.Relative));
+        HttpResponseMessage response = await _http.GetAsync(new Uri(AdminSecretEndpoint, UriKind.Relative));
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
-        await Assert.That(await response.Content.ReadAsStringAsync()).Contains("Authorization");
+        await Assert.That(await response.Content.ReadAsStringAsync()).Contains(AuthorizationText);
     }
 
     [Test]
@@ -93,10 +102,10 @@ internal sealed class AuthorizationTests : IDisposable
         // Arrange
         InitializeHttpClient();
         _http!.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", AdminToken);
+            new AuthenticationHeaderValue(BearerScheme, AdminToken);
 
         // Act
-        HttpResponseMessage response = await _http.GetAsync(new Uri("/api/admin/secret", UriKind.Relative));
+        HttpResponseMessage response = await _http.GetAsync(new Uri(AdminSecretEndpoint, UriKind.Relative));
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
@@ -110,15 +119,15 @@ internal sealed class AuthorizationTests : IDisposable
         // Arrange
         InitializeHttpClient();
         _http!.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", UserToken);
+            new AuthenticationHeaderValue(BearerScheme, UserToken);
 
         // Act
-        HttpResponseMessage response = await _http.GetAsync(new Uri("/api/admin/secret", UriKind.Relative));
+        HttpResponseMessage response = await _http.GetAsync(new Uri(AdminSecretEndpoint, UriKind.Relative));
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
         string content = await response.Content.ReadAsStringAsync();
-        await Assert.That(content).Contains("Forbidden");
+        await Assert.That(content).Contains(ForbiddenText);
     }
 
     [Test]
@@ -127,11 +136,11 @@ internal sealed class AuthorizationTests : IDisposable
         // Arrange
         InitializeHttpClient();
         _http!.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", TenantAToken);
+            new AuthenticationHeaderValue(BearerScheme, TenantAToken);
 
         // Act
         HttpResponseMessage response =
-            await _http.GetAsync(new Uri("/api/tenants/other-tenant/resource", UriKind.Relative));
+            await _http.GetAsync(new Uri(TenantsOtherResourceEndpoint, UriKind.Relative));
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
@@ -145,11 +154,11 @@ internal sealed class AuthorizationTests : IDisposable
         // Arrange
         InitializeHttpClient();
         _http!.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", AdminToken);
+            new AuthenticationHeaderValue(BearerScheme, AdminToken);
         object payload = new { Name = "<script>alert('xss')</script>" };
 
         // Act
-        HttpResponseMessage response = await _http.PostAsJsonAsync(new Uri("/api/users", UriKind.Relative), payload);
+        HttpResponseMessage response = await _http.PostAsJsonAsync(new Uri(UsersEndpoint, UriKind.Relative), payload);
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
@@ -163,10 +172,10 @@ internal sealed class AuthorizationTests : IDisposable
         // Arrange
         InitializeHttpClient();
         _http!.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", AdminToken);
+            new AuthenticationHeaderValue(BearerScheme, AdminToken);
 
         // Act
-        HttpResponseMessage response = await _http.GetAsync(new Uri("/api/users/deleted-user-id", UriKind.Relative));
+        HttpResponseMessage response = await _http.GetAsync(new Uri(DeletedUserEndpoint, UriKind.Relative));
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);

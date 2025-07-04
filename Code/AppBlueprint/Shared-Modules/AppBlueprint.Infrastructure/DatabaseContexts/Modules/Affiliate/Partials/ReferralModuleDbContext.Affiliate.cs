@@ -1,8 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Affiliate;
 
-public class AffiliateModuleDbContext
+public partial class AffiliateModuleDbContext
 {
-    // partial void OnModelCreating_Affiliate(ModelBuilder modelBuilder){
-
-    // }
+    // Placeholder for affiliate module database context configuration
+    // TODO: Implement affiliate-specific entity configurations
+    // This class should contain affiliate-specific DbSet properties and entity configurations
+    // Example: public DbSet<Affiliate> Affiliates { get; set; }
 }

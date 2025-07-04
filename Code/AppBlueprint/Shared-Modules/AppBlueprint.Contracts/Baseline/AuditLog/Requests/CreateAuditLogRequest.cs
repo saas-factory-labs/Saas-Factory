@@ -17,17 +17,17 @@ public class CreateAuditLogRequest
     // create new phone number, update phone number, delete phone number, etc.
     // create new contact person, update contact person, delete contact person, etc.
 
-    public int Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     [DataClassification(GDPRType.IndirectlyIdentifiable)]
-    public string Action { get; set; }
+    public string Action { get; set; } = string.Empty;
 
-    public string Category { get; set; }
+    public string Category { get; set; } = string.Empty;
 
-    [Required] public string NewValue { get; set; }
-    [Required] public string OldValue { get; set; }
+    [Required] public string NewValue { get; set; } = string.Empty;
+    [Required] public string OldValue { get; set; } = string.Empty;
 
-    [Required] public string ModifiedBy { get; set; }
+    [Required] public string ModifiedBy { get; set; } = string.Empty;
     public DateTime ModifiedAt { get; set; }
 
     // public int TenantId { get; set; }

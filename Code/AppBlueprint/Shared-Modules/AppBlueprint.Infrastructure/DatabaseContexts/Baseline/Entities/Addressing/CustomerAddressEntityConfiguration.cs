@@ -10,6 +10,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// </summary>
 public sealed class CustomerAddressEntityConfiguration : IEntityTypeConfiguration<CustomerAddressEntity>
 {
+    private const string CustomerIdProperty = "CustomerId";
+    
     public void Configure(EntityTypeBuilder<CustomerAddressEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -47,7 +49,7 @@ public sealed class CustomerAddressEntityConfiguration : IEntityTypeConfiguratio
         // Configure relationship to Customer
         builder.HasOne(ca => ca.Customer)
             .WithMany() // CustomerEntity doesn't have CustomerAddresses navigation property
-            .HasForeignKey("CustomerId") // Shadow property for foreign key
+            .HasForeignKey(CustomerIdProperty) // Shadow property for foreign key
             .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("FK_CustomerAddresses_Customers_CustomerId");
 
@@ -59,7 +61,7 @@ public sealed class CustomerAddressEntityConfiguration : IEntityTypeConfiguratio
             .HasConstraintName("FK_CustomerAddresses_Addresses_AddressId");
 
         // Create indexes for performance
-        builder.HasIndex("CustomerId")
+        builder.HasIndex(CustomerIdProperty)
             .HasDatabaseName("IX_CustomerAddresses_CustomerId")
             .HasFilter(null);
 
@@ -72,12 +74,12 @@ public sealed class CustomerAddressEntityConfiguration : IEntityTypeConfiguratio
             .HasFilter(null);
 
         // Ensure only one primary address per customer
-        builder.HasIndex("CustomerId", nameof(CustomerAddressEntity.IsPrimary))
+        builder.HasIndex(CustomerIdProperty, nameof(CustomerAddressEntity.IsPrimary))
             .HasDatabaseName("IX_CustomerAddresses_CustomerId_IsPrimary")
             .HasFilter($"{nameof(CustomerAddressEntity.IsPrimary)} = 1");
 
         // Create composite index for common queries
-        builder.HasIndex("CustomerId", nameof(CustomerAddressEntity.CustomerAddressTypeEnum))
+        builder.HasIndex(CustomerIdProperty, nameof(CustomerAddressEntity.CustomerAddressTypeEnum))
             .HasDatabaseName("IX_CustomerAddresses_CustomerId_CustomerAddressTypeEnum")
             .HasFilter(null);
     }

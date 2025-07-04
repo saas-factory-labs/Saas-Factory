@@ -3,8 +3,8 @@ namespace AppBlueprint.Contracts.B2B.Contracts;
 public class TeamInviteRequest
 {
     // Team that the user is invited to
-    public int TeamId { get; set; }
+    public string TeamId { get; set; } = string.Empty;
 
     // User who is invited to the team
-    public int UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
 }
