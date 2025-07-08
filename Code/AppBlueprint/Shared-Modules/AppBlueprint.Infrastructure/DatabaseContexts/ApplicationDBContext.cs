@@ -52,12 +52,14 @@ public class ApplicationDbContext : B2CdbContext
     private static void ConfigureSoftDeleteFilters(ModelBuilder modelBuilder)
     {
         // Configure soft delete filters for entities that implement IEntity
-        foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes()
-                     .Where(et => typeof(IEntity).IsAssignableFrom(et.ClrType)))
-        {
-            var queryFilter = CreateIsNotSoftDeletedFilter(entityType.ClrType);
-            modelBuilder.Entity(entityType.ClrType).HasQueryFilter(queryFilter);
-        }
+        modelBuilder.Model.GetEntityTypes()
+            .Where(et => typeof(IEntity).IsAssignableFrom(et.ClrType))
+            .ToList()
+            .ForEach(entityType =>
+            {
+                var queryFilter = CreateIsNotSoftDeletedFilter(entityType.ClrType);
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(queryFilter);
+            });
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
