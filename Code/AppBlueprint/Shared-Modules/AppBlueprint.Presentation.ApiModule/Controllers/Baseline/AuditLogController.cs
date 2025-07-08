@@ -18,7 +18,6 @@ public class AuditLogController : BaseController
 {
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly IConfiguration _configuration;
-    // Removed IUnitOfWork dependency for repository DI pattern
 
     public AuditLogController(
         IConfiguration configuration,
@@ -27,7 +26,6 @@ public class AuditLogController : BaseController
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _auditLogRepository = auditLogRepository ?? throw new ArgumentNullException(nameof(auditLogRepository));
-        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -75,29 +73,34 @@ public class AuditLogController : BaseController
         return Ok(response);
     }
 
-    // /// <summary>
-    // /// Creates a new audit log.
-    // /// </summary>
-    // /// <param name="auditLogDto">Audit log data transfer object.</param>
-    // /// <returns>Created audit log.</returns>
+    /// <summary>
+    /// Creates a new audit log.
+    /// </summary>
+    /// <param name="auditLogDto">Audit log data transfer object.</param>
+    /// <returns>Created audit log.</returns>
     // [HttpPost("CreateAuditLog")]
-    // [ProducesResponseType(typeof(AuditLogResponseDto), StatusCodes.Status201Created)]
+    // [ProducesResponseType(typeof(AuditLogResponse), StatusCodes.Status201Created)]
     // [MapToApiVersion(ApiVersions.V1)]
-    // public async Task<ActionResult> CreateAuditLog([FromBody] AuditLogRequestDto auditLogDto, CancellationToken cancellationToken)
+    // public async Task<ActionResult> CreateAuditLog([FromBody] CreateAuditLogRequest auditLogDto, CancellationToken cancellationToken)
     // {
     //     if (!ModelState.IsValid) return BadRequest(ModelState);
-    //
-    //     var newAuditLog = new AuditLogRequestDto()
+
+    //     var newAuditLog = new AuditLogEntity
     //     {
     //         Action = auditLogDto.Action,
+    //         TenantId = "",
+    //         UserId = auditLogDto.UserId,
     //     };
-    //     
-    //     await _auditLogRepository.GetByIdAsync(auditLogDto, cancellationToken);
-    //
-    //     await _auditLogRepository.AddAsync(, cancellationToken);
-    //     await _unitOfWork.SaveChangesAsync();
-    //
-    //     return CreatedAtAction(nameof(GetAuditLog), new { id = newAuditLog. }, newAuditLog);
+
+    //     await _auditLogRepository.AddAsync(newAuditLog, cancellationToken);
+
+    //     var response = new AuditLogResponse
+    //     {
+    //         Id = newAuditLog.Id,
+    //         Action = newAuditLog.Action
+    //     };
+
+    //     return CreatedAtAction(nameof(GetAuditLog), new { id = newAuditLog.Id }, response);
     // }
 
     /// <summary>

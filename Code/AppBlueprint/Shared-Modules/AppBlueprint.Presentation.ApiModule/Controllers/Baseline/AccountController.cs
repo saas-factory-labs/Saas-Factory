@@ -4,6 +4,7 @@ using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
@@ -29,29 +30,28 @@ public class AccountController : BaseController
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
-    // private readonly IFeatureManager _featureManager = featureManager ?? throw new ArgumentNullException(nameof(featureManager));
 
-    // [HttpGet(ApiEndpoints.Accounts.GetById)]    
-    // [EndpointSummary("Get Accounts V1")]
-    // [EndpointName("GetAccountsV1")]
-    // [EndpointDescription("Gets all accounts for customers")]
-    // [ProducesResponseType(typeof(IEnumerable<AccountEntity>), StatusCodes.Status200OK)]
-    // [ProducesResponseType(StatusCodes.Status404NotFound)]
-    // [MapToApiVersion(ApiVersions.V1)]
-    // public async Task<ActionResult> GetAccountsV1([FromHeader(Name = "Authorization")] string authorizationHeader, string idOrSlug, CancellationToken cancellationToken)
-    // {
-    //     // IEnumerable<AccountEntity>? accounts = await _accountRepository.GetByIdAsync(, cancellationToken);        
-    //     // if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });
-    //     //
-    //     // // map to dto
-    //     // var accountDtOs = accounts.Select(account => new
-    //     // {
-    //     //     Id = account.AccountId,
-    //     //     Email = account.Email,
-    //     // }).ToList();
-    //     //
-    //     // return Ok(accountDtOs); 
-    // }
+    [HttpGet(ApiEndpoints.Accounts.GetById)]    
+    [EndpointSummary("Get Accounts V1")]
+    [EndpointName("GetAccountsV1")]
+    [EndpointDescription("Gets all accounts for customers")]
+    [ProducesResponseType(typeof(IEnumerable<AccountEntity>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> GetAccountsV1([FromHeader(Name = "Authorization")] string authorizationHeader, string idOrSlug, CancellationToken cancellationToken)
+    {
+        IEnumerable<AccountEntity>? accounts = await _accountRepository.GetByIdAsync(, cancellationToken);        
+        if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });
+        
+        // map to dto
+        var accountDtOs = accounts.Select(account => new
+        {
+            Id = account.Id,
+            Email = account.Email,
+        }).ToList();
+        
+        return Ok(accountDtOs); 
+    }
 
     [HttpGet(ApiEndpoints.Accounts.GetAll)]
     [EndpointSummary("Get Accounts V1")]

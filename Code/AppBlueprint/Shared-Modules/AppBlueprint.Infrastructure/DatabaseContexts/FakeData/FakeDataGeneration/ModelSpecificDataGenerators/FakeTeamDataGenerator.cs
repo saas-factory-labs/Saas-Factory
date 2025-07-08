@@ -23,36 +23,10 @@ public class FakeTeamDataGenerator
         fakeTeam.CreatedAt = _faker.Date.Past();
         fakeTeam.Id = PrefixedUlid.Generate("team");
         fakeTeam.Description = _faker.Lorem.Sentence();
-        fakeTeam.IsActive = _faker.Random.Bool();
-        // fakeTeam.OwnerId = _faker.Random.Int(1, 1000);
+        fakeTeam.IsActive = _faker.Random.Bool();        
         fakeTeam.LastUpdatedAt = _faker.Date.Past();
 
         return fakeTeam;
     }
 }
 
-// Method to generate test data object for UserModel
-// public UserModel GenerateUserModelTestData()
-// {
-//     UserModel fakeUser = new UserModel();
-
-//     for (int i = 0; i < 2; i++)
-//     {
-//         fakeUser.Addresses.Add(new AddressModel()
-//         {
-
-//         });
-//     }
-
-// }
-
-// // Add methods for other entity models
-
-// // Method to generate test data objects for all entity models
-// public Dictionary<string, object> GenerateAllTestData()
-// {
-//     Dictionary<string, object> testData = new Dictionary<string, object>();
-//     testData.Add("UserModel", GenerateUserModelTestData());
-//     // Add other entity models
-//     return testData;
-// }

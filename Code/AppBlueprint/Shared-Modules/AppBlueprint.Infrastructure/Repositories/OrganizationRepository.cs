@@ -17,7 +17,8 @@ public class OrganizationRepository : IOrganizationRepository
     public async Task<IEnumerable<OrganizationEntity>> GetAllAsync()
     {
         return await _context.Set<OrganizationEntity>().ToListAsync();
-    }    public async Task<OrganizationEntity> GetByIdAsync(string id)
+    }
+    public async Task<OrganizationEntity> GetByIdAsync(string id)
     {
         return await _context.Set<OrganizationEntity>().FindAsync(id);
     }
@@ -32,7 +33,7 @@ public class OrganizationRepository : IOrganizationRepository
         _context.Set<OrganizationEntity>().Update(organization);
     }
 
-    public void Delete(int id)
+    public void Delete(string id)
     {
         OrganizationEntity? organization = _context.Set<OrganizationEntity>().Find(id);
         if (organization is not null) _context.Set<OrganizationEntity>().Remove(organization);

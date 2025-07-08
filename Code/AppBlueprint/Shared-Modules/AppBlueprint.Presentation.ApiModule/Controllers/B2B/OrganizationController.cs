@@ -9,7 +9,7 @@ using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrganizationEntity = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.OrganizationEntity;
+using OrganizationEntity = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 
@@ -22,7 +22,6 @@ public class OrganizationController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly IOrganizationRepository _organizationRepository;
-    // Removed IUnitOfWork dependency for repository DI pattern
 
     public OrganizationController(
         IConfiguration configuration,
@@ -31,7 +30,6 @@ public class OrganizationController : BaseController
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _organizationRepository = organizationRepository ?? throw new ArgumentNullException(nameof(organizationRepository));
-        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -45,16 +43,15 @@ public class OrganizationController : BaseController
     public async Task<ActionResult<IEnumerable<OrganizationResponse>>> GetOrganizations(
         CancellationToken cancellationToken)
     {
-        // IEnumerable<OrganizationEntity>? organizations = await _organizationRepository.GetAllAsync();
-        // if (!organizations.Any()) return NotFound(new { Message = "No organizations found." });
+        IEnumerable<OrganizationEntity>? organizations = await _organizationRepository.GetAllAsync();
+        if (!organizations.Any()) return NotFound(new { Message = "No organizations found." });
 
-        // IEnumerable<OrganizationResponse>? response = organizations.Select(o => new OrganizationResponse
-        // {
+        IEnumerable<OrganizationResponse>? response = organizations.Select(o => new OrganizationResponse
+        {
 
-        //     Name = o.Name,
-        // });
-        // return Ok(response);
-        return Ok();
+            Name = o.Name,
+        });
+        return Ok(response);
     }
 
     /// <summary>
@@ -68,18 +65,17 @@ public class OrganizationController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult<OrganizationResponse>> GetOrganization(string id, CancellationToken cancellationToken)
     {
-        // OrganizationEntity? org = await _organizationRepository.GetByIdAsync(id);
-        // if (org is null) return NotFound(new { Message = $"Organization with ID {id} not found." });
+        OrganizationEntity? org = await _organizationRepository.GetByIdAsync(id);
+        if (org is null) return NotFound(new { Message = $"Organization with ID {id} not found." });
 
-        // var response = new OrganizationResponse
-        // {
+        var response = new OrganizationResponse
+        {
 
-        //     Name = org.Name,
+            Name = org.Name,
 
-        // };
+        };
 
-        // return Ok(response);
-        return Ok();
+        return Ok(response);        
     }
 
     /// <summary>
@@ -109,7 +105,7 @@ public class OrganizationController : BaseController
             Teams = new List<TeamEntity>()
         };
 
-        // await _organizationRepository.AddAsync(newOrg);
+        await _organizationRepository.AddAsync(newOrg);
         // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return CreatedAtAction(nameof(GetOrganization), new { id = newOrg.Id }, new OrganizationResponse
@@ -129,17 +125,15 @@ public class OrganizationController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> UpdateOrganization(int id, [FromBody] UpdateOrganizationRequest organizationDto,
+    public async Task<ActionResult> UpdateOrganization(string id, [FromBody] UpdateOrganizationRequest organizationDto,
         CancellationToken cancellationToken)
     {
-        // OrganizationEntity? existingOrg = await _organizationRepository.GetByIdAsync(id);
-        // if (existingOrg is null) return NotFound(new { Message = $"Organization with ID {id} not found." });
+        OrganizationEntity? existingOrg = await _organizationRepository.GetByIdAsync(id);
+        if (existingOrg is null) return NotFound(new { Message = $"Organization with ID {id} not found." });
 
-        // existingOrg.Name = organizationDto.Name;
+        existingOrg.Name = organizationDto.Name;
 
-        // // _organizationRepository.Update(existingOrg);
-        // await _unitOfWork.SaveChangesAsync();
-
+         _organizationRepository.Update(existingOrg);
         return NoContent();
     }
 
@@ -154,11 +148,10 @@ public class OrganizationController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult> DeleteOrganization(string id, CancellationToken cancellationToken)
     {
-        // OrganizationEntity? existingOrg = await _organizationRepository.GetByIdAsync(id);
-        // if (existingOrg is null) return NotFound(new { Message = $"Organization with ID {id} not found." });
+        OrganizationEntity? existingOrg = await _organizationRepository.GetByIdAsync(id);
+        if (existingOrg is null) return NotFound(new { Message = $"Organization with ID {id} not found." });
 
-        // _organizationRepository.Delete(existingOrg.Id);
-        // await _unitOfWork.SaveChangesAsync();
+        _organizationRepository.Delete(id);
 
         return NoContent();
     }

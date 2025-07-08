@@ -4,10 +4,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-// using AppBlueprint.Infrastructure.DatabaseContexts;
-
 namespace AppBlueprint.Infrastructure.Repositories;
-
 public class AccountRepository : IAccountRepository
 {
     private readonly ApplicationDbContext _context;
@@ -21,8 +18,10 @@ public class AccountRepository : IAccountRepository
     {
         List<AccountEntity>? accounts = await _context.Accounts.ToListAsync(cancellationToken);
         return accounts;
-    }    public async Task<AccountEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
-    {        return await _context.Accounts.FindAsync(id, cancellationToken) ?? new AccountEntity
+    }
+    public async Task<AccountEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
+    {
+        return await _context.Accounts.FindAsync(id, cancellationToken) ?? new AccountEntity
         {
             Name = "Not Found",
             IsActive = false,
@@ -31,8 +30,10 @@ public class AccountRepository : IAccountRepository
             TenantId = "not-found",
             Owner = CreateNotFoundUserEntity()
         };
-    }    public async Task<AccountEntity> GetBySlugAsync(string slug, CancellationToken cancellationToken)
-    {        return await _context.Accounts.FindAsync(slug, cancellationToken) ?? new AccountEntity
+    }
+    public async Task<AccountEntity> GetBySlugAsync(string slug, CancellationToken cancellationToken)
+    {
+        return await _context.Accounts.FindAsync(slug, cancellationToken) ?? new AccountEntity
         {
             Name = "Not Found",
             IsActive = false,
@@ -63,21 +64,22 @@ public class AccountRepository : IAccountRepository
             _context.Accounts.Remove(account);
             await _context.SaveChangesAsync(cancellationToken);
         }
-    }    private static UserEntity CreateNotFoundUserEntity()
+    }
+    private static UserEntity CreateNotFoundUserEntity()
     {
         // Create a dummy user first to satisfy ProfileEntity requirement
         var tempUser = new UserEntity
         {
             FirstName = "temp",
-            LastName = "temp", 
+            LastName = "temp",
             Email = "temp",
             UserName = "temp",
             Profile = new ProfileEntity { User = null! } // Temporarily use null!
         };
-        
+
         // Now create the actual profile with the real user reference
         var profile = new ProfileEntity { User = tempUser };
-        
+
         // Update the user with correct values and profile
         tempUser.FirstName = "Not Found";
         tempUser.LastName = "Not Found";
@@ -86,7 +88,7 @@ public class AccountRepository : IAccountRepository
         tempUser.IsActive = false;
         tempUser.CreatedAt = DateTime.Now;
         tempUser.Profile = profile;
-        
+
         return tempUser;
     }
 }

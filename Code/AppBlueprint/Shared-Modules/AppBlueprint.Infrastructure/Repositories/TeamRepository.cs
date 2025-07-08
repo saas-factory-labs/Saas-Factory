@@ -35,6 +35,6 @@ public class TeamRepository : ITeamRepository
     }    public void Delete(string id)
     {
         TeamEntity? team = _context.Set<TeamEntity>().Find(id);
-        if (team is not null) _context.Set<TeamEntity>().Remove(team);
+        if (team is not null) _context.Set<TeamEntity>().Remove(team);                
     }
 }

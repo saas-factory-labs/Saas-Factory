@@ -18,7 +18,6 @@ public class TeamController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly ITeamRepository _teamRepository;
-    // Removed IUnitOfWork dependency for repository DI pattern
 
     public TeamController(
         IConfiguration configuration,
@@ -27,7 +26,6 @@ public class TeamController : BaseController
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _teamRepository = teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
-        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -43,22 +41,20 @@ public class TeamController : BaseController
         IEnumerable<TeamEntity> teams = await _teamRepository.GetAllAsync();
         if (!teams.Any()) return NotFound(new { Message = "No teams found." });
 
-        // var response = teams.Select(team => new TeamResponse
-        // {
-        //     Id = team.Id,
-        //     Name = team.Name,
-        //     Description = team.Description,
-        //     Members = team.TeamMembers?.Select(m => new TeamMemberResponse
-        //     {
-        //         Id = m.Id,
-        //         UserId = m.UserId,
-        //         Role = m.Role,
-        //         JoinedAt = m.JoinedAt
-        //     }).ToList()
-        // });
+        var response = teams.Select(team => new TeamResponse(
+            team.TeamMembers?.Select(m => new TeamMemberResponse
+            {
+                Id = m.Id,
+                UserId = m.UserId
+            }).ToList()
+        )
+        {
+            Id = team.Id,
+            Name = team.Name,
+            Description = team.Description
+        });
 
-        // return Ok(response);
-        return Ok();
+        return Ok(response);
     }
 
     /// <summary>
@@ -165,7 +161,6 @@ public class TeamController : BaseController
         if (existingTeam is null) return NotFound(new { Message = $"Team with ID {id} not found." });
 
         _teamRepository.Delete(existingTeam.Id);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }

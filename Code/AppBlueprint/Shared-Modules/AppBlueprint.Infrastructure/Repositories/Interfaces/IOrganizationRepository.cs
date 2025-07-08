@@ -8,5 +8,5 @@ public interface IOrganizationRepository
     Task<OrganizationEntity> GetByIdAsync(string id);
     Task AddAsync(OrganizationEntity organization);
     void Update(OrganizationEntity organization);
-    void Delete(int id);
+    void Delete(string id);
 }

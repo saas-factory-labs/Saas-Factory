@@ -34,11 +34,13 @@ public class ApplicationDbContext : B2CdbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        ArgumentNullException.ThrowIfNull(modelBuilder);
         base.OnModelCreating(modelBuilder);
 
-        // Mark properties with [GDPRType] as sensitive
+        // Mark properties with [GDPRType] as sensitive and configure soft delete filters
         foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
         {
+            // Mark GDPR sensitive properties
             foreach (IMutableProperty property in entityType.GetProperties())
             {
                 var sensitiveDataAttribute = property.PropertyInfo?
@@ -51,30 +53,17 @@ public class ApplicationDbContext : B2CdbContext
                 }
             }
 
+            // Configure soft delete filters for entities that implement IEntity
             if (typeof(IEntity).IsAssignableFrom(entityType.ClrType))
             {
-                var method = typeof(ApplicationDbContext)
-                    .GetMethod(nameof(SetSoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static)
-                    ?.MakeGenericMethod(entityType.ClrType);
-
-                method?.Invoke(null, new object[] { modelBuilder });
-            }
-        }
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        {
-            if (typeof(IEntity).IsAssignableFrom(entityType.ClrType))
-            {
-                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(
-                    CreateIsNotSoftDeletedFilter(entityType.ClrType));
+                // Use direct lambda expression instead of reflection for better security and performance
+                var queryFilter = CreateIsNotSoftDeletedFilter(entityType.ClrType);
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(queryFilter);
             }
         }
         // Optional: add multi-tenancy query filters here when ready
     }
 
-    private static void SetSoftDeleteFilter<T>(ModelBuilder modelBuilder) where T : class, IEntity
-    {
-        modelBuilder.Entity<T>().HasQueryFilter(e => !e.IsSoftDeleted);
-    }
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;

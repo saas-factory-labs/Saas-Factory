@@ -28,11 +28,5 @@ public sealed class PhoneNumberEntityConfiguration : IEntityTypeConfiguration<Ph
 
         builder.Property(e => e.IsPrimary)
             .IsRequired();
-
-        // Define relationships here if needed
-        // Example:
-        // builder.HasOne(e => e.ContactPerson)
-        //     .WithMany(cp => cp.PhoneNumbers)
-        //     .HasForeignKey(e => e.ContactPersonId);
     }
 }

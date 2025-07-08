@@ -22,26 +22,10 @@ public class FakeUserDataGenerator
             LastName = _faker.Person.LastName,
             Email = _faker.Person.Email,
             UserName = _faker.Person.UserName,
-            Profile = new ProfileEntity()
+            Profile = new ProfileEntity(),
+            LastLogin = _faker.Date.Past(),
+            IsActive = _faker.Random.Bool()
         };
-
-
-        //fakeUser.Avatar = _faker.Internet.Avatar();
-        //fakeUser.UserName = _faker.Person.UserName;
-        //fakeUser.Slug = _faker.Person.UserName;
-        //fakeUser.CreatedAt = _faker.Date.Past();
-        //fakeUser.LastLogin = _faker.Date.Past();
-        //fakeUser.Id = _faker.Random.Int(1, 1000);
-        //fakeUser.LastLogin = _faker.Date.Past();
-        //fakeUser.IsActive = _faker.Random.Bool();
-        //fakeUser.Language = _faker.Random.String2(2);
-
-        // mising person 
-        // missing addresses
-        // missing emails
-        // missing phones
-        // missing verifications
-
         return fakeUser;
     }
 }
