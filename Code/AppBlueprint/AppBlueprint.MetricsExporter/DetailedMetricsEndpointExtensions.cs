@@ -84,8 +84,8 @@ public static class MetricsEndpointExtensions
     /// <returns>The application builder for chaining.</returns>
     public static IApplicationBuilder UseMetricsExporter(this IApplicationBuilder app)
     {
-        // Get all registered meters from the application services
-        var meterProvider = app.ApplicationServices.GetService<MeterProvider>();
+        // TODO: Implement metrics exporter functionality
+        // var meterProvider = app.ApplicationServices.GetService<MeterProvider>();
         
         return app;
     }

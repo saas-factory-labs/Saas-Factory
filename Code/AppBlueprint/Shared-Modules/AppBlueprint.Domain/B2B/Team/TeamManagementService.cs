@@ -2,8 +2,8 @@ namespace AppBlueprint.Domain.B2B.Team;
 
 public sealed class TeamManagementService
 {
-    // Placeholder for team management functionality
-    // TODO: Implement team creation, member management, and permission methods
+    private TeamManagementService() { }
+    
     
     public static Task<Guid> CreateTeamAsync(string teamName, Guid tenantId, Guid ownerId)
     {

@@ -152,7 +152,8 @@ public class UserServiceInfrastructure
     }
     public async Task<bool> VerifyEmailAsync(string userId, string token, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(userId)
+        // Verify user exists
+        _ = await _userRepository.GetByIdAsync(userId)
             ?? throw new InvalidOperationException(UserNotFoundMessage);
 
         // Find the verification record

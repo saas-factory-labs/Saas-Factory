@@ -60,7 +60,7 @@ public class AccountController : BaseController
     {
         // call accountService instead of repository here
         IEnumerable<AccountEntity>? accounts = await _accountRepository.GetAllAsync(cancellationToken);
-        if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });        // ContractMapping.MapToAccountResponse();
+        if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });
 
         var accountDtOs = accounts.Select(account => new
         {

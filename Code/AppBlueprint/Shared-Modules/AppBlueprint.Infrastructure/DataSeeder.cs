@@ -97,19 +97,21 @@ public class DataSeeder(ApplicationDbContext dbContext)
     //     Console.WriteLine("Teams seeded.");
     // }
 
-    private async Task SeedUsersAsync(CancellationToken cancellationToken)
+    private static Task SeedUsersAsync(CancellationToken cancellationToken)
     {
-        Faker<UserEntity>? faker = new Faker<UserEntity>()
-            .RuleFor(u => u.UserName, f => f.Internet.UserName())
-            .RuleFor(u => u.Email, f => f.Internet.Email())
-            .RuleFor(u => u.FirstName, f => f.Name.FirstName())
-            .RuleFor(u => u.LastName, f => f.Name.LastName())
-            .RuleFor(u => u.IsActive, f => f.Random.Bool())
-            .RuleFor(u => u.CreatedAt, f => f.Date.Past())
-            .RuleFor(u => u.LastLogin, f => f.Date.Past())
-            // .RuleFor(u => u.EmailAddresses, f => new List<EmailAddressEntity> { dbContext.EmailAddresses.FirstOrDefault() })
-            .RuleFor(u => u.Addresses, f => dbContext.Addresses.ToList())
-            .RuleFor(u => u.Roles, f => new List<RoleEntity> { dbContext.Roles.FirstOrDefault() });
+        // TODO: Implement user seeding
+        // var faker = new Faker<UserEntity>()
+        //     .RuleFor(u => u.UserName, f => f.Internet.UserName())
+        //     .RuleFor(u => u.Email, f => f.Internet.Email())
+        //     .RuleFor(u => u.FirstName, f => f.Name.FirstName())
+        //     .RuleFor(u => u.LastName, f => f.Name.LastName())
+        //     .RuleFor(u => u.IsActive, f => f.Random.Bool())
+        //     .RuleFor(u => u.CreatedAt, f => f.Date.Past())
+        //     .RuleFor(u => u.LastLogin, f => f.Date.Past())
+        //     .RuleFor(u => u.Addresses, f => dbContext.Addresses.ToList())
+        //     .RuleFor(u => u.Roles, f => new List<RoleEntity> { dbContext.Roles.FirstOrDefault() });
+        
+        return Task.CompletedTask;
     }
 
     private async Task SeedLanguagesAsync(CancellationToken cancellationToken)

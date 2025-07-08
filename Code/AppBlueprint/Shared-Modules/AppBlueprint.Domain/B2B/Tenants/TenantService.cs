@@ -2,8 +2,8 @@ namespace AppBlueprint.Domain.B2B.Tenants;
 
 public sealed class TenantService
 {
-    // Placeholder for tenant management functionality
-    // TODO: Implement tenant creation, configuration, and management methods
+    private TenantService() { }
+    
     
     public static Task<Guid> CreateTenantAsync(string tenantName, string adminEmail)
     {

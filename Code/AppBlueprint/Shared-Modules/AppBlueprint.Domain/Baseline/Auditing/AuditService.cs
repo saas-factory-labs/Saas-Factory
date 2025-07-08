@@ -1,23 +1,22 @@
 namespace AppBlueprint.Domain.Baseline.Auditing;
 
-public class AuditService
+public sealed class AuditService
 {
-    // Placeholder for auditing functionality
-    // TODO: Implement audit trail methods for tracking data changes
+    private AuditService() { }
     
-    public Task LogChangeAsync(string entityName, Guid entityId, string action, object oldValue, object newValue, string userId)
+    public static Task LogChangeAsync(string entityName, Guid entityId, string action, object oldValue, object newValue, string userId)
     {
         // Implementation pending
         throw new NotImplementedException();
     }
     
-    public Task<IEnumerable<object>> GetAuditTrailAsync(string entityName, Guid entityId)
+    public static Task<IEnumerable<object>> GetAuditTrailAsync(string entityName, Guid entityId)
     {
         // Implementation pending
         throw new NotImplementedException();
     }
     
-    public Task<IEnumerable<object>> GetUserActivityAsync(string userId, DateTime fromDate, DateTime toDate)
+    public static Task<IEnumerable<object>> GetUserActivityAsync(string userId, DateTime fromDate, DateTime toDate)
     {
         // Implementation pending
         throw new NotImplementedException();

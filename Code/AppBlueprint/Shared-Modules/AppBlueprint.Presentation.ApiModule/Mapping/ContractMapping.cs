@@ -39,66 +39,6 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping
                 Email = account.Email
             };
         }
-
-        internal static class Accounts
-        {
-            // Placeholder for account-specific mapping methods
-            // TODO: Add account mapping logic here if needed
-        }
-
-        internal static class ContactPersons
-        {
-            // Placeholder for contact person-specific mapping methods
-            // TODO: Add contact person mapping logic here if needed
-        }
-
-        internal static class DataExports
-        {
-            // Placeholder for data export-specific mapping methods
-            // TODO: Add data export mapping logic here if needed
-        }
-
-        internal static class Files
-        {
-            // Placeholder for file-specific mapping methods
-            // TODO: Add file mapping logic here if needed
-        }
-
-        internal static class AuditLogs
-        {
-            // Placeholder for audit log-specific mapping methods
-            // TODO: Add audit log mapping logic here if needed
-        }
-
-        internal static class Notifications
-        {
-            // Placeholder for notification-specific mapping methods
-            // TODO: Add notification mapping logic here if needed
-        }
-
-        internal static class Profiles
-        {
-            // Placeholder for profile-specific mapping methods
-            // TODO: Add profile mapping logic here if needed
-        }
-
-        internal static class Roles
-        {
-            // Placeholder for role-specific mapping methods
-            // TODO: Add role mapping logic here if needed
-        }
-
-        internal static class Integrations
-        {
-            // Placeholder for integration-specific mapping methods
-            // TODO: Add integration mapping logic here if needed
-        }
-
-        internal static class Organizations
-        {
-            // Placeholder for organization-specific mapping methods
-            // TODO: Add organization mapping logic here if needed
-        }
     }
 }
 

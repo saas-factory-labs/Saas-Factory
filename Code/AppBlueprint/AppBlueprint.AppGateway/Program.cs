@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.RateLimiting;
 
 // Configure telemetry - must come before CreateBuilder and AddServiceDefaults
 // Get the OTLP endpoint from environment or use Aspire default
-string? dashboardEndpoint = "https://localhost:21250"; //Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
+string? dashboardEndpoint = "https://localhost:21250";
 string? otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
 string otlpDefaultEndpoint = "http://localhost:18889";
 
@@ -46,7 +46,7 @@ builder.Host.UseDefaultServiceProvider(options =>
 });
 
 // Add OpenAPI/Swagger support for API documentation.
-// builder.Services.AddOpenApi();
+builder.Services.AddOpenApi();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();
@@ -77,33 +77,6 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
 // Add global rate limiter configuration.
 builder.Services.AddRateLimiter(RateLimiterConfig.Configure);
 
-
-/*
- * TODO: implement these features:
- *  Load balancing
-    Response caching
-    Monitoring
-    tjek platform platform for yarp proxy setup
-    limit the downstream microservices to only accept traffic from the api gateway for security purposes
- *
- */
-
-// TODO: implement loading proxy routes from remote config like or implement such that routes are automatically sourced directly from the api and frontend projects by calling a minimal api endpoint on the frontend and api service to always keep in sync: 
-/*
- * Alternative	Cloud / Self-Hosted	Real-Time Updates	Good for Large Scale	Complexity
-    Azure App Config	Cloud	✔	✔	🔹🔹
-    Consul	Both	✔	✔✔	🔹🔹🔹
-    etcd	Both	✔	✔✔✔	🔹🔹🔹
-    AWS AppConfig	Cloud	✔	✔	🔹🔹
-    Google Runtime Config	Cloud	✔	✔	🔹🔹
-    PostgreSQL/SQL	Self-Hosted	❌	✔	🔹
-    Redis	Both	✔✔	✔✔	🔹🔹
-    ZooKeeper	Self-Hosted	✔	✔✔✔	🔹🔹🔹
-    GitOps (Git)	Both	✔ (Webhook)	✔	🔹🔹
-    File-Based (S3, Blob)	Both	❌ (Polling)	✔	🔹
- */
-
-
 // Configure Reverse Proxy from appsettings configuration.
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
@@ -114,11 +87,10 @@ WebApplication app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // Map OpenAPI endpoints in development mode.
-    // app.MapOpenApi();
+    app.MapOpenApi();
 }
 
-// app.UseHttpsRedirection();
+
 
 // Health check endpoint for monitoring.
 app.MapGet("/health", () => Results.Ok("Healthy"));

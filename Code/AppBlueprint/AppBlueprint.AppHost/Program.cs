@@ -11,8 +11,7 @@ var postgresServer = builder.AddPostgres("postgres-server")
     .WithDataVolume("appblueprint-postgres-data");
 postgresServer.AddDatabase("appblueprintdb");
 
-var AppGw = builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw");
-
+builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw");
 
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
     .WithReference(postgresServer)
