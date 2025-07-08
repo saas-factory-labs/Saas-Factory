@@ -16,7 +16,6 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Produces("application/json")]
 public class DataExportController : BaseController
 {
-    private readonly IConfiguration _configuration;
     private readonly IDataExportRepository _dataExportRepository;
 
     public DataExportController(
@@ -24,9 +23,7 @@ public class DataExportController : BaseController
         IDataExportRepository dataExportRepository)
         : base(configuration)
     {
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _dataExportRepository = dataExportRepository ?? throw new ArgumentNullException(nameof(dataExportRepository));
-        // Removed IUnitOfWork assignment
     }
 
     /// <summary>
@@ -44,9 +41,10 @@ public class DataExportController : BaseController
 
         IEnumerable<DataExportResponse>? response = dataExports.Select(dataExport => new DataExportResponse
         {
-            // Id = dataExport.Id,
-            // Name = dataExport.FileName,
-            // FileSize = dataExports.FileSize
+            DownloadUrl = string.Empty, // TODO: Generate actual download URL
+            FileName = dataExport.FileName,
+            FileSize = dataExport.FileSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            CreatedAt = dataExport.CreatedAt
         });
 
         return Ok(response);
@@ -57,8 +55,8 @@ public class DataExportController : BaseController
     /// </summary>
     /// <param name="id">Data export ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Data export</returns>    
-    /// [HttpGet(ApiEndpoints.DataExports.GetById)]
+    /// <returns>Data export</returns>
+    [HttpGet(ApiEndpoints.DataExports.GetById)]
     [ProducesResponseType(typeof(DataExportResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
@@ -69,9 +67,10 @@ public class DataExportController : BaseController
 
         var response = new DataExportResponse
         {
-            // i = dataExport.Id,
-            // Name = dataExport.Name,
-            // Type = dataExport.Type
+            DownloadUrl = string.Empty, // TODO: Generate actual download URL
+            FileName = dataExport.FileName,
+            FileSize = dataExport.FileSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            CreatedAt = dataExport.CreatedAt
         };
 
         return Ok(response);
@@ -120,10 +119,8 @@ public class DataExportController : BaseController
         if (existingDataExport is null) return NotFound(new { Message = $"Data export with ID {id} not found." });
 
         existingDataExport.FileName = dataExportDto.FileName;
-        // existingDataExport. = dataExportDto.Type;
 
         await _dataExportRepository.UpdateAsync(existingDataExport, cancellationToken);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
     }
@@ -131,7 +128,8 @@ public class DataExportController : BaseController
     /// <summary>
     ///     Deletes a data export by ID.
     /// </summary>
-    /// <param name="id">Data export ID.</param>    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <param name="id">Data export ID.</param>
+    /// /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns>No content.</returns>
     [HttpDelete(ApiEndpoints.DataExports.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
