@@ -24,12 +24,9 @@ public class CustomerEntity : BaseEntity
 
     // if customer is a company
 
-    //public string Name { get; set; }
-    //public string Email { get; set; }
     // 1, 2, 3, 4 ... 10
     public int CurrentlyAtOnboardingFlowStep { get; set; }
 
-    //public string TenantId { get; set; }
     public List<TenantEntity> Tenants { get; set; }
 
     public string? Type { get; set; } // Personal/Company

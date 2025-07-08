@@ -59,7 +59,8 @@ public class OrganizationController : BaseController
     /// </summary>
     /// <param name="id">Organization ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Organization details</returns>    [HttpGet(ApiEndpoints.Organizations.GetById)]
+    /// <returns>Organization details</returns>    
+    [HttpGet(ApiEndpoints.Organizations.GetById)]
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]

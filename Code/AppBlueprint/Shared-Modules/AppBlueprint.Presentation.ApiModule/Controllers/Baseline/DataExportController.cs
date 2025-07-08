@@ -57,7 +57,8 @@ public class DataExportController : BaseController
     /// </summary>
     /// <param name="id">Data export ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Data export</returns>    [HttpGet(ApiEndpoints.DataExports.GetById)]
+    /// <returns>Data export</returns>    
+    /// [HttpGet(ApiEndpoints.DataExports.GetById)]
     [ProducesResponseType(typeof(DataExportResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]

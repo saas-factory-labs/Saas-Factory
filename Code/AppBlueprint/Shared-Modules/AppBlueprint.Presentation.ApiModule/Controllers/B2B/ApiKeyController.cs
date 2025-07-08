@@ -142,6 +142,7 @@ public class ApiKeyController : BaseController
     /// <param name="id">API key ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns>No content.</returns>    [HttpDelete(ApiEndpoints.ApiKeys.DeleteById)]
+    [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]

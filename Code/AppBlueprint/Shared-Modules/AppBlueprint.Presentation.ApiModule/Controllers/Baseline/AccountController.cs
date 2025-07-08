@@ -17,40 +17,35 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 public class AccountController : BaseController
 {
     private readonly IAccountRepository _accountRepository;
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<AccountController> _logger;
 
     public AccountController(
-        ILogger<AccountController> logger,
         IAccountRepository accountRepository,
         IConfiguration configuration)
         : base(configuration)
     {
         _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [HttpGet(ApiEndpoints.Accounts.GetById)]    
-    [EndpointSummary("Get Accounts V1")]
-    [EndpointName("GetAccountsV1")]
-    [EndpointDescription("Gets all accounts for customers")]
-    [ProducesResponseType(typeof(IEnumerable<AccountEntity>), StatusCodes.Status200OK)]
+    [EndpointSummary("Get Account by ID V1")]
+    [EndpointName("GetAccountByIdV1")]
+    [EndpointDescription("Gets a single account by ID or slug")]
+    [ProducesResponseType(typeof(AccountEntity), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
-    public async Task<ActionResult> GetAccountsV1([FromHeader(Name = "Authorization")] string authorizationHeader, string idOrSlug, CancellationToken cancellationToken)
+    public async Task<ActionResult> GetAccountByIdV1([FromHeader(Name = "Authorization")] string authorizationHeader, string idOrSlug, CancellationToken cancellationToken)
     {
-        IEnumerable<AccountEntity>? accounts = await _accountRepository.GetByIdAsync(, cancellationToken);        
-        if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });
+        AccountEntity? account = await _accountRepository.GetByIdAsync(idOrSlug, cancellationToken);        
+        if (account is null) return NotFound(new { Message = "No account found." });
         
         // map to dto
-        var accountDtOs = accounts.Select(account => new
+        var accountDto = new
         {
             Id = account.Id,
             Email = account.Email,
-        }).ToList();
+        };
         
-        return Ok(accountDtOs); 
+        return Ok(accountDto); 
     }
 
     [HttpGet(ApiEndpoints.Accounts.GetAll)]
@@ -106,7 +101,8 @@ public class AccountController : BaseController
     /// <returns>Created account.</returns>
     /// POST: /account
     [HttpPost(ApiEndpoints.Accounts.Create)]
-    [ProducesResponseType(typeof(IEnumerable<AccountEntity>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(AccountEntity), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> CreateAccount([FromBody] AccountEntity account, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(account);
@@ -115,7 +111,7 @@ public class AccountController : BaseController
         await _accountRepository.AddAsync(account, cancellationToken);
         // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
-        return CreatedAtAction(nameof(GetAccountsV1), new { id = account.Id }, account);
+        return CreatedAtAction(nameof(GetAccountByIdV1), new { id = account.Id }, account);
     }
 
     /// <summary>
@@ -128,9 +124,10 @@ public class AccountController : BaseController
     /// PUT: /account/1
     [Authorize]
     [HttpPut(ApiEndpoints.Accounts.UpdateById)]
-    [ProducesResponseType(typeof(IEnumerable<AccountEntity>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AccountEntity>> UpdateAccount(int id, [FromBody] AccountEntity account,
+    public async Task<ActionResult> UpdateAccount(string id, [FromBody] AccountEntity account,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -143,12 +140,14 @@ public class AccountController : BaseController
 
     /// <summary>
     ///     Deletes an account by ID.
-    /// </summary>    /// <param name="id">Account ID.</param>
+    /// </summary>
+    /// <param name="id">Account ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns>No content.</returns>
     /// DELETE: /account/1
     [HttpDelete(ApiEndpoints.Accounts.DeleteById)]
-    [ProducesResponseType(typeof(IEnumerable<AccountEntity>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeleteAccount(string id, CancellationToken cancellationToken)
     {

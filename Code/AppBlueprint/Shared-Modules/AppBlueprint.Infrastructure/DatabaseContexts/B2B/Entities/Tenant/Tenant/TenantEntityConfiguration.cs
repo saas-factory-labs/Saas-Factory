@@ -97,6 +97,5 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantE
             .HasDatabaseName("IX_Tenants_IsSoftDeleted");
 
         // TODO: Update this query filter to use proper string-based tenant filtering
-        // builder.HasQueryFilter(x => x.Id == "tenant_01ARZ3NDEKTSV4RRFFQ69G5FAV");
     }
 }

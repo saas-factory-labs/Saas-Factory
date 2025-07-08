@@ -62,7 +62,8 @@ public class TeamController : BaseController
     /// </summary>
     /// <param name="id">Team ID.</param>
     /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Team details</returns>    [HttpGet(ApiEndpoints.Teams.GetById)]
+    /// <returns>Team details</returns>    
+    /// [HttpGet(ApiEndpoints.Teams.GetById)]
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
