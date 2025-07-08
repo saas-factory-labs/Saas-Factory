@@ -6,7 +6,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInv
 
 // Represents an invitation to join a team
 public class TeamInviteEntity : BaseEntity, ITenantScoped
-{    public TeamInviteEntity()
+{
+    public TeamInviteEntity()
     {
         Id = PrefixedUlid.Generate("team-invite");
         TeamId = string.Empty;
@@ -21,7 +22,7 @@ public class TeamInviteEntity : BaseEntity, ITenantScoped
     // User who is invited
     public string OwnerId { get; set; }
     public UserEntity? Owner { get; set; }
-    
+
     public DateTime ExpireAt { get; set; }
     public bool IsActive { get; set; }
 

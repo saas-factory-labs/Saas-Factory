@@ -6,7 +6,8 @@ using AppBlueprint.SharedKernel;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 
 public class ContactPersonEntity : BaseEntity, ITenantScoped
-{    public ContactPersonEntity()
+{
+    public ContactPersonEntity()
     {
         Id = PrefixedUlid.Generate("contact-person");
         FirstName = string.Empty;
@@ -20,14 +21,14 @@ public class ContactPersonEntity : BaseEntity, ITenantScoped
 
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    
+
     // ITenantScoped implementation
     public string TenantId { get; set; }
     public TenantEntity? Tenant { get; set; }
-    
+
     public string CustomerId { get; set; }
     public CustomerEntity? Customer { get; set; }
-    
+
     public List<EmailAddressEntity> EmailAddresses { get; set; }
     public List<AddressEntity> Addresses { get; set; }
     public List<PhoneNumberEntity> PhoneNumbers { get; set; }

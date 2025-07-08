@@ -54,6 +54,6 @@ public sealed class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserR
         // Indexes for performance
         builder.HasIndex("UserId");
         builder.HasIndex(ur => ur.RoleId);
-        builder.HasIndex(new [] { "UserId", "RoleId" }).IsUnique(); // Prevent duplicate role assignments
+        builder.HasIndex(new[] { "UserId", "RoleId" }).IsUnique(); // Prevent duplicate role assignments
     }
 }

@@ -12,7 +12,8 @@ using EmailVerificationEntity =
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 
 public class UserEntity : BaseEntity, ITenantScoped
-{    public UserEntity()
+{
+    public UserEntity()
     {
         Id = PrefixedUlid.Generate("user");
         EmailAddresses = new List<EmailAddressEntity>();

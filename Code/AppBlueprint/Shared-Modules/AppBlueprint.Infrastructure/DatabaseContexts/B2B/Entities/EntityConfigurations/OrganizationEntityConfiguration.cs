@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.EntityConfigurations;
 
 public sealed class OrganizationEntityConfiguration : IEntityTypeConfiguration<OrganizationEntity>
-{    public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
+{
+    public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 

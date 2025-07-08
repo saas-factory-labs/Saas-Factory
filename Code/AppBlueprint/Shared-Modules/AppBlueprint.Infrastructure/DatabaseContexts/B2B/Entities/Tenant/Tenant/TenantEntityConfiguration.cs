@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 
 public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantEntity>
-{    public void Configure(EntityTypeBuilder<TenantEntity> builder)
+{
+    public void Configure(EntityTypeBuilder<TenantEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        
+
         // Table and Primary Key
         builder.ToTable("Tenants");
         builder.HasKey(e => e.Id);
@@ -39,9 +40,9 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantE
             .IsRequired();
 
         builder.Property(e => e.Type)
-            .HasMaxLength(50);        builder.Property(e => e.VatNumber)
+            .HasMaxLength(50); builder.Property(e => e.VatNumber)
             .HasMaxLength(50);
-            
+
         builder.Property(e => e.Country)
             .HasMaxLength(100);
 
@@ -49,10 +50,10 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantE
         builder.Property(e => e.CreatedAt)
             .IsRequired();
 
-        builder.Property(e => e.LastUpdatedAt);        builder.Property(e => e.IsSoftDeleted)
+        builder.Property(e => e.LastUpdatedAt); builder.Property(e => e.IsSoftDeleted)
             .IsRequired()
             .HasDefaultValue(false);
-            
+
         // Relationships with proper foreign key constraints
         builder.HasMany(e => e.ContactPersons)
             .WithOne()
@@ -90,7 +91,7 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantE
             .HasDatabaseName("IX_Tenants_IsActive");
 
         builder.HasIndex(e => e.VatNumber)
-            .HasDatabaseName("IX_Tenants_VatNumber");        builder.HasIndex(e => e.Country)
+            .HasDatabaseName("IX_Tenants_VatNumber"); builder.HasIndex(e => e.Country)
             .HasDatabaseName("IX_Tenants_Country");        // Add index for soft delete filtering
         builder.HasIndex(e => e.IsSoftDeleted)
             .HasDatabaseName("IX_Tenants_IsSoftDeleted");

@@ -15,7 +15,7 @@ public static class MigrationExtensions
     private static readonly ILogger Logger = LoggerFactory
         .Create(builder => builder.AddConsole())
         .CreateLogger(typeof(MigrationExtensions));
-        
+
     public static async Task ApplyMigrationsAsync(this IApplicationBuilder app)
     {
         using IServiceScope scope = app.ApplicationServices.CreateScope();
@@ -27,9 +27,9 @@ public static class MigrationExtensions
         {
             // Get connection string for logging
             var connectionString = dbContext.Database.GetConnectionString();
-            Logger.LogInformation("Attempting to apply migrations with connection: {ConnectionString}", 
+            Logger.LogInformation("Attempting to apply migrations with connection: {ConnectionString}",
                 connectionString?.Replace(";Password=", ";Password=*****"));
-            
+
             // Ensure we can connect to the database
             for (int attempt = 1; attempt <= 3; attempt++)
             {

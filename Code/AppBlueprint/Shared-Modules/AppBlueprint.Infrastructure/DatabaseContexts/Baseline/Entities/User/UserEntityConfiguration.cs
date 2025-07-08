@@ -11,15 +11,15 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<UserEntit
         ArgumentNullException.ThrowIfNull(builder);
 
         builder.ToTable("Users");
-        
+
         // Primary key and indexes with standardized naming
         builder.HasKey(u => u.Id);
-        
+
         // Configure ULID ID with proper length for prefixed ULID (prefix + underscore + 26 char ULID)
         builder.Property(u => u.Id)
             .HasMaxLength(40)
             .IsRequired();
-            
+
         builder.HasIndex(u => u.Id)
             .IsUnique()
             .HasDatabaseName("IX_Users_Id");
@@ -31,7 +31,7 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<UserEntit
         builder.HasIndex(u => u.Email)
             .IsUnique()
             .HasDatabaseName("IX_Users_Email");
-            
+
         // Performance index on IsActive for filtering
         builder.HasIndex(u => u.IsActive)
             .HasDatabaseName("IX_Users_IsActive");

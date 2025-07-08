@@ -13,9 +13,9 @@ public sealed class SessionEntity : BaseEntity
 
     [DataClassification(GDPRType.Sensitive)]
     public required string SessionKey { get; set; }
-    
+
     [DataClassification(GDPRType.Sensitive)]
     public required string SessionData { get; set; }
-    
+
     public DateTime ExpireDate { get; set; }
 }

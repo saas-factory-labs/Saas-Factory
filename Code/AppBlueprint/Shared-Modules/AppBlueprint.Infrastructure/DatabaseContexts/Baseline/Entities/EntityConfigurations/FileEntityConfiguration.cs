@@ -39,7 +39,7 @@ public sealed class FileEntityConfiguration : IEntityTypeConfiguration<FileEntit
             .IsRequired();
 
         builder.Property(e => e.CreatedAt)
-            .IsRequired();        builder.Property(e => e.LastUpdatedAt);
+            .IsRequired(); builder.Property(e => e.LastUpdatedAt);
 
         // Performance indexes with standardized naming
         builder.HasIndex(e => e.FileName)

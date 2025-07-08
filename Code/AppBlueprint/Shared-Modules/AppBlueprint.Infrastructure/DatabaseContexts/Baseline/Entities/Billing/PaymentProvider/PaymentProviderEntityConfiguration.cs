@@ -21,7 +21,7 @@ public sealed class PaymentProviderEntityConfiguration : IEntityTypeConfiguratio
         // Table configuration
         builder.ToTable("PaymentProviders");
         builder.HasKey(e => e.Id);
-        
+
         // Primary key configuration
         builder.Property(e => e.Id)
             .ValueGeneratedOnAdd()

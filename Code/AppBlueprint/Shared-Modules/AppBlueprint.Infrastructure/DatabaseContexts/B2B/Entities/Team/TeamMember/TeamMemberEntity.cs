@@ -5,7 +5,8 @@ using AppBlueprint.SharedKernel;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
 
 public class TeamMemberEntity : BaseEntity, ITenantScoped
-{    public TeamMemberEntity()
+{
+    public TeamMemberEntity()
     {
         Id = PrefixedUlid.Generate("team-member");
         Alias = string.Empty;

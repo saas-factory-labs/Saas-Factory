@@ -91,18 +91,18 @@
 // //     {
 // //         ArgumentException.ThrowIfNullOrEmpty(keyName);
 // //         ArgumentOutOfRangeException.ThrowIfLessThan(keyLengthInBytes, 16, nameof(keyLengthInBytes));
-        
+
 // //         // Generate a cryptographically secure random key
 // //         byte[] keyBytes = new byte[keyLengthInBytes];
 // //         using var rng = RandomNumberGenerator.Create();
 // //         rng.GetBytes(keyBytes);
-        
+
 // //         // Convert to Base64 for storage
 // //         string base64Key = Convert.ToBase64String(keyBytes);
-        
+
 // //         return base64Key;
 // //     }
-    
+
 // //     /// <summary>
 // //     /// Stores a token signing key in the user secrets for development
 // //     /// </summary>
@@ -114,7 +114,7 @@
 // //         ArgumentException.ThrowIfNullOrEmpty(key);
 // //         ArgumentNullException.ThrowIfNull(configuration);
 // //         ArgumentException.ThrowIfNullOrEmpty(secretName);
-        
+
 // //         // In a real implementation, this would call User Secrets Manager
 // //         // For this demonstration, we're setting it in memory 
 // //         // Note: In production, use a secure key vault or similar service

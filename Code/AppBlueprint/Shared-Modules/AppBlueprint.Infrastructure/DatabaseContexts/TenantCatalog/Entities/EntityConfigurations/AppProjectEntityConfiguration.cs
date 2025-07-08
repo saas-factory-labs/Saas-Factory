@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities.EntityConfigurations;
 
 public sealed class AppProjectEntityConfiguration : IEntityTypeConfiguration<AppProjectEntity>
-{    public void Configure(EntityTypeBuilder<AppProjectEntity> builder)
+{
+    public void Configure(EntityTypeBuilder<AppProjectEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 

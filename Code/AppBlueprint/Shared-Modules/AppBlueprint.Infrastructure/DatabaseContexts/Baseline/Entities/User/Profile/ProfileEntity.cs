@@ -5,7 +5,8 @@ using AppBlueprint.SharedKernel;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 
 public sealed class ProfileEntity : BaseEntity
-{    public ProfileEntity()
+{
+    public ProfileEntity()
     {
         Id = PrefixedUlid.Generate("profile");
         UserId = string.Empty;
@@ -16,7 +17,7 @@ public sealed class ProfileEntity : BaseEntity
 
     [DataClassification(GDPRType.IndirectlyIdentifiable)]
     public string? Bio { get; set; }
-    
+
     public Uri? AvatarUrl { get; set; }
     public Uri? WebsiteUrl { get; set; }
     public string? TimeZone { get; set; }

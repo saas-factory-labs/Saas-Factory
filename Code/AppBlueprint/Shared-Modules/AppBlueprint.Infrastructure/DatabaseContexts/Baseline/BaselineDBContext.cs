@@ -52,15 +52,15 @@ public partial class BaselineDbContext : DbContext
     private void HandleSensitiveData(ModelBuilder modelBuilder)
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        foreach (var property in entityType.GetProperties())
-        {
-            var isSensitive = property.PropertyInfo?
-                .GetCustomAttributes(typeof(SensitiveDataAttribute), false)
-                .FirstOrDefault();
+            foreach (var property in entityType.GetProperties())
+            {
+                var isSensitive = property.PropertyInfo?
+                    .GetCustomAttributes(typeof(SensitiveDataAttribute), false)
+                    .FirstOrDefault();
 
-            if (isSensitive is not null)
-                property.SetAnnotation("SensitiveData", true);
-        }
+                if (isSensitive is not null)
+                    property.SetAnnotation("SensitiveData", true);
+            }
     }
 
     #region DbSets

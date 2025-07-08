@@ -17,7 +17,8 @@ public class TenantRepository : ITenantRepository
     public async Task<IEnumerable<TenantEntity>> GetAllAsync()
     {
         return await _context.Set<TenantEntity>().ToListAsync();
-    }    public async Task<TenantEntity?> GetByIdAsync(string id)
+    }
+    public async Task<TenantEntity?> GetByIdAsync(string id)
     {
         return await _context.Set<TenantEntity>().FindAsync(id);
     }

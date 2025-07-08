@@ -40,7 +40,7 @@ namespace AppBlueprint.Infrastructure.Authorization
                 // For demonstration purposes, we're simulating a successful login with a mock token
                 var mockToken = GenerateMockToken(email);
                 await _tokenStorage.StoreTokenAsync(mockToken);
-                
+
                 // Parse the mock token to extract expiration
                 var tokenParts = mockToken.Split('.');
                 if (tokenParts.Length >= 2)
@@ -50,7 +50,7 @@ namespace AppBlueprint.Infrastructure.Authorization
                             Convert.FromBase64String(tokenParts[1].PadBase64())
                         )
                     );
-                    
+
                     if (payload != null)
                     {
                         _accessToken = mockToken;
@@ -58,7 +58,7 @@ namespace AppBlueprint.Infrastructure.Authorization
                         return true;
                     }
                 }
-                
+
                 return false;
             }
             catch (Exception ex)
@@ -94,7 +94,7 @@ namespace AppBlueprint.Infrastructure.Authorization
                         if (payload != null)
                         {
                             var expiration = DateTimeOffset.FromUnixTimeSeconds(payload.exp).DateTime;
-                            
+
                             // Only set the token if it's still valid
                             if (DateTime.UtcNow < expiration)
                             {

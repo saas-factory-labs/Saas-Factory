@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
 public sealed class TeamInviteEntityConfiguration : IEntityTypeConfiguration<TeamInviteEntity>
-{    public void Configure(EntityTypeBuilder<TeamInviteEntity> builder)
+{
+    public void Configure(EntityTypeBuilder<TeamInviteEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 

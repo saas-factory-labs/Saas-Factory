@@ -10,7 +10,7 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog;
 public class CatalogDbContext : DbContext
 {
     public DbSet<TenantEntity> Tenants { get; set; }
-    public DbSet<CustomerEntity> Customers { get; set; }   
+    public DbSet<CustomerEntity> Customers { get; set; }
 
 
     public CatalogDbContext(DbContextOptions<CatalogDbContext> options)

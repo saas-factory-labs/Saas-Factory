@@ -9,13 +9,15 @@ using AppBlueprint.SharedKernel;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
 public sealed class PhoneNumberEntity : BaseEntity, ITenantScoped
-{    public PhoneNumberEntity()
+{
+    public PhoneNumberEntity()
     {
         Id = PrefixedUlid.Generate("phone-number");
         Number = string.Empty;
         CountryCode = string.Empty;
         TenantId = string.Empty;
-    }    [DataClassification(GDPRType.IndirectlyIdentifiable)]
+    }
+    [DataClassification(GDPRType.IndirectlyIdentifiable)]
     public string Number { get; set; } // store phone number as 25 varchar which should be sufficient for all phone numbers for all countries
     // dont store phone numbers with spaces but can contain dashes
     // format the phone number in the frontend UI, dont store it directly with a format in the db and dont have the backend or db do formatting. leave it to the UI

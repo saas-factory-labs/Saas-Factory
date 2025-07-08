@@ -16,11 +16,11 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(ApplicationDbContext context)
     {
         _applicationDbContext = context;
-    
+
     }
 
-    private IAdminRepository? __adminRepository;    
-    private IAccountRepository? _accountRepository;    
+    private IAdminRepository? __adminRepository;
+    private IAccountRepository? _accountRepository;
     private IApiKeyRepository? _apiKeyRepository;
     private INotificationRepository? _notificationRepository;
     private IOrganizationRepository? _organizationRepository;
@@ -136,7 +136,7 @@ public class UnitOfWork : IUnitOfWork
     {
         return await _applicationDbContext.SaveChangesAsync(cancellationToken);
     }
-    
+
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         await _applicationDbContext.Database.BeginTransactionAsync(cancellationToken);
@@ -153,7 +153,7 @@ public class UnitOfWork : IUnitOfWork
         return _applicationDbContext.Database.CurrentTransaction?
             .RollbackAsync(cancellationToken) ?? Task.CompletedTask;
     }
-    
+
     // Dispose pattern: dispose managed resources and suppress finalization
     public void Dispose()
     {

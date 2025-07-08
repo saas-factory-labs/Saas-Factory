@@ -17,7 +17,8 @@ public class PermissionRepository : IPermissionRepository
     public async Task<IEnumerable<PermissionEntity>> GetAllAsync()
     {
         return await _context.Set<PermissionEntity>().ToListAsync();
-    }    public async Task<PermissionEntity> GetByIdAsync(string id)
+    }
+    public async Task<PermissionEntity> GetByIdAsync(string id)
     {
         return await _context.Set<PermissionEntity>().FindAsync(id);
     }

@@ -15,7 +15,7 @@ public partial class BaselineDbContext
     public DbSet<EmailVerificationEntity> EmailVerifications { get; set; } = null!;
     public DbSet<EmailInviteEntity> EmailInvites { get; set; } = null!;
     public DbSet<PhoneNumberEntity> PhoneNumbers { get; set; } = null!;
-    public DbSet<EmailAddressEntity> EmailAddresses { get; set; } = null!;    partial void OnModelCreating_Users(ModelBuilder modelBuilder)
+    public DbSet<EmailAddressEntity> EmailAddresses { get; set; } = null!; partial void OnModelCreating_Users(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new EmailAddressesEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PhoneNumberEntityConfiguration());

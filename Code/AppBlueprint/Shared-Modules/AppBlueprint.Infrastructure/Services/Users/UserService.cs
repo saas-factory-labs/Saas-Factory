@@ -71,7 +71,8 @@ public class UserServiceInfrastructure
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return user;
-    }    public async Task<UserEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
+    }
+    public async Task<UserEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _userRepository.GetByIdAsync(id);
     }
@@ -93,7 +94,8 @@ public class UserServiceInfrastructure
 
         _userRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-    }    public async Task DeactivateUserAsync(string userId, CancellationToken cancellationToken)
+    }
+    public async Task DeactivateUserAsync(string userId, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(userId)
             ?? throw new InvalidOperationException(UserNotFoundMessage);
@@ -101,9 +103,10 @@ public class UserServiceInfrastructure
         user.IsActive = false;
         _userRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-    }    public async Task<string> GenerateEmailVerificationTokenAsync(string userId, CancellationToken cancellationToken)
+    }
+    public async Task<string> GenerateEmailVerificationTokenAsync(string userId, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(userId) 
+        UserEntity? user = await _userRepository.GetByIdAsync(userId)
             ?? throw new InvalidOperationException(UserNotFoundMessage);
 
         // Generate a secure random token
@@ -146,17 +149,18 @@ public class UserServiceInfrastructure
         }
 
         return token;
-    }    public async Task<bool> VerifyEmailAsync(string userId, string token, CancellationToken cancellationToken)
+    }
+    public async Task<bool> VerifyEmailAsync(string userId, string token, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(userId)
             ?? throw new InvalidOperationException(UserNotFoundMessage);
 
         // Find the verification record
         EmailVerificationEntity? verification = await _dbContext.Set<EmailVerificationEntity>()
-            .FirstOrDefaultAsync(v => 
-                v.UserEntityId == userId && 
-                v.Token == token && 
-                v.ExpireAt > DateTime.UtcNow, 
+            .FirstOrDefaultAsync(v =>
+                v.UserEntityId == userId &&
+                v.Token == token &&
+                v.ExpireAt > DateTime.UtcNow,
                 cancellationToken);
 
         if (verification is null)
@@ -244,11 +248,11 @@ public class UserServiceInfrastructure
             return false;
         }        // Find the reset record
         PasswordResetEntity? resetRecord = await _dbContext.Set<PasswordResetEntity>()
-            .FirstOrDefaultAsync(r => 
-                r.UserId == user.Id && 
-                r.Token == token && 
-                r.ExpireAt > DateTime.UtcNow && 
-                !r.IsUsed, 
+            .FirstOrDefaultAsync(r =>
+                r.UserId == user.Id &&
+                r.Token == token &&
+                r.ExpireAt > DateTime.UtcNow &&
+                !r.IsUsed,
                 cancellationToken);
 
         if (resetRecord is null)

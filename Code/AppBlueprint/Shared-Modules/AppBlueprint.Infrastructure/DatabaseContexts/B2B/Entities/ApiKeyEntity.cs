@@ -15,7 +15,7 @@ public sealed class ApiKeyEntity : BaseEntity, ITenantScoped
     public required UserEntity Owner { get; set; }
     public required string Name { get; set; }
     public string? Description { get; set; }
-    
+
     public required string SecretRef { get; set; } // saved in azure keyvault
 
     public string UserId { get; set; } = string.Empty;

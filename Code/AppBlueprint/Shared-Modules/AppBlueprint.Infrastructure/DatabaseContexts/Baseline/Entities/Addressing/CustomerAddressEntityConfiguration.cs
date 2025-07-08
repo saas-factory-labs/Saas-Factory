@@ -11,7 +11,7 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 public sealed class CustomerAddressEntityConfiguration : IEntityTypeConfiguration<CustomerAddressEntity>
 {
     private const string CustomerIdProperty = "CustomerId";
-    
+
     public void Configure(EntityTypeBuilder<CustomerAddressEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);

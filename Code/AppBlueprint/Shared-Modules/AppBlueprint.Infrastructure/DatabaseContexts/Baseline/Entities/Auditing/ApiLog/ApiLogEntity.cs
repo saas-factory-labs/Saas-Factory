@@ -2,10 +2,10 @@
 
 public sealed class ApiLogEntity
 {
-    public required SessionEntity SessionEntity { get; set; } = new() 
-    { 
-        SessionKey = string.Empty, 
-        SessionData = string.Empty 
+    public required SessionEntity SessionEntity { get; set; } = new()
+    {
+        SessionKey = string.Empty,
+        SessionData = string.Empty
     };
 
     public int Id { get; set; }

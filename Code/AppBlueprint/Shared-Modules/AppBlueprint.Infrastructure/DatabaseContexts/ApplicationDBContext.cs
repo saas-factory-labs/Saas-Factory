@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
-using System.Reflection;
-using AppBlueprint.Application.Enums;
+using AppBlueprint.Application.Attributes;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using AppBlueprint.SharedKernel;
 using Microsoft.AspNetCore.Http;
@@ -12,24 +11,12 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts;
 
 public class ApplicationDbContext : B2CdbContext
 {
-    private readonly IConfiguration _configuration;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly int _tenantId = 1; // Replace with tenantProvider.GetTenantId() when ready
-
     public ApplicationDbContext(
         DbContextOptions options,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor
     ) : base(options, configuration)
     {
-        _configuration = configuration;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        // Optional: You can add fallback logic or logging here
-        base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,31 +24,42 @@ public class ApplicationDbContext : B2CdbContext
         ArgumentNullException.ThrowIfNull(modelBuilder);
         base.OnModelCreating(modelBuilder);
 
-        // Mark properties with [GDPRType] as sensitive and configure soft delete filters
+        ConfigureGdprDataClassification(modelBuilder);
+        ConfigureSoftDeleteFilters(modelBuilder);
+        
+        // Optional: add multi-tenancy query filters here when ready
+    }
+
+    private static void ConfigureGdprDataClassification(ModelBuilder modelBuilder)
+    {
+        // Mark properties with [DataClassification] as sensitive
         foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
         {
-            // Mark GDPR sensitive properties
             foreach (IMutableProperty property in entityType.GetProperties())
             {
                 var sensitiveDataAttribute = property.PropertyInfo?
-                    .GetCustomAttributes(typeof(GDPRType), false)
+                    .GetCustomAttributes(typeof(DataClassificationAttribute), false)
                     .FirstOrDefault();
 
-                if (sensitiveDataAttribute != null)
+                if (sensitiveDataAttribute is not null)
                 {
                     property.SetAnnotation("SensitiveData", true);
                 }
             }
+        }
+    }
 
-            // Configure soft delete filters for entities that implement IEntity
+    private static void ConfigureSoftDeleteFilters(ModelBuilder modelBuilder)
+    {
+        // Configure soft delete filters for entities that implement IEntity
+        foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
+        {
             if (typeof(IEntity).IsAssignableFrom(entityType.ClrType))
             {
-                // Use direct lambda expression instead of reflection for better security and performance
                 var queryFilter = CreateIsNotSoftDeletedFilter(entityType.ClrType);
                 modelBuilder.Entity(entityType.ClrType).HasQueryFilter(queryFilter);
             }
         }
-        // Optional: add multi-tenancy query filters here when ready
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -73,6 +71,7 @@ public class ApplicationDbContext : B2CdbContext
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.CreatedAt = now;
+                // Set to null for new entities - will be populated on first update
                 entry.Entity.LastUpdatedAt = null;
             }
             else if (entry.State == EntityState.Modified)

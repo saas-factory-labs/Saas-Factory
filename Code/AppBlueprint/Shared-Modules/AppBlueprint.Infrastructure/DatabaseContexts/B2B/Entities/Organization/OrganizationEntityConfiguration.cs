@@ -8,7 +8,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization
 /// Supports multi-tenant B2B scenarios with user management and organizational hierarchy.
 /// </summary>
 public sealed class OrganizationEntityConfiguration : IEntityTypeConfiguration<OrganizationEntity>
-{    public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
+{
+    public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);        // Table mapping with standardized naming
         builder.ToTable("Organizations");
@@ -24,7 +25,7 @@ public sealed class OrganizationEntityConfiguration : IEntityTypeConfiguration<O
         // Properties with validation and constraints
         builder.Property(e => e.Name)
             .IsRequired()
-            .HasMaxLength(200);        builder.Property(e => e.Description)
+            .HasMaxLength(200); builder.Property(e => e.Description)
             .IsRequired()
             .HasMaxLength(1000);
 

@@ -7,7 +7,8 @@ using AppBlueprint.SharedKernel;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 
 public class TenantEntity : BaseEntity
-{    public TenantEntity()
+{
+    public TenantEntity()
     {
         Id = PrefixedUlid.Generate("tenant");
         ContactPersons = new List<ContactPersonEntity>();

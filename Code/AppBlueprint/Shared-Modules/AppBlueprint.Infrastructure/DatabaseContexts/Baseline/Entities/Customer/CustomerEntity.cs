@@ -6,7 +6,8 @@ using AppBlueprint.SharedKernel.Enums;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 
 public class CustomerEntity : BaseEntity
-{    public CustomerEntity()
+{
+    public CustomerEntity()
     {
         Id = PrefixedUlid.Generate("customer");
         Tenants = new List<TenantEntity>();

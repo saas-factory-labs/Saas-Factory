@@ -26,7 +26,7 @@ public class FamilyInviteEntity : BaseEntity
     public FamilyEntity Family { get; set; }
 
     // User receiving the invitation
-    public string UserId { get; set; } = string.Empty;    public UserEntity Owner { get; set; }
+    public string UserId { get; set; } = string.Empty; public UserEntity Owner { get; set; }
 
     public DateTime ExpireAt { get; set; }
     public bool IsActive { get; set; }

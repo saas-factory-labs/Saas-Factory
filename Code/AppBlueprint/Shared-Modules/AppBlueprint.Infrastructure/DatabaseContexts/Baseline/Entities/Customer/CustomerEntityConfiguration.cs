@@ -7,7 +7,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Custome
 /// Entity configuration for CustomerEntity defining table structure, relationships, and constraints.
 /// </summary>
 public sealed class CustomerEntityConfiguration : IEntityTypeConfiguration<CustomerEntity>
-{    public void Configure(EntityTypeBuilder<CustomerEntity> builder)
+{
+    public void Configure(EntityTypeBuilder<CustomerEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 

@@ -28,7 +28,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 
         // Create a mock HttpContextAccessor for design-time
         var httpContextAccessor = new HttpContextAccessor();
-        
+
         return new ApplicationDbContext(optionsBuilder.Options, configuration, httpContextAccessor);
     }
 }

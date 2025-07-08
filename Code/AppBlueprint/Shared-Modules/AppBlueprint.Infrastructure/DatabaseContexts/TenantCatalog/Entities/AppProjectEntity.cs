@@ -19,7 +19,8 @@ public class AppProjectEntity
     public string Category { get; set; }
 
     public string
-        DatabaseConnectionStringRef { get; set; } // azure keyvault reference to the database connection string
+        DatabaseConnectionStringRef
+    { get; set; } // azure keyvault reference to the database connection string
 
     public string
         DatabaseConnectionStringReference

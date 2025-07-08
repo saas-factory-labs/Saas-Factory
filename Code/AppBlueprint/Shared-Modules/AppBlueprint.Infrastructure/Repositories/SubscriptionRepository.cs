@@ -38,7 +38,8 @@ public class SubscriptionRepository : ISubscriptionRepository
 
         _context.Subscriptions.Update(subscription);
         await _context.SaveChangesAsync(cancellationToken);
-    }    public async Task DeleteAsync(string id, CancellationToken cancellationToken)
+    }
+    public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
         SubscriptionEntity? subscription =
             await _context.Subscriptions.FindAsync(new object[] { id }, cancellationToken);

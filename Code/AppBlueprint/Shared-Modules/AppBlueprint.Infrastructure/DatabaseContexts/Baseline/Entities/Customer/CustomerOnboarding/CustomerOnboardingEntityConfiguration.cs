@@ -24,7 +24,7 @@ public sealed class CustomerOnboardingEntityConfiguration : IEntityTypeConfigura
         // Self-referencing relationship (if needed based on the CustomerOnboarding property)
         // This seems to be a circular reference that might need to be removed or properly configured
         // For now, commenting out until the entity design is clarified
-        
+
         // Define relationships as needed based on actual entity requirements
         // Example: if there are relationships to Customer or User entities
         // builder.HasOne(e => e.Customer)

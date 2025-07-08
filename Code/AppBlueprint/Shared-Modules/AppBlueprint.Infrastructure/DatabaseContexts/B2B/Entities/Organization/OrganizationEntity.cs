@@ -10,7 +10,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization
 /// Provides organizational hierarchy, user management, and team coordination for B2B operations.
 /// </summary>
 public sealed class OrganizationEntity : BaseEntity, ITenantScoped
-{    public OrganizationEntity()
+{
+    public OrganizationEntity()
     {
         Id = PrefixedUlid.Generate("organization");
         Teams = new List<TeamEntity>();

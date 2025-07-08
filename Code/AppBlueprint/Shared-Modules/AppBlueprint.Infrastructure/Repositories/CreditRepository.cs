@@ -17,7 +17,8 @@ public class CreditRepository : ICreditRepository
     public async Task<IEnumerable<CreditEntity>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.Set<CreditEntity>().ToListAsync(cancellationToken);
-    }    public async Task<CreditEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
+    }
+    public async Task<CreditEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _context.Set<CreditEntity>().FindAsync(new object[] { id }, cancellationToken);
     }

@@ -11,7 +11,9 @@ public class AddressEntity : BaseEntity, ITenantScoped
     public enum AddressType
     {
         Home,
-        Office    }    public AddressEntity()
+        Office
+    }
+    public AddressEntity()
     {
         Id = PrefixedUlid.Generate("address");
         City = new CityEntity

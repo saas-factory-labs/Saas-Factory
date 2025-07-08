@@ -18,7 +18,7 @@ public interface IUserAuthenticationProvider : IAuthenticationProvider
     ///     Logs out the user by clearing the stored authentication token.
     /// </summary>
     Task LogoutAsync();
-    
+
     /// <summary>
     ///     Checks if the user is currently authenticated with a valid token.
     /// </summary>

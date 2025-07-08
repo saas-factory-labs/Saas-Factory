@@ -17,14 +17,14 @@ namespace AppBlueprint.Infrastructure.Extensions
         {
             // Register TokenStorageService for client-side token management
             services.AddScoped<ITokenStorageService, TokenStorageService>();
-            
+
             // Register UserAuthenticationProvider for authentication operations using the factory pattern
-            services.AddScoped<IUserAuthenticationProvider>(sp => 
+            services.AddScoped<IUserAuthenticationProvider>(sp =>
             {
                 var tokenStorage = sp.GetRequiredService<ITokenStorageService>();
                 return new UserAuthenticationProvider(tokenStorage);
             });
-            
+
             return services;
         }
     }

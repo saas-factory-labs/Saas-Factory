@@ -27,7 +27,8 @@ public class ApiKeyRepository : IApiKeyRepository
     public async Task AddAsync(ApiKeyEntity apiKey)
     {
         await _context.Set<ApiKeyEntity>().AddAsync(apiKey);
-    }    public void Update(ApiKeyEntity apiKey)
+    }
+    public void Update(ApiKeyEntity apiKey)
     {
         _context.Set<ApiKeyEntity>().Update(apiKey);
     }

@@ -11,7 +11,7 @@ public sealed class AdminEntityConfiguration : IEntityTypeConfiguration<AdminEnt
         ArgumentNullException.ThrowIfNull(builder);
 
         builder.ToTable("Admins");
-        builder.HasKey(e => e.AccountId);
+        builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Email)
             .IsRequired()

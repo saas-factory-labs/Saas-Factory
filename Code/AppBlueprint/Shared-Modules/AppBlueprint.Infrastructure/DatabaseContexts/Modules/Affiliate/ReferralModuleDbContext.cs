@@ -10,7 +10,7 @@ public partial class AffiliateModuleDbContext : ApplicationDbContext
     private readonly IConfiguration _configuration;
 
     public AffiliateModuleDbContext(
-        DbContextOptions options, 
+        DbContextOptions options,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor) :
         base(options, configuration, httpContextAccessor)

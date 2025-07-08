@@ -23,7 +23,7 @@ public class FakeTeamDataGenerator
         fakeTeam.CreatedAt = _faker.Date.Past();
         fakeTeam.Id = PrefixedUlid.Generate("team");
         fakeTeam.Description = _faker.Lorem.Sentence();
-        fakeTeam.IsActive = _faker.Random.Bool();        
+        fakeTeam.IsActive = _faker.Random.Bool();
         fakeTeam.LastUpdatedAt = _faker.Date.Past();
 
         return fakeTeam;

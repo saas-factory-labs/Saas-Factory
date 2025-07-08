@@ -19,7 +19,8 @@ public class DataExportRepository : IDataExportRepository
     {
         List<DataExportEntity>? dataExports = await _context.DataExports.ToListAsync(cancellationToken);
         return dataExports;
-    }    public async Task<DataExportEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
+    }
+    public async Task<DataExportEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _context.DataExports.FindAsync(id, cancellationToken) ?? new DataExportEntity
         {
