@@ -5,24 +5,17 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Custome
 
 public class OrganizationEntity
 {
-    public OrganizationEntity()
-    {
-        Customers = new List<CustomerEntity>();
-        Teams = new List<TeamEntity>();
-    }
-
     public int Id { get; set; }
 
-    public UserEntity Owner { get; set; }
+    public UserEntity? Owner { get; set; }
 
+    public string? Name { get; set; }
 
-    public string Name { get; set; }
-
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
     public DateTime? LastUpdatedAt { get; set; }
-    public List<CustomerEntity> Customers { get; set; }
-    public List<TeamEntity> Teams { get; set; }
+    public required List<CustomerEntity> Customers { get; set; } = new List<CustomerEntity>();
+    public List<TeamEntity>? Teams { get; set; } = new List<TeamEntity>();
 }

@@ -10,13 +10,13 @@ public class SubscriptionEntity : BaseEntity, ITenantScoped
         Id = PrefixedUlid.Generate("sub");
     }
 
-    public string Name { get; set; }
+    public required string Name { get; set; }
     public string? Description { get; set; }
-    public string Code { get; set; }
-    public string Status { get; set; }
-    public string CreatedBy { get; set; }
-    public string UpdatedBy { get; set; }
+    public required string Code { get; set; }
+    public required string Status { get; set; }
+    public required string CreatedBy { get; set; }
+    public required string UpdatedBy { get; set; }
 
-    public string TenantId { get; set; }
+    public required string TenantId { get; set; }
     public TenantEntity? Tenant { get; set; }
 }

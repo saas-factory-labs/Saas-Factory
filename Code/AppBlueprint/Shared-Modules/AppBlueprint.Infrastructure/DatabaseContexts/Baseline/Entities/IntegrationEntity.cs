@@ -9,12 +9,12 @@ public class IntegrationEntity : BaseEntity
         Id = PrefixedUlid.Generate("integ");
     }
 
-    public string OwnerId { get; set; }
+    public required string OwnerId { get; set; }
 
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     // Stripe, SendGrid, Twilio, etc
-    public string ServiceName { get; set; }
+    public required string ServiceName { get; set; }
     public string? Description { get; set; }
-    public string ApiKeySecretReference { get; set; }
+    public required string ApiKeySecretReference { get; set; }
 }

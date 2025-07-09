@@ -22,7 +22,7 @@
 </div>
 
 @code {
-    [CascadingParameter] public List<NavLinkMetadata> Links { get; set; }
+    [CascadingParameter] public required List<NavLinkMetadata> Links { get; set; }
 
 // Sidebar state
     [Parameter] public bool SidebarOpen { get; set; } = true;

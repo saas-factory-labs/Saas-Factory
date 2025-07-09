@@ -13,10 +13,10 @@ else
 
 @code {
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public required RenderFragment ChildContent { get; set; }
     
     [CascadingParameter]
-    private AuthProvider Auth { get; set; }
+    public required AuthProvider Auth { get; set; }
 
     private bool _isAuthenticated;
 

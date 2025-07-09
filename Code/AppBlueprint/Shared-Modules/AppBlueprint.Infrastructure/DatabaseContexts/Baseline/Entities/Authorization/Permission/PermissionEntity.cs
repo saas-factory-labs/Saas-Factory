@@ -9,7 +9,7 @@ public class PermissionEntity : BaseEntity
         Id = PrefixedUlid.Generate("permission");
     }
 
-    public string Name { get; set; }
+    public required string Name { get; set; }
     public string? Description { get; set; }
     //public RoleModel Role { get; set; }
     //public int RoleId { get; set; }

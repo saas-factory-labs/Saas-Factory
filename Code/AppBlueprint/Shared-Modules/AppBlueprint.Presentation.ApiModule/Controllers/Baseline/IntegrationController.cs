@@ -1,5 +1,6 @@
 using AppBlueprint.Contracts.Baseline.Integrations.Requests;
 using AppBlueprint.Contracts.Baseline.Integrations.Responses;
+using AppBlueprint.SharedKernel;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
@@ -98,6 +99,10 @@ public class IntegrationController : BaseController
 
         var newIntegration = new IntegrationEntity
         {
+            OwnerId = PrefixedUlid.Generate("usr"),
+            Name = string.Empty,
+            ServiceName = string.Empty,
+            ApiKeySecretReference = string.Empty
             // Name = integrationDto.Name,
             // Description = integrationDto.Description,
             // Type = integrationDto.Type,

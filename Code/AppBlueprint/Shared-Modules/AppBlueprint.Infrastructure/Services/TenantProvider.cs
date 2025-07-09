@@ -6,7 +6,14 @@ namespace AppBlueprint.Infrastructure.Services;
 public class TenantProvider
 {
     private const string TenantIdHeaderName = "X-TenantId";
-    private readonly IHttpContextAccessor _httpContextAccessor; public string GetTenantId()
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public TenantProvider(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    public string GetTenantId()
     {
         StringValues? tenantIdHeader = _httpContextAccessor.HttpContext?.Request.Headers[TenantIdHeaderName];
 

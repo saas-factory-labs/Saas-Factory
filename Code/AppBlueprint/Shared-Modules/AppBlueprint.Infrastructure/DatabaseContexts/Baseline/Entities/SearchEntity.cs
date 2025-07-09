@@ -1,15 +1,16 @@
-﻿namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+﻿using AppBlueprint.SharedKernel;
 
-public class SearchEntity
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+
+public class SearchEntity: BaseEntity
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
+    public required string Name { get; set; }
+    public required string Description { get; set; }
     public required string Url { get; set; }
     public required string SearchType { get; set; }
-    public string SearchCriteria { get; set; }
-    public string SearchResults { get; set; }
-    public string SearchStatus { get; set; }
-    public string SearchError { get; set; }
-    public string SearchErrorMessage { get; set; }
+    public required string SearchCriteria { get; set; }
+    public required string SearchResults { get; set; }
+    public required string SearchStatus { get; set; }
+    public required string SearchError { get; set; }
+    public required string SearchErrorMessage { get; set; }
 }

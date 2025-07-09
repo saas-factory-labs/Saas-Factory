@@ -6,7 +6,10 @@ public class PermissionRoleEntity
 {
     public PermissionRoleEntity()
     {
-        Permission = new PermissionEntity();
+        Permission = new PermissionEntity
+        {
+            Name = "Permission"
+        };
         Role = new RoleEntity
         {
             Name = "Role"

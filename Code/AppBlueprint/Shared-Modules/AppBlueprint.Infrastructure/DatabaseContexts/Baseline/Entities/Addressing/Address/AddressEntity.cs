@@ -20,12 +20,21 @@ public class AddressEntity : BaseEntity, ITenantScoped
         {
             Name = "City",
             PostalCode = "0000",
+            CountryId = PrefixedUlid.Generate("country"),
+            StateId = PrefixedUlid.Generate("state"),
             Country = new CountryEntity
             {
-                Name = "Country"
+                Name = "Country",
+                CityId = PrefixedUlid.Generate("city"),
+                GlobalRegionId = PrefixedUlid.Generate("region")
             }
         };
-        Country = new CountryEntity();
+        Country = new CountryEntity
+        {
+            Name = "Country",
+            CityId = PrefixedUlid.Generate("city"),
+            GlobalRegionId = PrefixedUlid.Generate("region")
+        };
         Street = new StreetEntity
         {
             Name = "Street",
@@ -33,9 +42,13 @@ public class AddressEntity : BaseEntity, ITenantScoped
             {
                 Name = "City",
                 PostalCode = "0000",
+                CountryId = PrefixedUlid.Generate("country"),
+                StateId = PrefixedUlid.Generate("state"),
                 Country = new CountryEntity
                 {
-                    Name = "Country"
+                    Name = "Country",
+                    CityId = PrefixedUlid.Generate("city"),
+                    GlobalRegionId = PrefixedUlid.Generate("region")
                 }
             }
         };

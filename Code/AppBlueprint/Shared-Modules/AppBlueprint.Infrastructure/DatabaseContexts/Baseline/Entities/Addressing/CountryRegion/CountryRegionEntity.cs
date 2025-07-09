@@ -1,10 +1,17 @@
-﻿namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
+﻿using AppBlueprint.SharedKernel;
+
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 
 public class CountryRegionEntity
 {
     public CountryRegionEntity()
     {
-        Country = new CountryEntity();
+        Country = new CountryEntity
+        {
+            Name = "Country",
+            CityId = PrefixedUlid.Generate("city"),
+            GlobalRegionId = PrefixedUlid.Generate("region")
+        };
     }
 
     public int Id { get; set; }

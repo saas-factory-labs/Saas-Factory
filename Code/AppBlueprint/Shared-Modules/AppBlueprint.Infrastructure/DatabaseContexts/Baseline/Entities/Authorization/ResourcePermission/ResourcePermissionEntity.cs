@@ -12,7 +12,7 @@ public class ResourcePermissionEntity
 
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
-    public UserEntity User { get; set; }
+    public required UserEntity User { get; set; }
     public Guid ResourceId { get; set; }
     public ICollection<ResourcePermissionTypeEntity> PermissionTypes { get; set; }
 }

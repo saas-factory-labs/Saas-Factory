@@ -9,6 +9,10 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Custome
 
 public class AccountEntity : BaseEntity, ITenantScoped
 {
+    public AccountEntity()
+    {
+        Id = PrefixedUlid.Generate("acc");
+    }
     public CustomerType CustomerType { get; set; } // B2B / B2C / Government
 
     public required string
@@ -26,13 +30,10 @@ public class AccountEntity : BaseEntity, ITenantScoped
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public required UserEntity Owner { get; set; }
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
     public required string TenantId { get; set; }
 
-    public AccountEntity()
-    {
-        Id = PrefixedUlid.Generate("acc");
-    }
+    
 
     public string Slug => GenerateSlug();
 

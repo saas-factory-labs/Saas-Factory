@@ -25,9 +25,9 @@ public class UserRoleEntity : BaseEntity
         };
     }
 
-    public string UserId { get; set; }
-    public UserEntity User { get; set; }
+    public required string UserId { get; set; }
+    public required UserEntity User { get; set; }
 
-    public string RoleId { get; set; }
-    public RoleEntity Role { get; set; }
+    public required string RoleId { get; set; }
+    public required RoleEntity Role { get; set; }
 }

@@ -10,8 +10,8 @@ public class RolePermissionEntity : BaseEntity
         Id = PrefixedUlid.Generate("role_perm");
     }
 
-    public string RoleId { get; set; }
-    public RoleEntity Role { get; set; }
+    public required string RoleId { get; set; }
+    public required RoleEntity Role { get; set; }
 
     // public Guid? ResourceId { get; set; }
 

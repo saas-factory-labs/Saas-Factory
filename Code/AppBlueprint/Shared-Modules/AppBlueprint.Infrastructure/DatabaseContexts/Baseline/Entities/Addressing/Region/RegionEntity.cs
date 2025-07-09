@@ -1,16 +1,17 @@
-﻿namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
+﻿using System.Collections.ObjectModel;
+using AppBlueprint.SharedKernel;
 
-public class GlobalRegionEntity
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
+
+public class GlobalRegionEntity: BaseEntity
 {
     public GlobalRegionEntity()
     {
-        Countries = new List<CountryEntity>();
+        Countries = new Collection<CountryEntity>();
     }
 
-    public int Id { get; set; }
-
     // North America, South America, Europe, Asia, Africa, Australia
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
-    public List<CountryEntity> Countries { get; set; }
+    public Collection<CountryEntity> Countries { get; }
 }

@@ -1,10 +1,10 @@
-﻿namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+﻿using AppBlueprint.SharedKernel;
 
-public class LanguageEntity
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+
+public class LanguageEntity: BaseEntity
 {
-    public int Id { get; set; }
+    public required string Name { get; set; }
 
-    public string Name { get; set; }
-
-    public string Code { get; set; }
+    public required string Code { get; set; }
 }

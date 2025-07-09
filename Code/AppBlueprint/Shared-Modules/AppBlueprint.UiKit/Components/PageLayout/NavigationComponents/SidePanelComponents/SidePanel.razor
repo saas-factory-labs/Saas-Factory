@@ -21,7 +21,7 @@
 
     [Parameter] public bool DrawerOpen { get; set; }
     [Parameter] public EventCallback<bool> DrawerOpenChanged { get; set; }
-    [Parameter] public MudImage Logo { get; set; }
+    [Parameter] public required MudImage Logo { get; set; }
 
     protected override void OnInitialized()
     {

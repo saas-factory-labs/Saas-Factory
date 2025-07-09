@@ -1,5 +1,6 @@
 using AppBlueprint.Contracts.Baseline.AuditLog.Requests;
 using AppBlueprint.Contracts.Baseline.AuditLog.Responses;
+using AppBlueprint.SharedKernel;
 using AppBlueprint.Contracts.Baseline.ContactPerson.Requests;
 using AppBlueprint.Contracts.Baseline.ContactPerson.Responses;
 using AppBlueprint.Contracts.Baseline.DataExport.Requests;
@@ -55,6 +56,7 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
 
             return new AccountEntity
             {
+                UserId = PrefixedUlid.Generate("usr"),
                 Name = request.Name,
                 TenantId = tenantId,
                 Owner = new UserEntity

@@ -63,10 +63,10 @@
 
 @code{
     [Parameter] public EventCallback OnToggleDrawer { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public required RenderFragment ChildContent { get; set; }
     
     [CascadingParameter]
-    private AuthProvider Auth { get; set; }
+    public required AuthProvider Auth { get; set; }
 
     private bool _isDarkMode = true; // Default to dark mode
     

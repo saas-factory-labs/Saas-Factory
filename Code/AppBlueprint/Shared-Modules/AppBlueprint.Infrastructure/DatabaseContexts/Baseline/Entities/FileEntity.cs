@@ -11,12 +11,12 @@ public class FileEntity : BaseEntity
         Id = PrefixedUlid.Generate("file");
     }
 
-    public string OwnerId { get; set; }
+    public required string OwnerId { get; set; }
 
     [DataClassification(GDPRType.IndirectlyIdentifiable)]
-    public string FileName { get; set; }
+    public required string FileName { get; set; }
 
     public long FileSize { get; set; }
-    public string FileExtension { get; set; }
-    public string FilePath { get; set; }
+    public required string FileExtension { get; set; }
+    public required string FilePath { get; set; }
 }

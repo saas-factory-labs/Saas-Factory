@@ -15,16 +15,19 @@ public class CountryEntity : BaseEntity
     {
         Id = PrefixedUlid.Generate("country");
         Cities = new List<CityEntity>();
-        GlobalRegion = new GlobalRegionEntity();
+        GlobalRegion = new GlobalRegionEntity
+        {
+            Name = string.Empty
+        };
     }
 
-    public string Name { get; set; } // Denmark, United States of America - populate from dictionary created from database at startup
+    public required string Name { get; set; } // Denmark, United States of America - populate from dictionary created from database at startup
 
     public IsoCode IsoCode { get; set; }
 
     public List<CityEntity> Cities { get; set; }
-    public string CityId { get; set; }
+    public required string CityId { get; set; }
 
     public GlobalRegionEntity GlobalRegion { get; set; }
-    public string GlobalRegionId { get; set; }
+    public required string GlobalRegionId { get; set; }
 }

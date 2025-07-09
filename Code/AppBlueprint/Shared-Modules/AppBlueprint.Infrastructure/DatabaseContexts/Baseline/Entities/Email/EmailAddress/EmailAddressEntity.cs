@@ -22,6 +22,8 @@ public class EmailAddressEntity : BaseEntity, ITenantScoped
             Profile = new ProfileEntity()
         };
         Address = string.Empty;
+        UserId = string.Empty;
+        TenantId = string.Empty;
     }
 
     [DataClassification(GDPRType.DirectlyIdentifiable)]

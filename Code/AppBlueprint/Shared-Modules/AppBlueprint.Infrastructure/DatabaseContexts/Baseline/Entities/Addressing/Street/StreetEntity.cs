@@ -8,13 +8,18 @@ public class StreetEntity : BaseEntity
     {
         Id = PrefixedUlid.Generate("street");
         Name = string.Empty;
+        CityId = string.Empty;
         City = new CityEntity
         {
             Name = "City",
             PostalCode = "0000",
+            CountryId = string.Empty,
+            StateId = string.Empty,
             Country = new CountryEntity
             {
-                Name = "Country"
+                Name = "Country",
+                CityId = string.Empty,
+                GlobalRegionId = string.Empty
             }
         };
     }

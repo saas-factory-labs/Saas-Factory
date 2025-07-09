@@ -1,5 +1,6 @@
 using AppBlueprint.Contracts.Baseline.File.Requests;
 using AppBlueprint.Contracts.Baseline.File.Responses;
+using AppBlueprint.SharedKernel;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
@@ -88,6 +89,9 @@ public class FileController : BaseController
 
         var newFile = new FileEntity
         {
+            OwnerId = PrefixedUlid.Generate("usr"),
+            FileExtension = string.Empty,
+            FilePath = string.Empty,
             FileName = fileDto.FileName
         };
 

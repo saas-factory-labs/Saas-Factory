@@ -6,6 +6,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorizati
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Enums;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
@@ -139,7 +140,11 @@ public class DataSeeder(ApplicationDbContext dbContext)
         {
             new()
             {
-                Name = "United States", IsoCode = IsoCode.Us, GlobalRegion = new GlobalRegionEntity { Name = "America" }
+                Name = "United States", 
+                IsoCode = IsoCode.Us, 
+                CityId = PrefixedUlid.Generate("city"),
+                GlobalRegionId = PrefixedUlid.Generate("region"),
+                GlobalRegion = new GlobalRegionEntity { Name = "America" }
             }
         };
 

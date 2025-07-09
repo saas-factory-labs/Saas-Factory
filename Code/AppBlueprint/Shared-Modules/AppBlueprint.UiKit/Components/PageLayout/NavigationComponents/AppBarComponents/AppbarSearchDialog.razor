@@ -27,7 +27,7 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] private MudDialog MudDialog { get; set; }
+    [CascadingParameter] public required MudDialog MudDialog { get; set; }
 
     private string _search = string.Empty;
     private MudListItem<string>? _selectedItem;

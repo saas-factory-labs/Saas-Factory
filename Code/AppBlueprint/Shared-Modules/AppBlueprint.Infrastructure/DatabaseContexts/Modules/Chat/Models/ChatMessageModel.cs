@@ -1,11 +1,9 @@
 ﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
 
-// using Shared.Models;
-
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Chat.Models;
 
-public class ChatMessageModel
+public class ChatMessageModel: BaseEntity
 {
     public ChatMessageModel()
     {
@@ -21,10 +19,27 @@ public class ChatMessageModel
             Profile = new ProfileEntity()
         };
 
-        Chat = new ChatModel();
+        Chat = new ChatModel
+        {
+            Name = "Default Chat",
+            IsActive = true,
+            CreatedAt = DateTime.Now,
+            LastUpdatedAt = DateTime.Now
+        };
+
+        Owner = new UserEntity
+        {
+            Email = "owner@test.com",
+            FirstName = "OwnerFirstName",
+            LastName = "OwnerLastName",
+            Id = PrefixedUlid.Generate("user"),
+            CreatedAt = DateTime.Now,
+            IsActive = true,
+            UserName = "owneruser",
+            Profile = new ProfileEntity()
+        };
     }
 
-    public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
     public bool IsActive { get; set; }
@@ -32,10 +47,10 @@ public class ChatMessageModel
     public DateTime CreatedAt { get; set; }
     public DateTime? LastUpdatedAt { get; set; }
 
-    public ChatModel Chat { get; set; }
+    public required ChatModel Chat { get; set; }
 
-    public UserEntity Sender { get; set; }
+    public required UserEntity Sender { get; set; }
 
-    public UserEntity Owner { get; set; }
+    public required UserEntity Owner { get; set; }
     public string OwnerId { get; set; } = string.Empty;
 }

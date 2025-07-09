@@ -10,19 +10,17 @@ public class AppProjectEntity
     }
 
     public int Id { get; set; }
-    public string Name { get; set; }
-    public bool IsActive { get; set; }
+    public required string Name { get; set; }
+    public required bool IsActive { get; set; }
     public string? Description { get; set; }
     public DateTime CreatedAt { get; init; }
     public DateTime? LastUpdatedAt { get; set; }
 
-    public string Category { get; set; }
+    public string? Category { get; set; }
 
-    public string
-        DatabaseConnectionStringRef
-    { get; set; } // azure keyvault reference to the database connection string
+    public string? DatabaseConnectionStringRef { get; set; } // azure keyvault reference to the database connection string
 
-    public string
+    public string?
         DatabaseConnectionStringReference
     {
         get;

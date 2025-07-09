@@ -78,12 +78,12 @@
 
 @code {
 
-    [Parameter] public MudAvatar Avatar { get; set; }
+    [Parameter] public required MudAvatar Avatar { get; set; }
 
-    private string _phoneNumber;
+    private string _phoneNumber = string.Empty;
     private bool _phoneError;
 
-    private string _emailAddress;
+    private string _emailAddress = string.Empty;
     private bool _emailError;
 
     private void ValidatePhoneNumber()

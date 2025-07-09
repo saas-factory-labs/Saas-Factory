@@ -28,6 +28,7 @@ public class AccountRepository : IAccountRepository
             CreatedAt = DateTime.Now,
             Email = "Not Found",
             TenantId = "not-found",
+            UserId = "not-found",
             Owner = CreateNotFoundUserEntity()
         };
     }
@@ -40,6 +41,7 @@ public class AccountRepository : IAccountRepository
             CreatedAt = DateTime.Now,
             Email = "Not Found",
             TenantId = "not-found",
+            UserId = "not-found",
             Owner = CreateNotFoundUserEntity()
         };
     }
