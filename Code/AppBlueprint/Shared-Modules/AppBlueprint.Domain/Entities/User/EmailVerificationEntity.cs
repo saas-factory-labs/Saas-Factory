@@ -15,7 +15,7 @@ public class EmailVerificationEntity : BaseEntity
     public DateTime ExpireAt => ExpiresAt; // Alias for backward compatibility
     public bool HasBeenVerified { get; set; }
     public bool HasBeenOpened { get; set; }
-    
+
     // Navigation property
     public UserEntity? User { get; set; }
 }

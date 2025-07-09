@@ -121,18 +121,18 @@
     <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0-alpha.22272.1" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
-    <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting.Azure" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.2.1" />
-    <PackageVersion Include="Aspire.Hosting.Testing" Version="9.2.1" />
-    <PackageVersion Include="Aspire.StackExchange.Redis.OutputCaching" Version="9.2.1" />
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.PostgreSQL.Extensions" Version="1.0.0" />
-    <PackageVersion Include="Azure.Security.KeyVault.Secrets" Version="4.7.0" />
+    <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.Azure" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.Testing" Version="9.3.1" />
+    <PackageVersion Include="Aspire.StackExchange.Redis.OutputCaching" Version="9.3.1" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.PostgreSQL.Extensions" Version="9.5.0" />
+    <PackageVersion Include="Azure.Security.KeyVault.Secrets" Version="4.8.0" />
     <PackageVersion Include="Scrutor" Version="6.0.1" />
     <PackageVersion Include="Microsoft.FeatureManagement" Version="3.2.0" />
     <PackageVersion Include="Asp.Versioning.Mvc" Version="8.1.0" />

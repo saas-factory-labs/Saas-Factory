@@ -2,9 +2,9 @@ namespace AppBlueprint.Contracts.Baseline.Customer.Requests;
 
 public class UpdateCustomerRequest
 {
-    public string Id { get; set; } = string.Empty;
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Address { get; set; }
+    public required string Id { get; set; }
+    public string? Name { get; set; }
+    public string? Email { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? Address { get; set; }
 }

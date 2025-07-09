@@ -10,20 +10,20 @@ internal class CustomRouteConvention : IControllerModelConvention
         CultureInfo culture = CultureInfo.InvariantCulture;
 
         foreach (ActionModel action in controller.Actions)
-        foreach (SelectorModel selector in action.Selectors)
-        {
-            if (selector.AttributeRouteModel is null) selector.AttributeRouteModel = new AttributeRouteModel();
+            foreach (SelectorModel selector in action.Selectors)
+            {
+                if (selector.AttributeRouteModel is null) selector.AttributeRouteModel = new AttributeRouteModel();
 
-            // Get the controller and action names
-            string controllerName = controller.ControllerName.ToLower(culture);
-            string actionName = action.ActionName.ToLower(culture);
+                // Get the controller and action names
+                string controllerName = controller.ControllerName.ToLower(culture);
+                string actionName = action.ActionName.ToLower(culture);
 
-            string guid = Guid.NewGuid().ToString();
+                string guid = Guid.NewGuid().ToString();
 
-            // Define the route template
-            string routeTemplate = $"api/{controllerName}/{actionName}/{guid}";
+                // Define the route template
+                string routeTemplate = $"api/{controllerName}/{actionName}/{guid}";
 
-            selector.AttributeRouteModel.Template = routeTemplate;
-        }
+                selector.AttributeRouteModel.Template = routeTemplate;
+            }
     }
 }

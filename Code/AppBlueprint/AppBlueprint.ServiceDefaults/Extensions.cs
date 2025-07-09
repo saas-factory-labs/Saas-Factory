@@ -311,7 +311,7 @@ namespace Microsoft.Extensions.Hosting
 // //             // string? dashboardEndpoint = Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
 
 // //             string dashboardEndpoint = "https://localhost:21250";
-            
+
 // //             // If dashboard endpoint is set, use it for OTEL exporter
 // //             if (!string.IsNullOrEmpty(dashboardEndpoint))
 // //             {
@@ -336,7 +336,7 @@ namespace Microsoft.Extensions.Hosting
 // //                 Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
 // //                 Console.WriteLine("ServiceDefaults: Setting default OTLP protocol: http/protobuf");
 // //             }
-            
+
 // //             // Clear headers if not set
 // //             string? headers = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS");
 // //             if (headers == null)
@@ -778,7 +778,7 @@ namespace Microsoft.Extensions.Hosting
 // // // //                 string? protocolStr = builder.Configuration["OTEL_EXPORTER_OTLP_PROTOCOL"]
 // // // //                                       ?? Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL");
 // // // //                 var protocol = string.Equals(protocolStr, "grpc", StringComparison.OrdinalIgnoreCase);
-                  
+
 
 // // // //                 // Metrics exporter
 // // // //                 builder.Services.ConfigureOpenTelemetryMeterProvider(options =>
@@ -935,7 +935,7 @@ namespace Microsoft.Extensions.Hosting
 // // // // //                 // Add sources that should be traced
 // // // // //                 tracing.AddSource(serviceName);
 // // // // //                 tracing.AddSource("Microsoft.AspNetCore");
-                
+
 // // // // //                 // Add instrumentation
 // // // // //                 tracing.AddAspNetCoreInstrumentation(options => 
 // // // // //                 {
@@ -965,14 +965,14 @@ namespace Microsoft.Extensions.Hosting
 // // // // //         {
 // // // // //             // First check for DOTNET_DASHBOARD_OTLP_ENDPOINT_URL (Aspire standard)
 // // // // //             string? otlpEndpoint = builder.Configuration["DOTNET_DASHBOARD_OTLP_ENDPOINT_URL"];
-            
+
 // // // // //             // Fall back to OTEL_EXPORTER_OTLP_ENDPOINT if the Aspire-specific one isn't set
 // // // // //             if (string.IsNullOrWhiteSpace(otlpEndpoint))
 // // // // //             {
 // // // // //                 otlpEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? 
 // // // // //                                Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
 // // // // //             }
-            
+
 // // // // //             // Default as last resort
 // // // // //             if (string.IsNullOrWhiteSpace(otlpEndpoint))
 // // // // //             {
@@ -985,7 +985,7 @@ namespace Microsoft.Extensions.Hosting
 // // // // //             var protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
 // // // // //             string? protocolStr = builder.Configuration["OTEL_EXPORTER_OTLP_PROTOCOL"] ?? 
 // // // // //                                  Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL");
-            
+
 // // // // //             if (!string.IsNullOrWhiteSpace(protocolStr))
 // // // // //             {
 // // // // //                 if (protocolStr.Equals("http/protobuf", StringComparison.OrdinalIgnoreCase))
@@ -1004,7 +1004,7 @@ namespace Microsoft.Extensions.Hosting
 // // // // //                     otlpOptions.Protocol = protocol;
 // // // // //                 });
 // // // // //             });
-            
+
 // // // // //             // Configure tracing with OTLP exporter
 // // // // //             builder.Services.ConfigureOpenTelemetryTracerProvider(options => 
 // // // // //             {
@@ -1015,7 +1015,7 @@ namespace Microsoft.Extensions.Hosting
 // // // // //                     otlpOptions.Protocol = protocol;
 // // // // //                 });
 // // // // //             });
-            
+
 // // // // //             // Configure logging with OTLP exporter
 // // // // //             builder.Logging.AddOpenTelemetry(logging =>
 // // // // //             {
@@ -1025,21 +1025,21 @@ namespace Microsoft.Extensions.Hosting
 // // // // //                     otlpOptions.Protocol = protocol;
 // // // // //                 });
 // // // // //             });
-            
+
 // // // // //             Console.WriteLine("Successfully configured OpenTelemetry exporters");
 // // // // //         }
 // // // // //         catch (Exception ex)
 // // // // //         {            
 // // // // //             Console.WriteLine($"Error configuring OpenTelemetry: {ex.Message}");
 // // // // //         }
-        
+
 // // // // //         return builder;
 // // // // //     }
 
 // // // // //     public static IHostApplicationBuilder AddDefaultHealthChecks(this IHostApplicationBuilder builder)
 // // // // //     {
 // // // // //         ArgumentNullException.ThrowIfNull(builder, nameof(builder));
-        
+
 // // // // //         builder.Services.AddHealthChecks()
 // // // // //             // Add a default liveness check to ensure app is responsive
 // // // // //             .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
@@ -1050,7 +1050,7 @@ namespace Microsoft.Extensions.Hosting
 // // // // //     public static WebApplication MapDefaultEndpoints(this WebApplication app)
 // // // // //     {
 // // // // //         ArgumentNullException.ThrowIfNull(app, nameof(app));
-        
+
 // // // // //         // Adding health checks endpoints to applications in non-development environments has security implications.
 // // // // //         // See https://aka.ms/dotnet/aspire/healthchecks for details before enabling these endpoints in non-development environments.
 // // // // //         if (app.Environment.IsDevelopment())

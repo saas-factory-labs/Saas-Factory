@@ -1,4 +1,4 @@
-public class LoggingHandler : DelegatingHandler
+internal class LoggingHandler : DelegatingHandler
 {
     public LoggingHandler(HttpMessageHandler innerHandler) : base(innerHandler)
     {

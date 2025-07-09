@@ -18,7 +18,7 @@ internal sealed class AuthorizationTests : IDisposable
     internal const string AdminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
     internal const string UserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
     internal const string TenantAToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
-    
+
     private const string AdminSecretEndpoint = "/api/admin/secret";
     private const string UsersEndpoint = "/api/users";
     private const string TenantsOtherResourceEndpoint = "/api/tenants/other-tenant/resource";
@@ -26,7 +26,7 @@ internal sealed class AuthorizationTests : IDisposable
     private const string BearerScheme = "Bearer";
     private const string AuthorizationText = "Authorization";
     private const string ForbiddenText = "Forbidden";
-    
+
     private bool _disposed;
     private WebApplicationFactory<TestStartup>? _factory;
     private HttpClient? _http;

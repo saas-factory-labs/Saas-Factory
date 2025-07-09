@@ -34,10 +34,10 @@ public sealed class FamilyEntity : BaseEntity
     public void AddFamilyMember(FamilyMemberEntity familyMember)
     {
         ArgumentNullException.ThrowIfNull(familyMember);
-        
+
         if (_familyMembers.Any(fm => fm.Id == familyMember.Id))
             return; // Family member already exists
-            
+
         _familyMembers.Add(familyMember);
     }
 
@@ -50,10 +50,10 @@ public sealed class FamilyEntity : BaseEntity
     public void AddFamilyInvite(FamilyInviteEntity familyInvite)
     {
         ArgumentNullException.ThrowIfNull(familyInvite);
-        
+
         if (_familyInvites.Any(fi => fi.Id == familyInvite.Id))
             return; // Family invite already exists
-            
+
         _familyInvites.Add(familyInvite);
     }
 

@@ -4,7 +4,7 @@ public class TenantMiddleware(RequestDelegate next)
 {    // Paths that should be excluded from tenant ID requirement
     private static readonly string[] ExcludedPaths = [
         "/swagger",
-        "/openapi", 
+        "/openapi",
         "/nswag",
         "/api-docs",
         "/swagger.json",
@@ -22,15 +22,15 @@ public class TenantMiddleware(RequestDelegate next)
         "/favicon.ico",
         "/api/test",
         "/api/system" // System endpoints should not require tenant
-    ];    public async Task Invoke(HttpContext? context)
+    ]; public async Task Invoke(HttpContext? context)
     {
         ArgumentNullException.ThrowIfNull(context);
-        
+
         string requestPath = context.Request.Path.Value ?? string.Empty;
-        
+
         // Check if the request should bypass tenant validation
         bool shouldBypassTenantValidation = ShouldBypassTenantValidation(requestPath);
-        
+
         if (!shouldBypassTenantValidation)
         {
             string? tenantId = context.Request.Headers["tenant-id"].FirstOrDefault();
@@ -46,14 +46,15 @@ public class TenantMiddleware(RequestDelegate next)
         }
 
         await next(context);
-    }    private static bool ShouldBypassTenantValidation(string requestPath)
+    }
+    private static bool ShouldBypassTenantValidation(string requestPath)
     {
         // Check if path is in the excluded list (case-insensitive)
-        bool isExcludedPath = ExcludedPaths.Any(excludedPath => 
+        bool isExcludedPath = ExcludedPaths.Any(excludedPath =>
             requestPath.StartsWith(excludedPath, StringComparison.OrdinalIgnoreCase));
-        
+
         if (isExcludedPath) return true;
-        
+
         // Check if it's a documentation or static file request
         bool isDocumentationOrStatic = requestPath.Contains("swagger", StringComparison.OrdinalIgnoreCase) ||
                                       requestPath.Contains("openapi", StringComparison.OrdinalIgnoreCase) ||
@@ -62,22 +63,22 @@ public class TenantMiddleware(RequestDelegate next)
                                       requestPath.EndsWith("/v1", StringComparison.OrdinalIgnoreCase) ||
                                       requestPath.StartsWith("/v1/", StringComparison.OrdinalIgnoreCase) ||
                                       HasStaticFileExtension(requestPath);
-        
+
         if (isDocumentationOrStatic) return true;
-        
+
         // Check if it's a system or test endpoint
         bool isSystemEndpoint = requestPath.StartsWith("/api/test", StringComparison.OrdinalIgnoreCase) ||
                                requestPath.StartsWith("/api/system", StringComparison.OrdinalIgnoreCase) ||
                                requestPath.StartsWith("/health", StringComparison.OrdinalIgnoreCase) ||
                                requestPath.StartsWith("/metrics", StringComparison.OrdinalIgnoreCase);
-        
+
         if (isSystemEndpoint) return true;
-        
+
         // If it's not an API endpoint, bypass validation
         bool isApiEndpoint = requestPath.StartsWith("/api", StringComparison.OrdinalIgnoreCase);
         return !isApiEndpoint;
     }
-    
+
     private static bool HasStaticFileExtension(string requestPath)
     {
         return requestPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase) ||

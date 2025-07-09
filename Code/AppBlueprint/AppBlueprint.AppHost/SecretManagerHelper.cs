@@ -8,13 +8,13 @@ namespace AppBlueprint.AppHost;
 
 internal static class SecretManagerHelper
 {
-    private static readonly IConfigurationRoot ConfigurationRoot = InitializeConfiguration();    private static IConfigurationRoot InitializeConfiguration()
+    private static readonly IConfigurationRoot ConfigurationRoot = InitializeConfiguration(); private static IConfigurationRoot InitializeConfiguration()
     {
         var builder = new ConfigurationBuilder();
         try
         {
             var userSecretsId = GetUserSecretsId();
-            
+
             if (!string.IsNullOrEmpty(userSecretsId))
             {
                 Console.WriteLine($"SecretManagerHelper: Using User Secrets ID: {userSecretsId}");
@@ -42,7 +42,7 @@ internal static class SecretManagerHelper
         }
         return builder.Build();
     }
-    
+
     private static string? GetUserSecretsId()
     {
         try
@@ -50,7 +50,7 @@ internal static class SecretManagerHelper
             var assembly = Assembly.GetEntryAssembly();
             if (assembly is null)
                 return null;
-                
+
             var attribute = assembly.GetCustomAttribute<UserSecretsIdAttribute>();
             return attribute?.UserSecretsId;
         }
@@ -75,7 +75,7 @@ internal static class SecretManagerHelper
             return null;
         }
     }
-    
+
     public static IResourceBuilder<ParameterResource> CreateStablePassword(
         this IDistributedApplicationBuilder builder,
         string secretName
@@ -83,14 +83,17 @@ internal static class SecretManagerHelper
     {
         ArgumentNullException.ThrowIfNull(builder, nameof(builder));
         ArgumentException.ThrowIfNullOrEmpty(secretName, nameof(secretName));
-        
+
         var password = ConfigurationRoot[secretName];
 
         if (string.IsNullOrEmpty(password))
         {
             var passwordGenerator = new GenerateParameterDefault
             {
-                MinLower = 5, MinUpper = 5, MinNumeric = 3, MinSpecial = 3
+                MinLower = 5,
+                MinUpper = 5,
+                MinNumeric = 3,
+                MinSpecial = 3
             };
             password = passwordGenerator.GetDefaultValue();
             SaveSecrectToDotNetUserSecrets(secretName, password);
@@ -98,11 +101,11 @@ internal static class SecretManagerHelper
 
         return builder.CreateResourceBuilder(new ParameterResource(secretName, _ => password, true));
     }
-    
+
     public static void GenerateAuthenticationTokenSigningKey(string secretName)
     {
         ArgumentException.ThrowIfNullOrEmpty(secretName, nameof(secretName));
-        
+
         if (string.IsNullOrEmpty(ConfigurationRoot[secretName]))
         {
             var key = new byte[64]; // 512-bit key
@@ -111,12 +114,12 @@ internal static class SecretManagerHelper
             SaveSecrectToDotNetUserSecrets(secretName, base64Key);
         }
     }
-    
+
     private static void SaveSecrectToDotNetUserSecrets(string key, string value)
     {
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
         ArgumentException.ThrowIfNullOrEmpty(value, nameof(value));
-        
+
         var userSecretsId = GetUserSecretsId();
         if (string.IsNullOrEmpty(userSecretsId))
         {
@@ -138,7 +141,7 @@ internal static class SecretManagerHelper
             Console.WriteLine($"Warning: Failed to start dotnet process to save secret '{key}'");
             return;
         }
-        
+
         process.WaitForExit();
     }
 }

@@ -1,6 +1,6 @@
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
-public static class Policy
+public static class AuthorizationPolicies
 {
     public const string AdminOnly = "AdminOnly";
     public const string HasUserClaim = "HasUserClaim";

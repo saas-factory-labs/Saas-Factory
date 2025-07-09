@@ -1,8 +1,6 @@
+using AppBlueprint.Application.Services.DataExport;
 using AppBlueprint.Contracts.Baseline.DataExport.Requests;
 using AppBlueprint.Contracts.Baseline.DataExport.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +14,14 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Produces("application/json")]
 public class DataExportController : BaseController
 {
-    private readonly IDataExportRepository _dataExportRepository;
+    private readonly IDataExportService _dataExportService;
 
     public DataExportController(
         IConfiguration configuration,
-        IDataExportRepository dataExportRepository)
+        IDataExportService dataExportService)
         : base(configuration)
     {
-        _dataExportRepository = dataExportRepository ?? throw new ArgumentNullException(nameof(dataExportRepository));
+        _dataExportService = dataExportService ?? throw new ArgumentNullException(nameof(dataExportService));
     }
 
     /// <summary>
@@ -36,18 +34,12 @@ public class DataExportController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult<IEnumerable<DataExportResponse>>> GetDataExports(CancellationToken cancellationToken)
     {
-        IEnumerable<DataExportEntity>? dataExports = await _dataExportRepository.GetAllAsync(cancellationToken);
-        if (!dataExports.Any()) return NotFound(new { Message = "No data exports found." });
+        var dataExports = await _dataExportService.GetAllDataExportsAsync(cancellationToken);
 
-        IEnumerable<DataExportResponse>? response = dataExports.Select(dataExport => new DataExportResponse
-        {
-            DownloadUrl = string.Empty, // TODO: Generate actual download URL
-            FileName = dataExport.FileName,
-            FileSize = dataExport.FileSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
-            CreatedAt = dataExport.CreatedAt
-        });
+        if (!dataExports.Any())
+            return NotFound(new { Message = "No data exports found." });
 
-        return Ok(response);
+        return Ok(dataExports);
     }
 
     /// <summary>
@@ -62,18 +54,12 @@ public class DataExportController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult<DataExportResponse>> GetDataExport(string id, CancellationToken cancellationToken)
     {
-        DataExportEntity? dataExport = await _dataExportRepository.GetByIdAsync(id, cancellationToken);
-        if (dataExport is null) return NotFound(new { Message = $"Data export with ID {id} not found." });
+        var dataExport = await _dataExportService.GetDataExportByIdAsync(id, cancellationToken);
 
-        var response = new DataExportResponse
-        {
-            DownloadUrl = string.Empty, // TODO: Generate actual download URL
-            FileName = dataExport.FileName,
-            FileSize = dataExport.FileSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
-            CreatedAt = dataExport.CreatedAt
-        };
+        if (dataExport is null)
+            return NotFound(new { Message = $"Data export with ID {id} not found." });
 
-        return Ok(response);
+        return Ok(dataExport);
     }
 
     /// <summary>
@@ -88,18 +74,13 @@ public class DataExportController : BaseController
     public async Task<ActionResult<DataExportResponse>> CreateDataExport(
         [FromBody] CreateDataExportRequest dataExportDto, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(dataExportDto);
+
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var newDataExport = new DataExportEntity
-        {
-            FileName = dataExportDto.FileName,
-            FileSize = dataExportDto.FileSize
-        };
+        var response = await _dataExportService.CreateDataExportAsync(dataExportDto, cancellationToken);
 
-        // await _dataExportRepository.AddAsync(newDataExport);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
-
-        return CreatedAtAction(nameof(GetDataExport), new { id = newDataExport.Id }, newDataExport);
+        return CreatedAtAction(nameof(GetDataExport), new { id = response.Id }, response);
     }
 
     /// <summary>
@@ -112,15 +93,16 @@ public class DataExportController : BaseController
     [HttpPut(ApiEndpoints.DataExports.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]    public async Task<ActionResult> UpdateDataExport(string id, [FromBody] UpdateDataExportRequest dataExportDto,
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> UpdateDataExport(string id, [FromBody] UpdateDataExportRequest dataExportDto,
         CancellationToken cancellationToken)
     {
-        DataExportEntity? existingDataExport = await _dataExportRepository.GetByIdAsync(id, cancellationToken);
-        if (existingDataExport is null) return NotFound(new { Message = $"Data export with ID {id} not found." });
+        ArgumentNullException.ThrowIfNull(dataExportDto);
 
-        existingDataExport.FileName = dataExportDto.FileName;
+        var success = await _dataExportService.UpdateDataExportAsync(id, dataExportDto, cancellationToken);
 
-        await _dataExportRepository.UpdateAsync(existingDataExport, cancellationToken);
+        if (!success)
+            return NotFound(new { Message = $"Data export with ID {id} not found." });
 
         return NoContent();
     }
@@ -137,11 +119,10 @@ public class DataExportController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult> DeleteDataExport(string id, CancellationToken cancellationToken)
     {
-        DataExportEntity? existingDataExport = await _dataExportRepository.GetByIdAsync(id, cancellationToken);
-        if (existingDataExport is null) return NotFound(new { Message = $"Data export with ID {id} not found." });
+        var success = await _dataExportService.DeleteDataExportAsync(id, cancellationToken);
 
-        // _dataExportRepository.Delete(existingDataExport.Id);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        if (!success)
+            return NotFound(new { Message = $"Data export with ID {id} not found." });
 
         return NoContent();
     }

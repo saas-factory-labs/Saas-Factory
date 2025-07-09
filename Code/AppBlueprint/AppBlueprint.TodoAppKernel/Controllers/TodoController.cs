@@ -18,9 +18,7 @@ public class TodoController(
     IConfiguration configuration)
     : ControllerBase
 {
-    private readonly IConfiguration _configuration = 
-        configuration ?? throw new ArgumentNullException(nameof(configuration));
-    private readonly ILogger<TodoController> _logger = 
+    private readonly ILogger<TodoController> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 
     [HttpGet]
@@ -46,7 +44,7 @@ public class TodoController(
         [FromBody] CreateTodoRequest request,
         CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid) 
+        if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         _logger.LogInformation("Creating new todo: {Title}", request.Title);
@@ -80,7 +78,7 @@ public class TodoController(
         [FromBody] UpdateTodoRequest request,
         CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid) 
+        if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         _logger.LogInformation("Updating todo: {Id}", id);

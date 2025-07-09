@@ -79,7 +79,12 @@ public class FileController : BaseController
     [ProducesResponseType(typeof(FileResponse), StatusCodes.Status201Created)]
     public async Task<ActionResult> Post([FromBody] CreateFileRequest fileDto, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(fileDto);
+
         if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        if (string.IsNullOrEmpty(fileDto.FileName))
+            return BadRequest(new { Message = "FileName is required" });
 
         var newFile = new FileEntity
         {
@@ -101,11 +106,17 @@ public class FileController : BaseController
     /// <returns>No content.</returns>
     [HttpPut("UpdateFile/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]    public async Task<ActionResult> Put(string id, [FromBody] UpdateFileRequest fileDto,
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> Put(string id, [FromBody] UpdateFileRequest fileDto,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(fileDto);
+
         FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken);
         if (existingFile is null) return NotFound(new { Message = $"File with ID {id} not found." });
+
+        if (string.IsNullOrEmpty(fileDto.FileName))
+            return BadRequest(new { Message = "FileName is required" });
 
         existingFile.FileName = fileDto.FileName;
 

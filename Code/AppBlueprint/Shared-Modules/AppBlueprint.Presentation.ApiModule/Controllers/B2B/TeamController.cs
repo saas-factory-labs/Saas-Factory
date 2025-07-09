@@ -101,6 +101,8 @@ public class TeamController : BaseController
     public async Task<ActionResult> CreateTeam([FromBody] CreateTeamRequest teamDto,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(teamDto);
+
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var newTeam = new TeamEntity
@@ -130,9 +132,12 @@ public class TeamController : BaseController
     [HttpPut(ApiEndpoints.Teams.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]    public async Task<ActionResult> UpdateTeam(string id, [FromBody] UpdateTeamRequest teamDto,
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> UpdateTeam(string id, [FromBody] UpdateTeamRequest teamDto,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(teamDto);
+
         TeamEntity? existingTeam = await _teamRepository.GetByIdAsync(id);
         if (existingTeam is null) return NotFound(new { Message = $"Team with ID {id} not found." });
 

@@ -5,17 +5,14 @@ namespace AppBlueprint.Contracts.Baseline.Profile.Requests;
 public class UpdateProfileRequest
 {
     public required string FirstName { get; set; }
-    public string? LastName { get; set; }
+    public required string LastName { get; set; }
 
     public DateTime DateOfBirth { get; set; }
 
     public Name.Gender? Gender { get; set; } = new Name.Gender();
 
-    public string? UserName { get; set; }
+    public required string UserName { get; set; }
     public bool IsActive { get; set; }
-
-    public DateTimeOffset CreatedAt { get; set; }
-    public DateTimeOffset LastLogin { get; set; }
 
     public string? Language { get; set; }
 

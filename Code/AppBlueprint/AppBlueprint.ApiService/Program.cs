@@ -50,7 +50,7 @@ internal static class Program // Make class static
             config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("BearerAuth"));
         });
 
-        builder.Services.AddControllers();        var app = builder.Build();
+        builder.Services.AddControllers(); var app = builder.Build();
 
         app.UseCustomMiddlewares();
 
@@ -68,7 +68,7 @@ internal static class Program // Make class static
 
         // Configure the HTTP request pipeline.
         app.UseExceptionHandler();
-        
+
         // Redirect root path to Swagger UI for easier access from Aspire dashboard
         app.MapGet("/", () => Results.Redirect("/swagger"));
 

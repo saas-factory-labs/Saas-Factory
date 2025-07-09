@@ -83,6 +83,8 @@ public class RoleController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Post([FromBody] CreateRoleRequest roleDto, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(roleDto);
+
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var newRole = new RoleEntity
@@ -105,9 +107,12 @@ public class RoleController : BaseController
     /// <returns>No content.</returns>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]    public async Task<ActionResult> Put(string id, [FromBody] UpdateRoleRequest request,
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> Put(string id, [FromBody] UpdateRoleRequest request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
         if (existingRole is null) return NotFound(new { Message = $"Role with ID {id} not found." });
 

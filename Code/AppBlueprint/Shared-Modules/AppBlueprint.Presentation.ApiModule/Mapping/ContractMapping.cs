@@ -22,6 +22,8 @@ using AppBlueprint.Contracts.Baseline.EmailAddress.Responses;
 using AppBlueprint.Contracts.Baseline.Address.Responses;
 using AppBlueprint.Contracts.Baseline.PhoneNumber.Responses;
 using AppBlueprint.Contracts.Baseline.Permissions.Responses;
+using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
+using AppBlueprint.Contracts.Baseline.User.Responses;
 
 namespace AppBlueprint.Presentation.ApiModule.Mapping
 {
@@ -30,7 +32,7 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping
     {
         public static AccountResponse MapToAccountResponse(this AccountEntity account)
         {
-            if (account == null) throw new ArgumentNullException(nameof(account));
+            ArgumentNullException.ThrowIfNull(account);
 
             return new AccountResponse
             {
@@ -46,9 +48,10 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping
 namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
 {
     public static class AccountsExtensions
-    {        public static AccountEntity MapToAccount(this CreateAccountRequest request, string tenantId)
+    {
+        public static AccountEntity MapToAccount(this CreateAccountRequest request, string tenantId)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
 
             return new AccountEntity
             {
@@ -80,6 +83,8 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
 
         public static AccountResponse MapToAccountResponse(this AccountEntity request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return new AccountResponse
             {
                 Id = request.Id,
@@ -93,6 +98,8 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
     {
         public static ContactPersonResponse MapToContactPerson(this CreateContactPersonRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return new ContactPersonResponse(
                 request.FirstName,
                 request.LastName,
@@ -107,9 +114,15 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
     {
         public static DataExportResponse MapToDataExport(this CreateDataExportRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return new DataExportResponse
             {
-                FileName = request.FileName
+                Id = Guid.NewGuid().ToString(), // Generate a temporary ID for mapping
+                DownloadUrl = request.DownloadUrl?.ToString() ?? string.Empty,
+                FileName = request.FileName,
+                FileSize = request.FileSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                CreatedAt = DateTime.UtcNow
             };
         }
     }
@@ -118,6 +131,8 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
     {
         public static FileResponse MapToFile(this CreateFileRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return new FileResponse
             {
                 FileName = request.FileName
@@ -129,9 +144,27 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
     {
         public static AuditLogResponse MapToAuditLog(this CreateAuditLogRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return new AuditLogResponse
             {
-                OldValue = request.OldValue
+                Action = request.Action,
+                Category = request.Category,
+                NewValue = request.NewValue,
+                OldValue = request.OldValue,
+                ModifiedBy = request.ModifiedBy,
+                ModifiedAt = DateTime.UtcNow,
+                Tenant = new TenantResponse
+                {
+                    Name = "Default Tenant",
+                    CreatedAt = DateTime.UtcNow
+                },
+                User = new UserResponse
+                {
+                    Email = "user@example.com",
+                    FirstName = "Default",
+                    LastName = "User"
+                }
             };
         }
     }
@@ -140,11 +173,13 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
     {
         public static NotificationResponse MapToNotification(this CreateNotificationRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return new NotificationResponse
             {
                 Title = request.Title,
                 Message = request.Message,
-                CreatedAt = request.CreatedAt,
+                CreatedAt = DateTime.UtcNow,
                 IsRead = request.IsRead
             };
         }
@@ -154,11 +189,14 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
     {
         public static ProfileResponse MapToProfile(this CreateProfileRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return new ProfileResponse
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                DateOfBirth = request.DateOfBirth
+                DateOfBirth = request.DateOfBirth,
+                CreatedAt = DateTimeOffset.UtcNow
             };
         }
     }
@@ -167,6 +205,8 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
     {
         public static RoleResponse MapToRole(this CreateRoleRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return new RoleResponse((IReadOnlyList<PermissionResponse>)new List<PermissionResponse>());
         }
     }
@@ -175,10 +215,12 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
     {
         public static IntegrationResponse MapToIntegration(this CreateIntegrationRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             return new IntegrationResponse
             {
                 IsRead = request.IsRead,
-                CreatedAt = request.CreatedAt
+                CreatedAt = DateTime.UtcNow
             };
         }
     }

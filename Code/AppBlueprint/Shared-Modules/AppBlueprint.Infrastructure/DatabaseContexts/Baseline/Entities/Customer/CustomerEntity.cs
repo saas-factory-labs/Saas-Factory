@@ -51,10 +51,10 @@ public sealed class CustomerEntity : BaseEntity
     public void AddTenant(TenantEntity tenant)
     {
         ArgumentNullException.ThrowIfNull(tenant);
-        
+
         if (_tenants.Any(t => t.Id == tenant.Id))
             return; // Tenant already exists
-            
+
         _tenants.Add(tenant);
     }
 
@@ -67,10 +67,10 @@ public sealed class CustomerEntity : BaseEntity
     public void AddContactPerson(ContactPersonEntity contactPerson)
     {
         ArgumentNullException.ThrowIfNull(contactPerson);
-        
+
         if (_contactPersons.Any(cp => cp.Id == contactPerson.Id))
             return; // Contact person already exists
-            
+
         _contactPersons.Add(contactPerson);
         contactPerson.CustomerId = Id;
     }

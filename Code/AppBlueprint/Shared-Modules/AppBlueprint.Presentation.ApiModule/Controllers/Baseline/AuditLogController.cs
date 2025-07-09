@@ -1,5 +1,7 @@
 using AppBlueprint.Contracts.Baseline.AuditLog.Requests;
 using AppBlueprint.Contracts.Baseline.AuditLog.Responses;
+using AppBlueprint.Contracts.Baseline.User.Responses;
+using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
@@ -44,7 +46,25 @@ public class AuditLogController : BaseController
         IEnumerable<AuditLogResponse>? response = auditLogs.Select(auditLog => new AuditLogResponse
         {
             Id = auditLog.Id,
-            Action = auditLog.Action
+            Action = auditLog.Action,
+            Category = auditLog.Category ?? "General",
+            NewValue = auditLog.NewValue,
+            OldValue = auditLog.OldValue,
+            ModifiedBy = $"{auditLog.ModifiedBy.FirstName} {auditLog.ModifiedBy.LastName}",
+            ModifiedAt = auditLog.ModifiedAt,
+            Tenant = new TenantResponse
+            {
+                Id = auditLog.Tenant.Id,
+                Name = auditLog.Tenant.Name ?? "Default Tenant",
+                CreatedAt = auditLog.Tenant.CreatedAt
+            },
+            User = new UserResponse
+            {
+                Id = auditLog.User.Id,
+                Email = auditLog.User.Email,
+                FirstName = auditLog.User.FirstName,
+                LastName = auditLog.User.LastName
+            }
         });
 
         return Ok(response);
@@ -58,7 +78,8 @@ public class AuditLogController : BaseController
     /// <returns>Audit log</returns>
     [HttpGet(ApiEndpoints.AuditLogs.GetById)]
     [ProducesResponseType(typeof(AuditLogResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]    [MapToApiVersion(ApiVersions.V1)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult> GetAuditLog(string id, CancellationToken cancellationToken)
     {
         AuditLogEntity? auditLog = await _auditLogRepository.GetByIdAsync(id, cancellationToken);
@@ -67,7 +88,25 @@ public class AuditLogController : BaseController
         var response = new AuditLogResponse
         {
             Id = auditLog.Id,
-            Action = auditLog.Action
+            Action = auditLog.Action,
+            Category = auditLog.Category ?? "General",
+            NewValue = auditLog.NewValue,
+            OldValue = auditLog.OldValue,
+            ModifiedBy = $"{auditLog.ModifiedBy.FirstName} {auditLog.ModifiedBy.LastName}",
+            ModifiedAt = auditLog.ModifiedAt,
+            Tenant = new TenantResponse
+            {
+                Id = auditLog.Tenant.Id,
+                Name = auditLog.Tenant.Name ?? "Default Tenant",
+                CreatedAt = auditLog.Tenant.CreatedAt
+            },
+            User = new UserResponse
+            {
+                Id = auditLog.User.Id,
+                Email = auditLog.User.Email,
+                FirstName = auditLog.User.FirstName,
+                LastName = auditLog.User.LastName
+            }
         };
 
         return Ok(response);
@@ -113,7 +152,8 @@ public class AuditLogController : BaseController
     [HttpPut(ApiEndpoints.AuditLogs.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]    public async Task<ActionResult> UpdateAuditLog(string id, [FromBody] UpdateAuditLogRequest auditLogDto,
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> UpdateAuditLog(string id, [FromBody] UpdateAuditLogRequest auditLogDto,
         CancellationToken cancellationToken)
     {
         AuditLogEntity? existingAuditLog = await _auditLogRepository.GetByIdAsync(id, cancellationToken);
@@ -135,7 +175,8 @@ public class AuditLogController : BaseController
     /// <returns>No content.</returns>
     [HttpDelete(ApiEndpoints.AuditLogs.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]    [MapToApiVersion(ApiVersions.V1)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult> DeleteAuditLog(string id, CancellationToken cancellationToken)
     {
         AuditLogEntity? existingAuditLog = await _auditLogRepository.GetByIdAsync(id, cancellationToken);

@@ -7,11 +7,11 @@ namespace AppBlueprint.Contracts.Baseline.Account.Requests;
 public class UpdateAccountRequest
 {
     [DataClassification(GDPRType.DirectlyIdentifiable)]
-    public string Email { get; set; } // GDPR data 
+    public required string Email { get; set; }
 
     public CustomerType CustomerType { get; set; } // B2B / B2C / Government
 
-    public string
+    public required string
         Name
     {
         get;

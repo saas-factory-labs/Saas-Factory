@@ -21,18 +21,18 @@ public class AuditLogResponse
 
     //public string EntityName { get; set; }
     //public int EntityId { get; set; }
-    public string Action { get; set; }
-    public string Category { get; set; }
+    public required string Action { get; set; }
+    public required string Category { get; set; }
 
-    [Required] public string NewValue { get; set; }
-    [Required] public string OldValue { get; set; }
+    [Required] public required string NewValue { get; set; }
+    [Required] public required string OldValue { get; set; }
 
-    [Required] public string ModifiedBy { get; set; }
-    public DateTime ModifiedAt { get; set; }
+    [Required] public required string ModifiedBy { get; set; }
+    public required DateTime ModifiedAt { get; set; }
 
     // public int TenantId { get; set; }
-    public TenantResponse Tenant { get; set; }
+    public required TenantResponse Tenant { get; set; }
 
     // public int UserId { get; set; }
-    public UserResponse User { get; set; }
+    public required UserResponse User { get; set; }
 }

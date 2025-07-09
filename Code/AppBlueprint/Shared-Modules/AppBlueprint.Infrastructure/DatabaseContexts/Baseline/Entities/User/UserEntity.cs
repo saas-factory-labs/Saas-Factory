@@ -62,10 +62,10 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
     public void AddEmailAddress(EmailAddressEntity emailAddress)
     {
         ArgumentNullException.ThrowIfNull(emailAddress);
-        
+
         if (_emailAddresses.Any(ea => ea.Id == emailAddress.Id))
             return; // Email address already exists
-            
+
         _emailAddresses.Add(emailAddress);
     }
 
@@ -78,10 +78,10 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
     public void AddAddress(AddressEntity address)
     {
         ArgumentNullException.ThrowIfNull(address);
-        
+
         if (_addresses.Any(a => a.Id == address.Id))
             return; // Address already exists
-            
+
         _addresses.Add(address);
     }
 
@@ -94,30 +94,30 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
     public void AddEmailVerification(EmailVerificationEntity emailVerification)
     {
         ArgumentNullException.ThrowIfNull(emailVerification);
-        
+
         if (_emailVerifications.Any(ev => ev.Id == emailVerification.Id))
             return; // Email verification already exists
-            
+
         _emailVerifications.Add(emailVerification);
     }
 
     public void AddReferralInvitation(EmailInviteEntity invitation)
     {
         ArgumentNullException.ThrowIfNull(invitation);
-        
+
         if (_referralInvitations.Any(ri => ri.Id == invitation.Id))
             return; // Invitation already exists
-            
+
         _referralInvitations.Add(invitation);
     }
 
     public void AddRole(RoleEntity role)
     {
         ArgumentNullException.ThrowIfNull(role);
-        
+
         if (_roles.Any(r => r.Id == role.Id))
             return; // Role already exists
-            
+
         _roles.Add(role);
     }
 
@@ -130,10 +130,10 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
     public void AddResourcePermission(ResourcePermissionEntity permission)
     {
         ArgumentNullException.ThrowIfNull(permission);
-        
+
         if (_resourcePermissions.Any(rp => rp.Id == permission.Id))
             return; // Permission already exists
-            
+
         _resourcePermissions.Add(permission);
     }
 
@@ -146,10 +146,10 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
     public void AddUserRole(UserRoleEntity userRole)
     {
         ArgumentNullException.ThrowIfNull(userRole);
-        
+
         if (_userRoles.Any(ur => ur.Id == userRole.Id))
             return; // User role already exists
-            
+
         _userRoles.Add(userRole);
     }
 

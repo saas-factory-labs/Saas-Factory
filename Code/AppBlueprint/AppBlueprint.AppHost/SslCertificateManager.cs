@@ -17,7 +17,7 @@ internal static class SslCertificateManager
             var assembly = Assembly.GetEntryAssembly();
             if (assembly == null)
                 return null;
-                
+
             var attribute = assembly.GetCustomAttribute<UserSecretsIdAttribute>();
             return attribute?.UserSecretsId;
         }
@@ -45,7 +45,7 @@ internal static class SslCertificateManager
         // Try to use user secrets only if we have a secrets ID
         var configBuilder = new ConfigurationBuilder();
         var userSecretsId = GetUserSecretsId();
-        
+
         if (!string.IsNullOrEmpty(userSecretsId))
         {
             Console.WriteLine($"Using User Secrets ID: {userSecretsId}");
@@ -55,12 +55,12 @@ internal static class SslCertificateManager
         {
             Console.WriteLine("User Secrets ID not found. Proceeding without user secrets.");
         }
-        
+
         var config = configBuilder.Build();
 
         const string certificatePasswordKey = "certificate-password";
         string certificatePassword;
-        
+
         var configValue = config[certificatePasswordKey];
         if (configValue is not null)
         {
@@ -81,18 +81,18 @@ internal static class SslCertificateManager
                 Console.WriteLine($"Certificate does not exist at {certificateLocation}. Creating a new certificate...");
                 CleanExistingCertificates();
                 CreateNewSelfSignedDeveloperCertificate(certificateLocation, certificatePassword);
-                
+
                 // Also set the password as an environment variable for other services to use
                 Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
                 Console.WriteLine("Certificate password set as environment variable CERTIFICATE_PASSWORD");
-                
+
                 return certificatePassword;
             }
-            
+
             // Certificate exists, try to load it
             using var certificate = X509CertificateLoader.LoadPkcs12FromFile(certificateLocation, certificatePassword);
             Console.WriteLine($"Existing certificate found at {certificateLocation}");
-            
+
             // Only create a new certificate if the current one is clearly invalid
             if (!IsCertificateValid(certificate))
             {
@@ -103,7 +103,7 @@ internal static class SslCertificateManager
             else
             {
                 Console.WriteLine("Certificate is valid. Using existing certificate.");
-                
+
                 // Only check trust if the certificate hasn't been regenerated
                 if (!IsCertificateTrusted(certificate))
                 {
@@ -115,7 +115,7 @@ internal static class SslCertificateManager
                     Console.WriteLine("Certificate is already trusted.");
                 }
             }
-            
+
             // Set the certificate password as an environment variable so it can be accessed by other services
             Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
             Console.WriteLine("Certificate password set as environment variable CERTIFICATE_PASSWORD");
@@ -125,7 +125,7 @@ internal static class SslCertificateManager
             Console.WriteLine($"Certificate cryptographic error: {ex.Message}. Generating new certificate at {certificateLocation}");
             CleanExistingCertificates();
             CreateNewSelfSignedDeveloperCertificate(certificateLocation, certificatePassword);
-            
+
             // Set the password as environment variable even after errors
             Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
         }
@@ -134,7 +134,7 @@ internal static class SslCertificateManager
             Console.WriteLine($"Unexpected certificate error: {ex.Message}. Generating new certificate.");
             CleanExistingCertificates();
             CreateNewSelfSignedDeveloperCertificate(certificateLocation, certificatePassword);
-            
+
             // Set the password as environment variable even after errors
             Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
         }
@@ -145,11 +145,11 @@ internal static class SslCertificateManager
     private static string GetCertificateLocation(string domain)
     {
         ArgumentException.ThrowIfNullOrEmpty(domain, nameof(domain));
-        
+
         var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         return Path.Combine(userFolder, "ASP.NET", "Https", $"{domain}.pfx");
     }
-    
+
     private static void CleanExistingCertificates()
     {
         Console.WriteLine("Cleaning existing development certificates...");
@@ -159,12 +159,12 @@ internal static class SslCertificateManager
     private static bool IsCertificateValid(X509Certificate2 certificate)
     {
         ArgumentNullException.ThrowIfNull(certificate);
-        
+
         try
         {
             // Check if certificate is valid for the current date
             DateTime now = DateTime.Now;
-            
+
             // Only invalidate if the certificate is already expired
             if (certificate.NotAfter < now)
             {
@@ -172,7 +172,7 @@ internal static class SslCertificateManager
                 Console.WriteLine($"Valid from {certificate.NotBefore} to {certificate.NotAfter}, but current date is {now}");
                 return false;
             }
-            
+
             return true;
         }
         catch (Exception ex)
@@ -186,13 +186,13 @@ internal static class SslCertificateManager
     {
         ArgumentException.ThrowIfNullOrEmpty(certificateLocation, nameof(certificateLocation));
         ArgumentException.ThrowIfNullOrEmpty(password, nameof(password));
-        
+
         if (File.Exists(certificateLocation))
         {
             Console.WriteLine($"Deleting existing certificate at {certificateLocation}");
             File.Delete(certificateLocation);
         }
-        
+
         var certificateDirectory = Path.GetDirectoryName(certificateLocation);
         if (certificateDirectory is not null && !Directory.Exists(certificateDirectory))
         {
@@ -203,22 +203,22 @@ internal static class SslCertificateManager
         // Create a new certificate with a 2-year validity period
         Console.WriteLine("Creating new certificate with dotnet dev-certs...");
         RunDotNetDevCertsCommand($"https -ep \"{certificateLocation}\" -p \"{password}\" --quiet");
-        
+
         // Extra step: Trust certificate in all system stores
         Console.WriteLine("Trusting certificate in system stores...");
         TrustCertificate(certificateLocation, password);
-        
+
         // Verify the certificate was created and is trusted
-        try 
+        try
         {
             using var cert = X509CertificateLoader.LoadPkcs12FromFile(certificateLocation, password);
             Console.WriteLine($"Successfully created certificate. Valid from {cert.NotBefore} to {cert.NotAfter}");
-            
+
             if (!IsCertificateTrusted(cert))
             {
                 Console.WriteLine("Warning: New certificate is not trusted yet. Running additional trust steps...");
                 RunDotNetDevCertsCommand("https --trust --quiet");
-                
+
                 // Additional trust step: explicitly trust it using system tools
                 ExplicitlyTrustCertificateInBrowserStores(cert);
             }
@@ -228,56 +228,56 @@ internal static class SslCertificateManager
             Console.WriteLine($"Error verifying new certificate: {ex.Message}");
         }
     }
-    
+
     private static bool IsCertificateTrusted(X509Certificate2 certificate)
     {
         ArgumentNullException.ThrowIfNull(certificate);
-        
+
         try
         {
             // Check if certificate is in the trusted root store for CurrentUser
             using var userRootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
             userRootStore.Open(OpenFlags.ReadOnly);
-            
+
             var userRootResult = userRootStore.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
             if (userRootResult.Count > 0)
             {
                 Console.WriteLine("Certificate is trusted in CurrentUser Root store.");
                 return true;
             }
-            
+
             // Also check trusted root for LocalMachine which browsers often use
             using var machineRootStore = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
             machineRootStore.Open(OpenFlags.ReadOnly);
-            
+
             var machineRootResult = machineRootStore.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
             if (machineRootResult.Count > 0)
             {
                 Console.WriteLine("Certificate is trusted in LocalMachine Root store.");
                 return true;
             }
-            
+
             // Also check if it's in the My store for CurrentUser or LocalMachine
             using var userMyStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
             userMyStore.Open(OpenFlags.ReadOnly);
-            
+
             var userMyResult = userMyStore.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
             if (userMyResult.Count > 0)
             {
                 Console.WriteLine("Certificate is trusted in CurrentUser My store.");
                 return true;
             }
-            
+
             using var machineMyStore = new X509Store(StoreName.My, StoreLocation.LocalMachine);
             machineMyStore.Open(OpenFlags.ReadOnly);
-            
+
             var machineMyResult = machineMyStore.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
             if (machineMyResult.Count > 0)
             {
                 Console.WriteLine("Certificate is trusted in LocalMachine My store.");
                 return true;
             }
-            
+
             // If we get here, the certificate is not trusted in any store
             Console.WriteLine("Certificate is not trusted in any certificate store.");
             return false;
@@ -287,31 +287,32 @@ internal static class SslCertificateManager
             Console.WriteLine($"Error checking certificate trust: {ex.Message}");
             return false;
         }
-    }      private static void TrustCertificate(string certificatePath, string password)
+    }
+    private static void TrustCertificate(string certificatePath, string password)
     {
         ArgumentException.ThrowIfNullOrEmpty(certificatePath, nameof(certificatePath));
         ArgumentException.ThrowIfNullOrEmpty(password, nameof(password));
-        
+
         Console.WriteLine("Explicitly trusting the development certificate...");
-        
+
         try
         {
             // First, trust the certificate using dotnet dev-certs
             RunDotNetDevCertsCommand("https --trust --quiet");
-            
+
             try
             {
                 // Load certificate with proper flags - use the loader directly
                 using var cert = X509CertificateLoader.LoadPkcs12FromFile(certificatePath, password);
-                
+
                 // Only add to user stores which don't require admin privileges
                 InstallCertificateToStore(cert, StoreName.Root, StoreLocation.CurrentUser);
                 InstallCertificateToStore(cert, StoreName.My, StoreLocation.CurrentUser);
-                
+
                 // Skip LocalMachine stores entirely as they're causing issues
                 // and require admin rights
                 Console.WriteLine("Skipping LocalMachine stores to focus on user-level certificate stores.");
-                
+
                 // Additional browser-specific trust step using user-level stores
                 ExplicitlyTrustCertificateInBrowserStores(cert);
             }
@@ -342,16 +343,16 @@ internal static class SslCertificateManager
             Console.WriteLine("You may need to manually trust the certificate in your browser.");
         }
     }
-    
+
     private static void InstallCertificateToStore(X509Certificate2 certificate, StoreName storeName, StoreLocation storeLocation)
     {
         ArgumentNullException.ThrowIfNull(certificate);
-        
+
         try
         {
             using var store = new X509Store(storeName, storeLocation);
             store.Open(OpenFlags.ReadWrite);
-            
+
             // Check if certificate already exists in store
             var existingCerts = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
             if (existingCerts.Count == 0)
@@ -369,11 +370,11 @@ internal static class SslCertificateManager
             Console.WriteLine($"Failed to add certificate to {storeName}/{storeLocation} store: {ex.Message}");
         }
     }
-    
+
     private static void ExplicitlyTrustCertificateInBrowserStores(X509Certificate2 certificate)
     {
         ArgumentNullException.ThrowIfNull(certificate);
-        
+
         // Windows-specific certificate browser trust enhancement
         if (OperatingSystem.IsWindows())
         {
@@ -385,7 +386,7 @@ internal static class SslCertificateManager
                 {
                     // Export the certificate to a .cer file 
                     File.WriteAllBytes(tempCerPath, certificate.Export(X509ContentType.Cert));
-                    
+
                     // First try with -user parameter which doesn't require admin rights
                     using var userProcess = Process.Start(new ProcessStartInfo
                     {
@@ -396,11 +397,11 @@ internal static class SslCertificateManager
                         UseShellExecute = false,
                         CreateNoWindow = true
                     });
-                    
+
                     if (userProcess is not null)
                     {
                         userProcess.WaitForExit();
-                        
+
                         if (userProcess.ExitCode == 0)
                         {
                             Console.WriteLine("Successfully added certificate to user's browser trust store using certutil.");
@@ -410,7 +411,7 @@ internal static class SslCertificateManager
                         {
                             var error = userProcess.StandardError.ReadToEnd();
                             Console.WriteLine($"User-level certutil operation failed: {error}");
-                            
+
                             // If user-level failed, try to suggest a manual approach
                             Console.WriteLine("You may need to manually trust the certificate in your browser settings.");
                             Console.WriteLine("Certificate was created successfully, but you might see a warning in your browser.");
@@ -443,7 +444,7 @@ internal static class SslCertificateManager
                 {
                     // Export the certificate
                     File.WriteAllBytes(tempCerPath, certificate.Export(X509ContentType.Cert));
-                    
+
                     // Add to keychain and trust
                     using var process = Process.Start(new ProcessStartInfo
                     {
@@ -454,7 +455,7 @@ internal static class SslCertificateManager
                         UseShellExecute = false,
                         CreateNoWindow = true
                     });
-                    
+
                     if (process is not null)
                     {
                         process.WaitForExit();
@@ -494,13 +495,13 @@ internal static class SslCertificateManager
             Console.WriteLine("- Fedora/RHEL: sudo cp cert.crt /etc/pki/ca-trust/source/anchors/ && sudo update-ca-trust extract");
         }
     }
-    
+
     private static void RunDotNetDevCertsCommand(string arguments)
     {
         ArgumentException.ThrowIfNullOrEmpty(arguments, nameof(arguments));
-        
+
         Console.WriteLine($"Running dotnet dev-certs {arguments}");
-        
+
         using var process = Process.Start(new ProcessStartInfo
         {
             FileName = "dotnet",
@@ -510,27 +511,27 @@ internal static class SslCertificateManager
             UseShellExecute = false,
             CreateNoWindow = false
         });
-        
+
         if (process is null)
         {
             throw new InvalidOperationException("Failed to start dotnet dev-certs process.");
         }
-        
+
         process.WaitForExit();
-        
+
         var output = process.StandardOutput.ReadToEnd();
         var error = process.StandardError.ReadToEnd();
-        
+
         if (!string.IsNullOrEmpty(output))
         {
             Console.WriteLine($"Output: {output}");
         }
-        
+
         if (!string.IsNullOrEmpty(error))
         {
             Console.WriteLine($"Error: {error}");
         }
-        
+
         if (process.ExitCode != 0)
         {
             Console.WriteLine($"dotnet dev-certs command failed with exit code {process.ExitCode}");

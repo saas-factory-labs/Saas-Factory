@@ -26,7 +26,7 @@ public class ApplicationDbContext : B2CdbContext
 
         ConfigureGdprDataClassification(modelBuilder);
         ConfigureSoftDeleteFilters(modelBuilder);
-        
+
         // Optional: add multi-tenancy query filters here when ready
     }
 

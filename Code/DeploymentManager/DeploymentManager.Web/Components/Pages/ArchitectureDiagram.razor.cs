@@ -166,13 +166,13 @@ public partial class ArchitectureDiagram
         OpenApiDocument? openApiDocument = new OpenApiStreamReader().Read(stream, out OpenApiDiagnostic? diagnostic);
 
         foreach (KeyValuePair<string, OpenApiPathItem> path in openApiDocument.Paths)
-        foreach (KeyValuePair<OperationType, OpenApiOperation> operation in path.Value.Operations)
-        {
-            NodeModel? node = CreateNode($"{operation.Key} {path.Key}", new Point(0, 0));
-            Diagram.Nodes.Add(node);
+            foreach (KeyValuePair<OperationType, OpenApiOperation> operation in path.Value.Operations)
+            {
+                NodeModel? node = CreateNode($"{operation.Key} {path.Key}", new Point(0, 0));
+                Diagram.Nodes.Add(node);
 
-            Console.WriteLine("node :" + node.Title);
-        }
+                Console.WriteLine("node :" + node.Title);
+            }
     }
 
     //private void ConfigureOpenTelemetry()

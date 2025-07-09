@@ -49,10 +49,10 @@ public sealed class OrganizationEntity : BaseEntity, ITenantScoped
     public void AddTeam(TeamEntity team)
     {
         ArgumentNullException.ThrowIfNull(team);
-        
+
         if (_teams.Any(t => t.Id == team.Id))
             return; // Team already exists
-            
+
         _teams.Add(team);
         team.OrganizationId = Id;
     }
@@ -66,10 +66,10 @@ public sealed class OrganizationEntity : BaseEntity, ITenantScoped
     public void AddCustomer(CustomerEntity customer)
     {
         ArgumentNullException.ThrowIfNull(customer);
-        
+
         if (_customers.Any(c => c.Id == customer.Id))
             return; // Customer already exists
-            
+
         _customers.Add(customer);
     }
 

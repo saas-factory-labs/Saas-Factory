@@ -1,4 +1,6 @@
 using System.Text;
+using AppBlueprint.Application.Services.DataExport;
+using AppBlueprint.Infrastructure.Services.DataExport;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using Asp.Versioning;
 using Asp.Versioning.Routing;
@@ -24,10 +26,10 @@ public static class ApplicationBuilderExtensions
         LoggerMessage.Define<string>(
             LogLevel.Information,
             new EventId(2, nameof(LogConnectionString)),
-            "Connection String: {ConnectionString}");    private static void AddDbContext(IServiceCollection serviceCollection, IConfiguration configuration)
+            "Connection String: {ConnectionString}"); private static void AddDbContext(IServiceCollection serviceCollection, IConfiguration configuration)
     {
         // Get connection string from IConfiguration - try Aspire resource name first, then DefaultConnection as fallback
-        string? databaseConnectionString = configuration.GetConnectionString("postgres-server") ?? 
+        string? databaseConnectionString = configuration.GetConnectionString("postgres-server") ??
                                          configuration.GetConnectionString("DefaultConnection");
 
         Console.WriteLine($"[AddDbContext] Database Connection String from IConfiguration: {databaseConnectionString}"); // Added logging
@@ -49,12 +51,12 @@ public static class ApplicationBuilderExtensions
                     maxRetryDelay: TimeSpan.FromSeconds(10),
                     errorCodesToAdd: null);
             });
-            
+
             // Configure warnings to suppress the pending model changes warning in development
-            options.ConfigureWarnings(warnings => 
+            options.ConfigureWarnings(warnings =>
             {
                 warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning);
-                
+
                 // Also log the shadow property warnings instead of throwing
                 warnings.Log(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.ShadowPropertyCreated);
             });
@@ -67,17 +69,18 @@ public static class ApplicationBuilderExtensions
         {
             builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
         }));
-    }    private static void ConfigureApiVersioning(IServiceCollection services)
+    }
+    private static void ConfigureApiVersioning(IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
-        
+
         // Add API versioning services with URL path support
         services.AddApiVersioning(options =>
         {
             options.ReportApiVersions = true;
             options.AssumeDefaultVersionWhenUnspecified = true;
             options.DefaultApiVersion = new ApiVersion(1, 0);
-            
+
             // Configure to read API version from URL path
             options.ApiVersionReader = ApiVersionReader.Combine(
                 new UrlSegmentApiVersionReader(),
@@ -105,20 +108,20 @@ public static class ApplicationBuilderExtensions
         {
             // Get the JWT secret from environment variables
             string supabaseJwtSecret = Environment.GetEnvironmentVariable("SUPABASE_JWT_SECRET") ?? "your-supabase-jwt-secret";
-            
+
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 // Validate the token issuer (Supabase)
                 ValidateIssuer = true,
                 ValidIssuer = "supabase",
-                
+
                 // Don't validate the audience as Supabase doesn't use it by default
                 ValidateAudience = false,
-                
+
                 // Validate the token's signature
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(supabaseJwtSecret)),
-                
+
                 // Validate the token's lifetime
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero // Don't allow any clock skew
@@ -127,7 +130,7 @@ public static class ApplicationBuilderExtensions
             // Validate the token as soon as it's received
             options.SaveToken = true;
             options.RequireHttpsMetadata = false; // Set to true in production
-            
+
             // Handle events
             options.Events = new JwtBearerEvents
             {
@@ -141,7 +144,7 @@ public static class ApplicationBuilderExtensions
                 }
             };
         });
-        
+
         // Add authorization services
         services.AddAuthorization();
     }
@@ -159,6 +162,9 @@ public static class ApplicationBuilderExtensions
         services.AddProblemDetails();
         services.AddAntiforgery();
         services.AddHttpContextAccessor();
+
+        // Register Application Services (Clean Architecture)
+        services.AddScoped<IDataExportService, AppBlueprint.Infrastructure.Services.DataExport.DataExportService>();
 
         // Pass IConfiguration to AddDbContext
         AddDbContext(services, configuration);

@@ -74,12 +74,12 @@ public class UserService : IUserService
 
     public async Task UpdateProfileAsync(string userId, string firstName, string lastName, string? phoneNumber, string? bio, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken) 
+        UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken)
             ?? throw new InvalidOperationException("User not found");
 
         user.FirstName = firstName;
         user.LastName = lastName;
-        
+
         if (user.Profile is not null)
         {
             user.Profile.PhoneNumber = phoneNumber;
@@ -103,7 +103,7 @@ public class UserService : IUserService
 
     public async Task<string> GenerateEmailVerificationTokenAsync(string userId, CancellationToken cancellationToken)
     {
-        UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken) 
+        UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken)
             ?? throw new InvalidOperationException("User not found");
 
         // Generate a secure random token

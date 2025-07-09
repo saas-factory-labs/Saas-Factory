@@ -7,7 +7,7 @@ internal static class GithubActionWorkflowCommand
     public static Command Create()
     {
         var saasNameOption = new Option<string>("--saas-name", "Name of the SaaS App") { IsRequired = true };
-        
+
         var command = new Command("create-github-action-workflows", "Create github action workflows for a new SaaS app")
         {
             saasNameOption

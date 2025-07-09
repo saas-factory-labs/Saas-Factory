@@ -20,7 +20,7 @@ internal class SystemController : ControllerBase
     {
         ArgumentNullException.ThrowIfNull(dbContext);
         ArgumentNullException.ThrowIfNull(logger);
-        
+
         _dbContext = dbContext;
         _logger = logger;
     }
@@ -31,18 +31,18 @@ internal class SystemController : ControllerBase
         try
         {
             _logger.LogInformation("Manually applying database migrations...");
-            
+
             // Check database connection
             if (await _dbContext.Database.CanConnectAsync())
             {
                 await _dbContext.Database.MigrateAsync();
                 _logger.LogInformation("Migrations applied successfully");
-                
+
                 // Call the seeder as well
                 var dataSeeder = new DataSeeder(_dbContext);
                 await dataSeeder.SeedDatabaseAsync();
                 _logger.LogInformation("Database seeding completed successfully");
-                
+
                 return Ok(new { success = true, message = "Migrations applied successfully" });
             }
             else
@@ -65,17 +65,17 @@ internal class SystemController : ControllerBase
         {
             var canConnect = await _dbContext.Database.CanConnectAsync();
             var connectionString = _dbContext.Database.GetConnectionString();
-            
+
             // Mask the password in the connection string for security
             var maskedConnectionString = connectionString?.Replace(";Password=", ";Password=*****", StringComparison.OrdinalIgnoreCase);
-            
+
             object response;
-            
+
             if (canConnect)
             {
                 // Check if there are pending migrations
                 var pendingMigrations = await _dbContext.Database.GetPendingMigrationsAsync();
-                response = new 
+                response = new
                 {
                     canConnect,
                     connectionString = maskedConnectionString,
@@ -85,14 +85,14 @@ internal class SystemController : ControllerBase
             }
             else
             {
-                response = new 
+                response = new
                 {
                     canConnect,
                     connectionString = maskedConnectionString,
                     migrationsPending = false
                 };
             }
-            
+
             return Ok(response);
         }
         catch (Exception ex)

@@ -8,7 +8,7 @@ using Microsoft.FeatureManagement;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
-[Authorize(Policy.Over18)]
+[Authorize(AuthorizationPolicies.Over18)]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [ApiVersion(ApiVersions.V2)]
@@ -26,7 +26,7 @@ public class AccountController : BaseController
         _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
     }
 
-    [HttpGet(ApiEndpoints.Accounts.GetById)]    
+    [HttpGet(ApiEndpoints.Accounts.GetById)]
     [EndpointSummary("Get Account by ID V1")]
     [EndpointName("GetAccountByIdV1")]
     [EndpointDescription("Gets a single account by ID or slug")]
@@ -35,17 +35,17 @@ public class AccountController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult> GetAccountByIdV1([FromHeader(Name = "Authorization")] string authorizationHeader, string idOrSlug, CancellationToken cancellationToken)
     {
-        AccountEntity? account = await _accountRepository.GetByIdAsync(idOrSlug, cancellationToken);        
+        AccountEntity? account = await _accountRepository.GetByIdAsync(idOrSlug, cancellationToken);
         if (account is null) return NotFound(new { Message = "No account found." });
-        
+
         // map to dto
         var accountDto = new
         {
             Id = account.Id,
             Email = account.Email,
         };
-        
-        return Ok(accountDto); 
+
+        return Ok(accountDto);
     }
 
     [HttpGet(ApiEndpoints.Accounts.GetAll)]

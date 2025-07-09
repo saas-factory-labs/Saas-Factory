@@ -3,7 +3,7 @@ namespace AppBlueprint.DeveloperCli;
 internal sealed class PulumiAutomationService
 {
     private PulumiAutomationService() { }
-    
+
     public static async Task CreateGithubActionWorkflow(string appName)
     {
         string dockerContext = "./Code/App1/";

@@ -12,7 +12,7 @@ public class PasswordResetEntity : BaseEntity
     public bool IsUsed { get; set; }
     public string UserId { get; set; } = string.Empty;
     public string TenantId { get; set; } = string.Empty;
-    
+
     // Navigation property
     public UserEntity? User { get; set; }
 }

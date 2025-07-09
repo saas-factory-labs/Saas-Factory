@@ -41,10 +41,10 @@ public sealed class ContactPersonEntity : BaseEntity, ITenantScoped
     public void AddEmailAddress(EmailAddressEntity emailAddress)
     {
         ArgumentNullException.ThrowIfNull(emailAddress);
-        
+
         if (_emailAddresses.Any(ea => ea.Id == emailAddress.Id))
             return; // Email address already exists
-            
+
         _emailAddresses.Add(emailAddress);
     }
 
@@ -57,10 +57,10 @@ public sealed class ContactPersonEntity : BaseEntity, ITenantScoped
     public void AddAddress(AddressEntity address)
     {
         ArgumentNullException.ThrowIfNull(address);
-        
+
         if (_addresses.Any(a => a.Id == address.Id))
             return; // Address already exists
-            
+
         _addresses.Add(address);
     }
 
@@ -73,10 +73,10 @@ public sealed class ContactPersonEntity : BaseEntity, ITenantScoped
     public void AddPhoneNumber(PhoneNumberEntity phoneNumber)
     {
         ArgumentNullException.ThrowIfNull(phoneNumber);
-        
+
         if (_phoneNumbers.Any(pn => pn.Id == phoneNumber.Id))
             return; // Phone number already exists
-            
+
         _phoneNumbers.Add(phoneNumber);
     }
 

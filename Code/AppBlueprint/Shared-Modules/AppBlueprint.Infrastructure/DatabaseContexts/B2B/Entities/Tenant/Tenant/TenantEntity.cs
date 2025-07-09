@@ -44,10 +44,10 @@ public sealed class TenantEntity : BaseEntity
     public void AddContactPerson(ContactPersonEntity contactPerson)
     {
         ArgumentNullException.ThrowIfNull(contactPerson);
-        
+
         if (_contactPersons.Any(cp => cp.Id == contactPerson.Id))
             return; // Contact person already exists
-            
+
         _contactPersons.Add(contactPerson);
     }
 
@@ -60,10 +60,10 @@ public sealed class TenantEntity : BaseEntity
     public void AddUser(UserEntity user)
     {
         ArgumentNullException.ThrowIfNull(user);
-        
+
         if (_users.Any(u => u.Id == user.Id))
             return; // User already exists
-            
+
         _users.Add(user);
         user.TenantId = Id;
     }
@@ -77,10 +77,10 @@ public sealed class TenantEntity : BaseEntity
     public void AddTeam(TeamEntity team)
     {
         ArgumentNullException.ThrowIfNull(team);
-        
+
         if (_teams.Any(t => t.Id == team.Id))
             return; // Team already exists
-            
+
         _teams.Add(team);
         team.TenantId = Id;
     }

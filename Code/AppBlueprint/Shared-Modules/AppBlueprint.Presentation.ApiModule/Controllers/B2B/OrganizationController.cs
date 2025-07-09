@@ -76,7 +76,7 @@ public class OrganizationController : BaseController
 
         };
 
-        return Ok(response);        
+        return Ok(response);
     }
 
     /// <summary>
@@ -98,7 +98,11 @@ public class OrganizationController : BaseController
 
         var owner = new UserEntity
         {
-            UserName = "adkakd", FirstName = "asd", LastName = "asd", Email = "asd", Profile = new ProfileEntity()
+            UserName = "adkakd",
+            FirstName = "asd",
+            LastName = "asd",
+            Email = "asd",
+            Profile = new ProfileEntity()
         };
 
         var newOrg = new OrganizationEntity
@@ -138,7 +142,7 @@ public class OrganizationController : BaseController
 
         existingOrg.Name = organizationDto.Name;
 
-         _organizationRepository.Update(existingOrg);
+        _organizationRepository.Update(existingOrg);
         return NoContent();
     }
 

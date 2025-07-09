@@ -110,7 +110,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
         //     .RuleFor(u => u.LastLogin, f => f.Date.Past())
         //     .RuleFor(u => u.Addresses, f => dbContext.Addresses.ToList())
         //     .RuleFor(u => u.Roles, f => new List<RoleEntity> { dbContext.Roles.FirstOrDefault() });
-        
+
         return Task.CompletedTask;
     }
 
@@ -164,8 +164,8 @@ public class DataSeeder(ApplicationDbContext dbContext)
 
     private async Task SeedSubscriptionsAsync(CancellationToken cancellationToken)
     {
-        if (await dbContext.Subscriptions.AnyAsync(cancellationToken)) return; 
-        
+        if (await dbContext.Subscriptions.AnyAsync(cancellationToken)) return;
+
         Faker<SubscriptionEntity> faker = new Faker<SubscriptionEntity>()
             .RuleFor(s => s.CreatedAt, f => f.Date.Past())
             .RuleFor(s => s.LastUpdatedAt, f => f.Date.Past())

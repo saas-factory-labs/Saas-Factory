@@ -22,10 +22,10 @@ public sealed class RoleEntity : BaseEntity
     public void AddUserRole(UserRoleEntity userRole)
     {
         ArgumentNullException.ThrowIfNull(userRole);
-        
+
         if (_userRoles.Any(ur => ur.Id == userRole.Id))
             return; // User role already exists
-            
+
         _userRoles.Add(userRole);
     }
 
@@ -38,10 +38,10 @@ public sealed class RoleEntity : BaseEntity
     public void AddRolePermission(RolePermissionEntity rolePermission)
     {
         ArgumentNullException.ThrowIfNull(rolePermission);
-        
+
         if (_rolePermissions.Any(rp => rp.Id == rolePermission.Id))
             return; // Role permission already exists
-            
+
         _rolePermissions.Add(rolePermission);
     }
 

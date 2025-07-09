@@ -5,11 +5,13 @@ namespace AppBlueprint.Contracts.Baseline.DataExport.Responses;
 
 public class DataExportResponse
 {
-    public string DownloadUrl { get; set; }
+    public required string Id { get; set; }
+
+    public required string DownloadUrl { get; set; }
 
     [DataClassification(GDPRType.IndirectlyIdentifiable)]
-    public string FileName { get; set; }
+    public required string FileName { get; set; }
 
-    public string FileSize { get; set; }
+    public required string FileSize { get; set; }
     public DateTime CreatedAt { get; set; }
 }

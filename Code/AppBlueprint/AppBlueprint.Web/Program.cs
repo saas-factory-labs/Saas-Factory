@@ -453,19 +453,19 @@ app.Run();
 // // // { 
 // // //     // Listen on HTTP port 80
 // // //     serverOptions.ListenAnyIP(80); 
-    
+
 // // //     // Listen on HTTPS port 443 with certificate from ASP.NET Https folder
 // // //     string certPath = Path.Combine(
 // // //         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
 // // //         "ASP.NET", "Https", "web-service.pfx");
-    
+
 // // //     // Get certificate password from environment variable (set by AppHost) or use default
 // // //     string certPassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
 // // //     if (string.IsNullOrEmpty(certPassword))
 // // //     {
 // // //         certPassword = "dev-cert-password";
 // // //     }
-    
+
 // // //     try
 // // //     {
 // // //         if (File.Exists(certPath))
@@ -481,7 +481,7 @@ app.Run();
 // // //                         certCollection.Import(certPath, certPassword, X509KeyStorageFlags.Exportable | 
 // // //                                                                     X509KeyStorageFlags.PersistKeySet | 
 // // //                                                                     X509KeyStorageFlags.MachineKeySet);
-                        
+
 // // //                         // Get the certificate from the collection
 // // //                         options.ServerCertificate = certCollection[0];
 // // //                         Console.WriteLine($"Using certificate from: {certPath}");
@@ -489,7 +489,7 @@ app.Run();
 // // //                     catch (Exception ex)
 // // //                     {
 // // //                         Console.WriteLine($"Error loading certificate from {certPath}: {ex.Message}");
-                        
+
 // // //                         // Fallback to development certificate
 // // //                         Console.WriteLine("Falling back to the default development certificate");
 // // //                         // Let ASP.NET Core use its default developer certificate

@@ -35,10 +35,10 @@ public sealed class TeamEntity : BaseEntity, ITenantScoped
     public void AddTeamMember(TeamMemberEntity teamMember)
     {
         ArgumentNullException.ThrowIfNull(teamMember);
-        
+
         if (_teamMembers.Any(tm => tm.Id == teamMember.Id))
             return; // Team member already exists
-            
+
         _teamMembers.Add(teamMember);
     }
 
@@ -51,10 +51,10 @@ public sealed class TeamEntity : BaseEntity, ITenantScoped
     public void AddTeamInvite(TeamInviteEntity teamInvite)
     {
         ArgumentNullException.ThrowIfNull(teamInvite);
-        
+
         if (_teamInvites.Any(ti => ti.Id == teamInvite.Id))
             return; // Team invite already exists
-            
+
         _teamInvites.Add(teamInvite);
     }
 

@@ -2,7 +2,8 @@
 
 // IEntityModel<T>
 internal class EntityModel : IEntityModel
-{    public EntityModel()
+{
+    public EntityModel()
     {
         Id = PrefixedUlid.Generate("entity");
     }

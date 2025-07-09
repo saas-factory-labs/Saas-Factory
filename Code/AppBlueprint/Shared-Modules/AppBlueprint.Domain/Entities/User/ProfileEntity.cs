@@ -11,10 +11,10 @@ public class ProfileEntity : BaseEntity
     public string? PhoneNumber { get; set; }
     public string? Avatar { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    
+
     // Foreign key to User
     public Guid UserId { get; set; }
-    
+
     // Navigation property back to User
     public UserEntity? User { get; set; }
 }

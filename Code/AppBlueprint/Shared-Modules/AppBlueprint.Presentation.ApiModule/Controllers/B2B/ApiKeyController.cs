@@ -121,7 +121,8 @@ public class ApiKeyController : BaseController
     [HttpPut(ApiEndpoints.ApiKeys.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [MapToApiVersion(ApiVersions.V1)]    public async Task<ActionResult> UpdateApiKey(string id, [FromBody] UpdateApiKeyRequest apiKeyDto,
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult> UpdateApiKey(string id, [FromBody] UpdateApiKeyRequest apiKeyDto,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(apiKeyDto);

@@ -16,15 +16,15 @@ internal static class RouteScanner
     public static async Task<List<RouteInfo>> GetAllRoutesAsync(string? baseUrl = null)
     {
         using var httpClient = new HttpClient();
-        
+
         try
         {
             // Default to localhost development URL if not provided
             baseUrl ??= DefaultBaseUrl;
-            
+
             var uri = new Uri($"{baseUrl}/dev/routes");
             var response = await httpClient.GetAsync(uri);
-            
+
             if (response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();

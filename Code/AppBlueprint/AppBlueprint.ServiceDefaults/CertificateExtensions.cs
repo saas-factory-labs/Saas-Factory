@@ -149,7 +149,7 @@
 // //         {
 // //             // Use .NET's dev certificate tooling to create a certificate
 // //             string devCertsCommand = $"dev-certs https -ep \"{certPath}\" -p \"{password}\"";
-            
+
 // //             var processStartInfo = new ProcessStartInfo
 // //             {
 // //                 FileName = "dotnet",
@@ -165,18 +165,18 @@
 // //             {
 // //                 throw new InvalidOperationException("Failed to start dotnet dev-certs process");
 // //             }
-            
+
 // //             process.WaitForExit();
-            
+
 // //             string output = process.StandardOutput.ReadToEnd();
 // //             string error = process.StandardError.ReadToEnd();
-            
+
 // //             if (process.ExitCode != 0)
 // //             {
 // //                 Logger.LogError("Certificate creation failed: {Error}", error);
 // //                 throw new InvalidOperationException($"Failed to create certificate: {error}");
 // //             }
-            
+
 // //             Logger.LogInformation("SSL certificate created successfully at {CertPath}", certPath);
 // //         }
 // //         catch (Exception ex)

@@ -37,11 +37,14 @@ public class AuthenticationController : BaseController
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
+        if (string.IsNullOrEmpty(request.Email))
+            return BadRequest(new { Message = "Email is required" });
+
         try
         {
-            UserEntity user = await _userService.GetByEmailAsync(request.Email, cancellationToken);
-            
-            if (user == null)
+            UserEntity? user = await _userService.GetByEmailAsync(request.Email, cancellationToken);
+
+            if (user is null)
                 return Unauthorized(new { Message = "Invalid credentials" });
 
             if (!user.IsActive)
@@ -70,6 +73,9 @@ public class AuthenticationController : BaseController
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+
+        if (string.IsNullOrEmpty(request.Email))
+            return BadRequest(new { Message = "Email is required" });
 
         try
         {
@@ -141,7 +147,8 @@ public class AuthenticationController : BaseController
     [Authorize]
     [HttpPost(ApiEndpoints.Authentication.DeactivateProfile)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]    public async Task<IActionResult> DeactivateProfile(string userId, CancellationToken cancellationToken)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeactivateProfile(string userId, CancellationToken cancellationToken)
     {
         try
         {
