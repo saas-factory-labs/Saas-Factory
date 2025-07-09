@@ -12,7 +12,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Authorize(Roles = Roles.SaaSProviderAdmin)]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/auditlog")]
+[Route("api/v{version:apiVersion}/audit-log")]
 [Produces("application/json")]
 public class AuditLogController : BaseController
 {

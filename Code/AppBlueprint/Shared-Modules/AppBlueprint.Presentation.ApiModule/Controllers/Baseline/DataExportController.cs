@@ -12,7 +12,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Authorize]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/data-exports")]
+[Route("api/v{version:apiVersion}/data-export")]
 [Produces("application/json")]
 public class DataExportController : BaseController
 {

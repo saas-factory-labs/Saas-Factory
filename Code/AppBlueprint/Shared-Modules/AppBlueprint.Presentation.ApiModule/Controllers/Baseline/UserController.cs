@@ -13,7 +13,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [ApiVersion(ApiVersions.V2)]
-[Route("api/v{version:apiVersion}/users")]
+[Route("api/v{version:apiVersion}/user")]
 [Produces("application/json")]
 public class UserController : BaseController
 {

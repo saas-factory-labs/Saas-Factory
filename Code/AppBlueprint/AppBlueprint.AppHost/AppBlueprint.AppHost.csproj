@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
+    <!-- Suppress CA1303 for AppHost - localization not required for development tools -->
+    <NoWarn>$(NoWarn);CA1303</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\\AppBlueprint.ApiService\\AppBlueprint.ApiService.csproj" />

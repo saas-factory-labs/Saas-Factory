@@ -6,7 +6,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 // [Authorize (Roles = Roles)]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/demos")]
+[Route("api/v{version:apiVersion}/demo")]
 [Produces("application/json")]
 public class DemoController : BaseController
 {

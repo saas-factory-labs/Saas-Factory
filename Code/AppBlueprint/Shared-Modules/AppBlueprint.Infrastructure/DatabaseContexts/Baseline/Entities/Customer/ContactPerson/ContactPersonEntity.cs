@@ -5,8 +5,12 @@ using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 
-public class ContactPersonEntity : BaseEntity, ITenantScoped
+public sealed class ContactPersonEntity : BaseEntity, ITenantScoped
 {
+    private readonly List<EmailAddressEntity> _emailAddresses = new();
+    private readonly List<AddressEntity> _addresses = new();
+    private readonly List<PhoneNumberEntity> _phoneNumbers = new();
+
     public ContactPersonEntity()
     {
         Id = PrefixedUlid.Generate("contact-person");
@@ -14,9 +18,6 @@ public class ContactPersonEntity : BaseEntity, ITenantScoped
         LastName = string.Empty;
         TenantId = string.Empty;
         CustomerId = string.Empty;
-        EmailAddresses = new List<EmailAddressEntity>();
-        Addresses = new List<AddressEntity>();
-        PhoneNumbers = new List<PhoneNumberEntity>();
     }
 
     public string FirstName { get; set; }
@@ -29,10 +30,59 @@ public class ContactPersonEntity : BaseEntity, ITenantScoped
     public string CustomerId { get; set; }
     public CustomerEntity? Customer { get; set; }
 
-    public List<EmailAddressEntity> EmailAddresses { get; set; }
-    public List<AddressEntity> Addresses { get; set; }
-    public List<PhoneNumberEntity> PhoneNumbers { get; set; }
+    public IReadOnlyCollection<EmailAddressEntity> EmailAddresses => _emailAddresses.AsReadOnly();
+    public IReadOnlyCollection<AddressEntity> Addresses => _addresses.AsReadOnly();
+    public IReadOnlyCollection<PhoneNumberEntity> PhoneNumbers => _phoneNumbers.AsReadOnly();
 
     public bool IsActive { get; set; } = true;
-    public bool IsPrimary { get; set; } = false;
+    public bool IsPrimary { get; set; }
+
+    // Domain methods for controlled collection management
+    public void AddEmailAddress(EmailAddressEntity emailAddress)
+    {
+        ArgumentNullException.ThrowIfNull(emailAddress);
+        
+        if (_emailAddresses.Any(ea => ea.Id == emailAddress.Id))
+            return; // Email address already exists
+            
+        _emailAddresses.Add(emailAddress);
+    }
+
+    public void RemoveEmailAddress(EmailAddressEntity emailAddress)
+    {
+        ArgumentNullException.ThrowIfNull(emailAddress);
+        _emailAddresses.Remove(emailAddress);
+    }
+
+    public void AddAddress(AddressEntity address)
+    {
+        ArgumentNullException.ThrowIfNull(address);
+        
+        if (_addresses.Any(a => a.Id == address.Id))
+            return; // Address already exists
+            
+        _addresses.Add(address);
+    }
+
+    public void RemoveAddress(AddressEntity address)
+    {
+        ArgumentNullException.ThrowIfNull(address);
+        _addresses.Remove(address);
+    }
+
+    public void AddPhoneNumber(PhoneNumberEntity phoneNumber)
+    {
+        ArgumentNullException.ThrowIfNull(phoneNumber);
+        
+        if (_phoneNumbers.Any(pn => pn.Id == phoneNumber.Id))
+            return; // Phone number already exists
+            
+        _phoneNumbers.Add(phoneNumber);
+    }
+
+    public void RemovePhoneNumber(PhoneNumberEntity phoneNumber)
+    {
+        ArgumentNullException.ThrowIfNull(phoneNumber);
+        _phoneNumbers.Remove(phoneNumber);
+    }
 }

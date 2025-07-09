@@ -20,11 +20,9 @@ internal static class X509CertificateLoader
             
             // Suppress obsolete warning - we need to use this constructor
             // as the new recommended APIs don't support the flags we need for browser compatibility
-#pragma warning disable SYSLIB0028, CA1416
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+#pragma warning disable SYSLIB0057
             return new X509Certificate2(filePath, password, flags);
-#pragma warning restore CA1303
-#pragma warning restore SYSLIB0028, CA1416
+#pragma warning restore SYSLIB0057
         }
         catch (CryptographicException ex)
         {
@@ -34,12 +32,10 @@ internal static class X509CertificateLoader
             
             // Try with ephemeral key set which has lowest permission requirements
             // Don't try MachineKeySet since that's causing issues with browsers
-#pragma warning disable SYSLIB0028, CA1416
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
+#pragma warning disable SYSLIB0057
             return new X509Certificate2(filePath, password, 
                 X509KeyStorageFlags.Exportable | X509KeyStorageFlags.EphemeralKeySet);
-#pragma warning restore CA1303
-#pragma warning restore SYSLIB0028, CA1416
+#pragma warning restore SYSLIB0057
         }
     }
 }

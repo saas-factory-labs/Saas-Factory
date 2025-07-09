@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace AppBlueprint.AppHost;
 
-public static class SslCertificateManager
+internal static class SslCertificateManager
 {
     private static string? GetUserSecretsId()
     {
@@ -21,7 +21,17 @@ public static class SslCertificateManager
             var attribute = assembly.GetCustomAttribute<UserSecretsIdAttribute>();
             return attribute?.UserSecretsId;
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
+        {
+            Console.WriteLine($"Warning: Failed to get UserSecretsId: {ex.Message}");
+            return null;
+        }
+        catch (ArgumentNullException ex)
+        {
+            Console.WriteLine($"Warning: Failed to get UserSecretsId: {ex.Message}");
+            return null;
+        }
+        catch (System.IO.IOException ex)
         {
             Console.WriteLine($"Warning: Failed to get UserSecretsId: {ex.Message}");
             return null;
@@ -51,9 +61,10 @@ public static class SslCertificateManager
         const string certificatePasswordKey = "certificate-password";
         string certificatePassword;
         
-        if (config[certificatePasswordKey] is not null)
+        var configValue = config[certificatePasswordKey];
+        if (configValue is not null)
         {
-            certificatePassword = config[certificatePasswordKey];
+            certificatePassword = configValue;
         }
         else
         {
@@ -79,7 +90,7 @@ public static class SslCertificateManager
             }
             
             // Certificate exists, try to load it
-            var certificate = X509CertificateLoader.LoadPkcs12FromFile(certificateLocation, certificatePassword);
+            using var certificate = X509CertificateLoader.LoadPkcs12FromFile(certificateLocation, certificatePassword);
             Console.WriteLine($"Existing certificate found at {certificateLocation}");
             
             // Only create a new certificate if the current one is clearly invalid
@@ -200,7 +211,7 @@ public static class SslCertificateManager
         // Verify the certificate was created and is trusted
         try 
         {
-            var cert = X509CertificateLoader.LoadPkcs12FromFile(certificateLocation, password);
+            using var cert = X509CertificateLoader.LoadPkcs12FromFile(certificateLocation, password);
             Console.WriteLine($"Successfully created certificate. Valid from {cert.NotBefore} to {cert.NotAfter}");
             
             if (!IsCertificateTrusted(cert))

@@ -94,16 +94,18 @@ public class OrganizationController : BaseController
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
+        ArgumentNullException.ThrowIfNull(organizationDto);
+
+        var owner = new UserEntity
+        {
+            UserName = "adkakd", FirstName = "asd", LastName = "asd", Email = "asd", Profile = new ProfileEntity()
+        };
+
         var newOrg = new OrganizationEntity
         {
-            Name = organizationDto.Name,
-            Customers = new List<CustomerEntity>(),
+            Name = organizationDto.Name ?? "Default Organization",
             Description = "ad",
-            Owner = new UserEntity
-            {
-                UserName = "adkakd", FirstName = "asd", LastName = "asd", Email = "asd", Profile = new ProfileEntity()
-            },
-            Teams = new List<TeamEntity>()
+            Owner = owner
         };
 
         await _organizationRepository.AddAsync(newOrg);
@@ -129,6 +131,8 @@ public class OrganizationController : BaseController
     public async Task<ActionResult> UpdateOrganization(string id, [FromBody] UpdateOrganizationRequest organizationDto,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(organizationDto);
+
         OrganizationEntity? existingOrg = await _organizationRepository.GetByIdAsync(id);
         if (existingOrg is null) return NotFound(new { Message = $"Organization with ID {id} not found." });
 

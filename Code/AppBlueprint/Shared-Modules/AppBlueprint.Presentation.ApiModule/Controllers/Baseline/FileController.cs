@@ -12,7 +12,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Authorize]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/files")]
+[Route("api/v{version:apiVersion}/file")]
 [Produces("application/json")]
 public class FileController : BaseController
 {

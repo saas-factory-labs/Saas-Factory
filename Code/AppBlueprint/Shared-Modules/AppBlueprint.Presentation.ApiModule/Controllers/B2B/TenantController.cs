@@ -13,7 +13,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 [Authorize]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/tenants")]
+[Route("api/v{version:apiVersion}/tenant")]
 [Produces("application/json")]
 public class TenantController : BaseController
 {

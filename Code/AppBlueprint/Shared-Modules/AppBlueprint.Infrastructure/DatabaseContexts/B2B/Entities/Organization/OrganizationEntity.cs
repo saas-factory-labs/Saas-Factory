@@ -11,11 +11,12 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization
 /// </summary>
 public sealed class OrganizationEntity : BaseEntity, ITenantScoped
 {
+    private readonly List<TeamEntity> _teams = new();
+    private readonly List<CustomerEntity> _customers = new();
+
     public OrganizationEntity()
     {
         Id = PrefixedUlid.Generate("organization");
-        Teams = new List<TeamEntity>();
-        Customers = new List<CustomerEntity>();
         TenantId = string.Empty;
         OwnerId = string.Empty;
     }
@@ -32,8 +33,6 @@ public sealed class OrganizationEntity : BaseEntity, ITenantScoped
 
     public required string Description { get; set; }
 
-
-
     public bool IsActive { get; set; } = true;
 
     // ITenantScoped implementation
@@ -43,6 +42,40 @@ public sealed class OrganizationEntity : BaseEntity, ITenantScoped
     public string OwnerId { get; set; }
     public required UserEntity? Owner { get; set; }
 
-    public required List<TeamEntity> Teams { get; set; }
-    public required List<CustomerEntity> Customers { get; set; }
+    public IReadOnlyCollection<TeamEntity> Teams => _teams.AsReadOnly();
+    public IReadOnlyCollection<CustomerEntity> Customers => _customers.AsReadOnly();
+
+    // Domain methods for controlled collection management
+    public void AddTeam(TeamEntity team)
+    {
+        ArgumentNullException.ThrowIfNull(team);
+        
+        if (_teams.Any(t => t.Id == team.Id))
+            return; // Team already exists
+            
+        _teams.Add(team);
+        team.OrganizationId = Id;
+    }
+
+    public void RemoveTeam(TeamEntity team)
+    {
+        ArgumentNullException.ThrowIfNull(team);
+        _teams.Remove(team);
+    }
+
+    public void AddCustomer(CustomerEntity customer)
+    {
+        ArgumentNullException.ThrowIfNull(customer);
+        
+        if (_customers.Any(c => c.Id == customer.Id))
+            return; // Customer already exists
+            
+        _customers.Add(customer);
+    }
+
+    public void RemoveCustomer(CustomerEntity customer)
+    {
+        ArgumentNullException.ThrowIfNull(customer);
+        _customers.Remove(customer);
+    }
 }

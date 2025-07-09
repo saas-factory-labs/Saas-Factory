@@ -12,7 +12,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 [Authorize]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/teams")]
+[Route("api/v{version:apiVersion}/team")]
 [Produces("application/json")]
 public class TeamController : BaseController
 {

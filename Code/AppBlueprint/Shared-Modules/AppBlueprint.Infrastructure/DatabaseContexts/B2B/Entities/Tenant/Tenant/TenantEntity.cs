@@ -6,15 +6,22 @@ using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 
-public class TenantEntity : BaseEntity
+public sealed class TenantEntity : BaseEntity
 {
+    private readonly List<ContactPersonEntity> _contactPersons = new();
+    private readonly List<UserEntity> _users = new();
+    private readonly List<TeamEntity> _teams = new();
+
     public TenantEntity()
     {
         Id = PrefixedUlid.Generate("tenant");
-        ContactPersons = new List<ContactPersonEntity>();
         Customer = new CustomerEntity();
-        Users = new List<UserEntity>();
-        Teams = new List<TeamEntity>();
+        Name = string.Empty;
+        Email = string.Empty;
+        Phone = string.Empty;
+        Type = string.Empty;
+        VatNumber = string.Empty;
+        Country = string.Empty;
     }
 
     public string Name { get; set; }
@@ -28,8 +35,59 @@ public class TenantEntity : BaseEntity
     public string Country { get; set; }
 
     // Relationships
-    public List<ContactPersonEntity> ContactPersons { get; set; }
+    public IReadOnlyCollection<ContactPersonEntity> ContactPersons => _contactPersons.AsReadOnly();
     public CustomerEntity Customer { get; set; }
-    public List<UserEntity> Users { get; set; }
-    public List<TeamEntity> Teams { get; set; }
+    public IReadOnlyCollection<UserEntity> Users => _users.AsReadOnly();
+    public IReadOnlyCollection<TeamEntity> Teams => _teams.AsReadOnly();
+
+    // Domain methods for controlled collection management
+    public void AddContactPerson(ContactPersonEntity contactPerson)
+    {
+        ArgumentNullException.ThrowIfNull(contactPerson);
+        
+        if (_contactPersons.Any(cp => cp.Id == contactPerson.Id))
+            return; // Contact person already exists
+            
+        _contactPersons.Add(contactPerson);
+    }
+
+    public void RemoveContactPerson(ContactPersonEntity contactPerson)
+    {
+        ArgumentNullException.ThrowIfNull(contactPerson);
+        _contactPersons.Remove(contactPerson);
+    }
+
+    public void AddUser(UserEntity user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        
+        if (_users.Any(u => u.Id == user.Id))
+            return; // User already exists
+            
+        _users.Add(user);
+        user.TenantId = Id;
+    }
+
+    public void RemoveUser(UserEntity user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        _users.Remove(user);
+    }
+
+    public void AddTeam(TeamEntity team)
+    {
+        ArgumentNullException.ThrowIfNull(team);
+        
+        if (_teams.Any(t => t.Id == team.Id))
+            return; // Team already exists
+            
+        _teams.Add(team);
+        team.TenantId = Id;
+    }
+
+    public void RemoveTeam(TeamEntity team)
+    {
+        ArgumentNullException.ThrowIfNull(team);
+        _teams.Remove(team);
+    }
 }

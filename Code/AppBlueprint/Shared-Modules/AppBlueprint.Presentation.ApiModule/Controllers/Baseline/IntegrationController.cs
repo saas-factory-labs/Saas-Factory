@@ -12,7 +12,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Authorize]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/integrations")]
+[Route("api/v{version:apiVersion}/integration")]
 [Produces("application/json")]
 public class IntegrationController : BaseController
 {

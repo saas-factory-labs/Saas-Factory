@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace AppBlueprint.AppHost;
 
-public static class SecretManagerHelper
+internal static class SecretManagerHelper
 {
     private static readonly IConfigurationRoot ConfigurationRoot = InitializeConfiguration();    private static IConfigurationRoot InitializeConfiguration()
     {
@@ -25,7 +25,17 @@ public static class SecretManagerHelper
                 Console.WriteLine("SecretManagerHelper: User Secrets ID not found. Proceeding without user secrets.");
             }
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
+        {
+            Console.WriteLine($"SecretManagerHelper: Error initializing configuration: {ex.Message}");
+            Console.WriteLine("SecretManagerHelper: Proceeding without user secrets.");
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"SecretManagerHelper: Error initializing configuration: {ex.Message}");
+            Console.WriteLine("SecretManagerHelper: Proceeding without user secrets.");
+        }
+        catch (UnauthorizedAccessException ex)
         {
             Console.WriteLine($"SecretManagerHelper: Error initializing configuration: {ex.Message}");
             Console.WriteLine("SecretManagerHelper: Proceeding without user secrets.");

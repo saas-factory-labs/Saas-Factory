@@ -15,7 +15,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [ApiVersion(ApiVersions.V2)]
-[Route("api/v{version:apiVersion}/api-keys")]
+[Route("api/v{version:apiVersion}/api-key")]
 [Produces("application/json")]
 public class ApiKeyController : BaseController
 {

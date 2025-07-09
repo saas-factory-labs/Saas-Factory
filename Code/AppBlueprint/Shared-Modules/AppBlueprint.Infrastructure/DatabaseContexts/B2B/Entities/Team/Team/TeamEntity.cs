@@ -6,13 +6,15 @@ using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 
-public class TeamEntity : BaseEntity, ITenantScoped
+public sealed class TeamEntity : BaseEntity, ITenantScoped
 {
+    private readonly List<TeamMemberEntity> _teamMembers = new();
+    private readonly List<TeamInviteEntity> _teamInvites = new();
+
     public TeamEntity()
     {
         Id = PrefixedUlid.Generate("team");
-        TeamMembers = new List<TeamMemberEntity>();
-        TeamInvites = new List<TeamInviteEntity>();
+        TenantId = string.Empty;
     }
 
     public string? Name { get; set; }
@@ -24,8 +26,41 @@ public class TeamEntity : BaseEntity, ITenantScoped
 
     public UserEntity? Owner { get; set; }
 
-    public List<TeamMemberEntity> TeamMembers { get; }
-    public List<TeamInviteEntity> TeamInvites { get; }
+    public IReadOnlyCollection<TeamMemberEntity> TeamMembers => _teamMembers.AsReadOnly();
+    public IReadOnlyCollection<TeamInviteEntity> TeamInvites => _teamInvites.AsReadOnly();
 
     public string? OrganizationId { get; set; }
+
+    // Domain methods for controlled collection management
+    public void AddTeamMember(TeamMemberEntity teamMember)
+    {
+        ArgumentNullException.ThrowIfNull(teamMember);
+        
+        if (_teamMembers.Any(tm => tm.Id == teamMember.Id))
+            return; // Team member already exists
+            
+        _teamMembers.Add(teamMember);
+    }
+
+    public void RemoveTeamMember(TeamMemberEntity teamMember)
+    {
+        ArgumentNullException.ThrowIfNull(teamMember);
+        _teamMembers.Remove(teamMember);
+    }
+
+    public void AddTeamInvite(TeamInviteEntity teamInvite)
+    {
+        ArgumentNullException.ThrowIfNull(teamInvite);
+        
+        if (_teamInvites.Any(ti => ti.Id == teamInvite.Id))
+            return; // Team invite already exists
+            
+        _teamInvites.Add(teamInvite);
+    }
+
+    public void RemoveTeamInvite(TeamInviteEntity teamInvite)
+    {
+        ArgumentNullException.ThrowIfNull(teamInvite);
+        _teamInvites.Remove(teamInvite);
+    }
 }

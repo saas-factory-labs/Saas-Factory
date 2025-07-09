@@ -11,7 +11,7 @@ namespace AppBlueprint.TodoAppKernel.Controllers;
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/v{version:apiVersion}/todos")]
+[Route("api/v{version:apiVersion}/todo")]
 [Produces("application/json")]
 public class TodoController(
     ILogger<TodoController> logger,
