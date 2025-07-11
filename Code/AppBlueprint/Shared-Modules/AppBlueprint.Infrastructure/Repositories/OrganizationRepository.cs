@@ -16,26 +16,26 @@ public class OrganizationRepository : IOrganizationRepository
 
     public async Task<IEnumerable<OrganizationEntity>> GetAllAsync()
     {
-        return await _context.Set<OrganizationEntity>().ToListAsync();
+        return await _context.Organizations.ToListAsync();
     }
-    public async Task<OrganizationEntity> GetByIdAsync(string id)
+    public async Task<OrganizationEntity?> GetByIdAsync(string id)
     {
-        return await _context.Set<OrganizationEntity>().FindAsync(id);
+        return await _context.Organizations.FindAsync(id);
     }
 
     public async Task AddAsync(OrganizationEntity organization)
     {
-        await _context.Set<OrganizationEntity>().AddAsync(organization);
+        await _context.Organizations.AddAsync(organization);
     }
 
     public void Update(OrganizationEntity organization)
     {
-        _context.Set<OrganizationEntity>().Update(organization);
+        _context.Organizations.Update(organization);
     }
 
     public void Delete(string id)
     {
-        OrganizationEntity? organization = _context.Set<OrganizationEntity>().Find(id);
-        if (organization is not null) _context.Set<OrganizationEntity>().Remove(organization);
+        OrganizationEntity? organization = _context.Organizations.Find(id);
+        if (organization is not null) _context.Organizations.Remove(organization);
     }
 }

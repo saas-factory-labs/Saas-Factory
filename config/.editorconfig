@@ -99,6 +99,10 @@ dotnet_diagnostic.CA2007.severity = none
 dotnet_diagnostic.CA1002.severity = none
 dotnet_diagnostic.CA1034.severity = none
 
+# Suppress CA1062 for Entity Framework migration files - these are auto-generated
+[Migrations/**/*.cs]
+dotnet_diagnostic.CA1062.severity = none
+
 # CA1848: For improved performance, use LoggerMessage delegates
 # Suppressed for code readability - following PlatformPlatform's pragmatic approach
 # LoggerMessage is only beneficial for hot-path logging, not typical application logging

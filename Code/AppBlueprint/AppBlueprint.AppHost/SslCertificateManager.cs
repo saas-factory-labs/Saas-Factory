@@ -129,9 +129,18 @@ internal static class SslCertificateManager
             // Set the password as environment variable even after errors
             Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
         }
-        catch (Exception ex)
+        catch (UnauthorizedAccessException ex)
         {
-            Console.WriteLine($"Unexpected certificate error: {ex.Message}. Generating new certificate.");
+            Console.WriteLine($"Certificate access error: {ex.Message}. Generating new certificate.");
+            CleanExistingCertificates();
+            CreateNewSelfSignedDeveloperCertificate(certificateLocation, certificatePassword);
+
+            // Set the password as environment variable even after errors
+            Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
+        }
+        catch (FileNotFoundException ex)
+        {
+            Console.WriteLine($"Certificate file not found: {ex.Message}. Generating new certificate.");
             CleanExistingCertificates();
             CreateNewSelfSignedDeveloperCertificate(certificateLocation, certificatePassword);
 
@@ -175,9 +184,14 @@ internal static class SslCertificateManager
 
             return true;
         }
-        catch (Exception ex)
+        catch (CryptographicException ex)
         {
-            Console.WriteLine($"Error checking certificate validity: {ex.Message}");
+            Console.WriteLine($"Error checking certificate validity (cryptographic): {ex.Message}");
+            return false;
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"Error checking certificate validity (invalid argument): {ex.Message}");
             return false;
         }
     }
@@ -223,9 +237,17 @@ internal static class SslCertificateManager
                 ExplicitlyTrustCertificateInBrowserStores(cert);
             }
         }
-        catch (Exception ex)
+        catch (CryptographicException ex)
         {
-            Console.WriteLine($"Error verifying new certificate: {ex.Message}");
+            Console.WriteLine($"Error verifying new certificate (cryptographic): {ex.Message}");
+        }
+        catch (FileNotFoundException ex)
+        {
+            Console.WriteLine($"Error verifying new certificate (file not found): {ex.Message}");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            Console.WriteLine($"Error verifying new certificate (access denied): {ex.Message}");
         }
     }
 

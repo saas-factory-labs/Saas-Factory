@@ -18,12 +18,12 @@ public class SessionRepository : ISessionRepository
     {
         return await _context.Set<SessionEntity>().ToListAsync(cancellationToken);
     }
-    public async Task<SessionEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
+    public async Task<SessionEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _context.Set<SessionEntity>().FindAsync(new object[] { id }, cancellationToken);
     }
 
-    public async Task<SessionEntity> GetByKeyAsync(string sessionKey, CancellationToken cancellationToken)
+    public async Task<SessionEntity?> GetByKeyAsync(string sessionKey, CancellationToken cancellationToken)
     {
         return await _context.Set<SessionEntity>()
             .FirstOrDefaultAsync(s => s.SessionKey == sessionKey, cancellationToken);

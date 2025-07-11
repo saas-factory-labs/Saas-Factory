@@ -16,26 +16,26 @@ public class ApiKeyRepository : IApiKeyRepository
 
     public async Task<IEnumerable<ApiKeyEntity>> GetAllAsync()
     {
-        return await _context.Set<ApiKeyEntity>().ToListAsync();
+        return await _context.ApiKeys.ToListAsync();
     }
 
-    public async Task<ApiKeyEntity> GetByIdAsync(string id)
+    public async Task<ApiKeyEntity?> GetByIdAsync(string id)
     {
-        return await _context.Set<ApiKeyEntity>().FindAsync(id);
+        return await _context.ApiKeys.FindAsync(id);
     }
 
     public async Task AddAsync(ApiKeyEntity apiKey)
     {
-        await _context.Set<ApiKeyEntity>().AddAsync(apiKey);
+        await _context.ApiKeys.AddAsync(apiKey);
     }
     public void Update(ApiKeyEntity apiKey)
     {
-        _context.Set<ApiKeyEntity>().Update(apiKey);
+        _context.ApiKeys.Update(apiKey);
     }
 
     public void Delete(string id)
     {
-        ApiKeyEntity? apiKey = _context.Set<ApiKeyEntity>().Find(id);
-        if (apiKey is not null) _context.Set<ApiKeyEntity>().Remove(apiKey);
+        ApiKeyEntity? apiKey = _context.ApiKeys.Find(id);
+        if (apiKey is not null) _context.ApiKeys.Remove(apiKey);
     }
 }

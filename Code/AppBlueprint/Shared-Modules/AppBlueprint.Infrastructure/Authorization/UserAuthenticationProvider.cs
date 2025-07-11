@@ -61,9 +61,19 @@ namespace AppBlueprint.Infrastructure.Authorization
 
                 return false;
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
-                Debug.WriteLine($"Login failed: {ex.Message}");
+                Debug.WriteLine($"Login failed due to JSON parsing error: {ex.Message}");
+                return false;
+            }
+            catch (FormatException ex)
+            {
+                Debug.WriteLine($"Login failed due to format error: {ex.Message}");
+                return false;
+            }
+            catch (ArgumentException ex)
+            {
+                Debug.WriteLine($"Login failed due to invalid argument: {ex.Message}");
                 return false;
             }
         }
@@ -110,9 +120,19 @@ namespace AppBlueprint.Infrastructure.Authorization
                     }
                 }
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
-                Debug.WriteLine($"Failed to initialize from storage: {ex.Message}");
+                Debug.WriteLine($"Failed to initialize from storage due to JSON parsing error: {ex.Message}");
+                await _tokenStorage.RemoveTokenAsync();
+            }
+            catch (FormatException ex)
+            {
+                Debug.WriteLine($"Failed to initialize from storage due to format error: {ex.Message}");
+                await _tokenStorage.RemoveTokenAsync();
+            }
+            catch (ArgumentException ex)
+            {
+                Debug.WriteLine($"Failed to initialize from storage due to invalid argument: {ex.Message}");
                 await _tokenStorage.RemoveTokenAsync();
             }
         }

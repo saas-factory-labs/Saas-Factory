@@ -16,30 +16,30 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<UserEntity>> GetAllAsync()
     {
-        return await _context.Set<UserEntity>().ToListAsync();
+        return await _context.Users.ToListAsync();
     }
-    public async Task<UserEntity> GetByIdAsync(string id)
+    public async Task<UserEntity?> GetByIdAsync(string id)
     {
-        return await _context.Set<UserEntity>().FindAsync(id);
+        return await _context.Users.FindAsync(id);
     }
 
-    public async Task<UserEntity> GetByEmailAsync(string? email)
+    public async Task<UserEntity?> GetByEmailAsync(string? email)
     {
-        return await _context.Set<UserEntity>().FirstOrDefaultAsync(x => x.Email == email);
+        return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
 
     public async Task AddAsync(UserEntity user)
     {
-        await _context.Set<UserEntity>().AddAsync(user);
+        await _context.Users.AddAsync(user);
     }
 
     public void Update(UserEntity user)
     {
-        _context.Set<UserEntity>().Update(user);
+        _context.Users.Update(user);
     }
     public void Delete(string id)
     {
-        UserEntity? user = _context.Set<UserEntity>().Find(id);
-        if (user is not null) _context.Set<UserEntity>().Remove(user);
+        UserEntity? user = _context.Users.Find(id);
+        if (user is not null) _context.Users.Remove(user);
     }
 }

@@ -16,26 +16,26 @@ public class RoleRepository : IRoleRepository
 
     public async Task<IEnumerable<RoleEntity>> GetAllAsync()
     {
-        return await _context.Set<RoleEntity>().ToListAsync();
+        return await _context.Roles.ToListAsync();
     }
-    public async Task<RoleEntity> GetByIdAsync(string id)
+    public async Task<RoleEntity?> GetByIdAsync(string id)
     {
-        return await _context.Set<RoleEntity>().FindAsync(id);
+        return await _context.Roles.FindAsync(id);
     }
 
     public async Task AddAsync(RoleEntity role)
     {
-        await _context.Set<RoleEntity>().AddAsync(role);
+        await _context.Roles.AddAsync(role);
     }
 
     public void Update(RoleEntity role)
     {
-        _context.Set<RoleEntity>().Update(role);
+        _context.Roles.Update(role);
     }
 
     public void Delete(string id)
     {
-        RoleEntity? role = _context.Set<RoleEntity>().Find(id);
-        if (role is not null) _context.Set<RoleEntity>().Remove(role);
+        RoleEntity? role = _context.Roles.Find(id);
+        if (role is not null) _context.Roles.Remove(role);
     }
 }

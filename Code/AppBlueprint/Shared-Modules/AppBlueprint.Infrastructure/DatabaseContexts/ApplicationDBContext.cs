@@ -1,5 +1,8 @@
 using System.Linq.Expressions;
 using AppBlueprint.Application.Attributes;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using AppBlueprint.SharedKernel;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +23,12 @@ public class ApplicationDbContext : B2CdbContext
     ) : base(options, configuration, logger)
     {
     }
+
+    #region B2B DbSets
+    public DbSet<ApiKeyEntity> ApiKeys { get; set; }
+    public DbSet<B2B.Entities.Organization.OrganizationEntity> Organizations { get; set; }
+    public DbSet<TeamEntity> Teams { get; set; }
+    #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

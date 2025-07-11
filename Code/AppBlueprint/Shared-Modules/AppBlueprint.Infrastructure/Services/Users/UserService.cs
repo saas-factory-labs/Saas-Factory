@@ -72,12 +72,12 @@ public class UserServiceInfrastructure
 
         return user;
     }
-    public async Task<UserEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
+    public async Task<UserEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _userRepository.GetByIdAsync(id);
     }
 
-    public async Task<UserEntity> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<UserEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         return await _userRepository.GetByEmailAsync(email);
     }

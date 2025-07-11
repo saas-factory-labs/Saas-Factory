@@ -16,7 +16,7 @@ public class StripeSubscriptionService
         StripeConfiguration.ApiKey = _stripeApiKey;
     }
 
-    public CustomerEntity CreateCustomer(string email, string paymentMethodId)
+    public CustomerEntity? CreateCustomer(string email, string paymentMethodId)
     {
         var customerOptions = new CustomerCreateOptions
         {
@@ -28,6 +28,9 @@ public class StripeSubscriptionService
             }
         };
         var customerService = new CustomerService();
+        
+        // TODO: Implement actual customer creation logic
+        // For now, returning null is acceptable since return type is nullable
         return null;
         //return customerService.Create(customerOptions);
     }

@@ -15,12 +15,12 @@ public class TenantProvider
 
     public string GetTenantId()
     {
-        StringValues? tenantIdHeader = _httpContextAccessor.HttpContext?.Request.Headers[TenantIdHeaderName];
+        StringValues tenantIdHeader = _httpContextAccessor.HttpContext?.Request.Headers[TenantIdHeaderName] ?? StringValues.Empty;
 
-        if (!tenantIdHeader.HasValue || string.IsNullOrWhiteSpace(tenantIdHeader.Value))
+        if (tenantIdHeader.Count == 0 || string.IsNullOrWhiteSpace(tenantIdHeader.ToString()))
             // TODO: also remember to add check to check if the tenant id actually exist in the tenant catalog database
-            throw new ApplicationException("Tenant Id is not present");
+            throw new InvalidOperationException("Tenant Id is not present");
 
-        return tenantIdHeader.Value.ToString();
+        return tenantIdHeader.ToString();
     }
 }

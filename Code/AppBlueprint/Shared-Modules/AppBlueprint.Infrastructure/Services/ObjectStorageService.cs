@@ -23,6 +23,7 @@ internal sealed class ObjectStorageService
         AccessKeyId = _configuration["ObjectStorage:AccessKeyId"] ?? throw new InvalidOperationException("ObjectStorage:AccessKeyId is not configured.");
         _SecretAccessKey = _configuration["ObjectStorage:SecretAccessKey"] ?? throw new InvalidOperationException("ObjectStorage:SecretAccessKey is not configured.");
         EndpointUrl = _configuration["ObjectStorage:EndpointUrl"] ?? throw new InvalidOperationException("ObjectStorage:EndpointUrl is not configured.");
+        BucketName = _configuration["ObjectStorage:BucketName"] ?? throw new InvalidOperationException("ObjectStorage:BucketName is not configured.");
 
         var credentials = new BasicAWSCredentials(AccessKeyId, _SecretAccessKey);
         _s3Client = new AmazonS3Client(credentials, new AmazonS3Config

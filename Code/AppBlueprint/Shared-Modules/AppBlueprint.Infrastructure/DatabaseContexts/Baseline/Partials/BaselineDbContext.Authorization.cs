@@ -1,4 +1,5 @@
 ﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Admin;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.EntityConfigurations;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermissionType;
@@ -11,6 +12,7 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {
+    public DbSet<AdminEntity> Admins { get; set; }
     public DbSet<UserRoleEntity> UserRoles { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
     public DbSet<PermissionEntity> Permissions { get; set; }
@@ -23,6 +25,7 @@ public partial class BaselineDbContext
 
     partial void OnModelCreating_Authorization(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new AdminEntityConfiguration());
         modelBuilder.ApplyConfiguration(new UserRoleEntityConfiguration());
         modelBuilder.ApplyConfiguration(new RoleEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PermissionEntityConfiguration());

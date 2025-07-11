@@ -11,7 +11,10 @@ public class FakeDataGenerator
 
     public FakeDataGenerator()
     {
-        IEnumerable<Type>? entityTypes = Assembly.GetAssembly(typeof(IEntity)).GetTypes()
+        Assembly? assembly = Assembly.GetAssembly(typeof(IEntity));
+        if (assembly == null) return;
+        
+        IEnumerable<Type> entityTypes = assembly.GetTypes()
             .Where(t => t.Namespace == "Shared.Models");
 
         foreach (Type? type in entityTypes)
@@ -30,8 +33,11 @@ public class FakeDataGenerator
     {
         if (_fakerConfigurations.TryGetValue(typeof(T), out object? configuration))
         {
-            object? autoFaker = configuration.GetType().GetMethod("Generate").Invoke(configuration, null);
-            return (T)autoFaker;
+            object? autoFaker = configuration.GetType().GetMethod("Generate")?.Invoke(configuration, null);
+            if (autoFaker is T result)
+            {
+                return result;
+            }
         }
 
         return new AutoFaker<T>().Generate();

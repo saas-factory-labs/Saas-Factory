@@ -18,7 +18,7 @@ public class AuditLogRepository : IAuditLogRepository
     {
         return await _context.Set<AuditLogEntity>().ToListAsync(cancellationToken);
     }
-    public async Task<AuditLogEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
+    public async Task<AuditLogEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _context.Set<AuditLogEntity>().FindAsync(new object[] { id }, cancellationToken);
     }

@@ -18,7 +18,7 @@ public class IntegrationRepository : IIntegrationRepository
     {
         return await _context.Set<IntegrationEntity>().ToListAsync(cancellationToken);
     }
-    public async Task<IntegrationEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
+    public async Task<IntegrationEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await _context.Set<IntegrationEntity>().FindAsync(new object[] { id }, cancellationToken);
     }

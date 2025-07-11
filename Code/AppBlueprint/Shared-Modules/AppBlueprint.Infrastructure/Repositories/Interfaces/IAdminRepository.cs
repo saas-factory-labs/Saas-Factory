@@ -5,7 +5,7 @@ namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 public interface IAdminRepository
 {
     Task<IEnumerable<AdminEntity>> GetAllAsync();
-    Task<AdminEntity> GetByIdAsync(string id);
+    Task<AdminEntity?> GetByIdAsync(string id);
     Task AddAsync(AdminEntity admin);
     void Update(AdminEntity admin);
     void Delete(int id);

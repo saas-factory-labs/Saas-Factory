@@ -52,7 +52,11 @@ public class AuthenticationController : BaseController
 
             return Ok(new { Message = "Authentication successful" });
         }
-        catch (Exception)
+        catch (InvalidOperationException)
+        {
+            return Unauthorized(new { Message = "Invalid credentials" });
+        }
+        catch (ArgumentException)
         {
             return Unauthorized(new { Message = "Invalid credentials" });
         }

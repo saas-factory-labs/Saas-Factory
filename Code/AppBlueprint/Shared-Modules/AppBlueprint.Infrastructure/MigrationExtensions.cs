@@ -44,9 +44,18 @@ public static class MigrationExtensions
                     Logger.LogInformation("Successfully established database connection on attempt {Attempt}", attempt);
                     break;
                 }
-                catch (Exception ex)
+                catch (NpgsqlException ex)
                 {
                     Logger.LogWarning("Failed to connect to database on attempt {Attempt}: {Message}", attempt, ex.Message);
+                    if (attempt == 3)
+                    {
+                        throw;
+                    }
+                    await Task.Delay(TimeSpan.FromSeconds(3));
+                }
+                catch (TimeoutException ex)
+                {
+                    Logger.LogWarning("Database connection timeout on attempt {Attempt}: {Message}", attempt, ex.Message);
                     if (attempt == 3)
                     {
                         throw;
@@ -68,10 +77,22 @@ public static class MigrationExtensions
                 Logger.LogWarning("Cannot connect to the database. Migrations were not applied.");
             }
         }
-        catch (Exception ex)
+        catch (NpgsqlException ex)
         {
-            // Log the error but don't crash the application
-            Logger.LogError(ex, "An error occurred while applying migrations: {Message}", ex.Message);
+            // Log the database-specific error but don't crash the application
+            Logger.LogError(ex, "A database error occurred while applying migrations: {Message}", ex.Message);
+            Logger.LogWarning("Application will continue without applying migrations.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Log EF Core operation errors but don't crash the application
+            Logger.LogError(ex, "An Entity Framework error occurred while applying migrations: {Message}", ex.Message);
+            Logger.LogWarning("Application will continue without applying migrations.");
+        }
+        catch (TimeoutException ex)
+        {
+            // Log timeout errors but don't crash the application
+            Logger.LogError(ex, "A timeout occurred while applying migrations: {Message}", ex.Message);
             Logger.LogWarning("Application will continue without applying migrations.");
         }
     }
@@ -93,10 +114,22 @@ public static class MigrationExtensions
             await dataSeeder.SeedDatabaseAsync();
             Logger.LogInformation("Database seeding completed successfully.");
         }
-        catch (Exception ex)
+        catch (NpgsqlException ex)
         {
-            // Log the error but don't crash the application
-            Logger.LogError(ex, "An error occurred while seeding the database: {Message}", ex.Message);
+            // Log the database-specific error but don't crash the application
+            Logger.LogError(ex, "A database error occurred while seeding the database: {Message}", ex.Message);
+            Logger.LogWarning("Application will continue without seeding the database.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Log EF Core operation errors but don't crash the application
+            Logger.LogError(ex, "An Entity Framework error occurred while seeding the database: {Message}", ex.Message);
+            Logger.LogWarning("Application will continue without seeding the database.");
+        }
+        catch (TimeoutException ex)
+        {
+            // Log timeout errors but don't crash the application
+            Logger.LogError(ex, "A timeout occurred while seeding the database: {Message}", ex.Message);
             Logger.LogWarning("Application will continue without seeding the database.");
         }
     }

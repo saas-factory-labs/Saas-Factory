@@ -44,6 +44,8 @@ public class TodoController(
         [FromBody] CreateTodoRequest request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
@@ -78,6 +80,8 @@ public class TodoController(
         [FromBody] UpdateTodoRequest request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 

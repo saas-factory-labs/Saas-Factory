@@ -116,7 +116,7 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
             return new DataExportResponse
             {
                 Id = Guid.NewGuid().ToString(), // Generate a temporary ID for mapping
-                DownloadUrl = request.DownloadUrl?.ToString() ?? string.Empty,
+                DownloadUrl = request.DownloadUrl ?? new Uri("https://placeholder.example.com"),
                 FileName = request.FileName,
                 FileSize = request.FileSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
                 CreatedAt = DateTime.UtcNow
@@ -204,7 +204,7 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            return new RoleResponse((IReadOnlyList<PermissionResponse>)new List<PermissionResponse>());
+            return new RoleResponse(new List<PermissionResponse>().AsReadOnly());
         }
     }
 

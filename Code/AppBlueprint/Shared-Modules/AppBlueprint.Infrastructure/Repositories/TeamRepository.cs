@@ -16,26 +16,26 @@ public class TeamRepository : ITeamRepository
 
     public async Task<IEnumerable<TeamEntity>> GetAllAsync()
     {
-        return await _context.Set<TeamEntity>().ToListAsync();
+        return await _context.Teams.ToListAsync();
     }
 
-    public async Task<TeamEntity> GetByIdAsync(string id)
+    public async Task<TeamEntity?> GetByIdAsync(string id)
     {
-        return await _context.Set<TeamEntity>().FindAsync(id);
+        return await _context.Teams.FindAsync(id);
     }
 
     public async Task AddAsync(TeamEntity team)
     {
-        await _context.Set<TeamEntity>().AddAsync(team);
+        await _context.Teams.AddAsync(team);
     }
 
     public void Update(TeamEntity team)
     {
-        _context.Set<TeamEntity>().Update(team);
+        _context.Teams.Update(team);
     }
     public void Delete(string id)
     {
-        TeamEntity? team = _context.Set<TeamEntity>().Find(id);
-        if (team is not null) _context.Set<TeamEntity>().Remove(team);
+        TeamEntity? team = _context.Teams.Find(id);
+        if (team is not null) _context.Teams.Remove(team);
     }
 }

@@ -7,10 +7,9 @@ public static class IdentityExtensions
     public static Guid? GetUserId(this HttpContext? context)
     {
         if (context is null) return null;
+        
         Claim? userId = context.User.Claims.SingleOrDefault(x => x.Type == "userid");
 
-        if (Guid.TryParse(userId?.Value, out Guid parsedId)) return parsedId;
-
-        return null;
+        return Guid.TryParse(userId?.Value, out Guid parsedId) ? parsedId : null;
     }
 }
