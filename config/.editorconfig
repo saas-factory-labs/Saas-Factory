@@ -99,6 +99,11 @@ dotnet_diagnostic.CA2007.severity = none
 dotnet_diagnostic.CA1002.severity = none
 dotnet_diagnostic.CA1034.severity = none
 
+# CA1848: For improved performance, use LoggerMessage delegates
+# Suppressed for code readability - following PlatformPlatform's pragmatic approach
+# LoggerMessage is only beneficial for hot-path logging, not typical application logging
+dotnet_diagnostic.CA1848.severity = suggestion
+
 # Disable ConfigureAwait warnings since it is not applicable in .NET 6 and later
 [*.{cs}]
 dotnet_diagnostic.VSTHRD200.severity = none

@@ -7,7 +7,7 @@ public class DataExportResponse
 {
     public required string Id { get; set; }
 
-    public required string DownloadUrl { get; set; }
+    public required Uri DownloadUrl { get; set; }
 
     [DataClassification(GDPRType.IndirectlyIdentifiable)]
     public required string FileName { get; set; }

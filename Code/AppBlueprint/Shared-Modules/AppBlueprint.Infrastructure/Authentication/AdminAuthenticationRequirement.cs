@@ -10,6 +10,8 @@ public class AdminAuthenticationRequirement(string apiKey) : IAuthorizationHandl
 {
     public Task HandleAsync(AuthorizationHandlerContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        
         if (context.User.HasClaim("Admin", "true"))
         {
             context.Succeed(this);

@@ -34,7 +34,7 @@ public sealed class AccountEntityConfiguration : IEntityTypeConfiguration<Accoun
             .IsRequired()
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-        builder.Property(e => e.UpdatedAt)
+        builder.Property(e => e.LastUpdatedAt)
             .IsRequired()
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
 

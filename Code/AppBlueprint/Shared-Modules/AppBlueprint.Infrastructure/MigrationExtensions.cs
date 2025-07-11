@@ -18,6 +18,8 @@ public static class MigrationExtensions
 
     public static async Task ApplyMigrationsAsync(this IApplicationBuilder app)
     {
+        ArgumentNullException.ThrowIfNull(app);
+        
         using IServiceScope scope = app.ApplicationServices.CreateScope();
 
         await using ApplicationDbContext dbContext =
@@ -82,10 +84,12 @@ public static class MigrationExtensions
 
         await using ApplicationDbContext dbContext =
             scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeeder>>();
 
         try
         {
-            var dataSeeder = new DataSeeder(dbContext);
+            var dataSeeder = new DataSeeder(dbContext, logger);
             await dataSeeder.SeedDatabaseAsync();
             Logger.LogInformation("Database seeding completed successfully.");
         }

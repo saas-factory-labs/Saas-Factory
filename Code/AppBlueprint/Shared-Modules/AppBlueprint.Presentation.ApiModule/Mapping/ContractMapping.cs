@@ -53,33 +53,28 @@ namespace AppBlueprint.Presentation.ApiModule.Mapping.Extensions
         public static AccountEntity MapToAccount(this CreateAccountRequest request, string tenantId)
         {
             ArgumentNullException.ThrowIfNull(request);
+            ArgumentNullException.ThrowIfNull(tenantId);
+
+            var userId = PrefixedUlid.Generate("usr");
 
             return new AccountEntity
             {
-                UserId = PrefixedUlid.Generate("usr"),
+                UserId = userId,
                 Name = request.Name,
                 TenantId = tenantId,
                 Owner = new UserEntity
                 {
-                    Email = string.Empty,
-                    UserName = string.Empty,
+                    Email = request.Email ?? string.Empty,
+                    UserName = request.Email ?? string.Empty,
                     FirstName = string.Empty,
                     LastName = string.Empty,
+                    TenantId = tenantId,
                     Profile = new ProfileEntity
                     {
-                        // DisplayName = string.Empty,
-                        // Bio = string.Empty,
-                        // AvatarUrl = string.Empty,
-                        // PhoneNumber = string.Empty,
-                        // Address = string.Empty,
-                        // City = string.Empty,
-                        // State = string.Empty,
-                        // Country = string.Empty,
-                        // ZipCode = string.Empty,
-                        // IsVerified = false
+                        UserId = userId
                     }
                 },
-                Email = request.Email
+                Email = request.Email ?? string.Empty
             };
         }
 

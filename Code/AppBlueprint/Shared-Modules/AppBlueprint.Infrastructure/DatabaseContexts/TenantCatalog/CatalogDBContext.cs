@@ -4,18 +4,22 @@ using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog;
 
 public class CatalogDbContext : DbContext
 {
+    private readonly ILogger<CatalogDbContext> _logger;
     public DbSet<TenantEntity> Tenants { get; set; }
     public DbSet<CustomerEntity> Customers { get; set; }
 
 
-    public CatalogDbContext(DbContextOptions<CatalogDbContext> options)
+    public CatalogDbContext(DbContextOptions<CatalogDbContext> options, ILogger<CatalogDbContext> logger)
         : base(options)
     {
+        _logger = logger;
+        _logger.LogInformation("Catalog DbContext initialized");
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -24,6 +28,8 @@ public class CatalogDbContext : DbContext
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
+        ArgumentNullException.ThrowIfNull(configurationBuilder);
+        
         base.ConfigureConventions(configurationBuilder);
         // default constraints
         configurationBuilder.Properties<string>()
@@ -33,6 +39,8 @@ public class CatalogDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        ArgumentNullException.ThrowIfNull(modelBuilder);
+        
         ArgumentNullException.ThrowIfNull(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new AppProjectEntityConfiguration());

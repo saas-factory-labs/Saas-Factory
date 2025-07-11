@@ -95,22 +95,27 @@ public class IntegrationController : BaseController
     public async Task<ActionResult> Post([FromBody] CreateIntegrationRequest integrationDto,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(integrationDto);
+
         if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        if (string.IsNullOrEmpty(integrationDto.Title))
+            return BadRequest(new { Message = "Title is required" });
+
+        if (string.IsNullOrEmpty(integrationDto.Message))
+            return BadRequest(new { Message = "Message is required" });
 
         var newIntegration = new IntegrationEntity
         {
             OwnerId = PrefixedUlid.Generate("usr"),
-            Name = string.Empty,
-            ServiceName = string.Empty,
-            ApiKeySecretReference = string.Empty
-            // Name = integrationDto.Name,
-            // Description = integrationDto.Description,
-            // Type = integrationDto.Type,
-            // Status = integrationDto.Status
+            Name = integrationDto.Title,
+            ServiceName = "Generic", // Default service name, should be specified by client in real implementation
+            ApiKeySecretReference = $"secret-{PrefixedUlid.Generate("ref")}",
+            Description = integrationDto.Message
         };
 
         await _integrationRepository.AddAsync(newIntegration, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var response = new IntegrationResponse
         {
@@ -165,7 +170,7 @@ public class IntegrationController : BaseController
         if (existingIntegration is null) return NotFound(new { Message = $"Integration with ID {id} not found." });
 
         await _integrationRepository.DeleteAsync(existingIntegration.Id, cancellationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }

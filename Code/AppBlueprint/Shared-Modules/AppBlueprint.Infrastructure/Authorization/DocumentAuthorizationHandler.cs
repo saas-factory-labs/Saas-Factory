@@ -13,6 +13,10 @@ public class DocumentAuthorizationHandler : AuthorizationHandler<DocumentRequire
         DocumentRequirement requirement,
         Document resource)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(requirement);
+        ArgumentNullException.ThrowIfNull(resource);
+        
         // context.User.Identity?.Name == resource.Name
         // check if user has access to the document since they own it
         if (true) context.Succeed(requirement);

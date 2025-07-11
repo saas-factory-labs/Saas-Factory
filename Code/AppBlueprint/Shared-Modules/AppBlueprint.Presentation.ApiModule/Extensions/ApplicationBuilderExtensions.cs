@@ -14,19 +14,7 @@ public static class ApplicationBuilderExtensions
 {
     private static readonly ILogger Logger = LoggerFactory
         .Create(builder => builder.AddConsole())
-        .CreateLogger(typeof(ApplicationBuilderExtensions));
-
-    private static readonly Action<ILogger, string, Exception?> LogMode =
-        LoggerMessage.Define<string>(
-            LogLevel.Information,
-            new EventId(1, nameof(LogMode)),
-            "Configuration mode: {Mode}");
-
-    private static readonly Action<ILogger, string, Exception?> LogConnectionString =
-        LoggerMessage.Define<string>(
-            LogLevel.Information,
-            new EventId(2, nameof(LogConnectionString)),
-            "Connection String: {ConnectionString}"); private static void AddDbContext(IServiceCollection serviceCollection, IConfiguration configuration)
+        .CreateLogger(typeof(ApplicationBuilderExtensions)); private static void AddDbContext(IServiceCollection serviceCollection, IConfiguration configuration)
     {
         // Get connection string from IConfiguration - try Aspire resource name first, then DefaultConnection as fallback
         string? databaseConnectionString = configuration.GetConnectionString("postgres-server") ??
@@ -37,7 +25,7 @@ public static class ApplicationBuilderExtensions
         // Throw if connection string is null or empty
         ArgumentException.ThrowIfNullOrEmpty(databaseConnectionString, nameof(databaseConnectionString));
 
-        LogConnectionString(Logger, databaseConnectionString, null); // Existing logging
+        Logger.LogInformation("Connection String: {ConnectionString}", databaseConnectionString); // Existing logging
 
         // Properly configure the ApplicationDbContext with Entity Framework Core
         serviceCollection.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>

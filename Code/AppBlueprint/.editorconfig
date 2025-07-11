@@ -9,5 +9,10 @@ root = false
 # Microsoft guidance: Don't use ConfigureAwait(false) in modern web applications
 dotnet_diagnostic.CA2007.severity = none
 
+# CA1848: For improved performance, use LoggerMessage delegates
+# Suppressed for code readability - following PlatformPlatform's pragmatic approach
+# LoggerMessage is only beneficial for hot-path logging, not typical application logging
+dotnet_diagnostic.CA1848.severity = suggestion
+
 # Already configured in root config but ensuring it's applied here too
 dotnet_diagnostic.VSTHRD200.severity = none

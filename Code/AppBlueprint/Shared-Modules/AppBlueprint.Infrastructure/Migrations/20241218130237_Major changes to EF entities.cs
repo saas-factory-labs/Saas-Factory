@@ -12,6 +12,8 @@ namespace AppBlueprint.SharedKernel.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(migrationBuilder);
+            
             migrationBuilder.CreateTable(
                 name: "Accounts",
                 columns: table => new

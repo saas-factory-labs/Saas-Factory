@@ -21,21 +21,6 @@ public class AdminController : BaseController
     private readonly IAdminRepository _adminRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    private static readonly Action<ILogger, string, Exception?> LogNoAdminsFound = LoggerMessage.Define<string>(
-        LogLevel.Information,
-        new EventId(1, nameof(GetAdminAccounts)),
-        "No admin accounts found: {Message}");
-
-    private static readonly Action<ILogger, string, Exception?> LogAdminNotFound = LoggerMessage.Define<string>(
-        LogLevel.Information,
-        new EventId(2, nameof(GetAdminAccount)),
-        "Admin account with ID {Id} not found");
-
-    private static readonly Action<ILogger, string, Exception?> LogAdminCreated = LoggerMessage.Define<string>(
-        LogLevel.Information,
-        new EventId(3, nameof(CreateAdminAccount)),
-        "Created new admin account with ID {AccountId}");
-
     public AdminController(
         IConfiguration configuration,
         ILogger<AdminController> logger,
@@ -62,7 +47,7 @@ public class AdminController : BaseController
         IEnumerable<AdminEntity> admins = await _adminRepository.GetAllAsync();
         if (!admins.Any())
         {
-            LogNoAdminsFound(_logger, "No accounts found.", null);
+            _logger.LogInformation("No admin accounts found");
             return NotFound(new { Message = "No accounts found." });
         }
 
@@ -90,7 +75,7 @@ public class AdminController : BaseController
         AdminEntity? account = await _adminRepository.GetByIdAsync(id);
         if (account == null)
         {
-            LogAdminNotFound(_logger, id, null);
+            _logger.LogInformation("Admin account with ID {Id} not found", id);
             return NotFound(new { Message = $"Admin account with ID {id} not found." });
         }
 
@@ -128,9 +113,9 @@ public class AdminController : BaseController
         };
 
         await _adminRepository.AddAsync(account);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        LogAdminCreated(_logger, account.Id, null);
+        _logger.LogInformation("Created new admin account with ID {AccountId}", account.Id);
 
         var response = new AccountResponse()
         {

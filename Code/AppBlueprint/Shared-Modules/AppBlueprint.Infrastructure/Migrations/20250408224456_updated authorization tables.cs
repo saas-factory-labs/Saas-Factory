@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AppBlueprint.SharedKernel.Migrations
 {
     /// <inheritdoc />
-    public partial class updatedauthorizationtables : Migration
+    public partial class UpdatedAuthorizationTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

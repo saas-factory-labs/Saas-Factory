@@ -7,6 +7,7 @@ using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
@@ -87,11 +88,14 @@ public class FileController : BaseController
         if (string.IsNullOrEmpty(fileDto.FileName))
             return BadRequest(new { Message = "FileName is required" });
 
+        var fileExtension = Path.GetExtension(fileDto.FileName) ?? ".bin";
+        var filePath = $"/files/{PrefixedUlid.Generate("file")}{fileExtension}";
+
         var newFile = new FileEntity
         {
             OwnerId = PrefixedUlid.Generate("usr"),
-            FileExtension = string.Empty,
-            FilePath = string.Empty,
+            FileExtension = fileExtension,
+            FilePath = filePath,
             FileName = fileDto.FileName
         };
 

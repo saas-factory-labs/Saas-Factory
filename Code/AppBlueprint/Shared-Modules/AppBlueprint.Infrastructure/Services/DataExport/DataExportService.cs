@@ -105,7 +105,7 @@ public sealed class DataExportService : IDataExportService
             Id = entity.Id,
             FileName = entity.FileName,
             FileSize = entity.FileSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
-            DownloadUrl = string.Empty, // TODO: Generate actual download URL based on business rules
+            DownloadUrl = new Uri("about:blank"), // TODO: Generate actual download URL based on business rules
             CreatedAt = entity.CreatedAt
         };
     }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts;
 
@@ -14,8 +15,9 @@ public class ApplicationDbContext : B2CdbContext
     public ApplicationDbContext(
         DbContextOptions options,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor
-    ) : base(options, configuration)
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<B2CdbContext> logger
+    ) : base(options, configuration, logger)
     {
     }
 

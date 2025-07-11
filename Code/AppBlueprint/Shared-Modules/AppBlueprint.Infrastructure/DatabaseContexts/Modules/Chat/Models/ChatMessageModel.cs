@@ -44,9 +44,6 @@ public class ChatMessageModel: BaseEntity
 
     public bool IsActive { get; set; }
     public string? Description { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastUpdatedAt { get; set; }
-
     public required ChatModel Chat { get; set; }
 
     public required UserEntity Sender { get; set; }

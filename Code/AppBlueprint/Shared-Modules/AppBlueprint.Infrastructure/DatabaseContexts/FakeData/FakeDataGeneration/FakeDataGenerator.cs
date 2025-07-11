@@ -19,7 +19,10 @@ public class FakeDataGenerator
             Type? autoFakerType = typeof(AutoFaker<>).MakeGenericType(type);
             object? autoFaker = Activator.CreateInstance(autoFakerType);
 
-            _fakerConfigurations[type] = autoFaker;
+            if (autoFaker is not null)
+            {
+                _fakerConfigurations[type] = autoFaker;
+            }
         }
     }
 

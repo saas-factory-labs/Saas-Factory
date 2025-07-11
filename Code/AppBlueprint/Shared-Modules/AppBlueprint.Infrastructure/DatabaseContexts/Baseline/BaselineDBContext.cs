@@ -6,6 +6,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
@@ -13,15 +14,20 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 public partial class BaselineDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
+    private readonly ILogger<BaselineDbContext> _logger;
 
-    public BaselineDbContext(DbContextOptions options, IConfiguration configuration)
+    public BaselineDbContext(DbContextOptions options, IConfiguration configuration, ILogger<BaselineDbContext> logger)
         : base(options)
     {
         _configuration = configuration;
+        _logger = logger;
+        _logger.LogInformation("Baseline DbContext initialized");
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
+        ArgumentNullException.ThrowIfNull(configurationBuilder);
+        
         base.ConfigureConventions(configurationBuilder);
 
         configurationBuilder.Properties<string>()
@@ -31,6 +37,8 @@ public partial class BaselineDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        ArgumentNullException.ThrowIfNull(modelBuilder);
+        
         base.OnModelCreating(modelBuilder);
 
         // partial configurations

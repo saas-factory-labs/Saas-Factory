@@ -170,7 +170,8 @@ namespace AppBlueprint.Infrastructure.Authorization
         }
 
         // Simple class to deserialize token payload
-        private class TokenPayload
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Class is instantiated by JSON deserialization")]
+        private sealed class TokenPayload
         {
             public string sub { get; set; } = string.Empty;
             public string name { get; set; } = string.Empty;
@@ -185,6 +186,8 @@ namespace AppBlueprint.Infrastructure.Authorization
     {
         public static string PadBase64(this string base64)
         {
+            ArgumentNullException.ThrowIfNull(base64);
+            
             switch (base64.Length % 4)
             {
                 case 2: return base64 + "==";

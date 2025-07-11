@@ -1,4 +1,6 @@
+using AppBlueprint.Infrastructure.Resources;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,11 +11,13 @@ public class DawaAddressLookupService
 {
     private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<DawaAddressLookupService> _logger;
 
-    public DawaAddressLookupService(HttpClient httpClient, IConfiguration configuration)
+    public DawaAddressLookupService(HttpClient httpClient, IConfiguration configuration, ILogger<DawaAddressLookupService> logger)
     {
         _httpClient = httpClient;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task LookupAddress(string address, CancellationToken cancellationToken = default)
@@ -35,13 +39,13 @@ public class DawaAddressLookupService
             string responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
             // Print resultatet
-            Console.WriteLine("API Response:");
-            Console.WriteLine(responseBody);
+            _logger.LogInformation(AddressLookupMessages.ApiResponse);
+            _logger.LogInformation("{ResponseBody}", responseBody);
         }
         catch (HttpRequestException e)
         {
-            Console.WriteLine("Error fetching data:");
-            Console.WriteLine(e.Message);
+            _logger.LogError(AddressLookupMessages.ErrorFetchingData);
+            _logger.LogError("{ErrorMessage}", e.Message);
         }
     }
 }

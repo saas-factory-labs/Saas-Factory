@@ -24,6 +24,8 @@ public sealed class ApiKeyAuthenticationFilter : IAuthorizationFilter
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        
         // 1.  Check for missing header
         if (!context.HttpContext.Request.Headers.TryGetValue(ApiHeaderNames.ApiKeyHeaderName,
                 out StringValues extractedApiKey))

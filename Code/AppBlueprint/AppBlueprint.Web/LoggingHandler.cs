@@ -1,30 +1,35 @@
+using Microsoft.Extensions.Logging;
+
 internal class LoggingHandler : DelegatingHandler
 {
-    public LoggingHandler(HttpMessageHandler innerHandler) : base(innerHandler)
+    private readonly ILogger<LoggingHandler> _logger;
+
+    public LoggingHandler(HttpMessageHandler innerHandler, ILogger<LoggingHandler> logger) : base(innerHandler)
     {
+        _logger = logger;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
         // Log Request
-        Console.WriteLine("Request:");
-        Console.WriteLine(request);
+        _logger.LogInformation("Request:");
+        _logger.LogInformation("{Request}", request);
 
         if (request.Content is not null)
         {
             string? requestBody = await request.Content.ReadAsStringAsync(cancellationToken);
-            Console.WriteLine($"Request Body: {requestBody}");
+            _logger.LogInformation("Request Body: {RequestBody}", requestBody);
         }
 
         HttpResponseMessage? response = await base.SendAsync(request, cancellationToken);
 
         // Log Response
-        Console.WriteLine("Response:");
-        Console.WriteLine(response);
+        _logger.LogInformation("Response:");
+        _logger.LogInformation("{Response}", response);
 
         string? responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-        Console.WriteLine($"Response Body: {responseBody}");
+        _logger.LogInformation("Response Body: {ResponseBody}", responseBody);
 
         return response;
     }

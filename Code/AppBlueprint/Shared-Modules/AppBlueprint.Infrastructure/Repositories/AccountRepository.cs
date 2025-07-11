@@ -21,7 +21,7 @@ public class AccountRepository : IAccountRepository
     }
     public async Task<AccountEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
-        return await _context.Accounts.FindAsync(id, cancellationToken) ?? new AccountEntity
+        return await _context.Accounts.FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken) ?? new AccountEntity
         {
             Name = "Not Found",
             IsActive = false,
@@ -34,7 +34,7 @@ public class AccountRepository : IAccountRepository
     }
     public async Task<AccountEntity> GetBySlugAsync(string slug, CancellationToken cancellationToken)
     {
-        return await _context.Accounts.FindAsync(slug, cancellationToken) ?? new AccountEntity
+        return await _context.Accounts.FindAsync(new object?[] { slug, cancellationToken }, cancellationToken: cancellationToken) ?? new AccountEntity
         {
             Name = "Not Found",
             IsActive = false,
@@ -60,7 +60,7 @@ public class AccountRepository : IAccountRepository
 
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
-        var account = await _context.Accounts.FindAsync(id, cancellationToken);
+        var account = await _context.Accounts.FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken);
         if (account is not null)
         {
             _context.Accounts.Remove(account);

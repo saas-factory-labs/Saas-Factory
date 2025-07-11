@@ -6,14 +6,16 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorizati
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Resources;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Enums;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure;
 
-public class DataSeeder(ApplicationDbContext dbContext)
+public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logger)
 {
     public async Task SeedDatabaseAsync(CancellationToken cancellationToken = default)
     {
@@ -21,7 +23,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
 
         if (await AreAllEntitiesSeededAsync(cancellationToken))
         {
-            Console.WriteLine("Database already seeded.");
+            logger.LogInformation(DataSeederMessages.DatabaseAlreadySeeded);
             return;
         }
 
@@ -38,7 +40,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
         //await SeedPhoneNumbersAsync(cancellationToken);
         //await SeedAuditLogsAsync(cancellationToken);
 
-        Console.WriteLine("Database seeding completed.");
+        logger.LogInformation(DataSeederMessages.DatabaseSeedingCompleted);
     }
 
     // private async Task SeedTeamInvitesAsync(CancellationToken cancellationToken)
@@ -81,7 +83,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
             await dbContext.Database.ExecuteSqlRawAsync(sql, cancellationToken);
         }
 
-        Console.WriteLine("All tables truncated.");
+        logger.LogInformation(DataSeederMessages.AllTablesProcessed);
     }
 
     // private async Task SeedTeamsAsync()
@@ -129,7 +131,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
 
         await dbContext.Languages.AddRangeAsync(languages, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
-        Console.WriteLine("Languages seeded.");
+        logger.LogInformation(DataSeederMessages.LanguagesSeeded);
     }
 
     private async Task SeedCountriesAsync(CancellationToken cancellationToken)
@@ -150,7 +152,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
 
         await dbContext.Countries.AddRangeAsync(countries, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
-        Console.WriteLine("Countries seeded.");
+        logger.LogInformation(DataSeederMessages.CountriesSeeded);
     }
 
     private async Task SeedAccountsAsync(CancellationToken cancellationToken)
@@ -164,7 +166,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
         List<AccountEntity> accounts = faker.Generate(10);
         await dbContext.Accounts.AddRangeAsync(accounts, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
-        Console.WriteLine("Accounts seeded.");
+        logger.LogInformation(DataSeederMessages.AccountsSeeded);
     }
 
     private async Task SeedSubscriptionsAsync(CancellationToken cancellationToken)
@@ -179,7 +181,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
         List<SubscriptionEntity> subscriptions = faker.Generate(5);
         await dbContext.Subscriptions.AddRangeAsync(subscriptions, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
-        Console.WriteLine("Subscriptions seeded.");
+        logger.LogInformation(DataSeederMessages.SubscriptionsSeeded);
     }
 
     // private async Task SeedOrganizationsAsync(CancellationToken cancellationToken)
@@ -205,7 +207,7 @@ public class DataSeeder(ApplicationDbContext dbContext)
 
         await dbContext.Roles.AddRangeAsync(roles, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
-        Console.WriteLine("Roles seeded.");
+        logger.LogInformation(DataSeederMessages.RolesSeeded);
     }
 
     // private async Task SeedApiKeysAsync(CancellationToken cancellationToken)

@@ -11,7 +11,7 @@ public class StripeSubscriptionService
 
     public StripeSubscriptionService(IConfiguration configuration)
     {
-        _stripeApiKey = configuration.GetConnectionString("StripeApiKey");
+        _stripeApiKey = configuration.GetConnectionString("StripeApiKey") ?? throw new InvalidOperationException("StripeApiKey connection string is not configured.");
 
         StripeConfiguration.ApiKey = _stripeApiKey;
     }

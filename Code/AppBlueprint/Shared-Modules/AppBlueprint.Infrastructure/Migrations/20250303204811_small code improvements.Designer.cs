@@ -13,7 +13,7 @@ namespace AppBlueprint.SharedKernel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250303204811_small code improvements")]
-    partial class smallcodeimprovements
+    partial class SmallCodeImprovements
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

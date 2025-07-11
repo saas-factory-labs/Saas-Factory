@@ -1,4 +1,5 @@
 using AppBlueprint.AppGateway;
+using AppBlueprint.AppGateway.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -12,16 +13,16 @@ string otlpDefaultEndpoint = "http://localhost:18889";
 if (!string.IsNullOrEmpty(dashboardEndpoint))
 {
     Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", dashboardEndpoint);
-    Console.WriteLine($"[AppGateway] Using dashboard OTLP endpoint: {dashboardEndpoint}");
+    Console.WriteLine(ConfigurationMessages.DashboardEndpointMessage, dashboardEndpoint);
 }
 else if (string.IsNullOrEmpty(otlpEndpoint))
 {
     Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", otlpDefaultEndpoint);
-    Console.WriteLine($"[AppGateway] Using default OTLP endpoint: {otlpDefaultEndpoint}");
+    Console.WriteLine(ConfigurationMessages.DefaultEndpointMessage, otlpDefaultEndpoint);
 }
 else
 {
-    Console.WriteLine($"[AppGateway] Using existing OTLP endpoint: {otlpEndpoint}");
+    Console.WriteLine(ConfigurationMessages.ExistingEndpointMessage, otlpEndpoint);
 }
 
 // Set OTLP protocol if not already set

@@ -1,24 +1,28 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
+using AppBlueprint.Infrastructure.Resources;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.Services;
 
 // Cloudflare R2 Object Storage
-internal class ObjectStorageService
+internal sealed class ObjectStorageService
 {
     private readonly IConfiguration _configuration;
+    private readonly ILogger<ObjectStorageService> _logger;
 
     private readonly AmazonS3Client _s3Client;
 
-    private ObjectStorageService(IConfiguration configuration)
+    private ObjectStorageService(IConfiguration configuration, ILogger<ObjectStorageService> logger)
     {
         _configuration = configuration;
+        _logger = logger;
 
-        AccessKeyId = _configuration["ObjectStorage:AccessKeyId"];
-        _SecretAccessKey = _configuration["ObjectStorage:SecretAccessKey"];
-        EndpointUrl = _configuration["ObjectStorage:EndpointUrl"];
+        AccessKeyId = _configuration["ObjectStorage:AccessKeyId"] ?? throw new InvalidOperationException("ObjectStorage:AccessKeyId is not configured.");
+        _SecretAccessKey = _configuration["ObjectStorage:SecretAccessKey"] ?? throw new InvalidOperationException("ObjectStorage:SecretAccessKey is not configured.");
+        EndpointUrl = _configuration["ObjectStorage:EndpointUrl"] ?? throw new InvalidOperationException("ObjectStorage:EndpointUrl is not configured.");
 
         var credentials = new BasicAWSCredentials(AccessKeyId, _SecretAccessKey);
         _s3Client = new AmazonS3Client(credentials, new AmazonS3Config
@@ -50,11 +54,11 @@ internal class ObjectStorageService
                 await responseStream.CopyToAsync(fileStream);
             }
 
-            Console.WriteLine("File downloaded successfully: {0}", filePath);
+            _logger.LogInformation(ObjectStorageMessages.FileDownloadedSuccessfully, filePath);
         }
         catch (AmazonS3Exception e)
         {
-            Console.WriteLine("Error encountered on server. Message: '{0}' when reading an object", e.Message);
+            _logger.LogError(ObjectStorageMessages.ErrorReadingObject, e.Message);
         }
     }
 
@@ -70,11 +74,11 @@ internal class ObjectStorageService
             };
 
             PutObjectResponse? response = await _s3Client.PutObjectAsync(request);
-            Console.WriteLine("ETag: {0}", response.ETag);
+            _logger.LogInformation(ObjectStorageMessages.ETagFormat, response.ETag);
         }
         catch (AmazonS3Exception e)
         {
-            Console.WriteLine("Error encountered on server. Message:'{0}' when writing an object", e.Message);
+            _logger.LogError(ObjectStorageMessages.ErrorWritingObject, e.Message);
         }
     }
 }

@@ -20,5 +20,4 @@ public class TeamInviteEntity: BaseEntity
     public required UserEntity Owner { get; set; }
     public required DateTime ExpireAt { get; set; }
     public required bool IsActive { get; set; }
-    public required DateTime CreatedAt { get; set; }
 }

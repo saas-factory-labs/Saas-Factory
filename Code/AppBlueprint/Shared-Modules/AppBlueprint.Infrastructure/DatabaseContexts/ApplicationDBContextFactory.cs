@@ -1,7 +1,9 @@
+using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts;
 
@@ -28,7 +30,11 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 
         // Create a mock HttpContextAccessor for design-time
         var httpContextAccessor = new HttpContextAccessor();
+        
+        // Create a logger factory for design-time
+        using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+        var logger = loggerFactory.CreateLogger<B2CdbContext>();
 
-        return new ApplicationDbContext(optionsBuilder.Options, configuration, httpContextAccessor);
+        return new ApplicationDbContext(optionsBuilder.Options, configuration, httpContextAccessor, logger);
     }
 }

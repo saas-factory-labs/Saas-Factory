@@ -5,8 +5,8 @@ namespace AppBlueprint.Domain.Interfaces.Services;
 /// </summary>
 public interface IEmailService
 {
-    Task SendEmailAsync(string to, string subject, string body, CancellationToken cancellationToken = default);
-    Task SendWelcomeEmailAsync(string to, string userName, CancellationToken cancellationToken = default);
-    Task SendPasswordResetEmailAsync(string to, string resetToken, CancellationToken cancellationToken = default);
-    Task SendSignUpWelcomeEmail(string fromEmail, string toEmail, string subject, CancellationToken cancellationToken = default);
+    Task SendEmailAsync(string recipient, string subject, string body, CancellationToken cancellationToken = default);
+    Task SendWelcomeEmailAsync(string recipient, string userName, CancellationToken cancellationToken = default);
+    Task SendPasswordResetEmailAsync(string recipient, string resetToken, CancellationToken cancellationToken = default);
+    Task SendSignUpWelcomeEmail(string fromEmail, string recipient, string subject, CancellationToken cancellationToken = default);
 }

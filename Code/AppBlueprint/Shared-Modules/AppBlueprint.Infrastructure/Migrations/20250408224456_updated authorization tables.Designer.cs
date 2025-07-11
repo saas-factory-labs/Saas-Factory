@@ -13,7 +13,7 @@ namespace AppBlueprint.SharedKernel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250408224456_updated authorization tables")]
-    partial class updatedauthorizationtables
+    partial class UpdatedAuthorizationTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

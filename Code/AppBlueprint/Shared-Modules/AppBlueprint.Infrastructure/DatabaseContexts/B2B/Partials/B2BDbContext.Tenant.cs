@@ -5,7 +5,7 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 
 public partial class B2BDbContext
 {
-    public DbSet<TenantEntity> Tenants { get; set; }
+    public new DbSet<TenantEntity> Tenants { get; set; }
 
     partial void OnModelCreating_Tenant(ModelBuilder modelBuilder)
     {

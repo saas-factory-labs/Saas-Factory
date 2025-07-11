@@ -21,9 +21,7 @@ public class ChatModel: BaseEntity
 
     public required bool IsActive { get; set; }
     public string? Description { get; set; }
-    public required DateTime CreatedAt { get; set; }
-    public required DateTime? LastUpdatedAt { get; set; }
-
+    
     public UserEntity Owner { get; set; }
     public int OwnerId { get; set; }
 

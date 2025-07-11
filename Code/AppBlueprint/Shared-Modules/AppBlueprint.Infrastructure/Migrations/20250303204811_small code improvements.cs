@@ -5,7 +5,7 @@
 namespace AppBlueprint.SharedKernel.Migrations
 {
     /// <inheritdoc />
-    public partial class smallcodeimprovements : Migration
+    public partial class SmallCodeImprovements : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
