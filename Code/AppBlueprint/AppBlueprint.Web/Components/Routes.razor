@@ -50,9 +50,12 @@
     {
         Console.WriteLine($"NavigationLinks injected in Routes.razor: {Links?.Count ?? 0}");
 
-        foreach (var link in Links)
+        if (Links is not null)
         {
-            Console.WriteLine($"Link: {link.Name} - {link.Href}");
+            foreach (var link in Links)
+            {
+                Console.WriteLine($"Link: {link.Name} - {link.Href}");
+            }
         }
     }
 

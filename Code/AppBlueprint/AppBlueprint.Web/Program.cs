@@ -34,7 +34,9 @@ if (!string.IsNullOrEmpty(dashboardEndpoint))
 else if (string.IsNullOrEmpty(otlpEndpoint))
 {
     Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", otlpDefaultEndpoint);
+#pragma warning disable CA1303 // Do not pass literals as localized parameters - Diagnostic logging not intended for localization
     Console.WriteLine($"[Web] Using default OTLP endpoint: {otlpDefaultEndpoint}");
+#pragma warning restore CA1303
 }
 else
 {
@@ -80,11 +82,17 @@ builder.WebHost.ConfigureKestrel(options =>
         {
             try
             {
-                var cert = new X509Certificate2(certPath, certPassword, X509KeyStorageFlags.DefaultKeySet);
+                var cert = X509CertificateLoader.LoadPkcs12FromFile(certPath, certPassword, X509KeyStorageFlags.DefaultKeySet);
                 listenOptions.UseHttps(cert);
             }
-            catch
+            catch (System.Security.Cryptography.CryptographicException ex)
             {
+                Console.WriteLine($"Certificate error: {ex.Message}. Using default HTTPS.");
+                listenOptions.UseHttps();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Certificate access error: {ex.Message}. Using default HTTPS.");
                 listenOptions.UseHttps();
             }
         }

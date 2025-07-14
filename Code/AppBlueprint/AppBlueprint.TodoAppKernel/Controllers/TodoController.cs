@@ -14,9 +14,7 @@ namespace AppBlueprint.TodoAppKernel.Controllers;
 [Route("api/v{version:apiVersion}/todo")]
 [Produces("application/json")]
 public class TodoController(
-    ILogger<TodoController> logger,
-    IConfiguration configuration)
-    : ControllerBase
+    ILogger<TodoController> logger): ControllerBase
 {
     private readonly ILogger<TodoController> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
