@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
@@ -13,7 +14,7 @@ public class MinimumAgeHandler : AuthorizationHandler<MinimumAgeRequirement>
         
         if (!context.User.HasClaim(c => c.Type == ClaimTypes.DateOfBirth)) return Task.CompletedTask;
 
-        var birthDate = DateTime.Parse(context.User.FindFirst(ClaimTypes.DateOfBirth)!.Value);
+        var birthDate = DateTime.Parse(context.User.FindFirst(ClaimTypes.DateOfBirth)!.Value, CultureInfo.InvariantCulture);
         int age = DateTime.Today.Year - birthDate.Year;
 
         if (age >= requirement.MinimumAge) context.Succeed(requirement);

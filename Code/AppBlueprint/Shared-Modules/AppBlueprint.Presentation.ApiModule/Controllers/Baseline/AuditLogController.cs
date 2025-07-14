@@ -112,11 +112,11 @@ public class AuditLogController : BaseController
         return Ok(response);
     }
 
-    /// <summary>
-    /// Creates a new audit log.
-    /// </summary>
-    /// <param name="auditLogDto">Audit log data transfer object.</param>
-    /// <returns>Created audit log.</returns>
+    // /// <summary>
+    // /// Creates a new audit log.
+    // /// </summary>
+    // /// <param name="auditLogDto">Audit log data transfer object.</param>
+    // /// <returns>Created audit log.</returns>
     // [HttpPost("CreateAuditLog")]
     // [ProducesResponseType(typeof(AuditLogResponse), StatusCodes.Status201Created)]
     // [MapToApiVersion(ApiVersions.V1)]

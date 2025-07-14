@@ -8,8 +8,8 @@ public class ContactPersonResponse(
     string? firstName,
     string? lastName,
     IReadOnlyList<EmailAddressResponse?> emailAddresses,
-    List<AddressResponse> addresses,
-    List<PhoneNumberResponse> phoneNumbers)
+    IReadOnlyList<AddressResponse> addresses,
+    IReadOnlyList<PhoneNumberResponse> phoneNumbers)
 {
     public string? FirstName { get; set; } = firstName;
     public string? LastName { get; set; } = lastName;

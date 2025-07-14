@@ -103,8 +103,9 @@ public static class ApplicationBuilderExtensions
                 ValidateIssuer = true,
                 ValidIssuer = "supabase",
 
-                // Don't validate the audience as Supabase doesn't use it by default
-                ValidateAudience = false,
+                // Validate the audience for security (Supabase uses "authenticated" for authenticated users)
+                ValidateAudience = true,
+                ValidAudience = "authenticated",
 
                 // Validate the token's signature
                 ValidateIssuerSigningKey = true,

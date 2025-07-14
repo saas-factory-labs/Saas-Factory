@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace AppBlueprint.Infrastructure.Authorization
 {
-    public class UserAuthenticationProvider : IUserAuthenticationProvider, IDisposable
+    public sealed class UserAuthenticationProvider : IUserAuthenticationProvider, IDisposable
     {
         private readonly ITokenStorageService _tokenStorage;
         private readonly HttpClient? _httpClient;
@@ -157,11 +157,21 @@ namespace AppBlueprint.Infrastructure.Authorization
 
         public void Dispose()
         {
-            // Cleanup resources if needed
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // Cleanup managed resources if needed
+                _httpClient?.Dispose();
+            }
         }
 
         // Helper method to generate a mock token for demonstration
-        private string GenerateMockToken(string email)
+        private static string GenerateMockToken(string email)
         {
             // In a real implementation, this would be a JWT token from your authentication service
             // For demonstration, we'll use a simple mock token structure

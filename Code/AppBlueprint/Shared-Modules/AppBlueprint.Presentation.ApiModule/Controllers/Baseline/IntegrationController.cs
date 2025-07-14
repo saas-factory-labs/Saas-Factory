@@ -139,7 +139,7 @@ public class IntegrationController : BaseController
     [HttpPut(ApiEndpoints.Integrations.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Put(int id, [FromBody] UpdateIntegrationRequest integrationDto,
+    public ActionResult Put(int id, [FromBody] UpdateIntegrationRequest integrationDto,
         CancellationToken cancellationToken)
     {
         // IntegrationEntity? existingIntegration = await _integrationRepository.GetByIdAsync(id);

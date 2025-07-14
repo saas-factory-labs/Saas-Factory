@@ -99,7 +99,7 @@ public class UserController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
     [MapToApiVersion(ApiVersions.V2)]
-    public async Task<ActionResult> GetUser(string id, CancellationToken cancellationToken)
+    public async Task<ActionResult> GetUserById(string id, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(id);
         if (user is null) return NotFound(new { Message = $"User with ID {id} not found." });
@@ -151,7 +151,7 @@ public class UserController : BaseController
         await _userRepository.AddAsync(newUser);
         // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
-        return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
+        return CreatedAtAction(nameof(GetUserById), new { id = newUser.Id }, newUser);
     }
 
     /// <summary>

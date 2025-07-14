@@ -15,7 +15,7 @@ using OpenTelemetry.Exporter;
 
 namespace Microsoft.Extensions.Hosting
 {
-    public static class Extensions
+    public static class ServiceDefaultsExtensions
     {
         private static readonly string[] LiveTags = { "live" };
         private const string OtelExporterOtlpEndpoint = "OTEL_EXPORTER_OTLP_ENDPOINT";

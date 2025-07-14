@@ -11,16 +11,18 @@ public class CreateEmailAddressRequest
 {
     public CreateEmailAddressRequest()
     {
-        // Initialize required properties
         Address = string.Empty;
         Tenant = new CreateTenantRequest { Name = string.Empty };
         var emailAddresses = new List<CreateEmailAddressRequest>();
         var Addresses = new List<CreateAddressRequest>();
         var PhoneNumbers = new List<CreatePhoneNumberRequest>();
-        ContactPerson = new CreateContactPersonRequest(emailAddresses, Addresses, PhoneNumbers)
+        ContactPerson = new CreateContactPersonRequest
         {
             FirstName = string.Empty,
-            LastName = string.Empty
+            LastName = string.Empty,
+            EmailAddresses = emailAddresses,
+            Addresses = Addresses,
+            PhoneNumbers = PhoneNumbers
         };
     }
 

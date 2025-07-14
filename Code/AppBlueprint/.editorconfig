@@ -14,5 +14,31 @@ dotnet_diagnostic.CA2007.severity = none
 # LoggerMessage is only beneficial for hot-path logging, not typical application logging
 dotnet_diagnostic.CA1848.severity = suggestion
 
+# CA1008: Enum naming convention issue with GDPRType
+# Suppressed to maintain domain-specific enum naming that is more descriptive
+# NonPersonalIdentifiable is more meaningful in GDPR context than generic "None"
+dotnet_diagnostic.CA1008.severity = none
+
 # Already configured in root config but ensuring it's applied here too
 dotnet_diagnostic.VSTHRD200.severity = none
+
+# Entity Framework specific suppressions
+# CA1002: Don't use List<T> in public APIs - suppressed for EF entities
+# Entity Framework requires concrete collection types like List<T> for navigation properties
+# to support add/remove operations and change tracking
+dotnet_diagnostic.CA1002.severity = none
+
+# CA2227: Collection properties should be read only - suppressed for EF entities  
+# Entity Framework requires settable navigation properties for lazy loading,
+# change tracking, and proper entity materialization from database
+dotnet_diagnostic.CA2227.severity = none
+
+# CA1822: Member does not access instance data and can be marked as static
+# Suppressed for partial methods in DbContext that are called from other parts
+# and Entity Framework configuration methods that must remain instance methods
+dotnet_diagnostic.CA1822.severity = suggestion
+
+# CA1062: Validate arguments of public methods - suppressed for EF migrations
+# Entity Framework migrations are auto-generated and parameter validation
+# is handled by the framework itself
+dotnet_diagnostic.CA1062.severity = suggestion
