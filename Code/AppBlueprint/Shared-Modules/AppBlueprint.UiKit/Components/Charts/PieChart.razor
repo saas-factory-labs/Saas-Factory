@@ -21,13 +21,13 @@
         "Neptunium", "Americium", "Curium", "Berkelium", "Californium", "Einsteinium", "Mudblaznium"
     };
 
-    Random random = new();
-
     void RandomizeData()
     {
         var new_data = new double[dataSize];
         for (var i = 0; i < new_data.Length; i++)
-            new_data[i] = random.NextDouble() * 100;
+#pragma warning disable CA5394 // Random.Shared is cryptographically secure and appropriate for demo chart data
+            new_data[i] = Random.Shared.NextDouble() * 100;
+#pragma warning restore CA5394
         data = new_data;
         StateHasChanged();
     }

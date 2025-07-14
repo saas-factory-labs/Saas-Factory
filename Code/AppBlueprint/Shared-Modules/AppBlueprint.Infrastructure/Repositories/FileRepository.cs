@@ -25,16 +25,19 @@ public class FileRepository : IFileRepository
 
     public async Task AddAsync(FileEntity file, CancellationToken cancellationToken)
     {
-        await _context.Set<FileEntity>().AddAsync(file, cancellationToken);
+        _context.Files.AddAsync(file, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(FileEntity file, CancellationToken cancellationToken)
+    public Task UpdateAsync(FileEntity file, CancellationToken cancellationToken)
     {
         _context.Set<FileEntity>().Update(file);
+        return Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(FileEntity file, CancellationToken cancellationToken)
+    public Task DeleteAsync(FileEntity file, CancellationToken cancellationToken)
     {
         _context.Set<FileEntity>().Remove(file);
+        return Task.CompletedTask;
     }
 }

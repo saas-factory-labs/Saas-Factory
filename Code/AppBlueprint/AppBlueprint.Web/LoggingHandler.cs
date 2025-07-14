@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-internal class LoggingHandler : DelegatingHandler
+internal sealed class LoggingHandler : DelegatingHandler
 {
     private readonly ILogger<LoggingHandler> _logger;
 

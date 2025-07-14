@@ -36,7 +36,8 @@ public class SessionRepository : ISessionRepository
 
     public async Task UpdateAsync(SessionEntity session, CancellationToken cancellationToken)
     {
-        _context.Set<SessionEntity>().Update(session);
+        _context.Sessions.Update(session);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)

@@ -16,6 +16,10 @@
     <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.UiKit/README.md</PackageProjectUrl>
     <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    
+    <!-- Suppress MudBlazor analyzer warnings for attribute casing -->
+    <!-- MUD0002: MudBlazor components use PascalCase attributes which is correct syntax -->
+    <NoWarn>$(NoWarn);MUD0002</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

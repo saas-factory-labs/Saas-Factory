@@ -1,3 +1,4 @@
+@using MudBlazor
 <MudPaper Class="pa-4">
     <MudChart ChartType="ChartType.HeatMap" ChartSeries="@_series" ChartOptions="@_options"
               XAxisLabels="@_xLabels" Width="100%" Height="350px"></MudChart>
@@ -68,7 +69,9 @@
             var data = new double[dataPoints];
             for (var i = 0; i < dataPoints; i++)
             {
+#pragma warning disable CA5394 // Random.Shared is cryptographically secure and appropriate for demo chart data
                 data[i] = Math.Round(Random.Shared.NextDouble() * 100, 2);
+#pragma warning restore CA5394
             }
 
             heatMapSeries.Add(new ChartSeries { Name = x, Data = data });

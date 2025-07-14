@@ -26,6 +26,7 @@ public class ExampleJsInterop : IAsyncDisposable
             IJSObjectReference? module = await _moduleTask.Value;
             await module.DisposeAsync();
         }
+        GC.SuppressFinalize(this);
     }
 
     public async ValueTask<string> Prompt(string message)

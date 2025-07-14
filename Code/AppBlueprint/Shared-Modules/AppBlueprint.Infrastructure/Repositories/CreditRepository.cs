@@ -28,9 +28,10 @@ public class CreditRepository : ICreditRepository
         await _context.Credits.AddAsync(credit, cancellationToken);
     }
 
-    public async Task UpdateAsync(CreditEntity credit, CancellationToken cancellationToken)
+    public Task UpdateAsync(CreditEntity credit, CancellationToken cancellationToken)
     {
         _context.Credits.Update(credit);
+        return Task.CompletedTask;
     }
 
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)

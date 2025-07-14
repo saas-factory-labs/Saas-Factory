@@ -11,20 +11,20 @@
         <MudAvatar Size="Size.Large" Icon="@Icons.Material.Filled.AccountCircle" Class="mb-2">
             <MudImage Src="https://miro.medium.com/v2/resize:fit:2400/1*oLFF9mcdiV4qtl5JuSATNA.jpeg">
             </MudImage>
-        </MudAvatar>
+        </MudAvatar>        
         <MudButton Variant="Variant.Text" Color="Color.Primary">Change</MudButton>
     </MudItem>
 </MudGrid>
 
 <MudText Typo="Typo.h6" Class="mt-4">Personal Information</MudText>
 
-<MudText Typo="Typo.body1" T="string" Label="First Name" Class="mt-2"> First name</MudText>
+<MudText Typo="Typo.body1" Class="mt-2"> First name</MudText>
 <MudTextField T="string" Variant="Variant.Outlined" Class="mt-2"></MudTextField>
 
-<MudText Typo="Typo.body1" T="string" Label="First Name" Class="mt-2"> Last name</MudText>
+<MudText Typo="Typo.body1" Class="mt-2"> Last name</MudText>
 <MudTextField T="string" Variant="Variant.Outlined" Class="mt-2"></MudTextField>
 
-<MudText Typo="Typo.body1" T="string" Label="Phone number" Class="mt-2"> Phone number</MudText>
+<MudText Typo="Typo.body1" Class="mt-2"> Phone number</MudText>
 <MudTextField
     @bind-Value="_phoneNumber"
     Placeholder="e.g., (123) 456-7890"
@@ -34,7 +34,7 @@
     Error="_phoneError"
     OnBlur="ValidatePhoneNumber" Class="mt-2"/>
 
-<MudText Typo="Typo.body1" T="string" Class="mt-2"> Email</MudText>
+<MudText Typo="Typo.body1" Class="mt-2"> Email</MudText>
 
 <MudTextField @bind-Value="_emailAddress"
               Placeholder="e.g., example@domain.com"

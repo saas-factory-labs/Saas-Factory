@@ -11,7 +11,8 @@ public class AlgoliaService
         _configuration = configuration;
     }
 
-    public async Task FulltextSearch()
+    public Task FulltextSearch()
     {
+        return Task.CompletedTask;
     }
 }

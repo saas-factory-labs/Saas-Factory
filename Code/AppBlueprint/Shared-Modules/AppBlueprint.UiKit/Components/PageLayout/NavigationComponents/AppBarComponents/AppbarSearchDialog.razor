@@ -30,17 +30,15 @@
     [CascadingParameter] public required MudDialog MudDialog { get; set; }
 
     private string _search = string.Empty;
-    private MudListItem<string>? _selectedItem;
     object _selectedValue = 1;
 
     private string StringValue { get; set; } = string.Empty;
 
     public SelectionMode SelectionMode = SelectionMode.MultiSelection;
-    private bool _coerceText = false;
     private readonly bool _coerceValue = false;
     // private bool resetValueOnEmptyText = false;
 
-    private async Task<IEnumerable<string>> SearchWithoutDropdown(string searchTerm, CancellationToken token)
+    private Task<IEnumerable<string>> SearchWithoutDropdown(string searchTerm, CancellationToken token)
     {
         // if (searchTerm == "" || searchTerm is null)
         // {
@@ -91,7 +89,7 @@
         //     Console.Error.WriteLine($"Error during search tasks: {ex.Message}");
         // }
         // return no dropdown items so it is a free text search bar instead of a dropdown search bar
-        return new string[0];
+        return Task.FromResult<IEnumerable<string>>(new string[0]);
     }
 
     private void Submit()

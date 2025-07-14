@@ -42,3 +42,8 @@ dotnet_diagnostic.CA1822.severity = suggestion
 # Entity Framework migrations are auto-generated and parameter validation
 # is handled by the framework itself
 dotnet_diagnostic.CA1062.severity = suggestion
+
+# CA1812: Avoid uninstantiated internal classes - suppressed for DI and reflection
+# Internal classes are often instantiated by dependency injection containers
+# or used in ways that the analyzer cannot detect (reflection, serialization)
+dotnet_diagnostic.CA1812.severity = none

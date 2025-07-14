@@ -2,7 +2,7 @@ using MudBlazor;
 
 namespace AppBlueprint.Web;
 
-internal class BreadcrumbService
+internal sealed class BreadcrumbService
 {
     public List<BreadcrumbItem> Breadcrumbs { get; private set; } = new();
     public event EventHandler? OnBreadcrumbsChanged;

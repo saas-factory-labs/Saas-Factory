@@ -36,9 +36,10 @@ public class DataExportRepository : IDataExportRepository
         await _context.DataExports.AddAsync(dataExport, cancellationToken);
     }
 
-    public async Task UpdateAsync(DataExportEntity dataExport, CancellationToken cancellationToken)
+    public Task UpdateAsync(DataExportEntity dataExport, CancellationToken cancellationToken)
     {
         _context.DataExports.Update(dataExport);
+        return Task.CompletedTask;
     }
 
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)

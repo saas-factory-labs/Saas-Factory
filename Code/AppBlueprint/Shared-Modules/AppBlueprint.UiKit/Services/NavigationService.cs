@@ -7,11 +7,9 @@ namespace AppBlueprint.UiKit.Services;
 
 public class NavigationService
 {
-    private readonly IConfiguration _configuration;
-
     public NavigationService(IConfiguration configuration)
     {
-        _configuration = configuration;
+        // Configuration not currently used but kept for future extensibility
     }
 
     public List<NavLinkMetadata> GetNavLinks()
@@ -20,13 +18,16 @@ public class NavigationService
 
         // 1. Load Pages via Reflection (Pages already in the UiKit Library)
         var assembly = Assembly.GetExecutingAssembly(); // Blazor Web App Assembly
-        IEnumerable<Type>? pageTypes = assembly.ExportedTypes
+        IEnumerable<Type> pageTypes = assembly.ExportedTypes
             .Where(type => type.IsSubclassOf(typeof(ComponentBase)) &&
-                           type.GetCustomAttributes(typeof(RouteAttribute), false).Any());
+                           type.GetCustomAttributes(typeof(RouteAttribute), false).Length > 0);
 
-        foreach (Type? pageType in pageTypes)
+        foreach (Type pageType in pageTypes)
         {
-            IEnumerable<RouteAttribute>? routeAttributes = pageType
+            if (pageType is null) 
+                continue;
+
+            IEnumerable<RouteAttribute> routeAttributes = pageType
                 .GetCustomAttributes(typeof(RouteAttribute), false)
                 .Cast<RouteAttribute>();
 

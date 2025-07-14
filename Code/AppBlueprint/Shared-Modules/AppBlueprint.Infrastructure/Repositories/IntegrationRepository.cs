@@ -28,9 +28,10 @@ public class IntegrationRepository : IIntegrationRepository
         await _context.Set<IntegrationEntity>().AddAsync(integration, cancellationToken);
     }
 
-    public async Task UpdateAsync(IntegrationEntity integration, CancellationToken cancellationToken)
+    public Task UpdateAsync(IntegrationEntity integration, CancellationToken cancellationToken)
     {
         _context.Set<IntegrationEntity>().Update(integration);
+        return Task.CompletedTask;
     }
 
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)

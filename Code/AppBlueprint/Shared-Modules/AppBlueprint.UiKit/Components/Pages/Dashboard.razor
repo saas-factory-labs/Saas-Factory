@@ -19,55 +19,9 @@
 
 @code {
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
+        return Task.CompletedTask;
     }
-
 }
 
-
-@* // private List<IGetAccounts3_Accounts>? accounts; *@
-
-@* // public async Task GetAccounts() *@
-@* // { *@
-@* //     var accounts = DbContext.Accounts.ToList(); *@
-@* // *@
-@* //     foreach (var account in accounts) *@
-@* //     { *@
-@* //         Console.WriteLine("Account:"); *@
-@* //         Console.WriteLine(account.AccountId); *@
-@* //         Console.WriteLine(account.Email); *@
-@* //     } *@
-@* // } *@
-
-@* // try *@
-@* // { *@
-@* //     var result = await StrawberryClient.MyQuery.ExecuteAsync(); *@
-@* // *@
-@* //     if (result.Errors.Any()) *@
-@* //     { *@
-@* //         errorMessage = string.Join(", ", result.Errors.Select(e => e.Message)); *@
-@* //     } *@
-@* //     else *@
-@* //     { *@
-@* //         accounts = result.Data?.Accounts?.ToList(); *@
-@* //     } *@
-@* // } *@
-@* // catch (Exception ex) *@
-@* // { *@
-@* //     errorMessage = ex.Message; *@
-@* // } *@
-@* *@
-@* // var result = await StrawberryClient.GetAccounts3.ExecuteAsync(); *@
-@* //      *@
-@* // if (result.Errors.Any()) *@
-@* //     { *@
-@* //         errorMessage = string.Join(", ", result.Errors.Select(e => e.Message)); *@
-@* //     } *@
-@* //      *@
-@* // var acc = result.Data?.Accounts?.ToList(); *@
-@* // *@
-@* // foreach (var account in result.Data?.Accounts) *@
-@* // {             *@
-@* //     Console.WriteLine(account.AccountId);             *@
-@* // }     *@

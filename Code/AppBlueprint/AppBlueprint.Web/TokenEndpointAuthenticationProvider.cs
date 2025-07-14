@@ -5,7 +5,7 @@ using Microsoft.Kiota.Abstractions.Authentication;
 
 namespace AppBlueprint.Web;
 
-internal class TokenEndpointAuthenticationProvider(
+internal sealed class TokenEndpointAuthenticationProvider(
     HttpClient httpClient,
     string tokenEndpoint,
     string clientId,
@@ -92,11 +92,12 @@ internal class TokenEndpointAuthenticationProvider(
         return tokenResponse ?? throw new InvalidOperationException("Failed to deserialize token response");
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (disposing)
         {
             _semaphore?.Dispose();
+            _httpClient?.Dispose();
         }
     }
 
