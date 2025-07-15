@@ -2,6 +2,9 @@ using System.Text;
 using AppBlueprint.Application.Services.DataExport;
 using AppBlueprint.Infrastructure.Services.DataExport;
 using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.Repositories;
+using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Asp.Versioning.Routing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -152,10 +155,10 @@ public static class ApplicationBuilderExtensions
         services.AddAntiforgery();
         services.AddHttpContextAccessor();
 
-        // Register Application Services (Clean Architecture)
         services.AddScoped<IDataExportService, AppBlueprint.Infrastructure.Services.DataExport.DataExportService>();
+        services.AddScoped<IDataExportRepository, DataExportRepository>();       
+        services.AddScoped<IUnitOfWork, AppBlueprint.Infrastructure.UnitOfWork.UnitOfWork>();
 
-        // Pass IConfiguration to AddDbContext
         AddDbContext(services, configuration);
         ConfigureApiVersioning(services);
         AddCors(services);

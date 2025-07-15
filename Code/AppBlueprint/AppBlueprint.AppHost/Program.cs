@@ -11,17 +11,17 @@ var postgresServer = builder.AddPostgres("postgres-server")
     .WithDataVolume("appblueprint-postgres-data");
 postgresServer.AddDatabase("appblueprintdb");
 
-builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw");
-
+builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
+    .WithHttpEndpoint(port: 8087, name: "gateway");
+    
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
     .WithReference(postgresServer)
-    .WithExternalHttpEndpoints()
-    .WithEnvironment("ASPNETCORE_URLS", "http://localhost:8090")
-    .WithEnvironment("SwaggerPath", "/swagger")
-    .WithEndpoint(port: 8090, scheme: "http", name: "swagger");
+    .WithHttpEndpoint(port: 8090, name: "api")
+    .WithEnvironment("SwaggerPath", "/swagger");
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithExternalHttpEndpoints()
+    .WithHttpEndpoint(port: 8080, name: "web")
     .WithReference(apiService);
 
 string[] keys = new[]
