@@ -85,13 +85,13 @@ public sealed class EmailAddressesEntityConfiguration : IEntityTypeConfiguration
         // Create indexes for performance
         builder.HasIndex(e => e.UserId)
             .HasDatabaseName("IX_Emails_UserId")
-            .HasFilter(null); builder.HasIndex(e => e.CustomerId)
+            .HasFilter(null);        builder.HasIndex(e => e.CustomerId)
             .HasDatabaseName("IX_Emails_CustomerId")
-            .HasFilter($"{nameof(EmailAddressEntity.CustomerId)} IS NOT NULL");
+            .HasFilter($"\"{nameof(EmailAddressEntity.CustomerId)}\" IS NOT NULL");
 
         builder.HasIndex(e => e.TenantId)
             .HasDatabaseName("IX_Emails_TenantId")
-            .HasFilter($"{nameof(EmailAddressEntity.TenantId)} IS NOT NULL");
+            .HasFilter($"\"{nameof(EmailAddressEntity.TenantId)}\" IS NOT NULL");
 
         // Create composite index for common queries
         builder.HasIndex(e => new { e.UserId, e.CustomerId })

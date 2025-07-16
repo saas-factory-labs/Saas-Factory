@@ -1,12 +1,18 @@
+using AppBlueprint.SharedKernel;
+
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermissionType;
 
-public class ResourcePermissionTypeEntity
+public class ResourcePermissionTypeEntity : BaseEntity
 {
-    public Guid Id { get; set; }
+    public ResourcePermissionTypeEntity()
+    {
+        Id = PrefixedUlid.Generate("resource_permission_type");
+        ResourcePermissionId = string.Empty;
+    }
 
-    public Guid ResourcePermissionId { get; set; }
+    public string ResourcePermissionId { get; set; }
     public required ResourcePermissionEntity ResourcePermission { get; set; }
 
     // public PermissionEntity Permission { get; set; }
-    // public Guid PermissionId { get; set; }
+    // public string PermissionId { get; set; }
 }

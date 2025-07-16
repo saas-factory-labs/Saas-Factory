@@ -3,14 +3,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public sealed class TeamInviteEntityConfiguration : IEntityTypeConfiguration<TeamInviteEntity>
+// NOTE: This is an old configuration - renamed to match the renamed entity
+public sealed class OldTeamInviteEntityConfiguration : IEntityTypeConfiguration<OldTeamInviteEntity>
 {
-    public void Configure(EntityTypeBuilder<TeamInviteEntity> builder)
+    public void Configure(EntityTypeBuilder<OldTeamInviteEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table Mapping
-        builder.ToTable("TeamInvites");
+        // Table Mapping - use different table name to avoid conflicts
+        builder.ToTable("OldTeamInvites");
 
         // Primary Key        
         builder.HasKey(e => e.Id);

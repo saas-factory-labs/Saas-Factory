@@ -2,10 +2,11 @@
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 
-public class CountryRegionEntity
+public class CountryRegionEntity : BaseEntity
 {
     public CountryRegionEntity()
     {
+        Id = PrefixedUlid.Generate("country_region");
         Country = new CountryEntity
         {
             Name = "Country",
@@ -14,11 +15,9 @@ public class CountryRegionEntity
         };
     }
 
-    public int Id { get; set; }
-
     // Syddanmark, Midtjylland, Nordjylland, Sjælland, Hovedstaden
     public required string Name { get; set; } //  populate from dictionary created from database at startup
 
     public CountryEntity Country { get; set; }
-    public int CountryId { get; set; }
+    public string CountryId { get; set; } = string.Empty;
 }

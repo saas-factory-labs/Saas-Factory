@@ -1,22 +1,28 @@
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailInvite;
 
-public class EmailInviteEntity
+public class EmailInviteEntity : BaseEntity
 {
-    public int Id { get; set; }
+    public EmailInviteEntity()
+    {
+        Id = PrefixedUlid.Generate("email_invite");
+        Token = string.Empty;
+        ReferredEmailAddress = string.Empty;
+        UserEntityId = string.Empty;
+    }
+
     public required string Token { get; set; }
 
     [DataClassification(GDPRType.DirectlyIdentifiable)]
     public required string ReferredEmailAddress { get; set; }
 
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastUpdatedAt { get; set; }
     public DateTime ExpireAt { get; set; }
     public bool InviteIsUsed { get; set; }
 
-    public int? UserEntityId { get; set; }
+    public string? UserEntityId { get; set; }
     public UserEntity? User { get; set; }
 }

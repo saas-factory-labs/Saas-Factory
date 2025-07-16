@@ -1,0 +1,1 @@
+- Development is mostly done with Windows and Powershell commands rather than Linux

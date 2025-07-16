@@ -19,8 +19,9 @@ public static class ApplicationBuilderExtensions
         .Create(builder => builder.AddConsole())
         .CreateLogger(typeof(ApplicationBuilderExtensions)); private static void AddDbContext(IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        // Get connection string from IConfiguration - try Aspire resource name first, then DefaultConnection as fallback
-        string? databaseConnectionString = configuration.GetConnectionString("postgres-server") ??
+        // Get connection string from IConfiguration - try Aspire database name first, then fallbacks
+        string? databaseConnectionString = configuration.GetConnectionString("appblueprintdb") ??
+                                         configuration.GetConnectionString("postgres-server") ??
                                          configuration.GetConnectionString("DefaultConnection");
 
         Console.WriteLine($"[AddDbContext] Database Connection String from IConfiguration: {databaseConnectionString}"); // Added logging

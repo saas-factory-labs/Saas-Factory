@@ -21,10 +21,11 @@ public sealed class CountryRegionEntityConfiguration : IEntityTypeConfiguration<
         builder.HasKey(e => e.Id)
             .HasName("PK_CountryRegions");
 
-        // Configure Id property
+        // Configure Id property - using ULID pattern
         builder.Property(e => e.Id)
-            .ValueGeneratedOnAdd()
-            .HasComment("Primary key for country region");
+            .HasMaxLength(40)
+            .IsRequired()
+            .HasComment("Primary key for country region using ULID format");
 
         // Configure Name property - populated from dictionary at startup
         builder.Property(e => e.Name)
@@ -34,8 +35,19 @@ public sealed class CountryRegionEntityConfiguration : IEntityTypeConfiguration<
 
         // Configure foreign key property
         builder.Property(e => e.CountryId)
+            .HasMaxLength(40)
             .IsRequired()
             .HasComment("Foreign key to the country this region belongs to");
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt);
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Configure relationship to Country
         builder.HasOne(cr => cr.Country)

@@ -49,7 +49,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="9.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
     <PackageVersion Include="Microsoft.JSInterop" Version="9.0.4" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.7.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.4.0" />
     <PackageVersion Include="OpenTelemetry" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Api" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.12.0" />
@@ -116,9 +116,9 @@
     <PackageVersion Include="Scalar.AspNetCore" Version="2.2.5" />
     <PackageVersion Include="Spectre.Console" Version="0.50.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.50.0" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.0" />
-    <PackageVersion Include="System.CommandLine.NamingConventionBinder" Version="2.0.0" />
-    <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageVersion Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta4.22272.1" />
+    <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0-alpha.22272.1" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
     <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="9.3.1" />

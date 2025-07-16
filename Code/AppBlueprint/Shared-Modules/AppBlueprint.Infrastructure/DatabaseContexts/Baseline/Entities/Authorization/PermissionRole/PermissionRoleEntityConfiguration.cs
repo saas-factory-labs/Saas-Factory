@@ -15,14 +15,34 @@ public sealed class PermissionRoleEntityConfiguration : IEntityTypeConfiguration
         // Primary key
         builder.HasKey(e => e.Id);
 
-        // Properties with validation
-        builder.Property(e => e.RoleId)
+        // Configure ULID ID with proper length for prefixed ULID
+        builder.Property(e => e.Id)
+            .HasMaxLength(40)
             .IsRequired();
+
+        // Configure foreign key properties
+        builder.Property(e => e.PermissionId)
+            .HasMaxLength(40)
+            .IsRequired();
+
+        builder.Property(e => e.RoleId)
+            .HasMaxLength(40)
+            .IsRequired();
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt);
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Relationships for many-to-many Permission-Role mapping
         builder.HasOne(pr => pr.Permission)
             .WithMany()
-            .HasForeignKey("PermissionId")
+            .HasForeignKey(pr => pr.PermissionId)
             .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("FK_PermissionRoles_Permissions_PermissionId");
 
@@ -33,14 +53,17 @@ public sealed class PermissionRoleEntityConfiguration : IEntityTypeConfiguration
             .HasConstraintName("FK_PermissionRoles_Roles_RoleId");
 
         // Performance indexes with standardized naming
-        builder.HasIndex("PermissionId")
+        builder.HasIndex(pr => pr.PermissionId)
             .HasDatabaseName("IX_PermissionRoles_PermissionId");
 
         builder.HasIndex(pr => pr.RoleId)
             .HasDatabaseName("IX_PermissionRoles_RoleId");
 
+        builder.HasIndex(pr => pr.IsSoftDeleted)
+            .HasDatabaseName("IX_PermissionRoles_IsSoftDeleted");
+
         // Unique constraint to prevent duplicate permission-role assignments
-        builder.HasIndex(new string[] { "PermissionId", "RoleId" })
+        builder.HasIndex(pr => new { pr.PermissionId, pr.RoleId })
             .IsUnique()
             .HasDatabaseName("UX_PermissionRoles_PermissionId_RoleId");
     }

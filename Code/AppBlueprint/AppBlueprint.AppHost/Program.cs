@@ -2,20 +2,18 @@ using Aspire.Hosting.ApplicationModel;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgresPassword = Environment.GetEnvironmentVariable("POSTGRES_DEV_PASSWORD");
-var postgresServer = builder.AddPostgres("postgres-server")
+var postgresPasswordValue = Environment.GetEnvironmentVariable("POSTGRES_DEV_PASSWORD") ?? "password";
+var postgresPassword = builder.AddParameter("postgres-password", postgresPasswordValue, secret: true);
+var postgresServer = builder.AddPostgres("postgres-server", password: postgresPassword)
     .WithLifetime(ContainerLifetime.Persistent)
-    .WithEnvironment("POSTGRES_USER", "postgres")
-    .WithEnvironment("POSTGRES_PASSWORD", postgresPassword!)
-    .WithEnvironment("POSTGRES_DB", "appblueprintdb")
     .WithDataVolume("appblueprint-postgres-data");
-postgresServer.AddDatabase("appblueprintdb");
+var appblueprintdb = postgresServer.AddDatabase("appblueprintdb");
 
 builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
     .WithHttpEndpoint(port: 8087, name: "gateway");
     
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
-    .WithReference(postgresServer)
+    .WithReference(appblueprintdb)
     .WithHttpEndpoint(port: 8090, name: "api")
     .WithEnvironment("SwaggerPath", "/swagger");
 

@@ -6,8 +6,10 @@ using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
+// NOTE: This is an old version of TeamInviteEntity - renamed to avoid conflicts
+// The correct version is in AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite
 // Represents an invitation to join a team
-public class TeamInviteEntity: BaseEntity
+public class OldTeamInviteEntity: BaseEntity
 {
     // Team that the user is invited to
     public int TeamId { get; set; }

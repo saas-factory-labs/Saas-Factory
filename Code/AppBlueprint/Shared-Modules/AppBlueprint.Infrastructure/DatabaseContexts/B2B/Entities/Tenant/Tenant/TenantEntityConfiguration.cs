@@ -62,8 +62,8 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantE
             .HasConstraintName("FK_ContactPersons_Tenants_TenantId");
 
         builder.HasOne(e => e.Customer)
-            .WithOne()
-            .HasForeignKey<TenantEntity>("CustomerId")
+            .WithMany()
+            .HasForeignKey("CustomerId")
             .OnDelete(DeleteBehavior.Restrict)
             .HasConstraintName("FK_Tenants_Customers_CustomerId");
 

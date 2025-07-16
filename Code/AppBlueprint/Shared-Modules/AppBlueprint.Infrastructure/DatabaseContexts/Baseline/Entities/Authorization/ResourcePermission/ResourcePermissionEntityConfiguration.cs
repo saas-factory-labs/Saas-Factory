@@ -18,9 +18,49 @@ public sealed class ResourcePermissionEntityConfiguration : IEntityTypeConfigura
 
         builder.HasKey(e => e.Id);
 
+        // Configure ULID ID with proper length for prefixed ULID
+        builder.Property(e => e.Id)
+            .HasMaxLength(40)
+            .IsRequired();
+
+        // Configure foreign key properties
+        builder.Property(e => e.UserId)
+            .HasMaxLength(40)
+            .IsRequired();
+
+        builder.Property(e => e.ResourceId)
+            .HasMaxLength(40)
+            .IsRequired();
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt);
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
         // Relationships
         builder.HasOne(rp => rp.User)
             .WithMany(u => u.ResourcePermissions)
-            .HasForeignKey(rp => rp.UserId);
+            .HasForeignKey(rp => rp.UserId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_ResourcePermissions_Users_UserId");
+
+        // Indexes for performance
+        builder.HasIndex(rp => rp.UserId)
+            .HasDatabaseName("IX_ResourcePermissions_UserId");
+
+        builder.HasIndex(rp => rp.ResourceId)
+            .HasDatabaseName("IX_ResourcePermissions_ResourceId");
+
+        builder.HasIndex(rp => new { rp.UserId, rp.ResourceId })
+            .IsUnique()
+            .HasDatabaseName("IX_ResourcePermissions_UserId_ResourceId_Unique");
+
+        builder.HasIndex(rp => rp.IsSoftDeleted)
+            .HasDatabaseName("IX_ResourcePermissions_IsSoftDeleted");
     }
 }
