@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 
@@ -24,11 +27,14 @@ public partial class B2BDbContext : BaselineDbContext
 
     public DbSet<ApiKeyEntity> ApiKeys { get; set; }
     public DbSet<OrganizationEntity> Organizations { get; set; }
+    public DbSet<TeamEntity> Teams { get; set; }
+    public DbSet<TeamMemberEntity> TeamMembers { get; set; }
+    public DbSet<TeamInviteEntity> TeamInvites { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         ArgumentNullException.ThrowIfNull(optionsBuilder);
-        
+
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseNpgsql(_connectionString);

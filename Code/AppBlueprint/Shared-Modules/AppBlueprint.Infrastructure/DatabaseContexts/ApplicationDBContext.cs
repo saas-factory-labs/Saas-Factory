@@ -3,6 +3,8 @@ using AppBlueprint.Application.Attributes;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using AppBlueprint.SharedKernel;
 using Microsoft.AspNetCore.Http;
@@ -22,13 +24,10 @@ public class ApplicationDbContext : B2CdbContext
         ILogger<B2CdbContext> logger
     ) : base(options, configuration, logger)
     {
-    }
-
-    #region B2B DbSets
-    public DbSet<ApiKeyEntity> ApiKeys { get; set; }
-    public DbSet<B2B.Entities.Organization.OrganizationEntity> Organizations { get; set; }
-    public DbSet<TeamEntity> Teams { get; set; }
-    #endregion
+    }    
+    
+    public DbSet<AppBlueprint.TodoAppKernel.Domain.TodoEntity> Todos { get; set; }
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

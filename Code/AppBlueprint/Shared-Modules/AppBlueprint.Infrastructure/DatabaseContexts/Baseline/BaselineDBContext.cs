@@ -78,6 +78,8 @@ public partial class BaselineDbContext : DbContext
     public DbSet<LanguageEntity> Languages { get; set; }
     public DbSet<DataExportEntity> DataExports { get; set; }
     public DbSet<FileEntity> Files { get; set; }
+    public DbSet<WebhookEntity> Webhooks { get; set; }
+    public DbSet<SearchEntity> Searches { get; set; }
 
     #endregion
 
