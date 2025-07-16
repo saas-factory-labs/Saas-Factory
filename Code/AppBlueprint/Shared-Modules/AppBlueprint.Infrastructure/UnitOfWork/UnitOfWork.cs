@@ -1,4 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog;
 using AppBlueprint.Infrastructure.Repositories;
 using System.Threading;
@@ -12,11 +13,12 @@ namespace AppBlueprint.Infrastructure.UnitOfWork;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _applicationDbContext;
+    private readonly B2BDbContext _b2bDbContext;
 
-    public UnitOfWork(ApplicationDbContext context)
+    public UnitOfWork(ApplicationDbContext context, B2BDbContext b2bDbContext)
     {
         _applicationDbContext = context;
-
+        _b2bDbContext = b2bDbContext;
     }
 
     private IAdminRepository? __adminRepository;
@@ -95,7 +97,7 @@ public class UnitOfWork : IUnitOfWork
         get
         {
             if (_organizationRepository is null)
-                _organizationRepository = new OrganizationRepository(_applicationDbContext);
+                _organizationRepository = new OrganizationRepository(_b2bDbContext);
 
             return _organizationRepository;
         }
@@ -116,7 +118,7 @@ public class UnitOfWork : IUnitOfWork
     {
         get
         {
-            if (_apiKeyRepository is null) _apiKeyRepository = new ApiKeyRepository(_applicationDbContext);
+            if (_apiKeyRepository is null) _apiKeyRepository = new ApiKeyRepository(_b2bDbContext);
 
             return _apiKeyRepository;
         }
@@ -126,7 +128,7 @@ public class UnitOfWork : IUnitOfWork
     {
         get
         {
-            if (_teamRepository is null) _teamRepository = new TeamRepository(_applicationDbContext);
+            if (_teamRepository is null) _teamRepository = new TeamRepository(_b2bDbContext);
 
             return _teamRepository;
         }
@@ -134,24 +136,34 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return await _applicationDbContext.SaveChangesAsync(cancellationToken);
+        // Save changes to both contexts and return total affected rows
+        var applicationChanges = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+        var b2bChanges = await _b2bDbContext.SaveChangesAsync(cancellationToken);
+        return applicationChanges + b2bChanges;
     }
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         await _applicationDbContext.Database.BeginTransactionAsync(cancellationToken);
+        await _b2bDbContext.Database.BeginTransactionAsync(cancellationToken);
     }
 
-    public Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
     {
-        return _applicationDbContext.Database.CurrentTransaction?
-            .CommitAsync(cancellationToken) ?? Task.CompletedTask;
+        if (_applicationDbContext.Database.CurrentTransaction != null)
+            await _applicationDbContext.Database.CurrentTransaction.CommitAsync(cancellationToken);
+        
+        if (_b2bDbContext.Database.CurrentTransaction != null)
+            await _b2bDbContext.Database.CurrentTransaction.CommitAsync(cancellationToken);
     }
 
-    public Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
     {
-        return _applicationDbContext.Database.CurrentTransaction?
-            .RollbackAsync(cancellationToken) ?? Task.CompletedTask;
+        if (_applicationDbContext.Database.CurrentTransaction != null)
+            await _applicationDbContext.Database.CurrentTransaction.RollbackAsync(cancellationToken);
+        
+        if (_b2bDbContext.Database.CurrentTransaction != null)
+            await _b2bDbContext.Database.CurrentTransaction.RollbackAsync(cancellationToken);
     }
 
     // Dispose pattern: dispose managed resources and suppress finalization
@@ -170,6 +182,7 @@ public class UnitOfWork : IUnitOfWork
         if (disposing)
         {
             _applicationDbContext.Dispose();
+            _b2bDbContext.Dispose();
         }
     }
 

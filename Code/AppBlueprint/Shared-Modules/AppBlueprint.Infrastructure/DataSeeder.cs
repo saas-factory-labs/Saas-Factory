@@ -1,4 +1,5 @@
 ﻿using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
@@ -80,7 +81,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure;
 
-public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logger)
+public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContext, ILogger<DataSeeder> logger)
 {
     public async Task SeedDatabaseAsync(CancellationToken cancellationToken = default)
     {
@@ -396,7 +397,7 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
                    && await dbContext.ContactPersons.AnyAsync(cancellationToken)
                    && await dbContext.PhoneNumbers.AnyAsync(cancellationToken)
                    && await dbContext.PaymentProviders.AnyAsync(cancellationToken)
-                   && await dbContext.Teams.AnyAsync(cancellationToken)
+                   && await b2bDbContext.Teams.AnyAsync(cancellationToken)
                    && await dbContext.Notifications.AnyAsync(cancellationToken)
                    && await dbContext.Files.AnyAsync(cancellationToken)
                    && await dbContext.Integrations.AnyAsync(cancellationToken);
@@ -665,7 +666,7 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
     {
         try
         {
-            if (await dbContext.Teams.AnyAsync(cancellationToken)) return;
+            if (await b2bDbContext.Teams.AnyAsync(cancellationToken)) return;
 
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
             var users = await dbContext.Users.ToListAsync(cancellationToken);
@@ -682,8 +683,8 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
                 .RuleFor(t => t.TenantId, f => f.PickRandom(tenants).Id);
 
             var teams = faker.Generate(15);
-            await dbContext.Teams.AddRangeAsync(teams, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await b2bDbContext.Teams.AddRangeAsync(teams, cancellationToken);
+            await b2bDbContext.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Successfully seeded {Count} teams", teams.Count);
         }
@@ -864,7 +865,7 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
     {
         try
         {
-            if (await dbContext.Organizations.AnyAsync(cancellationToken)) return;
+            if (await b2bDbContext.Organizations.AnyAsync(cancellationToken)) return;
 
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
@@ -879,8 +880,8 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
                 .RuleFor(o => o.CreatedAt, f => f.Date.Past(2));
 
             var organizations = faker.Generate(20);
-            await dbContext.Organizations.AddRangeAsync(organizations, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await b2bDbContext.Organizations.AddRangeAsync(organizations, cancellationToken);
+            await b2bDbContext.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Successfully seeded {Count} organizations", organizations.Count);
         }
@@ -895,7 +896,7 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
     {
         try
         {
-            if (await dbContext.ApiKeys.AnyAsync(cancellationToken)) return;
+            if (await b2bDbContext.ApiKeys.AnyAsync(cancellationToken)) return;
 
             var users = await dbContext.Users.ToListAsync(cancellationToken);
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
@@ -913,8 +914,8 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
                 .RuleFor(a => a.TenantId, f => f.PickRandom(tenants).Id);
 
             var apiKeys = faker.Generate(40);
-            await dbContext.ApiKeys.AddRangeAsync(apiKeys, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await b2bDbContext.ApiKeys.AddRangeAsync(apiKeys, cancellationToken);
+            await b2bDbContext.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Successfully seeded {Count} API keys", apiKeys.Count);
         }
@@ -967,9 +968,9 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
     {
         try
         {
-            if (await dbContext.TeamMembers.AnyAsync(cancellationToken)) return;
+            if (await b2bDbContext.TeamMembers.AnyAsync(cancellationToken)) return;
 
-            var teams = await dbContext.Teams.ToListAsync(cancellationToken);
+            var teams = await b2bDbContext.Teams.ToListAsync(cancellationToken);
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
             if (teams.Count == 0 || users.Count == 0)
@@ -986,8 +987,8 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
                 .RuleFor(tm => tm.TenantId, f => f.PickRandom(teams).TenantId);
 
             var teamMembers = faker.Generate(60);
-            await dbContext.TeamMembers.AddRangeAsync(teamMembers, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await b2bDbContext.TeamMembers.AddRangeAsync(teamMembers, cancellationToken);
+            await b2bDbContext.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Successfully seeded {Count} team members", teamMembers.Count);
         }
@@ -1002,9 +1003,9 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
     {
         try
         {
-            if (await dbContext.TeamInvites.AnyAsync(cancellationToken)) return;
+            if (await b2bDbContext.TeamInvites.AnyAsync(cancellationToken)) return;
 
-            var teams = await dbContext.Teams.ToListAsync(cancellationToken);
+            var teams = await b2bDbContext.Teams.ToListAsync(cancellationToken);
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
             if (teams.Count == 0 || users.Count == 0)
@@ -1020,8 +1021,8 @@ public class DataSeeder(ApplicationDbContext dbContext, ILogger<DataSeeder> logg
                 .RuleFor(ti => ti.TenantId, f => f.PickRandom(teams).TenantId);
 
             var teamInvites = faker.Generate(25);
-            await dbContext.TeamInvites.AddRangeAsync(teamInvites, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await b2bDbContext.TeamInvites.AddRangeAsync(teamInvites, cancellationToken);
+            await b2bDbContext.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Successfully seeded {Count} team invites", teamInvites.Count);
         }

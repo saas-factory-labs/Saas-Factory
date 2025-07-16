@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +7,9 @@ namespace AppBlueprint.Infrastructure.Repositories;
 
 public class ApiKeyRepository : IApiKeyRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly B2BDbContext _context;
 
-    public ApiKeyRepository(ApplicationDbContext context)
+    public ApiKeyRepository(B2BDbContext context)
     {
         _context = context;
     }

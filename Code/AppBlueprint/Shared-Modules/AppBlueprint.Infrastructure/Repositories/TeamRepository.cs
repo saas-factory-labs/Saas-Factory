@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +7,9 @@ namespace AppBlueprint.Infrastructure.Repositories;
 
 public class TeamRepository : ITeamRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly B2BDbContext _context;
 
-    public TeamRepository(ApplicationDbContext context)
+    public TeamRepository(B2BDbContext context)
     {
         _context = context;
     }

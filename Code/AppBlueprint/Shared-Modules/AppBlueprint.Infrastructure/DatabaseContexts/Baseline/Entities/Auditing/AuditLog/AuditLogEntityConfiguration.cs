@@ -125,7 +125,7 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
 
         builder.HasIndex(al => al.Category)
             .HasDatabaseName("IX_AuditLogs_Category")
-            .HasFilter($"\"{nameof(AuditLogEntity.Category)}\" IS NOT NULL");
+            .HasFilter("\"Category\" IS NOT NULL");
 
         // Create composite indexes for common compliance reporting queries
         builder.HasIndex(al => new { al.TenantId, al.ModifiedAt })
@@ -138,7 +138,7 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
 
         builder.HasIndex(al => new { al.Category, al.ModifiedAt })
             .HasDatabaseName("IX_AuditLogs_Category_ModifiedAt")
-            .HasFilter($"\"{nameof(AuditLogEntity.Category)}\" IS NOT NULL");
+            .HasFilter("\"Category\" IS NOT NULL");
 
         // Configure query filter for soft delete and tenant scoping
         builder.HasQueryFilter(a => !a.IsSoftDeleted);

@@ -1,4 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -106,11 +107,14 @@ public static class MigrationExtensions
         await using ApplicationDbContext dbContext =
             scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
+        await using var b2bDbContext = 
+            scope.ServiceProvider.GetRequiredService<B2BDbContext>();
+        
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeeder>>();
 
         try
         {
-            var dataSeeder = new DataSeeder(dbContext, logger);
+            var dataSeeder = new DataSeeder(dbContext, b2bDbContext, logger);
             await dataSeeder.SeedDatabaseAsync();
             Logger.LogInformation("Database seeding completed successfully.");
         }

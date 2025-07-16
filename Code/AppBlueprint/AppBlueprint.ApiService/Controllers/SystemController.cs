@@ -1,5 +1,6 @@
 using AppBlueprint.Infrastructure;
 using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,19 +15,23 @@ namespace AppBlueprint.ApiService.Controllers;
 internal class SystemController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;
+    private readonly B2BDbContext _b2bDbContext;
     private readonly ILogger<SystemController> _logger;
     private readonly ILoggerFactory _loggerFactory;
 
     public SystemController(
         ApplicationDbContext dbContext,
+        B2BDbContext b2bDbContext,
         ILogger<SystemController> logger,
         ILoggerFactory loggerFactory)
     {
         ArgumentNullException.ThrowIfNull(dbContext);
+        ArgumentNullException.ThrowIfNull(b2bDbContext);
         ArgumentNullException.ThrowIfNull(logger);
         ArgumentNullException.ThrowIfNull(loggerFactory);
 
         _dbContext = dbContext;
+        _b2bDbContext = b2bDbContext;
         _logger = logger;
         _loggerFactory = loggerFactory;
     }
@@ -41,12 +46,9 @@ internal class SystemController : ControllerBase
             // Check database connection
             if (await _dbContext.Database.CanConnectAsync())
             {
-                await _dbContext.Database.MigrateAsync();
-                _logger.LogInformation("Migrations applied successfully");
-
                 // Call the seeder as well
                 var dataSeederLogger = _loggerFactory.CreateLogger<DataSeeder>();
-                var dataSeeder = new DataSeeder(_dbContext, dataSeederLogger);
+                var dataSeeder = new DataSeeder(_dbContext, _b2bDbContext, dataSeederLogger);
                 await dataSeeder.SeedDatabaseAsync();
                 _logger.LogInformation("Database seeding completed successfully");
 
