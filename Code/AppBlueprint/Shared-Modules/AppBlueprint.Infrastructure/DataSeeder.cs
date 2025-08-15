@@ -1,7 +1,6 @@
 ﻿using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
@@ -9,16 +8,11 @@ using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Admin;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermissionType;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.RolePermission;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.UserRole;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
 
 /// <summary>
@@ -65,8 +59,6 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.Email
 /// Implements proper dependency ordering for foreign key constraints.
 /// Includes comprehensive error handling and logging.
 /// </summary>
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailInvite;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailVerification;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
@@ -74,7 +66,6 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
 using AppBlueprint.Infrastructure.Resources;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Enums;
-using AppBlueprint.TodoAppKernel.Domain;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -93,13 +84,14 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             return;
         }
 
+        // Correct dependency order
         await SeedLanguagesAsync(cancellationToken);
         await SeedGlobalRegionsAsync(cancellationToken);
-        await SeedCountryRegionsAsync(cancellationToken);
-        await SeedCitiesAsync(cancellationToken);
-        await SeedStreetsAsync(cancellationToken);
-        await SeedCountriesAsync(cancellationToken);
-        await SeedAddressesAsync(cancellationToken);
+        await SeedCountriesAsync(cancellationToken); // After GlobalRegions
+        await SeedCountryRegionsAsync(cancellationToken); // After Countries
+        await SeedCitiesAsync(cancellationToken); // After CountryRegions
+        await SeedStreetsAsync(cancellationToken); // After Cities
+        await SeedAddressesAsync(cancellationToken); // After Streets
 
         // Authorization and permissions
         await SeedRolesAsync(cancellationToken);

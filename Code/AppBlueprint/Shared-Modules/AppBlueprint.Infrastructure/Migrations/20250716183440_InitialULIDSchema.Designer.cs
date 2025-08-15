@@ -1117,7 +1117,7 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .IsUnicode(true)
                         .HasColumnType("character varying(200)")
                         .HasComment("Description of the action performed (GDPR sensitive)")
-                        .HasAnnotation("DataClassification", GDPRType.Sensitive)
+                        .HasAnnotation("DataClassification", GDPRType.SensitiveMiscellaneous)
                         .HasAnnotation("SensitiveData", true);
 
                     b.Property<string>("Category")
@@ -1158,7 +1158,7 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .IsUnicode(true)
                         .HasColumnType("text")
                         .HasComment("New value after the change (JSON format)")
-                        .HasAnnotation("DataClassification", GDPRType.Sensitive);
+                        .HasAnnotation("DataClassification", GDPRType.SensitiveMiscellaneous);
 
                     b.Property<string>("OldValue")
                         .IsRequired()
@@ -1166,7 +1166,7 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .IsUnicode(true)
                         .HasColumnType("text")
                         .HasComment("Previous value before the change (JSON format)")
-                        .HasAnnotation("DataClassification", GDPRType.Sensitive);
+                        .HasAnnotation("DataClassification", GDPRType.SensitiveMiscellaneous);
 
                     b.Property<string>("TenantId")
                         .IsRequired()
@@ -2036,7 +2036,7 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .IsUnicode(true)
                         .HasColumnType("character varying(200)")
                         .HasComment("Reference to the securely stored API key")
-                        .HasAnnotation("DataClassification", GDPRType.Sensitive);
+                        .HasAnnotation("DataClassification", GDPRType.SensitiveMiscellaneous);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()

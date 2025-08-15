@@ -50,7 +50,7 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
             .IsRequired()
             .HasMaxLength(200)
             .HasComment("Description of the action performed (GDPR sensitive)")
-            .HasAnnotation("DataClassification", GDPRType.Sensitive);
+            .HasAnnotation("DataClassification", GDPRType.SensitiveMiscellaneous);
 
         // Configure Category property
         builder.Property(e => e.Category)
@@ -63,13 +63,13 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
             .IsRequired()
             .HasColumnType("text")
             .HasComment("New value after the change (JSON format)")
-            .HasAnnotation("DataClassification", GDPRType.Sensitive);
+            .HasAnnotation("DataClassification", GDPRType.SensitiveMiscellaneous);
 
         builder.Property(e => e.OldValue)
             .IsRequired()
             .HasColumnType("text")
             .HasComment("Previous value before the change (JSON format)")
-            .HasAnnotation("DataClassification", GDPRType.Sensitive);
+            .HasAnnotation("DataClassification", GDPRType.SensitiveMiscellaneous);
 
         // Configure timestamp property
         builder.Property(e => e.ModifiedAt)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppBlueprint.SharedKernel.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_Languages_BaseEntity_Columns : Migration
+    public partial class AddLanguagesBaseEntityColumns : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

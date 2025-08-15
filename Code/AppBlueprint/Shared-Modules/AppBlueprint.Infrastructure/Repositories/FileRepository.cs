@@ -25,7 +25,7 @@ public class FileRepository : IFileRepository
 
     public async Task AddAsync(FileEntity file, CancellationToken cancellationToken)
     {
-        _context.Files.AddAsync(file, cancellationToken);
+        await _context.Files.AddAsync(file, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
     }
 

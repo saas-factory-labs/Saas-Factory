@@ -1,10 +1,5 @@
 using System.Linq.Expressions;
 using AppBlueprint.Application.Attributes;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using AppBlueprint.SharedKernel;
 using Microsoft.AspNetCore.Http;

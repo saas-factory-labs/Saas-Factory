@@ -11,10 +11,10 @@ public sealed class SessionEntity : BaseEntity
         Id = PrefixedUlid.Generate("session");
     }
 
-    [DataClassification(GDPRType.Sensitive)]
+    [DataClassification(GDPRType.SensitiveMiscellaneous)]
     public required string SessionKey { get; set; }
 
-    [DataClassification(GDPRType.Sensitive)]
+    [DataClassification(GDPRType.SensitiveMiscellaneous)]
     public required string SessionData { get; set; }
 
     public DateTime ExpireDate { get; set; }

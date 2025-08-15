@@ -4,6 +4,7 @@ using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel.Enums;
 using AppBlueprint.SharedKernel;
+using System.Globalization;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 
@@ -42,7 +43,8 @@ public class AccountEntity : BaseEntity, ITenantScoped
         // customertype
         // B2B - company name
 
-        string slug = CustomerType.ToString().ToLower() + "-" + Name.ToLower();
+        CultureInfo cultureInfo = CultureInfo.InvariantCulture;
+        string slug = CustomerType.ToString().ToLower(cultureInfo) + "-" + Name.ToLower(cultureInfo);
 
         return slug;
     }

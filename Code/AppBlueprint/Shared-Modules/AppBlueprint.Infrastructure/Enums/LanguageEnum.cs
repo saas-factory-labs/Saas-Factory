@@ -1,6 +1,6 @@
 ﻿namespace AppBlueprint.Infrastructure.Enums;
 
-public enum LanguageEnum
+public enum Languages
 {
     English,
     Spanish,

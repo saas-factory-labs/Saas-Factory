@@ -51,7 +51,7 @@ public sealed class IntegrationEntityConfiguration : IEntityTypeConfiguration<In
             .IsRequired()
             .HasMaxLength(200)
             .HasComment("Reference to the securely stored API key")
-            .HasAnnotation("DataClassification", GDPRType.Sensitive);
+            .HasAnnotation("DataClassification", GDPRType.SensitiveMiscellaneous);
 
         // Configure OwnerId property
         builder.Property(e => e.OwnerId)

@@ -36,7 +36,7 @@ public class AuditLogEntity : BaseEntity, ITenantScoped
     //public string EntityName { get; set; }
     //public string EntityId { get; set; }
 
-    [DataClassification(GDPRType.Sensitive)]
+    [DataClassification(GDPRType.SensitiveMiscellaneous)]
     public required string Action { get; set; } // GDPR
 
     public string? Category { get; set; }
