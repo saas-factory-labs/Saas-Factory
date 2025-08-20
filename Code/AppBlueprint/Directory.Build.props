@@ -2,7 +2,7 @@
 <Project>
     <PropertyGroup>
 
-        <Targetframework>net8.0</Targetframework>
+        <Targetframework>net9.0</Targetframework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
