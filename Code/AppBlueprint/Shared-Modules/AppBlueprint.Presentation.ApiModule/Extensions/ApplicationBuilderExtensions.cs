@@ -5,6 +5,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
+using AppBlueprint.Infrastructure.Extensions;
 using Asp.Versioning;
 using Asp.Versioning.Routing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -159,6 +160,9 @@ public static class ApplicationBuilderExtensions
         services.AddScoped<IDataExportService, AppBlueprint.Infrastructure.Services.DataExport.DataExportService>();
         services.AddScoped<IDataExportRepository, DataExportRepository>();       
         services.AddScoped<IUnitOfWork, AppBlueprint.Infrastructure.UnitOfWork.UnitOfWork>();
+
+        // Add payment services including Stripe integration
+        services.AddPaymentServices();
 
         AddDbContext(services, configuration);
         ConfigureApiVersioning(services);
