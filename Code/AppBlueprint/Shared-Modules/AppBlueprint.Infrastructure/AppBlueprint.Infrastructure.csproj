@@ -64,6 +64,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj"/>
         <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
         <!-- TodoAppKernel module reference -->
@@ -77,14 +81,15 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
         <GeneratePackage>true</GeneratePackage>
-        <!--        <Version></Version> &lt;!&ndash; Update version as needed &ndash;&gt;-->
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion will supply this in CI -->
         <PackageId>SaaS-Factory.AppBlueprint.Infrastructure</PackageId>
         <Authors>Casper Rubæk</Authors>
         <Description>Infrastructure library with database repositories and external services</Description>
         <PackageTags>infrastructure;database repositories;external services;</PackageTags>
-        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure/README.md</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/README.md</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 </Project>

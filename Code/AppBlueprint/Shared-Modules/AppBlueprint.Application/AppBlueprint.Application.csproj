@@ -14,15 +14,16 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
         <GeneratePackage>true</GeneratePackage>
-        <!--        <Version></Version> &lt;!&ndash; Update version as needed &ndash;&gt;-->
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion will supply this in CI -->
         <PackageId>SaaS-Factory.AppBlueprint.Application</PackageId>
         <Authors>Casper Rubæk</Authors>
-        <Description>A class library with application entities</Description>
-        <PackageTags>application;use cases</PackageTags>
-        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Application/AppBlueprint.Application/README.md</PackageProjectUrl>
+        <Description>Application layer with CQRS commands, queries, and use cases following Clean Architecture principles</Description>
+        <PackageTags>application;use cases;cqrs;clean architecture;domain driven design</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/README.md</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,6 +31,10 @@
         <Folder Include="CommandHandlers\"/>
         <Folder Include="DTOs\"/>
         <Folder Include="Queries\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
