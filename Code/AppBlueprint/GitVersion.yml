@@ -1,0 +1,6 @@
+next-version: 0.1.0
+mode: ContinuousDeployment
+branches:
+  main:
+    mode: ContinuousDeployment
+    increment: Patch
