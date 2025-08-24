@@ -21,17 +21,21 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0
+          dotnet-version: |
+            9.0.x
+          global-json-file: global.json
 
       - name: Install GitVersion
-        run: dotnet tool install --global GitVersion.Tool
+        run: |
+          dotnet --version
+          dotnet tool install --global GitVersion.Tool --version 6.1.0
 
       - name: Determine Version
         id: gitversion
