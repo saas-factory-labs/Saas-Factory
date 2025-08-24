@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 
-namespace AppBlueprint.Infrastructure.UnitOfWork;
+namespace AppBlueprint.Infrastructure.UnitOfWork.Implementation;
 
 public class UnitOfWork : IUnitOfWork
 {

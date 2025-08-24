@@ -20,7 +20,7 @@ public class SessionRepository : ISessionRepository
     }
     public async Task<SessionEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
-        return await _context.Set<SessionEntity>().FindAsync(new object[] { id }, cancellationToken);
+        return await _context.Set<SessionEntity>().FindAsync([id], cancellationToken);
     }
 
     public async Task<SessionEntity?> GetByKeyAsync(string sessionKey, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ public class SessionRepository : ISessionRepository
 
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
-        SessionEntity? session = await _context.Set<SessionEntity>().FindAsync(new object[] { id }, cancellationToken);
+        SessionEntity? session = await _context.Set<SessionEntity>().FindAsync([id], cancellationToken);
         if (session is not null) _context.Set<SessionEntity>().Remove(session);
     }
 

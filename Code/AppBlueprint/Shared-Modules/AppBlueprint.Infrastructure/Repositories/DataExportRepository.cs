@@ -22,7 +22,7 @@ public class DataExportRepository : IDataExportRepository
     }
     public async Task<DataExportEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
-        return await _context.DataExports.FindAsync(id, cancellationToken) ?? new DataExportEntity
+        return await _context.DataExports.FindAsync([id], cancellationToken) ?? new DataExportEntity
         {
             Id = PrefixedUlid.Generate("dex"),
             DownloadUrl = new Uri("https://www.example.com"),
@@ -44,7 +44,7 @@ public class DataExportRepository : IDataExportRepository
 
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
-        DataExportEntity? dataExport = await _context.DataExports.FindAsync(id, cancellationToken);
+        DataExportEntity? dataExport = await _context.DataExports.FindAsync([id], cancellationToken);
         if (dataExport is not null) _context.DataExports.Remove(dataExport);
     }
 }

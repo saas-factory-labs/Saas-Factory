@@ -46,7 +46,8 @@ internal sealed class AuthorizationTests : IDisposable
         }
 
         // Create a test factory for the API service
-        _factory = new WebApplicationFactory<TestStartup>()
+#pragma warning disable CA2000 // Dispose objects before losing scope - factory is disposed in Dispose method
+        var factory = new WebApplicationFactory<TestStartup>()
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -56,7 +57,9 @@ internal sealed class AuthorizationTests : IDisposable
                             "TestAuth", options => { });
                 });
             });
+#pragma warning restore CA2000
 
+        _factory = factory;
         _http = _factory.CreateClient();
     }
 

@@ -142,10 +142,7 @@ namespace AppBlueprint.Infrastructure.Authorization
             Dictionary<string, object>? additionalAuthenticationContext = null,
             CancellationToken cancellationToken = default)
         {
-            if (request is null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            ArgumentNullException.ThrowIfNull(request);
 
             if (IsAuthenticated())
             {

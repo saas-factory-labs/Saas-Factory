@@ -10,6 +10,7 @@ string? otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_EN
 string otlpDefaultEndpoint = "http://localhost:18889";
 
 // Set OTLP endpoint with priority: DOTNET_DASHBOARD_OTLP_ENDPOINT_URL > OTEL_EXPORTER_OTLP_ENDPOINT > default
+#pragma warning disable CA1303 // Do not pass literals as localized parameters - using resource constants
 if (!string.IsNullOrEmpty(dashboardEndpoint))
 {
     Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", dashboardEndpoint);
@@ -24,6 +25,7 @@ else
 {
     Console.WriteLine(ConfigurationMessages.ExistingEndpointMessage, otlpEndpoint);
 }
+#pragma warning restore CA1303
 
 // Set OTLP protocol if not already set
 if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")))
@@ -32,8 +34,10 @@ if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_
 }
 
 // Print final configuration
-Console.WriteLine($"[AppGateway] Final OTLP endpoint → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")}");
-Console.WriteLine($"[AppGateway] Final OTLP protocol → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")}");
+#pragma warning disable CA1303 // Do not pass literals as localized parameters - using resource constants
+Console.WriteLine(ConfigurationMessages.FinalOtlpEndpointMessage, Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT"));
+Console.WriteLine(ConfigurationMessages.FinalOtlpProtocolMessage, Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL"));
+#pragma warning restore CA1303
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

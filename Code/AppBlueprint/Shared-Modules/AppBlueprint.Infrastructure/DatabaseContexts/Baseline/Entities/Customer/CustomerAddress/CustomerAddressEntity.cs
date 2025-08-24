@@ -19,7 +19,7 @@ public class CustomerAddressEntity
     public CustomerEntity Customer { get; set; }
     public AddressEntity? Address { get; set; }
     public bool IsPrimary { get; set; }
-    public bool IsSecondary { get; set; } = false;
+    public bool IsSecondary { get; set; }
 
     public CustomerAddressType CustomerAddressTypeEnum { get; set; }
 }

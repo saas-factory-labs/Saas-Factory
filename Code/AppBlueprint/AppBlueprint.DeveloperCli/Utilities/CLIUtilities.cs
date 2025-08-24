@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Spectre.Console;
 
 namespace AppBlueprint.DeveloperCli.Utilities;
 
@@ -54,9 +55,19 @@ internal static class CliUtilities
                 return false;
             }
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Exception: {ex.Message}[/]");
+            AnsiConsole.MarkupLine($"[red]❌ Process error: {ex.Message}[/]");
+            return false;
+        }
+        catch (System.ComponentModel.Win32Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]❌ System error: {ex.Message}[/]");
+            return false;
+        }
+        catch (TimeoutException ex)
+        {
+            AnsiConsole.MarkupLine($"[red]❌ Timeout error: {ex.Message}[/]");
             return false;
         }
     }

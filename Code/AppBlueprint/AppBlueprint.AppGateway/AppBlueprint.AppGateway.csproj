@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <NoWarn>$(NoWarn);NU5119</NoWarn>
     </PropertyGroup>    
     <ItemGroup>        
         <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>

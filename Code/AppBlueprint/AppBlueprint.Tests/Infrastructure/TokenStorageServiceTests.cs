@@ -20,7 +20,7 @@ namespace AppBlueprint.Tests.Infrastructure
         }
 
         [Test]
-        public async Task StoreTokenAsync_ShouldStoreTokenInLocalStorage()
+        public async Task StoreTokenAsyncShouldStoreTokenInLocalStorage()
         {
             // Arrange
             _jsRuntimeMock.Setup(js => js.InvokeVoidAsync("localStorage.setItem", StorageKey, TestToken))
@@ -34,7 +34,7 @@ namespace AppBlueprint.Tests.Infrastructure
         }
 
         [Test]
-        public async Task GetTokenAsync_ShouldRetrieveTokenFromLocalStorage()
+        public async Task GetTokenAsyncShouldRetrieveTokenFromLocalStorage()
         {
             // Arrange
             _jsRuntimeMock.Setup(js => js.InvokeAsync<string?>("localStorage.getItem", StorageKey))
@@ -49,7 +49,7 @@ namespace AppBlueprint.Tests.Infrastructure
         }
 
         [Test]
-        public async Task RemoveTokenAsync_ShouldRemoveTokenFromLocalStorage()
+        public async Task RemoveTokenAsyncShouldRemoveTokenFromLocalStorage()
         {
             // Arrange
             _jsRuntimeMock.Setup(js => js.InvokeVoidAsync("localStorage.removeItem", StorageKey))
@@ -63,7 +63,7 @@ namespace AppBlueprint.Tests.Infrastructure
         }
 
         [Test]
-        public async Task StoreTokenAsync_ShouldThrowArgumentNullException_WhenTokenIsNull()
+        public async Task StoreTokenAsyncShouldThrowArgumentNullExceptionWhenTokenIsNull()
         {
             // Act
             Func<Task> act = () => _tokenStorageService.StoreTokenAsync(null!);

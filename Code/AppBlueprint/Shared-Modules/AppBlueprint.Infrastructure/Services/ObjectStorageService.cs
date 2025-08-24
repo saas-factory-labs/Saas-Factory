@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace AppBlueprint.Infrastructure.Services;
 
 // Cloudflare R2 Object Storage
-internal sealed class ObjectStorageService
+internal sealed class ObjectStorageService : IDisposable
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<ObjectStorageService> _logger;
@@ -81,5 +81,10 @@ internal sealed class ObjectStorageService
         {
             _logger.LogError(ObjectStorageMessages.ErrorWritingObject, e.Message);
         }
+    }
+
+    public void Dispose()
+    {
+        _s3Client?.Dispose();
     }
 }

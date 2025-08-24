@@ -20,7 +20,7 @@ public class AuditLogRepository : IAuditLogRepository
     }
     public async Task<AuditLogEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
-        return await _context.Set<AuditLogEntity>().FindAsync(new object[] { id }, cancellationToken);
+        return await _context.Set<AuditLogEntity>().FindAsync([id], cancellationToken);
     }
 
     public async Task AddAsync(AuditLogEntity auditLog, CancellationToken cancellationToken)

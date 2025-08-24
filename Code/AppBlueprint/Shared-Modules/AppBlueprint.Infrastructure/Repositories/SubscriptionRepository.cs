@@ -21,7 +21,7 @@ public class SubscriptionRepository : ISubscriptionRepository
 
     public async Task<SubscriptionEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
-        return await _context.Subscriptions.FindAsync(new object[] { id }, cancellationToken);
+        return await _context.Subscriptions.FindAsync([id], cancellationToken);
     }
 
     public async Task AddAsync(SubscriptionEntity subscription, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ public class SubscriptionRepository : ISubscriptionRepository
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
         SubscriptionEntity? subscription =
-            await _context.Subscriptions.FindAsync(new object[] { id }, cancellationToken);
+            await _context.Subscriptions.FindAsync([id], cancellationToken);
         if (subscription is not null)
         {
             _context.Subscriptions.Remove(subscription);

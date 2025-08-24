@@ -65,13 +65,20 @@ namespace DeploymentManager.Codeflow
                 {
                     SemanticModel? semanticModel = await document.GetSemanticModelAsync();
                     SyntaxTree? syntaxTree = await document.GetSyntaxTreeAsync();
+                    
+                    if (syntaxTree is null)
+                        continue;
+                        
                     SyntaxNode? root = await syntaxTree.GetRootAsync();
 
-                    IEnumerable<ClassDeclarationSyntax>? classes =
+                    if (root is null || semanticModel is null)
+                        continue;
+
+                    IEnumerable<ClassDeclarationSyntax> classes =
                         root.DescendantNodes().OfType<ClassDeclarationSyntax>();
-                    foreach (ClassDeclarationSyntax? classDeclaration in classes)
+                    foreach (ClassDeclarationSyntax classDeclaration in classes)
                     {
-                        ClassDataInput? classModel = CreateClassModel(classDeclaration, semanticModel);
+                        ClassDataInput classModel = CreateClassModel(classDeclaration, semanticModel);
                         classModels.Add(classModel);
 
                         ExtractProperties(classDeclaration, classModel);

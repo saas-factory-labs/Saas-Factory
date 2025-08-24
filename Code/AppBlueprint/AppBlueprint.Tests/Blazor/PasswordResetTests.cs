@@ -9,7 +9,7 @@ using Moq;
 
 namespace AppBlueprint.Tests.Blazor
 {
-    internal class PasswordResetTests : Bunit.TestContext // Changed to internal
+    internal sealed class PasswordResetTests : Bunit.TestContext // Changed to internal and sealed
     {
         private readonly Mock<IUserService> _userServiceMock;
 

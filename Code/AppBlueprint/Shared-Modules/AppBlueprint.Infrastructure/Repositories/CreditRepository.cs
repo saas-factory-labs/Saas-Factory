@@ -20,7 +20,7 @@ public class CreditRepository : ICreditRepository
     }
     public async Task<CreditEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
-        return await _context.Credits.FindAsync(new object[] { id }, cancellationToken);
+        return await _context.Credits.FindAsync([id], cancellationToken);
     }
 
     public async Task AddAsync(CreditEntity credit, CancellationToken cancellationToken)
@@ -36,19 +36,19 @@ public class CreditRepository : ICreditRepository
 
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
-        CreditEntity? credit = await _context.Credits.FindAsync(new object[] { id }, cancellationToken);
+        CreditEntity? credit = await _context.Credits.FindAsync([id], cancellationToken);
         if (credit is not null) _context.Credits.Remove(credit);
     }
 
     public async Task<decimal> GetRemainingCreditAsync(string id, CancellationToken cancellationToken)
     {
-        CreditEntity? credit = await _context.Credits.FindAsync(new object[] { id }, cancellationToken);
+        CreditEntity? credit = await _context.Credits.FindAsync([id], cancellationToken);
         return credit?.CreditRemaining ?? 0;
     }
 
     public async Task UpdateRemainingCreditAsync(string id, decimal amount, CancellationToken cancellationToken)
     {
-        CreditEntity? credit = await _context.Credits.FindAsync(new object[] { id }, cancellationToken);
+        CreditEntity? credit = await _context.Credits.FindAsync([id], cancellationToken);
         if (credit is not null)
         {
             credit.CreditRemaining = amount;

@@ -158,7 +158,7 @@ public static class ApplicationBuilderExtensions
 
         services.AddScoped<IDataExportService, AppBlueprint.Infrastructure.Services.DataExport.DataExportService>();
         services.AddScoped<IDataExportRepository, DataExportRepository>();       
-        services.AddScoped<IUnitOfWork, AppBlueprint.Infrastructure.UnitOfWork.UnitOfWork>();
+        services.AddScoped<IUnitOfWork, AppBlueprint.Infrastructure.UnitOfWork.Implementation.UnitOfWork>();
 
         AddDbContext(services, configuration);
         ConfigureApiVersioning(services);

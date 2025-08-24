@@ -48,10 +48,7 @@ namespace AppBlueprint.Infrastructure.Authorization
         /// <inheritdoc />
         public async Task StoreTokenAsync(string token)
         {
-            if (token is null)
-            {
-                throw new ArgumentNullException(nameof(token));
-            }
+            ArgumentNullException.ThrowIfNull(token);
 
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", StorageKey, token);
         }

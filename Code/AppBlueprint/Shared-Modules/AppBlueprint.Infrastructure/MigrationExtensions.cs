@@ -31,7 +31,7 @@ public static class MigrationExtensions
             // Get connection string for logging
             var connectionString = dbContext.Database.GetConnectionString();
             Logger.LogInformation("Attempting to apply migrations with connection: {ConnectionString}",
-                connectionString?.Replace(";Password=", ";Password=*****"));
+                connectionString?.Replace(";Password=", ";Password=*****", StringComparison.Ordinal));
 
             // Ensure we can connect to the database
             for (int attempt = 1; attempt <= 3; attempt++)
@@ -39,16 +39,16 @@ public static class MigrationExtensions
                 try
                 {
                     // Try to connect with explicit timeout
-                    NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString);
-                    sqlConnection.Open();
-                    sqlConnection.Close();
+                    await using var sqlConnection = new NpgsqlConnection(connectionString);
+                    await sqlConnection.OpenAsync();
+                    await sqlConnection.CloseAsync();
                     Logger.LogInformation("Successfully established database connection on attempt {Attempt}", attempt);
                     break;
                 }
                 catch (NpgsqlException ex)
                 {
                     Logger.LogWarning("Failed to connect to database on attempt {Attempt}: {Message}", attempt, ex.Message);
-                    if (attempt == 3)
+                    if (attempt >= 3)
                     {
                         throw;
                     }
@@ -57,7 +57,7 @@ public static class MigrationExtensions
                 catch (TimeoutException ex)
                 {
                     Logger.LogWarning("Database connection timeout on attempt {Attempt}: {Message}", attempt, ex.Message);
-                    if (attempt == 3)
+                    if (attempt >= 3)
                     {
                         throw;
                     }

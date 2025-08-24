@@ -20,7 +20,7 @@ public class FileRepository : IFileRepository
     }
     public async Task<FileEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
-        return await _context.Set<FileEntity>().FindAsync(new object[] { id }, cancellationToken);
+        return await _context.Set<FileEntity>().FindAsync([id], cancellationToken);
     }
 
     public async Task AddAsync(FileEntity file, CancellationToken cancellationToken)

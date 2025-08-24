@@ -8,4 +8,6 @@ internal static class ConfigurationMessages
     public const string DashboardEndpointMessage = "[AppGateway] Using dashboard OTLP endpoint: {0}";
     public const string DefaultEndpointMessage = "[AppGateway] Using default OTLP endpoint: {0}";
     public const string ExistingEndpointMessage = "[AppGateway] Using existing OTLP endpoint: {0}";
+    public const string FinalOtlpEndpointMessage = "[AppGateway] Final OTLP endpoint → {0}";
+    public const string FinalOtlpProtocolMessage = "[AppGateway] Final OTLP protocol → {0}";
 }

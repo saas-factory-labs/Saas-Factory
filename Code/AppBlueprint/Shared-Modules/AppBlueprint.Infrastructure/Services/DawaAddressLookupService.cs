@@ -32,7 +32,7 @@ public class DawaAddressLookupService
         try
         {
             // Send GET-forespørgsel
-            HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+            HttpResponseMessage response = await _httpClient.GetAsync(new Uri(url), cancellationToken);
             response.EnsureSuccessStatusCode();
 
             // Læs responsen som JSON
