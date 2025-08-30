@@ -2,9 +2,6 @@ name: SonarQube Cloud
 on:  
   workflow_dispatch:
   push:
-    paths:
-      - "./Code/AppBlueprint/**"
-      - "!**.md"
     branches:
       - main
   pull_request:
