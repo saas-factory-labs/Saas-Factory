@@ -16,12 +16,12 @@ public class ApplicationDbContext : B2CdbContext
         DbContextOptions options,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<B2CdbContext> logger
+        ILogger<ApplicationDbContext> logger
     ) : base(options, configuration, logger)
     {
     }    
     
-    public DbSet<AppBlueprint.TodoAppKernel.Domain.TodoEntity> Todos { get; set; }
+    public DbSet<TodoAppKernel.Domain.TodoEntity> Todos { get; set; }
     
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,9 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.Auditing;
 
-public sealed class AuditService
+public static class AuditService
 {
-    private AuditService() { }
-
     public static Task LogChangeAsync(string entityName, Guid entityId, string action, object oldValue, object newValue, string userId)
     {
         // Implementation pending

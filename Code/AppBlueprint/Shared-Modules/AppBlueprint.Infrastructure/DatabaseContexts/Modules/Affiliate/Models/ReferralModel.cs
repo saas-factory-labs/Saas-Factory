@@ -1,8 +1,6 @@
 ﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
 
-// using Shared.Models;
-
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate.Models;
 
 public class ReferralModel

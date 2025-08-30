@@ -23,7 +23,7 @@ public class ChatModel: BaseEntity
     public string? Description { get; set; }
     
     public UserEntity Owner { get; set; }
-    public int OwnerId { get; set; }
+    public string OwnerId { get; set; } 
 
     public List<ChatMessageModel>? ChatMessages { get; set; }
 }

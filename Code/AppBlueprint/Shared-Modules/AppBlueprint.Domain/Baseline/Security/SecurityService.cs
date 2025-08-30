@@ -1,12 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.Security;
 
-public sealed class SecurityService
-{
-    private SecurityService() { }
-
-    // Placeholder for security functionality
-    // TODO: Implement security validation, encryption, and authorization methods
-
+public static class SecurityService
+{   
     public static Task<bool> ValidatePermissionAsync(string userId, string resource, string action)
     {
         // Implementation pending

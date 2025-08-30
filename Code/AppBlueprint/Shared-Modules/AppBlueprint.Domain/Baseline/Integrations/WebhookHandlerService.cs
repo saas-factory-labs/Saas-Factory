@@ -1,12 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.Integrations;
 
-public sealed class WebhookHandlerService
+public static class WebhookHandlerService
 {
-    private WebhookHandlerService() { }
-
-    // Placeholder for webhook handling functionality
-    // TODO: Implement webhook processing and validation methods
-
     public static Task<bool> ValidateWebhookSignatureAsync(string payload, string signature, string secret)
     {
         // Implementation pending

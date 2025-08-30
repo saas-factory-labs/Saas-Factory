@@ -1,8 +1,6 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using Bogus;
 
-// using Shared.Models;
-
 namespace AppBlueprint.Infrastructure.DatabaseContexts.FakeData.FakeDataGeneration.ModelSpecificDataGenerators;
 
 public class FakeUserDataGenerator

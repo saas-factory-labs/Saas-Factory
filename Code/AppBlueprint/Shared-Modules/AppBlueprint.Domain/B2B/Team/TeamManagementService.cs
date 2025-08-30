@@ -1,10 +1,7 @@
 namespace AppBlueprint.Domain.B2B.Team;
 
-public sealed class TeamManagementService
+public static class TeamManagementService
 {
-    private TeamManagementService() { }
-
-
     public static Task<Guid> CreateTeamAsync(string teamName, Guid tenantId, Guid ownerId)
     {
         // Implementation pending

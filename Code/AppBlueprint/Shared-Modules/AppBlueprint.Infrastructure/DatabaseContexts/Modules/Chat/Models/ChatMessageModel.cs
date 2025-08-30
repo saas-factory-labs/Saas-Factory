@@ -49,5 +49,7 @@ public class ChatMessageModel: BaseEntity
     public required UserEntity Sender { get; set; }
 
     public required UserEntity Owner { get; set; }
-    public string OwnerId { get; set; } = string.Empty;
+    public string OwnerId { get; set; } 
+    public string SenderId { get; set; } 
+    public string ChatId { get; set; } 
 }

@@ -1,12 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.Identity;
 
-public sealed class RoleManagementService
+public static class RoleManagementService
 {
-    private RoleManagementService() { }
-
-    // Placeholder for role management functionality
-    // TODO: Implement role creation, assignment, and permission management methods
-
     public static Task<bool> CreateRoleAsync(string roleName, string description)
     {
         // Implementation pending

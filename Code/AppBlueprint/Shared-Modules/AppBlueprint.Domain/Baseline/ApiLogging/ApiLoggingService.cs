@@ -1,10 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.ApiLogging;
 
-public sealed class ApiLoggingService
+public static class ApiLoggingService
 {
-    private ApiLoggingService() { }
-
-
     public static Task LogRequestAsync(string endpoint, string method, string requestBody, string userId)
     {
         // Implementation pending

@@ -1,12 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.Integrations;
 
-public sealed class IntegrationService
+public static class IntegrationService
 {
-    private IntegrationService() { }
-
-    // Placeholder for integration functionality
-    // TODO: Implement third-party integration methods
-
     public static Task<bool> ConnectToServiceAsync(string serviceName, Dictionary<string, string> credentials)
     {
         // Implementation pending

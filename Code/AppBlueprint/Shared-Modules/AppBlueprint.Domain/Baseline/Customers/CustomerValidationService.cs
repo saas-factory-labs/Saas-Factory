@@ -1,10 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.Customers;
 
-public sealed class CustomerValidationService
+public static class CustomerValidationService
 {
-    // Placeholder for customer validation functionality
-    // TODO: Implement customer data validation methods
-
     public static Task<bool> ValidateCustomerDataAsync(object customerData)
     {
         // Implementation pending

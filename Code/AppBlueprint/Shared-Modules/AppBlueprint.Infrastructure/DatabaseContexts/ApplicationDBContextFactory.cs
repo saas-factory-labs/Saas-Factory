@@ -33,7 +33,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
         
         // Create a logger factory for design-time
         using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        var logger = loggerFactory.CreateLogger<B2CdbContext>();
+        var logger = loggerFactory.CreateLogger<ApplicationDbContext>();
 
         return new ApplicationDbContext(optionsBuilder.Options, configuration, httpContextAccessor, logger);
     }

@@ -1,18 +1,18 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.DatabaseContexts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Chat;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate;
 
-public partial class ChatModuleDbContext : ApplicationDbContext
+public partial class AffiliateModuleDbContext : ApplicationDbContext
 {
-    public ChatModuleDbContext(
+    public AffiliateModuleDbContext(
         DbContextOptions options,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<ChatModuleDbContext> logger) :
+        ILogger<AffiliateModuleDbContext> logger) :
         base(options, configuration, httpContextAccessor, logger)
     {
     }
@@ -20,11 +20,8 @@ public partial class ChatModuleDbContext : ApplicationDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        OnModelCreating_Chat(modelBuilder);
+        OnModelCreating_Affiliate(modelBuilder);
     }
 
-    partial void OnModelCreating_Chat(ModelBuilder modelBuilder);
+    partial void OnModelCreating_Affiliate(ModelBuilder modelBuilder);
 }
-
-
-

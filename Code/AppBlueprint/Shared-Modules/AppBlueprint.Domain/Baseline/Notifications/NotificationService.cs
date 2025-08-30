@@ -1,12 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.Notifications;
 
-public sealed class NotificationService
+public static class NotificationService
 {
-    private NotificationService() { }
-
-    // Placeholder for notification functionality
-    // TODO: Implement email, SMS, and push notification methods
-
     public static Task SendEmailNotificationAsync(string recipientEmail, string subject, string body)
     {
         // Implementation pending

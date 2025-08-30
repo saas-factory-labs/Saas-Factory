@@ -1,10 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.AddressMapping;
 
-public sealed class AddressMappingService
+public static class AddressMappingService
 {
-    private AddressMappingService() { }
-
-
     public static Task<(double Latitude, double Longitude)> GeocodeAddressAsync(string address)
     {
         // Implementation pending

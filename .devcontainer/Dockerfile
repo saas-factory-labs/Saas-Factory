@@ -5,15 +5,21 @@ FROM mcr.microsoft.com/devcontainers/dotnet:9.0 AS base
 
 # RUN sudo ./setup-dev-env.sh
 
-# Install Python, Node.js, and other dependencies
-RUN apt-get update 
-RUN apt-get install -y python3 
-RUN apt-get install -y python3-pip
-RUN apt-get install -y build-essential 
-RUN apt-get install -y libssl-dev
-RUN apt-get install -y npm
-RUN npm install -g typescript
-RUN apt-get clean
+# Install Python, Node.js, and other dependencies, Tailwind CSS, and .NET Workload
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        libssl-dev \
+        npm \
+        python3 \
+        python3-pip && \
+    npm install -g typescript && \
+    npm install -g tailwindcss && \
+    dotnet workload install aspire && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+
 
 # Install SQL Server dependencies and SQL Server itself
 # RUN apt-get update && \
@@ -42,9 +48,6 @@ RUN apt-get clean
 #     tar -xf azcopy.tar.gz && \
 #     sudo cp ./azcopy_linux_amd64_*/azcopy /usr/bin/
 
-# Install Tailwind CSS
-RUN npm install -g tailwindcss
-
 # Install k6 for load testing
 # RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 6A030B21BA07F4FB && \
 #     echo "deb https://dl.k6.io/deb stable main" | tee /etc/apt/sources.list.d/k6.list && \
@@ -58,18 +61,12 @@ RUN npm install -g tailwindcss
 #     apt-add-repository https://cli.github.com/packages && \
 #     apt-get update && apt-get install -y gh
 
-# Install .NET Workload (Aspire)
-RUN dotnet workload install aspire
-
 # Configure SQL Server to run in Developer mode and accept the EULA
 # RUN /opt/mssql/bin/mssql-conf set-sa-password
 # RUN /opt/mssql/bin/mssql-conf set memory.memorylimitmb 2048  # Optional: limit memory usage
 
 # Expose SQL Server default port
 # EXPOSE 1433
-
-# Clean up apt caches
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set a default password for SA
 # ENV SA_PASSWORD="YourStrong!Passw0rd"

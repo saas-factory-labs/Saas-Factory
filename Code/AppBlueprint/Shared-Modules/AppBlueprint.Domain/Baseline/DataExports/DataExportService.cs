@@ -1,12 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.DataExports;
 
-public sealed class DataExportService
-{
-    private DataExportService() { }
-
-    // Placeholder for data export functionality
-    // TODO: Implement data export methods for different formats
-
+public static class DataExportService
+{   
     public static Task<byte[]> ExportToCsvAsync<T>(IEnumerable<T> data, string[] columnNames)
     {
         // Implementation pending

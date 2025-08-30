@@ -1,12 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.Logging;
 
-public sealed class LoggingService
+public static class LoggingService
 {
-    private LoggingService() { }
-
-    // Placeholder for logging functionality
-    // TODO: Implement structured logging methods
-
     public static Task LogInformationAsync(string message, object? context = null)
     {
         // Implementation pending

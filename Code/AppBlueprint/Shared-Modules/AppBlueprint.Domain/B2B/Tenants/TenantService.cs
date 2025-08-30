@@ -1,10 +1,7 @@
 namespace AppBlueprint.Domain.B2B.Tenants;
 
-public sealed class TenantService
+public static class TenantService
 {
-    private TenantService() { }
-
-
     public static Task<Guid> CreateTenantAsync(string tenantName, string adminEmail)
     {
         // Implementation pending
