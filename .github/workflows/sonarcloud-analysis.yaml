@@ -42,11 +42,14 @@ jobs:
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          global-json-file: global.json
-
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3.4.2        
+      
+      - name: Export DOTNET_ROOT and update PATH
+        run: |
+          echo "DOTNET_ROOT=$(dirname $(which dotnet))" >> $GITHUB_ENV
+          echo "$(dirname $(which dotnet))" >> $GITHUB_PATH
+          
       - name: Install SonarQube Cloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         run: |
