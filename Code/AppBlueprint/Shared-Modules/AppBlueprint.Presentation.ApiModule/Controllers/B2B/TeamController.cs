@@ -67,6 +67,7 @@ public class TeamController : BaseController
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
+    [HttpGet(ApiEndpoints.Teams.GetById)]
     public async Task<ActionResult<TeamResponse>> GetTeam(string id, CancellationToken cancellationToken)
     {
         TeamEntity? team = await _teamRepository.GetByIdAsync(id);

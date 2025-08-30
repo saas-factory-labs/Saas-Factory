@@ -6,13 +6,14 @@ FROM mcr.microsoft.com/devcontainers/dotnet:9.0 AS base
 # RUN sudo ./setup-dev-env.sh
 
 # Install Python, Node.js, and other dependencies
-RUN apt-get update
+RUN apt-get update 
 RUN apt-get install -y python3 
 RUN apt-get install -y python3-pip
 RUN apt-get install -y build-essential 
 RUN apt-get install -y libssl-dev
 RUN apt-get install -y npm
 RUN npm install -g typescript
+RUN apt-get clean
 
 # Install SQL Server dependencies and SQL Server itself
 # RUN apt-get update && \

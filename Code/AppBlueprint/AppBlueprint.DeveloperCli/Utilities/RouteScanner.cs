@@ -34,7 +34,7 @@ internal static class RouteScanner
                 {
                     Method = r.Method ?? "UNKNOWN",
                     Path = r.Route ?? "UNKNOWN",
-                    Controller = r.Handler ?? TodoControllerName ?? "UNKNOWN"
+                    Controller = r.Handler
                 }).ToList() ?? new List<RouteInfo>();
             }
             else

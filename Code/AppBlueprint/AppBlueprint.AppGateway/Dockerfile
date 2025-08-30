@@ -28,7 +28,7 @@ COPY . .
 WORKDIR "/src/AppBlueprint.AppGateway"
 
 # Build the Gateway service
-RUN dotnet build "AppBlueprint.AppGateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "AppBlueprint.AppGateway.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
 
 

@@ -2,7 +2,7 @@
     "dotnet.defaultSolution": "SaaS-Factory.sln",
     "dotnet.preferCSharpExtension": false,
     "sonarlint.connectedMode.project": {
-        "connectionId": "saas-factory-labs/Saas-Factory",
+        "connectionId": "saas-factory-labs",
         "projectKey": "saas-factory-labs_Saas-Factory"
     }
 }

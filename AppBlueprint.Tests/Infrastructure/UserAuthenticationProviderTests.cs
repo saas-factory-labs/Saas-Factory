@@ -116,7 +116,7 @@ public class UserAuthenticationProviderTests
     /// <summary>
     /// A mock HTTP handler that returns a successful response with a mock token
     /// </summary>
-    private class MockHttpMessageHandler : HttpMessageHandler
+    sealed class MockHttpMessageHandler : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {

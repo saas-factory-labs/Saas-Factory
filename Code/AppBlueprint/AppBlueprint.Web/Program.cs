@@ -141,7 +141,7 @@ builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<
 var app = builder.Build();
 
 app.UseRouting();
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Temporarily disabled for design review
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.UseOutputCache();
