@@ -2,6 +2,7 @@
 
 This directory contains the rules for AI assistants to follow when working with this codebase from https://github.com/saas-factory-labs/Saas-Factory
 This directory contains specific guidance for AI assistants to follow when working with this codebase.
+Claude 4 Sonnet works best in this context in Github Copilot, possibly other models such as Gemini 2.5 Pro and GPT 5 could also work.
 
 ## Agent personality
 
