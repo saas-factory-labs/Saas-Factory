@@ -10,7 +10,14 @@ public partial class B2CdbContext : BaselineDbContext
     private readonly string? _connectionString;
     private readonly ILogger<B2CdbContext> _logger;
 
-    public B2CdbContext(DbContextOptions options, IConfiguration configuration, ILogger<B2CdbContext> logger)
+    // Public constructor for direct instantiation
+    public B2CdbContext(DbContextOptions<B2CdbContext> options, IConfiguration configuration, ILogger<B2CdbContext> logger)
+        : this((DbContextOptions)options, configuration, logger)
+    {
+    }
+
+    // Protected constructor for derived classes
+    protected B2CdbContext(DbContextOptions options, IConfiguration configuration, ILogger<B2CdbContext> logger)
         : base(options, configuration, logger)
     {
         // Try to get connection string, but don't throw if it's not found

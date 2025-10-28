@@ -16,15 +16,19 @@ public partial class B2BDbContext : BaselineDbContext
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<B2BDbContext> _logger;
-    private readonly string _connectionString;
+    private readonly string? _connectionString;
 
-    public B2BDbContext(DbContextOptions options, IConfiguration configuration, ILogger<B2BDbContext> logger)
+    public B2BDbContext(DbContextOptions<B2BDbContext> options, IConfiguration configuration, ILogger<B2BDbContext> logger)
         : base(options, configuration, logger)
     {
         _configuration = configuration;
         _logger = logger;
-        _connectionString = configuration.GetConnectionString("SUPABASE_POSTGRESQL")
-                           ?? throw new InvalidOperationException("Missing connection string.");
+        // Try multiple connection string names, don't throw if not found
+        // The options passed in already have the connection configured from DI
+        _connectionString = configuration.GetConnectionString("SUPABASE_POSTGRESQL") 
+                           ?? configuration.GetConnectionString("appblueprintdb")
+                           ?? configuration.GetConnectionString("postgres-server")
+                           ?? configuration.GetConnectionString("DefaultConnection");
     }
 
     public DbSet<ApiKeyEntity> ApiKeys { get; set; }

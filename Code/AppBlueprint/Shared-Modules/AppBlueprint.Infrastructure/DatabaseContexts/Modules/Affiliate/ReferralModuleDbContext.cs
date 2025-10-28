@@ -9,11 +9,11 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Referral;
 public partial class ReferralModuleDbContext : ApplicationDbContext
 {
     public ReferralModuleDbContext(
-        DbContextOptions options,
+        DbContextOptions<ReferralModuleDbContext> options,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
         ILogger<ReferralModuleDbContext> logger) :
-        base(options, configuration, httpContextAccessor, logger)
+        base((DbContextOptions)(DbContextOptions<ReferralModuleDbContext>)options, configuration, httpContextAccessor, logger)
     {
     }
 
