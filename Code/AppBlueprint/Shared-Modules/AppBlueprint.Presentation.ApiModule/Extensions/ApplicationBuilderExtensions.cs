@@ -2,6 +2,7 @@ using System.Text;
 using AppBlueprint.Application.Services.DataExport;
 using AppBlueprint.Infrastructure.Services.DataExport;
 using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
@@ -33,6 +34,29 @@ public static class ApplicationBuilderExtensions
 
         // Properly configure the ApplicationDbContext with Entity Framework Core
         serviceCollection.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+        {
+            // Use the connection string from IConfiguration
+            options.UseNpgsql(databaseConnectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.CommandTimeout(60);
+                npgsqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(10),
+                    errorCodesToAdd: null);
+            });
+
+            // Configure warnings to suppress the pending model changes warning in development
+            options.ConfigureWarnings(warnings =>
+            {
+                warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning);
+
+                // Also log the shadow property warnings instead of throwing
+                warnings.Log(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.ShadowPropertyCreated);
+            });
+        });
+
+        // Register B2BDbContext with the same connection string
+        serviceCollection.AddDbContext<B2BDbContext>((serviceProvider, options) =>
         {
             // Use the connection string from IConfiguration
             options.UseNpgsql(databaseConnectionString, npgsqlOptions =>

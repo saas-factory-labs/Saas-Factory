@@ -16,7 +16,14 @@ public partial class BaselineDbContext : DbContext
     private readonly IConfiguration _configuration;
     private readonly ILogger<BaselineDbContext> _logger;
 
-    public BaselineDbContext(DbContextOptions options, IConfiguration configuration, ILogger<BaselineDbContext> logger)
+    // Public constructor for direct instantiation
+    public BaselineDbContext(DbContextOptions<BaselineDbContext> options, IConfiguration configuration, ILogger<BaselineDbContext> logger)
+        : this((DbContextOptions)options, configuration, logger)
+    {
+    }
+
+    // Protected constructor for derived classes to pass their specific options
+    protected BaselineDbContext(DbContextOptions options, IConfiguration configuration, ILogger<BaselineDbContext> logger)
         : base(options)
     {
         _configuration = configuration;

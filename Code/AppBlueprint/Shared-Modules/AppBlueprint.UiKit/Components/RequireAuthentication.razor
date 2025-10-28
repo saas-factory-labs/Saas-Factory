@@ -6,7 +6,7 @@
 {
     @ChildContent
 }
-else
+else if (_isCheckingAuth)
 {
     <MudProgressCircular Indeterminate="true" />
 }
@@ -19,24 +19,34 @@ else
     public required AuthProvider Auth { get; set; }
 
     private bool _isAuthenticated;
+    private bool _isCheckingAuth = true;
+    private bool _hasNavigated = false;
 
     protected override void OnInitialized()
     {
         if (Auth is null)
         {
-            // No AuthProvider available, redirect to login
             Console.Error.WriteLine("Error: AuthProvider could not be found.");
-            NavigationManager.NavigateTo("/login", false);
+            _isCheckingAuth = false;
             return;
         }
         
         // Check if user is authenticated
         _isAuthenticated = Auth.IsAuthenticated;
-        
-        // If not authenticated, redirect to login page
-        if (!_isAuthenticated)
+        _isCheckingAuth = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasNavigated)
         {
-            NavigationManager.NavigateTo("/login", false);
+            if (Auth is null || !_isAuthenticated)
+            {
+                _hasNavigated = true;
+                NavigationManager.NavigateTo("/login", forceLoad: true);
+            }
         }
+        
+        await base.OnAfterRenderAsync(firstRender);
     }
 }

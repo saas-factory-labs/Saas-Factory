@@ -9,11 +9,11 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate;
 public partial class AffiliateModuleDbContext : ApplicationDbContext
 {
     public AffiliateModuleDbContext(
-        DbContextOptions options,
+        DbContextOptions<AffiliateModuleDbContext> options,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
         ILogger<AffiliateModuleDbContext> logger) :
-        base(options, configuration, httpContextAccessor, logger)
+        base((DbContextOptions)(DbContextOptions<AffiliateModuleDbContext>)options, configuration, httpContextAccessor, logger)
     {
     }
 

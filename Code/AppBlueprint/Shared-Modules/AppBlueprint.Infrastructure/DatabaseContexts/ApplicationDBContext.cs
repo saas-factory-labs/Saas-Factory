@@ -12,14 +12,25 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts;
 
 public class ApplicationDbContext : B2CdbContext
 {
+    // Public constructor for direct DI registration
     public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        IConfiguration configuration,
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<ApplicationDbContext> logger
+    ) : base((DbContextOptions)options, configuration, logger)
+    {
+    }
+
+    // Protected constructor for derived module DbContext classes
+    protected ApplicationDbContext(
         DbContextOptions options,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
         ILogger<ApplicationDbContext> logger
     ) : base(options, configuration, logger)
     {
-    }    
+    }
     
     public DbSet<TodoAppKernel.Domain.TodoEntity> Todos { get; set; }
     
@@ -95,5 +106,3 @@ public class ApplicationDbContext : B2CdbContext
         return Expression.Lambda(condition, parameter);
     }
 }
-
-
