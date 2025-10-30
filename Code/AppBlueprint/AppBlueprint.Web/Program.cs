@@ -1,5 +1,5 @@
 using AppBlueprint.Api.Client.Sdk;
-using AppBlueprint.Infrastructure.Authorization;
+using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.UiKit;
 using AppBlueprint.UiKit.Models;
 using AppBlueprint.Web;
@@ -120,17 +120,13 @@ builder.Services.AddMudServices();
 builder.Services.AddSingleton<BreadcrumbService>();
 builder.Services.AddUiKit();
 
-const string authEndpoint = "https://nnihwwacvgqfbkxzjnvx.supabase.co/auth/v1/token";
-builder.Services.AddHttpClient("authClient");
-builder.Services.AddScoped<ITokenStorageService, TokenStorageService>();
-builder.Services.AddScoped<UserAuthenticationProvider>(sp =>
-{
-    var client = sp.GetRequiredService<IHttpClientFactory>().CreateClient("authClient");
-    var storage = sp.GetRequiredService<ITokenStorageService>();
-    return new UserAuthenticationProvider(client, authEndpoint, storage);
-});
-builder.Services.AddScoped<IUserAuthenticationProvider>(sp => sp.GetRequiredService<UserAuthenticationProvider>());
-builder.Services.AddScoped<IAuthenticationProvider>(sp => sp.GetRequiredService<UserAuthenticationProvider>());
+// Add authentication services using the factory pattern
+builder.Services.AddAuthenticationServices();
+
+// Log authentication configuration on startup
+var authProvider = builder.Configuration["Authentication:Provider"] ?? "Mock";
+Console.WriteLine($"[Web] Authentication Provider configured: {authProvider}");
+
 builder.Services.AddScoped<IRequestAdapter>(sp =>
     new HttpClientRequestAdapter(sp.GetRequiredService<IAuthenticationProvider>())
     {
@@ -139,6 +135,11 @@ builder.Services.AddScoped<IRequestAdapter>(sp =>
 builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<IRequestAdapter>()));
 
 var app = builder.Build();
+
+Console.WriteLine("========================================");
+Console.WriteLine("[Web] Application built successfully");
+Console.WriteLine($"[Web] Environment: {app.Environment.EnvironmentName}");
+Console.WriteLine("========================================");
 
 app.UseRouting();
 // app.UseHttpsRedirection(); // Temporarily disabled for design review
@@ -151,6 +152,12 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.MapDefaultEndpoints();
+
+Console.WriteLine("========================================");
+Console.WriteLine("[Web] Starting application...");
+Console.WriteLine("[Web] Navigate to the app and watch for logs");
+Console.WriteLine("========================================");
+
 app.Run();
 
 
@@ -231,21 +238,12 @@ app.Run();
 // builder.Services.AddSingleton<BreadcrumbService>();
 // builder.Services.AddUiKit();
 
-// const string authEndpoint = "https://nnihwwacvgqfbkxzjnvx.supabase.co/auth/v1/token";
-// builder.Services.AddHttpClient("authClient");
-// builder.Services.AddScoped<ITokenStorageService, TokenStorageService>();
-// builder.Services.AddScoped<UserAuthenticationProvider>(sp =>
-// {
-//     var factory = sp.GetRequiredService<IHttpClientFactory>();
-//     var client = factory.CreateClient("authClient");
-//     var storage = sp.GetRequiredService<ITokenStorageService>();
-//     return new UserAuthenticationProvider(client, authEndpoint, storage);
-// });
-// builder.Services.AddScoped<IUserAuthenticationProvider>(sp => sp.GetRequiredService<UserAuthenticationProvider>());
-// builder.Services.AddScoped<IAuthenticationProvider>(sp => sp.GetRequiredService<UserAuthenticationProvider>());
+// // Add authentication services using the factory pattern
+// builder.Services.AddAuthenticationServices();
+
 // builder.Services.AddScoped<IRequestAdapter>(sp => new HttpClientRequestAdapter(sp.GetRequiredService<IAuthenticationProvider>())
 // {
-//     BaseUrl = "https://appblueprint-api:5002"
+//     BaseUrl = "https://localhost:5002"
 // });
 // builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<IRequestAdapter>()));
 
@@ -332,8 +330,7 @@ app.Run();
 // //                 listenOptions.UseHttps(options =>
 // //                 {
 // //                     var certCollection = new X509Certificate2Collection();
-// //                     certCollection.Import(certPath, certPassword,
-// //                         X509KeyStorageFlags.Exportable |
+// //                     certCollection.Import(certPath, certPassword, X509KeyStorageFlags.Exportable |
 // //                         X509KeyStorageFlags.PersistKeySet |
 // //                         X509KeyStorageFlags.MachineKeySet);
 // //                     options.ServerCertificate = certCollection[0];
@@ -392,13 +389,9 @@ app.Run();
 // // });
 // // builder.Services.AddScoped<IUserAuthenticationProvider>(sp => sp.GetRequiredService<UserAuthenticationProvider>());
 // // builder.Services.AddScoped<IAuthenticationProvider>(sp => sp.GetRequiredService<UserAuthenticationProvider>());
-// // builder.Services.AddScoped<IRequestAdapter>(sp =>
+// // builder.Services.AddScoped<IRequestAdapter>(sp => new HttpClientRequestAdapter(sp.GetRequiredService<IAuthenticationProvider>())
 // // {
-// //     var authProvider = sp.GetRequiredService<IAuthenticationProvider>();
-// //     return new HttpClientRequestAdapter(authProvider)
-// //     {
-// //         BaseUrl = "http://localhost:8090"
-// //     };
+// //     BaseUrl = "http://localhost:8090"
 // // });
 // // builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<IRequestAdapter>()));
 
@@ -509,16 +502,12 @@ app.Run();
 // // //         {
 // // //             // If our specific certificate doesn't exist, we need to add a development certificate
 // // //             Console.WriteLine($"Certificate not found at {certPath}. Using default development certificate.");
-// // //             serverOptions.ListenAnyIP(443, listenOptions => 
-// // //             {
-// // //                 listenOptions.UseHttps(); // Uses default ASP.NET Core development certificate
-// // //             });
+// // //             serverOptions.ListenAnyIP(443, listenOptions => listenOptions.UseHttps());
 // // //         }
 // // //     }
 // // //     catch (Exception ex)
 // // //     {
 // // //         Console.WriteLine($"Error configuring HTTPS: {ex.Message}");
-// // //         // Ensure we still have HTTPS endpoint even if configuration fails
 // // //         serverOptions.ListenAnyIP(443, listenOptions => listenOptions.UseHttps());
 // // //     }
 // // // });

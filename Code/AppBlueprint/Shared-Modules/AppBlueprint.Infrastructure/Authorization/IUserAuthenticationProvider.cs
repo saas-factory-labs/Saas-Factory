@@ -24,4 +24,10 @@ public interface IUserAuthenticationProvider : IAuthenticationProvider
     /// </summary>
     /// <returns>True if the user has a valid access token, false otherwise.</returns>
     bool IsAuthenticated();
+
+    /// <summary>
+    ///     Initializes the authentication state from stored tokens.
+    ///     Should be called when the provider is created to restore previous authentication.
+    /// </summary>
+    Task InitializeFromStorageAsync();
 }

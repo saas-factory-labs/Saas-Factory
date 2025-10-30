@@ -1,7 +1,7 @@
 @using AppBlueprint.Infrastructure.Authorization
 @implements IDisposable
-@inject ITokenStorageService TokenStorage
-@inject IUserAuthenticationProvider AuthenticationService
+@inject ITokenStorageService? TokenStorage
+@inject IUserAuthenticationProvider? AuthenticationService
 @inject NavigationManager NavigationManager
 
 <CascadingValue Value="this">
@@ -20,13 +20,69 @@
     /// <summary>
     /// Checks if the user is currently authenticated
     /// </summary>
-    public bool IsAuthenticated => AuthenticationService.IsAuthenticated();
+    public bool IsAuthenticated => AuthenticationService?.IsAuthenticated() ?? false;
+
+    private bool _hasInitialized = false;
     
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-        // The initialization from storage should already be handled by the AuthenticationService
-        // No need to explicitly call InitializeFromStorageAsync
+        Console.WriteLine("========================================");
+        Console.WriteLine("[AuthProvider] OnInitializedAsync START");
+        Console.WriteLine("========================================");
+        
+        Console.WriteLine($"[AuthProvider] TokenStorage is null: {TokenStorage is null}");
+        Console.WriteLine($"[AuthProvider] AuthenticationService is null: {AuthenticationService is null}");
+        
+        if (AuthenticationService is null)
+        {
+            Console.Error.WriteLine("========================================");
+            Console.Error.WriteLine("[AuthProvider] CRITICAL ERROR!");
+            Console.Error.WriteLine("[AuthProvider] AuthenticationService is NULL");
+            Console.Error.WriteLine("[AuthProvider] IUserAuthenticationProvider was NOT injected");
+            Console.Error.WriteLine("[AuthProvider] Check Program.cs service registration");
+            Console.Error.WriteLine("========================================");
+            return;
+        }
+        
+        Console.WriteLine($"[AuthProvider] SUCCESS: AuthenticationService type = {AuthenticationService.GetType().FullName}");
+        Console.WriteLine("[AuthProvider] Skipping storage restoration in OnInitializedAsync (JS not available yet)");
+        Console.WriteLine("[AuthProvider] Will restore in OnAfterRenderAsync instead");
+        Console.WriteLine("========================================");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasInitialized && AuthenticationService is not null)
+        {
+            Console.WriteLine("========================================");
+            Console.WriteLine("[AuthProvider] OnAfterRenderAsync - First Render");
+            Console.WriteLine("[AuthProvider] STEP 1: About to restore from storage");
+            
+            try
+            {
+                Console.WriteLine("[AuthProvider] STEP 2: Calling InitializeFromStorageAsync...");
+                await AuthenticationService.InitializeFromStorageAsync();
+                _hasInitialized = true;
+                Console.WriteLine("[AuthProvider] STEP 3: InitializeFromStorageAsync completed");
+                Console.WriteLine($"[AuthProvider] STEP 4: After restoration - IsAuthenticated = {IsAuthenticated}");
+                
+                // Notify state change to update UI
+                if (IsAuthenticated)
+                {
+                    OnAuthStateChanged?.Invoke();
+                    StateHasChanged();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[AuthProvider] ERROR restoring authentication: {ex.Message}");
+            }
+            
+            Console.WriteLine($"[AuthProvider] FINAL: IsAuthenticated = {IsAuthenticated}");
+            Console.WriteLine("========================================");
+        }
+        
+        await base.OnAfterRenderAsync(firstRender);
     }
     
     /// <summary>
@@ -34,11 +90,33 @@
     /// </summary>
     public async Task<bool> LoginAsync(string email, string password)
     {
+        Console.WriteLine("========================================");
+        Console.WriteLine($"[AuthProvider] LoginAsync START for: {email}");
+        Console.WriteLine("========================================");
+        
+        if (AuthenticationService is null)
+        {
+            Console.Error.WriteLine("[AuthProvider] CRITICAL ERROR: AuthenticationService is null. Cannot login.");
+            throw new InvalidOperationException("Authentication service is not available. The service was not injected properly.");
+        }
+        
+        Console.WriteLine("[AuthProvider] Calling AuthenticationService.LoginAsync...");
         bool result = await AuthenticationService.LoginAsync(email, password);
+        
+        Console.WriteLine($"[AuthProvider] Login result: {result}");
+        
         if (result)
         {
+            Console.WriteLine("[AuthProvider] Login successful - notifying state change");
             OnAuthStateChanged?.Invoke();
+            StateHasChanged();
         }
+        else
+        {
+            Console.WriteLine("[AuthProvider] Login failed");
+        }
+        
+        Console.WriteLine("========================================");
         return result;
     }
     
@@ -47,6 +125,14 @@
     /// </summary>
     public async Task LogoutAsync()
     {
+        Console.WriteLine("[AuthProvider] LogoutAsync called");
+        
+        if (AuthenticationService is null)
+        {
+            Console.Error.WriteLine("[AuthProvider] ERROR: AuthenticationService is null. Cannot logout.");
+            return;
+        }
+        
         await AuthenticationService.LogoutAsync();
         OnAuthStateChanged?.Invoke();
         NavigationManager.NavigateTo("/login");

@@ -25,14 +25,10 @@
 
     protected override void OnInitialized()
     {
-        // if (Links is null) 
-        // {
-        //     Links = new List<NavLinkMetadata>();
-        // }
-
-        // Console.WriteLine($"Route links injected from Web project: {Links?.Count ?? 0}");
-        //
-        // Console.WriteLine($"Route link injected from UiKit library for Dashboard page: {Links?.Count ?? 0}");
+        if (Links is null)
+        {
+            Links = new List<NavLinkMetadata>();
+        }
 
         // Check if a "Dashboard" link already exists before adding it
         if (Links.All(link => link.Href != "/"))
@@ -40,7 +36,9 @@
             Links.Insert(0, new NavLinkMetadata { Name = "Dashboard", Href = "/", MudblazorIconPath = "@Icons.Material.Filled.Home" });
         }
 
-        foreach (var link in Links)
+        // Create a copy to avoid collection modified exception
+        var linksCopy = Links.ToList();
+        foreach (var link in linksCopy)
         {
             // Skip the "/" (Dashboard) link
             if (link.Href is not "/")
@@ -49,20 +47,4 @@
             }
         }
     }
-
-
-    // protected override void OnInitialized()
-    // {
-    //     Links.Insert(0, new NavLinkMetadata { Name = "Dashboard", Href = "/", MudblazorIconPath = "@Icons.Material.Filled.Home" });
-    //
-    //     Console.WriteLine($"UIKIT SIDEPANEL Links: {Links?.Count ?? 0}");
-    //
-    //     if (Links is not null)
-    //     {
-    //         foreach (var link in Links)
-    //         {
-    //             Console.WriteLine($"Link: {link.Name} - {link.Href}");
-    //         }
-    //     }        
-    // }
 }

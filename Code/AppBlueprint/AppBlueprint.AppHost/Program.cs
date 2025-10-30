@@ -14,7 +14,7 @@ builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
     
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
     .WithReference(appblueprintdb)
-    .WithHttpEndpoint(port: 8090, name: "api")
+    .WithHttpEndpoint(port: 8091, name: "api")
     .WithEnvironment("SwaggerPath", "/swagger");
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")

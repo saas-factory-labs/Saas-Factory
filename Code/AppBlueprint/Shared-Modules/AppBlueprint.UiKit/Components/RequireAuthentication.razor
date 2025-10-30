@@ -20,33 +20,66 @@ else if (_isCheckingAuth)
 
     private bool _isAuthenticated;
     private bool _isCheckingAuth = true;
-    private bool _hasNavigated = false;
+    private bool _hasChecked = false;
 
     protected override void OnInitialized()
     {
         if (Auth is null)
         {
-            Console.Error.WriteLine("Error: AuthProvider could not be found.");
+            Console.Error.WriteLine("[RequireAuthentication] Error: AuthProvider is null");
             _isCheckingAuth = false;
             return;
         }
         
-        // Check if user is authenticated
-        _isAuthenticated = Auth.IsAuthenticated;
-        _isCheckingAuth = false;
+        // Subscribe to auth state changes
+        Auth.OnAuthStateChanged += HandleAuthStateChanged;
+        
+        Console.WriteLine("[RequireAuthentication] OnInitialized - Subscribed to auth state changes");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !_hasNavigated)
+        if (firstRender && !_hasChecked)
         {
-            if (Auth is null || !_isAuthenticated)
+            _hasChecked = true;
+            
+            Console.WriteLine($"[RequireAuthentication] OnAfterRenderAsync - Checking auth state");
+            
+            // Check authentication state
+            _isAuthenticated = Auth?.IsAuthenticated ?? false;
+            _isCheckingAuth = false;
+            
+            Console.WriteLine($"[RequireAuthentication] IsAuthenticated = {_isAuthenticated}");
+            
+            if (!_isAuthenticated)
             {
-                _hasNavigated = true;
-                NavigationManager.NavigateTo("/login", forceLoad: true);
+                Console.WriteLine("[RequireAuthentication] Not authenticated - redirecting to login");
+                NavigationManager.NavigateTo("/login", forceLoad: false);
+            }
+            else
+            {
+                Console.WriteLine("[RequireAuthentication] Authenticated - showing protected content");
+                StateHasChanged();
             }
         }
         
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void HandleAuthStateChanged()
+    {
+        Console.WriteLine("[RequireAuthentication] Auth state changed - updating UI");
+        _isAuthenticated = Auth?.IsAuthenticated ?? false;
+        _isCheckingAuth = false;
+        Console.WriteLine($"[RequireAuthentication] New auth state: {_isAuthenticated}");
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (Auth is not null)
+        {
+            Auth.OnAuthStateChanged -= HandleAuthStateChanged;
+        }
     }
 }

@@ -30,8 +30,6 @@
                      Class="login-tabs">            <!-- ─────────────────────────────  LOGIN  ───────────────────────────── -->            <MudTabPanel Text="Login">
                 @* Pure HTML form optimized for password managers *@
                 <form id="login-form"
-                      method="post"
-                      action="/login"
                       @onsubmit="HandleLoginSubmit"
                       @onsubmit:preventDefault="true"
                       autocomplete="on"
@@ -718,11 +716,25 @@
     private string _registerPassword         = string.Empty;
     private string _registerConfirmPassword  = string.Empty;
     private bool   _isLoading;
+    private bool   _hasCheckedAuth = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Auth?.IsAuthenticated == true)
-            NavigationManager.NavigateTo("/");
+        if (firstRender && !_hasCheckedAuth)
+        {
+            _hasCheckedAuth = true;
+            
+            // Give AuthProvider time to initialize
+            await Task.Delay(50);
+            
+            if (Auth?.IsAuthenticated == true)
+            {
+                Console.WriteLine("[Login] User already authenticated, redirecting to dashboard");
+                NavigationManager.NavigateTo("/dashboard", forceLoad: false);
+            }
+        }
+        
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     /* ─────────────  LOGIN  ───────────── */
@@ -739,18 +751,51 @@
         try
         {
             _isLoading = true;
-            if (await Auth.LoginAsync(_loginEmail, _loginPassword))
+            
+            // Check if Auth is null
+            if (Auth is null)
             {
+                Console.Error.WriteLine("Error: Auth (AuthProvider) is null in Login component");
+                Snackbar.Add("Authentication system is not available. Please refresh the page.", Severity.Error);
+                return;
+            }
+            
+            Console.WriteLine($"Attempting login for: {_loginEmail}");
+            
+            bool loginResult = await Auth.LoginAsync(_loginEmail, _loginPassword);
+            
+            if (loginResult)
+            {
+                Console.WriteLine("Login successful!");
                 Snackbar.Add("Login successful!", Severity.Success);
                 NavigationManager.NavigateTo("/");
             }
             else
             {
+                Console.WriteLine("Login failed - invalid credentials");
                 Snackbar.Add("Invalid email or password. Please try again.", Severity.Error);
             }
         }
+        catch (InvalidOperationException ex)
+        {
+            Console.Error.WriteLine($"InvalidOperationException during login: {ex.Message}");
+            Console.Error.WriteLine($"Stack trace: {ex.StackTrace}");
+            Snackbar.Add($"Configuration error: {ex.Message}", Severity.Error);
+        }
+        catch (NullReferenceException ex)
+        {
+            Console.Error.WriteLine($"NullReferenceException during login: {ex.Message}");
+            Console.Error.WriteLine($"Stack trace: {ex.StackTrace}");
+            Snackbar.Add("A system error occurred. Check the configuration and try again.", Severity.Error);
+        }
         catch (Exception ex)
         {
+            Console.Error.WriteLine($"Exception during login: {ex.GetType().Name}: {ex.Message}");
+            Console.Error.WriteLine($"Stack trace: {ex.StackTrace}");
+            if (ex.InnerException is not null)
+            {
+                Console.Error.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            }
             Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
         }
         finally

@@ -20,7 +20,7 @@ public partial class B2CdbContext : BaselineDbContext
     protected B2CdbContext(DbContextOptions options, IConfiguration configuration, ILogger<B2CdbContext> logger)
         : base(options, configuration, logger)
     {
-        // Try to get connection string, but don't throw if it's not found
+        // Try to get connectionstring, but don't throw if it's not found
         _connectionString = configuration.GetConnectionString("DefaultConnection");
         _logger = logger;
     }

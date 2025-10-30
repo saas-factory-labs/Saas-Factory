@@ -1,38 +1,41 @@
 ﻿@using System.Reflection
 @using AppBlueprint.UiKit.Models
 @using AppBlueprint.UiKit.Components
+@using AppBlueprint.UiKit.Components.Authentication
 @inherits LayoutComponentBase
 
 @inject NavigationManager NavManager
 @inject IConfiguration Configuration
 @inject List<NavLinkMetadata> Links
 
-@* The cascading value attribute passes the Links parameter to the Sidepanel component in UiKit library *@
-<CascadingValue Value="Links">
-    <Router AppAssembly="@typeof(Program).Assembly"
-            AdditionalAssemblies="@AdditionalAssemblies">
-        <Found Context="routeData">
-            @{
-                // Check if the current route should be protected
-                var requireAuth = ShouldRequireAuthentication(routeData);
-            }
-            
-            @if (requireAuth)
-            {
-                <RequireAuthentication>
+<AuthProvider>
+    @* The cascading value attribute passes the Links parameter to the Sidepanel component in UiKit library *@
+    <CascadingValue Value="Links">
+        <Router AppAssembly="@typeof(Program).Assembly"
+                AdditionalAssemblies="@AdditionalAssemblies">
+            <Found Context="routeData">
+                @{
+                    // Check if the current route should be protected
+                    var requireAuth = ShouldRequireAuthentication(routeData);
+                }
+                
+                @if (requireAuth)
+                {
+                    <RequireAuthentication>
+                        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+                    </RequireAuthentication>
+                }
+                else
+                {
                     <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-                </RequireAuthentication>
-            }
-            else
-            {
-                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-            }
-        </Found>
-        <NotFound>
-            <MudText Typo="Typo.h6">Sorry, there's nothing here!</MudText>
-        </NotFound>
-    </Router>
-</CascadingValue>
+                }
+            </Found>
+            <NotFound>
+                <MudText Typo="Typo.h6">Sorry, there's nothing here!</MudText>
+            </NotFound>
+        </Router>
+    </CascadingValue>
+</AuthProvider>
 
 @code {
     private Assembly[] AdditionalAssemblies { get; } = new[] { typeof(UiKit._Imports).Assembly };
