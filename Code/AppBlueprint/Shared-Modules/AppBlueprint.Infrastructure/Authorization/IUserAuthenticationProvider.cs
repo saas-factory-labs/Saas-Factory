@@ -30,4 +30,9 @@ public interface IUserAuthenticationProvider : IAuthenticationProvider
     ///     Should be called when the provider is created to restore previous authentication.
     /// </summary>
     Task InitializeFromStorageAsync();
+
+    /// <summary>
+    ///     Get the logout URL for the authentication provider (for OIDC providers)
+    /// </summary>
+    string? GetLogoutUrl(string postLogoutRedirectUri);
 }

@@ -45,6 +45,14 @@ else if (_isCheckingAuth)
             
             Console.WriteLine($"[RequireAuthentication] OnAfterRenderAsync - Checking auth state");
             
+            // Wait for AuthProvider to finish initializing from storage
+            if (!Auth.HasInitialized)
+            {
+                Console.WriteLine("[RequireAuthentication] Waiting for AuthProvider to initialize...");
+                // AuthProvider will notify us via OnAuthStateChanged when it's done
+                return;
+            }
+            
             // Check authentication state
             _isAuthenticated = Auth?.IsAuthenticated ?? false;
             _isCheckingAuth = false;

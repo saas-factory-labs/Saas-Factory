@@ -93,6 +93,24 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
         await _provider.InitializeAsync();
     }
 
+    public string? GetLogoutUrl(string postLogoutRedirectUri)
+    {
+        if (_provider is null)
+        {
+            Console.Error.WriteLine("Error: Authentication provider is null in GetLogoutUrl()");
+            return null;
+        }
+        
+        // Check if the provider is LogtoAuthorizationCodeProvider
+        if (_provider is Providers.Logto.LogtoAuthorizationCodeProvider logtoProvider)
+        {
+            return logtoProvider.GetLogoutUrl(postLogoutRedirectUri);
+        }
+        
+        // For other providers, return null (they may not need a logout URL)
+        return null;
+    }
+
     public void Dispose()
     {
         if (_provider is IDisposable disposableProvider)

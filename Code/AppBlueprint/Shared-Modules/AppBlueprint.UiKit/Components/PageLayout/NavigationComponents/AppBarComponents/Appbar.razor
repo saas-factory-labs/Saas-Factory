@@ -44,7 +44,7 @@
                 <MudNavLink Href="/account-settings" Icon="@Icons.Material.Filled.Settings">Account Settings
                 </MudNavLink>
             </MudMenuItem>
-            <MudMenuItem OnClick="HandleLogout">
+            <MudMenuItem OnClick="HandleLogoutDirectly">
                 <div class="d-flex align-center">
                     <MudIcon Icon="@Icons.Material.Filled.Logout" Class="mr-2" />
                     Sign Out
@@ -95,17 +95,75 @@
         Console.WriteLine($"Theme toggled. IsDarkMode: {_isDarkMode}");
     }
 
+    // Handle logout action - DIRECT VERSION - SIMPLIFIED
+    private async Task HandleLogoutDirectly()
+    {
+        Console.WriteLine("========================================");
+        Console.WriteLine("[Appbar] LOGOUT BUTTON CLICKED!");
+        Console.WriteLine("========================================");
+        
+        try
+        {
+            Console.WriteLine("[Appbar] Step 1: Calling AuthenticationProvider.LogoutAsync()...");
+            await AuthenticationProvider.LogoutAsync();
+            Console.WriteLine("[Appbar] Step 2: LogoutAsync completed - local tokens cleared");
+            
+            Console.WriteLine("[Appbar] Step 3: Getting Logto logout URL...");
+            // Use base URI without trailing slash - this is more commonly accepted
+            var postLogoutRedirectUri = NavigationManager.BaseUri.TrimEnd('/');
+            Console.WriteLine($"[Appbar] Using post-logout redirect URI: {postLogoutRedirectUri}");
+            var logoutUrl = AuthenticationProvider.GetLogoutUrl(postLogoutRedirectUri);
+            
+            if (!string.IsNullOrEmpty(logoutUrl))
+            {
+                Console.WriteLine($"[Appbar] Step 4: Redirecting to Logto logout URL: {logoutUrl}");
+                NavigationManager.NavigateTo(logoutUrl, forceLoad: true);
+            }
+            else
+            {
+                Console.WriteLine("[Appbar] Step 4: No logout URL - redirecting to /login directly");
+                NavigationManager.NavigateTo("/login", forceLoad: true);
+            }
+            
+            Console.WriteLine("[Appbar] Step 5: Navigation initiated");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"[Appbar] ERROR during logout: {ex.Message}");
+            Console.Error.WriteLine($"[Appbar] Stack: {ex.StackTrace}");
+            
+            // Fallback - just navigate to login
+            Console.WriteLine("[Appbar] Attempting fallback navigation...");
+            NavigationManager.NavigateTo("/login", forceLoad: true);
+        }
+        
+        Console.WriteLine("[Appbar] HandleLogoutDirectly END");
+        Console.WriteLine("========================================");
+    }
+
     // Handle logout action
+    private async Task HandleLogoutWithDelay()
+    {
+        Console.WriteLine("========================================");
+        Console.WriteLine("[Appbar] HandleLogoutWithDelay - LOGOUT BUTTON CLICKED");
+        Console.WriteLine("[Appbar] Giving menu time to close before logout...");
+        Console.WriteLine("========================================");
+        
+        // Small delay to let the menu close properly
+        await Task.Delay(100);
+        
+        await HandleLogoutDirectly();
+    }
+    
     private async Task HandleLogout()
     {
-        if (Auth != null)
-        {
-            await Auth.LogoutAsync();
-        }
-        else 
-        {
-            await AuthenticationProvider.LogoutAsync();
-            NavigationManager.NavigateTo("/login", true);
-        }
+        Console.WriteLine("========================================");
+        Console.WriteLine("[Appbar] HandleLogout - STARTING LOGOUT PROCESS");
+        Console.WriteLine("========================================");
+        
+        await HandleLogoutDirectly();
+        
+        Console.WriteLine("[Appbar] HandleLogout - END");
+        Console.WriteLine("========================================");
     }
 }

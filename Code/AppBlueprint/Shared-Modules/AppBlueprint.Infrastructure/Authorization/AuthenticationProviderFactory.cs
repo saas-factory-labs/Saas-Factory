@@ -64,9 +64,20 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
         var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
-        var logger = _serviceProvider.GetRequiredService<ILogger<LogtoProvider>>();
-
-        return new LogtoProvider(tokenStorage, httpClient, _configuration, logger);
+        
+        // Check if we should use Authorization Code Flow (recommended)
+        var useAuthCodeFlow = _configuration.GetValue<bool>("Authentication:Logto:UseAuthorizationCodeFlow", true);
+        
+        if (useAuthCodeFlow)
+        {
+            var logger = _serviceProvider.GetRequiredService<ILogger<LogtoAuthorizationCodeProvider>>();
+            return new LogtoAuthorizationCodeProvider(tokenStorage, httpClient, _configuration, logger);
+        }
+        else
+        {
+            var logger = _serviceProvider.GetRequiredService<ILogger<LogtoProvider>>();
+            return new LogtoProvider(tokenStorage, httpClient, _configuration, logger);
+        }
     }
 
     private IAuthenticationProvider CreateMockProvider()

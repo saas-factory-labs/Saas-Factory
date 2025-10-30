@@ -1,33 +1,53 @@
 @page "/login"
 @using AppBlueprint.Infrastructure.Authorization
 @using AppBlueprint.UiKit.Components.Authentication
+@using AppBlueprint.Infrastructure.Authorization.Providers.Logto
+@using Microsoft.Extensions.Configuration
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
+@inject IUserAuthenticationProvider AuthService
+@inject IConfiguration Configuration
 
 <PageTitle>Login - AppBlueprint</PageTitle>
 
-<div class="login-page-wrapper">
-    <div class="login-container">
-        <div class="login-hero-section">
-            <div class="login-logo">
-                <div class="login-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
-                    </svg>
+@if (_useLogtoHostedLogin)
+{
+    <!-- Show loading screen while redirecting to Logto -->
+    <div class="login-page-wrapper">
+        <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center justify-center" Style="min-height: 100vh;">
+            <MudPaper Elevation="3" Class="pa-6 text-center">
+                <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" Class="mb-4" />
+                <MudText Typo="Typo.h5" Class="mb-2">Redirecting to Login...</MudText>
+                <MudText Typo="Typo.body2" Color="Color.Secondary">Please wait while we redirect you to the login page.</MudText>
+            </MudPaper>
+        </MudContainer>
+    </div>
+}
+else
+{
+    <!-- Original login form for non-Logto authentication -->
+    <div class="login-page-wrapper">
+        <div class="login-container">
+            <div class="login-hero-section">
+                <div class="login-logo">
+                    <div class="login-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
+                        </svg>
+                    </div>
+                    <h1 class="login-title">Welcome Back</h1>
+                    <p class="login-subtitle">Sign in to your account to continue</p>
                 </div>
-                <h1 class="login-title">Welcome Back</h1>
-                <p class="login-subtitle">Sign in to your account to continue</p>
             </div>
-        </div>
-        
-        <MudPaper Elevation="8" Class="login-paper">
-            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" 
-                     Color="Color.Primary"
-                     TabPanelHeaderStyle="font-weight: 600; font-size: 16px"
-                     Rounded="true"
-                     Centered="true"
-                     Border="false"
-                     Class="login-tabs">            <!-- ─────────────────────────────  LOGIN  ───────────────────────────── -->            <MudTabPanel Text="Login">
+            
+            <MudPaper Elevation="8" Class="login-paper">
+                <MudTabs @bind-ActivePanelIndex="_activeTabIndex" 
+                         Color="Color.Primary"
+                         TabPanelHeaderStyle="font-weight: 600; font-size: 16px"
+                         Rounded="true"
+                         Centered="true"
+                         Border="false"
+                         Class="login-tabs">            <!-- ─────────────────────────────  LOGIN  ───────────────────────────── -->            <MudTabPanel Text="Login">
                 @* Pure HTML form optimized for password managers *@
                 <form id="login-form"
                       @onsubmit="HandleLoginSubmit"
@@ -703,6 +723,7 @@
     </MudPaper>
     </div>
 </div>
+}
 
 @code {
     [CascadingParameter] private AuthProvider Auth { get; set; } = default!;
@@ -717,10 +738,41 @@
     private string _registerConfirmPassword  = string.Empty;
     private bool   _isLoading;
     private bool   _hasCheckedAuth = false;
+    private bool   _useLogtoHostedLogin = false;
+
+    protected override void OnInitialized()
+    {
+        // Check if we're using Logto with Authorization Code Flow
+        var authProvider = Configuration["Authentication:Provider"];
+        var useAuthCodeFlow = Configuration.GetValue<bool>("Authentication:Logto:UseAuthorizationCodeFlow", true);
+        
+        _useLogtoHostedLogin = authProvider?.Equals("Logto", StringComparison.OrdinalIgnoreCase) == true && useAuthCodeFlow;
+        
+        Console.WriteLine($"[Login] Auth Provider: {authProvider}, Use Logto Hosted Login: {_useLogtoHostedLogin}");
+        
+        // IMPORTANT: Check if we're coming back from a failed callback to prevent infinite loop
+        var uri = new Uri(NavigationManager.Uri);
+        var isFromFailedCallback = uri.Query.Contains("error=auth_failed");
+        
+        if (isFromFailedCallback)
+        {
+            Console.WriteLine("[Login] Detected failed callback - NOT redirecting to prevent loop");
+            _useLogtoHostedLogin = false;
+            Snackbar.Add("Authentication failed. Please try again.", Severity.Error);
+            return;
+        }
+        
+        // If using Logto, redirect immediately
+        if (_useLogtoHostedLogin)
+        {
+            Console.WriteLine("[Login] Initiating immediate redirect to Logto...");
+            RedirectToLogtoLoginSync();
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !_hasCheckedAuth)
+        if (firstRender && !_hasCheckedAuth && !_useLogtoHostedLogin)
         {
             _hasCheckedAuth = true;
             
@@ -737,11 +789,94 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
+    private async void RedirectToLogtoLoginSync()
+    {
+        try
+        {
+            Console.WriteLine("[Login] Starting Logto redirect process...");
+            Console.WriteLine($"[Login] AuthService type: {AuthService?.GetType().FullName}");
+            
+            if (AuthService is null)
+            {
+                Console.Error.WriteLine("[Login] AuthService is NULL!");
+                Snackbar.Add("Authentication service not available", Severity.Error);
+                return;
+            }
+            
+            // Get the underlying provider to access GetAuthorizationUrl
+            if (AuthService is UserAuthenticationProviderAdapter adapter)
+            {
+                Console.WriteLine("[Login] AuthService is UserAuthenticationProviderAdapter");
+                
+                var adapterType = adapter.GetType();
+                var providerField = adapterType.GetField("_provider", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                
+                Console.WriteLine($"[Login] Provider field found: {providerField is not null}");
+                
+                if (providerField is not null)
+                {
+                    var provider = providerField.GetValue(adapter);
+                    Console.WriteLine($"[Login] Provider value: {provider?.GetType().FullName}");
+                    
+                    if (provider is LogtoAuthorizationCodeProvider logtoProvider)
+                    {
+                        Console.WriteLine("[Login] Provider is LogtoAuthorizationCodeProvider");
+                        
+                        var redirectUri = $"{NavigationManager.BaseUri}callback";
+                        Console.WriteLine($"[Login] Redirect URI: {redirectUri}");
+                        
+                        var authUrl = await logtoProvider.GetAuthorizationUrlAsync(redirectUri);
+                        
+                        Console.WriteLine($"[Login] Auth URL generated: {authUrl}");
+                        Console.WriteLine($"[Login] Navigating to Logto NOW...");
+                        
+                        NavigationManager.NavigateTo(authUrl, forceLoad: true);
+                    }
+                    else
+                    {
+                        Console.Error.WriteLine($"[Login] Provider is not LogtoAuthorizationCodeProvider, it's: {provider?.GetType().FullName}");
+                        Snackbar.Add($"Wrong provider type: {provider?.GetType().Name}", Severity.Error);
+                    }
+                }
+                else
+                {
+                    Console.Error.WriteLine("[Login] Provider field not found via reflection");
+                    Snackbar.Add("Cannot access authentication provider", Severity.Error);
+                }
+            }
+            else
+            {
+                Console.Error.WriteLine($"[Login] AuthService is not UserAuthenticationProviderAdapter, it's: {AuthService?.GetType().FullName}");
+                Snackbar.Add($"Wrong adapter type: {AuthService?.GetType().Name}", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"[Login] Error redirecting to Logto: {ex.Message}");
+            Console.Error.WriteLine($"[Login] Stack trace: {ex.StackTrace}");
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task RedirectToLogtoLogin()
+    {
+        RedirectToLogtoLoginSync();
+        await Task.CompletedTask;
+    }
+
     /* ─────────────  LOGIN  ───────────── */
     private async Task HandleLoginSubmit() => await HandleLogin();
 
     private async Task HandleLogin()
     {
+        // If using Logto hosted login, redirect instead of using form
+        if (_useLogtoHostedLogin)
+        {
+            await RedirectToLogtoLogin();
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(_loginEmail) || string.IsNullOrWhiteSpace(_loginPassword))
         {
             Snackbar.Add("Please enter both email and password", Severity.Warning);

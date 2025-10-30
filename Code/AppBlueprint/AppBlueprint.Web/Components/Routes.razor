@@ -43,7 +43,9 @@
     // List of routes that don't require authentication
     private readonly string[] _publicRoutes = new[]
     {
+        "/",            // Home page - allow anonymous access
         "/login",       // Login page
+        "/callback",    // OAuth callback page for Logto
         "/register",    // If you have a registration page
         "/forgot-password", // Password recovery
         "/reset-password"   // Password reset

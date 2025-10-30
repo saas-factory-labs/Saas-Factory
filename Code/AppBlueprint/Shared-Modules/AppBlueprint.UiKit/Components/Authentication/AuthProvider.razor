@@ -1,8 +1,10 @@
 @using AppBlueprint.Infrastructure.Authorization
+@using Microsoft.JSInterop
 @implements IDisposable
 @inject ITokenStorageService? TokenStorage
 @inject IUserAuthenticationProvider? AuthenticationService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <CascadingValue Value="this">
     @ChildContent
@@ -21,6 +23,11 @@
     /// Checks if the user is currently authenticated
     /// </summary>
     public bool IsAuthenticated => AuthenticationService?.IsAuthenticated() ?? false;
+
+    /// <summary>
+    /// Indicates whether the AuthProvider has completed its initialization from storage
+    /// </summary>
+    public bool HasInitialized => _hasInitialized;
 
     private bool _hasInitialized = false;
     
@@ -125,7 +132,9 @@
     /// </summary>
     public async Task LogoutAsync()
     {
+        Console.WriteLine("========================================");
         Console.WriteLine("[AuthProvider] LogoutAsync called");
+        Console.WriteLine("========================================");
         
         if (AuthenticationService is null)
         {
@@ -133,9 +142,51 @@
             return;
         }
         
-        await AuthenticationService.LogoutAsync();
-        OnAuthStateChanged?.Invoke();
-        NavigationManager.NavigateTo("/login");
+        try
+        {
+            Console.WriteLine("[AuthProvider] STEP 1: Calling AuthenticationService.LogoutAsync()...");
+            await AuthenticationService.LogoutAsync();
+            Console.WriteLine("[AuthProvider] STEP 2: AuthenticationService.LogoutAsync() completed");
+            
+            Console.WriteLine("[AuthProvider] STEP 3: Resetting _hasInitialized to false");
+            _hasInitialized = false;
+            
+            Console.WriteLine("[AuthProvider] STEP 4: Invoking OnAuthStateChanged event");
+            OnAuthStateChanged?.Invoke();
+            
+            Console.WriteLine("[AuthProvider] STEP 5: Calling StateHasChanged()");
+            StateHasChanged();
+            
+            Console.WriteLine("[AuthProvider] STEP 6: Navigating to login with JavaScript");
+            Console.WriteLine("[AuthProvider] Checking if navigationHelper exists in window...");
+            await JSRuntime.InvokeVoidAsync("navigationHelper.navigateTo", "/login");
+            Console.WriteLine("[AuthProvider] STEP 7: Navigation call completed");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"[AuthProvider] EXCEPTION during logout: {ex.Message}");
+            Console.Error.WriteLine($"[AuthProvider] Exception type: {ex.GetType().FullName}");
+            Console.Error.WriteLine($"[AuthProvider] Stack trace: {ex.StackTrace}");
+            if (ex.InnerException is not null)
+            {
+                Console.Error.WriteLine($"[AuthProvider] Inner exception: {ex.InnerException.Message}");
+                Console.Error.WriteLine($"[AuthProvider] Inner exception stack: {ex.InnerException.StackTrace}");
+            }
+            
+            // Try fallback navigation
+            Console.WriteLine("[AuthProvider] Attempting fallback navigation with NavigationManager...");
+            try
+            {
+                NavigationManager.NavigateTo("/login", forceLoad: true);
+            }
+            catch (Exception navEx)
+            {
+                Console.Error.WriteLine($"[AuthProvider] Fallback navigation also failed: {navEx.Message}");
+            }
+        }
+        
+        Console.WriteLine("[AuthProvider] LogoutAsync - END");
+        Console.WriteLine("========================================");
     }
 
     public void Dispose()

@@ -1,0 +1,144 @@
+@page "/callback"
+@using AppBlueprint.Infrastructure.Authorization
+@using AppBlueprint.Infrastructure.Authorization.Providers.Logto
+@using AppBlueprint.UiKit.Components.Authentication
+@inject IUserAuthenticationProvider AuthService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+
+<PageTitle>Authenticating...</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center justify-center" Style="min-height: 100vh;">
+    <MudPaper Elevation="3" Class="pa-6 text-center">
+        <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" Class="mb-4" />
+        <MudText Typo="Typo.h5" Class="mb-2">Completing Sign In...</MudText>
+        <MudText Typo="Typo.body2" Color="Color.Secondary">Please wait while we complete your authentication.</MudText>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private bool _hasProcessedCallback = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasProcessedCallback)
+        {
+            _hasProcessedCallback = true;
+            await ProcessCallbackAsync();
+        }
+    }
+
+    private async Task ProcessCallbackAsync()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        
+        var code = query["code"];
+        var state = query["state"];
+        var error = query["error"];
+        var errorDescription = query["error_description"];
+
+        Console.WriteLine($"[LogtoCallback] Callback received");
+        Console.WriteLine($"[LogtoCallback] Code present: {!string.IsNullOrEmpty(code)}");
+        Console.WriteLine($"[LogtoCallback] State present: {!string.IsNullOrEmpty(state)}");
+        Console.WriteLine($"[LogtoCallback] State value: {state}");
+        Console.WriteLine($"[LogtoCallback] Error: {error}");
+
+        if (!string.IsNullOrEmpty(error))
+        {
+            Console.Error.WriteLine($"[LogtoCallback] Authentication error: {error} - {errorDescription}");
+            Snackbar.Add($"Authentication failed: {errorDescription ?? error}", Severity.Error);
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/login?error=auth_failed", true);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(code))
+        {
+            Console.Error.WriteLine("[LogtoCallback] No authorization code received");
+            Snackbar.Add("Authentication failed: No authorization code received", Severity.Error);
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/login?error=auth_failed", true);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(state))
+        {
+            Console.Error.WriteLine("[LogtoCallback] No state parameter received");
+            Snackbar.Add("Authentication failed: No state parameter received", Severity.Error);
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/login?error=auth_failed", true);
+            return;
+        }
+
+        try
+        {
+            // Get the underlying provider if it's the authorization code provider
+            if (AuthService is UserAuthenticationProviderAdapter adapter)
+            {
+                var adapterType = adapter.GetType();
+                var providerField = adapterType.GetField("_provider", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                
+                if (providerField?.GetValue(adapter) is LogtoAuthorizationCodeProvider logtoProvider)
+                {
+                    Console.WriteLine("[LogtoCallback] Exchanging authorization code for tokens...");
+                    
+                    var redirectUri = $"{Navigation.BaseUri}callback";
+                    Console.WriteLine($"[LogtoCallback] Using redirect URI: {redirectUri}");
+                    
+                    var result = await logtoProvider.ExchangeCodeForTokensAsync(code, state, redirectUri);
+
+                    Console.WriteLine($"[LogtoCallback] Token exchange result - IsSuccess: {result.IsSuccess}");
+                    Console.WriteLine($"[LogtoCallback] Token exchange result - Error: {result.Error}");
+
+                    if (result.IsSuccess)
+                    {
+                        Console.WriteLine("[LogtoCallback] Token exchange successful! Redirecting to dashboard...");
+                        Snackbar.Add("Successfully signed in!", Severity.Success);
+                        
+                        // Wait a moment for the snackbar to show
+                        await Task.Delay(500);
+                        
+                        // Use JavaScript helper to navigate
+                        await JS.InvokeVoidAsync("navigationHelper.navigateTo", "/dashboard");
+                    }
+                    else
+                    {
+                        Console.Error.WriteLine($"[LogtoCallback] Token exchange failed: {result.Error}");
+                        Snackbar.Add($"Authentication failed: {result.Error}", Severity.Error);
+                        await Task.Delay(2000);
+                        Navigation.NavigateTo("/login?error=auth_failed", true);
+                    }
+                }
+                else
+                {
+                    Console.Error.WriteLine("[LogtoCallback] Not using Authorization Code Flow provider");
+                    Snackbar.Add("Authentication configuration error", Severity.Error);
+                    await Task.Delay(2000);
+                    Navigation.NavigateTo("/login?error=auth_failed", true);
+                }
+            }
+            else
+            {
+                Console.Error.WriteLine("[LogtoCallback] AuthService is not UserAuthenticationProviderAdapter");
+                Snackbar.Add("Authentication configuration error", Severity.Error);
+                await Task.Delay(2000);
+                Navigation.NavigateTo("/login?error=auth_failed", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"[LogtoCallback] Error during callback processing: {ex.Message}");
+            Console.Error.WriteLine($"[LogtoCallback] Stack trace: {ex.StackTrace}");
+            if (ex.InnerException is not null)
+            {
+                Console.Error.WriteLine($"[LogtoCallback] Inner exception: {ex.InnerException.Message}");
+            }
+            Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/login?error=auth_failed", true);
+        }
+    }
+}

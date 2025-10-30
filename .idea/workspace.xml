@@ -5,22 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b1fdbdc8-2716-46ce-b5ab-8f9c8f6ec8b2" name="Changes" comment="updated build-docs.yml workflow">
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/AuthenticationProviderFactory.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Auth0/Auth0Configuration.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Auth0/Auth0Provider.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/BaseAuthenticationProvider.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/IAuthenticationProvider.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Logto/LogtoConfiguration.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Logto/LogtoProvider.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Mock/MockProvider.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/UserAuthenticationProviderAdapter.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Components/Pages/LogtoCallback.razor" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Logto/LogtoAuthorizationCodeProvider.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.AppHost/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.AppHost/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.AppHost/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.AppHost/Properties/launchSettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/B2C/B2CDBContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/B2C/B2CDBContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/AuthenticationServiceExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/AuthenticationServiceExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/RequireAuthentication.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/RequireAuthentication.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Components/Routes.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Components/Routes.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/AuthenticationProviderFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/AuthenticationProviderFactory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Logto/LogtoProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Logto/LogtoProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/TokenStorageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/TokenStorageService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/ForgotPassword.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/ForgotPassword.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Login.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Login.razor" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

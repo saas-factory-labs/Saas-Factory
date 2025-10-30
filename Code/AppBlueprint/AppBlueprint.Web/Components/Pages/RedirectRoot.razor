@@ -1,11 +1,28 @@
 @page "/"
+@using AppBlueprint.UiKit.Components.Authentication
 @inject NavigationManager Navigation
 
+<p>Redirecting...</p>
+
 @code {
+    [CascadingParameter]
+    public AuthProvider? Auth { get; set; }
 
     protected override void OnInitialized()
     {
-        Navigation.NavigateTo("/dashboard", forceLoad: false);
+        // Check if user is authenticated
+        var isAuthenticated = Auth?.IsAuthenticated ?? false;
+        
+        if (isAuthenticated)
+        {
+            // Authenticated users go to dashboard
+            Navigation.NavigateTo("/dashboard", forceLoad: false);
+        }
+        else
+        {
+            // Non-authenticated users go to login
+            Navigation.NavigateTo("/login", forceLoad: false);
+        }
     }
 
 }

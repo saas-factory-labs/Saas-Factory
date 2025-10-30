@@ -29,17 +29,9 @@ public class LogtoProvider : BaseAuthenticationProvider
     {
         try
         {
+            _logger.LogInformation("Attempting Logto login for user: {Email}", request.Email);
+            
             // Logto uses OAuth2 Resource Owner Password Credentials Grant
-            var logtoRequest = new
-            {
-                client_id = _configuration.ClientId,
-                client_secret = _configuration.ClientSecret,
-                grant_type = "password",
-                username = request.Email,
-                password = request.Password,
-                scope = _configuration.Scope ?? "openid profile email"
-            };
-
             var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 ["client_id"] = _configuration.ClientId,
@@ -50,11 +42,16 @@ public class LogtoProvider : BaseAuthenticationProvider
                 ["scope"] = _configuration.Scope ?? "openid profile email"
             });
 
+            _logger.LogDebug("Posting to Logto token endpoint: {Endpoint}/oidc/token", _configuration.Endpoint);
+
             var response = await _httpClient.PostAsync($"{_configuration.Endpoint}/oidc/token", formContent, cancellationToken);
 
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            
             if (response.IsSuccessStatusCode)
             {
-                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogInformation("Logto login successful for user: {Email}", request.Email);
+                
                 var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(responseContent, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
@@ -75,19 +72,45 @@ public class LogtoProvider : BaseAuthenticationProvider
                 }
             }
 
-            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogWarning("Logto login failed with status: {StatusCode}, Content: {Content}", 
-                response.StatusCode, errorContent);
+            // Log the full error response for debugging
+            _logger.LogError("Logto login failed with status: {StatusCode}, Response: {Response}", 
+                response.StatusCode, responseContent);
+            
+            // Try to parse error for better user feedback
+            string errorMessage = "Login failed. Please check your credentials.";
+            try
+            {
+                var errorResponse = JsonSerializer.Deserialize<JsonElement>(responseContent);
+                if (errorResponse.TryGetProperty("error_description", out var errorDesc))
+                {
+                    errorMessage = errorDesc.GetString() ?? errorMessage;
+                }
+                else if (errorResponse.TryGetProperty("error", out var error))
+                {
+                    var errorType = error.GetString();
+                    errorMessage = errorType switch
+                    {
+                        "invalid_grant" => "Invalid email or password. Please check your credentials.",
+                        "unsupported_grant_type" => "Password login is not enabled. Please enable ROPC grant type in Logto Console.",
+                        "invalid_client" => "Application configuration error. Please check your Logto credentials.",
+                        _ => $"Login failed: {errorType}"
+                    };
+                }
+            }
+            catch
+            {
+                // If we can't parse the error, use the default message
+            }
             
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Login failed. Please check your credentials."
+                Error = errorMessage
             };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error during Logto login");
+            _logger.LogError(ex, "Error during Logto login for user: {Email}", request.Email);
             return new AuthenticationResult
             {
                 IsSuccess = false,
