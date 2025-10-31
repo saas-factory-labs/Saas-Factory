@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using System;
-using System.Data.Common;
 using System.Threading.Tasks;
 
 namespace AppBlueprint.Infrastructure;
@@ -33,37 +32,8 @@ public static class MigrationExtensions
             Logger.LogInformation("Attempting to apply migrations with connection: {ConnectionString}",
                 connectionString?.Replace(";Password=", ";Password=*****", StringComparison.Ordinal));
 
-            // Ensure we can connect to the database
-            for (int attempt = 1; attempt <= 3; attempt++)
-            {
-                try
-                {
-                    // Try to connect with explicit timeout
-                    await using var sqlConnection = new NpgsqlConnection(connectionString);
-                    await sqlConnection.OpenAsync();
-                    await sqlConnection.CloseAsync();
-                    Logger.LogInformation("Successfully established database connection on attempt {Attempt}", attempt);
-                    break;
-                }
-                catch (NpgsqlException ex)
-                {
-                    Logger.LogWarning("Failed to connect to database on attempt {Attempt}: {Message}", attempt, ex.Message);
-                    if (attempt >= 3)
-                    {
-                        throw;
-                    }
-                    await Task.Delay(TimeSpan.FromSeconds(3));
-                }
-                catch (TimeoutException ex)
-                {
-                    Logger.LogWarning("Database connection timeout on attempt {Attempt}: {Message}", attempt, ex.Message);
-                    if (attempt >= 3)
-                    {
-                        throw;
-                    }
-                    await Task.Delay(TimeSpan.FromSeconds(3));
-                }
-            }
+            // Try to ensure the database exists first
+            await EnsureDatabaseExistsAsync(connectionString);
 
             // Check if the database exists before trying to migrate
             Logger.LogInformation("Checking database connection...");
@@ -95,6 +65,60 @@ public static class MigrationExtensions
             // Log timeout errors but don't crash the application
             Logger.LogError(ex, "A timeout occurred while applying migrations: {Message}", ex.Message);
             Logger.LogWarning("Application will continue without applying migrations.");
+        }
+    }
+
+    private static async Task EnsureDatabaseExistsAsync(string? connectionString)
+    {
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            Logger.LogWarning("Connection string is null or empty. Cannot ensure database exists.");
+            return;
+        }
+
+        try
+        {
+            var builder = new NpgsqlConnectionStringBuilder(connectionString);
+            var databaseName = builder.Database;
+            
+            // Switch to postgres database to check if our database exists
+            builder.Database = "postgres";
+            var postgresConnectionString = builder.ToString();
+
+            Logger.LogInformation("Checking if database '{DatabaseName}' exists...", databaseName);
+
+            await using var connection = new NpgsqlConnection(postgresConnectionString);
+            await connection.OpenAsync();
+
+            // Check if database exists
+            await using var checkCommand = new NpgsqlCommand(
+                $"SELECT 1 FROM pg_database WHERE datname = @databaseName", connection);
+            checkCommand.Parameters.AddWithValue("databaseName", databaseName);
+            
+            var exists = await checkCommand.ExecuteScalarAsync();
+
+            if (exists is null)
+            {
+                Logger.LogInformation("Database '{DatabaseName}' does not exist. Creating it...", databaseName);
+                
+                // Create the database
+                await using var createCommand = new NpgsqlCommand(
+                    $"CREATE DATABASE \"{databaseName}\"", connection);
+                await createCommand.ExecuteNonQueryAsync();
+                
+                Logger.LogInformation("Database '{DatabaseName}' created successfully.", databaseName);
+            }
+            else
+            {
+                Logger.LogInformation("Database '{DatabaseName}' already exists.", databaseName);
+            }
+
+            await connection.CloseAsync();
+        }
+        catch (NpgsqlException ex)
+        {
+            Logger.LogError(ex, "Failed to ensure database exists: {Message}", ex.Message);
+            throw;
         }
     }
 

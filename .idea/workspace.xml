@@ -5,15 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b1fdbdc8-2716-46ce-b5ab-8f9c8f6ec8b2" name="Changes" comment="updated build-docs.yml workflow">
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Components/Pages/LogtoCallback.razor" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Logto/LogtoAuthorizationCodeProvider.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/CLOUD_DATABASE_SETUP.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Components/Routes.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Components/Routes.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/AuthenticationProviderFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/AuthenticationProviderFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Logto/LogtoProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Logto/LogtoProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/TokenStorageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/TokenStorageService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/ForgotPassword.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/ForgotPassword.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Login.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Login.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.AppHost/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.AppHost/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Services/Users/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Services/Users/UserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/ApplicationDBContextFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/ApplicationDBContextFactory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/B2B/B2BDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/B2B/B2BDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/MigrationExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/MigrationExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/Users/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/Users/UserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/AuthenticationController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/AuthenticationController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/ApplicationBuilderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/ApplicationBuilderExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/DeploymentManager/DeploymentManager.Web/Components/Pages/MyDiagram.razor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/DeploymentManager/DeploymentManager.Web/Components/Pages/MyDiagram.razor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SaaS-Factory.sln" beforeDir="false" afterPath="$PROJECT_DIR$/SaaS-Factory.sln" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

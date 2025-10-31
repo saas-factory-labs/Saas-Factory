@@ -269,7 +269,7 @@ public class UserService : IUserService
 
         // We're not implementing actual password hashing as per instructions
         // In a real application, the password would be hashed here
-        // For this exercise, we're assuming the authentication is handled externally by Supabase
+        // For this exercise, we're assuming the authentication is handled externally by an authentication provider
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return true;

@@ -1,16 +1,11 @@
-using System.Text;
 using AppBlueprint.Application.Services.DataExport;
-using AppBlueprint.Infrastructure.Services.DataExport;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
-using Asp.Versioning.Routing;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
@@ -20,17 +15,28 @@ public static class ApplicationBuilderExtensions
         .Create(builder => builder.AddConsole())
         .CreateLogger(typeof(ApplicationBuilderExtensions)); private static void AddDbContext(IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        // Get connection string from IConfiguration - try Aspire database name first, then fallbacks
-        string? databaseConnectionString = configuration.GetConnectionString("appblueprintdb") ??
-                                         configuration.GetConnectionString("postgres-server") ??
-                                         configuration.GetConnectionString("DefaultConnection");
+        // Priority 1: Check for environment variable for cloud database connection
+        string? databaseConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+        
+        // Priority 2: Fall back to IConfiguration connection strings
+        if (string.IsNullOrEmpty(databaseConnectionString))
+        {
+            databaseConnectionString = configuration.GetConnectionString("appblueprintdb") ??
+                                     configuration.GetConnectionString("postgres-server") ??
+                                     configuration.GetConnectionString("DefaultConnection");
+        }
 
-        Console.WriteLine($"[AddDbContext] Database Connection String from IConfiguration: {databaseConnectionString}"); // Added logging
+        var connectionSource = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") != null ? "Environment Variable" : "Configuration";
+        
+        Console.WriteLine($"[AddDbContext] Database Connection String Source: {connectionSource}");
+        
+        // Log detailed connection information
+        LogDatabaseConnectionInfo(databaseConnectionString);
 
         // Throw if connection string is null or empty
         ArgumentException.ThrowIfNullOrEmpty(databaseConnectionString, nameof(databaseConnectionString));
 
-        Logger.LogInformation("Connection String: {ConnectionString}", databaseConnectionString); // Existing logging
+        Logger.LogInformation("Connection String configured from: {Source}", connectionSource);
 
         // Properly configure the ApplicationDbContext with Entity Framework Core
         serviceCollection.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
@@ -79,6 +85,38 @@ public static class ApplicationBuilderExtensions
         });
     }
 
+    private static void LogDatabaseConnectionInfo(string? connectionString)
+    {
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            Console.WriteLine("[AddDbContext] Connection string is NULL");
+            return;
+        }
+
+        try
+        {
+            var builder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);
+            
+            Console.WriteLine("[AddDbContext] === Database Connection Details ===");
+            Console.WriteLine($"[AddDbContext] Host: {builder.Host ?? "not specified"}");
+            Console.WriteLine($"[AddDbContext] Port: {builder.Port}");
+            Console.WriteLine($"[AddDbContext] Database: {builder.Database ?? "not specified"}");
+            Console.WriteLine($"[AddDbContext] Username: {builder.Username ?? "not specified"}");
+            Console.WriteLine($"[AddDbContext] SSL Mode: {builder.SslMode}");
+            
+            var isLocal = builder.Host?.Contains("localhost") == true || 
+                         builder.Host?.Contains("127.0.0.1") == true ||
+                         builder.Host?.Contains("postgres-server") == true;
+            Console.WriteLine($"[AddDbContext] Connection Type: {(isLocal ? "LOCAL" : "CLOUD/REMOTE")}");
+            Console.WriteLine("[AddDbContext] ==========================================");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[AddDbContext] Failed to parse connection details: {ex.Message}");
+            Console.WriteLine($"[AddDbContext] Masked Connection String: {MaskConnectionString(connectionString)}");
+        }
+    }
+
     private static void AddCors(IServiceCollection serviceCollection)
     {
         serviceCollection.AddCors(policy => policy.AddDefaultPolicy(builder =>
@@ -112,60 +150,6 @@ public static class ApplicationBuilderExtensions
         });
     }
 
-    private static void ConfigureJwtAuthentication(IServiceCollection services)
-    {
-        // Configure JWT Bearer authentication for Supabase
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            // Get the JWT secret from environment variables
-            string supabaseJwtSecret = Environment.GetEnvironmentVariable("SUPABASE_JWT_SECRET") ?? "your-supabase-jwt-secret";
-
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                // Validate the token issuer (Supabase)
-                ValidateIssuer = true,
-                ValidIssuer = "supabase",
-
-                // Validate the audience for security (Supabase uses "authenticated" for authenticated users)
-                ValidateAudience = true,
-                ValidAudience = "authenticated",
-
-                // Validate the token's signature
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(supabaseJwtSecret)),
-
-                // Validate the token's lifetime
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero // Don't allow any clock skew
-            };
-
-            // Validate the token as soon as it's received
-            options.SaveToken = true;
-            options.RequireHttpsMetadata = false; // Set to true in production
-
-            // Handle events
-            options.Events = new JwtBearerEvents
-            {
-                OnAuthenticationFailed = context =>
-                {
-                    if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                    {
-                        context.Response.Headers.Append("Token-Expired", "true");
-                    }
-                    return Task.CompletedTask;
-                }
-            };
-        });
-
-        // Add authorization services
-        services.AddAuthorization();
-    }
-
     public static IServiceCollection AddAppBlueprintServices(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
@@ -187,7 +171,6 @@ public static class ApplicationBuilderExtensions
         AddDbContext(services, configuration);
         ConfigureApiVersioning(services);
         AddCors(services);
-        ConfigureJwtAuthentication(services);
 
         return services;
     }
@@ -208,5 +191,29 @@ public static class ApplicationBuilderExtensions
         app.MapControllers();
 
         return app;
+    }
+
+    private static string MaskConnectionString(string? connectionString)
+    {
+        if (string.IsNullOrEmpty(connectionString))
+            return "NULL";
+        
+        // Mask password in connection string for logging
+        var parts = connectionString.Split(';');
+        var masked = new List<string>();
+        foreach (var part in parts)
+        {
+            if (part.Contains("Password=", StringComparison.OrdinalIgnoreCase) || 
+                part.Contains("Pwd=", StringComparison.OrdinalIgnoreCase))
+            {
+                var key = part.Split('=')[0];
+                masked.Add($"{key}=***");
+            }
+            else
+            {
+                masked.Add(part);
+            }
+        }
+        return string.Join(";", masked);
     }
 }

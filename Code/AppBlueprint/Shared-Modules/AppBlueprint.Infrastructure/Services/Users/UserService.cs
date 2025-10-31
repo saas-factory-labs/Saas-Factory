@@ -1,10 +1,8 @@
-using AppBlueprint.Application.Services.Users;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.Services;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -267,7 +265,7 @@ public class UserServiceInfrastructure
 
         // We're not implementing actual password hashing as per instructions
         // In a real application, the password would be hashed here
-        // For this exercise, we're assuming the authentication is handled externally by Supabase
+        // For this exercise, we're assuming the authentication is handled externally by an authentication provider
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
