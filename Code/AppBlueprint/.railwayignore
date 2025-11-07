@@ -1,0 +1,106 @@
+# Railway Ignore File
+# Files and directories to exclude from Railway deployments
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!RAILWAY_*.md
+docs/
+Writerside/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Build artifacts (will be rebuilt by Railway)
+bin/
+obj/
+out/
+dist/
+
+# Tests
+**/Tests/
+**/*.Tests/
+*.Tests.csproj
+AppBlueprint.Tests/
+
+# CI/CD
+.github/
+!.github/workflows/deploy-to-railway.yml
+
+# Docker (Railway builds from Dockerfile)
+.docker/
+docker-compose*.yml
+!docker-compose.railway.yml
+
+# Local development
+.env
+.env.local
+*.local
+launchSettings.json
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+.sonar/
+.playwright-mcp/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Package files
+*.nupkg
+packages/
+
+# Certificates (use Railway secrets instead)
+*.pfx
+*.cer
+*.crt
+*.key
+*.pem
+
+# Database files (use Railway PostgreSQL)
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+# Node modules (Railway installs from package.json)
+node_modules/
+
+# Scripts (not needed in production)
+*.ps1
+*.sh
+!setup-railway.ps1
+
+# Configuration (use Railway environment variables)
+appsettings.Development.json
+appsettings.Local.json
+
+# Other projects not needed for deployment
+DeploymentManager/
+TEMPNewAppBlueprint/
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+

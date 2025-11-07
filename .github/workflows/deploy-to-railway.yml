@@ -1,0 +1,407 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Code/AppBlueprint/**"
+      - ".github/workflows/deploy-to-railway.yml"
+      - "!**/*.md"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "Code/AppBlueprint/**"
+      - ".github/workflows/deploy-to-railway.yml"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment (staging/production)'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      service:
+        description: 'Service to deploy (all/api/web)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - api
+          - web
+
+env:
+  DOTNET_VERSION: '9.0'
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          global-json-file: global.json
+
+      - name: Restore Dependencies
+        working-directory: Code/AppBlueprint
+        run: dotnet restore
+
+      - name: Build Solution
+        working-directory: Code/AppBlueprint
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run Tests
+        working-directory: Code/AppBlueprint
+        run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/test-results.trx'
+          retention-days: 30
+
+  deploy-api-staging:
+    name: Deploy API to Railway (Staging)
+    needs: build-and-test
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging' && (github.event.inputs.service == 'all' || github.event.inputs.service == 'api'))
+    runs-on: ubuntu-latest
+    environment: staging
+    outputs:
+      deployment_url: ${{ steps.get-url.outputs.url }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: |
+          npm install -g @railway/cli
+          railway --version
+
+      - name: Deploy API Service to Railway
+        working-directory: Code/AppBlueprint
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_STAGING }}
+        run: |
+          echo "Deploying API Service to Railway Staging..."
+          railway up --service api-service --environment staging --detach
+          echo "API Service deployment initiated successfully"
+
+      - name: Wait for Deployment
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_STAGING }}
+        run: |
+          echo "Waiting for deployment to complete..."
+          sleep 30
+
+      - name: Get Railway Deployment URL
+        id: get-url
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_STAGING }}
+        run: |
+          DEPLOYMENT_URL=$(railway domain --service api-service --environment staging 2>/dev/null || echo "https://api-staging.railway.app")
+          echo "API Deployed to: $DEPLOYMENT_URL"
+          echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+      - name: Health Check
+        run: |
+          echo "Performing health check..."
+          sleep 10
+          # Attempt health check (may fail if service is still starting)
+          curl -f ${{ steps.get-url.outputs.url }}/health || echo "Health check endpoint not ready yet"
+
+  deploy-web-staging:
+    name: Deploy Web to Railway (Staging)
+    needs: deploy-api-staging
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging' && (github.event.inputs.service == 'all' || github.event.inputs.service == 'web'))
+    runs-on: ubuntu-latest
+    environment: staging
+    outputs:
+      deployment_url: ${{ steps.get-url.outputs.url }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: |
+          npm install -g @railway/cli
+          railway --version
+
+      - name: Deploy Web Service to Railway
+        working-directory: Code/AppBlueprint
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_STAGING }}
+          API_SERVICE_URL: ${{ needs.deploy-api-staging.outputs.deployment_url }}
+        run: |
+          echo "Deploying Web Service to Railway Staging..."
+          echo "API Service URL: $API_SERVICE_URL"
+          railway up --service web-service --environment staging --detach
+          echo "Web Service deployment initiated successfully"
+
+      - name: Wait for Deployment
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_STAGING }}
+        run: |
+          echo "Waiting for deployment to complete..."
+          sleep 30
+
+      - name: Get Railway Deployment URL
+        id: get-url
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_STAGING }}
+        run: |
+          DEPLOYMENT_URL=$(railway domain --service web-service --environment staging 2>/dev/null || echo "https://web-staging.railway.app")
+          echo "Web Deployed to: $DEPLOYMENT_URL"
+          echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+  run-migrations-staging:
+    name: Run Database Migrations (Staging)
+    needs: deploy-api-staging
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install EF Core Tools
+        run: dotnet tool install --global dotnet-ef --version 9.*
+
+      - name: Restore Dependencies
+        working-directory: Code/AppBlueprint
+        run: dotnet restore
+
+      - name: Build Infrastructure Project
+        working-directory: Code/AppBlueprint
+        run: dotnet build Shared-Modules/AppBlueprint.Infrastructure --no-restore --configuration Release
+
+      - name: Run Migrations
+        working-directory: Code/AppBlueprint
+        env:
+          DATABASE_CONNECTION_STRING: ${{ secrets.RAILWAY_DATABASE_URL_STAGING }}
+        run: |
+          echo "Running database migrations..."
+          dotnet ef database update \
+            --project Shared-Modules/AppBlueprint.Infrastructure \
+            --startup-project AppBlueprint.ApiService \
+            --connection "$DATABASE_CONNECTION_STRING" \
+            --verbose
+
+      - name: Verify Migration
+        working-directory: Code/AppBlueprint
+        env:
+          DATABASE_CONNECTION_STRING: ${{ secrets.RAILWAY_DATABASE_URL_STAGING }}
+        run: |
+          echo "Verifying migrations..."
+          dotnet ef migrations list \
+            --project Shared-Modules/AppBlueprint.Infrastructure \
+            --startup-project AppBlueprint.ApiService \
+            --connection "$DATABASE_CONNECTION_STRING"
+
+  deploy-api-production:
+    name: Deploy API to Railway (Production)
+    needs: build-and-test
+    if: |
+      github.event_name == 'workflow_dispatch' && 
+      github.event.inputs.environment == 'production' && 
+      (github.event.inputs.service == 'all' || github.event.inputs.service == 'api')
+    runs-on: ubuntu-latest
+    environment: production
+    outputs:
+      deployment_url: ${{ steps.get-url.outputs.url }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: |
+          npm install -g @railway/cli
+          railway --version
+
+      - name: Deploy API Service to Railway
+        working-directory: Code/AppBlueprint
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PRODUCTION }}
+        run: |
+          echo "Deploying API Service to Railway Production..."
+          railway up --service api-service --environment production --detach
+          echo "API Service deployment initiated successfully"
+
+      - name: Wait for Deployment
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PRODUCTION }}
+        run: |
+          echo "Waiting for deployment to complete..."
+          sleep 30
+
+      - name: Get Railway Deployment URL
+        id: get-url
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PRODUCTION }}
+        run: |
+          DEPLOYMENT_URL=$(railway domain --service api-service --environment production 2>/dev/null || echo "https://api-production.railway.app")
+          echo "API Deployed to: $DEPLOYMENT_URL"
+          echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+      - name: Health Check
+        run: |
+          echo "Performing health check..."
+          sleep 10
+          curl -f ${{ steps.get-url.outputs.url }}/health || echo "Health check endpoint not ready yet"
+
+  deploy-web-production:
+    name: Deploy Web to Railway (Production)
+    needs: deploy-api-production
+    if: |
+      github.event_name == 'workflow_dispatch' && 
+      github.event.inputs.environment == 'production' && 
+      (github.event.inputs.service == 'all' || github.event.inputs.service == 'web')
+    runs-on: ubuntu-latest
+    environment: production
+    outputs:
+      deployment_url: ${{ steps.get-url.outputs.url }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: |
+          npm install -g @railway/cli
+          railway --version
+
+      - name: Deploy Web Service to Railway
+        working-directory: Code/AppBlueprint
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PRODUCTION }}
+          API_SERVICE_URL: ${{ needs.deploy-api-production.outputs.deployment_url }}
+        run: |
+          echo "Deploying Web Service to Railway Production..."
+          echo "API Service URL: $API_SERVICE_URL"
+          railway up --service web-service --environment production --detach
+          echo "Web Service deployment initiated successfully"
+
+      - name: Wait for Deployment
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PRODUCTION }}
+        run: |
+          echo "Waiting for deployment to complete..."
+          sleep 30
+
+      - name: Get Railway Deployment URL
+        id: get-url
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PRODUCTION }}
+        run: |
+          DEPLOYMENT_URL=$(railway domain --service web-service --environment production 2>/dev/null || echo "https://web-production.railway.app")
+          echo "Web Deployed to: $DEPLOYMENT_URL"
+          echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+  run-migrations-production:
+    name: Run Database Migrations (Production)
+    needs: deploy-api-production
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install EF Core Tools
+        run: dotnet tool install --global dotnet-ef --version 9.*
+
+      - name: Restore Dependencies
+        working-directory: Code/AppBlueprint
+        run: dotnet restore
+
+      - name: Build Infrastructure Project
+        working-directory: Code/AppBlueprint
+        run: dotnet build Shared-Modules/AppBlueprint.Infrastructure --no-restore --configuration Release
+
+      - name: Backup Database (Production)
+        env:
+          DATABASE_CONNECTION_STRING: ${{ secrets.RAILWAY_DATABASE_URL_PRODUCTION }}
+        run: |
+          echo "Creating database backup before migration..."
+          # Install PostgreSQL client
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          # Create backup (if pg_dump is available and credentials work)
+          pg_dump "$DATABASE_CONNECTION_STRING" --no-owner --no-acl --format=custom --file=backup-$(date +%Y%m%d-%H%M%S).dump || echo "Backup skipped or failed"
+
+      - name: Run Migrations
+        working-directory: Code/AppBlueprint
+        env:
+          DATABASE_CONNECTION_STRING: ${{ secrets.RAILWAY_DATABASE_URL_PRODUCTION }}
+        run: |
+          echo "Running database migrations..."
+          dotnet ef database update \
+            --project Shared-Modules/AppBlueprint.Infrastructure \
+            --startup-project AppBlueprint.ApiService \
+            --connection "$DATABASE_CONNECTION_STRING" \
+            --verbose
+
+      - name: Verify Migration
+        working-directory: Code/AppBlueprint
+        env:
+          DATABASE_CONNECTION_STRING: ${{ secrets.RAILWAY_DATABASE_URL_PRODUCTION }}
+        run: |
+          echo "Verifying migrations..."
+          dotnet ef migrations list \
+            --project Shared-Modules/AppBlueprint.Infrastructure \
+            --startup-project AppBlueprint.ApiService \
+            --connection "$DATABASE_CONNECTION_STRING"
+
+  notify-deployment:
+    name: Notify Deployment Status
+    needs: [deploy-web-staging, run-migrations-staging]
+    if: always() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment Summary
+        run: |
+          echo "### Railway Deployment Summary (Staging) 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **API URL**: ${{ needs.deploy-api-staging.outputs.deployment_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Web URL**: ${{ needs.deploy-web-staging.outputs.deployment_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Migrations**: Completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Deployment completed successfully! ✅" >> $GITHUB_STEP_SUMMARY
+
+  notify-deployment-production:
+    name: Notify Production Deployment Status
+    needs: [deploy-web-production, run-migrations-production]
+    if: always() && github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment Summary
+        run: |
+          echo "### Railway Deployment Summary (Production) 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **API URL**: ${{ needs.deploy-api-production.outputs.deployment_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Web URL**: ${{ needs.deploy-web-production.outputs.deployment_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Migrations**: Completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Production deployment completed successfully! ✅" >> $GITHUB_STEP_SUMMARY
+

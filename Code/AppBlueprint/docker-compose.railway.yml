@@ -1,0 +1,42 @@
+# Railway-specific Docker Compose configuration
+# This file contains Railway-specific overrides for docker-compose.yml
+
+services:
+  api-service:
+    environment:
+      # Railway provides PORT environment variable
+      - ASPNETCORE_URLS=http://+:${PORT:-80}
+      # Railway provides DATABASE_URL for PostgreSQL
+      - DATABASE_CONNECTION_STRING=${DATABASE_URL:-${APPBLUEPRINT_RAILWAY_CONNECTIONSTRING}}
+      - ConnectionStrings__DefaultConnection=${DATABASE_URL:-${APPBLUEPRINT_RAILWAY_CONNECTIONSTRING}}
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - DOTNET_ENVIRONMENT=${DOTNET_ENVIRONMENT:-Production}
+    ports:
+      - "${PORT:-80}:${PORT:-80}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-80}/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  web-service:
+    environment:
+      # Railway provides PORT environment variable
+      - ASPNETCORE_URLS=http://+:${PORT:-80}
+      # API Service URL (from Railway internal DNS or public URL)
+      - ApiService__BaseUrl=${API_SERVICE_URL:-http://api-service:80}
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - DOTNET_ENVIRONMENT=${DOTNET_ENVIRONMENT:-Production}
+    ports:
+      - "${PORT:-80}:${PORT:-80}"
+    depends_on:
+      api-service:
+        condition: service_healthy
+
+networks:
+  appblueprint-network:
+    driver: bridge
+
