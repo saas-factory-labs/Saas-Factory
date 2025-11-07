@@ -5,38 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b1fdbdc8-2716-46ce-b5ab-8f9c8f6ec8b2" name="Changes" comment="updated build-docs.yml workflow">
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.ApiService/Controllers/AuthTestController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/JwtTokenCommand.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/JWT_TOKEN_AUTOMATION.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Tests/Integration/JwtAuthenticationTests.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/AUTHENTICATION_PROVIDER_FIX.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Components/Pages/AuthDemo.razor" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/HOT_RELOAD_ERROR_FIX.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/JWT_AUTHENTICATION_CONFIGURATION.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/JWT_SIGNING_SECRET_EXPLAINED.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/PRERENDERING_FIX.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Services/AuthenticationDelegatingHandler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Services/TodoService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/TODO_IMPLEMENTATION.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/BLAZOR_JWT_GUIDE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/JWT_QUICK_REFERENCE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/JWT_TESTING_GUIDE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/JWT_VALIDATION_GUIDE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/QUICKSTART_JWT_TESTING.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/JwtAuthenticationExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/test-jwt-auth.ps1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/copilot-instructions.md" beforeDir="false" afterPath="$PROJECT_DIR$/.github/copilot-instructions.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Repositories/ITodoRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Repositories/TodoRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.ApiService/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.ApiService/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/AppBlueprint.DeveloperCli.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/AppBlueprint.DeveloperCli.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/CommandFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/CommandFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/Menus/MainMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/Menus/MainMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/AppBlueprint.Web.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/AppBlueprint.Web.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Components/Pages/TodoPage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Components/Pages/TodoPage.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Directory.Packages.props" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Directory.Packages.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SaaS-Factory.sln" beforeDir="false" afterPath="$PROJECT_DIR$/SaaS-Factory.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Controllers/TodoController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Controllers/TodoController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Domain/TodoEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Domain/TodoEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Infrastructure/TodoEntityConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Infrastructure/TodoEntityConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/ApplicationBuilderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/ApplicationBuilderExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/PageLayout/NavigationComponents/SidePanelComponents/SidePanel.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/PageLayout/NavigationComponents/SidePanelComponents/SidePanel.razor" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
