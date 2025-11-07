@@ -2,19 +2,20 @@ using Aspire.Hosting.ApplicationModel;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgresPasswordValue = Environment.GetEnvironmentVariable("POSTGRES_DEV_PASSWORD") ?? "password";
-var postgresPassword = builder.AddParameter("postgres-password", postgresPasswordValue, secret: true);
-var postgresServer = builder.AddPostgres("postgres-server", password: postgresPassword)
-    .WithLifetime(ContainerLifetime.Persistent)
-    .WithDataVolume("appblueprint-postgres-data");
-var appblueprintdb = postgresServer.AddDatabase("appblueprintdb");
+// Commented out local PostgreSQL - using Railway cloud database from appsettings.json
+// var postgresPasswordValue = Environment.GetEnvironmentVariable("POSTGRES_DEV_PASSWORD") ?? "password";
+// var postgresPassword = builder.AddParameter("postgres-password", postgresPasswordValue, secret: true);
+// var postgresServer = builder.AddPostgres("postgres-server", password: postgresPassword)
+//     .WithLifetime(ContainerLifetime.Persistent)
+//     .WithDataVolume("appblueprint-postgres-data");
+// var appblueprintdb = postgresServer.AddDatabase("appblueprintdb");
 
 builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
     .WithHttpEndpoint(port: 8087, name: "gateway");
     
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
-    .WithReference(appblueprintdb)
-    .WithHttpEndpoint(port: 8090, name: "api")
+    // .WithReference(appblueprintdb)  // Removed - using connection string from appsettings.json
+    .WithHttpEndpoint(port: 8091, name: "api")
     .WithEnvironment("SwaggerPath", "/swagger");
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")

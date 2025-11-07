@@ -1,0 +1,29 @@
+@page "/logto-signin"
+@using Microsoft.AspNetCore.Authentication
+@using Logto.AspNetCore.Authentication
+
+<PageTitle>Sign In</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
+    <MudPaper Class="pa-8" Elevation="4">
+        <div class="d-flex flex-column align-center">
+            <MudText Typo="Typo.h4" Class="mb-2">Welcome to AppBlueprint</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Default" Class="mb-6" Align="Align.Center">
+                Sign in to access your todos and manage your tasks
+            </MudText>
+
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Primary" 
+                       Size="Size.Large"
+                       FullWidth="true"
+                       Href="/signin-logto">
+                Sign In with Logto
+            </MudButton>
+
+            <MudText Typo="Typo.caption" Color="Color.Default" Class="mt-4" Align="Align.Center">
+                You'll be redirected to Logto for secure authentication
+            </MudText>
+        </div>
+    </MudPaper>
+</MudContainer>
+

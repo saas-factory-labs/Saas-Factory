@@ -1,5 +1,6 @@
 using AppBlueprint.Infrastructure.Authorization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Kiota.Abstractions.Authentication;
 
 namespace AppBlueprint.Infrastructure.Extensions
 {
@@ -18,12 +19,17 @@ namespace AppBlueprint.Infrastructure.Extensions
             // Register TokenStorageService for client-side token management
             services.AddScoped<ITokenStorageService, TokenStorageService>();
 
-            // Register UserAuthenticationProvider for authentication operations using the factory pattern
-            services.AddScoped<IUserAuthenticationProvider>(sp =>
-            {
-                var tokenStorage = sp.GetRequiredService<ITokenStorageService>();
-                return new UserAuthenticationProvider(tokenStorage);
-            });
+            // Register HttpClient for authentication providers
+            services.AddHttpClient<IAuthenticationProviderFactory>();
+
+            // Register the authentication provider factory
+            services.AddScoped<IAuthenticationProviderFactory, AuthenticationProviderFactory>();
+
+            // Register UserAuthenticationProvider using the factory pattern with adapter
+            services.AddScoped<IUserAuthenticationProvider, UserAuthenticationProviderAdapter>();
+            
+            // Register IAuthenticationProvider (Kiota interface) using the same adapter
+            services.AddScoped<IAuthenticationProvider>(sp => sp.GetRequiredService<IUserAuthenticationProvider>());
 
             return services;
         }

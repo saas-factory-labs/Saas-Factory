@@ -31,6 +31,20 @@ internal static class Program // Make class static
 
         builder.Services.AddAppBlueprintServices();
 
+        // Add CORS support for development
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
+
+        // Add JWT authentication
+        builder.Services.AddJwtAuthentication(builder.Configuration);
+
         // Add NSwag OpenAPI document generation
         builder.Services.AddOpenApiDocument(config =>
         {
@@ -68,6 +82,13 @@ internal static class Program // Make class static
 
         // Configure the HTTP request pipeline.
         app.UseExceptionHandler();
+        
+        // Add CORS middleware (must be before authentication)
+        app.UseCors();
+        
+        // Re-enabled authentication and authorization middleware
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         // Redirect root path to Swagger UI for easier access from Aspire dashboard
         app.MapGet("/", () => Results.Redirect("/swagger"));
@@ -78,5 +99,3 @@ internal static class Program // Make class static
         await app.RunAsync();
     }
 }
-
-

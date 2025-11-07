@@ -33,7 +33,8 @@ public sealed class TodoEntityConfiguration : IEntityTypeConfiguration<TodoEntit
 
         builder.Property(t => t.IsSoftDeleted)
             .IsRequired()
-            .HasDefaultValue(false);
+            .HasDefaultValue(false)
+            .ValueGeneratedNever();
 
         // Properties with validation and constraints
         builder.Property(t => t.Title)
@@ -45,7 +46,8 @@ public sealed class TodoEntityConfiguration : IEntityTypeConfiguration<TodoEntit
 
         builder.Property(t => t.IsCompleted)
             .IsRequired()
-            .HasDefaultValue(false);
+            .HasDefaultValue(false)
+            .ValueGeneratedNever();
 
         builder.Property(t => t.Priority)
             .IsRequired()

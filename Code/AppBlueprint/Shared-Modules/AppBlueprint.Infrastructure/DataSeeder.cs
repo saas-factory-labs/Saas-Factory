@@ -84,6 +84,10 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             return;
         }
 
+        // Clear the change tracker to avoid tracking conflicts after checking for seeded data
+        dbContext.ChangeTracker.Clear();
+        b2bDbContext.ChangeTracker.Clear();
+
         // Correct dependency order
         await SeedLanguagesAsync(cancellationToken);
         await SeedGlobalRegionsAsync(cancellationToken);

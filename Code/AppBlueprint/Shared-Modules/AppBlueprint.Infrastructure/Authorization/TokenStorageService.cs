@@ -26,6 +26,21 @@ namespace AppBlueprint.Infrastructure.Authorization
         /// </summary>
         /// <returns>Task representing the asynchronous operation</returns>
         Task RemoveTokenAsync();
+
+        /// <summary>
+        /// Store a generic value in browser storage
+        /// </summary>
+        Task StoreValueAsync(string key, string value);
+
+        /// <summary>
+        /// Get a generic value from browser storage
+        /// </summary>
+        Task<string?> GetValueAsync(string key);
+
+        /// <summary>
+        /// Remove a generic value from browser storage
+        /// </summary>
+        Task RemoveValueAsync(string key);
     }
 
     /// <summary>
@@ -63,6 +78,34 @@ namespace AppBlueprint.Infrastructure.Authorization
         public async Task RemoveTokenAsync()
         {
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", StorageKey);
+        }
+
+        /// <inheritdoc />
+        public async Task StoreValueAsync(string key, string value)
+        {
+            ArgumentNullException.ThrowIfNull(key);
+            ArgumentNullException.ThrowIfNull(value);
+
+            // Use sessionStorage instead of localStorage for better persistence across OAuth redirects
+            await _jsRuntime.InvokeVoidAsync("sessionStorage.setItem", key, value);
+        }
+
+        /// <inheritdoc />
+        public async Task<string?> GetValueAsync(string key)
+        {
+            ArgumentNullException.ThrowIfNull(key);
+
+            // Use sessionStorage instead of localStorage for better persistence across OAuth redirects
+            return await _jsRuntime.InvokeAsync<string?>("sessionStorage.getItem", key);
+        }
+
+        /// <inheritdoc />
+        public async Task RemoveValueAsync(string key)
+        {
+            ArgumentNullException.ThrowIfNull(key);
+
+            // Use sessionStorage instead of localStorage for better persistence across OAuth redirects
+            await _jsRuntime.InvokeVoidAsync("sessionStorage.removeItem", key);
         }
     }
 }

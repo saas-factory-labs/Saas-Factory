@@ -4,9 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 using OrganizationEntity = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity;
 using OrganizationEntityConfiguration = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntityConfiguration;
 
@@ -25,8 +22,7 @@ public partial class B2BDbContext : BaselineDbContext
         _logger = logger;
         // Try multiple connection string names, don't throw if not found
         // The options passed in already have the connection configured from DI
-        _connectionString = configuration.GetConnectionString("SUPABASE_POSTGRESQL") 
-                           ?? configuration.GetConnectionString("appblueprintdb")
+        _connectionString = configuration.GetConnectionString("appblueprintdb")
                            ?? configuration.GetConnectionString("postgres-server")
                            ?? configuration.GetConnectionString("DefaultConnection");
     }
@@ -54,8 +50,8 @@ public partial class B2BDbContext : BaselineDbContext
         modelBuilder.ApplyConfiguration(new ApiKeyEntityConfiguration());
         modelBuilder.ApplyConfiguration(new OrganizationEntityConfiguration());
 
-        OnModelCreating_Team(modelBuilder);
         OnModelCreating_Tenant(modelBuilder);
+        OnModelCreating_Team(modelBuilder);
         OnModelCreating_Todo(modelBuilder);
     }
 

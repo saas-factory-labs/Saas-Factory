@@ -1,0 +1,97 @@
+{
+  "name": "AppBlueprint",
+  "description": "SaaS Factory AppBlueprint - Multi-service application with API, Web, and PostgreSQL",
+  "environments": [
+    {
+      "name": "staging",
+      "variables": {
+        "ASPNETCORE_ENVIRONMENT": "Staging",
+        "DOTNET_ENVIRONMENT": "Staging"
+      }
+    },
+    {
+      "name": "production",
+      "variables": {
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "DOTNET_ENVIRONMENT": "Production"
+      }
+    }
+  ],
+  "services": [
+    {
+      "name": "api-service",
+      "description": "AppBlueprint API Service - REST API backend",
+      "source": {
+        "type": "repo",
+        "repo": "saas-factory-labs/Saas-Factory",
+        "branch": "main"
+      },
+      "build": {
+        "dockerfilePath": "Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile",
+        "dockerContext": "Code/AppBlueprint"
+      },
+      "deploy": {
+        "healthcheckPath": "/health",
+        "healthcheckTimeout": 100,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "variables": {
+        "RAILWAY_DOCKERFILE_PATH": "AppBlueprint.ApiService/Dockerfile",
+        "ASPNETCORE_URLS": "http://+:${PORT}",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
+        "DATABASE_CONNECTION_STRING": "${DATABASE_URL}"
+      },
+      "dependencies": ["postgres"]
+    },
+    {
+      "name": "web-service",
+      "description": "AppBlueprint Web Service - Blazor frontend",
+      "source": {
+        "type": "repo",
+        "repo": "saas-factory-labs/Saas-Factory",
+        "branch": "main"
+      },
+      "build": {
+        "dockerfilePath": "Code/AppBlueprint/AppBlueprint.Web/Dockerfile",
+        "dockerContext": "Code/AppBlueprint"
+      },
+      "deploy": {
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "variables": {
+        "RAILWAY_DOCKERFILE_PATH": "AppBlueprint.Web/Dockerfile",
+        "ASPNETCORE_URLS": "http://+:${PORT}",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
+        "ApiService__BaseUrl": "${API_SERVICE_URL}"
+      },
+      "dependencies": ["api-service"]
+    },
+    {
+      "name": "postgres",
+      "description": "PostgreSQL Database",
+      "source": {
+        "type": "image",
+        "image": "postgres:16-alpine"
+      },
+      "variables": {
+        "POSTGRES_DB": "appblueprintdb",
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "${POSTGRES_PASSWORD}"
+      },
+      "volumes": [
+        {
+          "mountPath": "/var/lib/postgresql/data",
+          "name": "postgres-data"
+        }
+      ]
+    }
+  ],
+  "volumes": [
+    {
+      "name": "postgres-data"
+    }
+  ]
+}
+

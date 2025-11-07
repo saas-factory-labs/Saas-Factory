@@ -17,6 +17,7 @@ internal static class CommandFactory
         rootCommand.AddCommand(GitHubCommand.Create());
         rootCommand.AddCommand(GithubActionWorkflowCommand.Create());
         rootCommand.AddCommand(RouteCommand.Create());
+        rootCommand.AddCommand(JwtTokenCommand.Create());
 
         return rootCommand;
     }

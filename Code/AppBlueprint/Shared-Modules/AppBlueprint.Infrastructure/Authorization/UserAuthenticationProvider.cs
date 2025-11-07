@@ -85,6 +85,13 @@ namespace AppBlueprint.Infrastructure.Authorization
             await _tokenStorage.RemoveTokenAsync();
         }
 
+        public string? GetLogoutUrl(string postLogoutRedirectUri)
+        {
+            // This provider doesn't use OIDC logout URLs
+            // Return null to indicate that local logout is sufficient
+            return null;
+        }
+
         public async Task InitializeFromStorageAsync()
         {
             try

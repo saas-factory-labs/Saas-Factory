@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b1fdbdc8-2716-46ce-b5ab-8f9c8f6ec8b2" name="Changes" comment="updated build-docs.yml workflow" />
+    <list default="true" id="b1fdbdc8-2716-46ce-b5ab-8f9c8f6ec8b2" name="Changes" comment="updated build-docs.yml workflow">
+      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Repositories/ITodoRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Repositories/TodoRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Controllers/TodoController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Controllers/TodoController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Domain/TodoEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Domain/TodoEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Infrastructure/TodoEntityConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.TodoAppKernel/Infrastructure/TodoEntityConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/ApplicationBuilderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/ApplicationBuilderExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/PageLayout/NavigationComponents/SidePanelComponents/SidePanel.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/PageLayout/NavigationComponents/SidePanelComponents/SidePanel.razor" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,6 +89,10 @@
       </map>
     </option>
   </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="NamedScopeManager">
     <scope name="Unnamed" pattern="" />
   </component>
@@ -94,27 +107,51 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Development/Development-Projects/SaaS-Factory/README.md",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.editor",
-    "writerside.last.selected.productSaaS-Factory": "ar"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ChatTagsLlmMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ClientConfigCleanupMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.CodyAccountHistoryMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.CodyAccountsIdsRefresh&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.CodyAssignOrphanedChatsToActiveAccount&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.CodyConvertUrlToCodebaseName&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.CodyHistoryLlmMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.CodyMigrateChatHistory-v2&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.CodyProjectSettingsMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.DeprecatedChatLlmMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ToggleCodyToolWindowAfterMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;fix/dev&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Development/Development-Projects/saas-factory-labs&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;,
+    &quot;writerside.last.selected.productSaaS-Factory&quot;: &quot;ar&quot;
   },
-  "keyToStringList": {
-    "stardust.markdown.MarkdownSplitEditorSuppressor:keyList": []
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ],
+    &quot;stardust.markdown.MarkdownSplitEditorSuppressor:keyList&quot;: []
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Development\Development-Projects\SaaS-Factory\test" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b1fdbdc8-2716-46ce-b5ab-8f9c8f6ec8b2" name="Changes" comment="updated build-docs.yml workflow" />
+      <created>1761842133743</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761842133743</updated>
+    </task>
+    <servers />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>

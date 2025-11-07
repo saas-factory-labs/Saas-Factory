@@ -54,6 +54,35 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code", "Code", "{314C6247-30EA-3492-19B6-DF847E3B326F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppBlueprint", "AppBlueprint", "{C8D098D9-42D3-9B82-1233-22636F3EF8F1}"
+	ProjectSection(SolutionItems) = preProject
+		Code\AppBlueprint\AUTH0_SETUP_GUIDE.md = Code\AppBlueprint\AUTH0_SETUP_GUIDE.md
+		Code\AppBlueprint\LOGTO_SETUP_GUIDE.md = Code\AppBlueprint\LOGTO_SETUP_GUIDE.md
+		Code\AppBlueprint\LOGTO_QUICKSTART.md = Code\AppBlueprint\LOGTO_QUICKSTART.md
+		Code\AppBlueprint\docker-compose.logto.yml = Code\AppBlueprint\docker-compose.logto.yml
+		Code\AppBlueprint\LOGTO_CLOUD_SETUP.md = Code\AppBlueprint\LOGTO_CLOUD_SETUP.md
+		Code\AppBlueprint\LOGTO_INTEGRATION_COMPLETE.md = Code\AppBlueprint\LOGTO_INTEGRATION_COMPLETE.md
+		Code\AppBlueprint\CLOUD_DATABASE_SETUP.md = Code\AppBlueprint\CLOUD_DATABASE_SETUP.md
+		Code\AppBlueprint\JWT_VALIDATION_GUIDE.md = Code\AppBlueprint\JWT_VALIDATION_GUIDE.md
+		Code\AppBlueprint\JWT_TESTING_GUIDE.md = Code\AppBlueprint\JWT_TESTING_GUIDE.md
+		Code\AppBlueprint\test-jwt-auth.ps1 = Code\AppBlueprint\test-jwt-auth.ps1
+		Code\AppBlueprint\QUICKSTART_JWT_TESTING.md = Code\AppBlueprint\QUICKSTART_JWT_TESTING.md
+		Code\AppBlueprint\BLAZOR_JWT_GUIDE.md = Code\AppBlueprint\BLAZOR_JWT_GUIDE.md
+		Code\AppBlueprint\JWT_QUICK_REFERENCE.md = Code\AppBlueprint\JWT_QUICK_REFERENCE.md
+		Code\AppBlueprint\railway.json = Code\AppBlueprint\railway.json
+		Code\AppBlueprint\RAILWAY_DEPLOYMENT.md = Code\AppBlueprint\RAILWAY_DEPLOYMENT.md
+		Code\AppBlueprint\docker-compose.railway.yml = Code\AppBlueprint\docker-compose.railway.yml
+		Code\AppBlueprint\railway-project.json = Code\AppBlueprint\railway-project.json
+		Code\AppBlueprint\setup-railway.ps1 = Code\AppBlueprint\setup-railway.ps1
+		Code\AppBlueprint\RAILWAY_QUICKSTART.md = Code\AppBlueprint\RAILWAY_QUICKSTART.md
+		Code\AppBlueprint\RAILWAY_IMPLEMENTATION_SUMMARY.md = Code\AppBlueprint\RAILWAY_IMPLEMENTATION_SUMMARY.md
+		Code\AppBlueprint\.railwayignore = Code\AppBlueprint\.railwayignore
+		Code\AppBlueprint\RAILWAY_CHECKLIST.md = Code\AppBlueprint\RAILWAY_CHECKLIST.md
+		Code\AppBlueprint\RAILWAY_OVERVIEW.md = Code\AppBlueprint\RAILWAY_OVERVIEW.md
+		Code\AppBlueprint\RAILWAY_README.md = Code\AppBlueprint\RAILWAY_README.md
+		Code\AppBlueprint\RAILWAY_DOCKERFILE_FIX.md = Code\AppBlueprint\RAILWAY_DOCKERFILE_FIX.md
+		Code\AppBlueprint\DOCKER_BUILD_INSTRUCTIONS.md = Code\AppBlueprint\DOCKER_BUILD_INSTRUCTIONS.md
+		Code\AppBlueprint\test-docker-build.ps1 = Code\AppBlueprint\test-docker-build.ps1
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBlueprint.TodoAppKernel", "Code\AppBlueprint\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj", "{327EAECC-6EC6-4AA5-BD20-6192BBEDFB97}"
 EndProject

@@ -21,7 +21,8 @@ public class TenantMiddleware(RequestDelegate next)
         "/_vs",
         "/favicon.ico",
         "/api/test",
-        "/api/system" // System endpoints should not require tenant
+        "/api/system", // System endpoints should not require tenant
+        "/api/AuthDebug" // Debug endpoints for troubleshooting
     ]; public async Task Invoke(HttpContext? context)
     {
         ArgumentNullException.ThrowIfNull(context);

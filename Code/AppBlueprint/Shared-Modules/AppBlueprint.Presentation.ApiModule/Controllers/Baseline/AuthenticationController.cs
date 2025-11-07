@@ -1,5 +1,4 @@
 using AppBlueprint.Contracts.Baseline.Auth.Requests;
-using AppBlueprint.Contracts.Baseline.Auth.Responses;
 using AppBlueprint.Application.Services.Users;
 using AppBlueprint.Domain.Entities.User;
 using Microsoft.AspNetCore.Authorization;
@@ -114,7 +113,7 @@ public class AuthenticationController : BaseController
     }
 
     /// <summary>
-    /// Create user profile after successful Supabase authentication
+    /// Create user profile after successful authentication
     /// </summary>
     [Authorize]
     [HttpPost(ApiEndpoints.Authentication.CreateProfile)]

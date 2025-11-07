@@ -12,7 +12,7 @@ public partial class MyDiagram
     {
         "cloudflare-worker", "bin", "obj", "Properties", ".idea", "ItemTemplates", ".template.config",
         "ProjectTemplates", ".vs", "wwwroot", "swagger", "v17", "DesignTimeBuild", "nupkg", "Cruip", "Cruip.old",
-        "Supabase", "Generated", ".vscode"
+        "Generated", ".vscode"
     };
 
     public BlazorDiagram Diagram { get; set; } = null!;
@@ -279,7 +279,7 @@ public partial class MyDiagram
 //            int currentX = 50;
 //            foreach (var node in level)
 //            {
-//                node.Position = new Point(currentX, currentY);
+//                node.Position = new Point(currentX, node.Position.Y);
 //                currentX += xSpacing;
 //            }
 //            currentY += ySpacing;

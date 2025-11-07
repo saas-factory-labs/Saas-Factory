@@ -44,7 +44,7 @@
                 <MudNavLink Href="/account-settings" Icon="@Icons.Material.Filled.Settings">Account Settings
                 </MudNavLink>
             </MudMenuItem>
-            <MudMenuItem OnClick="HandleLogout">
+            <MudMenuItem OnClick="HandleLogoutDirectly">
                 <div class="d-flex align-center">
                     <MudIcon Icon="@Icons.Material.Filled.Logout" Class="mr-2" />
                     Sign Out
@@ -95,17 +95,59 @@
         Console.WriteLine($"Theme toggled. IsDarkMode: {_isDarkMode}");
     }
 
-    // Handle logout action
-    private async Task HandleLogout()
+    // Handle logout action - Updated for OpenID Connect
+    private void HandleLogoutDirectly()
     {
-        if (Auth != null)
+        Console.WriteLine("========================================");
+        Console.WriteLine("[Appbar] LOGOUT BUTTON CLICKED!");
+        Console.WriteLine("========================================");
+        
+        try
         {
-            await Auth.LogoutAsync();
+            Console.WriteLine("[Appbar] Navigating to /signout-logto endpoint");
+            
+            // Navigate to the signout endpoint which handles OpenID Connect logout
+            NavigationManager.NavigateTo("/signout-logto", forceLoad: true);
+            
+            Console.WriteLine("[Appbar] Navigation to /signout-logto initiated");
         }
-        else 
+        catch (Exception ex)
         {
-            await AuthenticationProvider.LogoutAsync();
-            NavigationManager.NavigateTo("/login", true);
+            Console.Error.WriteLine($"[Appbar] ERROR during logout: {ex.Message}");
+            Console.Error.WriteLine($"[Appbar] Stack: {ex.StackTrace}");
+            
+            // Fallback - just navigate to login
+            Console.WriteLine("[Appbar] Attempting fallback navigation to /login...");
+            NavigationManager.NavigateTo("/login", forceLoad: true);
         }
+        
+        Console.WriteLine("[Appbar] HandleLogoutDirectly END");
+        Console.WriteLine("========================================");
+    }
+
+    // Handle logout action
+    private async Task HandleLogoutWithDelay()
+    {
+        Console.WriteLine("========================================");
+        Console.WriteLine("[Appbar] HandleLogoutWithDelay - LOGOUT BUTTON CLICKED");
+        Console.WriteLine("[Appbar] Giving menu time to close before logout...");
+        Console.WriteLine("========================================");
+        
+        // Small delay to let the menu close properly
+        await Task.Delay(100);
+        
+        HandleLogoutDirectly();
+    }
+    
+    private void HandleLogout()
+    {
+        Console.WriteLine("========================================");
+        Console.WriteLine("[Appbar] HandleLogout - STARTING LOGOUT PROCESS");
+        Console.WriteLine("========================================");
+        
+        HandleLogoutDirectly();
+        
+        Console.WriteLine("[Appbar] HandleLogout - END");
+        Console.WriteLine("========================================");
     }
 }

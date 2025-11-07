@@ -1,4 +1,3 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -11,12 +10,11 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 {
     public ApplicationDbContext CreateDbContext(string[] args)
     {
-        IConfigurationRoot? configuration = new ConfigurationBuilder()
+        IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory()) // Optional, for appsettings.json
             .AddJsonFile("appsettings.Development.json", true, true)
             .Build();
 
-        // supabase
         string? connectionString = Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING",
             EnvironmentVariableTarget.User);
 

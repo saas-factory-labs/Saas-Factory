@@ -10,7 +10,7 @@
         "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
         "ASPIRE_DASHBOARD_PORT": "15068",
         "DOTNET_WEB_SERVICE_ENDPOINT_URL": "http://localhost:8092",
-        "DOTNET_API_SERVICE_ENDPOINT_URL": "http://localhost:8090",
+        "DOTNET_API_SERVICE_ENDPOINT_URL": "http://localhost:8091",
         "DOTNET_GATEWAY_SERVICE_ENDPOINT_URL": "http://localhost:8094",
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:21250",
         "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:18889",

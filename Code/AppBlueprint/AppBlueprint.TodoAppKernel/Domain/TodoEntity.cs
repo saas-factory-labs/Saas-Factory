@@ -14,6 +14,8 @@ public sealed class TodoEntity : BaseEntity, ITenantScoped
         Title = string.Empty;
         TenantId = string.Empty;
         CreatedById = string.Empty;
+        IsCompleted = false;
+        IsSoftDeleted = false;
     }
 
     public TodoEntity(string title, string? description, string tenantId, string createdById) : this()
@@ -97,6 +99,16 @@ public sealed class TodoEntity : BaseEntity, ITenantScoped
 
         IsCompleted = false;
         CompletedAt = null;
+        LastUpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Updates the todo title and description.
+    /// </summary>
+    public void Update(string title, string? description)
+    {
+        Title = title ?? throw new ArgumentNullException(nameof(title));
+        Description = description;
         LastUpdatedAt = DateTime.UtcNow;
     }
 
