@@ -36,9 +36,28 @@ Add these secrets to your GitHub repository (Settings → Secrets and variables 
 
 ### 3. Configure Railway Services
 
+**⚠️ CRITICAL: Set Root Directory First!**
+
+For EACH service (api-service, web-service), you MUST set the Root Directory:
+
+1. Go to Railway Dashboard → Your Project → Select Service
+2. Click **Settings** tab
+3. Find **Root Directory** setting
+4. Set to: `Code/AppBlueprint`
+5. Save (auto-saves)
+
+Without this, Railway will look for files in the wrong location and builds will fail!
+
+---
+
 In Railway dashboard, for each service (api-service, web-service):
 
 #### API Service Settings
+
+**Settings → General:**
+- **Root Directory**: `Code/AppBlueprint` ⚠️ **REQUIRED!**
+
+**Variables:**
 ```
 Root Directory: Code/AppBlueprint
 RAILWAY_DOCKERFILE_PATH: AppBlueprint.ApiService/Dockerfile
