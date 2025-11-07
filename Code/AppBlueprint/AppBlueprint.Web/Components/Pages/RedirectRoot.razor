@@ -1,26 +1,30 @@
 @page "/"
-@using AppBlueprint.UiKit.Components.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<p>Redirecting...</p>
+<p>Checking authentication...</p>
 
 @code {
-    [CascadingParameter]
-    public AuthProvider? Auth { get; set; }
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // Check if user is authenticated
-        var isAuthenticated = Auth?.IsAuthenticated ?? false;
+        // Check if user is authenticated using ASP.NET Core auth state
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var isAuthenticated = user?.Identity?.IsAuthenticated == true;
+        
+        Console.WriteLine($"[RedirectRoot] User authenticated: {isAuthenticated}, Name: {user?.Identity?.Name}");
         
         if (isAuthenticated)
         {
             // Authenticated users go to dashboard
+            Console.WriteLine("[RedirectRoot] Redirecting to /dashboard");
             Navigation.NavigateTo("/dashboard", forceLoad: false);
         }
         else
         {
             // Non-authenticated users go to login
+            Console.WriteLine("[RedirectRoot] Redirecting to /login");
             Navigation.NavigateTo("/login", forceLoad: false);
         }
     }

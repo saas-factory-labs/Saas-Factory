@@ -31,7 +31,7 @@
         }
 
         // Check if a "Dashboard" link already exists before adding it
-        if (Links.All(link => link.Href != "/"))
+        if (Links.All(link => link is null || string.IsNullOrEmpty(link.Href) || link.Href != "/"))
         {
             Links.Insert(0, new NavLinkMetadata { Name = "Dashboard", Href = "/", MudblazorIconPath = "@Icons.Material.Filled.Home" });
         }
@@ -40,8 +40,8 @@
         var linksCopy = Links.ToList();
         foreach (var link in linksCopy)
         {
-            // Skip the "/" (Dashboard) link
-            if (link.Href is not "/")
+            // Skip the "/" (Dashboard) link and null links
+            if (link is not null && !string.IsNullOrEmpty(link.Href) && link.Href != "/")
             {
                 Console.WriteLine($"Link: {link.Name} - {link.Href}");
             }

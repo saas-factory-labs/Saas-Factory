@@ -7,6 +7,9 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
+        // No need to configure Spectre.Console - it auto-detects terminal capabilities
+        // The fallback in MainMenu.cs handles non-ANSI terminals
+
         if (args.Length is 0)
         {
             MainMenu.Show();

@@ -27,22 +27,25 @@
 
     <ItemGroup>
 
-        <ProjectReference Include="../AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj"/>
+        <ProjectReference Include="../AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj" />
 
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Api.Client.Sdk\AppBlueprint.Api.Client.Sdk.csproj"/>
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Api.Client.Sdk\AppBlueprint.Api.Client.Sdk.csproj" />
 
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj"/>
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
 
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
 
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
         <!--  <ProjectReference Include="../AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj" /> -->
 
         <!--        Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit-->
         <!--        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit/AppBlueprint.UiKit.csproj" />-->
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj"/>
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
 
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj"/>
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
+
+        <!-- TodoAppKernel module for Todo DTOs and domain models -->
+        <ProjectReference Include="..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj" />
 
         <!--        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />-->
 
@@ -56,17 +59,18 @@
     </ItemGroup>
 
     <ItemGroup>       
-        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
-        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"/>
-        <PackageReference Include="MudBlazor"/>
-        <PackageReference Include="MudBlazor.ThemeManager"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
-        <PackageReference Include="StrawberryShake"/>
-        <PackageReference Include="StrawberryShake.Transport.Http"/>
-        <PackageReference Include="StrawberryShake.Transport.WebSockets"/>
-        <PackageReference Include="Microsoft.Kiota.Authentication.Azure"/>
-        <PackageReference Include="Microsoft.Kiota.Bundle"/>
-        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Logto.AspNetCore.Authentication" />       
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+        <PackageReference Include="MudBlazor" />
+        <PackageReference Include="MudBlazor.ThemeManager" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+        <PackageReference Include="StrawberryShake" />
+        <PackageReference Include="StrawberryShake.Transport.Http" />
+        <PackageReference Include="StrawberryShake.Transport.WebSockets" />
+        <PackageReference Include="Microsoft.Kiota.Authentication.Azure" />
+        <PackageReference Include="Microsoft.Kiota.Bundle" />
+        <PackageReference Include="Newtonsoft.Json" />
     </ItemGroup>
 
     <ItemGroup>
@@ -92,9 +96,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\AnalyticsDashboard.razor"/>
-        <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\Dashboard.razor"/>
-        <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\FintechDashboard.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\AnalyticsDashboard.razor" />
+        <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\Dashboard.razor" />
+        <_ContentIncludedByDefault Remove="Components\Pages\Dashboard\FintechDashboard.razor" />
     </ItemGroup>
 
     <!--  <ItemGroup>-->

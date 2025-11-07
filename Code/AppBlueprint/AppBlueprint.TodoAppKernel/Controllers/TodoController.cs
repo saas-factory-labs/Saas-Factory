@@ -53,7 +53,9 @@ public class TodoController(
         // For now, return placeholder response
         var todo = new TodoEntity(request.Title, request.Description, "tenant_123", "user_123");
 
-        return Task.FromResult<ActionResult<TodoEntity>>(CreatedAtAction(nameof(GetTodoByIdAsync), new { id = todo.Id }, todo));
+        // Return Ok instead of CreatedAtAction to avoid routing error
+        // GetTodoByIdAsync is not fully implemented yet
+        return Task.FromResult<ActionResult<TodoEntity>>(Ok(todo));
     }
 
     [HttpGet("{id}")]

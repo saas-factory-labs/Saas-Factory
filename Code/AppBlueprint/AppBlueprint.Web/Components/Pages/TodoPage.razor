@@ -1,9 +1,355 @@
 @page "/todos"
-
-<h3>Todos</h3>
+@attribute [Authorize]
+@using AppBlueprint.TodoAppKernel.Domain
+@using AppBlueprint.TodoAppKernel.Controllers
+@using AppBlueprint.Web.Services
+@using AppBlueprint.Infrastructure.Authorization
+@using Microsoft.AspNetCore.Authorization
+@inject TodoService TodoService
+@inject ISnackbar Snackbar
+@inject ITokenStorageService TokenStorage
 
 <PageTitle>Todos</PageTitle>
 
-@code {
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudText Typo="Typo.h4" Class="mb-4">My Todos</MudText>
 
+    <!-- Diagnostic Section -->
+    @if (_showDiagnostics)
+    {
+        <MudPaper Class="pa-4 mb-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-2">🔍 Diagnostics</MudText>
+            <MudText Typo="Typo.body2" Color="@(_hasToken ? Color.Success : Color.Error)">
+                Token in Storage: @(_hasToken ? "✅ YES" : "❌ NO - You need to log in!")
+            </MudText>
+            <MudText Typo="Typo.body2">Connection Test: @_connectionTestResult</MudText>
+            <MudText Typo="Typo.body2">Auth Test: @_authTestResult</MudText>
+            @if (!string.IsNullOrEmpty(_diagnosticInfo))
+            {
+                <MudText Typo="Typo.caption" Class="mt-2">Headers: @_diagnosticInfo</MudText>
+            }
+            <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="RunDiagnosticsAsync" Class="mt-2">
+                Run Tests
+            </MudButton>
+            <MudButton Variant="Variant.Text" Size="Size.Small" OnClick="@(() => _showDiagnostics = false)" Class="mt-2 ml-2">
+                Hide
+            </MudButton>
+        </MudPaper>
+    }
+    else
+    {
+        <MudButton Variant="Variant.Text" Size="Size.Small" OnClick="@(() => _showDiagnostics = true)" Class="mb-4">
+            Show Diagnostics
+        </MudButton>
+    }
+
+    @if (_isLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    }
+    else if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-4">@_errorMessage</MudAlert>
+    }
+    else
+    {
+        <!-- Add New Todo Section -->
+        <MudPaper Class="pa-4 mb-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">Add New Todo</MudText>
+            <MudForm @ref="_form" @bind-IsValid="@_isFormValid">
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_newTodoTitle"
+                                      Label="Title"
+                                      Variant="Variant.Outlined"
+                                      Required="true"
+                                      RequiredError="Title is required"
+                                      MaxLength="200"
+                                      Counter="200"
+                                      Immediate="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_newTodoDescription"
+                                      Label="Description"
+                                      Variant="Variant.Outlined"
+                                      MaxLength="1000"
+                                      Counter="1000"
+                                      Lines="3" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   OnClick="AddTodoAsync"
+                                   Disabled="@(!_isFormValid || _isAdding)">
+                            @if (_isAdding)
+                            {
+                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                <MudText Class="ms-2">Adding...</MudText>
+                            }
+                            else
+                            {
+                                <span>Add Todo</span>
+                            }
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
+        </MudPaper>
+
+        <!-- Todos List -->
+        <MudText Typo="Typo.h6" Class="mb-3">
+            Todo List (@_todos.Count(t => !t.IsCompleted) active / @_todos.Count total)
+        </MudText>
+
+        @if (!_todos.Any())
+        {
+            <MudPaper Class="pa-8 text-center" Elevation="0">
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Large" Color="Color.Default" Class="mb-2" />
+                <MudText Typo="Typo.h6" Color="Color.Default">No todos yet</MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">Add your first todo above to get started!</MudText>
+            </MudPaper>
+        }
+        else
+        {
+            <MudStack Spacing="2">
+                @foreach (var todo in _todos.OrderBy(t => t.IsCompleted).ThenByDescending(t => t.CreatedAt))
+                {
+                    <MudPaper Class="pa-3" Elevation="1">
+                        <MudGrid>
+                            <MudItem xs="12" sm="8">
+                                <div class="d-flex align-center">
+                                    <MudCheckBox @bind-Value="@todo.IsCompleted"
+                                                 Color="Color.Success"
+                                                 T="bool"
+                                                 CheckedChanged="@(async (bool value) => await ToggleTodoCompletionAsync(todo))"
+                                                 Class="mr-2" />
+                                    <div>
+                                        <MudText Typo="Typo.body1"
+                                                 Class="@(todo.IsCompleted ? "text-decoration-line-through" : "")">
+                                            @todo.Title
+                                        </MudText>
+                                        @if (!string.IsNullOrEmpty(todo.Description))
+                                        {
+                                            <MudText Typo="Typo.body2"
+                                                     Color="Color.Default"
+                                                     Class="@(todo.IsCompleted ? "text-decoration-line-through" : "")">
+                                                @todo.Description
+                                            </MudText>
+                                        }
+                                    </div>
+                                </div>
+                            </MudItem>
+                            <MudItem xs="12" sm="4" Class="d-flex align-center justify-end">
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                               Color="Color.Error"
+                                               Size="Size.Small"
+                                               OnClick="@(async () => await DeleteTodoAsync(todo))"
+                                               Title="Delete" />
+                            </MudItem>
+                        </MudGrid>
+                        @if (todo.CompletedAt.HasValue)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Success" Class="mt-2">
+                                Completed: @todo.CompletedAt.Value.ToString("MMM dd, yyyy HH:mm")
+                            </MudText>
+                        }
+                    </MudPaper>
+                }
+            </MudStack>
+        }
+    }
+</MudContainer>
+
+@code {
+    private MudForm? _form;
+    private bool _isFormValid;
+    private bool _isLoading = true;
+    private bool _isAdding;
+    private bool _hasRendered;
+    private bool _showDiagnostics = true; // Show diagnostics by default
+    private bool _hasToken = false;
+    private string _connectionTestResult = "Not tested";
+    private string _authTestResult = "Not tested";
+    private string _diagnosticInfo = string.Empty;
+    private string _errorMessage = string.Empty;
+    private string _newTodoTitle = string.Empty;
+    private string _newTodoDescription = string.Empty;
+    private List<TodoEntity> _todos = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _hasRendered = true;
+            await RunDiagnosticsAsync(); // Run diagnostics first
+            await LoadTodosAsync();
+            StateHasChanged();
+        }
+    }
+
+    private async Task RunDiagnosticsAsync()
+    {
+        _connectionTestResult = "🔄 Testing...";
+        _authTestResult = "🔄 Testing...";
+        _diagnosticInfo = "🔄 Loading...";
+        StateHasChanged();
+
+        await Task.Delay(100); // Give UI time to update
+
+        try
+        {
+            // Check if token exists in storage
+            var token = await TokenStorage.GetTokenAsync();
+            _hasToken = !string.IsNullOrEmpty(token);
+            StateHasChanged();
+
+            if (!_hasToken)
+            {
+                _connectionTestResult = "⚠️ Skipped";
+                _authTestResult = "❌ No token - You must log in first!";
+                _diagnosticInfo = "No token in localStorage";
+                Snackbar.Add("You need to log in via Logto first!", Severity.Warning);
+                return;
+            }
+
+            // Test basic connection
+            var connectionOk = await TodoService.TestConnectionAsync();
+            _connectionTestResult = connectionOk ? "✅ Connected to API" : "❌ Cannot reach API";
+            StateHasChanged();
+
+            await Task.Delay(500); // Short delay between tests
+
+            // Get diagnostic info (what headers are being sent)
+            _diagnosticInfo = await TodoService.GetDiagnosticInfoAsync();
+            StateHasChanged();
+
+            await Task.Delay(500);
+
+            // Test authenticated connection
+            var authResult = await TodoService.TestAuthenticatedConnectionAsync();
+            _authTestResult = authResult;
+            
+            Snackbar.Add("Diagnostics complete - check results above", Severity.Info);
+        }
+        catch (Exception ex)
+        {
+            _connectionTestResult = $"❌ Error: {ex.Message}";
+            _authTestResult = $"❌ Error: {ex.Message}";
+            _diagnosticInfo = $"❌ Error: {ex.Message}";
+            Snackbar.Add($"Diagnostic error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadTodosAsync()
+    {
+        _isLoading = true;
+        _errorMessage = string.Empty;
+
+        try
+        {
+            var todos = await TodoService.GetTodosAsync();
+            _todos = todos.ToList();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to load todos: {ex.Message}";
+            Snackbar.Add(_errorMessage, Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task AddTodoAsync()
+    {
+        if (!_isFormValid || string.IsNullOrWhiteSpace(_newTodoTitle))
+        {
+            return;
+        }
+
+        _isAdding = true;
+
+        try
+        {
+            var request = new CreateTodoRequest
+            {
+                Title = _newTodoTitle.Trim(),
+                Description = string.IsNullOrWhiteSpace(_newTodoDescription) ? null : _newTodoDescription.Trim()
+            };
+
+            var newTodo = await TodoService.CreateTodoAsync(request);
+
+            if (newTodo is not null)
+            {
+                _todos.Add(newTodo);
+                _newTodoTitle = string.Empty;
+                _newTodoDescription = string.Empty;
+                await _form!.ResetAsync();
+                Snackbar.Add("Todo added successfully!", Severity.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to add todo: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isAdding = false;
+        }
+    }
+
+    private async Task ToggleTodoCompletionAsync(TodoEntity todo)
+    {
+        ArgumentNullException.ThrowIfNull(todo);
+
+        try
+        {
+            if (!todo.IsCompleted)
+            {
+                var updatedTodo = await TodoService.CompleteTodoAsync(todo.Id);
+                if (updatedTodo is not null)
+                {
+                    var index = _todos.FindIndex(t => t.Id == todo.Id);
+                    if (index >= 0)
+                    {
+                        _todos[index] = updatedTodo;
+                    }
+                    Snackbar.Add("Todo marked as completed!", Severity.Success);
+                }
+            }
+            else
+            {
+                // If we need to mark as incomplete, we'd need to call an update endpoint
+                Snackbar.Add("Marking as incomplete not yet implemented", Severity.Info);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to update todo: {ex.Message}", Severity.Error);
+            // Revert the UI change
+            todo.IsCompleted = !todo.IsCompleted;
+        }
+    }
+
+    private async Task DeleteTodoAsync(TodoEntity todo)
+    {
+        ArgumentNullException.ThrowIfNull(todo);
+
+        try
+        {
+            await TodoService.DeleteTodoAsync(todo.Id);
+            _todos.Remove(todo);
+            Snackbar.Add("Todo deleted successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to delete todo: {ex.Message}", Severity.Error);
+        }
+    }
 }

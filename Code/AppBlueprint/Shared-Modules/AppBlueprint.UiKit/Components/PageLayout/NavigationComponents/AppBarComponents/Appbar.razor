@@ -95,8 +95,8 @@
         Console.WriteLine($"Theme toggled. IsDarkMode: {_isDarkMode}");
     }
 
-    // Handle logout action - DIRECT VERSION - SIMPLIFIED
-    private async Task HandleLogoutDirectly()
+    // Handle logout action - Updated for OpenID Connect
+    private void HandleLogoutDirectly()
     {
         Console.WriteLine("========================================");
         Console.WriteLine("[Appbar] LOGOUT BUTTON CLICKED!");
@@ -104,28 +104,12 @@
         
         try
         {
-            Console.WriteLine("[Appbar] Step 1: Calling AuthenticationProvider.LogoutAsync()...");
-            await AuthenticationProvider.LogoutAsync();
-            Console.WriteLine("[Appbar] Step 2: LogoutAsync completed - local tokens cleared");
+            Console.WriteLine("[Appbar] Navigating to /signout-logto endpoint");
             
-            Console.WriteLine("[Appbar] Step 3: Getting Logto logout URL...");
-            // Use base URI without trailing slash - this is more commonly accepted
-            var postLogoutRedirectUri = NavigationManager.BaseUri.TrimEnd('/');
-            Console.WriteLine($"[Appbar] Using post-logout redirect URI: {postLogoutRedirectUri}");
-            var logoutUrl = AuthenticationProvider.GetLogoutUrl(postLogoutRedirectUri);
+            // Navigate to the signout endpoint which handles OpenID Connect logout
+            NavigationManager.NavigateTo("/signout-logto", forceLoad: true);
             
-            if (!string.IsNullOrEmpty(logoutUrl))
-            {
-                Console.WriteLine($"[Appbar] Step 4: Redirecting to Logto logout URL: {logoutUrl}");
-                NavigationManager.NavigateTo(logoutUrl, forceLoad: true);
-            }
-            else
-            {
-                Console.WriteLine("[Appbar] Step 4: No logout URL - redirecting to /login directly");
-                NavigationManager.NavigateTo("/login", forceLoad: true);
-            }
-            
-            Console.WriteLine("[Appbar] Step 5: Navigation initiated");
+            Console.WriteLine("[Appbar] Navigation to /signout-logto initiated");
         }
         catch (Exception ex)
         {
@@ -133,7 +117,7 @@
             Console.Error.WriteLine($"[Appbar] Stack: {ex.StackTrace}");
             
             // Fallback - just navigate to login
-            Console.WriteLine("[Appbar] Attempting fallback navigation...");
+            Console.WriteLine("[Appbar] Attempting fallback navigation to /login...");
             NavigationManager.NavigateTo("/login", forceLoad: true);
         }
         
@@ -152,16 +136,16 @@
         // Small delay to let the menu close properly
         await Task.Delay(100);
         
-        await HandleLogoutDirectly();
+        HandleLogoutDirectly();
     }
     
-    private async Task HandleLogout()
+    private void HandleLogout()
     {
         Console.WriteLine("========================================");
         Console.WriteLine("[Appbar] HandleLogout - STARTING LOGOUT PROCESS");
         Console.WriteLine("========================================");
         
-        await HandleLogoutDirectly();
+        HandleLogoutDirectly();
         
         Console.WriteLine("[Appbar] HandleLogout - END");
         Console.WriteLine("========================================");

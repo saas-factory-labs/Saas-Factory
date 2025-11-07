@@ -14,10 +14,19 @@ internal static class MainMenu
             "Migrate database",
             "Scan API routes",
             "Clone a GitHub repository",
+            "Generate JWT Token (for testing)",
             "Validate PostGreSQL Password",
             "Manage Environment Variable",
             "Exit"
         ];
+
+        // Check if terminal supports interactive prompts
+        if (!AnsiConsole.Profile.Capabilities.Interactive || !AnsiConsole.Profile.Capabilities.Ansi)
+        {
+            // Fallback to simple console menu for non-interactive terminals
+            ShowSimpleMenu(options);
+            return;
+        }
 
         string choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
@@ -26,6 +35,27 @@ internal static class MainMenu
                 .AddChoices(options));
 
         ProcessSelection(choice);
+    }
+
+    private static void ShowSimpleMenu(string[] options)
+    {
+        Console.WriteLine("\n=== Developer CLI Menu ===\n");
+        
+        for (int i = 0; i < options.Length; i++)
+        {
+            Console.WriteLine($"{i + 1}. {options[i]}");
+        }
+        
+        Console.Write("\nPlease select an option (1-{0}): ", options.Length);
+        
+        if (int.TryParse(Console.ReadLine(), out int selection) && selection >= 1 && selection <= options.Length)
+        {
+            ProcessSelection(options[selection - 1]);
+        }
+        else
+        {
+            Console.WriteLine("Invalid selection. Please run the CLI again.");
+        }
     }
 
     private static void ProcessSelection(string choice)
@@ -55,6 +85,10 @@ internal static class MainMenu
             case "Clone a GitHub repository":
                 AnsiConsole.MarkupLine("[yellow]Cloning GitHub repository...[/]");
                 GitHubCommand.ExecuteInteractive();
+                break;
+            case "Generate JWT Token (for testing)":
+                AnsiConsole.MarkupLine("[yellow]Generating JWT Token...[/]");
+                JwtTokenCommand.ExecuteInteractive();
                 break;
             case "Validate PostGreSQL Password":
                 AnsiConsole.MarkupLine("[yellow]Validating PostGreSQL Password...[/]");

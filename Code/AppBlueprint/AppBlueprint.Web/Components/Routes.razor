@@ -1,82 +1,51 @@
-﻿@using System.Reflection
+@using System.Reflection
 @using AppBlueprint.UiKit.Models
-@using AppBlueprint.UiKit.Components
-@using AppBlueprint.UiKit.Components.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using AppBlueprint.Web.Components.Shared
 @inherits LayoutComponentBase
 
-@inject NavigationManager NavManager
-@inject IConfiguration Configuration
 @inject List<NavLinkMetadata> Links
 
-<AuthProvider>
-    @* The cascading value attribute passes the Links parameter to the Sidepanel component in UiKit library *@
+<CascadingAuthenticationState>
     <CascadingValue Value="Links">
         <Router AppAssembly="@typeof(Program).Assembly"
                 AdditionalAssemblies="@AdditionalAssemblies">
             <Found Context="routeData">
-                @{
-                    // Check if the current route should be protected
-                    var requireAuth = ShouldRequireAuthentication(routeData);
-                }
-                
-                @if (requireAuth)
-                {
-                    <RequireAuthentication>
-                        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-                    </RequireAuthentication>
-                }
-                else
-                {
-                    <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-                }
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        @if (context.User.Identity?.IsAuthenticated != true)
+                        {
+                            <RedirectToLogin />
+                        }
+                        else
+                        {
+                            <div class="d-flex justify-center align-center" style="height: 100vh;">
+                                <MudText Typo="Typo.h6">You are not authorized to access this page.</MudText>
+                            </div>
+                        }
+                    </NotAuthorized>
+                    <Authorizing>
+                        <div class="d-flex justify-center align-center" style="height: 100vh;">
+                            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                        </div>
+                    </Authorizing>
+                </AuthorizeRouteView>
             </Found>
             <NotFound>
-                <MudText Typo="Typo.h6">Sorry, there's nothing here!</MudText>
+                <div class="d-flex justify-center align-center" style="height: 100vh;">
+                    <MudText Typo="Typo.h6">Sorry, there's nothing here!</MudText>
+                </div>
             </NotFound>
         </Router>
     </CascadingValue>
-</AuthProvider>
+</CascadingAuthenticationState>
 
 @code {
-    private Assembly[] AdditionalAssemblies { get; } = new[] { typeof(UiKit._Imports).Assembly };
-
-    // List of routes that don't require authentication
-    private readonly string[] _publicRoutes = new[]
-    {
-        "/",            // Home page - allow anonymous access
-        "/login",       // Login page
-        "/callback",    // OAuth callback page for Logto
-        "/register",    // If you have a registration page
-        "/forgot-password", // Password recovery
-        "/reset-password"   // Password reset
-    };
+    private IEnumerable<Assembly> AdditionalAssemblies { get; } = new[] { typeof(UiKit._Imports).Assembly };
 
     protected override void OnInitialized()
     {
-        Console.WriteLine($"NavigationLinks injected in Routes.razor: {Links?.Count ?? 0}");
-
-        if (Links is not null)
-        {
-            foreach (var link in Links)
-            {
-                Console.WriteLine($"Link: {link.Name} - {link.Href}");
-            }
-        }
-    }
-
-    // Determine if a route requires authentication
-    private bool ShouldRequireAuthentication(RouteData routeData)
-    {
-        var routeTemplate = routeData.PageType
-            .GetCustomAttributes(typeof(Microsoft.AspNetCore.Components.RouteAttribute), inherit: true)
-            .Cast<Microsoft.AspNetCore.Components.RouteAttribute>()
-            .FirstOrDefault()?.Template;
-
-        // If we can't determine the route, default to requiring authentication
-        if (string.IsNullOrEmpty(routeTemplate))
-            return true;
-
-        // Check if the route is in our list of public routes
-        return !_publicRoutes.Contains(routeTemplate.ToLowerInvariant());
+        Console.WriteLine($"[Routes] Navigation links injected: {Links?.Count ?? 0}");
     }
 }
+

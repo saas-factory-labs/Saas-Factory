@@ -62,6 +62,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppBlueprint", "AppBlueprin
 		Code\AppBlueprint\LOGTO_CLOUD_SETUP.md = Code\AppBlueprint\LOGTO_CLOUD_SETUP.md
 		Code\AppBlueprint\LOGTO_INTEGRATION_COMPLETE.md = Code\AppBlueprint\LOGTO_INTEGRATION_COMPLETE.md
 		Code\AppBlueprint\CLOUD_DATABASE_SETUP.md = Code\AppBlueprint\CLOUD_DATABASE_SETUP.md
+		Code\AppBlueprint\JWT_VALIDATION_GUIDE.md = Code\AppBlueprint\JWT_VALIDATION_GUIDE.md
+		Code\AppBlueprint\JWT_TESTING_GUIDE.md = Code\AppBlueprint\JWT_TESTING_GUIDE.md
+		Code\AppBlueprint\test-jwt-auth.ps1 = Code\AppBlueprint\test-jwt-auth.ps1
+		Code\AppBlueprint\QUICKSTART_JWT_TESTING.md = Code\AppBlueprint\QUICKSTART_JWT_TESTING.md
+		Code\AppBlueprint\BLAZOR_JWT_GUIDE.md = Code\AppBlueprint\BLAZOR_JWT_GUIDE.md
+		Code\AppBlueprint\JWT_QUICK_REFERENCE.md = Code\AppBlueprint\JWT_QUICK_REFERENCE.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBlueprint.TodoAppKernel", "Code\AppBlueprint\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj", "{327EAECC-6EC6-4AA5-BD20-6192BBEDFB97}"

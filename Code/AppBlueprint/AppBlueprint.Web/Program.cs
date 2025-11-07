@@ -12,6 +12,9 @@ using _Imports = AppBlueprint.UiKit._Imports;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
 using System.Net.Http;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -120,12 +123,99 @@ builder.Services.AddMudServices();
 builder.Services.AddSingleton<BreadcrumbService>();
 builder.Services.AddUiKit();
 
-// Add authentication services using the factory pattern
-builder.Services.AddAuthenticationServices();
+// Add HttpContextAccessor for accessing authentication tokens in delegating handlers
+builder.Services.AddHttpContextAccessor();
 
-// Log authentication configuration on startup
-var authProvider = builder.Configuration["Authentication:Provider"] ?? "Mock";
-Console.WriteLine($"[Web] Authentication Provider configured: {authProvider}");
+// Add OpenID Connect authentication (standard OIDC instead of Logto-specific SDK)
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+.AddOpenIdConnect(Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme, options =>
+{
+    options.Authority = "https://32nkyp.logto.app/oidc";
+    options.ClientId = builder.Configuration["Logto:AppId"]!;
+    options.ClientSecret = builder.Configuration["Logto:AppSecret"];
+    options.ResponseType = "code";
+    options.ResponseMode = "query";  // Use query instead of form_post
+    options.UsePkce = false;  // Disable PKCE - Logto may not support it properly
+    options.SaveTokens = true;
+    options.GetClaimsFromUserInfoEndpoint = true;
+    options.RequireHttpsMetadata = false;  // Allow HTTP in development
+    
+    // Add required scopes
+    options.Scope.Clear();
+    options.Scope.Add("openid");
+    options.Scope.Add("profile");
+    options.Scope.Add("email");
+    
+    // Configure callback paths
+    options.CallbackPath = "/callback";
+    options.SignedOutCallbackPath = "/signout-callback-logto";
+    
+    // Map claims
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        NameClaimType = "name",
+        RoleClaimType = "role",
+        ValidateIssuer = true
+    };
+    
+    // Add event handlers for debugging
+    options.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents
+    {
+        OnRedirectToIdentityProvider = context =>
+        {
+            Console.WriteLine($"[OIDC] Redirecting to identity provider: {context.ProtocolMessage.IssuerAddress}");
+            Console.WriteLine($"[OIDC] Redirect URI: {context.ProtocolMessage.RedirectUri}");
+            return Task.CompletedTask;
+        },
+        OnAuthorizationCodeReceived = context =>
+        {
+            Console.WriteLine($"[OIDC] Authorization code received");
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            Console.WriteLine($"[OIDC] Token validated for user: {context.Principal?.Identity?.Name}");
+            return Task.CompletedTask;
+        },
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"[OIDC] Authentication failed: {context.Exception?.Message}");
+            return Task.CompletedTask;
+        }
+    };
+    
+    Console.WriteLine($"[Web] OpenID Connect configured with Authority: {options.Authority}");
+});
+
+// Configure cookie authentication to work with Blazor Server
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/signin-logto";
+    options.LogoutPath = "/signout-logto";
+    options.AccessDeniedPath = "/access-denied";
+});
+
+// Add authorization services
+builder.Services.AddAuthorization();
+
+// Register stub IUserAuthenticationProvider for backward compatibility with UiKit components
+// UiKit components (NavigationMenu, Appbar, etc.) still depend on this interface
+// This stub integrates with ASP.NET Core's authentication state
+builder.Services.AddScoped<AppBlueprint.Infrastructure.Authorization.IUserAuthenticationProvider, 
+    AppBlueprint.Infrastructure.Authorization.AspNetCoreAuthenticationProviderStub>();
+
+// Register IAuthenticationProvider (Kiota) using the same stub
+builder.Services.AddScoped<IAuthenticationProvider>(sp => 
+    sp.GetRequiredService<AppBlueprint.Infrastructure.Authorization.IUserAuthenticationProvider>());
+
+// Keep ITokenStorageService for backward compatibility (used by TodoService)
+builder.Services.AddScoped<AppBlueprint.Infrastructure.Authorization.ITokenStorageService, 
+    AppBlueprint.Infrastructure.Authorization.TokenStorageService>();
 
 builder.Services.AddScoped<IRequestAdapter>(sp =>
     new HttpClientRequestAdapter(sp.GetRequiredService<IAuthenticationProvider>())
@@ -133,6 +223,33 @@ builder.Services.AddScoped<IRequestAdapter>(sp =>
         BaseUrl = "https://localhost:5002"
     });
 builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<IRequestAdapter>()));
+
+// Register authentication handler for TodoService as Scoped (not Transient)
+// Must be Scoped to work with ITokenStorageService which requires HttpContext
+builder.Services.AddScoped<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
+
+// Add TodoService with HttpClient configured for direct API access
+builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
+{
+    // Use direct localhost URL - more reliable than service discovery
+    // API service runs on port 8091 (from AppHost configuration)
+    client.BaseAddress = new Uri("http://localhost:8091");
+    client.Timeout = TimeSpan.FromSeconds(30);
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler();
+    if (builder.Environment.IsDevelopment())
+    {
+        // Accept self-signed certificates in development
+        handler.ServerCertificateCustomValidationCallback = 
+            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+    }
+    return handler;
+})
+.AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
+
+
 
 var app = builder.Build();
 
@@ -145,11 +262,56 @@ app.UseRouting();
 // app.UseHttpsRedirection(); // Temporarily disabled for design review
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+// Add authentication and authorization middleware for Logto
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseOutputCache();
 
 app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(_Imports).Assembly)
     .AddInteractiveServerRenderMode();
+
+// Map OpenID Connect authentication endpoints
+app.MapGet("/signin-logto", async (HttpContext context) =>
+{
+    // Check if user is already authenticated
+    if (context.User?.Identity?.IsAuthenticated == true)
+    {
+        Console.WriteLine($"[Web] /signin-logto - User already authenticated: {context.User.Identity.Name}");
+        
+        // Get return URL or default to "/"
+        var returnUrl = context.Request.Query["returnUrl"].FirstOrDefault() ?? "/";
+        context.Response.Redirect(returnUrl);
+        return;
+    }
+    
+    Console.WriteLine("[Web] /signin-logto endpoint hit - triggering OpenID Connect challenge");
+    
+    // Get the return URL from query string, or default to "/"
+    var returnUrl2 = context.Request.Query["returnUrl"].FirstOrDefault() ?? "/";
+    
+    // Trigger authentication challenge with OpenID Connect
+    await context.ChallengeAsync(
+        Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme,
+        new Microsoft.AspNetCore.Authentication.AuthenticationProperties
+        {
+            RedirectUri = returnUrl2
+        });
+}).AllowAnonymous();
+
+app.MapGet("/signout-logto", async (HttpContext context) =>
+{
+    Console.WriteLine("[Web] /signout-logto endpoint hit - signing out");
+    
+    // Sign out from both OpenID Connect and cookie authentication
+    await context.SignOutAsync(Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme);
+    await context.SignOutAsync(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+    
+    // Redirect to home page
+    context.Response.Redirect("/");
+}).RequireAuthorization();
 
 app.MapDefaultEndpoints();
 
