@@ -52,7 +52,14 @@ namespace Microsoft.Extensions.Hosting
                 string? endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
                 if (string.IsNullOrEmpty(endpoint))
                 {
-                    Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, "http://localhost:18889");
+                    // Only set default localhost endpoint in Development
+                    // In Production (Railway), leave it unset to disable OTLP export
+                    string? aspnetEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                    if (string.Equals(aspnetEnv, "Development", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, "http://localhost:18889");
+                    }
+                    // else: Leave unset in production - will skip OTLP exporters
                 }
             }
 
@@ -75,15 +82,31 @@ namespace Microsoft.Extensions.Hosting
             string serviceName = builder.Configuration["OTEL_SERVICE_NAME"] ?? builder.Environment.ApplicationName;
             var resources = ResourceBuilder.CreateDefault().AddService(serviceName, "1.0.0");
 
+            // Check if OTLP endpoint is configured
+            string? endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
+            bool hasOtlpEndpoint = !string.IsNullOrEmpty(endpoint);
+
             builder.Logging.AddOpenTelemetry(log =>
             {
                 log.SetResourceBuilder(resources);
                 log.IncludeScopes = true;
                 log.IncludeFormattedMessage = true;
 
-                string endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint)!;
-                bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
-                log.AddOtlpExporter(opt => { opt.Endpoint = new Uri(endpoint); opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; });
+                // Only add OTLP exporter if endpoint is configured
+                if (hasOtlpEndpoint)
+                {
+                    bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
+                    log.AddOtlpExporter(opt => 
+                    { 
+                        opt.Endpoint = new Uri(endpoint!); 
+                        opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; 
+                    });
+                }
+                else
+                {
+                    // Console exporter as fallback in production without OTLP
+                    log.AddConsoleExporter();
+                }
             });
 
             builder.Services.AddOpenTelemetry()
@@ -97,20 +120,40 @@ namespace Microsoft.Extensions.Hosting
                     metrics.AddHttpClientInstrumentation();
                     metrics.AddRuntimeInstrumentation();
 
-                    string endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint)!;
-                    bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
-                    metrics.AddOtlpExporter(opt => { opt.Endpoint = new Uri(endpoint); opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; });
+                    // Only add OTLP exporter if endpoint is configured
+                    if (hasOtlpEndpoint)
+                    {
+                        bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
+                        metrics.AddOtlpExporter(opt => 
+                        { 
+                            opt.Endpoint = new Uri(endpoint!); 
+                            opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; 
+                        });
+                    }
+                    // Metrics are collected but not exported if no OTLP endpoint
                 })
                 .WithTracing(tracing =>
                 {
                     tracing.AddSource(serviceName);
                     tracing.AddSource("Microsoft.AspNetCore");
                     tracing.AddAspNetCoreInstrumentation(options => options.RecordException = true);
-                    tracing.AddHttpClientInstrumentation(options => { options.RecordException = true; options.FilterHttpRequestMessage = _ => true; });
+                    tracing.AddHttpClientInstrumentation(options => 
+                    { 
+                        options.RecordException = true; 
+                        options.FilterHttpRequestMessage = _ => true; 
+                    });
 
-                    string endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint)!;
-                    bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
-                    tracing.AddOtlpExporter(opt => { opt.Endpoint = new Uri(endpoint); opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; });
+                    // Only add OTLP exporter if endpoint is configured
+                    if (hasOtlpEndpoint)
+                    {
+                        bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
+                        tracing.AddOtlpExporter(opt => 
+                        { 
+                            opt.Endpoint = new Uri(endpoint!); 
+                            opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; 
+                        });
+                    }
+                    // Traces are collected but not exported if no OTLP endpoint
                 });
 
             return builder;
