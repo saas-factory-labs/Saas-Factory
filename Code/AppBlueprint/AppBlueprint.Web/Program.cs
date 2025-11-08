@@ -154,79 +154,101 @@ builder.Services.AddUiKit();
 // Add HttpContextAccessor for accessing authentication tokens in delegating handlers
 builder.Services.AddHttpContextAccessor();
 
-// Add OpenID Connect authentication (standard OIDC instead of Logto-specific SDK)
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme;
-})
-.AddCookie(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
-.AddOpenIdConnect(Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme, options =>
-{
-    options.Authority = "https://32nkyp.logto.app/oidc";
-    options.ClientId = builder.Configuration["Logto:AppId"]!;
-    options.ClientSecret = builder.Configuration["Logto:AppSecret"];
-    options.ResponseType = "code";
-    options.ResponseMode = "query";  // Use query instead of form_post
-    options.UsePkce = false;  // Disable PKCE - Logto may not support it properly
-    options.SaveTokens = true;
-    options.GetClaimsFromUserInfoEndpoint = true;
-    options.RequireHttpsMetadata = false;  // Allow HTTP in development
-    
-    // Add required scopes
-    options.Scope.Clear();
-    options.Scope.Add("openid");
-    options.Scope.Add("profile");
-    options.Scope.Add("email");
-    
-    // Configure callback paths
-    options.CallbackPath = "/callback";
-    options.SignedOutCallbackPath = "/signout-callback-logto";
-    
-    // Map claims
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-        NameClaimType = "name",
-        RoleClaimType = "role",
-        ValidateIssuer = true
-    };
-    
-    // Add event handlers for debugging
-    options.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents
-    {
-        OnRedirectToIdentityProvider = context =>
-        {
-            Console.WriteLine($"[OIDC] Redirecting to identity provider: {context.ProtocolMessage.IssuerAddress}");
-            Console.WriteLine($"[OIDC] Redirect URI: {context.ProtocolMessage.RedirectUri}");
-            return Task.CompletedTask;
-        },
-        OnAuthorizationCodeReceived = context =>
-        {
-            Console.WriteLine($"[OIDC] Authorization code received");
-            return Task.CompletedTask;
-        },
-        OnTokenValidated = context =>
-        {
-            Console.WriteLine($"[OIDC] Token validated for user: {context.Principal?.Identity?.Name}");
-            return Task.CompletedTask;
-        },
-        OnAuthenticationFailed = context =>
-        {
-            Console.WriteLine($"[OIDC] Authentication failed: {context.Exception?.Message}");
-            return Task.CompletedTask;
-        }
-    };
-    
-    Console.WriteLine($"[Web] OpenID Connect configured with Authority: {options.Authority}");
-});
+// Check if Logto authentication is configured
+string? logtoAppId = builder.Configuration["Logto:AppId"];
+string? logtoEndpoint = builder.Configuration["Logto:Endpoint"];
+bool hasLogtoConfig = !string.IsNullOrEmpty(logtoAppId) && !string.IsNullOrEmpty(logtoEndpoint);
 
-// Configure cookie authentication to work with Blazor Server
-builder.Services.ConfigureApplicationCookie(options =>
+if (hasLogtoConfig)
 {
-    options.LoginPath = "/signin-logto";
-    options.LogoutPath = "/signout-logto";
-    options.AccessDeniedPath = "/access-denied";
-});
+    Console.WriteLine("[Web] Logto authentication configuration found - enabling OpenID Connect");
+    
+    // Add OpenID Connect authentication (standard OIDC instead of Logto-specific SDK)
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme;
+    })
+    .AddCookie(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddOpenIdConnect(Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme, options =>
+    {
+        options.Authority = logtoEndpoint;
+        options.ClientId = logtoAppId;
+        options.ClientSecret = builder.Configuration["Logto:AppSecret"];
+        options.ResponseType = "code";
+        options.ResponseMode = "query";  // Use query instead of form_post
+        options.UsePkce = false;  // Disable PKCE - Logto may not support it properly
+        options.SaveTokens = true;
+        options.GetClaimsFromUserInfoEndpoint = true;
+        options.RequireHttpsMetadata = false;  // Allow HTTP in development
+        
+        // Add required scopes
+        options.Scope.Clear();
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("email");
+        
+        // Configure callback paths
+        options.CallbackPath = "/callback";
+        options.SignedOutCallbackPath = "/signout-callback-logto";
+        
+        // Map claims
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            NameClaimType = "name",
+            RoleClaimType = "role",
+            ValidateIssuer = true
+        };
+        
+        // Add event handlers for debugging
+        options.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents
+        {
+            OnRedirectToIdentityProvider = context =>
+            {
+                Console.WriteLine($"[OIDC] Redirecting to identity provider: {context.ProtocolMessage.IssuerAddress}");
+                Console.WriteLine($"[OIDC] Redirect URI: {context.ProtocolMessage.RedirectUri}");
+                return Task.CompletedTask;
+            },
+            OnAuthorizationCodeReceived = context =>
+            {
+                Console.WriteLine($"[OIDC] Authorization code received");
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Console.WriteLine($"[OIDC] Token validated for user: {context.Principal?.Identity?.Name}");
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"[OIDC] Authentication failed: {context.Exception?.Message}");
+                return Task.CompletedTask;
+            }
+        };
+        
+        Console.WriteLine($"[Web] OpenID Connect configured with Authority: {options.Authority}");
+    });
+
+    // Configure cookie authentication to work with Blazor Server
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.LoginPath = "/signin-logto";
+        options.LogoutPath = "/signout-logto";
+        options.AccessDeniedPath = "/access-denied";
+    });
+}
+else
+{
+    Console.WriteLine("[Web] Logto authentication NOT configured - running without authentication");
+    Console.WriteLine("[Web] To enable authentication, set environment variables:");
+    Console.WriteLine("[Web]   - Logto__AppId");
+    Console.WriteLine("[Web]   - Logto__Endpoint");
+    Console.WriteLine("[Web]   - Logto__AppSecret (optional)");
+    
+    // Add minimal authentication for API compatibility
+    builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+}
 
 // Add authorization services
 builder.Services.AddAuthorization();

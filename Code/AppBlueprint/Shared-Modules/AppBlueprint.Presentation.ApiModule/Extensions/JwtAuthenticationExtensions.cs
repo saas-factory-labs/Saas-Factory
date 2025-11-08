@@ -162,8 +162,15 @@ public static class JwtAuthenticationExtensions
 
         if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(clientId))
         {
-            throw new InvalidOperationException(
-                "Logto Endpoint and ClientId must be configured in appsettings.json");
+            // In Railway/production without Logto config, fall back to custom JWT
+            // This allows API to start without Logto, using symmetric key validation
+            Console.WriteLine("[API] Logto Endpoint or ClientId not configured - falling back to custom JWT authentication");
+            Console.WriteLine("[API] To enable Logto authentication, set environment variables:");
+            Console.WriteLine("[API]   - Authentication__Logto__Endpoint");
+            Console.WriteLine("[API]   - Authentication__Logto__ClientId");
+            
+            ConfigureCustomJwt(options, configuration);
+            return;
         }
 
         // Remove trailing slash from endpoint if present
