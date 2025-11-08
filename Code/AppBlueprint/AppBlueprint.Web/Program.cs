@@ -1,5 +1,4 @@
 using AppBlueprint.Api.Client.Sdk;
-using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.UiKit;
 using AppBlueprint.UiKit.Models;
 using AppBlueprint.Web;
@@ -217,10 +216,18 @@ builder.Services.AddScoped<IAuthenticationProvider>(sp =>
 builder.Services.AddScoped<AppBlueprint.Infrastructure.Authorization.ITokenStorageService, 
     AppBlueprint.Infrastructure.Authorization.TokenStorageService>();
 
+// Get API base URL from environment variable or configuration
+// Priority: Environment variable > Configuration > Default localhost
+string apiBaseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") 
+    ?? builder.Configuration["ApiBaseUrl"] 
+    ?? "http://localhost:8091";
+
+Console.WriteLine($"[Web] API Base URL configured: {apiBaseUrl}");
+
 builder.Services.AddScoped<IRequestAdapter>(sp =>
     new HttpClientRequestAdapter(sp.GetRequiredService<IAuthenticationProvider>())
     {
-        BaseUrl = "https://localhost:5002"
+        BaseUrl = apiBaseUrl
     });
 builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<IRequestAdapter>()));
 
@@ -231,9 +238,9 @@ builder.Services.AddScoped<AppBlueprint.Web.Services.AuthenticationDelegatingHan
 // Add TodoService with HttpClient configured for direct API access
 builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
 {
-    // Use direct localhost URL - more reliable than service discovery
-    // API service runs on port 8091 (from AppHost configuration)
-    client.BaseAddress = new Uri("http://localhost:8091");
+    // Use API base URL from environment/configuration
+    // Supports Railway deployment with API_BASE_URL environment variable
+    client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
 })
 .ConfigurePrimaryHttpMessageHandler(() =>

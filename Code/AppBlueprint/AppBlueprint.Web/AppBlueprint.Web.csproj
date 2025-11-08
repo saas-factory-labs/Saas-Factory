@@ -59,12 +59,10 @@
     </ItemGroup>
 
     <ItemGroup>       
-        <PackageReference Include="Logto.AspNetCore.Authentication" />       
-        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Logto.AspNetCore.Authentication" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
         <PackageReference Include="MudBlazor" />
         <PackageReference Include="MudBlazor.ThemeManager" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="StrawberryShake" />
         <PackageReference Include="StrawberryShake.Transport.Http" />
         <PackageReference Include="StrawberryShake.Transport.WebSockets" />

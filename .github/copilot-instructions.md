@@ -62,3 +62,5 @@ The project structure is in the Writerside documentation at `/Writerside/topic/R
 - MAKE SURE EVERYTHING COMPILES CORRECTLY BY BUILDING THE AFFECTED PROJECTS AND RUNTIME ALSO FUNCTIONS CORRECTLY BEFORE ASSESING IF THE TASK WAS COMPLETED - YOU DONT NEED TO ASK FOR PERMISSION TO BUILD THE PROJECTS - JUST DO IT, UNLESS THE SPECIFIC PROJECT OR APPHOST IS ALREADY RUNNING
 - Always ask the user for clarification if you didn't understand the task, or if you need more information about the rules.
 - Based on the changes you made - formulate a git commit message that describes the changes you made.
+- When running a project do not use "&&" in the command for example "PS C:\Development\Development-Projects\saas-factory-labs> cd C:\Development\Development-Projects\saas-factory-labs\Code\AppBlueprint\AppBlueprint.Web && dotnet build
+  " as this does not work - instead run the commands separately in sequence.
