@@ -73,6 +73,13 @@ The Web Dockerfile already:
 - Sets `ASPNETCORE_URLS=http://+:80`
 - Does not require database connections
 
+### HTTPS/TLS Configuration
+**Important**: The Web application is configured to:
+- **Production Mode**: Only listens on HTTP port 80 (HTTPS is disabled)
+- **Development Mode**: Listens on both HTTP (80) and HTTPS (443)
+
+Railway handles TLS termination at the edge/load balancer level, so the application container only needs to serve HTTP traffic. This prevents the "Unable to configure HTTPS endpoint" error in Railway deployments.
+
 ## Local Development
 
 ### Default Behavior
