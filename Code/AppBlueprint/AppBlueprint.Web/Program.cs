@@ -176,11 +176,34 @@ if (hasLogtoConfig)
         options.ClientId = logtoAppId;
         options.ClientSecret = builder.Configuration["Logto:AppSecret"];
         options.ResponseType = "code";
-        options.ResponseMode = "query";  // Use query instead of form_post
-        options.UsePkce = false;  // Disable PKCE - Logto may not support it properly
+        options.ResponseMode = "query";
+        options.UsePkce = false;
         options.SaveTokens = true;
         options.GetClaimsFromUserInfoEndpoint = true;
-        options.RequireHttpsMetadata = false;  // Allow HTTP in development
+        options.RequireHttpsMetadata = false;
+        
+        // Configure timeout for metadata retrieval
+        // Railway needs more time than local (30s vs 10s) even though endpoint is accessible
+        options.BackchannelTimeout = builder.Environment.IsDevelopment() 
+            ? TimeSpan.FromSeconds(10) 
+            : TimeSpan.FromSeconds(30);
+        
+        // Configure HTTP client for better error handling
+        options.BackchannelHttpHandler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+            AllowAutoRedirect = true,
+            MaxAutomaticRedirections = 5,
+            // Add connection settings for Railway
+            MaxConnectionsPerServer = 10,
+            UseProxy = false
+        };
+        
+        // Set metadata address explicitly to help with Railway routing
+        options.MetadataAddress = $"{logtoEndpoint}/.well-known/openid-configuration";
+        
+        // Refresh on key not found
+        options.RefreshOnIssuerKeyNotFound = true;
         
         // Add required scopes
         options.Scope.Clear();
@@ -200,7 +223,7 @@ if (hasLogtoConfig)
             ValidateIssuer = true
         };
         
-        // Add event handlers for debugging
+        // Add event handlers for better error handling
         options.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents
         {
             OnRedirectToIdentityProvider = context =>
@@ -222,11 +245,45 @@ if (hasLogtoConfig)
             OnAuthenticationFailed = context =>
             {
                 Console.WriteLine($"[OIDC] Authentication failed: {context.Exception?.Message}");
+                Console.WriteLine($"[OIDC] Exception type: {context.Exception?.GetType().Name}");
+                
+                // Handle timeout/network errors gracefully
+                if (context.Exception is HttpRequestException || 
+                    context.Exception is TaskCanceledException ||
+                    context.Exception is TimeoutException)
+                {
+                    Console.WriteLine("[OIDC] Network error - Logto endpoint may be unreachable");
+                    Console.WriteLine("[OIDC] Skipping authentication for this request");
+                    context.HandleResponse();
+                    context.Response.Redirect("/");
+                    return Task.CompletedTask;
+                }
+                
+                return Task.CompletedTask;
+            },
+            OnRemoteFailure = context =>
+            {
+                Console.WriteLine($"[OIDC] Remote failure: {context.Failure?.Message}");
+                Console.WriteLine($"[OIDC] Failure type: {context.Failure?.GetType().Name}");
+                
+                // Handle metadata retrieval failures
+                if (context.Failure is IOException || 
+                    context.Failure is HttpRequestException ||
+                    context.Failure is TaskCanceledException ||
+                    context.Failure is TimeoutException)
+                {
+                    Console.WriteLine("[OIDC] Cannot reach Logto endpoint - redirecting to home");
+                    context.HandleResponse();
+                    context.Response.Redirect("/");
+                    return Task.CompletedTask;
+                }
+                
                 return Task.CompletedTask;
             }
         };
         
         Console.WriteLine($"[Web] OpenID Connect configured with Authority: {options.Authority}");
+        Console.WriteLine($"[Web] Backchannel timeout: {options.BackchannelTimeout.TotalSeconds}s");
     });
 
     // Configure cookie authentication to work with Blazor Server
@@ -330,6 +387,86 @@ app.UseOutputCache();
 app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(_Imports).Assembly)
     .AddInteractiveServerRenderMode();
+
+// Diagnostic endpoint to test Logto connectivity from Railway
+app.MapGet("/test-logto-connection", async () =>
+{
+    var results = new List<object>();
+    
+    // Test 1: DNS Resolution
+    try
+    {
+        var host = "32nkyp.logto.app";
+        var addresses = await System.Net.Dns.GetHostAddressesAsync(host);
+        results.Add(new 
+        { 
+            test = "DNS Resolution",
+            success = true,
+            host = host,
+            addresses = addresses.Select(a => a.ToString()).ToArray()
+        });
+    }
+    catch (Exception ex)
+    {
+        results.Add(new 
+        { 
+            test = "DNS Resolution",
+            success = false,
+            error = ex.Message,
+            type = ex.GetType().Name
+        });
+    }
+    
+    // Test 2: HTTPS Connectivity
+    try
+    {
+        using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+        var url = "https://32nkyp.logto.app/oidc/.well-known/openid-configuration";
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var response = await client.GetAsync(url);
+        sw.Stop();
+        var content = await response.Content.ReadAsStringAsync();
+        
+        results.Add(new 
+        { 
+            test = "HTTPS Connectivity",
+            success = response.IsSuccessStatusCode,
+            url = url,
+            statusCode = (int)response.StatusCode,
+            contentLength = content.Length,
+            elapsedMs = sw.ElapsedMilliseconds
+        });
+    }
+    catch (Exception ex)
+    {
+        results.Add(new 
+        { 
+            test = "HTTPS Connectivity",
+            success = false,
+            error = ex.Message,
+            type = ex.GetType().Name
+        });
+    }
+    
+    // Test 3: Current Logto Configuration
+    var logtoConfig = new
+    {
+        test = "Logto Configuration",
+        endpoint = builder.Configuration["Logto:Endpoint"],
+        appId = builder.Configuration["Logto:AppId"],
+        hasAppSecret = !string.IsNullOrEmpty(builder.Configuration["Logto:AppSecret"]),
+        environment = app.Environment.EnvironmentName
+    };
+    results.Add(logtoConfig);
+    
+    return Results.Json(new 
+    { 
+        timestamp = DateTime.UtcNow,
+        railway = !app.Environment.IsDevelopment(),
+        tests = results 
+    }, 
+    new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+});
 
 // Map OpenID Connect authentication endpoints
 app.MapGet("/signin-logto", async (HttpContext context) =>

@@ -90,6 +90,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppBlueprint", "AppBlueprin
 		Code\AppBlueprint\COMPLETE_RAILWAY_SOLUTION.md = Code\AppBlueprint\COMPLETE_RAILWAY_SOLUTION.md
 		Code\AppBlueprint\RAILWAY_PORT_80_CONFIGURATION.md = Code\AppBlueprint\RAILWAY_PORT_80_CONFIGURATION.md
 		Code\AppBlueprint\RAILWAY_AUTHENTICATION_COMPLETE.md = Code\AppBlueprint\RAILWAY_AUTHENTICATION_COMPLETE.md
+		Code\AppBlueprint\OPENTELEMETRY_LOGGING_DISABLED.md = Code\AppBlueprint\OPENTELEMETRY_LOGGING_DISABLED.md
+		Code\AppBlueprint\WHY_LOGTO_FAILED_ANALYSIS.md = Code\AppBlueprint\WHY_LOGTO_FAILED_ANALYSIS.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBlueprint.TodoAppKernel", "Code\AppBlueprint\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj", "{327EAECC-6EC6-4AA5-BD20-6192BBEDFB97}"
