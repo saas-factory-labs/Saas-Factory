@@ -22,38 +22,54 @@ using Microsoft.Extensions.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure telemetry - must come before AddServiceDefaults
-// Get the OTLP endpoint from environment or use Aspire default
-string? dashboardEndpoint = Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
-string? otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
-string otlpDefaultEndpoint = "http://localhost:18889";
+// In Production/Railway, disable OTLP to prevent connection errors
+// In Development, use Aspire Dashboard
+if (builder.Environment.IsDevelopment())
+{
+    // Development mode - configure OTLP for Aspire Dashboard
+    string? dashboardEndpoint = Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
+    string? otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+    string otlpDefaultEndpoint = "http://localhost:18889";
 
-// Set OTLP endpoint with priority: DOTNET_DASHBOARD_OTLP_ENDPOINT_URL > OTEL_EXPORTER_OTLP_ENDPOINT > default
-if (!string.IsNullOrEmpty(dashboardEndpoint))
-{
-    Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", dashboardEndpoint);
-    Console.WriteLine($"[Web] Using dashboard OTLP endpoint: {dashboardEndpoint}");
-}
-else if (string.IsNullOrEmpty(otlpEndpoint))
-{
-    Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", otlpDefaultEndpoint);
-#pragma warning disable CA1303 // Do not pass literals as localized parameters - Diagnostic logging not intended for localization
-    Console.WriteLine($"[Web] Using default OTLP endpoint: {otlpDefaultEndpoint}");
-#pragma warning restore CA1303
+    // Set OTLP endpoint with priority: DOTNET_DASHBOARD_OTLP_ENDPOINT_URL > OTEL_EXPORTER_OTLP_ENDPOINT > default
+    if (!string.IsNullOrEmpty(dashboardEndpoint))
+    {
+        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", dashboardEndpoint);
+        Console.WriteLine($"[Web] Using dashboard OTLP endpoint: {dashboardEndpoint}");
+    }
+    else if (string.IsNullOrEmpty(otlpEndpoint))
+    {
+        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", otlpDefaultEndpoint);
+        Console.WriteLine($"[Web] Using default OTLP endpoint: {otlpDefaultEndpoint}");
+    }
+    else
+    {
+        Console.WriteLine($"[Web] Using existing OTLP endpoint: {otlpEndpoint}");
+    }
+
+    // Set OTLP protocol if not already set
+    if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")))
+    {
+        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
+    }
+
+    Console.WriteLine($"[Web] Final OTLP endpoint → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")}");
+    Console.WriteLine($"[Web] Final OTLP protocol → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")}");
 }
 else
 {
-    Console.WriteLine($"[Web] Using existing OTLP endpoint: {otlpEndpoint}");
+    // Production mode (Railway) - disable OTLP export to prevent connection errors
+    // OpenTelemetry will still collect metrics/traces but won't export them
+    // Set to empty/null to disable OTLP exporter
+    Console.WriteLine("[Web] Production mode - OTLP telemetry export disabled (no Aspire Dashboard)");
+    
+    // Only set if explicitly provided via environment variable (e.g., for external observability)
+    string? explicitOtlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+    if (!string.IsNullOrEmpty(explicitOtlpEndpoint))
+    {
+        Console.WriteLine($"[Web] Using explicit OTLP endpoint: {explicitOtlpEndpoint}");
+    }
 }
-
-// Set OTLP protocol if not already set
-if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")))
-{
-    Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
-}
-
-// Print final configuration
-Console.WriteLine($"[Web] Final OTLP endpoint → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")}");
-Console.WriteLine($"[Web] Final OTLP protocol → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")}");
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
