@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -73,6 +74,13 @@ else
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+
+// Suppress OpenTelemetry verbose debug logs
+builder.Logging.AddFilter("OpenTelemetry", LogLevel.Warning);
+builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection", LogLevel.Warning);
+builder.Logging.AddFilter("Microsoft.AspNetCore.Server.Kestrel", LogLevel.Warning);
+builder.Logging.AddFilter("Microsoft.Hosting.Lifetime", LogLevel.Information);
+
 builder.AddServiceDefaults();
 
 builder.Host.UseDefaultServiceProvider((context, options) =>
@@ -154,6 +162,28 @@ builder.Services.AddUiKit();
 // Add HttpContextAccessor for accessing authentication tokens in delegating handlers
 builder.Services.AddHttpContextAccessor();
 
+// Configure Data Protection for Railway deployment
+// This fixes "Unable to unprotect the message.State" errors on callback
+if (!builder.Environment.IsDevelopment())
+{
+    Console.WriteLine("[Web] Configuring Data Protection for production (Railway)");
+    
+    // Use a persistent key storage location
+    var keysPath = Path.Combine("/app", "DataProtection-Keys");
+    Directory.CreateDirectory(keysPath);
+    
+    builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
+        .SetApplicationName("AppBlueprint")
+        .SetDefaultKeyLifetime(TimeSpan.FromDays(90));
+    
+    Console.WriteLine($"[Web] Data Protection keys will be stored at: {keysPath}");
+}
+else
+{
+    Console.WriteLine("[Web] Using default Data Protection (development mode)");
+}
+
 // Check if Logto authentication is configured
 string? logtoAppId = builder.Configuration["Logto:AppId"];
 string? logtoEndpoint = builder.Configuration["Logto:Endpoint"];
@@ -230,6 +260,10 @@ if (hasLogtoConfig)
             {
                 Console.WriteLine($"[OIDC] Redirecting to identity provider: {context.ProtocolMessage.IssuerAddress}");
                 Console.WriteLine($"[OIDC] Redirect URI: {context.ProtocolMessage.RedirectUri}");
+                Console.WriteLine($"[OIDC] Client ID: {context.ProtocolMessage.ClientId}");
+                Console.WriteLine($"[OIDC] Response Type: {context.ProtocolMessage.ResponseType}");
+                Console.WriteLine($"[OIDC] Scope: {context.ProtocolMessage.Scope}");
+                Console.WriteLine($"[OIDC] ⚠️  IMPORTANT: This redirect URI must be configured in Logto application settings!");
                 return Task.CompletedTask;
             },
             OnAuthorizationCodeReceived = context =>
@@ -244,8 +278,16 @@ if (hasLogtoConfig)
             },
             OnAuthenticationFailed = context =>
             {
-                Console.WriteLine($"[OIDC] Authentication failed: {context.Exception?.Message}");
+                Console.WriteLine($"[OIDC] ❌ Authentication failed: {context.Exception?.Message}");
                 Console.WriteLine($"[OIDC] Exception type: {context.Exception?.GetType().Name}");
+                Console.WriteLine($"[OIDC] Stack trace: {context.Exception?.StackTrace}");
+                
+                // Check for inner exception
+                if (context.Exception?.InnerException is not null)
+                {
+                    Console.WriteLine($"[OIDC] Inner exception: {context.Exception.InnerException.Message}");
+                    Console.WriteLine($"[OIDC] Inner exception type: {context.Exception.InnerException.GetType().Name}");
+                }
                 
                 // Handle timeout/network errors gracefully
                 if (context.Exception is HttpRequestException || 
@@ -253,18 +295,46 @@ if (hasLogtoConfig)
                     context.Exception is TimeoutException)
                 {
                     Console.WriteLine("[OIDC] Network error - Logto endpoint may be unreachable");
-                    Console.WriteLine("[OIDC] Skipping authentication for this request");
+                    Console.WriteLine("[OIDC] Redirecting to home with error");
                     context.HandleResponse();
-                    context.Response.Redirect("/");
+                    context.Response.Redirect("/?auth-error=network-failed");
                     return Task.CompletedTask;
                 }
                 
+                // Redirect with generic error
+                context.HandleResponse();
+                context.Response.Redirect("/?auth-error=auth-failed");
                 return Task.CompletedTask;
             },
             OnRemoteFailure = context =>
             {
-                Console.WriteLine($"[OIDC] Remote failure: {context.Failure?.Message}");
+                Console.WriteLine($"[OIDC] ❌ Remote failure: {context.Failure?.Message}");
                 Console.WriteLine($"[OIDC] Failure type: {context.Failure?.GetType().Name}");
+                
+                // Check for common errors
+                var errorMessage = context.Failure?.Message?.ToLowerInvariant() ?? "";
+                
+                // Handle "Unable to unprotect the message.State" - Data Protection issue
+                if (errorMessage.Contains("unable to unprotect") || errorMessage.Contains("message.state"))
+                {
+                    Console.WriteLine("[OIDC] ⚠️  DATA PROTECTION ERROR - Unable to decrypt state parameter");
+                    Console.WriteLine("[OIDC] This can happen after app restarts or when running on multiple instances");
+                    Console.WriteLine("[OIDC] User needs to try signing in again");
+                    context.HandleResponse();
+                    context.Response.Redirect("/login?auth-error=session-expired");
+                    return Task.CompletedTask;
+                }
+                
+                // Check for redirect URI configuration errors
+                if (errorMessage.Contains("redirect_uri") || errorMessage.Contains("redirect uri"))
+                {
+                    Console.WriteLine("[OIDC] ⚠️  REDIRECT URI MISMATCH!");
+                    Console.WriteLine("[OIDC] The redirect URI is not configured in Logto.");
+                    Console.WriteLine("[OIDC] Add 'https://appblueprint-web-staging.up.railway.app/callback' to Logto application settings.");
+                    context.HandleResponse();
+                    context.Response.Redirect("/login?auth-error=redirect-uri-mismatch");
+                    return Task.CompletedTask;
+                }
                 
                 // Handle metadata retrieval failures
                 if (context.Failure is IOException || 
@@ -274,10 +344,24 @@ if (hasLogtoConfig)
                 {
                     Console.WriteLine("[OIDC] Cannot reach Logto endpoint - redirecting to home");
                     context.HandleResponse();
-                    context.Response.Redirect("/");
+                    context.Response.Redirect("/login?auth-error=logto-unreachable");
                     return Task.CompletedTask;
                 }
                 
+                // Redirect with error details
+                context.HandleResponse();
+                context.Response.Redirect("/login?auth-error=remote-failed");
+                return Task.CompletedTask;
+            },
+            OnMessageReceived = context =>
+            {
+                Console.WriteLine($"[OIDC] Message received");
+                if (context.ProtocolMessage?.Error is not null)
+                {
+                    Console.WriteLine($"[OIDC] ❌ Protocol error: {context.ProtocolMessage.Error}");
+                    Console.WriteLine($"[OIDC] Error description: {context.ProtocolMessage.ErrorDescription}");
+                    Console.WriteLine($"[OIDC] Error URI: {context.ProtocolMessage.ErrorUri}");
+                }
                 return Task.CompletedTask;
             }
         };
@@ -417,10 +501,10 @@ app.MapGet("/test-logto-connection", async () =>
         });
     }
     
-    // Test 2: HTTPS Connectivity
+    // Test 2: HTTPS Connectivity (with longer timeout for Railway)
     try
     {
-        using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+        using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
         var url = "https://32nkyp.logto.app/oidc/.well-known/openid-configuration";
         var sw = System.Diagnostics.Stopwatch.StartNew();
         var response = await client.GetAsync(url);
@@ -433,8 +517,10 @@ app.MapGet("/test-logto-connection", async () =>
             success = response.IsSuccessStatusCode,
             url = url,
             statusCode = (int)response.StatusCode,
+            statusDescription = response.ReasonPhrase,
             contentLength = content.Length,
-            elapsedMs = sw.ElapsedMilliseconds
+            elapsedMs = sw.ElapsedMilliseconds,
+            warning = sw.ElapsedMilliseconds > 5000 ? "⚠️ Slow connection - took over 5 seconds" : null
         });
     }
     catch (Exception ex)
@@ -455,7 +541,17 @@ app.MapGet("/test-logto-connection", async () =>
         endpoint = builder.Configuration["Logto:Endpoint"],
         appId = builder.Configuration["Logto:AppId"],
         hasAppSecret = !string.IsNullOrEmpty(builder.Configuration["Logto:AppSecret"]),
-        environment = app.Environment.EnvironmentName
+        environment = app.Environment.EnvironmentName,
+        requiredRedirectUris = new[]
+        {
+            "https://appblueprint-web-staging.up.railway.app/callback",
+            "https://appblueprint-web-staging.up.railway.app/signout-callback-logto"
+        },
+        requiredPostLogoutRedirectUris = new[]
+        {
+            "https://appblueprint-web-staging.up.railway.app/"
+        },
+        configurationInstructions = "Add these URIs to your Logto application configuration under 'Redirect URIs' and 'Post sign-out redirect URIs'"
     };
     results.Add(logtoConfig);
     
@@ -463,7 +559,8 @@ app.MapGet("/test-logto-connection", async () =>
     { 
         timestamp = DateTime.UtcNow,
         railway = !app.Environment.IsDevelopment(),
-        tests = results 
+        tests = results,
+        action = "⚠️ If authentication fails, verify that the redirect URIs above are configured in your Logto application settings"
     }, 
     new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
 });
@@ -482,18 +579,32 @@ app.MapGet("/signin-logto", async (HttpContext context) =>
         return;
     }
     
-    Console.WriteLine("[Web] /signin-logto endpoint hit - triggering OpenID Connect challenge");
+    Console.WriteLine("[Web] /signin-logto - Initiating authentication challenge");
+    Console.WriteLine("[Web] ⚠️  If this fails, check that redirect URIs are configured in Logto:");
+    Console.WriteLine("[Web]    - https://appblueprint-web-staging.up.railway.app/callback");
+    Console.WriteLine("[Web]    - https://appblueprint-web-staging.up.railway.app/signout-callback-logto");
     
     // Get the return URL from query string, or default to "/"
     var returnUrl2 = context.Request.Query["returnUrl"].FirstOrDefault() ?? "/";
     
-    // Trigger authentication challenge with OpenID Connect
-    await context.ChallengeAsync(
-        Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme,
-        new Microsoft.AspNetCore.Authentication.AuthenticationProperties
-        {
-            RedirectUri = returnUrl2
-        });
+    try
+    {
+        // Trigger authentication challenge with OpenID Connect
+        await context.ChallengeAsync(
+            Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme,
+            new Microsoft.AspNetCore.Authentication.AuthenticationProperties
+            {
+                RedirectUri = returnUrl2
+            });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Web] /signin-logto - Challenge failed: {ex.GetType().Name}");
+        Console.WriteLine($"[Web] /signin-logto - Error: {ex.Message}");
+        
+        // Redirect to home with error parameter
+        context.Response.Redirect("/?auth-error=challenge-failed");
+    }
 }).AllowAnonymous();
 
 app.MapGet("/signout-logto", async (HttpContext context) =>
