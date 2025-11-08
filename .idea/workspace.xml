@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b1fdbdc8-2716-46ce-b5ab-8f9c8f6ec8b2" name="Changes" comment="updated build-docs.yml workflow">
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/RAILWAY_LOGTO_AUTH_FIX.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/RAILWAY_PORT_80_CONFIGURATION.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.ApiService/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.ApiService/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.Web/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/COMPLETE_RAILWAY_SOLUTION.md" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/COMPLETE_RAILWAY_SOLUTION.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SaaS-Factory.sln" beforeDir="false" afterPath="$PROJECT_DIR$/SaaS-Factory.sln" afterDir="false" />
-    </list>
+    <list default="true" id="b1fdbdc8-2716-46ce-b5ab-8f9c8f6ec8b2" name="Changes" comment="updated build-docs.yml workflow" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

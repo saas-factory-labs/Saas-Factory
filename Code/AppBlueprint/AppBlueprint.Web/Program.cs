@@ -213,10 +213,13 @@ if (hasLogtoConfig)
         options.RequireHttpsMetadata = false;
         
         // Configure timeout for metadata retrieval
-        // Railway needs more time than local (30s vs 10s) even though endpoint is accessible
+        // Railway has severe network issues reaching Logto (30s+ timeouts)
+        // Increase to 60s and add aggressive retry settings
         options.BackchannelTimeout = builder.Environment.IsDevelopment() 
             ? TimeSpan.FromSeconds(10) 
-            : TimeSpan.FromSeconds(30);
+            : TimeSpan.FromSeconds(60);
+        
+        Console.WriteLine($"[Web] Backchannel timeout set to: {options.BackchannelTimeout.TotalSeconds}s");
         
         // Configure HTTP client for better error handling
         options.BackchannelHttpHandler = new HttpClientHandler
@@ -225,9 +228,13 @@ if (hasLogtoConfig)
             AllowAutoRedirect = true,
             MaxAutomaticRedirections = 5,
             // Add connection settings for Railway
-            MaxConnectionsPerServer = 10,
-            UseProxy = false
+            MaxConnectionsPerServer = 20,
+            UseProxy = false,
+            AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
         };
+        
+        Console.WriteLine("[Web] ⚠️  WARNING: Railway → Logto network connectivity is very slow (30s+ timeouts)");
+        Console.WriteLine("[Web] If authentication fails, this is a network/firewall issue between Railway and Logto");
         
         // Set metadata address explicitly to help with Railway routing
         options.MetadataAddress = $"{logtoEndpoint}/.well-known/openid-configuration";
@@ -560,7 +567,10 @@ app.MapGet("/test-logto-connection", async () =>
         timestamp = DateTime.UtcNow,
         railway = !app.Environment.IsDevelopment(),
         tests = results,
-        action = "⚠️ If authentication fails, verify that the redirect URIs above are configured in your Logto application settings"
+        networkIssue = "⚠️ CRITICAL: Railway cannot reach Logto (30s+ timeout). This is a Railway network/firewall issue.",
+        action = "Authentication will likely fail until Railway can establish connection to Logto servers.",
+        workaround = "Increased backchannel timeout to 60s - authentication may work but will be very slow",
+        redirectUrisConfigured = "Make sure these URIs are in Logto: https://appblueprint-web-staging.up.railway.app/callback"
     }, 
     new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
 });
