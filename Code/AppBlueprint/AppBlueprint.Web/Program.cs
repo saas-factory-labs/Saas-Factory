@@ -72,37 +72,50 @@ builder.Services.AddSingleton(navigationRoutes);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
+    // Always listen on HTTP port 80
     options.ListenAnyIP(80);
-    string certPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "ASP.NET", "Https", "web-service.pfx");
-    string certPassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD") ?? "";
-
-    options.ListenAnyIP(443, listenOptions =>
+    
+    // Only configure HTTPS in Development mode
+    // In production (Railway), TLS is handled at the edge/load balancer
+    if (builder.Environment.IsDevelopment())
     {
-        if (File.Exists(certPath))
+        string certPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "ASP.NET", "Https", "web-service.pfx");
+        string certPassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD") ?? "";
+
+        options.ListenAnyIP(443, listenOptions =>
         {
-            try
+            if (File.Exists(certPath))
             {
-                var cert = X509CertificateLoader.LoadPkcs12FromFile(certPath, certPassword, X509KeyStorageFlags.DefaultKeySet);
-                listenOptions.UseHttps(cert);
+                try
+                {
+                    var cert = X509CertificateLoader.LoadPkcs12FromFile(certPath, certPassword, X509KeyStorageFlags.DefaultKeySet);
+                    listenOptions.UseHttps(cert);
+                    Console.WriteLine("[Web] HTTPS configured with custom certificate");
+                }
+                catch (System.Security.Cryptography.CryptographicException ex)
+                {
+                    Console.WriteLine($"Certificate error: {ex.Message}. Using default HTTPS.");
+                    listenOptions.UseHttps();
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    Console.WriteLine($"Certificate access error: {ex.Message}. Using default HTTPS.");
+                    listenOptions.UseHttps();
+                }
             }
-            catch (System.Security.Cryptography.CryptographicException ex)
+            else
             {
-                Console.WriteLine($"Certificate error: {ex.Message}. Using default HTTPS.");
                 listenOptions.UseHttps();
+                Console.WriteLine("[Web] HTTPS configured with default dev certificate");
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                Console.WriteLine($"Certificate access error: {ex.Message}. Using default HTTPS.");
-                listenOptions.UseHttps();
-            }
-        }
-        else
-        {
-            listenOptions.UseHttps();
-        }
-    });
+        });
+    }
+    else
+    {
+        Console.WriteLine("[Web] Production mode - HTTPS disabled (handled by Railway edge)");
+    }
 });
 
 builder.Services.ConfigureHttpClientDefaults(http =>
