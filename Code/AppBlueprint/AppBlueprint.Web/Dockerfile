@@ -15,25 +15,26 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy package management files
-COPY Directory.Packages.props ./
-COPY NuGet.Config /root/.nuget/NuGet.Config
+COPY Code/AppBlueprint/Directory.Packages.props ./
+COPY Code/AppBlueprint/NuGet.Config /root/.nuget/NuGet.Config
 
 # Copy project files for Web and all dependencies
-COPY ["AppBlueprint.Web/AppBlueprint.Web.csproj", "AppBlueprint.Web/"]
-COPY ["AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj", "AppBlueprint.ServiceDefaults/"]
-COPY ["AppBlueprint.TodoAppKernel/AppBlueprint.TodoAppKernel.csproj", "AppBlueprint.TodoAppKernel/"]
-COPY ["Shared-Modules/AppBlueprint.Api.Client.Sdk/AppBlueprint.Api.Client.Sdk.csproj", "Shared-Modules/AppBlueprint.Api.Client.Sdk/"]
-COPY ["Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj", "Shared-Modules/AppBlueprint.Application/"]
-COPY ["Shared-Modules/AppBlueprint.Domain/AppBlueprint.Domain.csproj", "Shared-Modules/AppBlueprint.Domain/"]
-COPY ["Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj", "Shared-Modules/AppBlueprint.Infrastructure/"]
-COPY ["Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj", "Shared-Modules/AppBlueprint.SharedKernel/"]
-COPY ["Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj", "Shared-Modules/AppBlueprint.UiKit/"]
+COPY ["Code/AppBlueprint/AppBlueprint.Web/AppBlueprint.Web.csproj", "AppBlueprint.Web/"]
+COPY ["Code/AppBlueprint/AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj", "AppBlueprint.ServiceDefaults/"]
+COPY ["Code/AppBlueprint/AppBlueprint.TodoAppKernel/AppBlueprint.TodoAppKernel.csproj", "AppBlueprint.TodoAppKernel/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/AppBlueprint.Api.Client.Sdk.csproj", "Shared-Modules/AppBlueprint.Api.Client.Sdk/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj", "Shared-Modules/AppBlueprint.Application/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/AppBlueprint.Contracts.csproj", "Shared-Modules/AppBlueprint.Contracts/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/AppBlueprint.Domain.csproj", "Shared-Modules/AppBlueprint.Domain/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj", "Shared-Modules/AppBlueprint.Infrastructure/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj", "Shared-Modules/AppBlueprint.SharedKernel/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj", "Shared-Modules/AppBlueprint.UiKit/"]
 
 # Restore dependencies
 RUN dotnet restore "AppBlueprint.Web/AppBlueprint.Web.csproj"
 
 # Copy the rest of the source code
-COPY . .
+COPY Code/AppBlueprint/ .
 
 WORKDIR "/src/AppBlueprint.Web"
 
