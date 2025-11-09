@@ -3,10 +3,24 @@
 @namespace AppBlueprint.UiKit.Components.Pages
 
 @page "/dashboard"
+@attribute [Authorize]
 @using AppBlueprint.UiKit.Components.Charts
 @using AppBlueprint.UiKit.Components.Dashboard
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 
 <PageTitle> Dashboard - AppBlueprint</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        @* Content for authenticated users *@
+        <MudText> LOGGED IN  </MudText>
+    </Authorized>
+    <NotAuthorized>
+        @* Content for unauthenticated users *@
+        <MudText> NOT LOGGED IN  </MudText>
+    </NotAuthorized>
+</AuthorizeView>
 
 <DashboardGrid/>
 

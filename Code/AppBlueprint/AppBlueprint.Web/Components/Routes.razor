@@ -1,10 +1,10 @@
 @using System.Reflection
 @using AppBlueprint.UiKit.Models
 @using Microsoft.AspNetCore.Components.Authorization
-@using AppBlueprint.Web.Components.Shared
 @inherits LayoutComponentBase
 
 @inject List<NavLinkMetadata> Links
+@inject NavigationManager NavigationManager
 
 <CascadingAuthenticationState>
     <CascadingValue Value="Links">
@@ -15,7 +15,7 @@
                     <NotAuthorized>
                         @if (context.User.Identity?.IsAuthenticated != true)
                         {
-                            <RedirectToLogin />
+                            @RedirectToLogin()
                         }
                         else
                         {
@@ -47,5 +47,10 @@
     {
         Console.WriteLine($"[Routes] Navigation links injected: {Links?.Count ?? 0}");
     }
+
+    private RenderFragment RedirectToLogin() => _ =>
+    {
+        NavigationManager.NavigateTo("/login", forceLoad: true);
+    };
 }
 

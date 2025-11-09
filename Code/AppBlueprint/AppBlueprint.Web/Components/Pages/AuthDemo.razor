@@ -3,9 +3,26 @@
 @inject IUserAuthenticationProvider AuthProvider
 @inject ITokenStorageService TokenStorage
 
-<PageTitle>Authentication Demo</PageTitle>
+<PageTitle>Authentication Demo (DEPRECATED)</PageTitle>
 
-<h3>JWT Token Demo - Blazor Server</h3>
+<MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Class="mb-4">
+    <MudText Typo="Typo.h6">⚠️ DEPRECATED DEMO PAGE</MudText>
+    <MudText Typo="Typo.body2" Class="mt-2">
+        This page demonstrates the <strong>legacy custom authentication system</strong> which is deprecated.
+    </MudText>
+    <MudText Typo="Typo.body2" Class="mt-2">
+        The application now uses <strong>ASP.NET Core authentication with Logto SDK</strong>.
+    </MudText>
+    <MudText Typo="Typo.body2" Class="mt-2">
+        This page is kept for reference only and will be removed in a future version.
+    </MudText>
+    <MudDivider Class="my-2" />
+    <MudText Typo="Typo.body2">
+        <strong>Current Authentication System:</strong> Use the "Sign In with Logto" button on the login page.
+    </MudText>
+</MudAlert>
+
+<h3>JWT Token Demo - Blazor Server (Legacy)</h3>
 
 <MudCard Class="my-4">
     <MudCardContent>

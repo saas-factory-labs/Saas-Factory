@@ -26,26 +26,25 @@ internal static class Program // Make class static
            options.ValidateOnBuild = true;
        });
 
-        // Configure Kestrel to use port 80 for Railway compatibility
+        // Configure Kestrel ports based on environment
         builder.WebHost.ConfigureKestrel(options =>
         {
-            // Always listen on HTTP port 80 (Railway requirement)
-            options.ListenAnyIP(80);
-            
-            // Only configure HTTPS in Development mode
-            // In production (Railway), TLS is handled at the edge/load balancer
             if (builder.Environment.IsDevelopment())
             {
-                // In development, also listen on 443 for HTTPS
-                options.ListenAnyIP(443, listenOptions =>
+                // Development: Use non-privileged ports that don't require admin
+                options.ListenAnyIP(8081); // HTTP on 8081
+                options.ListenAnyIP(8082, listenOptions =>
                 {
                     listenOptions.UseHttps();
                 });
-                Console.WriteLine("[API] Development mode - HTTP (80) and HTTPS (443) enabled");
+                Console.WriteLine("[API] Development mode - HTTP (8081) and HTTPS (8082) enabled");
             }
             else
             {
-                Console.WriteLine("[API] Production mode - HTTP only (80), HTTPS handled by Railway edge");
+                // Production (Railway): Use port 80 as Railway expects
+                // TLS is handled at the edge/load balancer
+                options.ListenAnyIP(80);
+                Console.WriteLine("[API] Production mode - HTTP (80) enabled, TLS handled by Railway");
             }
         });
 
