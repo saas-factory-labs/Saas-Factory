@@ -10,13 +10,20 @@
     </MudAlert>
 }
 
-<p>Checking authentication...</p>
+<div class="d-flex justify-center align-center" style="height: 100vh;">
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    <MudText Typo="Typo.h6" Class="ml-4">Checking authentication...</MudText>
+</div>
 
 @code {
     private string? _errorMessage;
     
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("========================================");
+        Console.WriteLine("[RedirectRoot] OnInitializedAsync START");
+        Console.WriteLine("========================================");
+        
         // Check for authentication error in query string
         var uri = new Uri(Navigation.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
@@ -27,7 +34,7 @@
             _errorMessage = authError switch
             {
                 "session-expired" => "Your login session expired. Please sign in again.",
-                "redirect-uri-mismatch" => "❌ Redirect URI not configured in Logto. Please add 'https://appblueprint-web-staging.up.railway.app/callback' to your Logto application's Redirect URIs.",
+                "redirect-uri-mismatch" => "❌ Redirect URI not configured in Logto. Please add the correct redirect URI to your Logto application's settings.",
                 "logto-unreachable" => "Cannot connect to the authentication provider. Please check your network connection.",
                 "network-failed" => "Network error during authentication. Please try again.",
                 "auth-failed" => "Authentication failed. Please try again or contact support.",
@@ -36,26 +43,32 @@
                 _ => "Authentication error occurred. Please try again or check the application logs."
             };
             
-            Console.WriteLine($"[RedirectRoot] Authentication error: {authError} - {_errorMessage}");
+            Console.WriteLine($"[RedirectRoot] ❌ Authentication error: {authError}");
+            Console.WriteLine($"[RedirectRoot] Error message: {_errorMessage}");
         }
         
         // Check if user is authenticated using ASP.NET Core auth state
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        var isAuthenticated = user?.Identity?.IsAuthenticated == true;
+        var isAuthenticated = user.Identity?.IsAuthenticated == true;
         
-        Console.WriteLine($"[RedirectRoot] User authenticated: {isAuthenticated}, Name: {user?.Identity?.Name}");
+        Console.WriteLine($"[RedirectRoot] Authentication check:");
+        Console.WriteLine($"[RedirectRoot]   - Is Authenticated: {isAuthenticated}");
+        Console.WriteLine($"[RedirectRoot]   - User Name: {user.Identity?.Name ?? "(none)"}");
+        Console.WriteLine($"[RedirectRoot]   - Claims Count: {user.Claims.Count()}");
         
         if (isAuthenticated)
         {
             // Authenticated users go to dashboard
-            Console.WriteLine("[RedirectRoot] Redirecting to /dashboard");
+            Console.WriteLine("[RedirectRoot] ✅ User is authenticated - redirecting to /dashboard");
+            Console.WriteLine("========================================");
             Navigation.NavigateTo("/dashboard", forceLoad: false);
         }
         else
         {
             // Non-authenticated users go to login
-            Console.WriteLine("[RedirectRoot] Redirecting to /login");
+            Console.WriteLine("[RedirectRoot] ❌ User is NOT authenticated - redirecting to /login");
+            Console.WriteLine("========================================");
             Navigation.NavigateTo("/login", forceLoad: false);
         }
     }

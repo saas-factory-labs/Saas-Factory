@@ -7,10 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <!-- Framework references for ASP.NET Core types -->
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!-- Authentication and Security -->
-        <PackageReference Include="Microsoft.AspNetCore.Authorization"/>
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection"/>
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions"/>
+        <PackageReference Include="Logto.AspNetCore.Authentication"/>
         
         <!-- API and Documentation -->
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions"/>
@@ -23,8 +26,6 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
         
         <!-- Configuration and Hosting -->
-        <PackageReference Include="Microsoft.Extensions.Configuration"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
         <PackageReference Include="Microsoft.Extensions.Compliance.Redaction"/>
         <PackageReference Include="Microsoft.Extensions.Compliance.Abstractions"/>
@@ -49,9 +50,7 @@
         <PackageReference Include="AutoBogus"/>
         <PackageReference Include="Bogus"/>
 
-        <!-- Browser Storage and Reverse Proxy -->
-        <PackageReference Include="Microsoft.AspNetCore.Components"/>
-        <PackageReference Include="Microsoft.JSInterop"/>
+        <!-- Reverse Proxy -->
         <PackageReference Include="Yarp.ReverseProxy"/>
     </ItemGroup>
 

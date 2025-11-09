@@ -1,10 +1,12 @@
 @page "/account-settings"
+@attribute [Authorize]
 @using AppBlueprint.UiKit.Components.AccountSettings.BillingInvoices
 @using AppBlueprint.UiKit.Components.AccountSettings.Feedback
 @using AppBlueprint.UiKit.Components.AccountSettings.MyAccount
 @using AppBlueprint.UiKit.Components.AccountSettings.MyConnectedApps
 @using AppBlueprint.UiKit.Components.AccountSettings.MyNotifications
 @using AppBlueprint.UiKit.Components.AccountSettings.Plans
+@using Microsoft.AspNetCore.Authorization
 
 <PageTitle> Account Settings - AppBlueprint</PageTitle>
 

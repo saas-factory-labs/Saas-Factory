@@ -1,49 +1,126 @@
-@* Removed @page "/login" directive - this component conflicts with AppBlueprint.Web\Components\Pages\Login.razor *@
-@* Use the Login.razor in AppBlueprint.Web instead which has full error handling *@
+@* @page "/logto-signin" *@
+@page "/login"
 @using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 
-<PageTitle>Login - AppBlueprint</PageTitle>
+<PageTitle>Sign In</PageTitle>
 
-<!-- Show loading screen while redirecting to Logto -->
-<div class="login-page-wrapper">
-    <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center justify-center" Style="min-height: 100vh;">
-        <MudPaper Elevation="3" Class="pa-6 text-center">
-            <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" Class="mb-4" />
-            <MudText Typo="Typo.h5" Class="mb-2">Checking authentication...</MudText>
-            <MudText Typo="Typo.body2" Color="Color.Secondary">Please wait...</MudText>
-        </MudPaper>
-    </MudContainer>
-</div>
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
+    <MudPaper Class="pa-8" Elevation="4">
+        <div class="d-flex flex-column align-center">
+            <MudText Typo="Typo.h4" Class="mb-2">Welcome to AppBlueprint</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Default" Class="mb-6" Align="Align.Center">
+                Sign in to access your todos and manage your tasks
+            </MudText>
 
-<style>
-    .login-page-wrapper {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-</style>
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-4" Variant="Variant.Filled">
+                    <MudText Typo="Typo.body2">@_errorMessage</MudText>
+                    @if (_errorMessage.Contains("Redirect URI") || _errorMessage.Contains("Configuration Error"))
+                    {
+                        <MudButton Href="/auth-config-help" Variant="Variant.Text" Color="Color.Default" Class="mt-2"
+                                   Style="color: white;">
+                            View Configuration Help →
+                        </MudButton>
+                    }
+                </MudAlert>
+            }
+
+            <p>Is authenticated: @User.Identity?.IsAuthenticated</p>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           OnClick="SignOut">
+                    Sign In with Logto
+                </MudButton>
+            }
+            else
+            {
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           OnClick="SignOut">
+                    Sign In with Logto
+                </MudButton>
+            }
+
+            <MudText Typo="Typo.caption" Color="Color.Default" Class="mt-4" Align="Align.Center">
+                You'll be redirected to Logto for secure authentication
+            </MudText>
+        </div>
+    </MudPaper>
+</MudContainer>
 
 @code {
+    private string? _errorMessage;
+
+    private ClaimsPrincipal? User { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         // Check if user is already authenticated
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        
-        if (user?.Identity?.IsAuthenticated == true)
+        User = authState.User;
+        var isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+        if (isAuthenticated)
         {
-            Console.WriteLine($"[Login] User already authenticated: {user.Identity.Name} - redirecting to home");
-            NavigationManager.NavigateTo("/", forceLoad: true);
+            Console.WriteLine($"[Login] User already authenticated: {User.Identity?.Name} - redirecting to dashboard");
+            NavigationManager.NavigateTo("/dashboard", forceLoad: false);
+            return;
         }
-        else
+
+        // Check for authentication error in query string
+        var uri = new Uri(NavigationManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var authError = query["auth-error"];
+
+        if (!string.IsNullOrEmpty(authError))
         {
-            Console.WriteLine("[Login] User not authenticated - redirecting to /signin-logto");
-            NavigationManager.NavigateTo("/signin-logto", forceLoad: true);
+            _errorMessage = authError switch
+            {
+                "session-expired" => "Your login session expired. Please click the button below to sign in again.",
+                "redirect-uri-mismatch" => "❌ Configuration Error: Redirect URI not configured in Logto. Contact your administrator.",
+                "logto-unreachable" => "Cannot connect to authentication service. Please check your network.",
+                "network-failed" => "Network error during authentication. Please try again.",
+                "auth-failed" => "Authentication failed. Please try again.",
+                "remote-failed" => "Authentication service error. Please contact support if this persists.",
+                "challenge-failed" => "Failed to start authentication. Please try again.",
+                _ => "Authentication error. Please try again."
+            };
+
+            Console.WriteLine($"[Login] Authentication error: {authError} - {_errorMessage}");
         }
     }
+
+    private void SignIn()
+    {
+        NavigationManager.NavigateTo("/SignIn", forceLoad: true);
+    }
+
+    private void SignOut()
+    {
+        NavigationManager.NavigateTo("/SignOut", forceLoad: true);
+    }
+
+    private void HandleSignIn()
+    {
+        Console.WriteLine("[Login] Sign in button clicked - navigating to /SignIn with forceLoad (Logto SDK)");
+        // Force a full page load to trigger server-side authentication
+        NavigationManager.NavigateTo("/SignIn", forceLoad: true);
+    }
+
 }
+
+
+
+
 

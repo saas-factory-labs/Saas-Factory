@@ -1,9 +1,9 @@
 @* all injections need to be at the top of the file or it wont work! *@
+@implements IDisposable
 @inject IDialogService DialogService
-@using AppBlueprint.Infrastructure.Authorization
-@using AppBlueprint.UiKit.Components.Authentication
-@inject IUserAuthenticationProvider AuthenticationProvider
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
 
@@ -36,7 +36,7 @@
                OnClick="ChangeTheme" Color="Color.Inherit" Variant="Variant.Text">
     </MudButton>
 
-    @if (IsAuthenticated)
+    @if (_isAuthenticated)
     {
         <MudMenu StartIcon="@Icons.Material.Filled.Person" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Label="Account"
                 Color="Color.Primary" Variant="Variant.Filled" IconColor="Color.Default">
@@ -64,13 +64,35 @@
 @code{
     [Parameter] public EventCallback OnToggleDrawer { get; set; }
     [Parameter] public required RenderFragment ChildContent { get; set; }
-    
-    [CascadingParameter]
-    public required AuthProvider Auth { get; set; }
 
     private bool _isDarkMode = true; // Default to dark mode
+    private bool _isAuthenticated = false;
     
-    private bool IsAuthenticated => Auth?.IsAuthenticated ?? AuthenticationProvider.IsAuthenticated();
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckAuthenticationState();
+        
+        // Subscribe to authentication state changes
+        AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+    }
+    
+    private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+    {
+        await CheckAuthenticationState();
+        await InvokeAsync(StateHasChanged);
+    }
+    
+    private async Task CheckAuthenticationState()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _isAuthenticated = authState.User?.Identity?.IsAuthenticated ?? false;
+        Console.WriteLine($"[Appbar] Authentication state checked: {_isAuthenticated}");
+    }
+    
+    public void Dispose()
+    {
+        AuthenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+    }
 
     private void ToggleDrawer()
     {
@@ -95,7 +117,7 @@
         Console.WriteLine($"Theme toggled. IsDarkMode: {_isDarkMode}");
     }
 
-    // Handle logout action - Updated for OpenID Connect
+    // Handle logout action - Updated for Logto SDK
     private void HandleLogoutDirectly()
     {
         Console.WriteLine("========================================");
@@ -104,12 +126,12 @@
         
         try
         {
-            Console.WriteLine("[Appbar] Navigating to /signout-logto endpoint");
+            Console.WriteLine("[Appbar] Navigating to /SignOut endpoint (Logto SDK)");
             
-            // Navigate to the signout endpoint which handles OpenID Connect logout
-            NavigationManager.NavigateTo("/signout-logto", forceLoad: true);
+            // Navigate to the signout endpoint which handles Logto SDK logout
+            NavigationManager.NavigateTo("/SignOut", forceLoad: true);
             
-            Console.WriteLine("[Appbar] Navigation to /signout-logto initiated");
+            Console.WriteLine("[Appbar] Navigation to /SignOut initiated");
         }
         catch (Exception ex)
         {

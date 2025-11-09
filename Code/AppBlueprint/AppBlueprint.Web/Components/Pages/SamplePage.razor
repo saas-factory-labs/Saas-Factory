@@ -10,18 +10,18 @@
 
 <h1>Sample Page</h1>
 
-@if (!string.IsNullOrEmpty(loginError))
+@if (!string.IsNullOrEmpty(_loginError))
 {
-    <p style="color: red;">@loginError</p>
+    <p style="color: red;">@_loginError</p>
 }
-@if (data is null)
+@if (_data is null)
 {
     <p>Loading...</p>
 }
 else
 {
     <ul>
-        @foreach (var item in data)
+        @foreach (var item in _data)
         {
             <li>@item.Name</li>
         }
@@ -29,28 +29,28 @@ else
 }
 
 @code {
-    private IEnumerable<AccountEntity> data = Enumerable.Empty<AccountEntity>();
-    private string loginError = string.Empty;
+    private IEnumerable<AccountEntity> _data = Enumerable.Empty<AccountEntity>();
+    private string _loginError = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         // Log in using preset credentials.
         // Adjust "user@example.com" and "UserPassword" to your valid credentials.
-        var loggedIn = await AuthProvider.LoginAsync("deltacaspi@gmail.com", "12345678");
+        var loggedIn = await AuthProvider.LoginAsync("", "12345678");
         if (!loggedIn)
         {
-            loginError = "Login failed. Please check your credentials.";
+            _loginError = "Login failed. Please check your credentials.";
             return;
         }
 
         // If login is successful, call the API to get the data.
         try
         {
-            data = await ApiClient.Api.V1.Account.GetAccounts.GetAsync();
+            _data = await ApiClient.Api.V1.Account.GetAccounts.GetAsync();
         }
         catch (Exception ex)
         {
-            loginError = $"Error calling API: {ex.Message}";
+            _loginError = $"Error calling API: {ex.Message}";
         }
     }
 

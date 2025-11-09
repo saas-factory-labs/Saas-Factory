@@ -1,0 +1,113 @@
+@page "/auth-config-help"
+@inject NavigationManager Navigation
+
+<PageTitle>Authentication Configuration Help</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudPaper Class="pa-6" Elevation="4">
+        <MudText Typo="Typo.h4" GutterBottom="true">⚙️ Authentication Configuration Help</MudText>
+        
+        <MudAlert Severity="Severity.Info" Class="mb-4">
+            If login is not working, you need to configure the redirect URIs in your Logto application settings.
+        </MudAlert>
+
+        <MudText Typo="Typo.h6" GutterBottom="true">Current Application URL:</MudText>
+        <MudPaper Class="pa-3 mb-4" Elevation="0" Style="background-color: #f5f5f5;">
+            <MudText Typo="Typo.body2" Style="font-family: monospace;">@_currentBaseUrl</MudText>
+        </MudPaper>
+
+        <MudText Typo="Typo.h6" GutterBottom="true">Required Redirect URIs in Logto:</MudText>
+        <div class="mb-4">
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.Link" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2" Style="font-family: monospace;">@(_currentBaseUrl)/callback</MudText>
+            </div>
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.Link" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2" Style="font-family: monospace;">@(_currentBaseUrl)/signout-callback-logto</MudText>
+            </div>
+        </div>
+
+        <MudDivider Class="my-4" />
+
+        <MudText Typo="Typo.h6" GutterBottom="true">Steps to Configure Logto:</MudText>
+        <div class="mb-4">
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2">Go to <MudLink Href="https://32nkyp.logto.app/console" Target="_blank">Logto Console</MudLink></MudText>
+            </div>
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2">Navigate to Applications → Your Application</MudText>
+            </div>
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2">Add the URIs above to "Redirect URIs" section</MudText>
+            </div>
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2">Add the signout URI to "Post sign-out redirect URIs" section</MudText>
+            </div>
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2">Click "Save changes"</MudText>
+            </div>
+        </div>
+
+        <MudDivider Class="my-4" />
+
+        <MudText Typo="Typo.h6" GutterBottom="true">Common URLs to Add:</MudText>
+        <MudText Typo="Typo.body2" Class="mb-2">For development:</MudText>
+        <div class="mb-4 ml-4">
+            <div class="d-flex align-center mb-1">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2" Style="font-family: monospace;">http://localhost/callback</MudText>
+            </div>
+            <div class="d-flex align-center mb-1">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2" Style="font-family: monospace;">https://localhost/callback</MudText>
+            </div>
+            <div class="d-flex align-center mb-1">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2" Style="font-family: monospace;">http://localhost:80/callback</MudText>
+            </div>
+            <div class="d-flex align-center mb-1">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2" Style="font-family: monospace;">https://localhost:443/callback</MudText>
+            </div>
+        </div>
+
+        <MudText Typo="Typo.body2" Class="mb-2 mt-4">For production (Railway):</MudText>
+        <div class="mb-4 ml-4">
+            <div class="d-flex align-center mb-1">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2" Style="font-family: monospace;">https://appblueprint-web-staging.up.railway.app/callback</MudText>
+            </div>
+            <div class="d-flex align-center mb-1">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Class="mr-2" />
+                <MudText Typo="Typo.body2" Style="font-family: monospace;">https://appblueprint-web-staging.up.railway.app/signout-callback-logto</MudText>
+            </div>
+        </div>
+
+        <MudDivider Class="my-4" />
+
+        <MudButton Href="/login" Variant="Variant.Filled" Color="Color.Primary" Class="mr-2">
+            Try Login Again
+        </MudButton>
+        <MudButton Href="/" Variant="Variant.Text" Color="Color.Default">
+            Back to Home
+        </MudButton>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private string _currentBaseUrl = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(Navigation.Uri);
+        _currentBaseUrl = $"{uri.Scheme}://{uri.Authority}";
+        Console.WriteLine($"[AuthConfigHelp] Current base URL: {_currentBaseUrl}");
+    }
+}
+
