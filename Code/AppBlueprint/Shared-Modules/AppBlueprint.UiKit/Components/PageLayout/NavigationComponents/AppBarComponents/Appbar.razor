@@ -44,7 +44,7 @@
                 <MudNavLink Href="/account-settings" Icon="@Icons.Material.Filled.Settings">Account Settings
                 </MudNavLink>
             </MudMenuItem>
-            <MudMenuItem OnClick="HandleLogoutDirectly">
+            <MudMenuItem Href="/SignOut/Local">
                 <div class="d-flex align-center">
                     <MudIcon Icon="@Icons.Material.Filled.Logout" Class="mr-2" />
                     Sign Out
@@ -117,7 +117,7 @@
         Console.WriteLine($"Theme toggled. IsDarkMode: {_isDarkMode}");
     }
 
-    // Handle logout action - Updated for Logto SDK
+    // Handle logout action - Full Logto sign-out
     private void HandleLogoutDirectly()
     {
         Console.WriteLine("========================================");
@@ -126,9 +126,12 @@
         
         try
         {
-            Console.WriteLine("[Appbar] Navigating to /SignOut endpoint (Logto SDK)");
+            // Full sign-out from both app and Logto IdP
+            Console.WriteLine("[Appbar] Navigating to /SignOut endpoint (Full Logto sign-out)");
             
-            // Navigate to the signout endpoint which handles Logto SDK logout
+            // Navigate to the signout endpoint which handles full Logto logout
+            // This will redirect to Logto's end session endpoint, sign out from IdP,
+            // and then redirect back to /login
             NavigationManager.NavigateTo("/SignOut", forceLoad: true);
             
             Console.WriteLine("[Appbar] Navigation to /SignOut initiated");

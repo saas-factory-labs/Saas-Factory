@@ -85,49 +85,21 @@ var navigationRoutes = builder.Configuration
     .Get<List<NavLinkMetadata>>() ?? new List<NavLinkMetadata>();
 builder.Services.AddSingleton(navigationRoutes);
 
-builder.WebHost.ConfigureKestrel(options =>
+// Only configure Kestrel ports for production (Railway)
+// In development, Aspire AppHost controls the ports
+if (!builder.Environment.IsDevelopment())
 {
-    // Always listen on HTTP port 80
-    options.ListenAnyIP(80);
-    
-    // Only configure HTTPS in Development mode
-    // In production (Railway), TLS is handled at the edge/load balancer
-    if (builder.Environment.IsDevelopment())
+    builder.WebHost.ConfigureKestrel(options =>
     {
-        string certPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "ASP.NET", "Https", "web-service.pfx");
-        string certPassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD") ?? "";
-
-        // Only configure HTTPS if certificate exists
-        if (File.Exists(certPath))
-        {
-            options.ListenAnyIP(443, listenOptions =>
-            {
-                try
-                {
-                    var cert = X509CertificateLoader.LoadPkcs12FromFile(certPath, certPassword, X509KeyStorageFlags.DefaultKeySet);
-                    listenOptions.UseHttps(cert);
-                    Console.WriteLine("[Web] HTTPS configured with custom certificate on port 443");
-                }
-                catch (System.Security.Cryptography.CryptographicException ex)
-                {
-                    Console.WriteLine($"Certificate error: {ex.Message}. Using default HTTPS.");
-                    listenOptions.UseHttps();
-                }
-                catch (UnauthorizedAccessException ex)
-                {
-                    Console.WriteLine($"Certificate access error: {ex.Message}. Using default HTTPS.");
-                    listenOptions.UseHttps();
-                }
-            });
-        }
-    }
-    else
-    {
-        Console.WriteLine("[Web] Production mode - HTTPS disabled (handled by Railway edge)");
-    }
-});
+        // Production (Railway): Use port 80
+        options.ListenAnyIP(80);
+        Console.WriteLine("[Web] Production mode - HTTP (80), HTTPS handled by Railway edge");
+    });
+}
+else
+{
+    Console.WriteLine("[Web] Development mode - Ports controlled by Aspire AppHost");
+}
 
 builder.Services.ConfigureHttpClientDefaults(http =>
 {
@@ -225,7 +197,7 @@ app.MapRazorComponents<App>()
 
 // Logto authentication endpoints - EXACTLY as per documentation
 // https://docs.logto.io/quick-starts/dotnet-core/blazor-server
-app.MapAuthenticationEndpoints();
+app.MapAuthenticationEndpoints(builder.Configuration);
 
 // Diagnostic endpoint to test Logto connectivity from Railway
 app.MapLogtoTestEndpoint(builder.Configuration, app.Environment);

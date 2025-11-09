@@ -107,46 +107,184 @@ public static class WebAuthenticationExtensions
     /// Maps authentication endpoints (sign in, sign out) for the web application.
     /// </summary>
     /// <param name="app">The web application</param>
+    /// <param name="configuration">The configuration to get Logto endpoint</param>
     /// <returns>The web application for chaining</returns>
-    public static WebApplication MapAuthenticationEndpoints(this WebApplication app)
+    public static WebApplication MapAuthenticationEndpoints(this WebApplication app, IConfiguration configuration)
     {
         // Sign in endpoint
-        // app.MapGet("/SignIn", () =>
-        // {
-        //     // Trigger authentication
-        //     return Results.Challenge(
-        //         new AuthenticationProperties { RedirectUri = "/" });
-        // }).AllowAnonymous();
-        
         app.MapGet("/SignIn", async context =>
         {
+            Console.WriteLine("========================================");
+            Console.WriteLine("[Web] SignIn endpoint called");
+            Console.WriteLine($"[Web] User authenticated: {context.User?.Identity?.IsAuthenticated ?? false}");
+            Console.WriteLine($"[Web] User name: {context.User?.Identity?.Name ?? "null"}");
+            Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+            
             if (!(context.User?.Identity?.IsAuthenticated ?? false))
             {
-                await context.ChallengeAsync(new AuthenticationProperties { RedirectUri = "/" });
-            } else {
+                Console.WriteLine("[Web] User NOT authenticated - calling ChallengeAsync to redirect to Logto");
+                Console.WriteLine("[Web] Redirect URI after login: /");
+                
+                try
+                {
+                    await context.ChallengeAsync(new AuthenticationProperties { RedirectUri = "/" });
+                    Console.WriteLine("[Web] ✅ ChallengeAsync completed - should redirect to Logto now");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[Web] ❌ ERROR in ChallengeAsync: {ex.Message}");
+                    Console.WriteLine($"[Web] Stack trace: {ex.StackTrace}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("[Web] User already authenticated - redirecting to /");
                 context.Response.Redirect("/");
             }
+            
+            Console.WriteLine("========================================");
         });
 
-        // Sign out endpoint  
-        // app.MapGet("/SignOut", () =>
-        // {
-        //     // Trigger sign out using Logto SDK's registered schemes
-        //     // The SDK registers: "Logto.Cookie" and "Logto" (not the default "Cookies" and "OpenIdConnect")
-        //     return Results.SignOut(
-        //         new AuthenticationProperties { RedirectUri = "/" },
-        //         LogtoSchemes);
-        // }).RequireAuthorization();
-        
-        app.MapGet("/SignOut", async context =>
+        // Sign out endpoint - Full Logto sign-out (signs out from both app and Logto IdP)
+        // Sign out endpoint - Full Logto sign-out
+        app.MapGet("/SignOut", async (HttpContext context, IConfiguration config) =>
         {
-            if (context.User?.Identity?.IsAuthenticated ?? false)
+            Console.WriteLine("========================================");
+            Console.WriteLine("[Web] SignOut endpoint called - FULL LOGTO SIGN-OUT");
+            Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+            Console.WriteLine($"[Web] User authenticated: {context.User?.Identity?.IsAuthenticated}");
+            Console.WriteLine($"[Web] User name: {context.User?.Identity?.Name}");
+            
+            // Get the id_token from the authentication properties if available
+            var authenticateResult = await context.AuthenticateAsync("Logto");
+            string? idToken = authenticateResult?.Properties?.GetTokenValue("id_token");
+            
+            Console.WriteLine($"[Web] ID Token available: {idToken != null}");
+            
+            // Clear local authentication cookies first
+            await context.SignOutAsync("Logto.Cookie");
+            Console.WriteLine("[Web] ✅ Cleared Logto.Cookie");
+            
+            // Build Logto's end session URL
+            var logtoEndpoint = config["Logto:Endpoint"];
+            
+            // Construct the post-logout redirect URI
+            // The web runs on 8083 (HTTPS) and 8082 (HTTP) in development, port 80 in production
+            var request = context.Request;
+            var postLogoutRedirectUri = $"{request.Scheme}://{request.Host}/logout-complete";
+            
+            Console.WriteLine($"[Web] Logto endpoint: {logtoEndpoint}");
+            Console.WriteLine($"[Web] Request Host: {request.Host}");
+            Console.WriteLine($"[Web] Post-logout redirect URI: {postLogoutRedirectUri}");
+            
+            // Construct the Logto end session URL according to OIDC spec
+            var endSessionUrl = $"{logtoEndpoint}oidc/session/end?post_logout_redirect_uri={Uri.EscapeDataString(postLogoutRedirectUri)}";
+            
+            // Add id_token_hint if available (recommended for proper sign-out)
+            if (!string.IsNullOrEmpty(idToken))
             {
-                await context.SignOutAsync(new AuthenticationProperties { RedirectUri = "/" });
-            } else {
-                context.Response.Redirect("/");
+                endSessionUrl += $"&id_token_hint={Uri.EscapeDataString(idToken)}";
+                Console.WriteLine("[Web] ✅ Added id_token_hint to sign-out URL");
             }
-        });
+            else
+            {
+                Console.WriteLine("[Web] ⚠️ No id_token available - sign-out might not work properly");
+            }
+            
+            Console.WriteLine($"[Web] ➡️  Redirecting to Logto end session:");
+            Console.WriteLine($"[Web] {endSessionUrl}");
+            Console.WriteLine("========================================");
+            
+            // Redirect to Logto's end session endpoint
+            context.Response.Redirect(endSessionUrl);
+        }).AllowAnonymous();
+
+        // Logout complete callback - where Logto redirects back after sign-out
+        app.MapGet("/logout-complete", async (HttpContext context) =>
+        {
+            Console.WriteLine("========================================");
+            Console.WriteLine("[Web] Logout complete callback - user returned from Logto");
+            Console.WriteLine($"[Web] Current authentication state: {context.User?.Identity?.IsAuthenticated}");
+            
+            // Make absolutely sure cookies are cleared
+            try
+            {
+                await context.SignOutAsync("Logto.Cookie");
+                await context.SignOutAsync("Logto");
+                Console.WriteLine("[Web] ✅ Cleared all authentication cookies");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Web] Cookie clear error (might be already cleared): {ex.Message}");
+            }
+            
+            // Return HTML that uses JavaScript to navigate to login
+            // This ensures a complete page reload and new Blazor circuit
+            context.Response.ContentType = "text/html";
+            await context.Response.WriteAsync(@"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signing out...</title>
+    <script>
+        console.log('[Logout] Redirecting to login page after sign-out');
+        window.location.href = '/login';
+    </script>
+</head>
+<body>
+    <p>Signing out... You will be redirected to the login page.</p>
+    <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
+</body>
+</html>
+");
+            Console.WriteLine("[Web] ✅ Sent HTML redirect to /login");
+            Console.WriteLine("========================================");
+        }).AllowAnonymous();
+
+        // Simple manual sign-out endpoint for debugging (bypasses Logto's end session endpoint)
+        // This just clears local cookies without going to Logto
+        app.MapGet("/SignOut/Local", async (HttpContext context) =>
+        {
+            Console.WriteLine("========================================");
+            Console.WriteLine("[Web] Local sign-out endpoint called (bypassing Logto end session)");
+            Console.WriteLine($"[Web] User was: {context.User?.Identity?.Name ?? "unknown"}");
+            
+            try
+            {
+                // Clear local authentication cookies
+                await context.SignOutAsync("Logto.Cookie");
+                Console.WriteLine("[Web] ✅ Cleared Logto.Cookie");
+                
+                // Return HTML that forces a complete page reload to /login
+                // This ensures Blazor circuit is completely reset
+                context.Response.ContentType = "text/html";
+                await context.Response.WriteAsync(@"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signing out...</title>
+    <meta http-equiv='refresh' content='0; url=/login'>
+    <script>
+        console.log('[SignOut/Local] Redirecting to login page');
+        window.location.replace('/login');
+    </script>
+</head>
+<body>
+    <p>Signing out... You will be redirected to the login page.</p>
+    <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
+</body>
+</html>
+");
+                Console.WriteLine("[Web] ✅ Sent HTML redirect to /login (forced reload)");
+                Console.WriteLine("========================================");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Web] ⚠️ ERROR during local sign-out: {ex.Message}");
+                Console.WriteLine("========================================");
+                context.Response.Redirect("/login");
+            }
+        }).AllowAnonymous();
 
         return app;
     }

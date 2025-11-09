@@ -1,10 +1,9 @@
 @* @page "/logto-signin" *@
 @page "/login"
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@using Microsoft.AspNetCore.Components.Authorization
-@using System.Security.Claims
 
 <PageTitle>Sign In</PageTitle>
 
@@ -30,27 +29,13 @@
                 </MudAlert>
             }
 
-            <p>Is authenticated: @User.Identity?.IsAuthenticated</p>
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Size="Size.Large"
-                           FullWidth="true"
-                           OnClick="SignOut">
-                    Sign In with Logto
-                </MudButton>
-            }
-            else
-            {
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Size="Size.Large"
-                           FullWidth="true"
-                           OnClick="SignOut">
-                    Sign In with Logto
-                </MudButton>
-            }
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       FullWidth="true"
+                       OnClick="SignIn">
+                Sign In with Logto
+            </MudButton>
 
             <MudText Typo="Typo.caption" Color="Color.Default" Class="mt-4" Align="Align.Center">
                 You'll be redirected to Logto for secure authentication
@@ -66,17 +51,23 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine($"[Login] OnInitializedAsync called. Current URL: {NavigationManager.Uri}");
+        
         // Check if user is already authenticated
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         User = authState.User;
         var isAuthenticated = User.Identity?.IsAuthenticated == true;
 
+        Console.WriteLine($"[Login] Authentication check: IsAuthenticated={isAuthenticated}, UserName={User.Identity?.Name ?? "null"}");
+
         if (isAuthenticated)
         {
-            Console.WriteLine($"[Login] User already authenticated: {User.Identity?.Name} - redirecting to dashboard");
+            Console.WriteLine($"[Login] ⚠️ User already authenticated: {User.Identity?.Name} - redirecting to dashboard");
             NavigationManager.NavigateTo("/dashboard", forceLoad: false);
             return;
         }
+        
+        Console.WriteLine("[Login] ✅ User not authenticated - showing login page");
 
         // Check for authentication error in query string
         var uri = new Uri(NavigationManager.Uri);
@@ -103,21 +94,10 @@
 
     private void SignIn()
     {
-        NavigationManager.NavigateTo("/SignIn", forceLoad: true);
-    }
-
-    private void SignOut()
-    {
-        NavigationManager.NavigateTo("/SignOut", forceLoad: true);
-    }
-
-    private void HandleSignIn()
-    {
         Console.WriteLine("[Login] Sign in button clicked - navigating to /SignIn with forceLoad (Logto SDK)");
         // Force a full page load to trigger server-side authentication
         NavigationManager.NavigateTo("/SignIn", forceLoad: true);
     }
-
 }
 
 
