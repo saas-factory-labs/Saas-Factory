@@ -43,9 +43,10 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
             if (httpContext?.User?.Identity?.IsAuthenticated == true)
             {
                 _logger.LogInformation("[AuthHandler] User is authenticated: {User}", httpContext.User.Identity.Name);
-                
+
                 // Try to get the access token from authentication properties
-                var accessToken = await httpContext.GetTokenAsync("access_token");
+                // Explicitly specify "Logto" scheme to get tokens saved by Logto authentication
+                var accessToken = await httpContext.GetTokenAsync("Logto", "access_token");
                 
                 if (!string.IsNullOrEmpty(accessToken))
                 {
@@ -66,8 +67,9 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
                 if (string.IsNullOrEmpty(token))
                 {
                     _logger.LogWarning("[AuthHandler] ❌ No valid access_token in HttpContext, trying id_token");
-                    
-                    var idToken = await httpContext.GetTokenAsync("id_token");
+
+                    // Also explicitly specify "Logto" scheme for id_token
+                    var idToken = await httpContext.GetTokenAsync("Logto", "id_token");
                     
                     if (!string.IsNullOrEmpty(idToken))
                     {
