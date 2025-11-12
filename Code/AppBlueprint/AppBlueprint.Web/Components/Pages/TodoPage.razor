@@ -23,7 +23,7 @@
                 Token in LocalStorage: @(_hasToken ? "✅ YES" : "⚠️ NO (using Logto cookie auth)")
             </MudText>
             <MudText Typo="Typo.body2">Connection Test: @_connectionTestResult</MudText>
-            <MudText Typo="Typo.body2">Auth Test: @_authTestResult</MudText>
+            @* <MudText Typo="Typo.body2">Auth Test: @_authTestResult</MudText> *@
             @if (!string.IsNullOrEmpty(_diagnosticInfo))
             {
                 <MudText Typo="Typo.caption" Class="mt-2">Headers: @_diagnosticInfo</MudText>
