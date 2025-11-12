@@ -1,6 +1,7 @@
 using Logto.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -66,14 +67,68 @@ public static class WebAuthenticationExtensions
             Console.WriteLine($"[Web] Has AppSecret: {!string.IsNullOrEmpty(logtoAppSecret)}");
             Console.WriteLine("[Web] ========================================");
             
-            // Add Logto authentication - EXACTLY as per Logto documentation
+            // Add Logto authentication with token persistence for API calls
             services.AddLogtoAuthentication(options =>
             {
                 options.Endpoint = logtoEndpoint;
                 options.AppId = logtoAppId;
                 options.AppSecret = logtoAppSecret;
             });
-            
+
+            // Configure the underlying OpenID Connect options to save tokens
+            // The Logto SDK uses OpenID Connect internally, so we configure it to persist tokens
+            services.Configure<OpenIdConnectOptions>("Logto", options =>
+            {
+                Console.WriteLine("[Web] Configuring OpenID Connect 'Logto' scheme to save tokens...");
+
+                // Save tokens (access_token, id_token, refresh_token) to authentication properties
+                // This enables API authentication using JWT tokens from Logto
+                options.SaveTokens = true;
+
+                // Add event handler to ensure tokens are saved
+                var existingOnTokenValidated = options.Events.OnTokenValidated;
+                options.Events.OnTokenValidated = async context =>
+                {
+                    Console.WriteLine("[Web] OnTokenValidated event fired - saving tokens to authentication properties");
+
+                    // Call existing handler if any
+                    if (existingOnTokenValidated != null)
+                    {
+                        await existingOnTokenValidated(context);
+                    }
+
+                    // Log token information for debugging
+                    if (context.TokenEndpointResponse != null)
+                    {
+                        var hasAccessToken = !string.IsNullOrEmpty(context.TokenEndpointResponse.AccessToken);
+                        var hasIdToken = !string.IsNullOrEmpty(context.TokenEndpointResponse.IdToken);
+                        var hasRefreshToken = !string.IsNullOrEmpty(context.TokenEndpointResponse.RefreshToken);
+
+                        Console.WriteLine($"[Web] Tokens received - AccessToken: {hasAccessToken}, IdToken: {hasIdToken}, RefreshToken: {hasRefreshToken}");
+
+                        if (hasAccessToken)
+                        {
+                            Console.WriteLine($"[Web] AccessToken length: {context.TokenEndpointResponse.AccessToken?.Length ?? 0}");
+                        }
+                    }
+
+                    Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");
+                };
+
+                Console.WriteLine("[Web] OpenID Connect configured to save tokens for API authentication");
+            });
+
+            // Also configure ALL OpenIdConnect options as a fallback
+            // in case Logto uses a different internal scheme name
+            services.ConfigureAll<OpenIdConnectOptions>(options =>
+            {
+                if (!options.SaveTokens)
+                {
+                    Console.WriteLine($"[Web] Configuring OpenIdConnect scheme to SaveTokens (fallback for all schemes)");
+                    options.SaveTokens = true;
+                }
+            });
+
             Console.WriteLine("[Web] Logto authentication configured successfully");
         }
         else
