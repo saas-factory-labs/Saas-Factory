@@ -1,6 +1,7 @@
 using Logto.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -66,14 +67,25 @@ public static class WebAuthenticationExtensions
             Console.WriteLine($"[Web] Has AppSecret: {!string.IsNullOrEmpty(logtoAppSecret)}");
             Console.WriteLine("[Web] ========================================");
             
-            // Add Logto authentication - EXACTLY as per Logto documentation
+            // Add Logto authentication with token persistence for API calls
             services.AddLogtoAuthentication(options =>
             {
                 options.Endpoint = logtoEndpoint;
                 options.AppId = logtoAppId;
                 options.AppSecret = logtoAppSecret;
             });
-            
+
+            // Configure the underlying OpenID Connect options to save tokens
+            // The Logto SDK uses OpenID Connect internally, so we can post-configure it
+            services.PostConfigure<Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions>("Logto", options =>
+            {
+                // Save tokens (access_token, id_token, refresh_token) to authentication properties
+                // This enables API authentication using JWT tokens from Logto
+                options.SaveTokens = true;
+
+                Console.WriteLine("[Web] Configured OpenID Connect to save tokens for API authentication");
+            });
+
             Console.WriteLine("[Web] Logto authentication configured successfully");
         }
         else
