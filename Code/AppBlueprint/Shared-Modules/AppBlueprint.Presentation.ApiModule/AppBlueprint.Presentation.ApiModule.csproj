@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>AppBlueprint.Presentation.ApiModule</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -14,7 +14,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SaaS-Factory.AppBlueprint.Presentation.ApiModule</PackageId>
     <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion or manual override -->
-    <Authors>Casper Rubæk</Authors>
+    <Authors>Casper Rub�k</Authors>
     <Description>Presentation layer with API definitions and integrations.</Description>
     <PackageTags>aspnetcore;api;swagger;webapi;presentation</PackageTags>
     <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>

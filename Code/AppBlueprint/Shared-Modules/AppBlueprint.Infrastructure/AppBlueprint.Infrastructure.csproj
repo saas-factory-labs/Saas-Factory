@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -82,7 +82,7 @@
         <GeneratePackage>true</GeneratePackage>
         <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion will supply this in CI -->
         <PackageId>SaaS-Factory.AppBlueprint.Infrastructure</PackageId>
-        <Authors>Casper Rubæk</Authors>
+        <Authors>Casper Rub�k</Authors>
         <Description>Infrastructure library with database repositories and external services</Description>
         <PackageTags>infrastructure;database repositories;external services;</PackageTags>
         <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/README.md</PackageProjectUrl>

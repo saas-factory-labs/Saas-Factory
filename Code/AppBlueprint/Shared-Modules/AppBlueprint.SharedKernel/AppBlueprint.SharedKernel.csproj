@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>12.0</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -12,7 +12,7 @@
 
     <!-- NuGet Metadata -->
     <PackageId>SaaS-Factory.AppBlueprint.SharedKernel</PackageId>
-    <Authors>Casper Rubæk</Authors>
+    <Authors>Casper Rub�k</Authors>
     <Description>A reusable shared class library of entities, DbContexts, and other core domain components.</Description>
     <PackageTags>blazor;razor;components;mudblazor;sharedkernel;ddd</PackageTags>
     <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.SharedKernel/README.md</PackageProjectUrl>

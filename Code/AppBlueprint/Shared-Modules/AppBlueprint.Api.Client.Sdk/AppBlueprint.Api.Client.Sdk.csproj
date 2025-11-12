@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latestmajor</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -10,7 +10,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>SaaS-Factory.AppBlueprint.Api.Client.Sdk</PackageId>
-        <Authors>Casper Rubæk</Authors>
+        <Authors>Casper Rub�k</Authors>
         <Description>A Blazor-friendly API client generated using Microsoft Kiota Cli.</Description>
         <!--        <PackageLicenseExpression></PackageLicenseExpression>-->
         <PackageProjectUrl>https://</PackageProjectUrl>

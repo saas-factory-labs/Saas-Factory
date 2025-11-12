@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>AppBlueprint.Application</RootNamespace>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latestmajor</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -16,7 +16,7 @@
         <GeneratePackage>true</GeneratePackage>
         <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion will supply this in CI -->
         <PackageId>SaaS-Factory.AppBlueprint.Application</PackageId>
-        <Authors>Casper Rubæk</Authors>
+        <Authors>Casper Rub�k</Authors>
         <Description>Application layer with CQRS commands, queries, and use cases following Clean Architecture principles</Description>
         <PackageTags>application;use cases;cqrs;clean architecture;domain driven design</PackageTags>
         <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/README.md</PackageProjectUrl>
