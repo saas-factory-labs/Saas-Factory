@@ -150,7 +150,7 @@ public static class ApplicationBuilderExtensions
         });
     }
 
-    public static IServiceCollection AddAppBlueprintServices(this IServiceCollection services)
+    public static void AddAppBlueprintServices(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
 
@@ -174,8 +174,6 @@ public static class ApplicationBuilderExtensions
         AddDbContext(services, configuration);
         ConfigureApiVersioning(services);
         AddCors(services);
-
-        return services;
     }
 
     public static WebApplication ConfigureApplication(this WebApplication app)

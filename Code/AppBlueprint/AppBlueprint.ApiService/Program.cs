@@ -86,7 +86,7 @@ internal static class Program // Make class static
             config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("BearerAuth"));
         });
 
-        builder.Services.AddControllers(); var app = builder.Build();
+        var app = builder.Build();
 
         app.UseCustomMiddlewares();
 

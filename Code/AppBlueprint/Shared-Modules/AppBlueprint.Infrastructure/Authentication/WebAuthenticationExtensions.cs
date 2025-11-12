@@ -1,6 +1,7 @@
 using Logto.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -72,6 +73,12 @@ public static class WebAuthenticationExtensions
                 options.Endpoint = logtoEndpoint;
                 options.AppId = logtoAppId;
                 options.AppSecret = logtoAppSecret;
+            });
+            
+            services.Configure<OpenIdConnectOptions>(LogtoDefaults.AuthenticationScheme, options =>
+            {
+                options.SaveTokens = true;
+                options.Scope.Add("offline_access");
             });
             
             Console.WriteLine("[Web] Logto authentication configured successfully");

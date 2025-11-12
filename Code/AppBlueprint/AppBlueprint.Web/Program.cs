@@ -118,6 +118,7 @@ builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authe
 builder.Services.AddMudServices();
 builder.Services.AddSingleton<BreadcrumbService>();
 builder.Services.AddUiKit();
+builder.Services.AddControllers();
 
 // Add HttpContextAccessor for accessing authentication tokens in delegating handlers
 builder.Services.AddHttpContextAccessor();
@@ -202,6 +203,7 @@ app.MapAuthenticationEndpoints(builder.Configuration);
 // Diagnostic endpoint to test Logto connectivity from Railway
 app.MapLogtoTestEndpoint(builder.Configuration, app.Environment);
 
+app.MapControllers();
 app.MapDefaultEndpoints();
 
 Console.WriteLine("========================================");
