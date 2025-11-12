@@ -19,8 +19,8 @@
     {
         <MudPaper Class="pa-4 mb-4" Elevation="2">
             <MudText Typo="Typo.h6" Class="mb-2">🔍 Diagnostics</MudText>
-            <MudText Typo="Typo.body2" Color="@(_hasToken ? Color.Success : Color.Error)">
-                Token in Storage: @(_hasToken ? "✅ YES" : "❌ NO - You need to log in!")
+            <MudText Typo="Typo.body2" Color="@(_hasToken ? Color.Success : Color.Info)">
+                Token in LocalStorage: @(_hasToken ? "✅ YES" : "⚠️ NO (using Logto cookie auth)")
             </MudText>
             <MudText Typo="Typo.body2">Connection Test: @_connectionTestResult</MudText>
             <MudText Typo="Typo.body2">Auth Test: @_authTestResult</MudText>
@@ -199,21 +199,18 @@
 
         try
         {
-            // Check if token exists in storage
+            // Check if token exists in localStorage (legacy check - not used with Logto SDK)
             var token = await TokenStorage.GetTokenAsync();
             _hasToken = !string.IsNullOrEmpty(token);
-            StateHasChanged();
 
             if (!_hasToken)
             {
-                _connectionTestResult = "⚠️ Skipped";
-                _authTestResult = "❌ No token - You must log in first!";
-                _diagnosticInfo = "No token in localStorage";
-                Snackbar.Add("You need to log in via Logto first!", Severity.Warning);
-                return;
+                _diagnosticInfo = "⚠️ No token in localStorage (expected with Logto cookie auth)";
             }
 
-            // Test basic connection
+            StateHasChanged();
+
+            // Test basic connection (works without token)
             var connectionOk = await TodoService.TestConnectionAsync();
             _connectionTestResult = connectionOk ? "✅ Connected to API" : "❌ Cannot reach API";
             StateHasChanged();
