@@ -8,13 +8,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Address
 /// Entity configuration for CityEntity defining table structure, relationships, and constraints.
 /// Establishes the State→City relationship in the geographic hierarchy.
 /// </summary>
-public sealed class CityEntityConfiguration : IEntityTypeConfiguration<CityEntity>
+public sealed class CityEntityConfiguration : BaseEntityConfiguration<CityEntity>
 {
-    public void Configure(EntityTypeBuilder<CityEntity> builder)
+    public override void Configure(EntityTypeBuilder<CityEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("Cities");
 
         // Primary key - ULID as string

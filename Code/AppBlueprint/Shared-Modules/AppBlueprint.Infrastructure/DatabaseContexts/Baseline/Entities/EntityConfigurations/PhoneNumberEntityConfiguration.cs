@@ -4,12 +4,14 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public sealed class PhoneNumberEntityConfiguration : IEntityTypeConfiguration<PhoneNumberEntity>
+public sealed class PhoneNumberEntityConfiguration : BaseEntityConfiguration<PhoneNumberEntity>
 {
-    public void Configure(EntityTypeBuilder<PhoneNumberEntity> builder)
+    public override void Configure(EntityTypeBuilder<PhoneNumberEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
         builder.ToTable("PhoneNumbers");
 
         builder.HasKey(e => e.Id);

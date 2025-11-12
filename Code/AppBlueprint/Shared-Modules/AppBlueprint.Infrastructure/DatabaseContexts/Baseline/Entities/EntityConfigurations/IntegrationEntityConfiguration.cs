@@ -10,12 +10,14 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integra
 /// Entity configuration for IntegrationEntity managing third-party service integrations.
 /// Handles secure storage of API keys and provides efficient querying by service type and owner.
 /// </summary>
-public sealed class IntegrationEntityConfiguration : IEntityTypeConfiguration<IntegrationEntity>
+public sealed class IntegrationEntityConfiguration : BaseEntityConfiguration<IntegrationEntity>
 {
-    public void Configure(EntityTypeBuilder<IntegrationEntity> builder)
+    public override void Configure(EntityTypeBuilder<IntegrationEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
         // Define table name
         builder.ToTable("Integrations");
 

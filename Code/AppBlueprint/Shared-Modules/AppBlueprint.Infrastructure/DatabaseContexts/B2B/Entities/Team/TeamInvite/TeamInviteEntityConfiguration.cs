@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInv
 /// Entity configuration for TeamInviteEntity defining table structure, relationships, and constraints.
 /// Manages team invitation system for B2B scenarios.
 /// </summary>
-public sealed class TeamInviteEntityConfiguration : IEntityTypeConfiguration<TeamInviteEntity>
+public sealed class TeamInviteEntityConfiguration : BaseEntityConfiguration<TeamInviteEntity>
 {
-    public void Configure(EntityTypeBuilder<TeamInviteEntity> builder)
+    public override void Configure(EntityTypeBuilder<TeamInviteEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("TeamInvites");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("TeamInvites");
 
         // Primary Key
         builder.HasKey(ti => ti.Id);

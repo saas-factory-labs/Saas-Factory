@@ -6,9 +6,9 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// <summary>
 /// Entity configuration for PermissionEntity defining authorization permission schema and constraints.
 /// </summary>
-public sealed class PermissionEntityConfiguration : IEntityTypeConfiguration<PermissionEntity>
+public sealed class PermissionEntityConfiguration : BaseEntityConfiguration<PermissionEntity>
 {
-    public void Configure(EntityTypeBuilder<PermissionEntity> builder)
+    public override void Configure(EntityTypeBuilder<PermissionEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);        // Table mapping with standardized naming
         builder.ToTable("Permissions");

@@ -6,12 +6,14 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileMan
 /// <summary>
 /// Entity configuration for FileEntity defining table structure, relationships, and constraints.
 /// </summary>
-public sealed class FileEntityConfiguration : IEntityTypeConfiguration<FileEntity>
+public sealed class FileEntityConfiguration : BaseEntityConfiguration<FileEntity>
 {
-    public void Configure(EntityTypeBuilder<FileEntity> builder)
+    public override void Configure(EntityTypeBuilder<FileEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
         // Table mapping with standardized naming
         builder.ToTable("Files");
 
@@ -37,9 +39,6 @@ public sealed class FileEntityConfiguration : IEntityTypeConfiguration<FileEntit
 
         builder.Property(e => e.OwnerId)
             .IsRequired();
-
-        builder.Property(e => e.CreatedAt)
-            .IsRequired(); builder.Property(e => e.LastUpdatedAt);
 
         // Performance indexes with standardized naming
         builder.HasIndex(e => e.FileName)

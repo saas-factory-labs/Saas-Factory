@@ -8,13 +8,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Address
 /// Entity configuration for GlobalRegionEntity defining table structure, relationships, and constraints.
 /// Configures the top-level geographic hierarchy for GlobalRegion→Country relationships.
 /// </summary>
-public sealed class GlobalRegionEntityConfiguration : IEntityTypeConfiguration<GlobalRegionEntity>
+public sealed class GlobalRegionEntityConfiguration : BaseEntityConfiguration<GlobalRegionEntity>
 {
-    public void Configure(EntityTypeBuilder<GlobalRegionEntity> builder)
+    public override void Configure(EntityTypeBuilder<GlobalRegionEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("GlobalRegions");
 
         // Primary key

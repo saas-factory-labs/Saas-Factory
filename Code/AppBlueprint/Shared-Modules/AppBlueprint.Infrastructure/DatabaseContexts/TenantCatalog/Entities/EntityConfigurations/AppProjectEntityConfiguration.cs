@@ -4,13 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities.EntityConfigurations;
 
-public sealed class AppProjectEntityConfiguration : IEntityTypeConfiguration<AppProjectEntity>
+public sealed class AppProjectEntityConfiguration : BaseEntityConfiguration<AppProjectEntity>
 {
-    public void Configure(EntityTypeBuilder<AppProjectEntity> builder)
+    public override void Configure(EntityTypeBuilder<AppProjectEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("AppProjects");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("AppProjects");
         builder.HasKey(t => t.Id);
         builder.Property(t => t.Name).IsRequired().HasMaxLength(100);
 

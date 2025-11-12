@@ -3,14 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Session.EntityConfigurations;
 
-public sealed class SessionEntityConfiguration : IEntityTypeConfiguration<SessionEntity>
+public sealed class SessionEntityConfiguration : BaseEntityConfiguration<SessionEntity>
 {
-    public void Configure(EntityTypeBuilder<SessionEntity> builder)
+    public override void Configure(EntityTypeBuilder<SessionEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+
         builder.ToTable("Sessions");
-        builder.HasKey(e => e.Id);
 
         builder.Property(e => e.SessionKey)
             .IsRequired()

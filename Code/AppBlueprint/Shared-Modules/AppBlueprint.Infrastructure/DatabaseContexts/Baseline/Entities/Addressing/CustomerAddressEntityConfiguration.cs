@@ -8,15 +8,18 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// Entity configuration for CustomerAddressEntity defining the mapping between customers and their addresses.
 /// Handles the many-to-many relationship through a junction table pattern.
 /// </summary>
-public sealed class CustomerAddressEntityConfiguration : IEntityTypeConfiguration<CustomerAddressEntity>
+public sealed class CustomerAddressEntityConfiguration : BaseEntityConfiguration<CustomerAddressEntity>
 {
     private const string CustomerIdProperty = "CustomerId";
 
-    public void Configure(EntityTypeBuilder<CustomerAddressEntity> builder)
+    public override void Configure(EntityTypeBuilder<CustomerAddressEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Define table name - fix typo in original template
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Define table name - fix typo in original template
         builder.ToTable("CustomerAddresses");
 
         // Define primary key

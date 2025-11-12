@@ -6,9 +6,9 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authori
 /// <summary>
 /// Entity configuration for RoleEntity defining authorization role schema, relationships and constraints.
 /// </summary>
-public sealed class RoleEntityConfiguration : IEntityTypeConfiguration<RoleEntity>
+public sealed class RoleEntityConfiguration : BaseEntityConfiguration<RoleEntity>
 {
-    public void Configure(EntityTypeBuilder<RoleEntity> builder)
+    public override void Configure(EntityTypeBuilder<RoleEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);        // Table mapping with standardized naming
         builder.ToTable("Roles");

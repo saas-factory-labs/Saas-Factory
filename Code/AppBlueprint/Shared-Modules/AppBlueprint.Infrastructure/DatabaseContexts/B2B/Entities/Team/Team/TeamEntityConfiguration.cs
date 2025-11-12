@@ -3,13 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 
-public sealed class TeamEntityConfiguration : IEntityTypeConfiguration<TeamEntity>
+public sealed class TeamEntityConfiguration : BaseEntityConfiguration<TeamEntity>
 {
-    public void Configure(EntityTypeBuilder<TeamEntity> builder)
+    public override void Configure(EntityTypeBuilder<TeamEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
         
-        builder.ToTable("Teams");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("Teams");
 
         builder.HasKey(t => t.Id);
 

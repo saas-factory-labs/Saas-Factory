@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using AppBlueprint.SharedKernel;
@@ -41,7 +40,9 @@ public class ApplicationDbContext : B2CdbContext
         base.OnModelCreating(modelBuilder);
 
         ConfigureGdprDataClassification(modelBuilder);
-        ConfigureSoftDeleteFilters(modelBuilder);
+
+        // Soft delete filters are now configured using named query filters in entity configurations
+        // See BaseEntityConfiguration<TEntity> for the implementation
 
         // Optional: add multi-tenancy query filters here when ready
     }
@@ -65,19 +66,6 @@ public class ApplicationDbContext : B2CdbContext
         }
     }
 
-    private static void ConfigureSoftDeleteFilters(ModelBuilder modelBuilder)
-    {
-        // Configure soft delete filters for entities that implement IEntity
-        modelBuilder.Model.GetEntityTypes()
-            .Where(et => typeof(IEntity).IsAssignableFrom(et.ClrType))
-            .ToList()
-            .ForEach(entityType =>
-            {
-                var queryFilter = CreateIsNotSoftDeletedFilter(entityType.ClrType);
-                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(queryFilter);
-            });
-    }
-
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
@@ -97,12 +85,5 @@ public class ApplicationDbContext : B2CdbContext
         }
 
         return base.SaveChangesAsync(cancellationToken);
-    }
-    private static LambdaExpression CreateIsNotSoftDeletedFilter(Type entityType)
-    {
-        var parameter = Expression.Parameter(entityType, "e");
-        var property = Expression.Property(parameter, nameof(IEntity.IsSoftDeleted));
-        var condition = Expression.Equal(property, Expression.Constant(false));
-        return Expression.Lambda(condition, parameter);
     }
 }

@@ -1,3 +1,4 @@
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 using AppBlueprint.TodoAppKernel.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -8,32 +9,20 @@ namespace AppBlueprint.TodoAppKernel.Infrastructure;
 /// Entity configuration for TodoEntity defining table structure, relationships, and constraints.
 /// Supports multi-tenant todo management with user assignment and priority tracking.
 /// </summary>
-public sealed class TodoEntityConfiguration : IEntityTypeConfiguration<TodoEntity>
+public sealed class TodoEntityConfiguration : BaseEntityConfiguration<TodoEntity>
 {
-    public void Configure(EntityTypeBuilder<TodoEntity> builder)
+    public override void Configure(EntityTypeBuilder<TodoEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
+
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
 
         // Table mapping with standardized naming
         builder.ToTable("Todos");
 
-        // Primary key
-        builder.HasKey(t => t.Id);
-
-        // Configure ULID ID with proper length for prefixed ULID (prefix + underscore + 26 char ULID)
-        builder.Property(t => t.Id)
-            .HasMaxLength(40)
-            .IsRequired();
-
-        // BaseEntity properties
-        builder.Property(t => t.CreatedAt)
-            .IsRequired();
-
-        builder.Property(t => t.LastUpdatedAt);
-
+        // Override base IsSoftDeleted configuration to add ValueGeneratedNever
         builder.Property(t => t.IsSoftDeleted)
-            .IsRequired()
-            .HasDefaultValue(false)
             .ValueGeneratedNever();
 
         // Properties with validation and constraints
@@ -93,9 +82,7 @@ public sealed class TodoEntityConfiguration : IEntityTypeConfiguration<TodoEntit
         builder.HasIndex(t => t.CreatedAt)
             .HasDatabaseName("IX_Todos_CreatedAt");
 
-        // Add index for soft delete filtering
-        builder.HasIndex(t => t.IsSoftDeleted)
-            .HasDatabaseName("IX_Todos_IsSoftDeleted");
+        // Note: IsSoftDeleted index is configured in BaseEntityConfiguration
 
         // Composite indexes for common queries
         builder.HasIndex(t => new { t.TenantId, t.IsCompleted })

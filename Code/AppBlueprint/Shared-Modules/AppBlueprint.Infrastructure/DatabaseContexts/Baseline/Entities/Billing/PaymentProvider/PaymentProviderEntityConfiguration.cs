@@ -7,18 +7,21 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing
 /// Entity configuration for PaymentProviderEntity managing payment service providers.
 /// Configures payment providers like Stripe, PayPal, etc. with proper validation and indexing.
 /// </summary>
-public sealed class PaymentProviderEntityConfiguration : IEntityTypeConfiguration<PaymentProviderEntity>
+public sealed class PaymentProviderEntityConfiguration : BaseEntityConfiguration<PaymentProviderEntity>
 {
     /// <summary>
     /// Configures the PaymentProviderEntity with table mapping, properties, and indexes.
     /// </summary>
     /// <param name="builder">The entity type builder for PaymentProviderEntity</param>
     /// <exception cref="ArgumentNullException">Thrown when builder is null</exception>
-    public void Configure(EntityTypeBuilder<PaymentProviderEntity> builder)
+    public override void Configure(EntityTypeBuilder<PaymentProviderEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table configuration
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table configuration
         builder.ToTable("PaymentProviders");
         builder.HasKey(e => e.Id);
 

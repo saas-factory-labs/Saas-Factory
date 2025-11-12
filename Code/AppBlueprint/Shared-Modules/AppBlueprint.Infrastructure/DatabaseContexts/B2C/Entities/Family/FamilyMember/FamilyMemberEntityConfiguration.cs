@@ -6,13 +6,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.Famil
 /// <summary>
 /// Entity configuration for FamilyMemberEntity defining table structure, relationships, and constraints.
 /// </summary>
-public sealed class FamilyMemberEntityConfiguration : IEntityTypeConfiguration<FamilyMemberEntity>
+public sealed class FamilyMemberEntityConfiguration : BaseEntityConfiguration<FamilyMemberEntity>
 {
-    public void Configure(EntityTypeBuilder<FamilyMemberEntity> builder)
+    public override void Configure(EntityTypeBuilder<FamilyMemberEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Define table name
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Define table name
         builder.ToTable("FamilyMembers");
 
         // Primary Key

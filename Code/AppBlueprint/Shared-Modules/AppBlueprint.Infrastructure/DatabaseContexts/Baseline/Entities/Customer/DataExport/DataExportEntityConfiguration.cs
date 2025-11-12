@@ -5,11 +5,14 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Custome
 
 public class DataExportEntityConfiguration : IEntityTypeConfiguration<DataExportEntity>
 {
-    public void Configure(EntityTypeBuilder<DataExportEntity> builder)
+    public override void Configure(EntityTypeBuilder<DataExportEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
         
-        builder.ToTable("DataExports");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("DataExports");
 
         // Configure ID as ULID string
         builder.HasKey(d => d.Id);

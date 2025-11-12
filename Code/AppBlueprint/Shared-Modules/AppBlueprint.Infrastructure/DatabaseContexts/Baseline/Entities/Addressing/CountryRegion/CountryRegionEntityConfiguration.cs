@@ -8,13 +8,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// Entity configuration for CountryRegionEntity defining geographical regions within countries.
 /// Examples: Syddanmark, Midtjylland, Nordjylland, Sjælland, Hovedstaden for Denmark.
 /// </summary>
-public sealed class CountryRegionEntityConfiguration : IEntityTypeConfiguration<CountryRegionEntity>
+public sealed class CountryRegionEntityConfiguration : BaseEntityConfiguration<CountryRegionEntity>
 {
-    public void Configure(EntityTypeBuilder<CountryRegionEntity> builder)
+    public override void Configure(EntityTypeBuilder<CountryRegionEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Define table name
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Define table name
         builder.ToTable("CountryRegions");
 
         // Define primary key

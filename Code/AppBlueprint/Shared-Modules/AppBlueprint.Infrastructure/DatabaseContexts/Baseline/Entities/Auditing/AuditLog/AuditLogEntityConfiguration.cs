@@ -9,35 +9,30 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// Entity configuration for AuditLogEntity tracking all system changes for compliance and security purposes.
 /// Implements GDPR compliance for sensitive audit data and optimizes for compliance reporting queries.
 /// </summary>
-public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<AuditLogEntity>
+public sealed class AuditLogEntityConfiguration : BaseEntityConfiguration<AuditLogEntity>
 {
-    public void Configure(EntityTypeBuilder<AuditLogEntity> builder)
+    public override void Configure(EntityTypeBuilder<AuditLogEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
+
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
 
         // Define table name
         builder.ToTable("AuditLogs");
 
-        // Configure ID as ULID string
-        builder.HasKey(a => a.Id);
+        // Override base ID configuration to add additional settings
         builder.Property(a => a.Id)
-            .IsRequired()
-            .HasMaxLength(40)
             .ValueGeneratedNever()
             .HasComment("Primary key for audit log entry");
 
-        // Configure BaseEntity properties
+        // Override base CreatedAt and LastUpdatedAt to add default SQL
         builder.Property(a => a.CreatedAt)
-            .IsRequired()
             .HasDefaultValueSql("NOW()");
 
         builder.Property(a => a.LastUpdatedAt)
             .IsRequired()
             .HasDefaultValueSql("NOW()");
-
-        builder.Property(a => a.IsSoftDeleted)
-            .IsRequired()
-            .HasDefaultValue(false);
 
         // Configure TenantId for multi-tenancy
         builder.Property(a => a.TenantId)
@@ -108,8 +103,7 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
         builder.HasIndex(a => a.TenantId)
             .HasDatabaseName("IX_AuditLogs_TenantId");
 
-        builder.HasIndex(a => a.IsSoftDeleted)
-            .HasDatabaseName("IX_AuditLogs_IsSoftDeleted");
+        // Note: IsSoftDeleted index is configured in BaseEntityConfiguration
 
         builder.HasIndex(a => new { a.TenantId, a.IsSoftDeleted })
             .HasDatabaseName("IX_AuditLogs_TenantId_IsSoftDeleted");
@@ -140,7 +134,6 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
             .HasDatabaseName("IX_AuditLogs_Category_ModifiedAt")
             .HasFilter("\"Category\" IS NOT NULL");
 
-        // Configure query filter for soft delete and tenant scoping
-        builder.HasQueryFilter(a => !a.IsSoftDeleted);
+        // Note: Soft delete query filter is configured in BaseEntityConfiguration
     }
 }

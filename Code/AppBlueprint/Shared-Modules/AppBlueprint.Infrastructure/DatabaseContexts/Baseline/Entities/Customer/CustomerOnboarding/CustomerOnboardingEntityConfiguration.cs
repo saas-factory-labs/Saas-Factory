@@ -6,13 +6,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Custome
 /// <summary>
 /// Entity configuration for CustomerOnboardingEntity defining table structure, relationships, and constraints.
 /// </summary>
-public sealed class CustomerOnboardingEntityConfiguration : IEntityTypeConfiguration<CustomerOnboardingEntity>
+public sealed class CustomerOnboardingEntityConfiguration : BaseEntityConfiguration<CustomerOnboardingEntity>
 {
-    public void Configure(EntityTypeBuilder<CustomerOnboardingEntity> builder)
+    public override void Configure(EntityTypeBuilder<CustomerOnboardingEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Define table name
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Define table name
         builder.ToTable("CustomerOnboardings");        // Define primary key
         builder.HasKey(e => e.Id);
 

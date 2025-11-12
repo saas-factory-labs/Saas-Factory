@@ -8,18 +8,21 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// Entity configuration for AuthenticationProviderEntity managing external authentication providers.
 /// Configures authentication providers like Google OAuth, Microsoft Azure AD, Auth0, etc.
 /// </summary>
-public sealed class AuthorizationProviderEntityConfiguration : IEntityTypeConfiguration<AuthenticationProviderEntity>
+public sealed class AuthorizationProviderEntityConfiguration : BaseEntityConfiguration<AuthenticationProviderEntity>
 {
     /// <summary>
     /// Configures the AuthenticationProviderEntity with table mapping, properties, and indexes.
     /// </summary>
     /// <param name="builder">The entity type builder for AuthenticationProviderEntity</param>
     /// <exception cref="ArgumentNullException">Thrown when builder is null</exception>
-    public void Configure(EntityTypeBuilder<AuthenticationProviderEntity> builder)
+    public override void Configure(EntityTypeBuilder<AuthenticationProviderEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table configuration
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table configuration
         builder.ToTable("AuthenticationProviders");
         builder.HasKey(e => e.Id);
 

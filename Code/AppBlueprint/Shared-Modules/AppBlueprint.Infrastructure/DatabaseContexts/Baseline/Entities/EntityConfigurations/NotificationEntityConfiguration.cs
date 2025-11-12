@@ -6,32 +6,23 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// <summary>
 /// Entity configuration for NotificationEntity defining table structure, relationships, and constraints.
 /// </summary>
-public sealed class NotificationEntityConfiguration : IEntityTypeConfiguration<NotificationEntity>
+public sealed class NotificationEntityConfiguration : BaseEntityConfiguration<NotificationEntity>
 {
-    public void Configure(EntityTypeBuilder<NotificationEntity> builder)
+    public override void Configure(EntityTypeBuilder<NotificationEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
         // Table mapping with standardized naming
         builder.ToTable("Notifications");
 
         // Primary key - ULID as string
-        builder.HasKey(e => e.Id);
-
-        builder.Property(e => e.Id)
-            .IsRequired()
-            .HasMaxLength(40);
 
         // BaseEntity properties
-        builder.Property(e => e.CreatedAt)
-            .IsRequired();
 
         builder.Property(e => e.LastUpdatedAt)
             .IsRequired();
-
-        builder.Property(e => e.IsSoftDeleted)
-            .IsRequired()
-            .HasDefaultValue(false);
 
         // Properties with validation
         builder.Property(e => e.Title)

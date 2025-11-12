@@ -4,22 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public sealed class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
+public sealed class UserEntityConfiguration : BaseEntityConfiguration<UserEntity>
 {
-    public void Configure(EntityTypeBuilder<UserEntity> builder)
+    public override void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+
         builder.ToTable("Users");
 
-        // Primary key and indexes with standardized naming
-        builder.HasKey(u => u.Id);
-
-        // Configure ULID ID with proper length for prefixed ULID (prefix + underscore + 26 char ULID)
-        builder.Property(u => u.Id)
-            .HasMaxLength(40)
-            .IsRequired();
-
+        // Primary key index with standardized naming
         builder.HasIndex(u => u.Id)
             .IsUnique()
             .HasDatabaseName("IX_Users_Id");
@@ -62,22 +58,11 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<UserEntit
         builder.Property(u => u.IsActive)
             .IsRequired();
 
-        // BaseEntity properties
-        builder.Property(u => u.CreatedAt)
-            .IsRequired();
-
-        builder.Property(u => u.LastUpdatedAt);
-
-        builder.Property(u => u.IsSoftDeleted)
-            .IsRequired()
-            .HasDefaultValue(false);
-
         builder.Property(u => u.LastLogin)
             .IsRequired();
 
-        // Add index for soft delete filtering
-        builder.HasIndex(u => u.IsSoftDeleted)
-            .HasDatabaseName("IX_Users_IsSoftDeleted");
+        // Note: BaseEntity properties (Id, CreatedAt, LastUpdatedAt, IsSoftDeleted)
+        // are configured in BaseEntityConfiguration including the soft delete index
 
         // Tenant relationship
         builder.HasOne(u => u.Tenant)

@@ -3,13 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public sealed class PermissionRoleEntityConfiguration : IEntityTypeConfiguration<PermissionRoleEntity>
+public sealed class PermissionRoleEntityConfiguration : BaseEntityConfiguration<PermissionRoleEntity>
 {
-    public void Configure(EntityTypeBuilder<PermissionRoleEntity> builder)
+    public override void Configure(EntityTypeBuilder<PermissionRoleEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("PermissionRoles");
 
         // Primary key

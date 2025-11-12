@@ -10,11 +10,14 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// </summary>
 public class SearchEntityConfiguration : IEntityTypeConfiguration<SearchEntity>
 {
-    public void Configure(EntityTypeBuilder<SearchEntity> builder)
+    public override void Configure(EntityTypeBuilder<SearchEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
         
-        // Configure Uri property to be stored as string in database
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Configure Uri property to be stored as string in database
         builder.Property(e => e.Url)
             .HasConversion(
                 uri => uri.ToString(),

@@ -7,7 +7,7 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// Entity Framework configuration for the ApiLogEntity.
 /// This configuration defines the database mapping, constraints, and relationships for API request/response logging.
 /// </summary>
-public sealed class ApiLogEntityConfiguration : IEntityTypeConfiguration<ApiLogEntity>
+public sealed class ApiLogEntityConfiguration : BaseEntityConfiguration<ApiLogEntity>
 {
     /// <summary>
     /// Configures the entity mapping for ApiLogEntity including table structure, property constraints, 
@@ -15,11 +15,14 @@ public sealed class ApiLogEntityConfiguration : IEntityTypeConfiguration<ApiLogE
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the ApiLogEntity.</param>
     /// <exception cref="ArgumentNullException">Thrown when builder is null.</exception>
-    public void Configure(EntityTypeBuilder<ApiLogEntity> builder)
+    public override void Configure(EntityTypeBuilder<ApiLogEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Configure table name
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Configure table name
         builder.ToTable("ApiLogs");
 
         // Configure primary key

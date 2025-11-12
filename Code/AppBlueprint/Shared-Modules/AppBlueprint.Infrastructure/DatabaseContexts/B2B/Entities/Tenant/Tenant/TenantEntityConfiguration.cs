@@ -3,13 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 
-public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantEntity>
+public sealed class TenantEntityConfiguration : BaseEntityConfiguration<TenantEntity>
 {
-    public void Configure(EntityTypeBuilder<TenantEntity> builder)
+    public override void Configure(EntityTypeBuilder<TenantEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table and Primary Key
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table and Primary Key
         builder.ToTable("Tenants");
         builder.HasKey(e => e.Id);
 

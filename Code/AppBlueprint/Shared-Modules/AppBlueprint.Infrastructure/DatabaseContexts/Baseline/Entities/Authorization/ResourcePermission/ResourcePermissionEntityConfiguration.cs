@@ -8,13 +8,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// Entity configuration for ResourcePermissionEntity defining table structure, relationships, and constraints.
 /// Manages resource-based permissions and access control rules.
 /// </summary>
-public sealed class ResourcePermissionEntityConfiguration : IEntityTypeConfiguration<ResourcePermissionEntity>
+public sealed class ResourcePermissionEntityConfiguration : BaseEntityConfiguration<ResourcePermissionEntity>
 {
-    public void Configure(EntityTypeBuilder<ResourcePermissionEntity> builder)
+    public override void Configure(EntityTypeBuilder<ResourcePermissionEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("ResourcePermissions");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("ResourcePermissions");
 
         builder.HasKey(e => e.Id);
 

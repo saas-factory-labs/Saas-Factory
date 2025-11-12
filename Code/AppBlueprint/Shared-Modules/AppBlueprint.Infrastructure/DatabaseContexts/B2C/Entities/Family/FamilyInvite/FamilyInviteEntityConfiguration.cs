@@ -8,13 +8,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Family.FamilyInvite;
 /// Entity configuration for FamilyInviteEntity defining table structure, relationships, and constraints.
 /// Manages family invitation system for B2C scenarios.
 /// </summary>
-public sealed class FamilyInviteEntityConfiguration : IEntityTypeConfiguration<FamilyInviteEntity>
+public sealed class FamilyInviteEntityConfiguration : BaseEntityConfiguration<FamilyInviteEntity>
 {
-    public void Configure(EntityTypeBuilder<FamilyInviteEntity> builder)
+    public override void Configure(EntityTypeBuilder<FamilyInviteEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table Mapping
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table Mapping
         builder.ToTable("FamilyInvites");
 
         // Primary Key

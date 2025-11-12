@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
 /// Entity configuration for CreditEntity defining table structure, relationships, and constraints.
 /// Manages credit balances and transactions for billing purposes.
 /// </summary>
-public sealed class CreditEntityConfiguration : IEntityTypeConfiguration<CreditEntity>
+public sealed class CreditEntityConfiguration : BaseEntityConfiguration<CreditEntity>
 {
-    public void Configure(EntityTypeBuilder<CreditEntity> builder)
+    public override void Configure(EntityTypeBuilder<CreditEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("Credits");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("Credits");
 
         // Configure ID as ULID string
         builder.HasKey(c => c.Id);

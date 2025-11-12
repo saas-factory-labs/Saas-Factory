@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Pa
 /// Entity configuration for PasswordResetEntity defining table structure, relationships, and constraints.
 /// Configures the User authentication flow for password reset functionality.
 /// </summary>
-public sealed class PasswordResetEntityConfiguration : IEntityTypeConfiguration<PasswordResetEntity>
+public sealed class PasswordResetEntityConfiguration : BaseEntityConfiguration<PasswordResetEntity>
 {
-    public void Configure(EntityTypeBuilder<PasswordResetEntity> builder)
+    public override void Configure(EntityTypeBuilder<PasswordResetEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("PasswordResets");
 
         // Primary key - ULID string

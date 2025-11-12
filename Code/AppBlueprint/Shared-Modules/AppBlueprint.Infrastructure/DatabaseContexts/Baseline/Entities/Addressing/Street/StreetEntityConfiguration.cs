@@ -8,13 +8,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Address
 /// Entity configuration for StreetEntity defining table structure, relationships, and constraints.
 /// Establishes the City→Street relationship in the geographic hierarchy.
 /// </summary>
-public sealed class StreetEntityConfiguration : IEntityTypeConfiguration<StreetEntity>
+public sealed class StreetEntityConfiguration : BaseEntityConfiguration<StreetEntity>
 {
-    public void Configure(EntityTypeBuilder<StreetEntity> builder)
+    public override void Configure(EntityTypeBuilder<StreetEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("Streets");
 
         // Primary key

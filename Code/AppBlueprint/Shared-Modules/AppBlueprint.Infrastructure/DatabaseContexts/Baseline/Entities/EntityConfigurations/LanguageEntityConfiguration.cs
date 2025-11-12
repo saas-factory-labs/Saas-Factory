@@ -6,12 +6,14 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// <summary>
 /// Entity configuration for LanguageEntity defining table structure, relationships, and constraints.
 /// </summary>
-public sealed class LanguageEntityConfiguration : IEntityTypeConfiguration<LanguageEntity>
+public sealed class LanguageEntityConfiguration : BaseEntityConfiguration<LanguageEntity>
 {
-    public void Configure(EntityTypeBuilder<LanguageEntity> builder)
+    public override void Configure(EntityTypeBuilder<LanguageEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
         // Table mapping with standardized naming
         builder.ToTable("Languages");
 

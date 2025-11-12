@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.E
 /// Entity configuration for EmailInviteEntity defining table structure, relationships, and constraints.
 /// Manages email invitation system and token validation.
 /// </summary>
-public sealed class EmailInviteEntityConfiguration : IEntityTypeConfiguration<EmailInviteEntity>
+public sealed class EmailInviteEntityConfiguration : BaseEntityConfiguration<EmailInviteEntity>
 {
-    public void Configure(EntityTypeBuilder<EmailInviteEntity> builder)
+    public override void Configure(EntityTypeBuilder<EmailInviteEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("EmailInvites");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("EmailInvites");
 
         builder.HasKey(e => e.Id);
 

@@ -6,9 +6,9 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authori
 /// <summary>
 /// Entity configuration for RolePermissionEntity defining table structure, relationships, and constraints.
 /// </summary>
-public sealed class RolePermissionEntityConfiguration : IEntityTypeConfiguration<RolePermissionEntity>
+public sealed class RolePermissionEntityConfiguration : BaseEntityConfiguration<RolePermissionEntity>
 {
-    public void Configure(EntityTypeBuilder<RolePermissionEntity> builder)
+    public override void Configure(EntityTypeBuilder<RolePermissionEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);        // Table mapping with standardized naming
         builder.ToTable("RolePermissions");

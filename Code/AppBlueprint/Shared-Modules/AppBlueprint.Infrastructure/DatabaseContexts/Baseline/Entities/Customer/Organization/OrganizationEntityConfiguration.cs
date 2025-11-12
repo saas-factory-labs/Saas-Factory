@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Custome
 /// Entity configuration for baseline OrganizationEntity defining table structure, relationships, and constraints.
 /// Manages baseline customer organization information.
 /// </summary>
-public sealed class OrganizationEntityConfiguration : IEntityTypeConfiguration<OrganizationEntity>
+public sealed class OrganizationEntityConfiguration : BaseEntityConfiguration<OrganizationEntity>
 {
-    public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
+    public override void Configure(EntityTypeBuilder<OrganizationEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table Mapping
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table Mapping
         builder.ToTable("Organizations");
 
         // Primary Key        

@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Address
 /// Entity configuration for AddressEntity defining table structure, relationships, and constraints.
 /// Manages address information with geographic and postal data.
 /// </summary>
-public sealed class AddressEntityConfiguration : IEntityTypeConfiguration<AddressEntity>
+public sealed class AddressEntityConfiguration : BaseEntityConfiguration<AddressEntity>
 {
-    public void Configure(EntityTypeBuilder<AddressEntity> builder)
+    public override void Configure(EntityTypeBuilder<AddressEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table Mapping
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table Mapping
         builder.ToTable("Addresses");
 
         // Primary Key

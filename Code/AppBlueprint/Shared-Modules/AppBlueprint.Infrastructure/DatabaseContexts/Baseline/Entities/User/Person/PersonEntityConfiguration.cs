@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Pe
 /// Entity configuration for PersonEntity defining table structure, relationships, and constraints.
 /// Supports shared person information model used across User and Customer contexts.
 /// </summary>
-public sealed class PersonEntityConfiguration : IEntityTypeConfiguration<PersonEntity>
+public sealed class PersonEntityConfiguration : BaseEntityConfiguration<PersonEntity>
 {
-    public void Configure(EntityTypeBuilder<PersonEntity> builder)
+    public override void Configure(EntityTypeBuilder<PersonEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("Persons");
 
         // Primary key

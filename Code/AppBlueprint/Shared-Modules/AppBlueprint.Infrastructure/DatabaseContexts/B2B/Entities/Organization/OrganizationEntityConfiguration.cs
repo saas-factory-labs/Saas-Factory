@@ -7,9 +7,9 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization
 /// Entity configuration for B2B OrganizationEntity defining table structure, relationships, and constraints.
 /// Supports multi-tenant B2B scenarios with user management and organizational hierarchy.
 /// </summary>
-public sealed class OrganizationEntityConfiguration : IEntityTypeConfiguration<OrganizationEntity>
+public sealed class OrganizationEntityConfiguration : BaseEntityConfiguration<OrganizationEntity>
 {
-    public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
+    public override void Configure(EntityTypeBuilder<OrganizationEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);        // Table mapping with standardized naming
         builder.ToTable("Organizations");

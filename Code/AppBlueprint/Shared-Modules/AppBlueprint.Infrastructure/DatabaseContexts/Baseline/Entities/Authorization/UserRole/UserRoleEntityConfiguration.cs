@@ -6,9 +6,9 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authori
 /// <summary>
 /// Entity configuration for UserRoleEntity defining table structure, relationships, and constraints.
 /// </summary>
-public sealed class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserRoleEntity>
+public sealed class UserRoleEntityConfiguration : BaseEntityConfiguration<UserRoleEntity>
 {
-    public void Configure(EntityTypeBuilder<UserRoleEntity> builder)
+    public override void Configure(EntityTypeBuilder<UserRoleEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);        // Define table name
         builder.ToTable("UserRoles");

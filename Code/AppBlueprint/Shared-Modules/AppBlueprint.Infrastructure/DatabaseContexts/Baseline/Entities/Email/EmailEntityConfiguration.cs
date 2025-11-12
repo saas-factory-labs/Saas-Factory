@@ -10,13 +10,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email;
 /// Entity configuration for EmailAddressEntity defining email addresses and their relationships to users, customers, and tenants.
 /// Supports multiple email addresses per entity with proper validation and indexing.
 /// </summary>
-public sealed class EmailAddressesEntityConfiguration : IEntityTypeConfiguration<EmailAddressEntity>
+public sealed class EmailAddressesEntityConfiguration : BaseEntityConfiguration<EmailAddressEntity>
 {
-    public void Configure(EntityTypeBuilder<EmailAddressEntity> builder)
+    public override void Configure(EntityTypeBuilder<EmailAddressEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Define table name
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Define table name
         builder.ToTable("EmailAddresses");
 
         // Define primary key

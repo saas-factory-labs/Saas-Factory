@@ -7,18 +7,21 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing
 /// Entity configuration for SubscriptionEntity managing subscription plans and offerings.
 /// Configures subscription data with proper validation, indexing, and audit tracking.
 /// </summary>
-public sealed class SubscriptionEntityConfiguration : IEntityTypeConfiguration<SubscriptionEntity>
+public sealed class SubscriptionEntityConfiguration : BaseEntityConfiguration<SubscriptionEntity>
 {
     /// <summary>
     /// Configures the SubscriptionEntity with table mapping, properties, relationships, and indexes.
     /// </summary>
     /// <param name="builder">The entity type builder for SubscriptionEntity</param>
     /// <exception cref="ArgumentNullException">Thrown when builder is null</exception>
-    public void Configure(EntityTypeBuilder<SubscriptionEntity> builder)
+    public override void Configure(EntityTypeBuilder<SubscriptionEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table configuration
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table configuration
         builder.ToTable("Subscriptions");
         builder.HasKey(e => e.Id);
 

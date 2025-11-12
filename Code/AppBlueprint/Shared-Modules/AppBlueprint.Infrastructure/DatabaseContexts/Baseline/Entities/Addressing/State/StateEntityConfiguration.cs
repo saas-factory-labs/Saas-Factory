@@ -8,13 +8,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityC
 /// Entity configuration for StateEntity defining table structure, relationships, and constraints.
 /// Establishes the Country→State relationship in the geographic hierarchy.
 /// </summary>
-public sealed class StateEntityConfiguration : IEntityTypeConfiguration<StateEntity>
+public sealed class StateEntityConfiguration : BaseEntityConfiguration<StateEntity>
 {
-    public void Configure(EntityTypeBuilder<StateEntity> builder)
+    public override void Configure(EntityTypeBuilder<StateEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("States");
 
         // Primary key - ULID as string

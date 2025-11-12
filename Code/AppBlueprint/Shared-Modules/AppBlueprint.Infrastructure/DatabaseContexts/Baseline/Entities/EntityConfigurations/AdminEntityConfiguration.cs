@@ -4,12 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
-public sealed class AdminEntityConfiguration : IEntityTypeConfiguration<AdminEntity>
+public sealed class AdminEntityConfiguration : BaseEntityConfiguration<AdminEntity>
 {
-    public void Configure(EntityTypeBuilder<AdminEntity> builder)
+    public override void Configure(EntityTypeBuilder<AdminEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
         builder.ToTable("Admins");
         builder.HasKey(e => e.Id);
 

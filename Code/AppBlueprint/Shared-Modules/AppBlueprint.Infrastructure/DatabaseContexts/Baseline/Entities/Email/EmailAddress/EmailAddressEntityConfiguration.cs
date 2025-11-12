@@ -6,13 +6,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.E
 /// <summary>
 /// Entity configuration for EmailAddressEntity defining table structure, relationships, and constraints.
 /// </summary>
-public sealed class EmailAddressEntityConfiguration : IEntityTypeConfiguration<EmailAddressEntity>
+public sealed class EmailAddressEntityConfiguration : BaseEntityConfiguration<EmailAddressEntity>
 {
-    public void Configure(EntityTypeBuilder<EmailAddressEntity> builder)
+    public override void Configure(EntityTypeBuilder<EmailAddressEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("EmailAddresses");
 
         // Primary key - ULID as string

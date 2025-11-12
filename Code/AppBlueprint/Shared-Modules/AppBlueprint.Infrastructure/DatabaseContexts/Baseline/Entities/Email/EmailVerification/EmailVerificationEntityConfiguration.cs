@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.E
 /// Entity configuration for EmailVerificationEntity defining table structure, relationships, and constraints.
 /// Manages email verification tokens and validation process.
 /// </summary>
-public sealed class EmailVerificationEntityConfiguration : IEntityTypeConfiguration<EmailVerificationEntity>
+public sealed class EmailVerificationEntityConfiguration : BaseEntityConfiguration<EmailVerificationEntity>
 {
-    public void Configure(EntityTypeBuilder<EmailVerificationEntity> builder)
+    public override void Configure(EntityTypeBuilder<EmailVerificationEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("EmailVerifications");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("EmailVerifications");
 
         // Primary key - ULID as string
         builder.HasKey(e => e.Id);

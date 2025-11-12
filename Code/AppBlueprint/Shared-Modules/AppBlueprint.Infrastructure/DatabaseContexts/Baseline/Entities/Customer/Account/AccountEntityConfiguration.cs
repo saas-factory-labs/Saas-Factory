@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Custome
 /// Entity configuration for AccountEntity defining table structure, relationships, and constraints.
 /// Manages customer account information and billing details.
 /// </summary>
-public sealed class AccountEntityConfiguration : IEntityTypeConfiguration<AccountEntity>
+public sealed class AccountEntityConfiguration : BaseEntityConfiguration<AccountEntity>
 {
-    public void Configure(EntityTypeBuilder<AccountEntity> builder)
+    public override void Configure(EntityTypeBuilder<AccountEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table Mapping
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table Mapping
         builder.ToTable("Accounts");        // Primary Key        
         builder.HasKey(e => e.Id);
 

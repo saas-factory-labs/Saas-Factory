@@ -9,13 +9,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Pr
 /// Entity configuration for ProfileEntity defining table structure, relationships, and constraints.
 /// Manages user profile information and personal data.
 /// </summary>
-public sealed class ProfileEntityConfiguration : IEntityTypeConfiguration<DomainProfileEntity>
+public sealed class ProfileEntityConfiguration : BaseEntityConfiguration<DomainProfileEntity>
 {
-    public void Configure(EntityTypeBuilder<DomainProfileEntity> builder)
+    public override void Configure(EntityTypeBuilder<DomainProfileEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("Profiles");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("Profiles");
 
         builder.HasKey(e => e.Id);
 

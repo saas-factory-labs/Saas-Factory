@@ -3,13 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.EntityConfigurations;
 
-public sealed class OrganizationEntityConfiguration : IEntityTypeConfiguration<OrganizationEntity>
+public sealed class OrganizationEntityConfiguration : BaseEntityConfiguration<OrganizationEntity>
 {
-    public void Configure(EntityTypeBuilder<OrganizationEntity> builder)
+    public override void Configure(EntityTypeBuilder<OrganizationEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("Organizations"); // Corrected table name
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("Organizations"); // Corrected table name
         builder.HasKey(o => o.Id);
 
         builder.Property(o => o.Name)

@@ -4,12 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
 // NOTE: This is an old configuration - renamed to match the renamed entity
-public sealed class OldTeamInviteEntityConfiguration : IEntityTypeConfiguration<OldTeamInviteEntity>
+public sealed class OldTeamInviteEntityConfiguration : BaseEntityConfiguration<OldTeamInviteEntity>
 {
-    public void Configure(EntityTypeBuilder<OldTeamInviteEntity> builder)
+    public override void Configure(EntityTypeBuilder<OldTeamInviteEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
         // Table Mapping - use different table name to avoid conflicts
         builder.ToTable("OldTeamInvites");
 

@@ -3,13 +3,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 
-public sealed class ContactPersonEntityConfiguration : IEntityTypeConfiguration<ContactPersonEntity>
+public sealed class ContactPersonEntityConfiguration : BaseEntityConfiguration<ContactPersonEntity>
 {
-    public void Configure(EntityTypeBuilder<ContactPersonEntity> builder)
+    public override void Configure(EntityTypeBuilder<ContactPersonEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.ToTable("ContactPersons");
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+builder.ToTable("ContactPersons");
 
         builder.HasKey(c => c.Id);
         builder.HasIndex(c => c.Id).IsUnique();

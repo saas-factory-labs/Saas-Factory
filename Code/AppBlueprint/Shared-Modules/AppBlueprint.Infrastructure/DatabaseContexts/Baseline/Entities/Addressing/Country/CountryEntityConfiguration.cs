@@ -7,13 +7,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Address
 /// Entity configuration for CountryEntity defining table structure, relationships, and constraints.
 /// Configures the geographic hierarchy for Country→State→City relationships.
 /// </summary>
-public sealed class CountryEntityConfiguration : IEntityTypeConfiguration<CountryEntity>
+public sealed class CountryEntityConfiguration : BaseEntityConfiguration<CountryEntity>
 {
-    public void Configure(EntityTypeBuilder<CountryEntity> builder)
+    public override void Configure(EntityTypeBuilder<CountryEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("Countries");
 
         // Primary key - ULID as string

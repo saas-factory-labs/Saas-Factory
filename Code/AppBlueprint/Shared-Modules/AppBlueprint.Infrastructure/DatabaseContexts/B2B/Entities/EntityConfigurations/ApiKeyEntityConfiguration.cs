@@ -6,13 +6,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.EntityConfig
 /// <summary>
 /// Entity configuration for ApiKeyEntity defining database schema, relationships and constraints.
 /// </summary>
-public sealed class ApiKeyEntityConfiguration : IEntityTypeConfiguration<ApiKeyEntity>
+public sealed class ApiKeyEntityConfiguration : BaseEntityConfiguration<ApiKeyEntity>
 {
-    public void Configure(EntityTypeBuilder<ApiKeyEntity> builder)
+    public override void Configure(EntityTypeBuilder<ApiKeyEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table mapping with standardized naming
+        
+        // Apply base configuration including named soft delete filter
+        base.Configure(builder);
+// Table mapping with standardized naming
         builder.ToTable("ApiKeys");
 
         // Primary key
