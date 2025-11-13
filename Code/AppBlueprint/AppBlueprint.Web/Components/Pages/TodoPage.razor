@@ -8,6 +8,7 @@
 @inject TodoService TodoService
 @inject ISnackbar Snackbar
 @inject ITokenStorageService TokenStorage
+@inject ILogger<TodoPage> _logger
 
 <PageTitle>Todos</PageTitle>
 
@@ -182,7 +183,19 @@
         if (firstRender)
         {
             _hasRendered = true;
-            await RunDiagnosticsAsync(); // Run diagnostics first
+
+            // Run diagnostics but don't let it block loading todos
+            try
+            {
+                await RunDiagnosticsAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Diagnostics failed (JS interop may not be ready yet): {Message}", ex.Message);
+                _diagnosticInfo = $"⚠️ Diagnostics unavailable: {ex.Message}";
+            }
+
+            // Always try to load todos regardless of diagnostics result
             await LoadTodosAsync();
             StateHasChanged();
         }
@@ -200,12 +213,28 @@
         try
         {
             // Check if token exists in localStorage (legacy check - not used with Logto SDK)
-            var token = await TokenStorage.GetTokenAsync();
-            _hasToken = !string.IsNullOrEmpty(token);
-
-            if (!_hasToken)
+            // Wrap in try-catch for .NET 10 JS interop timing issues
+            try
             {
-                _diagnosticInfo = "⚠️ No token in localStorage (expected with Logto cookie auth)";
+                var token = await TokenStorage.GetTokenAsync();
+                _hasToken = !string.IsNullOrEmpty(token);
+
+                if (!_hasToken)
+                {
+                    _diagnosticInfo = "⚠️ No token in localStorage (expected with Logto cookie auth)";
+                }
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("JavaScript interop"))
+            {
+                _logger.LogDebug("JS interop not ready during token check: {Message}", ex.Message);
+                _diagnosticInfo = "⚠️ JavaScript not ready (expected on first load in .NET 10)";
+                _hasToken = false;
+            }
+            catch (Microsoft.JSInterop.JSException ex)
+            {
+                _logger.LogDebug("JSException during token check: {Message}", ex.Message);
+                _diagnosticInfo = "⚠️ JavaScript not ready (expected on first load in .NET 10)";
+                _hasToken = false;
             }
 
             StateHasChanged();
