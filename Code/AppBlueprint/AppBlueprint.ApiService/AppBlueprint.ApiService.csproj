@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -38,23 +38,24 @@
 
 
     <ItemGroup>
-          <PackageReference Include="NSwag.AspNetCore"/>
+        <PackageReference Include="NSwag.AspNetCore"/>
+        <PackageReference Include="Microsoft.OpenApi"/>
         <PackageReference Include="Microsoft.Extensions.Compliance.Redaction"/>
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>        
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
         <PackageReference Include="Microsoft.IdentityModel.Tokens"/>
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
         <PackageReference Include="Newtonsoft.Json"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
-        <PackageReference Include="Npgsql" />
+        <PackageReference Include="Npgsql"/>
         <PackageReference Include="Scalar.AspNetCore"/>
         <PackageReference Include="Serilog"/>
         <PackageReference Include="OpenTelemetry.Extensions.Hosting"/>
         <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore"/>
-        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
-        <PackageReference Include ="OpenTelemetry.Instrumentation.Http" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol"/>
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http"/>
 
         <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
     </ItemGroup>

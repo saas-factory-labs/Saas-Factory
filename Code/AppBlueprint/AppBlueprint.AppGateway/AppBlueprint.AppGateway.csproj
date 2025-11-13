@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <NoWarn>$(NoWarn);NU5119</NoWarn>
     </PropertyGroup>    
     <ItemGroup>        
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
         <PackageReference Include="Yarp.ReverseProxy"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
         <PackageReference Include="Swashbuckle.AspNetCore"/>

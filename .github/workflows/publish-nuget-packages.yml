@@ -5,9 +5,9 @@ permissions:
 
 on:
   push:
-    branches: ["main"]
-    tags: ["v*.*.*"]
-  workflow_dispatch:
+    tags:
+      - 'v*.*.*'  # Only trigger on version tags (e.g., v1.0.0, v1.2.3-beta)
+  workflow_dispatch:  # Allow manual triggering
 
 jobs:
   publish-packages:
@@ -15,21 +15,34 @@ jobs:
     strategy:
       matrix:
         package-name:
+          # Core shared kernel and contracts
+          - "AppBlueprint.SharedKernel"
+          - "AppBlueprint.Contracts"
+
+          # Domain and Application layers
+          - "AppBlueprint.Domain"
+          - "AppBlueprint.Application"
+
+          # Infrastructure layer
+          - "AppBlueprint.Infrastructure"
+
+          # Presentation layers
           - "AppBlueprint.Presentation.ApiModule"
           - "AppBlueprint.UiKit"
-          - "AppBlueprint.SharedKernel"
+
+          # API client SDK
+          - "AppBlueprint.Api.Client.Sdk"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Full history needed for GitVersion
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            9.0.x
+          dotnet-version: '10.0.x'  # .NET 10 as specified in global.json
           global-json-file: global.json
 
       - name: Install GitVersion
@@ -72,18 +85,22 @@ jobs:
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
       - name: Build the project
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release --no-restore
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
       - name: Pack NuGet package with versioning
-        run: dotnet pack --configuration Release --output ./bin/Release --p:Version=${{ env.VERSION }}
+        run: dotnet pack --configuration Release --no-build --output ./bin/Release --p:Version=${{ env.VERSION }}
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
       - name: Push to NuGet.org
         run: |
-          echo "Pushing ${{ matrix.package-name }} to NuGet.org..."
+          echo "Pushing ${{ matrix.package-name }} version ${{ env.VERSION }} to NuGet.org..."
           dotnet nuget push ./bin/Release/*.nupkg \
             --api-key ${{ secrets.NUGET_API_KEY }} \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
+
+      - name: Summary
+        run: |
+          echo "✅ Successfully published ${{ matrix.package-name }} v${{ env.VERSION }} to NuGet.org"

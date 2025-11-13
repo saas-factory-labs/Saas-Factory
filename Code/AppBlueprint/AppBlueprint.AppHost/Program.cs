@@ -20,7 +20,6 @@ var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservic
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithExternalHttpEndpoints()
-    .WithHttpsEndpoint(port: 8083, name: "web-https")
     .WithHttpEndpoint(port: 8082, name: "web-http")
     .WithReference(apiService);
 
