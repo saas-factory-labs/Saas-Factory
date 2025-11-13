@@ -27,10 +27,10 @@
 <Routes @rendermode="RenderMode.InteractiveServer"/>
 <script src="js/navigationHelper.js"></script>
 <script src="_framework/blazor.web.js"></script>
-
-<!-- MudBlazor .NET 10 compatibility polyfill - must load before MudBlazor.min.js -->
-<script src="js/mudblazor-net10-polyfill.js"></script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+
+<!-- MudBlazor .NET 10 compatibility polyfill - must load AFTER MudBlazor.min.js -->
+<script src="js/mudblazor-net10-polyfill.js"></script>
 
 </body>
 </html>

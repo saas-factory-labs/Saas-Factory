@@ -26,12 +26,15 @@ The polyfill creates these functions if they don't exist, providing backward com
 ### 2. Updated App.razor
 **File:** `Code/AppBlueprint/AppBlueprint.Web/Components/App.razor`
 
-Added the polyfill script **before** MudBlazor's JavaScript loads:
+Added the polyfill script **AFTER** MudBlazor's JavaScript loads (CRITICAL - order matters!):
 ```html
-<!-- MudBlazor .NET 10 compatibility polyfill - must load before MudBlazor.min.js -->
-<script src="js/mudblazor-net10-polyfill.js"></script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+
+<!-- MudBlazor .NET 10 compatibility polyfill - must load AFTER MudBlazor.min.js -->
+<script src="js/mudblazor-net10-polyfill.js"></script>
 ```
+
+**Why this order?** MudBlazor creates its own `mudElementRef` object. The polyfill must load after to augment it, not before (which would cause MudBlazor to overwrite it).
 
 ## Testing Instructions
 
