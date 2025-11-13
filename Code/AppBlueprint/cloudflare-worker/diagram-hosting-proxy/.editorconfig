@@ -1,12 +1,6 @@
 # http://editorconfig.org
-root = true
+root = false
 
-[*]
-indent_style = tab
-end_of_line = lf
-charset = utf-8
-trim_trailing_whitespace = true
-insert_final_newline = true
-
-[*.yml]
-indent_style = space
+# Inherit from root .editorconfig file
+# JavaScript/TypeScript and YAML rules have been consolidated to the root .editorconfig
+# This file is kept for future project-specific overrides if needed
