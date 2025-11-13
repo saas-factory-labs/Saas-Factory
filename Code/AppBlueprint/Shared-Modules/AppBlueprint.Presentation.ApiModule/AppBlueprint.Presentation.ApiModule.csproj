@@ -1,57 +1,58 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>AppBlueprint.Presentation.ApiModule</RootNamespace>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Library</OutputType>
+        <RootNamespace>AppBlueprint.Presentation.ApiModule</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
 
-    <!-- NuGet packaging -->
-    <IsPackable>true</IsPackable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>SaaS-Factory.AppBlueprint.Presentation.ApiModule</PackageId>
-    <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion or manual override -->
-    <Authors>Casper Rubæk</Authors>
-    <Description>Presentation layer with API definitions and integrations.</Description>
-    <PackageTags>aspnetcore;api;swagger;webapi;presentation</PackageTags>
-    <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+        <!-- NuGet packaging -->
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>SaaS-Factory.AppBlueprint.Presentation.ApiModule</PackageId>
+        <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion or manual override -->
+        <Authors>Casper Rubæk</Authors>
+        <Description>Presentation layer with API definitions and integrations.</Description>
+        <PackageTags>aspnetcore;api;swagger;webapi;presentation</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
-    <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
-    <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
-    <ProjectReference Include="..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />    
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Logging" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />    <PackageReference Include="Asp.Versioning.Http" />
-    <PackageReference Include="Asp.Versioning.Mvc" />
-    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj"/>
+        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
+        <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj"/>
+        <ProjectReference Include="..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authorization"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Logging"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        <PackageReference Include="Swashbuckle.AspNetCore"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI"/>
+        <PackageReference Include="Asp.Versioning.Http"/>
+        <PackageReference Include="Asp.Versioning.Mvc"/>
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer"/>
+        <PackageReference Include="Microsoft.OpenApi"/>
+    </ItemGroup>
 
 </Project>
