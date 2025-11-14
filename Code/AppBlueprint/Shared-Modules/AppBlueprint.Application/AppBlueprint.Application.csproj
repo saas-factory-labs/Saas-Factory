@@ -39,6 +39,7 @@
 
     <ItemGroup>
         <PackageReference Include="Fluent-Regex"/>
+        <PackageReference Include="FluentValidation"/>
     </ItemGroup>
 
     <ItemGroup>
