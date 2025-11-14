@@ -189,6 +189,24 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TeamService>(client =>
 })
 .AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
+// Add RoleService with HttpClient configured for direct API access
+builder.Services.AddHttpClient<AppBlueprint.Web.Services.RoleService>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler();
+    if (builder.Environment.IsDevelopment())
+    {
+        handler.ServerCertificateCustomValidationCallback =
+            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+    }
+    return handler;
+})
+.AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
+
 var app = builder.Build();
 
 Console.WriteLine("========================================");

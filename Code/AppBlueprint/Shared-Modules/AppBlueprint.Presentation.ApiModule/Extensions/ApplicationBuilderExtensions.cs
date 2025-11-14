@@ -165,11 +165,14 @@ public static class ApplicationBuilderExtensions
         services.AddHttpContextAccessor();
 
         services.AddScoped<IDataExportService, AppBlueprint.Infrastructure.Services.DataExport.DataExportService>();
-        services.AddScoped<IDataExportRepository, DataExportRepository>();       
+        services.AddScoped<IDataExportRepository, DataExportRepository>();
         services.AddScoped<IUnitOfWork, AppBlueprint.Infrastructure.UnitOfWork.Implementation.UnitOfWork>();
-        
+
         // Register TodoRepository
         services.AddScoped<AppBlueprint.TodoAppKernel.Repositories.ITodoRepository, TodoRepository>();
+
+        // Register TeamRepository
+        services.AddScoped<ITeamRepository, TeamRepository>();
 
         AddDbContext(services, configuration);
         ConfigureApiVersioning(services);

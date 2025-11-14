@@ -37,7 +37,14 @@ public class TeamService
         try
         {
             var response = await _httpClient.GetAsync("/api/v1/teams", cancellationToken);
-            response.EnsureSuccessStatusCode();
+
+            // If error, read response body for details before throwing
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogError("Teams API error {StatusCode}: {ErrorContent}", response.StatusCode, errorContent);
+                throw new HttpRequestException($"API returned {response.StatusCode}: {errorContent}");
+            }
 
             var teams = await response.Content.ReadFromJsonAsync<IEnumerable<TeamResponse>>(_jsonOptions, cancellationToken);
             return teams ?? Enumerable.Empty<TeamResponse>();
