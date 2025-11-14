@@ -441,6 +441,117 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         logger.LogInformation(DataSeederMessages.RolePermissionsSeeded);
     }
 
+    private async Task SeedUserRolesAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (await dbContext.UserRoles.AnyAsync(cancellationToken)) return;
+
+            var users = await dbContext.Users.ToListAsync(cancellationToken);
+            var roles = await dbContext.Roles.ToListAsync(cancellationToken);
+
+            if (users.Count == 0 || roles.Count == 0)
+            {
+                throw new InvalidOperationException("Cannot seed UserRoles - Users or Roles not found. Ensure SeedUsersAsync and SeedRolesAsync are called first.");
+            }
+
+            // Find specific roles
+            var adminRole = roles.FirstOrDefault(r => r.Name == "Admin");
+            var managerRole = roles.FirstOrDefault(r => r.Name == "Manager");
+            var userRole = roles.FirstOrDefault(r => r.Name == "User");
+            var ownerRole = roles.FirstOrDefault(r => r.Name == "Owner");
+
+            var userRoles = new List<UserRoleEntity>();
+
+            // Distribute roles realistically:
+            // - Owner: 2-3 users (first 2-3)
+            // - Admin: next 4 users
+            // - Manager: ~15% of remaining users
+            // - User: rest of users
+
+            var userIndex = 0;
+
+            // Assign Owner role to first 2 users
+            if (ownerRole is not null && users.Count > 0)
+            {
+                var ownerCount = Math.Min(2, users.Count);
+                for (int i = 0; i < ownerCount; i++)
+                {
+                    userRoles.Add(new UserRoleEntity
+                    {
+                        UserId = users[userIndex].Id,
+                        User = users[userIndex],
+                        RoleId = ownerRole.Id,
+                        Role = ownerRole
+                    });
+                    userIndex++;
+                }
+            }
+
+            // Assign Admin role to next 4 users
+            if (adminRole is not null && userIndex < users.Count)
+            {
+                var adminCount = Math.Min(4, users.Count - userIndex);
+                for (int i = 0; i < adminCount; i++)
+                {
+                    userRoles.Add(new UserRoleEntity
+                    {
+                        UserId = users[userIndex].Id,
+                        User = users[userIndex],
+                        RoleId = adminRole.Id,
+                        Role = adminRole
+                    });
+                    userIndex++;
+                }
+            }
+
+            // Assign Manager role to ~15% of remaining users
+            if (managerRole is not null && userIndex < users.Count)
+            {
+                var remainingUsers = users.Count - userIndex;
+                var managerCount = Math.Max(1, (int)(remainingUsers * 0.15));
+                managerCount = Math.Min(managerCount, remainingUsers);
+
+                for (int i = 0; i < managerCount; i++)
+                {
+                    userRoles.Add(new UserRoleEntity
+                    {
+                        UserId = users[userIndex].Id,
+                        User = users[userIndex],
+                        RoleId = managerRole.Id,
+                        Role = managerRole
+                    });
+                    userIndex++;
+                }
+            }
+
+            // Assign User role to all remaining users
+            if (userRole is not null && userIndex < users.Count)
+            {
+                for (int i = userIndex; i < users.Count; i++)
+                {
+                    userRoles.Add(new UserRoleEntity
+                    {
+                        UserId = users[i].Id,
+                        User = users[i],
+                        RoleId = userRole.Id,
+                        Role = userRole
+                    });
+                }
+            }
+
+            await dbContext.UserRoles.AddRangeAsync(userRoles, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            logger.LogInformation("Successfully seeded {Count} user roles", userRoles.Count);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error seeding UserRoles");
+            throw;
+        }
+    }
+
     private async Task<bool> AreAllEntitiesSeededAsync(CancellationToken cancellationToken)
     {
         try
