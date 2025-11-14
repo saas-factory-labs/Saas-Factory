@@ -18,14 +18,17 @@ public class TeamController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly ITeamRepository _teamRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public TeamController(
         IConfiguration configuration,
-        ITeamRepository teamRepository)
+        ITeamRepository teamRepository,
+        IUnitOfWork unitOfWork)
         : base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _teamRepository = teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
     /// <summary>
@@ -75,10 +78,10 @@ public class TeamController : BaseController
 
         var response = new TeamResponse(team.TeamMembers?.Select(m => new TeamMemberResponse
         {
-            // Id = m.Id,
-            // UserId = m.UserId,
-            // Role = m.Role,
-            // JoinedAt = m.JoinedAt
+            Id = m.Id,
+            UserId = m.UserId,
+            Role = m.Role,
+            JoinedAt = m.JoinedAt
         }).ToList())
         {
             Id = team.Id,
@@ -113,7 +116,7 @@ public class TeamController : BaseController
         };
 
         await _teamRepository.AddAsync(newTeam);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return CreatedAtAction(nameof(GetTeam), new { id = newTeam.Id }, new TeamResponse(new List<TeamMemberResponse>())
         {
@@ -148,7 +151,7 @@ public class TeamController : BaseController
             existingTeam.Description = teamDto.Description;
 
         _teamRepository.Update(existingTeam);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }

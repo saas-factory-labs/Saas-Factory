@@ -20,14 +20,17 @@ public class AuditLogController : BaseController
 {
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly IConfiguration _configuration;
+    private readonly IUnitOfWork _unitOfWork;
 
     public AuditLogController(
         IConfiguration configuration,
-        IAuditLogRepository auditLogRepository)
+        IAuditLogRepository auditLogRepository,
+        IUnitOfWork unitOfWork)
         : base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _auditLogRepository = auditLogRepository ?? throw new ArgumentNullException(nameof(auditLogRepository));
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
     /// <summary>
@@ -159,10 +162,10 @@ public class AuditLogController : BaseController
         AuditLogEntity? existingAuditLog = await _auditLogRepository.GetByIdAsync(id, cancellationToken);
         if (existingAuditLog is null) return NotFound(new { Message = $"Audit log with ID {id} not found." });
 
-        // existingAuditLog.Action = auditLogDto.Action      
+        existingAuditLog.Action = auditLogDto.Action;
 
         _auditLogRepository.Update(existingAuditLog, cancellationToken);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
@@ -183,7 +186,7 @@ public class AuditLogController : BaseController
         if (existingAuditLog is null) return NotFound(new { Message = $"Audit log with ID {id} not found." });
 
         _auditLogRepository.Delete(existingAuditLog.Id, cancellationToken);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
