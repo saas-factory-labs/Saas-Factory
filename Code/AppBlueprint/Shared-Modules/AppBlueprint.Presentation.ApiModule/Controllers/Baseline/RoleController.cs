@@ -30,9 +30,17 @@ public class RoleController : BaseController
     }
 
     /// <summary>
-    ///     Gets all roles.
+    ///     Retrieves all roles in the system.
     /// </summary>
-    /// <returns>List of roles</returns>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>List of roles with their names and associated permissions.</returns>
+    /// <remarks>
+    ///     Returns all defined roles including system roles and custom roles.
+    ///     Requires user authentication.
+    /// </remarks>
+    /// <response code="200">Returns the list of roles successfully.</response>
+    /// <response code="404">No roles found in the system.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpGet(ApiEndpoints.Roles.GetAll)]
     [ProducesResponseType(typeof(IEnumerable<RoleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -51,10 +59,18 @@ public class RoleController : BaseController
     }
 
     /// <summary>
-    ///     Gets a role by ID.
+    ///     Retrieves a specific role by its unique identifier.
     /// </summary>
-    /// <param name="id">Role ID.</param>    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Role</returns>
+    /// <param name="id">The unique identifier of the role (e.g., "role_01HX...").</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>Role details including name and permissions.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>GET /api/v1/role/role_01HX...</code>
+    /// </remarks>
+    /// <response code="200">Returns the role details successfully.</response>
+    /// <response code="404">Role with the specified ID was not found.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpGet(ApiEndpoints.Roles.GetById)]
     [ProducesResponseType(typeof(RoleResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -73,11 +89,24 @@ public class RoleController : BaseController
     }
 
     /// <summary>
-    ///     Creates a new role.
+    ///     Creates a new role with the specified name.
     /// </summary>
-    /// <param name="roleDto">Role data transfer object.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Created role.</returns>
+    /// <param name="roleDto">Role creation request containing the role name.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>The newly created role with generated ID.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>
+    ///     POST /api/v1/role
+    ///     {
+    ///         "name": "Content Manager"
+    ///     }
+    ///     </code>
+    ///     Role names should be unique and descriptive.
+    /// </remarks>
+    /// <response code="201">Role created successfully. Returns the created role with its ID.</response>
+    /// <response code="400">Invalid request data or validation failed.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpPost]
     [ProducesResponseType(typeof(RoleResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -99,12 +128,24 @@ public class RoleController : BaseController
     }
 
     /// <summary>
-    ///     Updates an existing role.
+    ///     Updates an existing role's name.
     /// </summary>
-    /// <param name="id">Role ID.</param>
-    /// <param name="request">Role data transfer object.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="id">The unique identifier of the role to update.</param>
+    /// <param name="request">Updated role data containing the new name.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>
+    ///     PUT /api/v1/role/role_01HX...
+    ///     {
+    ///         "name": "Senior Content Manager"
+    ///     }
+    ///     </code>
+    /// </remarks>
+    /// <response code="204">Role updated successfully.</response>
+    /// <response code="404">Role with the specified ID was not found.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -125,10 +166,20 @@ public class RoleController : BaseController
     }
 
     /// <summary>
-    ///     Deletes a role by ID.
-    /// </summary>    /// <param name="id">Role ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    ///     Deletes a role by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the role to delete.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>DELETE /api/v1/role/role_01HX...</code>
+    ///     Warning: Deleting a role may affect users who have been assigned this role.
+    ///     Note: Currently commented out in implementation - needs to be uncommented.
+    /// </remarks>
+    /// <response code="204">Role deleted successfully.</response>
+    /// <response code="404">Role with the specified ID was not found.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -29,9 +29,25 @@ public class TeamController : BaseController
     }
 
     /// <summary>
-    ///     Gets all teams.
+    ///     Retrieves all teams in the system.
     /// </summary>
-    /// <returns>List of teams</returns>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>List of teams with their details and members.</returns>
+    /// <remarks>
+    ///     Sample response:
+    ///     <code>
+    ///     [
+    ///         {
+    ///             "id": "team_01HX...",
+    ///             "name": "Engineering Team",
+    ///             "description": "Core development team",
+    ///             "teamMembers": [...]
+    ///         }
+    ///     ]
+    ///     </code>
+    /// </remarks>
+    /// <response code="200">Returns the list of teams successfully.</response>
+    /// <response code="404">No teams found in the system.</response>
     [HttpGet(ApiEndpoints.Teams.GetAll)]
     [ProducesResponseType(typeof(IEnumerable<TeamResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -58,12 +74,17 @@ public class TeamController : BaseController
     }
 
     /// <summary>
-    ///     Gets a team by ID.
+    ///     Retrieves a specific team by its unique identifier.
     /// </summary>
-    /// <param name="id">Team ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Team details</returns>    
-    /// [HttpGet(ApiEndpoints.Teams.GetById)]
+    /// <param name="id">The unique identifier of the team (e.g., "team_01HX...").</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>Team details including name, description, and team members.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>GET /api/v1/team/team_01HX...</code>
+    /// </remarks>
+    /// <response code="200">Returns the team details successfully.</response>
+    /// <response code="404">Team with the specified ID was not found.</response>
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
@@ -90,11 +111,23 @@ public class TeamController : BaseController
     }
 
     /// <summary>
-    ///     Creates a new team.
+    ///     Creates a new team with the specified details.
     /// </summary>
-    /// <param name="teamDto">Team data transfer object.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Created team.</returns>
+    /// <param name="teamDto">Team creation request containing name and description.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>The newly created team with generated ID.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>
+    ///     POST /api/v1/team
+    ///     {
+    ///         "name": "Engineering Team",
+    ///         "description": "Core development team"
+    ///     }
+    ///     </code>
+    /// </remarks>
+    /// <response code="201">Team created successfully. Returns the created team with its ID.</response>
+    /// <response code="400">Invalid request data or validation failed.</response>
     [HttpPost(ApiEndpoints.Teams.Create)]
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -124,12 +157,25 @@ public class TeamController : BaseController
     }
 
     /// <summary>
-    ///     Updates an existing team.
+    ///     Updates an existing team's details.
     /// </summary>
-    /// <param name="id">Team ID.</param>
-    /// <param name="teamDto">Team data transfer object.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="id">The unique identifier of the team to update.</param>
+    /// <param name="teamDto">Updated team data containing name and/or description.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>
+    ///     PUT /api/v1/team/team_01HX...
+    ///     {
+    ///         "name": "Updated Team Name",
+    ///         "description": "Updated description"
+    ///     }
+    ///     </code>
+    ///     Note: Only provided fields will be updated. Null values are ignored.
+    /// </remarks>
+    /// <response code="204">Team updated successfully.</response>
+    /// <response code="404">Team with the specified ID was not found.</response>
     [HttpPut(ApiEndpoints.Teams.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -154,10 +200,18 @@ public class TeamController : BaseController
     }
 
     /// <summary>
-    ///     Deletes a team by ID.
+    ///     Deletes a team by its unique identifier.
     /// </summary>
-    /// <param name="id">Team ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>    /// <returns>No content.</returns>
+    /// <param name="id">The unique identifier of the team to delete.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>DELETE /api/v1/team/team_01HX...</code>
+    ///     Warning: This operation cannot be undone. All team data and associations will be removed.
+    /// </remarks>
+    /// <response code="204">Team deleted successfully.</response>
+    /// <response code="404">Team with the specified ID was not found.</response>
     [HttpDelete(ApiEndpoints.Teams.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -31,9 +31,22 @@ public class AuditLogController : BaseController
     }
 
     /// <summary>
-    ///     Gets all audit logs.
+    ///     Retrieves all audit logs in the system.
     /// </summary>
-    /// <returns>List of audit logs</returns>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>List of audit logs with action details, user information, and timestamps.</returns>
+    /// <remarks>
+    ///     Requires SaaSProviderAdmin role. Returns comprehensive audit trail including:
+    ///     - Action performed
+    ///     - User who performed the action
+    ///     - Tenant context
+    ///     - Old and new values
+    ///     - Timestamp
+    /// </remarks>
+    /// <response code="200">Returns the list of audit logs successfully.</response>
+    /// <response code="404">No audit logs found in the system.</response>
+    /// <response code="401">User is not authenticated.</response>
+    /// <response code="403">User does not have SaaSProviderAdmin role.</response>
     [HttpGet(ApiEndpoints.AuditLogs.GetAll)]
     [ProducesResponseType(typeof(IEnumerable<AuditLogResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -71,11 +84,18 @@ public class AuditLogController : BaseController
     }
 
     /// <summary>
-    ///     Gets an audit log by ID.
+    ///     Retrieves a specific audit log entry by its unique identifier.
     /// </summary>
-    /// <param name="id">Audit log ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Audit log</returns>
+    /// <param name="id">The unique identifier of the audit log entry.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>Detailed audit log entry with full change history.</returns>
+    /// <remarks>
+    ///     Requires SaaSProviderAdmin role.
+    ///     Provides complete details of a single audit event including before/after values.
+    /// </remarks>
+    /// <response code="200">Returns the audit log entry successfully.</response>
+    /// <response code="404">Audit log entry with the specified ID was not found.</response>
+    /// <response code="403">User does not have SaaSProviderAdmin role.</response>
     [HttpGet(ApiEndpoints.AuditLogs.GetById)]
     [ProducesResponseType(typeof(AuditLogResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -143,12 +163,20 @@ public class AuditLogController : BaseController
     // }
 
     /// <summary>
-    ///     Updates an existing audit log.
+    ///     Updates an existing audit log entry.
     /// </summary>
-    /// <param name="id">Audit log ID.</param>
-    /// <param name="auditLogDto">Audit log data transfer object.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="id">The unique identifier of the audit log to update.</param>
+    /// <param name="auditLogDto">Updated audit log data.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Requires SaaSProviderAdmin role.
+    ///     Warning: Modifying audit logs should be done with extreme caution as it affects audit trail integrity.
+    ///     Note: Update logic is currently commented out in implementation.
+    /// </remarks>
+    /// <response code="204">Audit log updated successfully.</response>
+    /// <response code="404">Audit log with the specified ID was not found.</response>
+    /// <response code="403">User does not have SaaSProviderAdmin role.</response>
     [HttpPut(ApiEndpoints.AuditLogs.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -168,11 +196,19 @@ public class AuditLogController : BaseController
     }
 
     /// <summary>
-    ///     Deletes an audit log by ID.
+    ///     Deletes an audit log entry by its unique identifier.
     /// </summary>
-    /// <param name="id">Audit log ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="id">The unique identifier of the audit log to delete.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Requires SaaSProviderAdmin role.
+    ///     Warning: Deleting audit logs compromises audit trail integrity and should only be done
+    ///     when absolutely necessary (e.g., GDPR data deletion requests).
+    /// </remarks>
+    /// <response code="204">Audit log deleted successfully.</response>
+    /// <response code="404">Audit log with the specified ID was not found.</response>
+    /// <response code="403">User does not have SaaSProviderAdmin role.</response>
     [HttpDelete(ApiEndpoints.AuditLogs.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

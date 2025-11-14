@@ -33,9 +33,18 @@ public class OrganizationController : BaseController
     }
 
     /// <summary>
-    ///     Gets all organizations.
+    ///     Retrieves all organizations in the system.
     /// </summary>
-    /// <returns>List of organizations</returns>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>List of organizations with their basic information.</returns>
+    /// <remarks>
+    ///     This endpoint requires TenantAdmin role.
+    ///     Returns organization names and basic details.
+    /// </remarks>
+    /// <response code="200">Returns the list of organizations successfully.</response>
+    /// <response code="404">No organizations found in the system.</response>
+    /// <response code="401">User is not authenticated.</response>
+    /// <response code="403">User does not have TenantAdmin role.</response>
     [HttpGet(ApiEndpoints.Organizations.GetAll)]
     [ProducesResponseType(typeof(IEnumerable<OrganizationResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -55,11 +64,17 @@ public class OrganizationController : BaseController
     }
 
     /// <summary>
-    ///     Gets an organization by ID.
+    ///     Retrieves a specific organization by its unique identifier.
     /// </summary>
-    /// <param name="id">Organization ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Organization details</returns>    
+    /// <param name="id">The unique identifier of the organization (e.g., "org_01HX...").</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>Organization details including name and associated data.</returns>
+    /// <remarks>
+    ///     Requires TenantAdmin role. Returns organization information for the specified ID.
+    /// </remarks>
+    /// <response code="200">Returns the organization details successfully.</response>
+    /// <response code="404">Organization with the specified ID was not found.</response>
+    /// <response code="403">User does not have TenantAdmin role.</response>
     [HttpGet(ApiEndpoints.Organizations.GetById)]
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -80,11 +95,24 @@ public class OrganizationController : BaseController
     }
 
     /// <summary>
-    ///     Creates a new organization.
+    ///     Creates a new organization with the specified details.
     /// </summary>
-    /// <param name="organizationDto">Organization data transfer object.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Created organization.</returns>
+    /// <param name="organizationDto">Organization creation request containing name and other details.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>The newly created organization with generated ID.</returns>
+    /// <remarks>
+    ///     Requires TenantAdmin role.
+    ///     Sample request:
+    ///     <code>
+    ///     POST /api/v1/organization
+    ///     {
+    ///         "name": "Acme Corporation"
+    ///     }
+    ///     </code>
+    /// </remarks>
+    /// <response code="201">Organization created successfully. Returns the created organization with its ID.</response>
+    /// <response code="400">Invalid request data or validation failed.</response>
+    /// <response code="403">User does not have TenantAdmin role.</response>
     [HttpPost(ApiEndpoints.Organizations.Create)]
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -122,12 +150,25 @@ public class OrganizationController : BaseController
     }
 
     /// <summary>
-    ///     Updates an existing organization.
+    ///     Updates an existing organization's details.
     /// </summary>
-    /// <param name="id">Organization ID.</param>
-    /// <param name="organizationDto">Organization data transfer object.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="id">The unique identifier of the organization to update.</param>
+    /// <param name="organizationDto">Updated organization data containing name.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Requires TenantAdmin role.
+    ///     Sample request:
+    ///     <code>
+    ///     PUT /api/v1/organization/org_01HX...
+    ///     {
+    ///         "name": "Updated Organization Name"
+    ///     }
+    ///     </code>
+    /// </remarks>
+    /// <response code="204">Organization updated successfully.</response>
+    /// <response code="404">Organization with the specified ID was not found.</response>
+    /// <response code="403">User does not have TenantAdmin role.</response>
     [HttpPut(ApiEndpoints.Organizations.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -147,10 +188,20 @@ public class OrganizationController : BaseController
     }
 
     /// <summary>
-    ///     Deletes an organization by ID.
+    ///     Deletes an organization by its unique identifier.
     /// </summary>
-    /// <param name="id">Organization ID.</param>    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="id">The unique identifier of the organization to delete.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Requires TenantAdmin role.
+    ///     Sample request:
+    ///     <code>DELETE /api/v1/organization/org_01HX...</code>
+    ///     Warning: This operation cannot be undone. All organization data will be permanently removed.
+    /// </remarks>
+    /// <response code="204">Organization deleted successfully.</response>
+    /// <response code="404">Organization with the specified ID was not found.</response>
+    /// <response code="403">User does not have TenantAdmin role.</response>
     [HttpDelete(ApiEndpoints.Organizations.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
