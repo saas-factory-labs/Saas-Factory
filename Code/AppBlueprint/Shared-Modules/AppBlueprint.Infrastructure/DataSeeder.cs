@@ -17,44 +17,47 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.Email
 
 /// <summary>
 /// Comprehensive database seeder that populates all application tables with realistic test data.
-/// 
-/// ENTITIES SEEDED (21 types, 1000+ records):
-/// 
+///
+/// ENTITIES SEEDED (22 types, 1000+ records):
+///
 /// Core Reference Data:
 /// - Languages (24 entries) - World languages with ISO codes
-/// - GlobalRegions (6 entries) - Continental regions  
+/// - GlobalRegions (6 entries) - Continental regions
 /// - CountryRegions (3 per country) - Regional subdivisions
 /// - Cities (5 per region) - Major cities worldwide
 /// - Streets (5 per city) - Street addresses
 /// - Countries (195 entries) - All world countries
 /// - Addresses (50 realistic addresses) - Complete address records
-/// 
+///
 /// Authorization & Access Control:
 /// - Roles (5 standard roles) - Admin, User, Manager, Support, Guest
 /// - Permissions (10 core permissions) - CRUD and management permissions
-/// 
+///
 /// Business & Payment:
 /// - Subscriptions (20 plans) - Various subscription tiers
-/// - Accounts (50 accounts) - Customer account records  
+/// - Accounts (50 accounts) - Customer account records
 /// - PaymentProviders (6 providers) - Stripe, PayPal, Square, etc.
 /// - Credits (2 per tenant) - Credit balance tracking
-/// 
+///
 /// User Management & Multi-tenancy:
 /// - Tenants (10 organizations) - Tenant organizations
 /// - Users (50 users) - Users with realistic profiles
 /// - Customers (30 customers) - Business/Personal/Government types
 /// - ContactPersons (50 contacts) - Customer contact persons
-/// 
+///
 /// Communication & Files:
 /// - EmailAddresses (100 emails) - Linked to users/customers
 /// - PhoneNumbers (80 numbers) - With country codes and verification
 /// - Notifications (200 notifications) - User notification records
 /// - Files (100 files) - File metadata with various extensions
-/// 
+///
 /// Collaboration & Integration:
 /// - Teams (15 teams) - Organizational teams within tenants
 /// - Integrations (30 integrations) - Third-party service connections
-/// 
+///
+/// Data Management:
+/// - DataExports (40 exports) - Data export configurations with various formats
+///
 /// Uses Bogus library for realistic fake data generation.
 /// Implements proper dependency ordering for foreign key constraints.
 /// Includes comprehensive error handling and logging.
@@ -145,13 +148,13 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         // await SeedUserRolesAsync(cancellationToken);
         // await SeedRolePermissionsAsync(cancellationToken);
         // await SeedAdminsAsync(cancellationToken);
-        
+
         // Data Management
+        await SeedDataExportsAsync(cancellationToken);
         // TODO: Add these when available in ApplicationDbContext
-        // await SeedDataExportsAsync(cancellationToken);
         // await SeedWebhooksAsync(cancellationToken);
         // await SeedSearchesAsync(cancellationToken);
-        
+
         logger.LogInformation(DataSeederMessages.DatabaseSeedingCompleted);
     }
 
@@ -465,7 +468,8 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
                    && await b2bDbContext.Teams.AnyAsync(cancellationToken)
                    && await dbContext.Notifications.AnyAsync(cancellationToken)
                    && await dbContext.Files.AnyAsync(cancellationToken)
-                   && await dbContext.Integrations.AnyAsync(cancellationToken);
+                   && await dbContext.Integrations.AnyAsync(cancellationToken)
+                   && await dbContext.DataExports.AnyAsync(cancellationToken);
         }
         catch (InvalidOperationException ex)
         {
@@ -1094,6 +1098,50 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         catch (Exception ex)
         {
             logger.LogError(ex, "Error seeding TeamInvites");
+            throw;
+        }
+    }
+
+    // --- Data Management ---
+    private async Task SeedDataExportsAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (await dbContext.DataExports.AnyAsync(cancellationToken)) return;
+
+            var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
+
+            if (tenants.Count == 0)
+            {
+                throw new InvalidOperationException("Cannot seed DataExports - Tenants not found. Ensure SeedTenantsAsync is called first.");
+            }
+
+            var exportFormats = new[] { ".csv", ".json", ".xlsx", ".xml", ".pdf" };
+            var exportTypes = new[] { "customers", "orders", "invoices", "users", "reports", "analytics", "audit_logs", "transactions" };
+
+            var faker = new Faker<DatabaseContexts.Baseline.Entities.Customer.DataExport.DataExportEntity>()
+                .RuleFor(de => de.FileName, f =>
+                {
+                    var exportType = f.PickRandom(exportTypes);
+                    var timestamp = f.Date.Recent(30).ToString("yyyyMMdd_HHmmss");
+                    var format = f.PickRandom(exportFormats);
+                    return $"{exportType}_export_{timestamp}{format}";
+                })
+                .RuleFor(de => de.FileSize, f => f.Random.Double(50000, 50000000)) // 50KB to 50MB
+                .RuleFor(de => de.DownloadUrl, f => f.Random.Bool(0.8f)
+                    ? new Uri($"https://storage.example.com/exports/{f.Random.Hash(32)}")
+                    : null)
+                .RuleFor(de => de.TenantId, f => f.PickRandom(tenants).Id);
+
+            var dataExports = faker.Generate(40);
+            await dbContext.DataExports.AddRangeAsync(dataExports, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            logger.LogInformation("Successfully seeded {Count} data exports", dataExports.Count);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error seeding DataExports");
             throw;
         }
     }
