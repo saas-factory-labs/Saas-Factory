@@ -17,44 +17,45 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.Email
 
 /// <summary>
 /// Comprehensive database seeder that populates all application tables with realistic test data.
-/// 
-/// ENTITIES SEEDED (21 types, 1000+ records):
-/// 
+///
+/// ENTITIES SEEDED (22 types, 1000+ records):
+///
 /// Core Reference Data:
 /// - Languages (24 entries) - World languages with ISO codes
-/// - GlobalRegions (6 entries) - Continental regions  
+/// - GlobalRegions (6 entries) - Continental regions
 /// - CountryRegions (3 per country) - Regional subdivisions
 /// - Cities (5 per region) - Major cities worldwide
 /// - Streets (5 per city) - Street addresses
 /// - Countries (195 entries) - All world countries
 /// - Addresses (50 realistic addresses) - Complete address records
-/// 
+///
 /// Authorization & Access Control:
-/// - Roles (5 standard roles) - Admin, User, Manager, Support, Guest
-/// - Permissions (10 core permissions) - CRUD and management permissions
-/// 
+/// - Roles (4 standard roles) - Admin, User, Manager, Owner
+/// - Permissions (6 core permissions) - CRUD and management permissions
+/// - UserRoles (50 assignments) - User-to-role mappings with realistic distribution
+///
 /// Business & Payment:
 /// - Subscriptions (20 plans) - Various subscription tiers
-/// - Accounts (50 accounts) - Customer account records  
+/// - Accounts (50 accounts) - Customer account records
 /// - PaymentProviders (6 providers) - Stripe, PayPal, Square, etc.
 /// - Credits (2 per tenant) - Credit balance tracking
-/// 
+///
 /// User Management & Multi-tenancy:
 /// - Tenants (10 organizations) - Tenant organizations
 /// - Users (50 users) - Users with realistic profiles
 /// - Customers (30 customers) - Business/Personal/Government types
 /// - ContactPersons (50 contacts) - Customer contact persons
-/// 
+///
 /// Communication & Files:
 /// - EmailAddresses (100 emails) - Linked to users/customers
 /// - PhoneNumbers (80 numbers) - With country codes and verification
 /// - Notifications (200 notifications) - User notification records
 /// - Files (100 files) - File metadata with various extensions
-/// 
+///
 /// Collaboration & Integration:
 /// - Teams (15 teams) - Organizational teams within tenants
 /// - Integrations (30 integrations) - Third-party service connections
-/// 
+///
 /// Uses Bogus library for realistic fake data generation.
 /// Implements proper dependency ordering for foreign key constraints.
 /// Includes comprehensive error handling and logging.
@@ -141,9 +142,8 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         await SeedTeamInvitesAsync(cancellationToken);
         
         // Authorization Relations
+        await SeedUserRolesAsync(cancellationToken);
         // TODO: Add these when available in ApplicationDbContext
-        // await SeedUserRolesAsync(cancellationToken);
-        // await SeedRolePermissionsAsync(cancellationToken);
         // await SeedAdminsAsync(cancellationToken);
         
         // Data Management
@@ -465,7 +465,8 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
                    && await b2bDbContext.Teams.AnyAsync(cancellationToken)
                    && await dbContext.Notifications.AnyAsync(cancellationToken)
                    && await dbContext.Files.AnyAsync(cancellationToken)
-                   && await dbContext.Integrations.AnyAsync(cancellationToken);
+                   && await dbContext.Integrations.AnyAsync(cancellationToken)
+                   && await dbContext.UserRoles.AnyAsync(cancellationToken);
         }
         catch (InvalidOperationException ex)
         {
@@ -1094,6 +1095,92 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         catch (Exception ex)
         {
             logger.LogError(ex, "Error seeding TeamInvites");
+            throw;
+        }
+    }
+
+    private async Task SeedUserRolesAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (await dbContext.UserRoles.AnyAsync(cancellationToken)) return;
+
+            // Get all users and roles from database
+            var users = await dbContext.Users.ToListAsync(cancellationToken);
+            var roles = await dbContext.Roles.ToListAsync(cancellationToken);
+
+            if (users.Count == 0 || roles.Count == 0)
+            {
+                throw new InvalidOperationException("Cannot seed UserRoles - Users or Roles not found. Ensure SeedUsersAsync and SeedRolesAsync are called first.");
+            }
+
+            // Find specific roles
+            var adminRole = roles.FirstOrDefault(r => r.Name == "Admin");
+            var ownerRole = roles.FirstOrDefault(r => r.Name == "Owner");
+            var managerRole = roles.FirstOrDefault(r => r.Name == "Manager");
+            var userRole = roles.FirstOrDefault(r => r.Name == "User");
+
+            var userRoles = new List<UserRoleEntity>();
+
+            // Assign roles to users with a realistic distribution
+            for (int i = 0; i < users.Count; i++)
+            {
+                var user = users[i];
+
+                if (i == 0 && adminRole is not null)
+                {
+                    // First user: Admin role (super admin)
+                    userRoles.Add(new UserRoleEntity
+                    {
+                        UserId = user.Id,
+                        RoleId = adminRole.Id,
+                        User = user,
+                        Role = adminRole
+                    });
+                }
+                else if (i >= 1 && i <= 3 && ownerRole is not null)
+                {
+                    // Users 1-3: Owner role (account owners)
+                    userRoles.Add(new UserRoleEntity
+                    {
+                        UserId = user.Id,
+                        RoleId = ownerRole.Id,
+                        User = user,
+                        Role = ownerRole
+                    });
+                }
+                else if (i >= 4 && i <= 9 && managerRole is not null)
+                {
+                    // Users 4-9: Manager role (team managers)
+                    userRoles.Add(new UserRoleEntity
+                    {
+                        UserId = user.Id,
+                        RoleId = managerRole.Id,
+                        User = user,
+                        Role = managerRole
+                    });
+                }
+                else if (userRole is not null)
+                {
+                    // All other users: User role (standard users)
+                    userRoles.Add(new UserRoleEntity
+                    {
+                        UserId = user.Id,
+                        RoleId = userRole.Id,
+                        User = user,
+                        Role = userRole
+                    });
+                }
+            }
+
+            await dbContext.UserRoles.AddRangeAsync(userRoles, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            logger.LogInformation("Successfully seeded {Count} user roles", userRoles.Count);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error seeding UserRoles");
             throw;
         }
     }
