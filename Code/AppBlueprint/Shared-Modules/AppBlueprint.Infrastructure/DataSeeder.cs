@@ -463,9 +463,9 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             var userRoles = new List<UserRoleEntity>();
 
             // Distribute roles realistically:
-            // - Owner: 2-3 users (first 2-3)
-            // - Admin: 3-5 users (next 3-5)
-            // - Manager: 10-15% of remaining users
+            // - Owner: first 2 users
+            // - Admin: next 4 users
+            // - Manager: ~15% of remaining users
             // - User: rest of users
 
             var userIndex = 0;
@@ -479,9 +479,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
                     userRoles.Add(new UserRoleEntity
                     {
                         UserId = users[userIndex].Id,
-                        User = users[userIndex],
-                        RoleId = ownerRole.Id,
-                        Role = ownerRole
+                        RoleId = ownerRole.Id
                     });
                     userIndex++;
                 }
@@ -496,9 +494,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
                     userRoles.Add(new UserRoleEntity
                     {
                         UserId = users[userIndex].Id,
-                        User = users[userIndex],
-                        RoleId = adminRole.Id,
-                        Role = adminRole
+                        RoleId = adminRole.Id
                     });
                     userIndex++;
                 }
@@ -516,9 +512,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
                     userRoles.Add(new UserRoleEntity
                     {
                         UserId = users[userIndex].Id,
-                        User = users[userIndex],
-                        RoleId = managerRole.Id,
-                        Role = managerRole
+                        RoleId = managerRole.Id
                     });
                     userIndex++;
                 }
@@ -532,9 +526,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
                     userRoles.Add(new UserRoleEntity
                     {
                         UserId = users[i].Id,
-                        User = users[i],
-                        RoleId = userRole.Id,
-                        Role = userRole
+                        RoleId = userRole.Id
                     });
                 }
             }
