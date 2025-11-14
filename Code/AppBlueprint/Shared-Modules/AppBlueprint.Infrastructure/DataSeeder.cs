@@ -469,11 +469,12 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             // - User: rest of users
 
             var userIndex = 0;
+            var random = new Random();
 
-            // Assign Owner role to first 2 users
+            // Assign Owner role to first 2-3 users
             if (ownerRole is not null && users.Count > 0)
             {
-                var ownerCount = Math.Min(2, users.Count);
+                var ownerCount = Math.Min(random.Next(2, 4), users.Count); // Random between 2 and 3
                 for (int i = 0; i < ownerCount; i++)
                 {
                     userRoles.Add(new UserRoleEntity
@@ -487,10 +488,10 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
                 }
             }
 
-            // Assign Admin role to next 4 users
+            // Assign Admin role to next 3-5 users
             if (adminRole is not null && userIndex < users.Count)
             {
-                var adminCount = Math.Min(4, users.Count - userIndex);
+                var adminCount = Math.Min(random.Next(3, 6), users.Count - userIndex); // Random between 3 and 5
                 for (int i = 0; i < adminCount; i++)
                 {
                     userRoles.Add(new UserRoleEntity
