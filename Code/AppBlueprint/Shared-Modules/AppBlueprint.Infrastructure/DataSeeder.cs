@@ -465,7 +465,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             // Distribute roles realistically:
             // - Owner: 2-3 users (first 2-3)
             // - Admin: 3-5 users (next 3-5)
-            // - Manager: 10-15% of remaining users
+            // - Manager: ~15% of remaining users
             // - User: rest of users
 
             var userIndex = 0;
