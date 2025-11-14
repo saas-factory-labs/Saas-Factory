@@ -68,6 +68,16 @@ public static class ApiEndpoints
         public const string DeleteById = $"{ControllerBaseUrl}/{{id}}";
     }
 
+    internal static class Notifications
+    {
+        private const string ControllerBaseUrl = "notifications";
+        public const string Create = ControllerBaseUrl;
+        public const string GetById = $"{ControllerBaseUrl}/{{id}}";
+        public const string GetAll = ControllerBaseUrl;
+        public const string UpdateById = $"{ControllerBaseUrl}/{{id}}";
+        public const string DeleteById = $"{ControllerBaseUrl}/{{id}}";
+    }
+
     internal static class Roles
     {
         private const string ControllerBaseUrl = "roles";

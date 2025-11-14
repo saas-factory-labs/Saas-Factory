@@ -33,7 +33,7 @@ public class NotificationRepository : INotificationRepository
         _context.Notifications.Update(notification);
     }
 
-    public void Delete(int id)
+    public void Delete(string id)
     {
         NotificationEntity? notification = _context.Notifications.Find(id);
         if (notification is not null) _context.Notifications.Remove(notification);
