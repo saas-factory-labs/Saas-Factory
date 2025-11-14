@@ -1,11 +1,30 @@
+using AppBlueprint.SharedKernel;
+
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
 
-public class PaymentProviderEntity
+/// <summary>
+/// Represents a payment service provider (e.g., Stripe, PayPal, Square).
+/// Used as a reference table for payment processing integrations.
+/// </summary>
+public class PaymentProviderEntity : BaseEntity
 {
-    public int Id { get; set; }
-    public required string Name { get; set; } // stripe
+    public PaymentProviderEntity()
+    {
+        Id = PrefixedUlid.Generate("pay_prov");
+    }
+
+    /// <summary>
+    /// Name of the payment provider (e.g., Stripe, PayPal, Square)
+    /// </summary>
+    public required string Name { get; set; }
+
+    /// <summary>
+    /// Optional description of the payment provider and its capabilities
+    /// </summary>
     public string? Description { get; set; }
+
+    /// <summary>
+    /// Indicates if this payment provider is currently active and available for use
+    /// </summary>
     public bool IsActive { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastUpdatedAt { get; set; }
 }

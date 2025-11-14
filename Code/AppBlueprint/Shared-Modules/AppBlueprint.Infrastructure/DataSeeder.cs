@@ -100,13 +100,13 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         // Authorization and permissions
         await SeedRolesAsync(cancellationToken);
         await SeedPermissionsAsync(cancellationToken);
-        // TODO: Fix RolePermissionEntity structure and re-enable
-        // await SeedRolePermissionsAsync(cancellationToken);
+
+        await SeedRolePermissionsAsync(cancellationToken);
         // await SeedResourcePermissionTypesAsync(cancellationToken);
         // await SeedResourcePermissionsAsync(cancellationToken);
 
-        // Payment and billing - TODO: Fix entity properties
-        // await SeedPaymentProvidersAsync(cancellationToken);
+        // Payment and billing
+        await SeedPaymentProvidersAsync(cancellationToken);
         await SeedSubscriptionsAsync(cancellationToken);
         // await SeedCreditsAsync(cancellationToken);
 
@@ -370,6 +370,75 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         await dbContext.Permissions.AddRangeAsync(permissions, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Permissions seeded");
+    }
+
+    private async Task SeedRolePermissionsAsync(CancellationToken cancellationToken)
+    {
+        if (await dbContext.RolePermissions.AnyAsync(cancellationToken)) return;
+
+        // Get all roles and permissions from database
+        var roles = await dbContext.Roles.ToListAsync(cancellationToken);
+        var permissions = await dbContext.Permissions.ToListAsync(cancellationToken);
+
+        // Find specific roles
+        var adminRole = roles.FirstOrDefault(r => r.Name == "Admin");
+        var managerRole = roles.FirstOrDefault(r => r.Name == "Manager");
+        var userRole = roles.FirstOrDefault(r => r.Name == "User");
+        var ownerRole = roles.FirstOrDefault(r => r.Name == "Owner");
+
+        // Find specific permissions
+        var createPerm = permissions.FirstOrDefault(p => p.Name == "Create");
+        var readPerm = permissions.FirstOrDefault(p => p.Name == "Read");
+        var updatePerm = permissions.FirstOrDefault(p => p.Name == "Update");
+        var deletePerm = permissions.FirstOrDefault(p => p.Name == "Delete");
+        var manageUsersPerm = permissions.FirstOrDefault(p => p.Name == "ManageUsers");
+        var manageRolesPerm = permissions.FirstOrDefault(p => p.Name == "ManageRoles");
+
+        var rolePermissions = new List<RolePermissionEntity>();
+
+        // Admin Role - Full permissions
+        if (adminRole is not null)
+        {
+            if (createPerm is not null) rolePermissions.Add(new() { RoleId = adminRole.Id, PermissionId = createPerm.Id, Role = adminRole, Permission = createPerm });
+            if (readPerm is not null) rolePermissions.Add(new() { RoleId = adminRole.Id, PermissionId = readPerm.Id, Role = adminRole, Permission = readPerm });
+            if (updatePerm is not null) rolePermissions.Add(new() { RoleId = adminRole.Id, PermissionId = updatePerm.Id, Role = adminRole, Permission = updatePerm });
+            if (deletePerm is not null) rolePermissions.Add(new() { RoleId = adminRole.Id, PermissionId = deletePerm.Id, Role = adminRole, Permission = deletePerm });
+            if (manageUsersPerm is not null) rolePermissions.Add(new() { RoleId = adminRole.Id, PermissionId = manageUsersPerm.Id, Role = adminRole, Permission = manageUsersPerm });
+            if (manageRolesPerm is not null) rolePermissions.Add(new() { RoleId = adminRole.Id, PermissionId = manageRolesPerm.Id, Role = adminRole, Permission = manageRolesPerm });
+        }
+
+        // Owner Role - Full permissions (same as Admin)
+        if (ownerRole is not null)
+        {
+            if (createPerm is not null) rolePermissions.Add(new() { RoleId = ownerRole.Id, PermissionId = createPerm.Id, Role = ownerRole, Permission = createPerm });
+            if (readPerm is not null) rolePermissions.Add(new() { RoleId = ownerRole.Id, PermissionId = readPerm.Id, Role = ownerRole, Permission = readPerm });
+            if (updatePerm is not null) rolePermissions.Add(new() { RoleId = ownerRole.Id, PermissionId = updatePerm.Id, Role = ownerRole, Permission = updatePerm });
+            if (deletePerm is not null) rolePermissions.Add(new() { RoleId = ownerRole.Id, PermissionId = deletePerm.Id, Role = ownerRole, Permission = deletePerm });
+            if (manageUsersPerm is not null) rolePermissions.Add(new() { RoleId = ownerRole.Id, PermissionId = manageUsersPerm.Id, Role = ownerRole, Permission = manageUsersPerm });
+            if (manageRolesPerm is not null) rolePermissions.Add(new() { RoleId = ownerRole.Id, PermissionId = manageRolesPerm.Id, Role = ownerRole, Permission = manageRolesPerm });
+        }
+
+        // Manager Role - CRUD + ManageUsers (no ManageRoles)
+        if (managerRole is not null)
+        {
+            if (createPerm is not null) rolePermissions.Add(new() { RoleId = managerRole.Id, PermissionId = createPerm.Id, Role = managerRole, Permission = createPerm });
+            if (readPerm is not null) rolePermissions.Add(new() { RoleId = managerRole.Id, PermissionId = readPerm.Id, Role = managerRole, Permission = readPerm });
+            if (updatePerm is not null) rolePermissions.Add(new() { RoleId = managerRole.Id, PermissionId = updatePerm.Id, Role = managerRole, Permission = updatePerm });
+            if (deletePerm is not null) rolePermissions.Add(new() { RoleId = managerRole.Id, PermissionId = deletePerm.Id, Role = managerRole, Permission = deletePerm });
+            if (manageUsersPerm is not null) rolePermissions.Add(new() { RoleId = managerRole.Id, PermissionId = manageUsersPerm.Id, Role = managerRole, Permission = manageUsersPerm });
+        }
+
+        // User Role - Basic CRUD only (for their own resources)
+        if (userRole is not null)
+        {
+            if (createPerm is not null) rolePermissions.Add(new() { RoleId = userRole.Id, PermissionId = createPerm.Id, Role = userRole, Permission = createPerm });
+            if (readPerm is not null) rolePermissions.Add(new() { RoleId = userRole.Id, PermissionId = readPerm.Id, Role = userRole, Permission = readPerm });
+            if (updatePerm is not null) rolePermissions.Add(new() { RoleId = userRole.Id, PermissionId = updatePerm.Id, Role = userRole, Permission = updatePerm });
+        }
+
+        await dbContext.RolePermissions.AddRangeAsync(rolePermissions, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        logger.LogInformation(DataSeederMessages.RolePermissionsSeeded);
     }
 
     private async Task<bool> AreAllEntitiesSeededAsync(CancellationToken cancellationToken)
@@ -638,12 +707,12 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
 
             var paymentProviders = new List<PaymentProviderEntity>
             {
-                new() { Name = "Stripe", Description = "Online payment processing for internet businesses", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new() { Name = "PayPal", Description = "Digital payment platform and online money transfer service", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new() { Name = "Square", Description = "Point-of-sale and financial services platform", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new() { Name = "Klarna", Description = "Buy now, pay later payment solution", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new() { Name = "Adyen", Description = "Global payment platform for omnichannel commerce", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new() { Name = "Braintree", Description = "Full-stack payment platform owned by PayPal", IsActive = false, CreatedAt = DateTime.UtcNow }
+                new() { Name = "Stripe", Description = "Online payment processing for internet businesses", IsActive = true },
+                new() { Name = "PayPal", Description = "Digital payment platform and online money transfer service", IsActive = true },
+                new() { Name = "Square", Description = "Point-of-sale and financial services platform", IsActive = true },
+                new() { Name = "Klarna", Description = "Buy now, pay later payment solution", IsActive = true },
+                new() { Name = "Adyen", Description = "Global payment platform for omnichannel commerce", IsActive = true },
+                new() { Name = "Braintree", Description = "Full-stack payment platform owned by PayPal", IsActive = false }
             };
 
             await dbContext.PaymentProviders.AddRangeAsync(paymentProviders, cancellationToken);

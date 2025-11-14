@@ -12,5 +12,6 @@ public static class DataSeederMessages
     public const string AccountsSeeded = "Accounts seeded.";
     public const string SubscriptionsSeeded = "Subscriptions seeded.";
     public const string RolesSeeded = "Roles seeded.";
+    public const string RolePermissionsSeeded = "Role permissions seeded.";
     public const string AllTablesProcessed = "All tables truncated.";
 }

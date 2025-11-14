@@ -182,6 +182,39 @@ Console.WriteLine("========================================");
 
 app.UseRouting();
 // app.UseHttpsRedirection(); // Temporarily disabled for design review
+
+// Security Headers Middleware - Add security headers to all responses
+app.Use(async (context, next) =>
+{
+    // Prevent MIME-sniffing attacks
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+
+    // Prevent clickjacking attacks by disallowing embedding in iframes
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+
+    // Enable XSS protection in older browsers
+    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+
+    // Control referrer information sent with requests
+    context.Response.Headers.Append("Referrer-Policy", "no-referrer");
+
+    // Content Security Policy - restrict resource loading to prevent XSS
+    // Note: Adjust this policy based on your application's requirements
+    context.Response.Headers.Append("Content-Security-Policy",
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src 'self' https://fonts.gstatic.com; " +
+        "img-src 'self' data: https:; " +
+        "connect-src 'self' https://32nkyp.logto.app wss://localhost:* ws://localhost:*;");
+
+    // Permissions Policy - control browser features
+    context.Response.Headers.Append("Permissions-Policy",
+        "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
+
+    await next();
+});
+
 app.UseStaticFiles();
 app.UseAntiforgery();
 

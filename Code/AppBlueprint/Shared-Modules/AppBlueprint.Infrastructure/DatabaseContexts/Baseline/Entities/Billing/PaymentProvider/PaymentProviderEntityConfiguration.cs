@@ -18,14 +18,26 @@ public sealed class PaymentProviderEntityConfiguration : IEntityTypeConfiguratio
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // Table configuration
+        // Table mapping with standardized naming
         builder.ToTable("PaymentProviders");
+
+        // Primary key - ULID as string
         builder.HasKey(e => e.Id);
 
-        // Primary key configuration
         builder.Property(e => e.Id)
-            .ValueGeneratedOnAdd()
-            .HasComment("Unique identifier for the payment provider");
+            .IsRequired()
+            .HasMaxLength(40);
+
+        // BaseEntity properties
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
+
+        builder.Property(e => e.LastUpdatedAt)
+            .IsRequired(false);
+
+        builder.Property(e => e.IsSoftDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // Payment provider name (required, unique)
         builder.Property(e => e.Name)
@@ -45,17 +57,7 @@ public sealed class PaymentProviderEntityConfiguration : IEntityTypeConfiguratio
             .HasDefaultValue(true)
             .HasComment("Indicates if this payment provider is currently active and available for use");
 
-        // Audit fields
-        builder.Property(e => e.CreatedAt)
-            .IsRequired()
-            .HasDefaultValueSql("CURRENT_TIMESTAMP")
-            .HasComment("Timestamp when the payment provider was created");
-
-        builder.Property(e => e.LastUpdatedAt)
-            .IsRequired(false)
-            .HasComment("Timestamp when the payment provider was last updated");
-
-        // Indexes for performance
+        // Performance indexes with standardized naming
         builder.HasIndex(e => e.Name)
             .IsUnique()
             .HasDatabaseName("IX_PaymentProviders_Name");

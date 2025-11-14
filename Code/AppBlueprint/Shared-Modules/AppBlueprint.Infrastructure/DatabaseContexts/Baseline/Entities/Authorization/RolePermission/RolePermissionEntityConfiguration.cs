@@ -36,6 +36,10 @@ public sealed class RolePermissionEntityConfiguration : IEntityTypeConfiguration
             .IsRequired()
             .HasMaxLength(40);
 
+        builder.Property(e => e.PermissionId)
+            .IsRequired()
+            .HasMaxLength(40);
+
         // Relationships
         builder.HasOne(rp => rp.Role)
             .WithMany(r => r.RolePermissions)
@@ -43,8 +47,22 @@ public sealed class RolePermissionEntityConfiguration : IEntityTypeConfiguration
             .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("FK_RolePermissions_Roles_RoleId");
 
+        builder.HasOne(rp => rp.Permission)
+            .WithMany()
+            .HasForeignKey(rp => rp.PermissionId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_RolePermissions_Permissions_PermissionId");
+
         // Performance indexes with standardized naming
         builder.HasIndex(e => e.RoleId)
             .HasDatabaseName("IX_RolePermissions_RoleId");
+
+        builder.HasIndex(e => e.PermissionId)
+            .HasDatabaseName("IX_RolePermissions_PermissionId");
+
+        // Unique constraint - prevent duplicate role-permission assignments
+        builder.HasIndex(e => new { e.RoleId, e.PermissionId })
+            .IsUnique()
+            .HasDatabaseName("IX_RolePermissions_RoleId_PermissionId_Unique");
     }
 }
