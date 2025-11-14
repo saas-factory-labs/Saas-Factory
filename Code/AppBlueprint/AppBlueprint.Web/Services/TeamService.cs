@@ -36,7 +36,7 @@ public class TeamService
     {
         try
         {
-            var response = await _httpClient.GetAsync("/api/v1/team", cancellationToken);
+            var response = await _httpClient.GetAsync("/api/v1/teams", cancellationToken);
             response.EnsureSuccessStatusCode();
 
             var teams = await response.Content.ReadFromJsonAsync<IEnumerable<TeamResponse>>(_jsonOptions, cancellationToken);
@@ -58,7 +58,7 @@ public class TeamService
 
         try
         {
-            var response = await _httpClient.GetAsync($"/api/v1/team/{id}", cancellationToken);
+            var response = await _httpClient.GetAsync($"/api/v1/teams/{id}", cancellationToken);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<TeamResponse>(_jsonOptions, cancellationToken);
@@ -79,7 +79,7 @@ public class TeamService
 
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("/api/v1/team", request, cancellationToken);
+            var response = await _httpClient.PostAsJsonAsync("/api/v1/teams", request, cancellationToken);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<TeamResponse>(_jsonOptions, cancellationToken);
@@ -101,7 +101,7 @@ public class TeamService
 
         try
         {
-            var response = await _httpClient.PutAsJsonAsync($"/api/v1/team/{id}", request, cancellationToken);
+            var response = await _httpClient.PutAsJsonAsync($"/api/v1/teams/{id}", request, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
@@ -120,7 +120,7 @@ public class TeamService
 
         try
         {
-            var response = await _httpClient.DeleteAsync($"/api/v1/team/{id}", cancellationToken);
+            var response = await _httpClient.DeleteAsync($"/api/v1/teams/{id}", cancellationToken);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
