@@ -19,14 +19,14 @@ public class RoleController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly IRoleRepository _roleRepository;
-    // Removed IUnitOfWork dependency for repository DI pattern
+    private readonly IUnitOfWork _unitOfWork;
 
-    public RoleController(IConfiguration configuration, IRoleRepository roleRepository) :
+    public RoleController(IConfiguration configuration, IRoleRepository roleRepository, IUnitOfWork unitOfWork) :
         base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _roleRepository = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
-        // Removed IUnitOfWork assignment
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public class RoleController : BaseController
         };
 
         await _roleRepository.AddAsync(newRole);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return CreatedAtAction(nameof(Get), new { id = newRole.Id }, newRole);
     }
@@ -119,7 +119,7 @@ public class RoleController : BaseController
         existingRole.Name = request.Name;
 
         _roleRepository.Update(existingRole);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
@@ -137,8 +137,8 @@ public class RoleController : BaseController
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
         if (existingRole is null) return NotFound(new { Message = $"Role with ID {id} not found." });
 
-        // _roleRepository.Delete(existingRole);
-        // await _unitOfWork.SaveChangesAsync(cancellationToken);
+        _roleRepository.Delete(existingRole.Id);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
