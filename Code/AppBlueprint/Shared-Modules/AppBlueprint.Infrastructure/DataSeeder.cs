@@ -463,7 +463,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             var userRoles = new List<UserRoleEntity>();
 
             // Distribute roles realistically:
-            // - Owner: 2-3 users (first 2-3)
+            // - Owner: first 2 users
             // - Admin: next 4 users
             // - Manager: ~15% of remaining users
             // - User: rest of users
