@@ -9,25 +9,11 @@ public class UserRoleEntity : BaseEntity
     public UserRoleEntity()
     {
         Id = PrefixedUlid.Generate("user-role");
-        User = new UserEntity
-        {
-            FirstName = string.Empty,
-            LastName = string.Empty,
-            Email = string.Empty,
-            IsActive = true,
-            UserName = string.Empty,
-            Profile = new ProfileEntity()
-        };
-        Role = new RoleEntity
-        {
-            Name = string.Empty,
-            Description = string.Empty
-        };
     }
 
     public required string UserId { get; set; }
-    public required UserEntity User { get; set; }
+    public UserEntity? User { get; set; }
 
     public required string RoleId { get; set; }
-    public required RoleEntity Role { get; set; }
+    public RoleEntity? Role { get; set; }
 }
