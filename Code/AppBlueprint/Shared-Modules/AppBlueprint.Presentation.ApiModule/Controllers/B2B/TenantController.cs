@@ -32,9 +32,18 @@ public class TenantController : BaseController
     }
 
     /// <summary>
-    ///     Gets all tenants.
+    ///     Retrieves all tenants in the multi-tenant system.
     /// </summary>
-    /// <returns>List of tenants</returns>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>List of tenants with their details including creation and update timestamps.</returns>
+    /// <remarks>
+    ///     Returns all tenants configured in the B2B multi-tenant architecture.
+    ///     Each tenant represents an isolated organizational workspace.
+    ///     Requires authentication.
+    /// </remarks>
+    /// <response code="200">Returns the list of tenants successfully.</response>
+    /// <response code="404">No tenants found in the system.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpGet(ApiEndpoints.Tenants.GetAll)]
     [ProducesResponseType(typeof(IEnumerable<TenantResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -56,11 +65,19 @@ public class TenantController : BaseController
     }
 
     /// <summary>
-    ///     Gets a tenant by ID.
+    ///     Retrieves a specific tenant by its unique identifier.
     /// </summary>
-    /// <param name="id">Tenant ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Tenant details</returns>
+    /// <param name="id">The unique identifier of the tenant (e.g., "tenant_01HX...").</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>Tenant details including name, description, and timestamps.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>GET /api/v1/tenant/tenant_01HX...</code>
+    ///     Returns complete tenant information for the specified ID.
+    /// </remarks>
+    /// <response code="200">Returns the tenant details successfully.</response>
+    /// <response code="404">Tenant with the specified ID was not found.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpGet(ApiEndpoints.Tenants.GetById)]
     [ProducesResponseType(typeof(TenantResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -83,11 +100,26 @@ public class TenantController : BaseController
     }
 
     /// <summary>
-    ///     Creates a new tenant.
+    ///     Creates a new tenant in the multi-tenant system.
     /// </summary>
-    /// <param name="tenantDto">Tenant data transfer object.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>Created tenant.</returns>
+    /// <param name="tenantDto">Tenant creation request containing name and description.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>The newly created tenant with generated ID and timestamps.</returns>
+    /// <remarks>
+    ///     Creates a new isolated tenant workspace in the B2B system.
+    ///     Sample request:
+    ///     <code>
+    ///     POST /api/v1/tenant
+    ///     {
+    ///         "name": "Acme Corporation",
+    ///         "description": "Tenant for Acme Corp"
+    ///     }
+    ///     </code>
+    ///     Automatically sets creation timestamp to current UTC time.
+    /// </remarks>
+    /// <response code="201">Tenant created successfully. Returns the created tenant with its ID.</response>
+    /// <response code="400">Invalid request data or validation failed.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpPost(ApiEndpoints.Tenants.Create)]
     [ProducesResponseType(typeof(TenantResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -120,12 +152,27 @@ public class TenantController : BaseController
     }
 
     /// <summary>
-    ///     Updates an existing tenant.
+    ///     Updates an existing tenant's information.
     /// </summary>
-    /// <param name="id">Tenant ID.</param>
-    /// <param name="tenantDto">Tenant data transfer object.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="id">The unique identifier of the tenant to update.</param>
+    /// <param name="tenantDto">Updated tenant data containing name and/or description.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>
+    ///     PUT /api/v1/tenant/tenant_01HX...
+    ///     {
+    ///         "name": "Acme Corporation - Updated",
+    ///         "description": "Updated description"
+    ///     }
+    ///     </code>
+    ///     Only provided fields will be updated. Null values are ignored.
+    ///     Automatically updates LastUpdatedAt timestamp to current UTC time.
+    /// </remarks>
+    /// <response code="204">Tenant updated successfully.</response>
+    /// <response code="404">Tenant with the specified ID was not found.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpPut(ApiEndpoints.Tenants.UpdateById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -151,11 +198,21 @@ public class TenantController : BaseController
     }
 
     /// <summary>
-    ///     Deletes a tenant by ID.
+    ///     Deletes a tenant by its unique identifier.
     /// </summary>
-    /// <param name="id">Tenant ID.</param>
-    /// <param name="cancellationToken">Cancellation Token</param>
-    /// <returns>No content.</returns>
+    /// <param name="id">The unique identifier of the tenant to delete.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>No content on success.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     <code>DELETE /api/v1/tenant/tenant_01HX...</code>
+    ///     Warning: This operation permanently removes the tenant and all associated data.
+    ///     All users, teams, and resources within this tenant will be affected.
+    ///     Consider tenant deactivation instead of deletion for production systems.
+    /// </remarks>
+    /// <response code="204">Tenant deleted successfully.</response>
+    /// <response code="404">Tenant with the specified ID was not found.</response>
+    /// <response code="401">User is not authenticated.</response>
     [HttpDelete(ApiEndpoints.Tenants.DeleteById)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
