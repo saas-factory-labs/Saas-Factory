@@ -13,14 +13,6 @@ public class RolePermissionEntity : BaseEntity
     public required string RoleId { get; set; }
     public required RoleEntity Role { get; set; }
 
-    // public Guid? ResourceId { get; set; }
-
-    // public PermissionType Permission { get; set; } // Enum
-
-
-    // public Resource Resource { get; set; }
-
-    // public TYPE Type { get; set; }
-
-    // public PermissionEntity Permission { get; set; }
+    public required string PermissionId { get; set; }
+    public required PermissionEntity Permission { get; set; }
 }

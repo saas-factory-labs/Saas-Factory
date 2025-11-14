@@ -4,17 +4,20 @@ using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AppBlueprint.Infrastructure.Migrations
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251114033416_AddRolePermissionRelationship")]
+    partial class AddRolePermissionRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1233,13 +1236,18 @@ namespace AppBlueprint.Infrastructure.Migrations
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider.PaymentProviderEntity", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(40)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(40)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasComment("Unique identifier for the payment provider");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                        .HasComment("Timestamp when the payment provider was created");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -1253,13 +1261,9 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .HasDefaultValue(true)
                         .HasComment("Indicates if this payment provider is currently active and available for use");
 
-                    b.Property<bool>("IsSoftDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
                     b.Property<DateTime?>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasComment("Timestamp when the payment provider was last updated");
 
                     b.Property<string>("Name")
                         .IsRequired()
