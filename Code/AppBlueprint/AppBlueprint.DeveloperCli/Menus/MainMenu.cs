@@ -96,7 +96,7 @@ internal static class MainMenu
                 break;
             case "Manage Environment Variable":
                 AnsiConsole.MarkupLine("[yellow]Managing Environment Variable...[/]");
-                // TODO: Implement environment variable management
+                EnvironmentVariableCommand.ExecuteInteractive();
                 break;
             case "Exit":
                 AnsiConsole.MarkupLine("[red]Goodbye![/]");
