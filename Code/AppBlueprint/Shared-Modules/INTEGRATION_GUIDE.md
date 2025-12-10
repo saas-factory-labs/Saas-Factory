@@ -322,39 +322,227 @@ public class DatingDbContext : DbContext
 - Cannot access AppBlueprint entities directly
 - Need distributed transactions for cross-context operations
 
-## Migration Guide
+## Database Migration Strategy
 
-### Migrating Existing Database Schema
+AppBlueprint uses **separate migration histories within the same database schema**. This allows you to:
+- ✅ Use AppBlueprint's pre-built tables (Todos, Teams, DataExports, etc.)
+- ✅ Add your own app-specific tables (Profiles, Matches, Messages, etc.)
+- ✅ Keep migrations organized by context
+- ✅ Avoid schema conflicts
 
-1. **Backup your database:**
-   ```bash
-   pg_dump -U postgres -d your-database > backup.sql
-   ```
+### How It Works
 
-2. **Run AppBlueprint migrations:**
-   ```bash
-   dotnet ef migrations add InitialAppBlueprint --context ApplicationDbContext
-   dotnet ef database update --context ApplicationDbContext
-   ```
+1. **ApplicationDbContext** (from AppBlueprint.Infrastructure NuGet package)
+   - Manages AppBlueprint tables: `TodoItems`, `Teams`, `DataExports`, `Roles`, `Permissions`, etc.
+   - Migrations are pre-applied in the NuGet package
+   - Migration history tracked in `__EFMigrationsHistory` with `ContextType = 'ApplicationDbContext'`
 
-3. **Run your migrations:**
-   ```bash
-   dotnet ef migrations add InitialDatingApp --context DatingDbContext
-   dotnet ef database update --context DatingDbContext
-   ```
+2. **DatingDbContext** (your app-specific context)
+   - Inherits from `ApplicationDbContext` → access to AppBlueprint tables
+   - Adds your tables: `Profiles`, `Matches`, `Messages`, etc.
+   - Your migrations tracked in `__EFMigrationsHistory` with `ContextType = 'DatingDbContext'`
+   - **Same database, same schema, separate migration tracking**
 
-4. **Verify both contexts work:**
-   ```csharp
-   using var scope = app.Services.CreateScope();
-   var appBlueprintDb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-   var datingDb = scope.ServiceProvider.GetRequiredService<DatingDbContext>();
-   
-   // Test AppBlueprint
-   var todos = await appBlueprintDb.TodoItems.ToListAsync();
-   
-   // Test Dating App
-   var profiles = await datingDb.Profiles.ToListAsync();
-   ```
+### Initial Setup (New Database)
+
+```bash
+# 1. Set connection string
+$env:DATABASE_CONNECTION_STRING = "Host=localhost;Port=5432;Database=datingapp;Username=postgres;Password=yourpassword"
+
+# 2. Apply AppBlueprint migrations (creates shared tables)
+dotnet ef database update --context ApplicationDbContext --project ./AppBlueprint.Infrastructure
+
+# 3. Add your initial migration (for dating app tables)
+dotnet ef migrations add InitialDatingSchema --context DatingDbContext --project ./DatingApp.Infrastructure --output-dir Migrations
+
+# 4. Apply your migrations (creates your tables)
+dotnet ef database update --context DatingDbContext --project ./DatingApp.Infrastructure
+```
+
+### Result: Single Database with Two Migration Histories
+
+```sql
+-- Check migration history
+SELECT "MigrationId", "ProductVersion", "ContextType"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+
+-- Output:
+-- 20250716183440_InitialULIDSchema     | 10.0.0 | ApplicationDbContext
+-- 20251114033416_AddRolePermission     | 10.0.0 | ApplicationDbContext
+-- 20251210120000_InitialDatingSchema   | 10.0.0 | DatingDbContext
+-- 20251210150000_AddMatchesTable       | 10.0.0 | DatingDbContext
+```
+
+### Adding New Tables to Your App
+
+```bash
+# 1. Add entities to DatingDbContext
+# DatingApp.Infrastructure/DatabaseContexts/DatingDbContext.cs
+
+public class DatingDbContext : ApplicationDbContext
+{
+    public DbSet<Profile> Profiles => Set<Profile>();
+    public DbSet<Match> Matches => Set<Match>();     // ← New table
+    public DbSet<Message> Messages => Set<Message>(); // ← New table
+}
+
+# 2. Create migration
+dotnet ef migrations add AddMatchesAndMessages --context DatingDbContext --project ./DatingApp.Infrastructure
+
+# 3. Apply migration
+dotnet ef database update --context DatingDbContext --project ./DatingApp.Infrastructure
+```
+
+### Migrating Existing Database (Already Has Data)
+
+If you have an existing dating app database and want to integrate AppBlueprint:
+
+```bash
+# 1. Backup your database
+pg_dump -U postgres -d datingapp > backup_before_appblueprint.sql
+
+# 2. Add AppBlueprint migrations WITHOUT applying them yet
+#    (EF Core will see they need to run)
+dotnet ef database update --context ApplicationDbContext --project ./AppBlueprint.Infrastructure
+
+# 3. Review what tables will be created
+dotnet ef migrations script --context ApplicationDbContext --project ./AppBlueprint.Infrastructure
+
+# 4. If safe, apply AppBlueprint migrations
+#    (Creates TodoItems, Teams, DataExports, Roles, Permissions, etc.)
+dotnet ef database update --context ApplicationDbContext --project ./AppBlueprint.Infrastructure
+
+# 5. Create initial migration for YOUR existing tables
+#    (This will be empty if tables already exist - that's OK!)
+dotnet ef migrations add InitialDatingSchema --context DatingDbContext --project ./DatingApp.Infrastructure
+
+# 6. Apply your migration (EF Core will record it as applied)
+dotnet ef database update --context DatingDbContext --project ./DatingApp.Infrastructure
+```
+
+### Production Deployment
+
+```bash
+# Option 1: Run migrations on startup (recommended for development)
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var appBlueprintDb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var datingDb = scope.ServiceProvider.GetRequiredService<DatingDbContext>();
+    
+    await appBlueprintDb.Database.MigrateAsync(); // Apply AppBlueprint migrations
+    await datingDb.Database.MigrateAsync();       // Apply your migrations
+}
+
+app.Run();
+
+# Option 2: Generate SQL scripts for manual deployment (recommended for production)
+dotnet ef migrations script --context ApplicationDbContext --project ./AppBlueprint.Infrastructure --output appblueprint-migrations.sql
+dotnet ef migrations script --context DatingDbContext --project ./DatingApp.Infrastructure --output datingapp-migrations.sql
+
+# Review scripts, then apply to production database
+```
+
+### Migration Commands Reference
+
+```bash
+# === AppBlueprint (Infrastructure Package) ===
+# List AppBlueprint migrations
+dotnet ef migrations list --context ApplicationDbContext --project ./AppBlueprint.Infrastructure
+
+# View pending AppBlueprint migrations
+dotnet ef migrations script --context ApplicationDbContext --project ./AppBlueprint.Infrastructure
+
+# Apply AppBlueprint migrations
+dotnet ef database update --context ApplicationDbContext --project ./AppBlueprint.Infrastructure
+
+# === Your App (DatingApp) ===
+# Add new migration for your tables
+dotnet ef migrations add AddNewFeature --context DatingDbContext --project ./DatingApp.Infrastructure
+
+# List your migrations
+dotnet ef migrations list --context DatingDbContext --project ./DatingApp.Infrastructure
+
+# Apply your migrations
+dotnet ef database update --context DatingDbContext --project ./DatingApp.Infrastructure
+
+# Rollback your migration to specific version
+dotnet ef database update PreviousMigrationName --context DatingDbContext --project ./DatingApp.Infrastructure
+
+# Remove last migration (if not applied yet)
+dotnet ef migrations remove --context DatingDbContext --project ./DatingApp.Infrastructure
+```
+
+### Schema Visualization
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     PostgreSQL Database                      │
+│                         datingapp                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌────────────────────────────────────────────────────┐     │
+│  │  AppBlueprint Tables (ApplicationDbContext)        │     │
+│  ├────────────────────────────────────────────────────┤     │
+│  │  • TodoItems                                        │     │
+│  │  • Teams                                            │     │
+│  │  • DataExports                                      │     │
+│  │  • Roles                                            │     │
+│  │  • Permissions                                      │     │
+│  │  • UserRoles                                        │     │
+│  └────────────────────────────────────────────────────┘     │
+│                                                              │
+│  ┌────────────────────────────────────────────────────┐     │
+│  │  Dating App Tables (DatingDbContext)               │     │
+│  ├────────────────────────────────────────────────────┤     │
+│  │  • Profiles                                         │     │
+│  │  • Matches                                          │     │
+│  │  • Messages                                         │     │
+│  │  • Likes                                            │     │
+│  │  • UserPreferences                                  │     │
+│  └────────────────────────────────────────────────────┘     │
+│                                                              │
+│  ┌────────────────────────────────────────────────────┐     │
+│  │  __EFMigrationsHistory                             │     │
+│  ├────────────────────────────────────────────────────┤     │
+│  │  MigrationId                 | ContextType         │     │
+│  │  ──────────────────────────────────────────────────│     │
+│  │  InitialULIDSchema           | ApplicationDbContext│     │
+│  │  AddRolePermission           | ApplicationDbContext│     │
+│  │  InitialDatingSchema         | DatingDbContext     │     │
+│  │  AddMatchesTable             | DatingDbContext     │     │
+│  └────────────────────────────────────────────────────┘     │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Troubleshooting
+
+**Problem:** "Table 'TodoItems' already exists"
+```bash
+# Solution: EF Core thinks migration wasn't applied
+# Manually add migration record:
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion") 
+VALUES ('20250716183440_InitialULIDSchema', '10.0.0');
+```
+
+**Problem:** "The context type 'DatingDbContext' is not registered"
+```bash
+# Solution: Make sure you registered the DbContext
+builder.Services.AddDbContext<DatingDbContext>(options => 
+    options.UseNpgsql(connectionString));
+```
+
+**Problem:** "Cannot access AppBlueprint tables from DatingDbContext"
+```bash
+# Solution: Make sure DatingDbContext inherits ApplicationDbContext
+public class DatingDbContext : ApplicationDbContext
+{
+    // Now you can access TodoItems, Teams, etc.
+}
+```
 
 ## Troubleshooting
 

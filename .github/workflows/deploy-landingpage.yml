@@ -1,0 +1,59 @@
+name: Deploy Landing Page to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'Code/Landingpage/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+        
+    - name: Publish Blazor WASM
+      run: |
+        cd Code/Landingpage/Landingpage.Web
+        dotnet publish -c Release -o publish
+        
+    - name: Change base href
+      run: |
+        cd Code/Landingpage/Landingpage.Web/publish/wwwroot
+        sed -i 's/<base href="\/" \/>/<base href="\/Saas-Factory\/" \/>/g' index.html
+        
+    - name: Add 404.html for SPA routing
+      run: |
+        cd Code/Landingpage/Landingpage.Web/publish/wwwroot
+        cp index.html 404.html
+        
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: 'Code/Landingpage/Landingpage.Web/publish/wwwroot'
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
