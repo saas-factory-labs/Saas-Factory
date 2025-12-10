@@ -113,14 +113,14 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
 
         // Customers and accounts
         await SeedAccountsAsync(cancellationToken);
-        
+
         // User management - fixing entity structures
         await SeedTenantsAsync(cancellationToken);
         await SeedUsersAsync(cancellationToken);
         await SeedCustomersAsync(cancellationToken);
         await SeedCreditsAsync(cancellationToken);
         await SeedEmailAddressesAsync(cancellationToken);
-        
+
         // Additional entities
         await SeedContactPersonsAsync(cancellationToken);
         await SeedPhoneNumbersAsync(cancellationToken);
@@ -129,29 +129,29 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         await SeedNotificationsAsync(cancellationToken);
         await SeedFilesAsync(cancellationToken);
         await SeedIntegrationsAsync(cancellationToken);
-        
+
         // Auditing & Sessions
         await SeedSessionsAsync(cancellationToken);
         await SeedAuditLogsAsync(cancellationToken);
-        
-        // B2B Entities  
+
+        // B2B Entities
         await SeedOrganizationsAsync(cancellationToken);
         await SeedApiKeysAsync(cancellationToken);
         await SeedTodosAsync(cancellationToken);
         await SeedTeamMembersAsync(cancellationToken);
         await SeedTeamInvitesAsync(cancellationToken);
-        
+
         // Authorization Relations
         await SeedUserRolesAsync(cancellationToken);
         // TODO: Add these when available in ApplicationDbContext
         // await SeedAdminsAsync(cancellationToken);
-        
+
         // Data Management
         // TODO: Add these when available in ApplicationDbContext
         // await SeedDataExportsAsync(cancellationToken);
         // await SeedWebhooksAsync(cancellationToken);
         // await SeedSearchesAsync(cancellationToken);
-        
+
         logger.LogInformation(DataSeederMessages.DatabaseSeedingCompleted);
     }
 
@@ -209,8 +209,8 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         {
             new()
             {
-                Name = "United States", 
-                IsoCode = IsoCode.Us, 
+                Name = "United States",
+                IsoCode = IsoCode.Us,
                 CityId = PrefixedUlid.Generate("city"),
                 GlobalRegionId = PrefixedUlid.Generate("region"),
                 GlobalRegion = new GlobalRegionEntity { Name = "America" }
@@ -706,7 +706,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             var customers = await dbContext.Customers.ToListAsync(cancellationToken);
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
 
-            if (users.Count == 0 || customers.Count == 0 || tenants.Count == 0) 
+            if (users.Count == 0 || customers.Count == 0 || tenants.Count == 0)
             {
                 throw new InvalidOperationException("Cannot seed EmailAddresses - Users, Customers, or Tenants not found. Ensure related entities are seeded first.");
             }
@@ -739,7 +739,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             var customers = await dbContext.Customers.ToListAsync(cancellationToken);
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
 
-            if (customers.Count == 0 || tenants.Count == 0) 
+            if (customers.Count == 0 || tenants.Count == 0)
             {
                 throw new InvalidOperationException("Cannot seed ContactPersons - Customers or Tenants not found. Ensure related entities are seeded first.");
             }
@@ -776,7 +776,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             var contactPersons = await dbContext.ContactPersons.ToListAsync(cancellationToken);
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
 
-            if (users.Count == 0 || customers.Count == 0 || contactPersons.Count == 0 || tenants.Count == 0) 
+            if (users.Count == 0 || customers.Count == 0 || contactPersons.Count == 0 || tenants.Count == 0)
             {
                 throw new InvalidOperationException("Cannot seed PhoneNumbers - Users, Customers, ContactPersons, or Tenants not found. Ensure related entities are seeded first.");
             }
@@ -841,7 +841,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
-            if (tenants.Count == 0 || users.Count == 0) 
+            if (tenants.Count == 0 || users.Count == 0)
             {
                 throw new InvalidOperationException("Cannot seed Teams - Tenants or Users not found. Ensure related entities are seeded first.");
             }
@@ -873,7 +873,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
 
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
-            if (users.Count == 0) 
+            if (users.Count == 0)
             {
                 throw new InvalidOperationException("Cannot seed Notifications - Users not found. Ensure SeedUsersAsync is called first.");
             }
@@ -906,7 +906,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
 
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
-            if (users.Count == 0) 
+            if (users.Count == 0)
             {
                 throw new InvalidOperationException("Cannot seed Files - Users not found. Ensure SeedUsersAsync is called first.");
             }
@@ -940,7 +940,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
 
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
-            if (users.Count == 0) 
+            if (users.Count == 0)
             {
                 throw new InvalidOperationException("Cannot seed Integrations - Users not found. Ensure SeedUsersAsync is called first.");
             }
@@ -1199,92 +1199,6 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         catch (Exception ex)
         {
             logger.LogError(ex, "Error seeding TeamInvites");
-            throw;
-        }
-    }
-
-    private async Task SeedUserRolesAsync(CancellationToken cancellationToken)
-    {
-        try
-        {
-            if (await dbContext.UserRoles.AnyAsync(cancellationToken)) return;
-
-            // Get all users and roles from database
-            var users = await dbContext.Users.ToListAsync(cancellationToken);
-            var roles = await dbContext.Roles.ToListAsync(cancellationToken);
-
-            if (users.Count == 0 || roles.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed UserRoles - Users or Roles not found. Ensure SeedUsersAsync and SeedRolesAsync are called first.");
-            }
-
-            // Find specific roles
-            var adminRole = roles.FirstOrDefault(r => r.Name == "Admin");
-            var ownerRole = roles.FirstOrDefault(r => r.Name == "Owner");
-            var managerRole = roles.FirstOrDefault(r => r.Name == "Manager");
-            var userRole = roles.FirstOrDefault(r => r.Name == "User");
-
-            var userRoles = new List<UserRoleEntity>();
-
-            // Assign roles to users with a realistic distribution
-            for (int i = 0; i < users.Count; i++)
-            {
-                var user = users[i];
-
-                if (i == 0 && adminRole is not null)
-                {
-                    // First user: Admin role (super admin)
-                    userRoles.Add(new UserRoleEntity
-                    {
-                        UserId = user.Id,
-                        RoleId = adminRole.Id,
-                        User = user,
-                        Role = adminRole
-                    });
-                }
-                else if (i >= 1 && i <= 3 && ownerRole is not null)
-                {
-                    // Users 1-3: Owner role (account owners)
-                    userRoles.Add(new UserRoleEntity
-                    {
-                        UserId = user.Id,
-                        RoleId = ownerRole.Id,
-                        User = user,
-                        Role = ownerRole
-                    });
-                }
-                else if (i >= 4 && i <= 9 && managerRole is not null)
-                {
-                    // Users 4-9: Manager role (team managers)
-                    userRoles.Add(new UserRoleEntity
-                    {
-                        UserId = user.Id,
-                        RoleId = managerRole.Id,
-                        User = user,
-                        Role = managerRole
-                    });
-                }
-                else if (userRole is not null)
-                {
-                    // All other users: User role (standard users)
-                    userRoles.Add(new UserRoleEntity
-                    {
-                        UserId = user.Id,
-                        RoleId = userRole.Id,
-                        User = user,
-                        Role = userRole
-                    });
-                }
-            }
-
-            await dbContext.UserRoles.AddRangeAsync(userRoles, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            logger.LogInformation("Successfully seeded {Count} user roles", userRoles.Count);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding UserRoles");
             throw;
         }
     }

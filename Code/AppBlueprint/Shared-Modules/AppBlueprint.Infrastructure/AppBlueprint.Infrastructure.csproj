@@ -1,9 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <!-- Basic Project Properties -->
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Infrastructure library with database repositories and external services</Description>
+        <PackageTags>infrastructure database-repositories external-services</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>infrastructure-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -64,31 +78,14 @@
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj"/>
-        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
+        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
         <!-- TodoAppKernel module reference -->
-        <ProjectReference Include="..\..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj"/>
+        <ProjectReference Include="..\..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj" />
     </ItemGroup>
 
-    <PropertyGroup>
-        <!-- Enable packaging the ApiModule project to Nuget package file -->
-        <IsPackable>true</IsPackable>
-        <!-- NuGet Configuration -->
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
-        <GeneratePackage>true</GeneratePackage>
-        <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion will supply this in CI -->
-        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure</PackageId>
-        <Authors>Casper Rubæk</Authors>
-        <Description>Infrastructure library with database repositories and external services</Description>
-        <PackageTags>infrastructure;database repositories;external services;</PackageTags>
-        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/README.md</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-    </PropertyGroup>
 </Project>

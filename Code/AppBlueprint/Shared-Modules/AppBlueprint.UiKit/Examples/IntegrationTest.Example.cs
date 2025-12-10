@@ -7,9 +7,10 @@ using AppBlueprint.UiKit.Configuration;
 using AppBlueprint.UiKit.Services;
 using AppBlueprint.UiKit.Themes;
 using Bunit;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
-using Xunit;
+using TUnit.Core;
 
 namespace YourProject.IntegrationTests;
 
@@ -19,7 +20,7 @@ namespace YourProject.IntegrationTests;
 /// </summary>
 public class UiKitIntegrationTests : TestContext
 {
-    [Fact]
+    [Test]
     public void AddUiKit_WithDefaultConfiguration_RegistersServices()
     {
         // Arrange & Act
@@ -28,17 +29,17 @@ public class UiKitIntegrationTests : TestContext
 
         // Assert
         var navigationService = Services.BuildServiceProvider().GetService<NavigationService>();
-        Assert.NotNull(navigationService);
+        navigationService.Should().NotBeNull();
 
         var breadcrumbService = Services.BuildServiceProvider().GetService<BreadcrumbService>();
-        Assert.NotNull(breadcrumbService);
+        breadcrumbService.Should().NotBeNull();
 
         var theme = Services.BuildServiceProvider().GetService<MudTheme>();
-        Assert.NotNull(theme);
-        Assert.Equal(CustomThemes.Superherotheme.PaletteLight.Primary, theme.PaletteLight.Primary);
+        theme.Should().NotBeNull();
+        theme!.PaletteLight.Primary.Should().Be(CustomThemes.Superherotheme.PaletteLight.Primary);
     }
 
-    [Fact]
+    [Test]
     public void AddUiKit_WithCustomTheme_UsesCustomTheme()
     {
         // Arrange
@@ -51,10 +52,10 @@ public class UiKitIntegrationTests : TestContext
 
         // Assert
         var theme = Services.BuildServiceProvider().GetRequiredService<MudTheme>();
-        Assert.Equal(customPrimaryColor, theme.PaletteLight.Primary);
+        theme.PaletteLight.Primary.Should().Be(customPrimaryColor);
     }
 
-    [Fact]
+    [Test]
     public void AddUiKit_WithPresetTheme_UsesCorrectPreset()
     {
         // Arrange & Act
@@ -63,10 +64,10 @@ public class UiKitIntegrationTests : TestContext
 
         // Assert
         var theme = Services.BuildServiceProvider().GetRequiredService<MudTheme>();
-        Assert.NotEqual(CustomThemes.Superherotheme.PaletteLight.Primary, theme.PaletteLight.Primary);
+        theme.PaletteLight.Primary.Should().NotBe(CustomThemes.Superherotheme.PaletteLight.Primary);
     }
 
-    [Fact]
+    [Test]
     public void AddUiKit_WithDisabledFeatures_StillRegistersCore()
     {
         // Arrange & Act
@@ -79,10 +80,10 @@ public class UiKitIntegrationTests : TestContext
 
         // Assert - Core services should still be registered
         var navigationService = Services.BuildServiceProvider().GetService<NavigationService>();
-        Assert.NotNull(navigationService);
+        navigationService.Should().NotBeNull();
     }
 
-    [Fact]
+    [Test]
     public void AddUiKit_WithCustomServiceConfiguration_RegistersCustomServices()
     {
         // Arrange
@@ -104,10 +105,10 @@ public class UiKitIntegrationTests : TestContext
 
         // Assert
         var testService = Services.BuildServiceProvider().GetService<ITestService>();
-        Assert.NotNull(testService);
+        testService.Should().NotBeNull();
     }
 
-    [Fact]
+    [Test]
     public void NavigationMenu_Renders_Successfully()
     {
         // Arrange
@@ -119,12 +120,12 @@ public class UiKitIntegrationTests : TestContext
         var cut = RenderComponent<NavigationMenu>();
 
         // Assert
-        Assert.NotNull(cut);
+        cut.Should().NotBeNull();
         // Verify navigation menu structure exists
         cut.Find("nav"); // Should not throw
     }
 
-    [Fact]
+    [Test]
     public void DashboardCard_WithValidProps_RendersCorrectly()
     {
         // Arrange
@@ -139,12 +140,12 @@ public class UiKitIntegrationTests : TestContext
             .Add(p => p.TrendDirection, "up"));
 
         // Assert
-        Assert.Contains("Test Card", cut.Markup);
-        Assert.Contains("$1,234", cut.Markup);
-        Assert.Contains("12.5", cut.Markup);
+        cut.Markup.Should().Contain("Test Card");
+        cut.Markup.Should().Contain("$1,234");
+        cut.Markup.Should().Contain("12.5");
     }
 
-    [Fact]
+    [Test]
     public void ThemeBuilder_FluentAPI_BuildsCorrectTheme()
     {
         // Arrange & Act
@@ -155,12 +156,12 @@ public class UiKitIntegrationTests : TestContext
             .Build();
 
         // Assert
-        Assert.Equal("#FF0000", theme.PaletteLight.Primary);
-        Assert.Equal("#00FF00", theme.PaletteLight.Secondary);
-        Assert.Equal("8px", theme.LayoutProperties.DefaultBorderRadius);
+        theme.PaletteLight.Primary.Should().Be("#FF0000");
+        theme.PaletteLight.Secondary.Should().Be("#00FF00");
+        theme.LayoutProperties.DefaultBorderRadius.Should().Be("8px");
     }
 
-    [Fact]
+    [Test]
     public void ThemeBuilder_Presets_ProduceUniqueThemes()
     {
         // Arrange & Act
@@ -169,11 +170,11 @@ public class UiKitIntegrationTests : TestContext
         var modernDarkTheme = new ThemeBuilder().UseModernDarkPreset().Build();
 
         // Assert
-        Assert.NotEqual(superheroTheme.PaletteLight.Primary, professionalTheme.PaletteLight.Primary);
-        Assert.NotEqual(professionalTheme.PaletteLight.Primary, modernDarkTheme.PaletteLight.Primary);
+        superheroTheme.PaletteLight.Primary.Should().NotBe(professionalTheme.PaletteLight.Primary);
+        professionalTheme.PaletteLight.Primary.Should().NotBe(modernDarkTheme.PaletteLight.Primary);
     }
 
-    [Fact]
+    [Test]
     public void NavigationService_AddRoute_StoresRoute()
     {
         // Arrange
@@ -189,10 +190,10 @@ public class UiKitIntegrationTests : TestContext
         service.AddRoute(route);
 
         // Assert
-        Assert.Contains(route, service.Routes);
+        service.Routes.Should().Contain(route);
     }
 
-    [Fact]
+    [Test]
     public void BreadcrumbService_UpdatesBreadcrumbs_WhenNavigating()
     {
         // Arrange
@@ -206,9 +207,9 @@ public class UiKitIntegrationTests : TestContext
         });
 
         // Assert
-        Assert.Equal(2, service.Breadcrumbs.Count);
-        Assert.Equal("Home", service.Breadcrumbs[0].Text);
-        Assert.Equal("Dashboard", service.Breadcrumbs[1].Text);
+        service.Breadcrumbs.Should().HaveCount(2);
+        service.Breadcrumbs[0].Text.Should().Be("Home");
+        service.Breadcrumbs[1].Text.Should().Be("Dashboard");
     }
 
     // Test helper interfaces and classes
@@ -221,7 +222,7 @@ public class UiKitIntegrationTests : TestContext
 /// </summary>
 public class UiKitPerformanceTests
 {
-    [Fact]
+    [Test]
     public void DisablingFeatures_ReducesBundleSize()
     {
         // This is a conceptual test - actual implementation would measure bundle size
@@ -236,7 +237,7 @@ public class UiKitPerformanceTests
         var allFeaturesSize = 1000; // KB (example)
         var noChartsSize = 950;     // KB (example)
 
-        Assert.True(noChartsSize < allFeaturesSize, "Disabling charts should reduce bundle size");
+        noChartsSize.Should().BeLessThan(allFeaturesSize, "Disabling charts should reduce bundle size");
     }
 }
 
@@ -245,7 +246,7 @@ public class UiKitPerformanceTests
 /// </summary>
 public class UiKitCompatibilityTests : TestContext
 {
-    [Fact]
+    [Test]
     public void UiKit_WorksWithBlazorServer()
     {
         // Arrange
@@ -254,14 +255,14 @@ public class UiKitCompatibilityTests : TestContext
 
         // Act & Assert
         var serviceProvider = Services.BuildServiceProvider();
-        Assert.NotNull(serviceProvider.GetService<NavigationService>());
+        serviceProvider.GetService<NavigationService>().Should().NotBeNull();
     }
 
-    [Theory]
-    [InlineData(ThemePreset.Superhero)]
-    [InlineData(ThemePreset.ProfessionalBlue)]
-    [InlineData(ThemePreset.ModernDark)]
-    [InlineData(ThemePreset.Minimal)]
+    [Test]
+    [Arguments(ThemePreset.Superhero)]
+    [Arguments(ThemePreset.ProfessionalBlue)]
+    [Arguments(ThemePreset.ModernDark)]
+    [Arguments(ThemePreset.Minimal)]
     public void AllThemePresets_RegisterSuccessfully(ThemePreset preset)
     {
         // Arrange
@@ -273,12 +274,12 @@ public class UiKitCompatibilityTests : TestContext
 
         // Assert
         var theme = Services.BuildServiceProvider().GetService<MudTheme>();
-        Assert.NotNull(theme);
+        theme.Should().NotBeNull();
     }
 }
 
 // NOTE: To use these tests in your project:
-// 1. Create a test project: dotnet new xunit -n YourProject.IntegrationTests
+// 1. Create a test project: dotnet new tunit -n YourProject.IntegrationTests
 // 2. Add packages:
 //    dotnet add package SaaS-Factory.AppBlueprint.UiKit
 //    dotnet add package bunit

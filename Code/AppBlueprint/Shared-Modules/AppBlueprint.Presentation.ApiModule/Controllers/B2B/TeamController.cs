@@ -12,7 +12,7 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 [Authorize]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/team")]
+[Route("api/v{version:apiVersion}")]
 [Produces("application/json")]
 public class TeamController : BaseController
 {
@@ -50,27 +50,41 @@ public class TeamController : BaseController
     /// <response code="404">No teams found in the system.</response>
     [HttpGet(ApiEndpoints.Teams.GetAll)]
     [ProducesResponseType(typeof(IEnumerable<TeamResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult<IEnumerable<TeamResponse>>> GetTeams(CancellationToken cancellationToken)
     {
-        IEnumerable<TeamEntity> teams = await _teamRepository.GetAllAsync();
-        if (!teams.Any()) return NotFound(new { Message = "No teams found." });
-
-        var response = teams.Select(team => new TeamResponse(
-            team.TeamMembers?.Select(m => new TeamMemberResponse
-            {
-                Id = m.Id,
-                UserId = m.UserId
-            }).ToList()
-        )
+        try
         {
-            Id = team.Id,
-            Name = team.Name,
-            Description = team.Description
-        });
+            IEnumerable<TeamEntity> teams = await _teamRepository.GetAllAsync();
 
-        return Ok(response);
+            // Return empty list instead of 404 - more RESTful
+            if (!teams.Any())
+            {
+                return Ok(Enumerable.Empty<TeamResponse>());
+            }
+
+            var response = teams.Select(team => new TeamResponse(
+                team.TeamMembers?.Select(m => new TeamMemberResponse
+                {
+                    Id = m.Id,
+                    UserId = m.UserId,
+                    Role = string.Empty,
+                    JoinedAt = DateTime.UtcNow
+                }).ToList()
+            )
+            {
+                Id = team.Id,
+                Name = team.Name,
+                Description = team.Description
+            });
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            // Log the error and return 500 with details
+            return StatusCode(500, new { Message = "Error retrieving teams", Error = ex.Message });
+        }
     }
 
     /// <summary>

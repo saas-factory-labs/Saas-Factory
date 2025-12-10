@@ -1,0 +1,337 @@
+@page "/roles"
+@attribute [Authorize]
+@using AppBlueprint.Contracts.Baseline.Role.Requests
+@using AppBlueprint.Contracts.Baseline.Role.Responses
+@using AppBlueprint.Web.Services
+@using Microsoft.AspNetCore.Authorization
+@inject RoleService RoleService
+@inject ISnackbar Snackbar
+@inject ILogger<RolesPage> Logger
+
+<PageTitle>Roles</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudText Typo="Typo.h4" Class="mb-4">Roles Management</MudText>
+
+    @if (_isLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    }
+    else if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-4">@_errorMessage</MudAlert>
+    }
+    else
+    {
+        <!-- Add New Role Section -->
+        <MudPaper Class="pa-4 mb-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">Add New Role</MudText>
+            <MudForm @ref="_form" @bind-IsValid="@_isFormValid">
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_newRoleName"
+                                      Label="Role Name"
+                                      Variant="Variant.Outlined"
+                                      Required="true"
+                                      RequiredError="Role name is required"
+                                      MaxLength="100"
+                                      Counter="100"
+                                      Immediate="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_newRoleDescription"
+                                      Label="Description"
+                                      Variant="Variant.Outlined"
+                                      MaxLength="500"
+                                      Counter="500"
+                                      Lines="3" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   OnClick="AddRoleAsync"
+                                   Disabled="@(!_isFormValid || _isAdding)">
+                            @if (_isAdding)
+                            {
+                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                <MudText Class="ms-2">Adding...</MudText>
+                            }
+                            else
+                            {
+                                <span>Add Role</span>
+                            }
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
+        </MudPaper>
+
+        <!-- Roles List -->
+        <MudText Typo="Typo.h6" Class="mb-3">
+            Roles List (@_roles.Count roles)
+        </MudText>
+
+        @if (!_roles.Any())
+        {
+            <MudPaper Class="pa-8 text-center" Elevation="0">
+                <MudIcon Icon="@Icons.Material.Filled.Shield" Size="Size.Large" Color="Color.Default" Class="mb-2" />
+                <MudText Typo="Typo.h6" Color="Color.Default">No roles yet</MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">Add your first role above to get started!</MudText>
+            </MudPaper>
+        }
+        else
+        {
+            <MudStack Spacing="2">
+                @foreach (var role in _roles.OrderBy(r => r.Name))
+                {
+                    <MudPaper Class="pa-3" Elevation="1">
+                        @if (_editingRoleId == role.Id)
+                        {
+                            <!-- Edit Mode -->
+                            <MudForm @ref="_editForm" @bind-IsValid="@_isEditFormValid">
+                                <MudGrid>
+                                    <MudItem xs="12" sm="6">
+                                        <MudTextField @bind-Value="_editRoleName"
+                                                      Label="Role Name"
+                                                      Variant="Variant.Outlined"
+                                                      Required="true"
+                                                      RequiredError="Role name is required"
+                                                      MaxLength="100"
+                                                      Immediate="true" />
+                                    </MudItem>
+                                    <MudItem xs="12" sm="6">
+                                        <MudTextField @bind-Value="_editRoleDescription"
+                                                      Label="Description"
+                                                      Variant="Variant.Outlined"
+                                                      MaxLength="500"
+                                                      Lines="2" />
+                                    </MudItem>
+                                    <MudItem xs="12" Class="d-flex gap-2">
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="Color.Success"
+                                                   Size="Size.Small"
+                                                   StartIcon="@Icons.Material.Filled.Save"
+                                                   OnClick="@(async () => await SaveRoleAsync(role.Id))"
+                                                   Disabled="@(!_isEditFormValid || _isSaving)">
+                                            Save
+                                        </MudButton>
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Color="Color.Default"
+                                                   Size="Size.Small"
+                                                   OnClick="CancelEdit"
+                                                   Disabled="@_isSaving">
+                                            Cancel
+                                        </MudButton>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudForm>
+                        }
+                        else
+                        {
+                            <!-- View Mode -->
+                            <MudGrid>
+                                <MudItem xs="12" sm="8">
+                                    <div>
+                                        <MudText Typo="Typo.h6" Class="mb-1">
+                                            @role.Name
+                                        </MudText>
+                                        @if (!string.IsNullOrEmpty(role.Description))
+                                        {
+                                            <MudText Typo="Typo.body2" Color="Color.Default">
+                                                @role.Description
+                                            </MudText>
+                                        }
+                                        @if (role.Permissions is not null && role.Permissions.Any())
+                                        {
+                                            <MudText Typo="Typo.caption" Color="Color.Primary" Class="mt-2">
+                                                @role.Permissions.Count permission(s)
+                                            </MudText>
+                                        }
+                                        <MudText Typo="Typo.caption" Color="Color.Default" Class="mt-1">
+                                            Created: @role.CreatedAt.ToString("g")
+                                        </MudText>
+                                    </div>
+                                </MudItem>
+                                <MudItem xs="12" sm="4" Class="d-flex align-center justify-end gap-2">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                   Color="Color.Primary"
+                                                   Size="Size.Small"
+                                                   OnClick="@(() => StartEditRole(role))"
+                                                   Title="Edit" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Color="Color.Error"
+                                                   Size="Size.Small"
+                                                   OnClick="@(async () => await DeleteRoleAsync(role))"
+                                                   Title="Delete" />
+                                </MudItem>
+                            </MudGrid>
+                        }
+                    </MudPaper>
+                }
+            </MudStack>
+        }
+    }
+</MudContainer>
+
+@code {
+    private MudForm? _form;
+    private MudForm? _editForm;
+    private bool _isFormValid;
+    private bool _isEditFormValid;
+    private bool _isLoading = true;
+    private bool _isAdding;
+    private bool _isSaving;
+    private string _errorMessage = string.Empty;
+    private string _newRoleName = string.Empty;
+    private string _newRoleDescription = string.Empty;
+    private string _editRoleName = string.Empty;
+    private string _editRoleDescription = string.Empty;
+    private string? _editingRoleId = null;
+    private List<RoleResponse> _roles = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadRolesAsync();
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadRolesAsync()
+    {
+        _isLoading = true;
+        _errorMessage = string.Empty;
+
+        try
+        {
+            var roles = await RoleService.GetRolesAsync();
+            _roles = roles.ToList();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to load roles: {ex.Message}";
+            Logger.LogError(ex, "Error loading roles");
+            Snackbar.Add(_errorMessage, Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task AddRoleAsync()
+    {
+        if (!_isFormValid || string.IsNullOrWhiteSpace(_newRoleName))
+        {
+            return;
+        }
+
+        _isAdding = true;
+
+        try
+        {
+            var request = new CreateRoleRequest
+                {
+                    Name = _newRoleName.Trim(),
+                    Description = string.IsNullOrWhiteSpace(_newRoleDescription) ? null : _newRoleDescription.Trim()
+                };
+
+            var newRole = await RoleService.CreateRoleAsync(request);
+
+            if (newRole is not null)
+            {
+                _roles.Add(newRole);
+                _newRoleName = string.Empty;
+                _newRoleDescription = string.Empty;
+                await _form!.ResetAsync();
+                Snackbar.Add("Role added successfully!", Severity.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error adding role");
+            Snackbar.Add($"Failed to add role: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isAdding = false;
+        }
+    }
+
+    private void StartEditRole(RoleResponse role)
+    {
+        ArgumentNullException.ThrowIfNull(role);
+
+        _editingRoleId = role.Id;
+        _editRoleName = role.Name ?? string.Empty;
+        _editRoleDescription = role.Description ?? string.Empty;
+    }
+
+    private void CancelEdit()
+    {
+        _editingRoleId = null;
+        _editRoleName = string.Empty;
+        _editRoleDescription = string.Empty;
+    }
+
+    private async Task SaveRoleAsync(string roleId)
+    {
+        if (!_isEditFormValid || string.IsNullOrWhiteSpace(_editRoleName))
+        {
+            return;
+        }
+
+        _isSaving = true;
+
+        try
+        {
+            var request = new UpdateRoleRequest
+                {
+                    Name = _editRoleName.Trim(),
+                    Description = string.IsNullOrWhiteSpace(_editRoleDescription) ? null : _editRoleDescription.Trim(),
+                    Permissions = Array.Empty<AppBlueprint.Contracts.Baseline.Permissions.Requests.UpdatePermissionRequest>()
+                };
+
+            await RoleService.UpdateRoleAsync(roleId, request);
+
+            // Update the local list
+            var role = _roles.FirstOrDefault(r => r.Id == roleId);
+            if (role is not null)
+            {
+                role.Name = request.Name;
+                role.Description = request.Description;
+            }
+
+            CancelEdit();
+            Snackbar.Add("Role updated successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error updating role {RoleId}", roleId);
+            Snackbar.Add($"Failed to update role: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isSaving = false;
+        }
+    }
+
+    private async Task DeleteRoleAsync(RoleResponse role)
+    {
+        ArgumentNullException.ThrowIfNull(role);
+
+        try
+        {
+            await RoleService.DeleteRoleAsync(role.Id);
+            _roles.Remove(role);
+            Snackbar.Add("Role deleted successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error deleting role {RoleId}", role.Id);
+            Snackbar.Add($"Failed to delete role: {ex.Message}", Severity.Error);
+        }
+    }
+}

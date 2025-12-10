@@ -10,7 +10,6 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog;
 
 public class CatalogDbContext : DbContext
 {
-    private readonly ILogger<CatalogDbContext> _logger;
     public DbSet<TenantEntity> Tenants { get; set; }
     public DbSet<CustomerEntity> Customers { get; set; }
 
@@ -18,7 +17,7 @@ public class CatalogDbContext : DbContext
     public CatalogDbContext(DbContextOptions<CatalogDbContext> options, ILogger<CatalogDbContext> logger)
         : base(options)
     {
-        _logger = logger;
+        var _logger = logger;
         _logger.LogInformation("Catalog DbContext initialized");
     }
 

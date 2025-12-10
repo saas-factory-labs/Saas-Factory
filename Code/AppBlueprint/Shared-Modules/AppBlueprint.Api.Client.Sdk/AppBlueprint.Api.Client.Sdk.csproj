@@ -1,33 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <!-- Basic Project Properties -->
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latestmajor</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-    </PropertyGroup>
 
-    <!-- NuGet package metadata -->
-    <PropertyGroup>
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
         <PackageId>SaaS-Factory.AppBlueprint.Api.Client.Sdk</PackageId>
         <Authors>Casper Rubæk</Authors>
-        <Description>A Blazor-friendly API client generated using Microsoft Kiota Cli.</Description>
-        <!--        <PackageLicenseExpression></PackageLicenseExpression>-->
-        <PackageProjectUrl>https://</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/yourrepo</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>microsoft kiota; rest api; client; blazor</PackageTags>
-        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Api.Client.Sdk/README.md</PackageProjectUrl>
+        <Description>Type-safe API client SDK generated with Microsoft Kiota for consuming AppBlueprint APIs</Description>
+        <PackageTags>kiota rest-api http-client sdk api-client blazor-friendly</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/README.md</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <!-- Enable packaging the UiKit project to Nuget package file -->
-        <IsPackable>true</IsPackable>
-        <!-- NuGet Configuration -->
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
-        <GeneratePackage>true</GeneratePackage>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>api-client-sdk-icon.png</PackageIcon>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\assets\icons\api-client-sdk-icon.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Kiota.Abstractions"/>

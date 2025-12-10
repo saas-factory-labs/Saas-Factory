@@ -19,11 +19,14 @@ public static class MigrationExtensions
     public static async Task ApplyMigrationsAsync(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app);
-        
+
         using IServiceScope scope = app.ApplicationServices.CreateScope();
 
         await using ApplicationDbContext dbContext =
             scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        await using B2BDbContext b2bDbContext =
+            scope.ServiceProvider.GetRequiredService<B2BDbContext>();
 
         try
         {
@@ -39,9 +42,13 @@ public static class MigrationExtensions
             Logger.LogInformation("Checking database connection...");
             if (await dbContext.Database.CanConnectAsync())
             {
-                Logger.LogInformation("Successfully connected to database. Applying database migrations...");
+                Logger.LogInformation("Successfully connected to database. Applying ApplicationDbContext migrations...");
                 await dbContext.Database.MigrateAsync();
-                Logger.LogInformation("Database migrations applied successfully.");
+                Logger.LogInformation("ApplicationDbContext migrations applied successfully.");
+
+                Logger.LogInformation("Applying B2BDbContext migrations...");
+                await b2bDbContext.Database.MigrateAsync();
+                Logger.LogInformation("B2BDbContext migrations applied successfully.");
             }
             else
             {

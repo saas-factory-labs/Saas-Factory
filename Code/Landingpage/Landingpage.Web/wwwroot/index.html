@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SaaS Factory - AppBlueprint | Enterprise SaaS Framework</title>
+    <base href="/" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="Landingpage.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-orange': '#ff6b35',
+                        'brand-dark': '#1a1a1a',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+            <div style="display: inline-block; width: 50px; height: 50px; border: 5px solid #ff6b35; border-bottom-color: transparent; border-radius: 50%; animation: rotation 1s linear infinite;"></div>
+            <style>
+                @keyframes rotation {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui" style="background: lightyellow; bottom: 0; box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.2); display: none; left: 0; padding: 0.6rem 1.25rem 0.7rem 1.25rem; position: fixed; width: 100%; z-index: 1000;">
+        An unhandled error has occurred.
+        <a href="" style="font-weight: bold;">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

@@ -164,14 +164,48 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
     if (builder.Environment.IsDevelopment())
     {
         // Accept self-signed certificates in development
-        handler.ServerCertificateCustomValidationCallback = 
+        handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
     }
     return handler;
 })
 .AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
+// Add TeamService with HttpClient configured for direct API access
+builder.Services.AddHttpClient<AppBlueprint.Web.Services.TeamService>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler();
+    if (builder.Environment.IsDevelopment())
+    {
+        handler.ServerCertificateCustomValidationCallback =
+            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+    }
+    return handler;
+})
+.AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
+// Add RoleService with HttpClient configured for direct API access
+builder.Services.AddHttpClient<AppBlueprint.Web.Services.RoleService>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler();
+    if (builder.Environment.IsDevelopment())
+    {
+        handler.ServerCertificateCustomValidationCallback =
+            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+    }
+    return handler;
+})
+.AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
 var app = builder.Build();
 

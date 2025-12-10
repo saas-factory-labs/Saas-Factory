@@ -1,29 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <!-- Basic Project Properties -->
         <RootNamespace>AppBlueprint.Application</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latestmajor</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-    </PropertyGroup>
 
-    <PropertyGroup>
-        <!-- Enable packaging the ApiModule project to Nuget package file -->
-        <IsPackable>true</IsPackable>
-        <!-- NuGet Configuration -->
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
-        <GeneratePackage>true</GeneratePackage>
-        <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion will supply this in CI -->
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
         <PackageId>SaaS-Factory.AppBlueprint.Application</PackageId>
         <Authors>Casper Rubæk</Authors>
         <Description>Application layer with CQRS commands, queries, and use cases following Clean Architecture principles</Description>
-        <PackageTags>application;use cases;cqrs;clean architecture;domain driven design</PackageTags>
+        <PackageTags>application use-cases cqrs clean-architecture domain-driven-design</PackageTags>
         <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/README.md</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>application-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -35,19 +30,19 @@
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\assets\icons\application-icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Fluent-Regex"/>
         <PackageReference Include="FluentValidation"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
     </ItemGroup>
 
     <ItemGroup>
-        <!--      <ProjectReference Include="..\..\..\..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj" />-->
         <!-- Infrastructure reference removed to avoid circular dependency -->
         <!-- TODO: Use proper Domain entities instead of Infrastructure entities -->
-
-        <ProjectReference Include="..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj"/>
-        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
+        <ProjectReference Include="..\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
     </ItemGroup>
 </Project>

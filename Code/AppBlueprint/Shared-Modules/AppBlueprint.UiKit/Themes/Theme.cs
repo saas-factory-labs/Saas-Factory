@@ -1,6 +1,6 @@
 using MudBlazor;
 
-namespace AppBlueprint.Uikit.Themes;
+namespace AppBlueprint.UiKit.Themes;
 
 public static class CustomThemes
 {

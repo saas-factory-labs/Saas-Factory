@@ -1,29 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <!-- Basic Project Properties -->
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latestmajor</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-    </PropertyGroup>
 
-    <PropertyGroup>
-        <!-- Enable packaging the ApiModule project to Nuget package file -->
-        <IsPackable>true</IsPackable>
-        <!-- NuGet Configuration -->
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <!--<OutputPath>C:\Development\LocalNugetFeed\Release</OutputPath>-->
-        <GeneratePackage>true</GeneratePackage>
-        <!--        <Version></Version> &lt;!&ndash; Update version as needed &ndash;&gt;-->
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
         <PackageId>SaaS-Factory.AppBlueprint.Contracts</PackageId>
         <Authors>Casper Rubæk</Authors>
-        <Description>A class library with API request/response contracts for usage by clients</Description>
-        <PackageTags>contracts;request/response;api</PackageTags>
-        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.Contracts/AppBlueprint.Contracts/README.md</PackageProjectUrl>
+        <Description>API contracts library with request/response DTOs for client-server communication</Description>
+        <PackageTags>contracts dto request response api data-transfer-objects</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/README.md</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>contracts-icon.png</PackageIcon>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\assets\icons\contracts-icon.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <ItemGroup>
         <Folder Include="Admin\"/>
