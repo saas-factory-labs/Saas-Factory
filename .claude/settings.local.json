@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash($null)",
+      "Bash(Sort-Object)",
+      "Bash(dotnet test:*)",
+      "Bash(git add:*)",
+      "Bash(dotnet build:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

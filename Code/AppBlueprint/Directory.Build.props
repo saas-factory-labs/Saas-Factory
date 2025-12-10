@@ -13,17 +13,53 @@
         <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
         <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
 
-        <!-- Enable packaging the shared projects to Nuget package files -->
+        <!-- Assembly Information and Copyright -->
+        <Company>SaaS Factory Labs</Company>
+        <Authors>Casper Rubæk</Authors>
+        <Copyright>Copyright © 2024-2025 SaaS Factory Labs. Licensed under the MIT License.</Copyright>
+        <Product>AppBlueprint</Product>
+        <Trademark>SaaS Factory</Trademark>
+        <NeutralLanguage>en</NeutralLanguage>
+        
+        <!-- NuGet Package Configuration -->
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <GeneratePackage>true</GeneratePackage>
-        <Authors>Casper Rubæk</Authors>
-        <Company>SaaS Factory</Company>
-        <Copyright>© SaaS Factory</Copyright>
-        <Description>Shared .nuget packages for Appblueprint template from Shared-Modules folder</Description>
+        <Description>Shared .nuget packages for AppBlueprint template from Shared-Modules folder</Description>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        
+        <!-- Symbol Packages for Debugging -->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        
+        <!-- SourceLink Support for Debugging into Source -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        
+        <!-- Deterministic Builds for Reproducibility -->
+        <Deterministic>true</Deterministic>
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     </PropertyGroup>
+    
+    <!-- Debug Configuration -->
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
+    
+    <!-- Release Configuration - Optimized for NuGet -->
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+    
+    <!-- SourceLink Package for GitHub -->
+    <ItemGroup Condition="'$(IsPackable)' == 'true'">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+    </ItemGroup>
 
     <!-- Enable source code analysis using sonar nuget package across all projects except docker projects eg. .dcproj -->
     <ItemGroup Condition="'$(MSBuildProjectExtension)' != '.dcproj'">

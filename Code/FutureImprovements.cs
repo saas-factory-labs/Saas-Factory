@@ -1,4 +1,6 @@
 
+// -- COMPLIANCE AND REDACTION SETUP --
+
 // // Add compliance services
 // builder.Services.AddCompliance(options =>
 // {
@@ -22,6 +24,8 @@
 //     }, new DataClassificationSet(DataTaxonomy.PiiData));
 // });
 
+
+// // -- OPENAPI / SWAGGER SETUP --
 
 //
 // builder.Services.AddOpenApi();
@@ -95,6 +99,7 @@
 
 
 
+// // Kestrel SSL setup
 
 // this might fail to work on coolify because traefik will handle the ssl termination thus the app will not be able to see the ssl certificate and should run on http
 // this config makes swagger docs ui fail to render!
@@ -107,6 +112,9 @@
 //            listenOptions.UseHttps();
 //        });
 //    });
+
+
+// -- PULIMI INFRASTRUCTURE AS CODE SETUP --
 
 /*
  * pulumi - infrastructure as code  (not deployment manager - will run as part of creation step in the developer cli using pulumi automation api)

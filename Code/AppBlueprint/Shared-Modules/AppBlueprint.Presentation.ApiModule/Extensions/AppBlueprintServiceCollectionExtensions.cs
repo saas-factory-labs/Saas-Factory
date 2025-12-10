@@ -1,0 +1,41 @@
+using AppBlueprint.Application.Extensions;
+using AppBlueprint.Infrastructure.Extensions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace AppBlueprint.Presentation.ApiModule.Extensions;
+
+/// <summary>
+/// Unified extension method for adding all AppBlueprint services at once.
+/// </summary>
+public static class AppBlueprintServiceCollectionExtensions
+{
+    /// <summary>
+    /// Adds all AppBlueprint services (Infrastructure, Application, and Presentation) in one call.
+    /// This is a convenience method that calls AddAppBlueprintInfrastructure, AddAppBlueprintApplication,
+    /// and AddAppBlueprintPresentation.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configuration">The configuration for infrastructure services.</param>
+    /// <returns>The service collection for chaining.</returns>
+    /// <example>
+    /// <code>
+    /// // In Program.cs
+    /// builder.Services.AddAppBlueprint(builder.Configuration);
+    /// </code>
+    /// </example>
+    public static IServiceCollection AddAppBlueprint(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        // Register all AppBlueprint layers
+        services.AddAppBlueprintInfrastructure(configuration);
+        services.AddAppBlueprintApplication();
+        services.AddAppBlueprintPresentation();
+
+        return services;
+    }
+}

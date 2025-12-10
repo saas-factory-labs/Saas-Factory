@@ -4,24 +4,15 @@ from diagrams.aws.compute import EC2
 from diagrams.aws.database import RDS
 from diagrams.aws.network import ELB
 from diagrams.saas.cdn import Cloudflare
-from diagrams.azure.compute import *
-from diagrams.azure.database import *
-from diagrams.azure.general import *
-from diagrams.azure.integration import *
-from diagrams.azure.security import *
-from diagrams.azure.network import *
-from diagrams.elastic.saas import *
-from diagrams.onprem.vcs import *
-from diagrams.onprem.queue import *
-from diagrams.onprem.network import *
-from diagrams.onprem.monitoring import *
-from diagrams.onprem.logging import *
-from diagrams.onprem.gitops import *
-from diagrams.onprem.database import *
-from diagrams.onprem.ci import *
-from diagrams.onprem.certificates import *
-from diagrams.azure.database import *
-from diagrams.elastic.elasticsearch import *
+from diagrams.azure.compute import AKS
+from diagrams.azure.database import DatabaseForPostgresqlServers
+from diagrams.azure.integration import ServiceBus
+from diagrams.azure.security import KeyVaults
+from diagrams.azure.storage import BlobStorage
+from diagrams.azure.devops import ContainerRegistries
+from diagrams.onprem.vcs import Github
+from diagrams.onprem.monitoring import Grafana
+from diagrams.elastic.elasticsearch import ElasticSearch
 
 with Diagram("SaaS B2B system", show=False, direction="LR"):
 

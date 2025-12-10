@@ -1,25 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Basic Project Properties -->
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>12.0</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <IsPackable>true</IsPackable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>$(GITVERSION_SemVer)</Version> <!-- GitVersion will supply this in CI -->
     <UserSecretsId>c5bbe413-4aa6-4190-944c-bf90912749a1</UserSecretsId>
 
-    <!-- NuGet Metadata -->
+    <!-- NuGet Package Configuration -->
+    <Version>$(GITVERSION_SemVer)</Version>
     <PackageId>SaaS-Factory.AppBlueprint.SharedKernel</PackageId>
     <Authors>Casper Rubæk</Authors>
-    <Description>A reusable shared class library of entities, DbContexts, and other core domain components.</Description>
-    <PackageTags>blazor;razor;components;mudblazor;sharedkernel;ddd</PackageTags>
-    <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/AppBlueprint.SharedKernel/README.md</PackageProjectUrl>
+    <Description>Shared kernel library with base entities, value objects, and common domain primitives following DDD principles</Description>
+    <PackageTags>shared-kernel ddd domain-driven-design base-entities value-objects</PackageTags>
+    <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/README.md</PackageProjectUrl>
     <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>sharedkernel-icon.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\assets\icons\sharedkernel-icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.FeatureManagement" />
