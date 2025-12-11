@@ -4,7 +4,6 @@ using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.TodoAppKernel.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -114,7 +113,6 @@ public static class ServiceCollectionExtensions
     /// </summary>
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<ITodoRepository, TodoRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
         services.AddScoped<IDataExportRepository, DataExportRepository>();
         // Add more repositories as they are implemented

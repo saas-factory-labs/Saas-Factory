@@ -80,8 +80,6 @@
     <ItemGroup>
         <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
         <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
-        <!-- TodoAppKernel module reference -->
-        <ProjectReference Include="..\..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj" />
     </ItemGroup>
 
 </Project>
