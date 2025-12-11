@@ -64,7 +64,7 @@ jobs:
           cat GitVersion.yml || echo "No GitVersion.yml found"
           echo "=== Running GitVersion ==="
           export PATH="$PATH:/root/.dotnet/tools"
-          dotnet-gitversion --version
+          dotnet-gitversion
           RAW_VERSION=$(dotnet-gitversion /output json 2>&1 || echo '{}')
           echo "Raw GitVersion Output: $RAW_VERSION"
           VERSION=$(echo "$RAW_VERSION" | jq -r '.SemVer // empty' 2>/dev/null || echo "0.1.0")
