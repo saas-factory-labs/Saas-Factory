@@ -1,6 +1,7 @@
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Services.DataExport;
 using AppBlueprint.Infrastructure.Authentication;
+using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.Repositories;
@@ -68,7 +69,12 @@ public static class ServiceCollectionExtensions
 
         Console.WriteLine($"[AppBlueprint.Infrastructure] Database Connection Source: {connectionSource}");
 
-        ArgumentException.ThrowIfNullOrEmpty(connectionString, nameof(connectionString));
+        // Validate connection string with helpful error message
+        ConfigurationValidator.ValidateDatabaseConnectionString(
+            connectionString, 
+            "appblueprintdb", 
+            "postgres-server", 
+            "DefaultConnection");
 
         // Register ApplicationDbContext
         services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
