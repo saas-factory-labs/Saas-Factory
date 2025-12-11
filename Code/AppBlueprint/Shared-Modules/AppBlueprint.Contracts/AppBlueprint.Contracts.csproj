@@ -18,10 +18,12 @@
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>contracts-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\assets\icons\contracts-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup>
