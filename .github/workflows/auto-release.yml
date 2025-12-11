@@ -1,0 +1,74 @@
+name: Automated Semantic Release
+
+permissions:
+  contents: write  # Required to create tags and releases
+  issues: write    # Required to comment on issues
+  pull-requests: write  # Required to comment on PRs
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  release:
+    name: Create Release and Tag
+    runs-on: ubuntu-latest
+    
+    outputs:
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history needed for semantic-release
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install semantic-release and plugins
+        run: |
+          npm install -g \
+            semantic-release@23 \
+            @semantic-release/changelog@6 \
+            @semantic-release/git@10 \
+            @semantic-release/github@10 \
+            @semantic-release/commit-analyzer@12 \
+            @semantic-release/release-notes-generator@13
+
+      - name: Semantic Release
+        id: semantic
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+
+      - name: Release Summary
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          echo "🎉 New release created!"
+          echo "Version: v${{ steps.semantic.outputs.new_release_version }}"
+          echo "Release notes have been published to GitHub Releases"
+          echo ""
+          echo "The NuGet publishing workflow will be triggered automatically by the new tag."
+
+      - name: No Release Summary
+        if: steps.semantic.outputs.new_release_published != 'true'
+        run: |
+          echo "ℹ️ No new release created."
+          echo "No releasable commits found since the last release."
+          echo ""
+          echo "Use conventional commits to trigger releases:"
+          echo "  - feat: new feature (minor version bump)"
+          echo "  - fix: bug fix (patch version bump)"
+          echo "  - feat!: breaking change (major version bump)"
+          echo "  - BREAKING CHANGE: in commit body (major version bump)"

@@ -25,8 +25,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
-        <!-- Note: Removed Infrastructure reference to avoid circular dependency -->
-        <!-- TodoAppKernel is self-contained and Infrastructure will reference it instead -->
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
     </ItemGroup>
 
     <PropertyGroup>

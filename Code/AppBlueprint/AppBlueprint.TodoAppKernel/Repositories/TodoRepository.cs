@@ -1,20 +1,20 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.TodoAppKernel.Domain;
-using AppBlueprint.TodoAppKernel.Repositories;
+using AppBlueprint.TodoAppKernel.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Repositories;
+namespace AppBlueprint.TodoAppKernel.Repositories;
 
 /// <summary>
 /// Repository implementation for Todo operations using Entity Framework
+/// Uses TodoDbContext which inherits from B2BDbContext
 /// </summary>
 public class TodoRepository : ITodoRepository
 {
-    private readonly B2BDbContext _dbContext;
+    private readonly TodoDbContext _dbContext;
     private readonly ILogger<TodoRepository> _logger;
 
-    public TodoRepository(B2BDbContext dbContext, ILogger<TodoRepository> logger)
+    public TodoRepository(TodoDbContext dbContext, ILogger<TodoRepository> logger)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -93,4 +93,3 @@ public class TodoRepository : ITodoRepository
         }
     }
 }
-

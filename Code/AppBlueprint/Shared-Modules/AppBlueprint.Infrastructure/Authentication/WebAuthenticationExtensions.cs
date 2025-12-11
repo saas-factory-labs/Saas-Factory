@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using AppBlueprint.Infrastructure.Configuration;
 
 namespace AppBlueprint.Infrastructure.Authentication;
 
@@ -52,14 +53,15 @@ public static class WebAuthenticationExtensions
             Console.WriteLine("[Web] Using default Data Protection (development mode)");
         }
 
-        // Check if Logto authentication is configured
-        string? logtoAppId = configuration["Logto:AppId"];
-        string? logtoEndpoint = configuration["Logto:Endpoint"];
-        string? logtoAppSecret = configuration["Logto:AppSecret"];
-        bool hasLogtoConfig = !string.IsNullOrEmpty(logtoAppId) && !string.IsNullOrEmpty(logtoEndpoint);
+        // Validate and check if Logto authentication is configured
+        bool hasLogtoConfig = ConfigurationValidator.ValidateLogtoConfiguration(configuration, throwOnMissing: false);
 
         if (hasLogtoConfig)
         {
+            string? logtoAppId = configuration["Logto:AppId"];
+            string? logtoEndpoint = configuration["Logto:Endpoint"];
+            string? logtoAppSecret = configuration["Logto:AppSecret"];
+            
             Console.WriteLine("[Web] ========================================");
             Console.WriteLine("[Web] Logto authentication configuration found");
             Console.WriteLine($"[Web] Endpoint: {logtoEndpoint}");

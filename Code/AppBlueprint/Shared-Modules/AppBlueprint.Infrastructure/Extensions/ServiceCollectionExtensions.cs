@@ -1,13 +1,20 @@
+using Amazon.Runtime;
+using Amazon.S3;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Services.DataExport;
+using AppBlueprint.Infrastructure.Authentication;
+using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.TodoAppKernel.Repositories;
+using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Resend;
+using Stripe;
 
 namespace AppBlueprint.Infrastructure.Extensions;
 
@@ -22,18 +29,22 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration (used as fallback if environment variables not set).</param>
+    /// <param name="environment">The hosting environment (required for authentication setup).</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddAppBlueprintInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(environment);
 
         services.AddDatabaseContexts(configuration);
         services.AddRepositories();
-        services.AddAuthenticationServices();
+        services.AddWebAuthentication(configuration, environment);
         services.AddUnitOfWork();
+        services.AddExternalServices(configuration);
         services.AddHealthChecksServices(configuration);
 
         return services;
@@ -64,7 +75,12 @@ public static class ServiceCollectionExtensions
 
         Console.WriteLine($"[AppBlueprint.Infrastructure] Database Connection Source: {connectionSource}");
 
-        ArgumentException.ThrowIfNullOrEmpty(connectionString, nameof(connectionString));
+        // Validate connection string with helpful error message
+        ConfigurationValidator.ValidateDatabaseConnectionString(
+            connectionString, 
+            "appblueprintdb", 
+            "postgres-server", 
+            "DefaultConnection");
 
         // Register ApplicationDbContext
         services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
@@ -114,7 +130,6 @@ public static class ServiceCollectionExtensions
     /// </summary>
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<ITodoRepository, TodoRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
         services.AddScoped<IDataExportRepository, DataExportRepository>();
         // Add more repositories as they are implemented
@@ -128,6 +143,118 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddUnitOfWork(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork.Implementation.UnitOfWork>();
+        return services;
+    }
+
+    /// <summary>
+    /// Registers external service integrations (Stripe, Cloudflare R2, Resend).
+    /// Services are only registered if their configuration is present.
+    /// </summary>
+    private static IServiceCollection AddExternalServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddStripeService(configuration);
+        services.AddCloudflareR2Service(configuration);
+        services.AddResendEmailService(configuration);
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers Stripe payment service if API key is configured.
+    /// Looks for STRIPE_API_KEY environment variable or ConnectionStrings:StripeApiKey in configuration.
+    /// </summary>
+    private static IServiceCollection AddStripeService(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var stripeApiKey = Environment.GetEnvironmentVariable("STRIPE_API_KEY") ??
+                          configuration.GetConnectionString("StripeApiKey");
+
+        if (!string.IsNullOrEmpty(stripeApiKey))
+        {
+            StripeConfiguration.ApiKey = stripeApiKey;
+            services.AddScoped<StripeSubscriptionService>();
+            Console.WriteLine("[AppBlueprint.Infrastructure] Stripe service registered");
+        }
+        else
+        {
+            Console.WriteLine("[AppBlueprint.Infrastructure] Stripe not configured (optional)");
+        }
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers Cloudflare R2 object storage service if credentials are configured.
+    /// Requires ObjectStorage:AccessKeyId, ObjectStorage:SecretAccessKey, ObjectStorage:EndpointUrl, ObjectStorage:BucketName.
+    /// </summary>
+    private static IServiceCollection AddCloudflareR2Service(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var accessKeyId = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ACCESS_KEY_ID") ??
+                         configuration["ObjectStorage:AccessKeyId"];
+        var secretAccessKey = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_SECRET_ACCESS_KEY") ??
+                             configuration["ObjectStorage:SecretAccessKey"];
+        var endpointUrl = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ENDPOINT_URL") ??
+                         configuration["ObjectStorage:EndpointUrl"];
+        var bucketName = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_BUCKET_NAME") ??
+                        configuration["ObjectStorage:BucketName"];
+
+        if (!string.IsNullOrEmpty(accessKeyId) &&
+            !string.IsNullOrEmpty(secretAccessKey) &&
+            !string.IsNullOrEmpty(endpointUrl) &&
+            !string.IsNullOrEmpty(bucketName))
+        {
+            services.AddSingleton<IAmazonS3>(sp =>
+            {
+                var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+                return new AmazonS3Client(credentials, new AmazonS3Config
+                {
+                    ServiceURL = endpointUrl,
+                    ForcePathStyle = true // Required for R2 compatibility
+                });
+            });
+
+            Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 storage service registered");
+        }
+        else
+        {
+            Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 not configured (optional)");
+        }
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers Resend email service if API key is configured.
+    /// Looks for RESEND_API_KEY environment variable or Resend:ApiKey in configuration.
+    /// </summary>
+    private static IServiceCollection AddResendEmailService(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var resendApiKey = Environment.GetEnvironmentVariable("RESEND_API_KEY") ??
+                          configuration["Resend:ApiKey"];
+
+        if (!string.IsNullOrEmpty(resendApiKey))
+        {
+            services.AddHttpClient<IResend, ResendClient>()
+                .ConfigureHttpClient(client =>
+                {
+                    client.BaseAddress = new Uri("https://api.resend.com");
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendApiKey}");
+                });
+            services.AddScoped<TransactionEmailService>();
+            Console.WriteLine("[AppBlueprint.Infrastructure] Resend email service registered");
+        }
+        else
+        {
+            Console.WriteLine("[AppBlueprint.Infrastructure] Resend not configured (optional)");
+        }
+
         return services;
     }
 

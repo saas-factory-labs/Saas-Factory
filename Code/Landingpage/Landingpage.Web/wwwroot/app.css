@@ -42,3 +42,12 @@ html, body {
 .animate-float {
     animation: float 6s ease-in-out infinite;
 }
+
+.carousel-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-container > div {
+    flex-shrink: 0;
+}

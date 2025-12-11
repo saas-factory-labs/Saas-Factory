@@ -1,7 +1,7 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using Bogus;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.FakeData.FakeDataGeneration.ModelSpecificDataGenerators;
+namespace AppBlueprint.SeedTest.FakeDataGeneration.ModelSpecificDataGenerators;
 
 public class FakeUserDataGenerator
 {

@@ -71,7 +71,7 @@ using Bogus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure;
+namespace AppBlueprint.SeedTest;
 
 public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContext, ILogger<DataSeeder> logger)
 {

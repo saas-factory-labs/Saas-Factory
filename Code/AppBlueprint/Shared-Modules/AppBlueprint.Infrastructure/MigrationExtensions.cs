@@ -129,43 +129,19 @@ public static class MigrationExtensions
         }
     }
 
-    public static async Task ApplyDatabaseSeedingAsync(this IApplicationBuilder app)
+    // NOTE: Database seeding has been moved to SeedTest project
+    // This method is left as a placeholder for future database initialization tasks
+    public static Task ApplyDatabaseSeedingAsync(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app);
-
-        using IServiceScope scope = app.ApplicationServices.CreateScope();
-
-        await using ApplicationDbContext dbContext =
-            scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
-        await using var b2bDbContext = 
-            scope.ServiceProvider.GetRequiredService<B2BDbContext>();
+        // Database seeding is now handled separately via the SeedTest project
+        // For production scenarios, consider implementing database seeding through:
+        // - Migration-based seed data
+        // - Startup initialization tasks
+        // - Dedicated seeding services
         
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeeder>>();
-
-        try
-        {
-            var dataSeeder = new DataSeeder(dbContext, b2bDbContext, logger);
-            await dataSeeder.SeedDatabaseAsync();
-            Logger.LogInformation("Database seeding completed successfully.");
-        }
-        catch (NpgsqlException ex)
-        {
-            // Log the database-specific error but don't crash the application
-            Logger.LogError(ex, "A database error occurred while seeding the database: {Message}", ex.Message);
-            Logger.LogWarning("Application will continue without seeding the database.");
-        }
-        catch (InvalidOperationException ex)
-        {
-            // Log EF Core operation errors but don't crash the application
-            Logger.LogError(ex, "An Entity Framework error occurred while seeding the database: {Message}", ex.Message);
-            Logger.LogWarning("Application will continue without seeding the database.");
-        }
-        catch (TimeoutException ex)
-        {
-            // Log timeout errors but don't crash the application
-            Logger.LogError(ex, "A timeout occurred while seeding the database: {Message}", ex.Message);
-            Logger.LogWarning("Application will continue without seeding the database.");
-        }
+        Logger.LogInformation("Database seeding method called - no seeding configured (use SeedTest project for development seeding).");
+        return Task.CompletedTask;
     }
 }

@@ -3,7 +3,7 @@ using AutoBogus;
 using Newtonsoft.Json;
 using Assembly = System.Reflection.Assembly;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.FakeData.FakeDataGeneration;
+namespace AppBlueprint.SeedTest.FakeDataGeneration;
 
 public class FakeDataGenerator
 {

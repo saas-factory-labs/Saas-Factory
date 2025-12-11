@@ -59,10 +59,6 @@
         <PackageReference Include="Resend"/>
         <PackageReference Include="Stripe.net"/>
         <PackageReference Include="AWSSDK.S3"/>
-        
-        <!-- Testing and Data Generation -->
-        <PackageReference Include="AutoBogus"/>
-        <PackageReference Include="Bogus"/>
 
         <!-- Reverse Proxy -->
         <PackageReference Include="Yarp.ReverseProxy"/>
@@ -84,8 +80,6 @@
     <ItemGroup>
         <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
         <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
-        <!-- TodoAppKernel module reference -->
-        <ProjectReference Include="..\..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj" />
     </ItemGroup>
 
 </Project>

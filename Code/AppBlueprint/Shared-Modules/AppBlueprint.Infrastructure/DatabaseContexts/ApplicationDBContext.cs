@@ -31,9 +31,6 @@ public class ApplicationDbContext : B2CdbContext
     ) : base(options, configuration, logger)
     {
     }
-    
-    public DbSet<TodoAppKernel.Domain.TodoEntity> Todos { get; set; }
-    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
