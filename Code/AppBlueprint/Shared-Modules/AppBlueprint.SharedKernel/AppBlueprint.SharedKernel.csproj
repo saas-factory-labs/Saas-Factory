@@ -18,12 +18,7 @@
     <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>sharedkernel-icon.png</PackageIcon>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\assets\icons\sharedkernel-icon.png" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.FeatureManagement" />

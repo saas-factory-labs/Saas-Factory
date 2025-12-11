@@ -17,12 +17,7 @@
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>domain-icon.png</PackageIcon>
     </PropertyGroup>
-
-    <ItemGroup>
-        <None Include="..\assets\icons\domain-icon.png" Pack="true" PackagePath="\" />
-    </ItemGroup>
 
     <ItemGroup>
         <Folder Include="Accounts\"/>

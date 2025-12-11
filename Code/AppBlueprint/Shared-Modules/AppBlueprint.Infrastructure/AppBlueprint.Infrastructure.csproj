@@ -17,7 +17,6 @@
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageIcon>infrastructure-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -74,7 +73,6 @@
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
-        <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
