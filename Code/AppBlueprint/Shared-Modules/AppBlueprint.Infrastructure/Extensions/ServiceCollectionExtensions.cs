@@ -1,5 +1,6 @@
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Services.DataExport;
+using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.Repositories;
@@ -7,6 +8,7 @@ using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace AppBlueprint.Infrastructure.Extensions;
 
@@ -21,17 +23,20 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration (used as fallback if environment variables not set).</param>
+    /// <param name="environment">The hosting environment (required for authentication setup).</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddAppBlueprintInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(environment);
 
         services.AddDatabaseContexts(configuration);
         services.AddRepositories();
-        services.AddAuthenticationServices();
+        services.AddWebAuthentication(configuration, environment);
         services.AddUnitOfWork();
         services.AddHealthChecksServices(configuration);
 

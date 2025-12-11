@@ -2,6 +2,7 @@ using AppBlueprint.Application.Extensions;
 using AppBlueprint.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
@@ -17,22 +18,25 @@ public static class AppBlueprintServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration for infrastructure services.</param>
+    /// <param name="environment">The hosting environment (required for authentication setup).</param>
     /// <returns>The service collection for chaining.</returns>
     /// <example>
     /// <code>
     /// // In Program.cs
-    /// builder.Services.AddAppBlueprint(builder.Configuration);
+    /// builder.Services.AddAppBlueprint(builder.Configuration, builder.Environment);
     /// </code>
     /// </example>
     public static IServiceCollection AddAppBlueprint(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(environment);
 
         // Register all AppBlueprint layers
-        services.AddAppBlueprintInfrastructure(configuration);
+        services.AddAppBlueprintInfrastructure(configuration, environment);
         services.AddAppBlueprintApplication();
         services.AddAppBlueprintPresentation();
 
