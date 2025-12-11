@@ -18,7 +18,6 @@
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageIcon>application-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,7 +29,6 @@
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
-        <None Include="..\assets\icons\application-icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>

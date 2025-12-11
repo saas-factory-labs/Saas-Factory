@@ -18,22 +18,14 @@
     <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>uikit-icon.png</PackageIcon>
-  </PropertyGroup>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- MUD0002: MudBlazor components use PascalCase attributes which is correct syntax -->
-  </PropertyGroup>
+    <PropertyGroup>
+        <!-- MUD0002: MudBlazor components use PascalCase attributes which is correct syntax -->
+    </PropertyGroup>
 
-  <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\assets\icons\uikit-icon.png" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ItemGroup>
+        <SupportedPlatform Include="browser" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="MudBlazor" />
     <PackageReference Include="MudBlazor.ThemeManager" />
