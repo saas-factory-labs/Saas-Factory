@@ -1,5 +1,3 @@
-using Bogus.DataSets;
-
 namespace AppBlueprint.Contracts.Baseline.Profile.Requests;
 
 public class CreateProfileRequest
@@ -9,7 +7,7 @@ public class CreateProfileRequest
 
     public DateTime DateOfBirth { get; set; }
 
-    public Name.Gender? Gender { get; set; } = new Name.Gender();
+    public string? Gender { get; set; }
 
     public required string UserName { get; set; }
     public bool IsActive { get; set; }

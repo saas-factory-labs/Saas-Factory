@@ -4,7 +4,7 @@ using Bogus;
 
 // using Shared.Models;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.FakeData.FakeDataGeneration.ModelSpecificDataGenerators;
+namespace AppBlueprint.SeedTest.FakeDataGeneration.ModelSpecificDataGenerators;
 
 public class FakeTeamDataGenerator
 {

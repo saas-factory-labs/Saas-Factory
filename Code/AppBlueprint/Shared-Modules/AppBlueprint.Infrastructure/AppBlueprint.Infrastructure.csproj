@@ -59,10 +59,6 @@
         <PackageReference Include="Resend"/>
         <PackageReference Include="Stripe.net"/>
         <PackageReference Include="AWSSDK.S3"/>
-        
-        <!-- Testing and Data Generation -->
-        <PackageReference Include="AutoBogus"/>
-        <PackageReference Include="Bogus"/>
 
         <!-- Reverse Proxy -->
         <PackageReference Include="Yarp.ReverseProxy"/>

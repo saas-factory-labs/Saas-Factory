@@ -1,5 +1,3 @@
-using Bogus.DataSets;
-
 namespace AppBlueprint.Contracts.Baseline.Profile.Responses;
 
 public class ProfileResponse
@@ -9,7 +7,7 @@ public class ProfileResponse
 
     public DateTime DateOfBirth { get; set; }
 
-    public Name.Gender? Gender { get; set; } = new Name.Gender();
+    public string? Gender { get; set; }
 
     public string? UserName { get; set; }
     public bool IsActive { get; set; }
