@@ -1,0 +1,89 @@
+@page "/job/job-listing"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="sm:flex sm:justify-between sm:items-center mb-5">
+
+        <!-- Left: Title -->
+        <div class="mb-4 sm:mb-0">
+            <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Search For Jobs</h1>
+        </div>
+
+        <!-- Post a job button -->
+        <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">Post A Job</button>
+
+    </div>
+
+    <!-- Page content -->
+    <div class="flex flex-col space-y-10 sm:flex-row sm:space-x-6 sm:space-y-0 md:flex-col md:space-x-0 md:space-y-10 xl:flex-row xl:space-x-6 xl:space-y-0 mt-9">
+
+        <!-- Sidebar -->
+        <JobSidebar />
+
+        <!-- Content -->
+        <div class="w-full">
+
+            <!-- Search form -->
+            <div class="mb-5">
+                <form class="relative">
+                    <label for="job-search" class="sr-only">Search</label>
+                    <input id="job-search" class="form-input w-full pl-9 bg-white dark:bg-gray-800" type="search" placeholder="Search job title or keyword…" />
+                    <button class="absolute inset-0 right-auto group" type="submit" aria-label="Search">
+                        <svg class="shrink-0 fill-current text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400 ml-3 mr-2" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zM7 2C4.243 2 2 4.243 2 7s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5z" />
+                            <path d="M15.707 14.293L13.314 11.9a8.019 8.019 0 01-1.414 1.414l2.393 2.393a.997.997 0 001.414 0 .999.999 0 000-1.414z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Jobs header -->
+            <div class="flex justify-between items-center mb-4">
+                <div class="text-sm text-gray-500 dark:text-gray-400 italic">Showing 289 Jobs</div>
+                <!-- Sort -->
+                <div class="text-sm">
+                    <span>Sort by </span>
+                    <DropdownSort Align="right" />
+                </div>
+            </div>
+
+            <!-- Job list -->
+            <div class="space-y-2">
+                @foreach (var item in items)
+                {
+                    <JobListItem Item="@item" />
+                }
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-6">
+                <PaginationNumeric />
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private List<JobListItem.JobItem> items = new();
+
+    protected override void OnInitialized()
+    {
+        items = new List<JobListItem.JobItem>
+        {
+            new() { Id = 0, Image = "images/company-icon-05.svg", Company = "Company 01", Role = "Senior Web App Designer", Link = "/job/job-post", Details = "Contract / Remote / New York, NYC", Date = "Jan 4", Type = "Featured", Fav = false },
+            new() { Id = 1, Image = "images/company-icon-05.svg", Company = "Company 02", Role = "Senior Full Stack Engineer", Link = "/job/job-post", Details = "Contract / Remote / New York, NYC", Date = "Jan 7", Type = "New", Fav = true },
+            new() { Id = 2, Image = "images/company-icon-06.svg", Company = "Company 03", Role = "Ruby on Rails Engineer", Link = "/job/job-post", Details = "Contract / Remote / New York, NYC", Date = "Jan 7", Type = "New", Fav = false },
+            new() { Id = 3, Image = "images/company-icon-03.svg", Company = "Company 04", Role = "Senior Software Engineer Backend", Link = "/job/job-post", Details = "Full-time / Remote / Anywhere", Date = "Jan 7", Type = "New", Fav = false },
+            new() { Id = 4, Image = "images/company-icon-07.svg", Company = "Company 05", Role = "React.js Software Developer", Link = "/job/job-post", Details = "Full-time / Remote / London, UK", Date = "Jan 6", Type = "New", Fav = true },
+            new() { Id = 5, Image = "images/company-icon-08.svg", Company = "Company 06", Role = "Senior Full Stack Rails Developer", Link = "/job/job-post", Details = "Part-time / Remote / Milan, IT", Date = "Jan 6", Type = "New", Fav = false },
+            new() { Id = 6, Image = "images/company-icon-01.svg", Company = "Company 07", Role = "Principal Software Engineer", Link = "/job/job-post", Details = "Freelance / Remote / London, UK", Date = "Jan 6", Type = "New", Fav = false },
+            new() { Id = 7, Image = "images/company-icon-07.svg", Company = "Company 08", Role = "Contract React Native Engineer", Link = "/job/job-post", Details = "Contract / Remote / Miami, FL", Date = "Jan 6", Type = "New", Fav = false },
+            new() { Id = 8, Image = "images/company-icon-08.svg", Company = "Company 09", Role = "Senior Client Engineer (React & React Native)", Link = "/job/job-post", Details = "Full-time / Remote / Lincoln, NE", Date = "Jan 5", Type = "New", Fav = false },
+            new() { Id = 9, Image = "images/company-icon-02.svg", Company = "Company 10", Role = "QA Automation Engineer", Link = "/job/job-post", Details = "Contract / Remote / Anywhere", Date = "Jan 5", Type = "New", Fav = false }
+        };
+    }
+}

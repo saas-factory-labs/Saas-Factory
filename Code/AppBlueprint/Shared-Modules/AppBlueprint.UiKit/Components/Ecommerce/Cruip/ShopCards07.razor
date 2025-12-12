@@ -1,0 +1,171 @@
+@* Shop Cards 07 - Product grid with Like button, Special Offer badges, and CTA banner *@
+
+@{
+    var products = new[]
+    {
+        new { Image = "21", HasOffer = true, Price = "$39.00", IsSale = true },
+        new { Image = "22", HasOffer = false, Price = "$69.00", IsSale = false },
+        new { Image = "23", HasOffer = true, Price = "$39.00", IsSale = true },
+        new { Image = "24", HasOffer = false, Price = "$69.00", IsSale = false },
+        new { Image = "25", HasOffer = false, Price = "$69.00", IsSale = false },
+        new { Image = "26", HasOffer = true, Price = "$39.00", IsSale = true },
+        new { Image = "27", HasOffer = false, Price = "$69.00", IsSale = false },
+        new { Image = "28", HasOffer = false, Price = "$69.00", IsSale = false },
+        new { Image = "29", HasOffer = false, Price = "$69.00", IsSale = false }
+    };
+}
+
+@foreach (var product in products)
+{
+    <div class="col-span-full md:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl overflow-hidden">
+        <div class="flex flex-col h-full">
+            <!-- Image -->
+            <div class="relative">
+                <img class="w-full" src="_content/AppBlueprint.UiKit/images/applications-image-@(product.Image).jpg" width="301" height="226" alt="Application @product.Image" />
+                <!-- Like button -->
+                <button class="absolute top-0 right-0 mt-4 mr-4">
+                    <div class="text-gray-100 bg-gray-900/60 rounded-full">
+                        <span class="sr-only">Like</span>
+                        <svg class="h-8 w-8 fill-current" viewBox="0 0 32 32">
+                            <path d="M22.682 11.318A4.485 4.485 0 0019.5 10a4.377 4.377 0 00-3.5 1.707A4.383 4.383 0 0012.5 10a4.5 4.5 0 00-3.182 7.682L16 24l6.682-6.318a4.5 4.5 0 000-6.364zm-1.4 4.933L16 21.247l-5.285-5A2.5 2.5 0 0112.5 12c1.437 0 2.312.681 3.5 2.625C17.187 12.681 18.062 12 19.5 12a2.5 2.5 0 011.785 4.251h-.003z" />
+                        </svg>
+                    </div>
+                </button>
+                @if (product.HasOffer)
+                {
+                    <!-- Special Offer label -->
+                    <div class="absolute bottom-0 right-0 mb-4 mr-4">
+                        <div class="inline-flex items-center text-xs font-medium text-gray-100 dark:text-gray-300 bg-gray-900/60 dark:bg-gray-800/60 rounded-full text-center px-2 py-0.5">
+                            <svg class="w-3 h-3 shrink-0 fill-current text-yellow-500 mr-1" viewBox="0 0 12 12">
+                                <path d="M11.953 4.29a.5.5 0 00-.454-.292H6.14L6.984.62A.5.5 0 006.12.173l-6 7a.5.5 0 00.379.825h5.359l-.844 3.38a.5.5 0 00.864.445l6-7a.5.5 0 00.075-.534z" />
+                            </svg>
+                            <span>Special Offer</span>
+                        </div>
+                    </div>
+                }
+            </div>
+            <!-- Card Content -->
+            <div class="grow flex flex-col p-5">
+                <!-- Card body -->
+                <div class="grow">
+                    <header class="mb-2">
+                        <a href="#0">
+                            <h3 class="text-lg text-gray-800 dark:text-gray-100 font-semibold mb-1">Form Builder CP</h3>
+                        </a>
+                        <div class="text-sm">Lorem ipsum dolor sit amet adipiscing elit, sed do eiusmod.</div>
+                    </header>
+                </div>
+                <!-- Rating and price -->
+                <div class="flex flex-wrap justify-between items-center">
+                    <!-- Rating -->
+                    <div class="flex items-center space-x-2 mr-2">
+                        <div class="flex space-x-1">
+                            @for (int i = 0; i < 4; i++)
+                            {
+                                <span>
+                                    <span class="sr-only">@(i + 1) star</span>
+                                    <svg class="fill-current text-yellow-500" width="16" height="16" viewBox="0 0 16 16">
+                                        <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
+                                    </svg>
+                                </span>
+                            }
+                            <span>
+                                <span class="sr-only">5 stars</span>
+                                <svg class="fill-current text-gray-300 dark:text-gray-600" width="16" height="16" viewBox="0 0 16 16">
+                                    <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="inline-flex text-sm font-medium text-yellow-600">4.7</div>
+                    </div>
+                    <!-- Price -->
+                    <div>
+                        <div class="inline-flex text-sm font-medium @(product.IsSale ? "bg-red-500/20 text-red-700" : "bg-green-500/20 text-green-700") rounded-full text-center px-2 py-0.5">@product.Price</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- CTA -->
+<div class="col-span-full md:order-1 xl:order-none">
+    <div class="h-full p-6 bg-gray-900 dark:bg-gray-800 rounded-lg text-center xl:text-left xl:flex xl:justify-between xl:items-center">
+        <div class="mb-4 xl:mb-0 xl:mr-4">
+            <div class="text-xl text-gray-50 font-semibold mb-1">Excepteur sint occaecat cupidatat</div>
+            <div class="m-auto text-sm text-gray-400">Excepteur sint occaecat cupidatat non proidentsunt in culpa qui officia deserunt mollit!</div>
+        </div>
+        <button class="btn bg-gray-100 text-gray-800 hover:bg-white shrink-0">Reedem Now!</button>
+    </div>
+</div>
+
+<!-- Additional Cards -->
+@{
+    var additionalProducts = new[]
+    {
+        new { Image = "30", Price = "$69.00", IsSale = false },
+        new { Image = "31", Price = "$39.00", IsSale = true },
+        new { Image = "32", Price = "$69.00", IsSale = false }
+    };
+}
+
+@foreach (var product in additionalProducts)
+{
+    <div class="col-span-full md:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl overflow-hidden">
+        <div class="flex flex-col h-full">
+            <!-- Image -->
+            <div class="relative">
+                <img class="w-full" src="_content/AppBlueprint.UiKit/images/applications-image-@(product.Image).jpg" width="301" height="226" alt="Application @product.Image" />
+                <!-- Like button -->
+                <button class="absolute top-0 right-0 mt-4 mr-4">
+                    <div class="text-gray-100 bg-gray-900/60 rounded-full">
+                        <span class="sr-only">Like</span>
+                        <svg class="h-8 w-8 fill-current" viewBox="0 0 32 32">
+                            <path d="M22.682 11.318A4.485 4.485 0 0019.5 10a4.377 4.377 0 00-3.5 1.707A4.383 4.383 0 0012.5 10a4.5 4.5 0 00-3.182 7.682L16 24l6.682-6.318a4.5 4.5 0 000-6.364zm-1.4 4.933L16 21.247l-5.285-5A2.5 2.5 0 0112.5 12c1.437 0 2.312.681 3.5 2.625C17.187 12.681 18.062 12 19.5 12a2.5 2.5 0 011.785 4.251h-.003z" />
+                        </svg>
+                    </div>
+                </button>
+            </div>
+            <!-- Card Content -->
+            <div class="grow flex flex-col p-5">
+                <!-- Card body -->
+                <div class="grow">
+                    <header class="mb-2">
+                        <a href="#0">
+                            <h3 class="text-lg text-gray-800 dark:text-gray-100 font-semibold mb-1">Form Builder CP</h3>
+                        </a>
+                        <div class="text-sm">Lorem ipsum dolor sit amet adipiscing elit, sed do eiusmod.</div>
+                    </header>
+                </div>
+                <!-- Rating and price -->
+                <div class="flex flex-wrap justify-between items-center">
+                    <!-- Rating -->
+                    <div class="flex items-center space-x-2 mr-2">
+                        <div class="flex space-x-1">
+                            @for (int i = 0; i < 4; i++)
+                            {
+                                <span>
+                                    <span class="sr-only">@(i + 1) star</span>
+                                    <svg class="fill-current text-yellow-500" width="16" height="16" viewBox="0 0 16 16">
+                                        <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
+                                    </svg>
+                                </span>
+                            }
+                            <span>
+                                <span class="sr-only">5 stars</span>
+                                <svg class="fill-current text-gray-300 dark:text-gray-600" width="16" height="16" viewBox="0 0 16 16">
+                                    <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="inline-flex text-sm font-medium text-yellow-600">4.7</div>
+                    </div>
+                    <!-- Price -->
+                    <div>
+                        <div class="inline-flex text-sm font-medium @(product.IsSale ? "bg-red-500/20 text-red-700" : "bg-green-500/20 text-green-700") rounded-full text-center px-2 py-0.5">@product.Price</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
