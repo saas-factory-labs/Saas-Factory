@@ -1,5 +1,3 @@
-@using MosaicPortal.Web.Components.Charts
-
 <div class="flex flex-col col-span-full sm:col-span-6 xl:col-span-3 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
     <div class="px-5 pt-5">
         <header>
@@ -14,7 +12,7 @@
     </div>
     <!-- Chart -->
     <div class="grow">
-        <MosaicPortal.Web.Components.Charts.LineChart
+        <AppBlueprint.UiKit.Components.Charts.LineChart
             CanvasId="facebook-stock-chart"
             Height="98"
             Labels="@labels"
@@ -41,13 +39,13 @@
         "12-01-2024", "01-01-2025"
     };
 
-    private List<MosaicPortal.Web.Components.Charts.LineChart.ChartDataset> datasets = new();
+    private List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset> datasets = new();
 
     protected override void OnInitialized()
     {
         datasets = new()
         {
-            new MosaicPortal.Web.Components.Charts.LineChart.ChartDataset
+            new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
             {
                 Data = new List<double>
                 {

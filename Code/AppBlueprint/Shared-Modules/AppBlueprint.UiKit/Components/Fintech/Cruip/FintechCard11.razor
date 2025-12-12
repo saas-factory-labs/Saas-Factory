@@ -1,21 +1,19 @@
-@using MosaicPortal.Web.Components.Charts
-
 <div class="flex flex-col col-span-full sm:col-span-6 xl:col-span-3 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
     <div class="px-5 pt-5">
         <header>
-            <h3 class="text-xs font-semibold text-gray-500 uppercase mb-1">
-                <span class="text-gray-800 dark:text-gray-100">Twtr</span> - Twitter Inc.
+            <h3 class="text-sm font-semibold text-gray-500 uppercase mb-1">
+                <span class="text-gray-800 dark:text-gray-100">Amzn</span> - Amazon Inc.
             </h3>
-            <div class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1">$43.07</div>
+            <div class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1">$3,400.35</div>
             <div class="text-sm">
-                <span class="font-medium text-green-600">+$4,20 (9,2%)</span> - Today
+                <span class="font-medium text-green-600">+$142 (3,7%)</span> - Today
             </div>
         </header>
     </div>
     <!-- Chart -->
     <div class="grow">
-        <MosaicPortal.Web.Components.Charts.LineChart
-            CanvasId="twitter-stock-chart"
+        <AppBlueprint.UiKit.Components.Charts.LineChart
+            CanvasId="amazon-stock-chart"
             Height="98"
             Labels="@labels"
             Datasets="@datasets"
@@ -41,20 +39,20 @@
         "12-01-2024", "01-01-2025"
     };
 
-    private List<MosaicPortal.Web.Components.Charts.LineChart.ChartDataset> datasets = new();
+    private List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset> datasets = new();
 
     protected override void OnInitialized()
     {
         datasets = new()
         {
-            new MosaicPortal.Web.Components.Charts.LineChart.ChartDataset
+            new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
             {
                 Data = new List<double>
                 {
-                    540, 466, 540, 466, 385, 432, 334,
-                    334, 289, 289, 200, 289, 222, 289,
-                    289, 403, 554, 304, 289, 270, 134,
-                    270, 829, 644, 688, 664
+                    222, 222, 226, 271, 365, 365, 238,
+                    324, 288, 206, 324, 324, 500, 409,
+                    409, 273, 232, 273, 500, 570, 767,
+                    808, 685, 767, 685, 685
                 },
                 BorderColor = "rgb(62, 201, 114)", // custom green-500
                 BackgroundColor = "rgba(62, 201, 114, 0.1)", // custom green-500
