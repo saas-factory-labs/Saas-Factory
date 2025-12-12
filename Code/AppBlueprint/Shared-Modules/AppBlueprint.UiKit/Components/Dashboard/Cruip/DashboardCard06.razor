@@ -4,11 +4,12 @@
     </header>
     <!-- Chart -->
     <div class="grow flex flex-col justify-center p-5">
-        @* TODO: Migrate to use DoughnutChartCard component from AppBlueprint.UiKit.Components.Shared.Cruip *@
-        @* <DoughnutChartCard Height="260px" Labels="@labels" Data="@data" /> *@
-        <div class="flex items-center justify-center h-32 text-gray-400">Chart placeholder - needs migration</div>
+        <canvas id="dashboard-card-06" width="389" height="260"></canvas>
     </div>
 </div>
+
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
 
 @code {
     private List<string> labels = new() { "United States", "Italy", "Other" };
@@ -25,4 +26,39 @@
         "rgb(2, 132, 199)",    // sky-600
         "rgb(91, 33, 182)"     // violet-900
     };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (firstRender)
+            {
+                var config = new
+                {
+                    data = new
+                    {
+                        labels = labels,
+                        datasets = new[]
+                        {
+                            new
+                            {
+                                label = "Top Countries",
+                                data = data,
+                                backgroundColor = backgroundColors,
+                                hoverBackgroundColor = hoverBackgroundColors,
+                                hoverBorderColor = "white"
+                            }
+                        }
+                    },
+                    cutout = "80%"
+                };
+
+                await JS.InvokeVoidAsync("chartJsInterop.createDoughnutChart", "dashboard-card-06", config);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in DashboardCard06: {ex.Message}");
+        }
+    }
 }

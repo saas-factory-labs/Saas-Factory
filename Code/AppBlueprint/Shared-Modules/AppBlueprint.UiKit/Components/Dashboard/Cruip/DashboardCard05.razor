@@ -61,14 +61,21 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && labels.Any() && data.Any())
+        try
         {
-            await InitializeChart();
+            if (firstRender && labels.Any() && data.Any())
+            {
+                await InitializeChart();
 
-            // Start real-time updates
-            timer = new System.Timers.Timer(2000);
-            timer.Elapsed += async (sender, e) => await UpdateChart();
-            timer.Start();
+                // Start real-time updates
+                timer = new System.Timers.Timer(2000);
+                timer.Elapsed += async (sender, e) => await UpdateChart();
+                timer.Start();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in DashboardCard05: {ex.Message}");
         }
     }
 

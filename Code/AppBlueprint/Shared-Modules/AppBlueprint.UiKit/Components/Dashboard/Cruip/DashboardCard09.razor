@@ -14,11 +14,12 @@
     </div>
     <!-- Chart -->
     <div class="grow">
-        @* TODO: Migrate to use BarChartCard component from AppBlueprint.UiKit.Components.Shared.Cruip *@
-        @* <BarChartCard Height="248px" Labels="@labels" Datasets="@ConvertDatasets(datasets)" /> *@
-        <div class="flex items-center justify-center h-32 text-gray-400">Chart placeholder - needs migration</div>
+        <canvas id="dashboard-card-09" width="595" height="248"></canvas>
     </div>
 </div>
+
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
 
 @code {
     private List<string> labels = new()
@@ -27,27 +28,52 @@
         "03-01-2023", "04-01-2023", "05-01-2023"
     };
 
-    @* TODO: Migrate datasets when implementing charts\n    private List<MosaicPortal.Web.Components.Charts.BarChart.BarChartDataset> datasets = new()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        new()
+        try
         {
-            Label = "Stack 1",
-            Data = new List<double> { 6200, 9200, 6600, 8800, 5200, 9200 },
-            BackgroundColor = "rgb(139, 92, 246)",
-            HoverBackgroundColor = "rgb(124, 58, 237)",
-            BarPercentage = 0.7,
-            CategoryPercentage = 0.7,
-            BorderRadius = 4
-        },
-        new()
-        {
-            Label = "Stack 2",
-            Data = new List<double> { -4000, -2600, -5350, -4000, -7500, -2000 },
-            BackgroundColor = "rgb(221, 214, 254)",
-            HoverBackgroundColor = "rgb(196, 181, 253)",
-            BarPercentage = 0.7,
-            CategoryPercentage = 0.7,
-            BorderRadius = 4
+            if (firstRender)
+            {
+                var config = new
+                {
+                    data = new
+                    {
+                        labels = labels,
+                        datasets = new[]
+                        {
+                            new
+                            {
+                                label = "Stack 1",
+                                data = new[] { 6200, 9200, 6600, 8800, 5200, 9200 },
+                                backgroundColor = "rgb(139, 92, 246)",
+                                hoverBackgroundColor = "rgb(124, 58, 237)",
+                                barPercentage = 0.66,
+                                categoryPercentage = 0.66,
+                                borderRadius = 4
+                            },
+                            new
+                            {
+                                label = "Stack 2",
+                                data = new[] { -4000, -2600, -5350, -4000, -7500, -2000 },
+                                backgroundColor = "rgb(199, 210, 254)",
+                                hoverBackgroundColor = "rgb(165, 180, 252)",
+                                barPercentage = 0.66,
+                                categoryPercentage = 0.66,
+                                borderRadius = 4
+                            }
+                        }
+                    },
+                    showYAxis = true,
+                    showXAxis = true,
+                    useTimeScale = true
+                };
+
+                await JS.InvokeVoidAsync("chartJsInterop.createBarChart", "dashboard-card-09", config);
+            }
         }
-    };\n    *@
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in DashboardCard09: {ex.Message}");
+        }
+    }
 }

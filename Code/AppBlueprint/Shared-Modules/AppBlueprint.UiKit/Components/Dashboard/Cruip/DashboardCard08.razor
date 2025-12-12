@@ -4,11 +4,12 @@
     </header>
     <!-- Chart -->
     <div class="grow px-5 py-3">
-        @* TODO: Migrate to use LineChartCard component from AppBlueprint.UiKit.Components.Shared.Cruip *@
-        @* <LineChartCard Height="248px" Labels="@labels" Datasets="@ConvertDatasets(datasets)" /> *@
-        <div class="flex items-center justify-center h-32 text-gray-400">Chart placeholder - needs migration</div>
+        <canvas id="dashboard-card-08" width="595" height="248"></canvas>
     </div>
 </div>
+
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
 
 @code {
     private List<string> labels = new()
@@ -22,43 +23,68 @@
         "12-01-2024", "01-01-2025"
     };
 
-    @* TODO: Migrate datasets when implementing charts\n    private List<MosaicPortal.Web.Components.Charts.LineChart.ChartDataset> datasets = new()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        new()
+        try
         {
-            Label = "Current",
-            Data = new List<double> { 73, 64, 73, 69, 104, 104, 164, 164, 120, 120, 120, 148, 142, 104, 122, 110, 104, 152, 166, 233, 268, 252, 284, 284, 333, 323 },
-            BorderColor = "rgb(139, 92, 246)",
-            BackgroundColor = "transparent",
-            Fill = false,
-            Tension = 0.2,
-            PointRadius = 0,
-            PointHoverRadius = 3,
-            BorderWidth = 2
-        },
-        new()
-        {
-            Label = "Previous",
-            Data = new List<double> { 184, 86, 42, 378, 42, 243, 38, 120, 0, 0, 42, 0, 84, 0, 276, 0, 124, 42, 124, 88, 88, 215, 156, 88, 124, 64 },
-            BorderColor = "rgb(14, 165, 233)",
-            BackgroundColor = "transparent",
-            Fill = false,
-            Tension = 0.2,
-            PointRadius = 0,
-            PointHoverRadius = 3,
-            BorderWidth = 2
-        },
-        new()
-        {
-            Label = "Average",
-            Data = new List<double> { 122, 170, 192, 86, 102, 124, 115, 115, 56, 104, 0, 72, 208, 186, 223, 188, 114, 162, 200, 150, 118, 118, 76, 122, 230, 268 },
-            BorderColor = "rgb(34, 197, 94)",
-            BackgroundColor = "transparent",
-            Fill = false,
-            Tension = 0.2,
-            PointRadius = 0,
-            PointHoverRadius = 3,
-            BorderWidth = 2
+            if (firstRender)
+            {
+                var config = new
+                {
+                    data = new
+                    {
+                        labels = labels,
+                        datasets = new[]
+                        {
+                            new
+                            {
+                                label = "Current",
+                                data = new[] { 73, 64, 73, 69, 104, 104, 164, 164, 120, 120, 120, 148, 142, 104, 122, 110, 104, 152, 166, 233, 268, 252, 284, 284, 333, 323 },
+                                borderColor = "rgb(139, 92, 246)",
+                                backgroundColor = "transparent",
+                                fill = false,
+                                tension = 0.2,
+                                pointRadius = 0,
+                                pointHoverRadius = 3,
+                                borderWidth = 2
+                            },
+                            new
+                            {
+                                label = "Previous",
+                                data = new[] { 184, 86, 42, 378, 42, 243, 38, 120, 0, 0, 42, 0, 84, 0, 276, 0, 124, 42, 124, 88, 88, 215, 156, 88, 124, 64 },
+                                borderColor = "rgb(14, 165, 233)",
+                                backgroundColor = "transparent",
+                                fill = false,
+                                tension = 0.2,
+                                pointRadius = 0,
+                                pointHoverRadius = 3,
+                                borderWidth = 2
+                            },
+                            new
+                            {
+                                label = "Average",
+                                data = new[] { 122, 170, 192, 86, 102, 124, 115, 115, 56, 104, 0, 72, 208, 186, 223, 188, 114, 162, 200, 150, 118, 118, 76, 122, 230, 268 },
+                                borderColor = "rgb(34, 197, 94)",
+                                backgroundColor = "transparent",
+                                fill = false,
+                                tension = 0.2,
+                                pointRadius = 0,
+                                pointHoverRadius = 3,
+                                borderWidth = 2
+                            }
+                        }
+                    },
+                    showYAxis = true,
+                    showXAxis = true,
+                    useTimeScale = true
+                };
+
+                await JS.InvokeVoidAsync("chartJsInterop.createLineChart", "dashboard-card-08", config);
+            }
         }
-    };\n    *@
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in DashboardCard08: {ex.Message}");
+        }
+    }
 }

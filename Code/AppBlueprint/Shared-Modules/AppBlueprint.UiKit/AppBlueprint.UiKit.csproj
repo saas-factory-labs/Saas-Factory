@@ -33,8 +33,7 @@
         <SupportedPlatform Include="browser" />
     <PackageReference Include="Blazorise.Charts" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
-    <PackageReference Include="MudBlazor" />
-    <PackageReference Include="MudBlazor.ThemeManager" />
+
   </ItemGroup>
 
   <ItemGroup>

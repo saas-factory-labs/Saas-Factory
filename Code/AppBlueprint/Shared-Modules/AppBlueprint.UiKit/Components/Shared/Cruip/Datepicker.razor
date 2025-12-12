@@ -23,9 +23,16 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        try
         {
-            await JS.InvokeVoidAsync("datepickerManager.initialize", inputRef, Align);
+            if (firstRender)
+            {
+                await JS.InvokeVoidAsync("datepickerManager.initialize", inputRef, Align);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in Datepicker: {ex.Message}");
         }
     }
 }

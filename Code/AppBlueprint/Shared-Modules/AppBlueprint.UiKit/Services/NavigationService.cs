@@ -37,7 +37,7 @@ public class NavigationService
                 {
                     Name = pageType.Name,
                     Href = routeAttribute.Template,
-                    MudblazorIconPath = "@Icons.Material.Filled.Home"
+                    Icon = "home"
                 });
         }
 

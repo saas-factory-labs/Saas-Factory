@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=fallback');
 
 @import 'tailwindcss';
-@source "./safelist.html";
+@source "../safelist.html";
 @import './utility-patterns.css' layer(components);
 @import './flatpickr-custom.css';
 
@@ -12,21 +12,24 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant sidebar-expanded (&:is(.sidebar-expanded *));
 
-/* Manually added classes to ensure they exist */
-.dark\:bg-gray-900 {
-  background-color: var(--color-gray-900);
-}
+@layer utilities {
 
-.dark .dark\:bg-gray-900 {
-  background-color: var(--color-gray-900);
-}
+  /* Manually added classes to ensure they exist */
+  .dark\:bg-gray-900 {
+    background-color: var(--color-gray-900);
+  }
 
-.dark\:text-gray-400 {
-  color: var(--color-gray-400);
-}
+  .dark .dark\:bg-gray-900 {
+    background-color: var(--color-gray-900);
+  }
 
-.dark .dark\:text-gray-400 {
-  color: var(--color-gray-400);
+  .dark\:text-gray-400 {
+    color: var(--color-gray-400);
+  }
+
+  .dark .dark\:text-gray-400 {
+    color: var(--color-gray-400);
+  }
 }
 
 @theme {

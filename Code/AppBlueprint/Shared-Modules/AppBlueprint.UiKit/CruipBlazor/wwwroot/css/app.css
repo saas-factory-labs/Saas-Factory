@@ -6689,17 +6689,19 @@ span.flatpickr-weekday {
 .flatpickr-calendar.arrowTop::before, .flatpickr-calendar.arrowTop::after, .flatpickr-calendar.arrowBottom::before, .flatpickr-calendar.arrowBottom::after {
   display: none;
 }
-.dark\:bg-gray-900 {
-  background-color: var(--color-gray-900);
-}
-.dark .dark\:bg-gray-900 {
-  background-color: var(--color-gray-900);
-}
-.dark\:text-gray-400 {
-  color: var(--color-gray-400);
-}
-.dark .dark\:text-gray-400 {
-  color: var(--color-gray-400);
+@layer utilities {
+  .dark\:bg-gray-900 {
+    background-color: var(--color-gray-900);
+  }
+  .dark .dark\:bg-gray-900 {
+    background-color: var(--color-gray-900);
+  }
+  .dark\:text-gray-400 {
+    color: var(--color-gray-400);
+  }
+  .dark .dark\:text-gray-400 {
+    color: var(--color-gray-400);
+  }
 }
 @layer base {
   *,

@@ -80,9 +80,16 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        try
         {
-            await JS.InvokeVoidAsync("dropdownManager.initialize", dropdownRef, triggerRef, DotNetObjectReference.Create(this));
+            if (firstRender)
+            {
+                await JS.InvokeVoidAsync("dropdownManager.initialize", dropdownRef, triggerRef, DotNetObjectReference.Create(this));
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in DropdownFilter: {ex.Message}");
         }
     }
 

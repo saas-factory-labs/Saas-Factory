@@ -7,7 +7,7 @@ using AppBlueprint.Web.Components;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
-using MudBlazor.Services;
+using Microsoft.Kiota.Http.HttpClientLibrary;
 using _Imports = AppBlueprint.UiKit._Imports;
 using System.Security.Cryptography.X509Certificates;
 
@@ -115,8 +115,8 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 builder.Services.AddOutputCache();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authentication
-builder.Services.AddMudServices();
-builder.Services.AddSingleton<BreadcrumbService>();
+builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authentication
+
 builder.Services.AddUiKit();
 
 // Add HttpContextAccessor for accessing authentication tokens in delegating handlers
@@ -243,7 +243,7 @@ app.Use(async (context, next) =>
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' https://32nkyp.logto.app wss://localhost:* ws://localhost:*;");
+        "connect-src 'self' https://32nkyp.logto.app wss://localhost:* ws://localhost:* https://cdn.jsdelivr.net;");
 
     // Permissions Policy - control browser features
     context.Response.Headers.Append("Permissions-Policy",

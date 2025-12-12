@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build:css": "postcss Styles/app.css -o wwwroot/css/app.css",
-    "watch:css": "postcss Styles/app.css -o wwwroot/css/app.css --watch"
+    "build:css": "postcss Styles/app.css -o ../wwwroot/cruip/css/app.css",
+    "watch:css": "postcss Styles/app.css -o ../wwwroot/cruip/css/app.css --watch"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",

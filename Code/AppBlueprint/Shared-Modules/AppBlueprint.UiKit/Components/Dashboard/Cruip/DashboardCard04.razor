@@ -32,40 +32,47 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        try
         {
-            var config = new
+            if (firstRender)
             {
-                data = new
+                var config = new
                 {
-                    labels = new[] { "Dec 22", "Jan 23", "Feb 23", "Mar 23", "Apr 23", "May 23" },
-                    datasets = new[]
+                    data = new
                     {
-                        new
+                        labels = new[] { "Dec 22", "Jan 23", "Feb 23", "Mar 23", "Apr 23", "May 23" },
+                        datasets = new[]
                         {
-                            label = "Direct",
-                            data = new[] { 800, 1600, 900, 1300, 1950, 1700 },
-                            backgroundColor = "rgb(14, 165, 233)",
-                            hoverBackgroundColor = "rgb(2, 132, 199)",
-                            barPercentage = 0.7,
-                            categoryPercentage = 0.7,
-                            borderRadius = 4
-                        },
-                        new
-                        {
-                            label = "Indirect",
-                            data = new[] { 4900, 2600, 5350, 4800, 5200, 4800 },
-                            backgroundColor = "rgb(139, 92, 246)",
-                            hoverBackgroundColor = "rgb(124, 58, 237)",
-                            barPercentage = 0.7,
-                            categoryPercentage = 0.7,
-                            borderRadius = 4
+                            new
+                            {
+                                label = "Direct",
+                                data = new[] { 800, 1600, 900, 1300, 1950, 1700 },
+                                backgroundColor = "rgb(14, 165, 233)",
+                                hoverBackgroundColor = "rgb(2, 132, 199)",
+                                barPercentage = 0.7,
+                                categoryPercentage = 0.7,
+                                borderRadius = 4
+                            },
+                            new
+                            {
+                                label = "Indirect",
+                                data = new[] { 4900, 2600, 5350, 4800, 5200, 4800 },
+                                backgroundColor = "rgb(139, 92, 246)",
+                                hoverBackgroundColor = "rgb(124, 58, 237)",
+                                barPercentage = 0.7,
+                                categoryPercentage = 0.7,
+                                borderRadius = 4
+                            }
                         }
                     }
-                }
-            };
+                };
 
-            await JS.InvokeVoidAsync("chartJsInterop.createBarChart", "dashboard-card-04", config);
+                await JS.InvokeVoidAsync("chartJsInterop.createBarChart", "dashboard-card-04", config);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in DashboardCard04: {ex.Message}");
         }
     }
 }
