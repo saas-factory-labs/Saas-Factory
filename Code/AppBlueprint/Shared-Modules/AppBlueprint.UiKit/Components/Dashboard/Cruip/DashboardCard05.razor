@@ -180,19 +180,30 @@
 
     public async ValueTask DisposeAsync()
     {
-        timer?.Stop();
-        timer?.Dispose();
-
-        if (_initialized)
+        try
         {
-            try
+            timer?.Stop();
+            timer?.Dispose();
+
+            if (_initialized)
             {
-                await JSRuntime.InvokeVoidAsync("chartJsInterop.destroyChart", "dashboard-card-05-chart");
+                try
+                {
+                    await JSRuntime.InvokeVoidAsync("chartJsInterop.destroyChart", "dashboard-card-05-chart");
+                }
+                catch (JSDisconnectedException)
+                {
+                    // Ignore - circuit is already disconnected
+                }
+                catch (Exception)
+                {
+                    // Ignore other errors during disposal
+                }
             }
-            catch (JSDisconnectedException)
-            {
-                // Ignore - circuit is already disconnected
-            }
+        }
+        catch
+        {
+            // Ignore all errors during disposal
         }
     }
 

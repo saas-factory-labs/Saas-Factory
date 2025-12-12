@@ -19,21 +19,21 @@
                         }
                         else
                         {
-                            <div class="d-flex justify-center align-center" style="height: 100vh;">
-                                <MudText Typo="Typo.h6">You are not authorized to access this page.</MudText>
+                            <div class="flex justify-center items-center h-screen">
+                                <p class="text-xl font-semibold text-gray-800 dark:text-gray-100">You are not authorized to access this page.</p>
                             </div>
                         }
                     </NotAuthorized>
                     <Authorizing>
-                        <div class="d-flex justify-center align-center" style="height: 100vh;">
-                            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                        <div class="flex justify-center items-center h-screen">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
                         </div>
                     </Authorizing>
                 </AuthorizeRouteView>
             </Found>
             <NotFound>
-                <div class="d-flex justify-center align-center" style="height: 100vh;">
-                    <MudText Typo="Typo.h6">Sorry, there's nothing here!</MudText>
+                <div class="flex justify-center items-center h-screen">
+                    <p class="text-xl font-semibold text-gray-800 dark:text-gray-100">Sorry, there's nothing here!</p>
                 </div>
             </NotFound>
         </Router>

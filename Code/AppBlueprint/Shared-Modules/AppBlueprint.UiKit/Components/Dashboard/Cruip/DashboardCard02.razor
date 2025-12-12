@@ -32,44 +32,51 @@
 @code {
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        try
         {
-            var config = new
+            if (firstRender)
             {
-                data = new
+                var config = new
                 {
-                    labels = new[] { "12-01-2022", "01-01-2023", "02-01-2023", "03-01-2023", "04-01-2023", "05-01-2023", "06-01-2023", "07-01-2023", "08-01-2023", "09-01-2023", "10-01-2023", "11-01-2023", "12-01-2023", "01-01-2024", "02-01-2024", "03-01-2024", "04-01-2024", "05-01-2024", "06-01-2024", "07-01-2024", "08-01-2024", "09-01-2024", "10-01-2024", "11-01-2024", "12-01-2024", "01-01-2025" },
-                    datasets = new[]
+                    data = new
                     {
-                        new
+                        labels = new[] { "12-01-2022", "01-01-2023", "02-01-2023", "03-01-2023", "04-01-2023", "05-01-2023", "06-01-2023", "07-01-2023", "08-01-2023", "09-01-2023", "10-01-2023", "11-01-2023", "12-01-2023", "01-01-2024", "02-01-2024", "03-01-2024", "04-01-2024", "05-01-2024", "06-01-2024", "07-01-2024", "08-01-2024", "09-01-2024", "10-01-2024", "11-01-2024", "12-01-2024", "01-01-2025" },
+                        datasets = new[]
                         {
-                            label = "Current",
-                            data = new[] { 622, 622, 426, 471, 365, 365, 238, 324, 288, 206, 324, 324, 500, 409, 409, 273, 232, 273, 500, 570, 767, 808, 685, 767, 685, 685 },
-                            borderColor = "rgb(139, 92, 246)",
-                            backgroundColor = "rgba(139, 92, 246, 0.08)",
-                            fill = true,
-                            tension = 0.2,
-                            pointRadius = 0,
-                            pointHoverRadius = 3,
-                            borderWidth = 2
-                        },
-                        new
-                        {
-                            label = "Previous",
-                            data = new[] { 732, 610, 610, 504, 504, 504, 349, 349, 504, 342, 504, 610, 391, 192, 154, 273, 191, 191, 126, 263, 349, 252, 423, 622, 470, 532 },
-                            borderColor = "rgba(100, 116, 139, 0.25)",
-                            backgroundColor = "transparent",
-                            fill = false,
-                            tension = 0.2,
-                            pointRadius = 0,
-                            pointHoverRadius = 3,
-                            borderWidth = 2
+                            new
+                            {
+                                label = "Current",
+                                data = new[] { 622, 622, 426, 471, 365, 365, 238, 324, 288, 206, 324, 324, 500, 409, 409, 273, 232, 273, 500, 570, 767, 808, 685, 767, 685, 685 },
+                                borderColor = "rgb(139, 92, 246)",
+                                backgroundColor = "rgba(139, 92, 246, 0.08)",
+                                fill = true,
+                                tension = 0.2,
+                                pointRadius = 0,
+                                pointHoverRadius = 3,
+                                borderWidth = 2
+                            },
+                            new
+                            {
+                                label = "Previous",
+                                data = new[] { 732, 610, 610, 504, 504, 504, 349, 349, 504, 342, 504, 610, 391, 192, 154, 273, 191, 191, 126, 263, 349, 252, 423, 622, 470, 532 },
+                                borderColor = "rgba(100, 116, 139, 0.25)",
+                                backgroundColor = "transparent",
+                                fill = false,
+                                tension = 0.2,
+                                pointRadius = 0,
+                                pointHoverRadius = 3,
+                                borderWidth = 2
+                            }
                         }
                     }
-                }
-            };
+                };
 
-            await JS.InvokeVoidAsync("chartJsInterop.createLineChart", "dashboard-card-02", config);
+                await JS.InvokeVoidAsync("chartJsInterop.createLineChart", "dashboard-card-02", config);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in DashboardCard02: {ex.Message}");
         }
     }
 }
