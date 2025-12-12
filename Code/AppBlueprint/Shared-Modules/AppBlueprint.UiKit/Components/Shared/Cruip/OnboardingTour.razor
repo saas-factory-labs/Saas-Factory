@@ -1,0 +1,235 @@
+@* Onboarding Tour component with step-by-step tooltips *@
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+@if (IsActive && CurrentStep != null)
+{
+    @* Backdrop overlay *@
+    <div class="fixed inset-0 z-40 bg-gray-900/50 dark:bg-gray-900/70 transition-opacity"></div>
+
+    @* Spotlight cutout - positioned via JS *@
+    <div id="tour-spotlight" class="fixed z-40 ring-4 ring-violet-500 ring-offset-4 ring-offset-transparent rounded-lg transition-all duration-300 pointer-events-none"
+         style="@spotlightStyle">
+    </div>
+
+    @* Tooltip *@
+    <div class="fixed z-50 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 transition-all duration-300"
+         style="@tooltipStyle">
+        @* Arrow *@
+        <div class="@GetArrowClasses()"></div>
+
+        @* Content *@
+        <div class="p-5">
+            @* Progress indicator *@
+            <div class="flex items-center gap-1 mb-3">
+                @for (int i = 0; i < Steps.Count; i++)
+                {
+                    var isActive = i == CurrentStepIndex;
+                    var isPast = i < CurrentStepIndex;
+                    <div class="@GetProgressDotClasses(isActive, isPast)"></div>
+                }
+                <span class="ml-auto text-xs text-gray-400 dark:text-gray-500">@(CurrentStepIndex + 1) of @Steps.Count</span>
+            </div>
+
+            @* Title *@
+            <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">@CurrentStep.Title</h4>
+
+            @* Description *@
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">@CurrentStep.Description</p>
+
+            @* Custom content *@
+            @if (CurrentStep.Content != null)
+            {
+                <div class="mb-4">
+                    @CurrentStep.Content
+                </div>
+            }
+
+            @* Actions *@
+            <div class="flex items-center justify-between">
+                <button type="button"
+                        class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                        @onclick="Skip">
+                    Skip tour
+                </button>
+                <div class="flex items-center gap-2">
+                    @if (CurrentStepIndex > 0)
+                    {
+                        <button type="button"
+                                class="btn-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500"
+                                @onclick="Previous">
+                            Back
+                        </button>
+                    }
+                    @if (CurrentStepIndex < Steps.Count - 1)
+                    {
+                        <button type="button"
+                                class="btn-sm bg-violet-500 hover:bg-violet-600 text-white"
+                                @onclick="Next">
+                            Next
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button"
+                                class="btn-sm bg-green-500 hover:bg-green-600 text-white"
+                                @onclick="Complete">
+                            Done
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public List<TourStep> Steps { get; set; } = new();
+    [Parameter] public bool IsActive { get; set; } = false;
+    [Parameter] public EventCallback<bool> IsActiveChanged { get; set; }
+    [Parameter] public EventCallback OnComplete { get; set; }
+    [Parameter] public EventCallback OnSkip { get; set; }
+    [Parameter] public string StorageKey { get; set; } = "onboarding-tour-completed";
+
+    private int CurrentStepIndex { get; set; } = 0;
+    private string spotlightStyle = "";
+    private string tooltipStyle = "";
+
+    private TourStep? CurrentStep => Steps.Count > CurrentStepIndex ? Steps[CurrentStepIndex] : null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsActive)
+        {
+            await UpdatePositions();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (IsActive)
+        {
+            await UpdatePositions();
+        }
+    }
+
+    private async Task UpdatePositions()
+    {
+        if (CurrentStep == null || string.IsNullOrEmpty(CurrentStep.TargetSelector)) return;
+
+        try
+        {
+            var rect = await JS.InvokeAsync<ElementRect>("getElementRect", CurrentStep.TargetSelector);
+            if (rect != null)
+            {
+                // Set spotlight position
+                var padding = 8;
+                spotlightStyle = $"top: {rect.Top - padding}px; left: {rect.Left - padding}px; width: {rect.Width + padding * 2}px; height: {rect.Height + padding * 2}px;";
+
+                // Calculate tooltip position
+                var tooltipWidth = 320;
+                var tooltipHeight = 200;
+                var margin = 16;
+
+                var position = CurrentStep.Position ?? "bottom";
+                var (top, left) = position switch
+                {
+                    "top" => (rect.Top - tooltipHeight - margin, rect.Left + (rect.Width - tooltipWidth) / 2),
+                    "left" => (rect.Top + (rect.Height - tooltipHeight) / 2, rect.Left - tooltipWidth - margin),
+                    "right" => (rect.Top + (rect.Height - tooltipHeight) / 2, rect.Right + margin),
+                    _ => (rect.Bottom + margin, rect.Left + (rect.Width - tooltipWidth) / 2) // bottom
+                };
+
+                // Keep tooltip in viewport
+                left = Math.Max(margin, Math.Min(left, 1920 - tooltipWidth - margin));
+                top = Math.Max(margin, top);
+
+                tooltipStyle = $"top: {top}px; left: {left}px;";
+                StateHasChanged();
+            }
+        }
+        catch
+        {
+            // Ignored
+        }
+    }
+
+    private async Task Next()
+    {
+        if (CurrentStepIndex < Steps.Count - 1)
+        {
+            CurrentStepIndex++;
+            await UpdatePositions();
+        }
+    }
+
+    private async Task Previous()
+    {
+        if (CurrentStepIndex > 0)
+        {
+            CurrentStepIndex--;
+            await UpdatePositions();
+        }
+    }
+
+    private async Task Skip()
+    {
+        await Close();
+        await OnSkip.InvokeAsync();
+    }
+
+    private async Task Complete()
+    {
+        await JS.InvokeVoidAsync("localStorage.setItem", StorageKey, "true");
+        await Close();
+        await OnComplete.InvokeAsync();
+    }
+
+    private async Task Close()
+    {
+        IsActive = false;
+        CurrentStepIndex = 0;
+        await IsActiveChanged.InvokeAsync(false);
+    }
+
+    private string GetArrowClasses()
+    {
+        var position = CurrentStep?.Position ?? "bottom";
+        return position switch
+        {
+            "top" => "absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white dark:bg-gray-800 border-r border-b border-gray-200 dark:border-gray-700 rotate-45",
+            "left" => "absolute top-1/2 -right-2 -translate-y-1/2 w-4 h-4 bg-white dark:bg-gray-800 border-r border-t border-gray-200 dark:border-gray-700 rotate-45",
+            "right" => "absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 bg-white dark:bg-gray-800 border-l border-b border-gray-200 dark:border-gray-700 rotate-45",
+            _ => "absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white dark:bg-gray-800 border-l border-t border-gray-200 dark:border-gray-700 rotate-45"
+        };
+    }
+
+    private string GetProgressDotClasses(bool isActive, bool isPast)
+    {
+        var baseClasses = "w-2 h-2 rounded-full transition-colors";
+        if (isActive) return $"{baseClasses} bg-violet-500";
+        if (isPast) return $"{baseClasses} bg-violet-300 dark:bg-violet-700";
+        return $"{baseClasses} bg-gray-200 dark:bg-gray-600";
+    }
+
+    public class TourStep
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string TargetSelector { get; set; } = "";
+        public string? Position { get; set; }
+        public RenderFragment? Content { get; set; }
+    }
+
+    public class ElementRect
+    {
+        public double Top { get; set; }
+        public double Left { get; set; }
+        public double Right { get; set; }
+        public double Bottom { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+    }
+
+}
+

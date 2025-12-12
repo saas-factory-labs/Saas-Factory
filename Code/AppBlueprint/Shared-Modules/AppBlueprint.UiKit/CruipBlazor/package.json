@@ -1,0 +1,19 @@
+{
+  "name": "mosaic-portal-web",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build:css": "postcss Styles/app.css -o wwwroot/css/app.css",
+    "watch:css": "postcss Styles/app.css -o wwwroot/css/app.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/postcss": "^4.0.2",
+    "postcss": "^8.5.1",
+    "postcss-cli": "^11.0.0",
+    "tailwindcss": "^4.0.2"
+  },
+  "dependencies": {
+    "flatpickr": "^4.6.13"
+  }
+}

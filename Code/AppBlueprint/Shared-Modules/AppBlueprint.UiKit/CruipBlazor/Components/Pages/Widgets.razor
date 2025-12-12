@@ -1,0 +1,299 @@
+@page "/widgets"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Dashboard Widgets</h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-2">Calendars, activity feeds, progress trackers, and stats cards</p>
+    </div>
+
+    <div class="space-y-8">
+
+        <!-- Stats Cards Section -->
+        <div>
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Stats Cards</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatsCard Value="24,780"
+                           Label="Total Users"
+                           TrendValue="12.5m"
+                           Variant="primary"
+                           IconName="users"
+                           ShowSparkline="true"
+                           SparklineData="@(new List<decimal> { 10, 15, 12, 25, 20, 35, 30, 45 })" />
+
+                <StatsCard Value="$128,430"
+                           Label="Revenue"
+                           TrendValue="8.2m"
+                           Variant="success"
+                           IconName="revenue"
+                           ShowSparkline="true"
+                           SparklineData="@(new List<decimal> { 20, 25, 30, 28, 35, 40, 38, 50 })" />
+
+                <StatsCard Value="1,284"
+                           Label="Orders"
+                           TrendValue="-3.1m"
+                           Variant="warning"
+                           IconName="orders"
+                           ShowProgress="true"
+                           ProgressValue="68"
+                           ProgressLabel="Monthly target" />
+
+                <StatsCard Value="94.2%"
+                           Label="Conversion Rate"
+                           TrendValue="2.4m"
+                           Variant="default"
+                           IconName="chart">
+                    <Footer>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-500 dark:text-gray-400">vs last month</span>
+                            <span class="text-green-500 font-medium">+5.2%</span>
+                        </div>
+                    </Footer>
+                </StatsCard>
+            </div>
+        </div>
+
+        <!-- Calendar and Activity Feed Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Calendar Widget -->
+            <div>
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Calendar</h2>
+                <CalendarWidget Events="@calendarEvents"
+                                @bind-SelectedDate="selectedDate"
+                                ShowEventsList="true"
+                                Class="shadow-sm" />
+            </div>
+
+            <!-- Activity Feed -->
+            <div>
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Activity Feed</h2>
+                <ActivityFeed Title="Recent Activity"
+                              Activities="@activityItems"
+                              ShowLoadMore="true"
+                              Class="shadow-sm">
+                    <HeaderActions>
+                        <button class="text-sm text-violet-600 dark:text-violet-400 hover:text-violet-700 font-medium">
+                            View all
+                        </button>
+                    </HeaderActions>
+                </ActivityFeed>
+            </div>
+        </div>
+
+        <!-- Progress Trackers Section -->
+        <div>
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Progress Trackers</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Vertical Progress Tracker -->
+                <ProgressTracker Title="Project Milestones"
+                                 Description="Q4 2024 Development Roadmap"
+                                 Steps="@verticalSteps"
+                                 Variant="vertical"
+                                 ShowProgressBar="true"
+                                 ShowPercentage="true"
+                                 Class="shadow-sm" />
+
+                <!-- Horizontal Progress Tracker -->
+                <ProgressTracker Title="Order Status"
+                                 Description="Track your order progress"
+                                 Steps="@horizontalSteps"
+                                 Variant="horizontal"
+                                 ShowProgressBar="false"
+                                 ShowPercentage="false"
+                                 Class="shadow-sm" />
+            </div>
+        </div>
+
+        <!-- Additional Stats Row -->
+        <div>
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">More Stats Variants</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatsCard Value="847"
+                           Label="Active Sessions"
+                           Prefix=""
+                           TrendValue="15.3m"
+                           Variant="primary"
+                           ShowSparkline="true"
+                           SparklineData="@(new List<decimal> { 30, 45, 35, 50, 40, 55, 45, 60 })">
+                    <Icon>
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </Icon>
+                </StatsCard>
+
+                <StatsCard Value="12.4GB"
+                           Label="Storage Used"
+                           ShowTrend="false"
+                           Variant="warning"
+                           ShowProgress="true"
+                           ProgressValue="62"
+                           ProgressLabel="of 20GB">
+                    <Icon>
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                        </svg>
+                    </Icon>
+                </StatsCard>
+
+                <StatsCard Value="99.9%"
+                           Label="Uptime"
+                           TrendValue="0.1m"
+                           Variant="success">
+                    <Icon>
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </Icon>
+                    <Footer>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            Last incident: 45 days ago
+                        </div>
+                    </Footer>
+                </StatsCard>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private DateTime? selectedDate = DateTime.Today;
+
+    // Calendar Events
+    private List<CalendarWidget.CalendarEvent> calendarEvents = new()
+    {
+        new() { Title = "Team Meeting", Date = DateTime.Today, Time = "10:00 AM", Color = "blue" },
+        new() { Title = "Project Review", Date = DateTime.Today, Time = "2:00 PM", Color = "violet" },
+        new() { Title = "Client Call", Date = DateTime.Today.AddDays(1), Time = "11:00 AM", Color = "green" },
+        new() { Title = "Sprint Planning", Date = DateTime.Today.AddDays(2), Time = "9:00 AM", Color = "yellow" },
+        new() { Title = "Deadline: Feature X", Date = DateTime.Today.AddDays(3), Time = "5:00 PM", Color = "red" },
+        new() { Title = "Team Lunch", Date = DateTime.Today.AddDays(5), Time = "12:30 PM", Color = "green" },
+        new() { Title = "Code Review", Date = DateTime.Today.AddDays(7), Time = "3:00 PM", Color = "violet" }
+    };
+
+    // Activity Feed Items
+    private List<ActivityFeed.ActivityItem> activityItems = new()
+    {
+        new()
+        {
+            UserName = "Sarah Johnson",
+            AvatarUrl = "https://i.pravatar.cc/40?img=1",
+            Action = "completed task",
+            Target = "Update user dashboard",
+            Time = "2 min ago",
+            ShowBadge = true,
+            BadgeType = "online"
+        },
+        new()
+        {
+            UserName = "Mike Chen",
+            AvatarUrl = "https://i.pravatar.cc/40?img=3",
+            Action = "commented on",
+            Target = "Feature Request #234",
+            Time = "15 min ago",
+            Attachment = new ActivityFeed.ActivityAttachment
+            {
+                Type = "comment",
+                Content = "I think we should prioritize this for the next sprint."
+            }
+        },
+        new()
+        {
+            Action = "Deployment successful",
+            Description = "Version 2.4.1 deployed to production",
+            Time = "1 hour ago",
+            Type = "success"
+        },
+        new()
+        {
+            UserName = "Emily Davis",
+            AvatarUrl = "https://i.pravatar.cc/40?img=5",
+            Action = "uploaded",
+            Target = "design-specs.pdf",
+            Time = "2 hours ago",
+            Attachment = new ActivityFeed.ActivityAttachment
+            {
+                Type = "file",
+                Name = "design-specs.pdf",
+                Size = "2.4 MB"
+            }
+        },
+        new()
+        {
+            Action = "System alert",
+            Description = "CPU usage exceeded 80% threshold",
+            Time = "3 hours ago",
+            Type = "warning"
+        }
+    };
+
+    // Vertical Progress Steps
+    private List<ProgressTracker.ProgressStep> verticalSteps = new()
+    {
+        new()
+        {
+            Title = "Project Kickoff",
+            Description = "Initial planning and team setup",
+            Status = "completed",
+            Date = "Oct 1",
+            SubTasks = new List<ProgressTracker.SubTask>
+            {
+                new() { Title = "Define project scope", Completed = true },
+                new() { Title = "Assemble team", Completed = true },
+                new() { Title = "Setup development environment", Completed = true }
+            }
+        },
+        new()
+        {
+            Title = "Design Phase",
+            Description = "UI/UX design and prototyping",
+            Status = "completed",
+            Date = "Oct 15",
+            SubTasks = new List<ProgressTracker.SubTask>
+            {
+                new() { Title = "Wireframes", Completed = true },
+                new() { Title = "High-fidelity mockups", Completed = true },
+                new() { Title = "Design review", Completed = true }
+            }
+        },
+        new()
+        {
+            Title = "Development",
+            Description = "Core feature implementation",
+            Status = "current",
+            Date = "Nov 1",
+            SubTasks = new List<ProgressTracker.SubTask>
+            {
+                new() { Title = "Backend API", Completed = true },
+                new() { Title = "Frontend components", Completed = true },
+                new() { Title = "Integration testing", Completed = false }
+            }
+        },
+        new()
+        {
+            Title = "Testing & QA",
+            Description = "Quality assurance and bug fixes",
+            Status = "pending",
+            Date = "Nov 15"
+        },
+        new()
+        {
+            Title = "Launch",
+            Description = "Production deployment",
+            Status = "pending",
+            Date = "Dec 1"
+        }
+    };
+
+    // Horizontal Progress Steps
+    private List<ProgressTracker.ProgressStep> horizontalSteps = new()
+    {
+        new() { Title = "Order Placed", Description = "Nov 18, 2024", Status = "completed" },
+        new() { Title = "Processing", Description = "Nov 19, 2024", Status = "completed" },
+        new() { Title = "Shipped", Description = "In transit", Status = "current" },
+        new() { Title = "Delivered", Description = "Est. Nov 22", Status = "pending" }
+    };
+}

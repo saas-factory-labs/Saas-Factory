@@ -1,0 +1,79 @@
+@* Toggle/Switch component *@
+
+<div class="@ContainerClass">
+    <div class="flex items-center justify-between @(Reversed ? "flex-row-reverse" : "")">
+        @if (!string.IsNullOrEmpty(Label) || ChildContent != null)
+        {
+            <span class="text-sm @(Disabled ? "text-gray-400" : "text-gray-600 dark:text-gray-400") @(Reversed ? "ml-3" : "mr-3")">
+                @if (ChildContent != null)
+                {
+                    @ChildContent
+                }
+                else
+                {
+                    @Label
+                }
+            </span>
+        }
+        <div class="form-switch">
+            <input
+                type="checkbox"
+                id="@Id"
+                class="sr-only"
+                checked="@Checked"
+                disabled="@Disabled"
+                @onchange="OnChange" />
+            <label class="@GetToggleClasses()" for="@Id">
+                <span class="bg-white shadow-sm" aria-hidden="true"></span>
+                <span class="sr-only">@(Checked ? "Enabled" : "Disabled")</span>
+            </label>
+        </div>
+    </div>
+    @if (!string.IsNullOrEmpty(HelpText))
+    {
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">@HelpText</p>
+    }
+</div>
+
+@code {
+    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool Checked { get; set; } = false;
+    [Parameter] public EventCallback<bool> CheckedChanged { get; set; }
+    [Parameter] public string? HelpText { get; set; }
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public bool Reversed { get; set; } = false;
+    [Parameter] public string Size { get; set; } = "md"; // sm, md, lg
+    [Parameter] public string Variant { get; set; } = "violet"; // violet, sky, green, red
+    [Parameter] public string? ContainerClass { get; set; }
+
+    private string GetToggleClasses()
+    {
+        var sizeClasses = Size switch
+        {
+            "sm" => "w-8 h-4",
+            "lg" => "w-14 h-7",
+            _ => "w-11 h-6"
+        };
+
+        var colorClass = Variant switch
+        {
+            "sky" => "peer-checked:bg-sky-500",
+            "green" => "peer-checked:bg-green-500",
+            "red" => "peer-checked:bg-red-500",
+            _ => "peer-checked:bg-violet-500"
+        };
+
+        var disabledClass = Disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
+
+        return $"bg-gray-300 dark:bg-gray-700 {colorClass} rounded-full {sizeClasses} {disabledClass} block";
+    }
+
+    private async Task OnChange(ChangeEventArgs e)
+    {
+        if (Disabled) return;
+        Checked = (bool)(e.Value ?? false);
+        await CheckedChanged.InvokeAsync(Checked);
+    }
+}

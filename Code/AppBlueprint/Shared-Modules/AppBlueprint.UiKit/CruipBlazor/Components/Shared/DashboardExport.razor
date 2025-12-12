@@ -1,0 +1,191 @@
+@* Dashboard Export Component - Supports CSV and PDF export *@
+@inject IJSRuntime JS
+
+<div class="relative inline-flex">
+    <button type="button"
+            class="@GetButtonClasses()"
+            @onclick="ToggleDropdown">
+        <svg class="fill-current shrink-0" width="16" height="16" viewBox="0 0 16 16">
+            <path d="M15 15H1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1ZM2 13h12V3H2v10Z" />
+            <path d="M8 11.5a.5.5 0 0 1-.354-.146l-3-3a.5.5 0 1 1 .708-.708L8 10.293l2.646-2.647a.5.5 0 0 1 .708.708l-3 3A.5.5 0 0 1 8 11.5Z" />
+            <path d="M8 11.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 1 1 0v6a.5.5 0 0 1-.5.5Z" />
+        </svg>
+        @if (!string.IsNullOrEmpty(ButtonText))
+        {
+            <span class="ml-2">@ButtonText</span>
+        }
+    </button>
+
+    @if (IsOpen)
+    {
+        @* Backdrop *@
+        <div class="fixed inset-0 z-40" @onclick="Close"></div>
+
+        @* Dropdown menu *@
+        <div class="@GetDropdownClasses()">
+            <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase px-3 py-2">Export Options</div>
+
+            <ul class="py-1">
+                <li>
+                    <button type="button"
+                            class="flex items-center w-full px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                            @onclick="ExportCsv">
+                        <svg class="shrink-0 mr-2 text-green-500" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM9.5 0v4a1 1 0 0 0 1 1H14L9.5 0ZM5.5 9a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5ZM5 11.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm.5 1.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5Z"/>
+                        </svg>
+                        <span class="flex-1 text-left">Export as CSV</span>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">.csv</span>
+                    </button>
+                </li>
+                <li>
+                    <button type="button"
+                            class="flex items-center w-full px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                            @onclick="ExportExcel">
+                        <svg class="shrink-0 mr-2 text-green-600" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.64L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54Z"/>
+                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2ZM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2Z"/>
+                        </svg>
+                        <span class="flex-1 text-left">Export as Excel</span>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">.xlsx</span>
+                    </button>
+                </li>
+                <li>
+                    <button type="button"
+                            class="flex items-center w-full px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                            @onclick="ExportPdf">
+                        <svg class="shrink-0 mr-2 text-red-500" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M5.523 10.424c.14-.082.293-.162.459-.238a7.878 7.878 0 0 1-.45.606c-.28.337-.498.516-.635.572a.266.266 0 0 1-.035.012.282.282 0 0 1-.026-.044c-.056-.11-.054-.216.04-.36.106-.165.319-.354.647-.548Zm2.455-1.647c-.119.025-.237.05-.356.078a21.035 21.035 0 0 0 .5-1.05 11.96 11.96 0 0 0 .51.858c-.217.032-.436.07-.654.114Zm2.525.939a3.888 3.888 0 0 1-.435-.41c.228.005.434.022.612.054.317.057.466.147.518.209a.095.095 0 0 1 .026.064.436.436 0 0 1-.06.2.307.307 0 0 1-.094.124.107.107 0 0 1-.069.015c-.09-.003-.258-.066-.498-.256ZM8.278 4.97c-.04.244-.108.524-.2.829a4.86 4.86 0 0 1-.089-.346c-.076-.353-.087-.63-.046-.822.038-.177.11-.248.196-.283a.517.517 0 0 1 .145-.04c.013.03.028.092.032.198.005.122-.007.277-.038.465Z"/>
+                            <path fill-rule="evenodd" d="M4 0h5.5v1A1.5 1.5 0 0 0 11 2.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2Zm5.5 1.5v-1L13 4h-2.5A1.5 1.5 0 0 1 9 2.5v-1ZM4.165 13.668c.09.18.23.343.438.419.207.075.412.04.58-.03.318-.13.635-.436.926-.786.333-.401.683-.927 1.021-1.51a11.64 11.64 0 0 1 1.997-.406c.3.383.61.713.91.95.28.22.603.403.934.417a.856.856 0 0 0 .51-.138c.155-.101.27-.247.354-.416.09-.181.145-.37.138-.563a.844.844 0 0 0-.2-.518c-.226-.27-.596-.4-.96-.465a5.76 5.76 0 0 0-1.335-.05 10.954 10.954 0 0 1-.98-1.686c.25-.66.437-1.284.52-1.794.036-.218.055-.426.048-.614a1.238 1.238 0 0 0-.127-.538.7.7 0 0 0-.477-.365c-.202-.043-.41 0-.601.077-.377.15-.576.47-.651.823-.073.34-.04.736.046 1.136.088.406.238.848.43 1.295a19.707 19.707 0 0 1-1.062 2.227 7.662 7.662 0 0 0-1.482.645c-.37.22-.699.48-.897.787-.21.326-.275.714-.08 1.103Z"/>
+                        </svg>
+                        <span class="flex-1 text-left">Export as PDF</span>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">.pdf</span>
+                    </button>
+                </li>
+                <li>
+                    <button type="button"
+                            class="flex items-center w-full px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                            @onclick="ExportJson">
+                        <svg class="shrink-0 mr-2 text-yellow-500" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path fill-rule="evenodd" d="M6 1h6v1a1 1 0 0 0 1 1h1v11a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h3v-0Zm6 1V1L14 3h-1a1 1 0 0 1-1-1Z"/>
+                            <path d="M5.5 7a.5.5 0 0 0-.5.5v.634l-.549-.317a.5.5 0 1 0-.5.866L4.5 9l-.549.317a.5.5 0 1 0 .5.866l.549-.317v.634a.5.5 0 0 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L6.5 9l.549-.317a.5.5 0 1 0-.5-.866L6 8.134V7.5a.5.5 0 0 0-.5-.5Zm5 0a.5.5 0 0 0-.5.5v.634l-.549-.317a.5.5 0 1 0-.5.866L9.5 9l-.549.317a.5.5 0 1 0 .5.866l.549-.317v.634a.5.5 0 0 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L11.5 9l.549-.317a.5.5 0 1 0-.5-.866l-.549.317V7.5a.5.5 0 0 0-.5-.5Z"/>
+                        </svg>
+                        <span class="flex-1 text-left">Export as JSON</span>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">.json</span>
+                    </button>
+                </li>
+            </ul>
+
+            @if (ShowPrintOption)
+            {
+                <hr class="my-1 border-gray-200 dark:border-gray-700/60" />
+                <ul class="py-1">
+                    <li>
+                        <button type="button"
+                                class="flex items-center w-full px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                                @onclick="Print">
+                            <svg class="shrink-0 mr-2 text-gray-500" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1Z"/>
+                                <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5Zm7 2v2H4V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1Zm-3 7a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4Zm5-6v4.5a1.5 1.5 0 0 1-1.5 1.5H12V9h2a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1Zm-13 0h1v4H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/>
+                            </svg>
+                            <span class="flex-1 text-left">Print Dashboard</span>
+                        </button>
+                    </li>
+                </ul>
+            }
+        </div>
+    }
+</div>
+
+@if (IsExporting)
+{
+    <div class="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 flex items-center gap-4">
+            <div class="animate-spin rounded-full h-8 w-8 border-4 border-violet-500 border-t-transparent"></div>
+            <span class="text-gray-700 dark:text-gray-200">Exporting @ExportingFormat...</span>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string ButtonText { get; set; } = "Export";
+    [Parameter] public string Align { get; set; } = "right"; // left, right
+    [Parameter] public string Variant { get; set; } = "default"; // default, primary
+    [Parameter] public bool ShowPrintOption { get; set; } = true;
+    [Parameter] public EventCallback<string> OnExport { get; set; }
+    [Parameter] public Func<string, Task<byte[]>>? ExportDataProvider { get; set; }
+    [Parameter] public string FileName { get; set; } = "dashboard-export";
+
+    private bool IsOpen { get; set; } = false;
+    private bool IsExporting { get; set; } = false;
+    private string ExportingFormat { get; set; } = "";
+
+    private void ToggleDropdown() => IsOpen = !IsOpen;
+    private void Close() => IsOpen = false;
+
+    private async Task ExportCsv() => await DoExport("csv");
+    private async Task ExportExcel() => await DoExport("xlsx");
+    private async Task ExportPdf() => await DoExport("pdf");
+    private async Task ExportJson() => await DoExport("json");
+
+    private async Task DoExport(string format)
+    {
+        Close();
+        IsExporting = true;
+        ExportingFormat = format.ToUpper();
+        StateHasChanged();
+
+        try
+        {
+            await OnExport.InvokeAsync(format);
+
+            if (ExportDataProvider != null)
+            {
+                var data = await ExportDataProvider(format);
+                await DownloadFile(data, $"{FileName}.{format}", GetMimeType(format));
+            }
+        }
+        finally
+        {
+            await Task.Delay(500); // Brief delay to show export animation
+            IsExporting = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task Print()
+    {
+        Close();
+        await JS.InvokeVoidAsync("window.print");
+    }
+
+    private async Task DownloadFile(byte[] data, string fileName, string mimeType)
+    {
+        var base64 = Convert.ToBase64String(data);
+        await JS.InvokeVoidAsync("downloadFileFromBase64", base64, fileName, mimeType);
+    }
+
+    private static string GetMimeType(string format) => format switch
+    {
+        "csv" => "text/csv",
+        "xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "pdf" => "application/pdf",
+        "json" => "application/json",
+        _ => "application/octet-stream"
+    };
+
+    private string GetButtonClasses()
+    {
+        var baseClasses = "btn px-2.5";
+        return Variant switch
+        {
+            "primary" => $"{baseClasses} bg-violet-500 hover:bg-violet-600 text-white",
+            _ => $"{baseClasses} bg-white dark:bg-gray-800 border-gray-200 hover:border-gray-300 dark:border-gray-700/60 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400"
+        };
+    }
+
+    private string GetDropdownClasses()
+    {
+        var alignClass = Align == "right" ? "right-0" : "left-0";
+        return $"absolute z-50 top-full {alignClass} mt-1 min-w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/60 rounded-lg shadow-lg overflow-hidden";
+    }
+}

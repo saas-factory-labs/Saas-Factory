@@ -1,0 +1,109 @@
+@* Modal dialog component with backdrop and animations *@
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+@if (IsOpen)
+{
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        @* Backdrop *@
+        <div class="fixed inset-0 bg-gray-900/70 transition-opacity @(IsAnimating ? "opacity-0" : "opacity-100")"
+             @onclick="OnBackdropClick">
+        </div>
+
+        @* Modal container *@
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="@GetModalClasses()"
+                 @onclick:stopPropagation="true">
+                @* Close button *@
+                @if (ShowCloseButton)
+                {
+                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
+                            @onclick="Close">
+                        <span class="sr-only">Close</span>
+                        <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z"/>
+                        </svg>
+                    </button>
+                }
+                @ChildContent
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool IsOpen { get; set; } = false;
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+    [Parameter] public bool ShowCloseButton { get; set; } = true;
+    [Parameter] public bool CloseOnBackdropClick { get; set; } = true;
+    [Parameter] public string Size { get; set; } = "md";
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private bool IsAnimating { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (IsOpen && IsAnimating)
+        {
+            // Allow DOM to render before starting animation
+            await Task.Delay(10);
+            IsAnimating = false;
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (IsOpen && !IsAnimating)
+        {
+            // If opening, start with animation state
+            // Logic handled in Open() or parent update, but here we ensure animation state if opened via parameter
+        }
+    }
+
+    private string GetModalClasses()
+    {
+        var sizeClasses = Size switch
+        {
+            "sm" => "max-w-sm",
+            "lg" => "max-w-2xl",
+            "xl" => "max-w-4xl",
+            "full" => "max-w-full mx-4",
+            _ => "max-w-lg"
+        };
+
+        var animationClasses = IsAnimating
+            ? "opacity-0 scale-95"
+            : "opacity-100 scale-100";
+
+        return $"relative w-full {sizeClasses} bg-white dark:bg-gray-800 rounded-xl shadow-xl transform transition-all duration-200 {animationClasses}";
+    }
+
+    private async Task OnBackdropClick()
+    {
+        if (CloseOnBackdropClick)
+        {
+            await Close();
+        }
+    }
+
+    public async Task Close()
+    {
+        IsAnimating = true;
+        StateHasChanged();
+        await Task.Delay(150);
+        IsOpen = false;
+        await IsOpenChanged.InvokeAsync(false);
+        await OnClose.InvokeAsync();
+    }
+
+    public async Task Open()
+    {
+        IsOpen = true;
+        IsAnimating = true;
+        await IsOpenChanged.InvokeAsync(true);
+        StateHasChanged();
+    }
+
+}

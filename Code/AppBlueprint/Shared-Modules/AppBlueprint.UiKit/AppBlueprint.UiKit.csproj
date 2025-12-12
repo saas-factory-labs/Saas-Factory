@@ -31,6 +31,7 @@
 
     <ItemGroup>
         <SupportedPlatform Include="browser" />
+    <PackageReference Include="Blazorise.Charts" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="MudBlazor" />
     <PackageReference Include="MudBlazor.ThemeManager" />
@@ -52,6 +53,12 @@
     <Compile Remove="Examples\**" />
     <EmbeddedResource Remove="Examples\**" />
     <None Include="Examples\**" />
+    
+    <!-- Exclude CruipBlazor source directory - components have been copied to Components/Layout/Cruip, Components/Dashboard/Cruip, Components/Shared/Cruip -->
+    <Compile Remove="CruipBlazor\**" />
+    <Content Remove="CruipBlazor\**" />
+    <EmbeddedResource Remove="CruipBlazor\**" />
+    <None Remove="CruipBlazor\**" />
   </ItemGroup>
 
 </Project>

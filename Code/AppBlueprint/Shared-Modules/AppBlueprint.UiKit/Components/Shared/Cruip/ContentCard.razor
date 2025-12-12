@@ -1,0 +1,220 @@
+@* Content Card component with multiple variants *@
+
+<div class="@GetContainerClasses()" @onclick="HandleClick">
+    @* Image *@
+    @if (!string.IsNullOrEmpty(ImageUrl))
+    {
+        <div class="@GetImageContainerClasses()">
+            <img src="@ImageUrl" alt="@ImageAlt" class="@GetImageClasses()" />
+            @if (ImageOverlay != null)
+            {
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent">
+                    @ImageOverlay
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Badge))
+            {
+                <span class="absolute top-3 left-3 px-2 py-1 text-xs font-medium rounded-full @GetBadgeClasses()">
+                    @Badge
+                </span>
+            }
+        </div>
+    }
+
+    @* Content *@
+    <div class="@GetContentClasses()">
+        @* Header with avatar *@
+        @if (!string.IsNullOrEmpty(AvatarUrl) || Header != null)
+        {
+            <div class="flex items-start gap-3 mb-3">
+                @if (!string.IsNullOrEmpty(AvatarUrl))
+                {
+                    <img src="@AvatarUrl" alt="@AvatarAlt" class="w-10 h-10 rounded-full object-cover shrink-0" />
+                }
+                @if (Header != null)
+                {
+                    <div class="flex-1 min-w-0">
+                        @Header
+                    </div>
+                }
+            </div>
+        }
+
+        @* Category *@
+        @if (!string.IsNullOrEmpty(Category))
+        {
+            <span class="inline-block text-xs font-medium text-violet-500 dark:text-violet-400 uppercase tracking-wide mb-2">
+                @Category
+            </span>
+        }
+
+        @* Title *@
+        @if (!string.IsNullOrEmpty(Title))
+        {
+            <h3 class="@GetTitleClasses()">
+                @if (!string.IsNullOrEmpty(Href))
+                {
+                    <a href="@Href" class="hover:text-violet-500 dark:hover:text-violet-400 transition-colors">
+                        @Title
+                    </a>
+                }
+                else
+                {
+                    @Title
+                }
+            </h3>
+        }
+
+        @* Description *@
+        @if (!string.IsNullOrEmpty(Description))
+        {
+            <p class="@GetDescriptionClasses()">@Description</p>
+        }
+
+        @* Custom content *@
+        @if (ChildContent != null)
+        {
+            <div class="mt-3">
+                @ChildContent
+            </div>
+        }
+
+        @* Meta info *@
+        @if (Meta != null)
+        {
+            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                @Meta
+            </div>
+        }
+
+        @* Footer with actions *@
+        @if (Footer != null)
+        {
+            <div class="@GetFooterClasses()">
+                @Footer
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Variant { get; set; } = "default"; // default, horizontal, overlay, minimal
+    [Parameter] public string? ImageUrl { get; set; }
+    [Parameter] public string? ImageAlt { get; set; }
+    [Parameter] public string ImageAspect { get; set; } = "video"; // video (16:9), square, portrait
+    [Parameter] public string? AvatarUrl { get; set; }
+    [Parameter] public string? AvatarAlt { get; set; }
+    [Parameter] public string? Category { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string? Badge { get; set; }
+    [Parameter] public string BadgeVariant { get; set; } = "primary"; // primary, success, warning, danger
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public bool Hoverable { get; set; } = true;
+    [Parameter] public bool Clickable { get; set; } = false;
+    [Parameter] public RenderFragment? Header { get; set; }
+    [Parameter] public RenderFragment? ImageOverlay { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Meta { get; set; }
+    [Parameter] public RenderFragment? Footer { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    private async Task HandleClick()
+    {
+        if (Clickable)
+        {
+            await OnClick.InvokeAsync();
+        }
+    }
+
+    private string GetContainerClasses()
+    {
+        var baseClasses = "bg-white dark:bg-gray-800 rounded-xl overflow-hidden";
+        var shadowClass = "shadow-sm dark:shadow-none";
+        var hoverClass = Hoverable ? "hover:shadow-lg dark:hover:shadow-gray-900/30 transition-shadow duration-200" : "";
+        var clickClass = Clickable ? "cursor-pointer" : "";
+
+        var variantClasses = Variant switch
+        {
+            "horizontal" => "flex flex-col sm:flex-row",
+            "overlay" => "relative",
+            "minimal" => "border border-gray-200 dark:border-gray-700 shadow-none",
+            _ => ""
+        };
+
+        return $"{baseClasses} {shadowClass} {hoverClass} {clickClass} {variantClasses} {Class}".Trim();
+    }
+
+    private string GetImageContainerClasses()
+    {
+        var aspectClass = ImageAspect switch
+        {
+            "square" => "aspect-square",
+            "portrait" => "aspect-[3/4]",
+            _ => "aspect-video" // 16:9
+        };
+
+        var variantClasses = Variant switch
+        {
+            "horizontal" => $"sm:w-48 sm:shrink-0 {aspectClass} sm:aspect-auto sm:h-full",
+            "overlay" => aspectClass,
+            _ => aspectClass
+        };
+
+        return $"relative overflow-hidden {variantClasses}";
+    }
+
+    private string GetImageClasses()
+    {
+        return "w-full h-full object-cover";
+    }
+
+    private string GetContentClasses()
+    {
+        var baseClasses = "p-5";
+
+        var variantClasses = Variant switch
+        {
+            "horizontal" => "flex-1",
+            "overlay" => "absolute inset-x-0 bottom-0 p-5 text-white",
+            _ => ""
+        };
+
+        return $"{baseClasses} {variantClasses}";
+    }
+
+    private string GetTitleClasses()
+    {
+        var baseClasses = "font-semibold mb-2";
+        var sizeClass = Variant == "minimal" ? "text-base" : "text-lg";
+        var colorClass = Variant == "overlay" ? "text-white" : "text-gray-800 dark:text-gray-100";
+
+        return $"{baseClasses} {sizeClass} {colorClass}";
+    }
+
+    private string GetDescriptionClasses()
+    {
+        var colorClass = Variant == "overlay"
+            ? "text-gray-200"
+            : "text-gray-500 dark:text-gray-400";
+
+        return $"text-sm {colorClass} line-clamp-2";
+    }
+
+    private string GetFooterClasses()
+    {
+        return "mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-3";
+    }
+
+    private string GetBadgeClasses()
+    {
+        return BadgeVariant switch
+        {
+            "success" => "bg-green-500 text-white",
+            "warning" => "bg-yellow-500 text-white",
+            "danger" => "bg-red-500 text-white",
+            _ => "bg-violet-500 text-white"
+        };
+    }
+}

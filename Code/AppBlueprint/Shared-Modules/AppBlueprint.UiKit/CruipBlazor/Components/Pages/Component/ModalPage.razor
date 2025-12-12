@@ -1,0 +1,252 @@
+@page "/component/modal"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Modal</h1>
+    </div>
+
+    <div>
+
+        <!-- Components -->
+        <div class="space-y-8 mt-8">
+
+            <!-- Basic -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Basic</h2>
+                <div class="flex flex-wrap items-center -m-1.5">
+
+                    <!-- Basic Modal -->
+                    <div class="m-1.5">
+                        <!-- Start -->
+                        <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" @onclick="() => basicModalOpen = true">Basic Modal</button>
+                        <ModalBasic ModalOpen="@basicModalOpen" OnCloseModal="@(() => basicModalOpen = false)" Title="Basic Modal">
+                            <!-- Modal content -->
+                            <div class="px-5 pt-4 pb-1">
+                                <div class="text-sm">
+                                    <div class="font-medium text-gray-800 dark:text-gray-100 mb-2">Let's Talk Paragraph</div>
+                                    <div class="space-y-2">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="px-5 py-4">
+                                <div class="flex flex-wrap justify-end space-x-2">
+                                    <button class="btn-sm border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300" @onclick="() => basicModalOpen = false">Close</button>
+                                    <button class="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">I Understand</button>
+                                </div>
+                            </div>
+                        </ModalBasic>
+                        <!-- End -->
+                    </div>
+
+                    <!-- Cookies -->
+                    <div class="m-1.5">
+                        <!-- Start -->
+                        <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" @onclick="() => cookiesModalOpen = true">Cookies</button>
+                        <ModalCookies ModalOpen="@cookiesModalOpen" OnCloseModal="@(() => cookiesModalOpen = false)" Title="We use cookies 🍪">
+                            <!-- Modal content -->
+                            <div class="text-sm mb-5">
+                                <div class="space-y-2">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                                </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="flex flex-wrap justify-end space-x-2">
+                                <button class="btn-sm border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300" @onclick="() => cookiesModalOpen = false">Decline</button>
+                                <button class="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" @onclick="() => cookiesModalOpen = false">I Accept</button>
+                            </div>
+                        </ModalCookies>
+                        <!-- End -->
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Feedback -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Feedback</h2>
+                <div class="flex flex-wrap items-center -m-1.5">
+
+                    <!-- Success Modal -->
+                    <div class="m-1.5">
+                        <!-- Start -->
+                        <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" @onclick="() => successModalOpen = true">Success Modal</button>
+                        <ModalBlank ModalOpen="@successModalOpen" OnCloseModal="@(() => successModalOpen = false)">
+                            <div class="p-5 flex space-x-4">
+                                <!-- Icon -->
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-gray-100 dark:bg-gray-700">
+                                    <svg class="shrink-0 fill-current text-green-500" width="16" height="16" viewBox="0 0 16 16">
+                                        <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM7 11.4L3.6 8 5 6.6l2 2 4-4L12.4 6 7 11.4z" />
+                                    </svg>
+                                </div>
+                                <!-- Content -->
+                                <div>
+                                    <!-- Modal header -->
+                                    <div class="mb-2">
+                                        <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">Upgrade your Subscription?</div>
+                                    </div>
+                                    <!-- Modal content -->
+                                    <div class="text-sm mb-10">
+                                        <div class="space-y-2">
+                                            <p>Semper eget duis at tellus at urna condimentum mattis pellentesque lacus suspendisse faucibus interdum.</p>
+                                        </div>
+                                    </div>
+                                    <!-- Modal footer -->
+                                    <div class="flex flex-wrap justify-end space-x-2">
+                                        <button class="btn-sm border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300" @onclick="() => successModalOpen = false">Cancel</button>
+                                        <button class="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">Yes, Upgrade it</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ModalBlank>
+                        <!-- End -->
+                    </div>
+
+                    <!-- Danger Modal -->
+                    <div class="m-1.5">
+                        <!-- Start -->
+                        <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" @onclick="() => dangerModalOpen = true">Danger Modal</button>
+                        <ModalBlank ModalOpen="@dangerModalOpen" OnCloseModal="@(() => dangerModalOpen = false)">
+                            <div class="p-5 flex space-x-4">
+                                <!-- Icon -->
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-gray-100 dark:bg-gray-700">
+                                    <svg class="shrink-0 fill-current text-red-500" width="16" height="16" viewBox="0 0 16 16">
+                                        <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 12c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm1-3H7V4h2v5z" />
+                                    </svg>
+                                </div>
+                                <!-- Content -->
+                                <div>
+                                    <!-- Modal header -->
+                                    <div class="mb-2">
+                                        <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">Delete 1 customer?</div>
+                                    </div>
+                                    <!-- Modal content -->
+                                    <div class="text-sm mb-10">
+                                        <div class="space-y-2">
+                                            <p>Semper eget duis at tellus at urna condimentum mattis pellentesque lacus suspendisse faucibus interdum.</p>
+                                        </div>
+                                    </div>
+                                    <!-- Modal footer -->
+                                    <div class="flex flex-wrap justify-end space-x-2">
+                                        <button class="btn-sm border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300" @onclick="() => dangerModalOpen = false">Cancel</button>
+                                        <button class="btn-sm bg-red-500 hover:bg-red-600 text-white">Yes, Delete it</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ModalBlank>
+                        <!-- End -->
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Product -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Product</h2>
+                <div class="flex flex-wrap items-center -m-1.5">
+
+                    <!-- Send Feedback -->
+                    <div class="m-1.5">
+                        <!-- Start -->
+                        <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" @onclick="() => feedbackModalOpen = true">Send Feedback</button>
+                        <ModalBasic ModalOpen="@feedbackModalOpen" OnCloseModal="@(() => feedbackModalOpen = false)" Title="Send Feedback">
+                            <!-- Modal content -->
+                            <div class="px-5 py-4">
+                                <div class="text-sm">
+                                    <div class="font-medium text-gray-800 dark:text-gray-100 mb-3">Let us know what you think 🙌</div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="name">Name <span class="text-red-500">*</span></label>
+                                        <input id="name" class="form-input w-full px-2 py-1" type="text" required />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="email">Email <span class="text-red-500">*</span></label>
+                                        <input id="email" class="form-input w-full px-2 py-1" type="email" required />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="feedback">Message <span class="text-red-500">*</span></label>
+                                        <textarea id="feedback" class="form-textarea w-full px-2 py-1" rows="4" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="px-5 py-4 border-t border-gray-200 dark:border-gray-700/60">
+                                <div class="flex flex-wrap justify-end space-x-2">
+                                    <button class="btn-sm border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300" @onclick="() => feedbackModalOpen = false">Cancel</button>
+                                    <button class="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">Send</button>
+                                </div>
+                            </div>
+                        </ModalBasic>
+                        <!-- End -->
+                    </div>
+
+                    <!-- Newsletter -->
+                    <div class="m-1.5">
+                        <!-- Start -->
+                        <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" @onclick="() => newsletterModalOpen = true">Newsletter</button>
+                        <ModalAction ModalOpen="@newsletterModalOpen" OnCloseModal="@(() => newsletterModalOpen = false)">
+                            <!-- Modal header -->
+                            <div class="mb-2 text-center">
+                                <!-- Icon -->
+                                <div class="mb-3">
+                                    <svg class="inline-flex w-12 h-12 rounded-full shrink-0 fill-current" viewBox="0 0 48 48">
+                                        <rect class="text-gray-100 dark:text-gray-700" width="48" height="48" rx="24" />
+                                        <path class="text-violet-300" d="M19 16h7a8 8 0 110 16h-7V16z" />
+                                        <path class="text-violet-500" d="M26 24l-7-6v5h-8v2h8v5z" />
+                                    </svg>
+                                </div>
+                                <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">Subscribe to the Newsletter!</div>
+                            </div>
+                            <!-- Modal content -->
+                            <div class="text-center">
+                                <div class="text-sm mb-6">
+                                    Semper eget duis at tellus at urna condimentum mattis pellentesque lacus suspendisse faucibus interdum.
+                                </div>
+                                <!-- Submit form -->
+                                <form class="flex max-w-sm m-auto">
+                                    <div class="grow mr-2">
+                                        <label for="subscribe-form" class="sr-only">Leave your Email</label>
+                                        <input id="subscribe-form" class="form-input w-full px-2 py-1" type="email" />
+                                    </div>
+                                    <button type="submit" class="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white whitespace-nowrap">Subscribe</button>
+                                </form>
+                                <div class="text-xs text-gray-500 italic mt-3">
+                                    I respect your privacy. No spam. Unsubscribe at any time!
+                                </div>
+                            </div>
+                        </ModalAction>
+                        <!-- End -->
+                    </div>
+
+                    <!-- Quick Find -->
+                    <div class="m-1.5">
+                        <!-- Start -->
+                        <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" @onclick="() => searchModalOpen = true">Quick Find</button>
+                        <ModalSearch ModalOpen="@searchModalOpen" OnOpenModal="@(() => searchModalOpen = true)" OnCloseModal="@(() => searchModalOpen = false)" />
+                        <!-- End -->
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private bool basicModalOpen;
+    private bool cookiesModalOpen;
+    private bool successModalOpen;
+    private bool dangerModalOpen;
+    private bool feedbackModalOpen;
+    private bool newsletterModalOpen;
+    private bool searchModalOpen;
+}

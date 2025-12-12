@@ -8,28 +8,53 @@
 
     <link rel="icon" type="image/png" href="favicon.png"/>
 
+    @* Cruip Tailwind CSS Theme *@
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=fallback">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="_content/AppBlueprint.UiKit/cruip/css/app.css"/>
+    
+    @* MudBlazor (Legacy - to be removed after full migration) *@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
-
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
     <link href="_content/MudBlazor.ThemeManager/MudBlazorThemeManager.css" rel="stylesheet"/>
-
-    @* <link href='superherotheme-static.css' rel='stylesheet' /> *@
-
-    <link href="../../AppBlueprint.UiKit/wwwroot/superherotheme-static.css"/>
 
     <HeadOutlet/>
 </head>
 
-<body>
-<Routes @rendermode="RenderMode.InteractiveServer"/>
-<script src="js/navigationHelper.js"></script>
-<script src="_framework/blazor.web.js"></script>
-<script src="_content/MudBlazor/MudBlazor.min.js"></script>
+<body class="font-inter antialiased bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
+<script>
+    // Initialize sidebar state for Cruip template
+    if (localStorage.getItem('sidebar-expanded') == 'true') {
+        document.querySelector('body').classList.add('sidebar-expanded');
+    } else {
+        document.querySelector('body').classList.remove('sidebar-expanded');
+    }
 
-<!-- MudBlazor .NET 10 compatibility polyfill - must load AFTER MudBlazor.min.js -->
+    // Initialize dark mode
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+</script>
+<Routes @rendermode="RenderMode.InteractiveServer"/>
+
+@* Navigation helper *@
+<script src="js/navigationHelper.js"></script>
+
+@* Cruip Tailwind Template Scripts *@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="_content/AppBlueprint.UiKit/cruip/js/site.js"></script>
+
+@* Blazor Framework *@
+<script src="_framework/blazor.web.js"></script>
+
+@* MudBlazor (Legacy - to be removed after full migration) *@
+<script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="js/mudblazor-net10-polyfill.js"></script>
 
 </body>

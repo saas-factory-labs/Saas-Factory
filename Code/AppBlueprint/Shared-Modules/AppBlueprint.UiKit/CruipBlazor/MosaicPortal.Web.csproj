@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MosaicPortal.ServiceDefaults\MosaicPortal.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazorise.Charts" Version="1.8.7" />
+    <PackageReference Include="Blazorise.Tailwind" Version="1.8.7" />
+  </ItemGroup>
+
+  <!-- Auto-build Tailwind CSS before compilation -->
+  <Target Name="BuildTailwindCss" BeforeTargets="BeforeBuild">
+    <Exec Command="npm run build:css" WorkingDirectory="$(ProjectDir)" />
+  </Target>
+
+</Project>

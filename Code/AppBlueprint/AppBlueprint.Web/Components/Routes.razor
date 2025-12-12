@@ -11,7 +11,7 @@
         <Router AppAssembly="@typeof(Program).Assembly"
                 AdditionalAssemblies="@AdditionalAssemblies">
             <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(AppBlueprint.UiKit.Components.Layout.Cruip.MainLayout)">
                     <NotAuthorized>
                         @if (context.User.Identity?.IsAuthenticated != true)
                         {
@@ -41,7 +41,10 @@
 </CascadingAuthenticationState>
 
 @code {
-    private IEnumerable<Assembly> AdditionalAssemblies { get; } = new[] { typeof(UiKit._Imports).Assembly };
+    private IEnumerable<Assembly> AdditionalAssemblies { get; } = new[] 
+    { 
+        typeof(UiKit._Imports).Assembly
+    };
 
     protected override void OnInitialized()
     {

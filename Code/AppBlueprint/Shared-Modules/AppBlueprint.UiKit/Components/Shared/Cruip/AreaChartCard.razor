@@ -1,0 +1,135 @@
+@* Area Chart Card component using Blazorise.Charts (Line chart with fill) *@
+@using Blazorise.Charts
+
+<div class="@GetContainerClasses()">
+    @* Header *@
+    @if (!string.IsNullOrEmpty(Title) || HeaderActions != null)
+    {
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                @if (!string.IsNullOrEmpty(Title))
+                {
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@Title</h3>
+                }
+                @if (!string.IsNullOrEmpty(Subtitle))
+                {
+                    <p class="text-sm text-gray-500 dark:text-gray-400">@Subtitle</p>
+                }
+            </div>
+            @if (HeaderActions != null)
+            {
+                @HeaderActions
+            }
+        </div>
+    }
+
+    @* Summary stats *@
+    @if (ShowSummary && SummaryItems != null && SummaryItems.Any())
+    {
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            @foreach (var item in SummaryItems)
+            {
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-100">@item.Value</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">@item.Label</div>
+                </div>
+            }
+        </div>
+    }
+
+    @* Chart *@
+    <div style="height: @Height;">
+        <LineChart @ref="chart" TItem="double" Options="@chartOptions" />
+    </div>
+
+    @* Legend *@
+    @if (ShowLegend && Datasets != null && Datasets.Any())
+    {
+        <div class="flex flex-wrap items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            @foreach (var dataset in Datasets)
+            {
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-2 rounded" style="background-color: @dataset.Color"></span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">@dataset.Label</span>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string Height { get; set; } = "300px";
+    [Parameter] public bool ShowLegend { get; set; } = true;
+    [Parameter] public bool ShowSummary { get; set; } = false;
+    [Parameter] public bool Stacked { get; set; } = false;
+    [Parameter] public List<string>? Labels { get; set; }
+    [Parameter] public List<ChartDataset>? Datasets { get; set; }
+    [Parameter] public List<SummaryItem>? SummaryItems { get; set; }
+    [Parameter] public RenderFragment? HeaderActions { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    private LineChart<double>? chart;
+    private LineChartOptions chartOptions = new()
+    {
+        Responsive = true,
+        MaintainAspectRatio = false
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && chart != null && Labels != null && Datasets != null)
+        {
+            await chart.Clear();
+
+            await chart.AddLabelsDatasetsAndUpdate(
+                Labels,
+                Datasets.Select(d => new LineChartDataset<double>
+                {
+                    Label = d.Label,
+                    Data = d.Data,
+                    BorderColor = d.Color,
+                    BackgroundColor = d.FillColor ?? GetDefaultFillColor(d.Color),
+                    Fill = true,
+                    Tension = 0.4f,
+                    PointRadius = 0,
+                    PointHoverRadius = 4,
+                    BorderWidth = 2
+                }).ToArray()
+            );
+        }
+    }
+
+    private string GetDefaultFillColor(string color)
+    {
+        // Convert hex to rgba with transparency
+        if (color.StartsWith("#") && color.Length == 7)
+        {
+            var r = Convert.ToInt32(color.Substring(1, 2), 16);
+            var g = Convert.ToInt32(color.Substring(3, 2), 16);
+            var b = Convert.ToInt32(color.Substring(5, 2), 16);
+            return $"rgba({r}, {g}, {b}, 0.1)";
+        }
+        return color;
+    }
+
+    private string GetContainerClasses()
+    {
+        return $"bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 {Class}".Trim();
+    }
+
+    public class ChartDataset
+    {
+        public string Label { get; set; } = "";
+        public List<double> Data { get; set; } = new();
+        public string Color { get; set; } = "#8B5CF6";
+        public string? FillColor { get; set; }
+    }
+
+    public class SummaryItem
+    {
+        public string Label { get; set; } = "";
+        public string Value { get; set; } = "";
+    }
+}

@@ -1,0 +1,217 @@
+@* Calendar Widget component with month/week views and events *@
+
+<div class="@GetContainerClasses()">
+    @* Header *@
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+            @currentDate.ToString("MMMM yyyy")
+        </h3>
+        <div class="flex items-center gap-1">
+            <button type="button"
+                    class="p-1.5 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                    @onclick="PreviousMonth">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <button type="button"
+                    class="px-3 py-1 text-sm font-medium text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-500/10 rounded-lg"
+                    @onclick="GoToToday">
+                Today
+            </button>
+            <button type="button"
+                    class="p-1.5 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                    @onclick="NextMonth">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    @* Day headers *@
+    <div class="grid grid-cols-7 gap-px mb-2">
+        @foreach (var day in DayNames)
+        {
+            <div class="text-center text-xs font-medium text-gray-500 dark:text-gray-400 py-2">
+                @day
+            </div>
+        }
+    </div>
+
+    @* Calendar grid *@
+    <div class="grid grid-cols-7 gap-px bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+        @foreach (var week in GetCalendarWeeks())
+        {
+            @foreach (var day in week)
+            {
+                var isCurrentMonth = day.Month == currentDate.Month;
+                var isToday = day.Date == DateTime.Today;
+                var isSelected = day.Date == SelectedDate?.Date;
+                var dayEvents = GetEventsForDate(day);
+
+                <button type="button"
+                        class="@GetDayClasses(isCurrentMonth, isToday, isSelected)"
+                        @onclick="() => SelectDate(day)">
+                    <span class="@GetDayNumberClasses(isToday, isSelected)">@day.Day</span>
+                    @if (dayEvents.Any() && ShowEventDots)
+                    {
+                        <div class="flex justify-center gap-0.5 mt-1">
+                            @foreach (var evt in dayEvents.Take(3))
+                            {
+                                <span class="w-1.5 h-1.5 rounded-full @GetEventDotColor(evt.Color)"></span>
+                            }
+                        </div>
+                    }
+                </button>
+            }
+        }
+    </div>
+
+    @* Events for selected date *@
+    @if (ShowEventsList && SelectedDate.HasValue)
+    {
+        var selectedEvents = GetEventsForDate(SelectedDate.Value);
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                @SelectedDate.Value.ToString("dddd, MMMM d")
+            </h4>
+            @if (selectedEvents.Any())
+            {
+                <div class="space-y-2">
+                    @foreach (var evt in selectedEvents)
+                    {
+                        <div class="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <div class="w-1 h-full min-h-[2.5rem] rounded-full @GetEventBarColor(evt.Color)"></div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-medium text-gray-800 dark:text-gray-100 text-sm">@evt.Title</div>
+                                @if (!string.IsNullOrEmpty(evt.Time))
+                                {
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">@evt.Time</div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-sm text-gray-500 dark:text-gray-400">No events scheduled</p>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public List<CalendarEvent> Events { get; set; } = new();
+    [Parameter] public DateTime? SelectedDate { get; set; }
+    [Parameter] public EventCallback<DateTime?> SelectedDateChanged { get; set; }
+    [Parameter] public bool ShowEventDots { get; set; } = true;
+    [Parameter] public bool ShowEventsList { get; set; } = true;
+    [Parameter] public string? Class { get; set; }
+
+    private DateTime currentDate = DateTime.Today;
+    private static readonly string[] DayNames = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+
+    protected override void OnInitialized()
+    {
+        SelectedDate ??= DateTime.Today;
+    }
+
+    private void PreviousMonth() => currentDate = currentDate.AddMonths(-1);
+    private void NextMonth() => currentDate = currentDate.AddMonths(1);
+    private async Task GoToToday()
+    {
+        currentDate = DateTime.Today;
+        await SelectDate(DateTime.Today);
+    }
+
+    private async Task SelectDate(DateTime date)
+    {
+        SelectedDate = date;
+        await SelectedDateChanged.InvokeAsync(date);
+    }
+
+    private List<List<DateTime>> GetCalendarWeeks()
+    {
+        var weeks = new List<List<DateTime>>();
+        var firstOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+        var startDate = firstOfMonth.AddDays(-(int)firstOfMonth.DayOfWeek);
+
+        for (int week = 0; week < 6; week++)
+        {
+            var weekDays = new List<DateTime>();
+            for (int day = 0; day < 7; day++)
+            {
+                weekDays.Add(startDate.AddDays(week * 7 + day));
+            }
+            weeks.Add(weekDays);
+        }
+
+        return weeks;
+    }
+
+    private List<CalendarEvent> GetEventsForDate(DateTime date)
+    {
+        return Events.Where(e => e.Date.Date == date.Date).ToList();
+    }
+
+    private string GetContainerClasses()
+    {
+        return $"bg-white dark:bg-gray-800 rounded-xl p-5 {Class}".Trim();
+    }
+
+    private string GetDayClasses(bool isCurrentMonth, bool isToday, bool isSelected)
+    {
+        var baseClasses = "relative p-2 min-h-[3rem] bg-white dark:bg-gray-800 flex flex-col items-center transition-colors";
+        var monthClass = isCurrentMonth ? "" : "opacity-40";
+        var hoverClass = "hover:bg-gray-50 dark:hover:bg-gray-700/50";
+
+        return $"{baseClasses} {monthClass} {hoverClass}";
+    }
+
+    private string GetDayNumberClasses(bool isToday, bool isSelected)
+    {
+        var baseClasses = "w-7 h-7 flex items-center justify-center rounded-full text-sm font-medium";
+
+        if (isSelected)
+            return $"{baseClasses} bg-violet-500 text-white";
+        if (isToday)
+            return $"{baseClasses} bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400";
+
+        return $"{baseClasses} text-gray-700 dark:text-gray-300";
+    }
+
+    private string GetEventDotColor(string? color)
+    {
+        return color switch
+        {
+            "green" => "bg-green-500",
+            "yellow" => "bg-yellow-500",
+            "red" => "bg-red-500",
+            "blue" => "bg-blue-500",
+            _ => "bg-violet-500"
+        };
+    }
+
+    private string GetEventBarColor(string? color)
+    {
+        return color switch
+        {
+            "green" => "bg-green-500",
+            "yellow" => "bg-yellow-500",
+            "red" => "bg-red-500",
+            "blue" => "bg-blue-500",
+            _ => "bg-violet-500"
+        };
+    }
+
+    public class CalendarEvent
+    {
+        public string Title { get; set; } = "";
+        public DateTime Date { get; set; }
+        public string? Time { get; set; }
+        public string? Color { get; set; }
+        public string? Description { get; set; }
+    }
+}

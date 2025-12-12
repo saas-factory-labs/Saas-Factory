@@ -1,0 +1,11 @@
+@* Modal footer component *@
+
+<div class="px-5 py-4 border-t border-gray-100 dark:border-gray-700/60">
+    <div class="flex flex-wrap justify-end gap-2">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

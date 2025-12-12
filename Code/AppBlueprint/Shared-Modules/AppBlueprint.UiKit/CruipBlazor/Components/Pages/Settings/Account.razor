@@ -1,0 +1,114 @@
+@page "/settings/account"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Account Settings</h1>
+    </div>
+
+    <!-- Content -->
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl mb-8">
+        <div class="flex flex-col md:flex-row md:-mr-px">
+            <MosaicPortal.Web.Components.Settings.SettingsSidebar/>
+
+            <!-- Account Panel -->
+            <div class="grow">
+                <!-- Panel body -->
+                <div class="p-6 space-y-6">
+                    <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-5">My Account</h2>
+
+                    <!-- Picture -->
+                    <section>
+                        <div class="flex items-center">
+                            <div class="mr-4">
+                                <img class="w-20 h-20 rounded-full" src="images/user-avatar-80.png" width="80" height="80" alt="User upload"/>
+                            </div>
+                            <button class="btn-sm border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300 bg-white dark:bg-gray-800">Change</button>
+                        </div>
+                    </section>
+
+                    <!-- Business Profile -->
+                    <section>
+                        <h3 class="text-xl leading-snug text-gray-800 dark:text-gray-100 font-bold mb-1">Business Profile</h3>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.</div>
+                        <div class="sm:flex sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-5">
+                            <div class="sm:w-1/3">
+                                <label class="block text-sm font-medium mb-1" for="name">Business Name</label>
+                                <input id="name" class="form-input w-full dark:bg-gray-700" type="text" @bind="model.BusinessName"/>
+                            </div>
+                            <div class="sm:w-1/3">
+                                <label class="block text-sm font-medium mb-1" for="business-id">Business ID</label>
+                                <input id="business-id" class="form-input w-full dark:bg-gray-700" type="text" @bind="model.BusinessId"/>
+                            </div>
+                            <div class="sm:w-1/3">
+                                <label class="block text-sm font-medium mb-1" for="location">Location</label>
+                                <input id="location" class="form-input w-full dark:bg-gray-700" type="text" @bind="model.Location"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Email -->
+                    <section>
+                        <h3 class="text-xl leading-snug text-gray-800 dark:text-gray-100 font-bold mb-1">Email</h3>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia.</div>
+                        <div class="flex flex-wrap mt-5">
+                            <div class="mr-2">
+                                <label class="sr-only" for="email">Business email</label>
+                                <input id="email" class="form-input dark:bg-gray-700" type="email" @bind="model.Email"/>
+                            </div>
+                            <button class="btn border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300 bg-white dark:bg-gray-800">Change</button>
+                        </div>
+                    </section>
+
+                    <!-- Password -->
+                    <section>
+                        <h3 class="text-xl leading-snug text-gray-800 dark:text-gray-100 font-bold mb-1">Password</h3>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">You can set a permanent password if you don't want to use temporary login codes.</div>
+                        <div class="mt-5">
+                            <button class="btn border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300 bg-white dark:bg-gray-800">Set New Password</button>
+                        </div>
+                    </section>
+
+                    <!-- Smart Sync -->
+                    <section>
+                        <h3 class="text-xl leading-snug text-gray-800 dark:text-gray-100 font-bold mb-1">Smart Sync update for Mac</h3>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">With this update, online-only files will no longer appear to take up hard drive space.</div>
+                        <div class="flex items-center mt-5">
+                            <label class="relative inline-flex cursor-pointer">
+                                <input type="checkbox" @bind="model.SmartSync" class="sr-only peer"/>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-violet-500"></div>
+                            </label>
+                            <div class="text-sm text-gray-400 dark:text-gray-500 italic ml-2">@(model.SmartSync ? "On" : "Off")</div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Panel footer -->
+                <footer>
+                    <div class="flex flex-col px-6 py-5 border-t border-gray-200 dark:border-gray-700/60">
+                        <div class="flex self-end">
+                            <button class="btn border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300 bg-white dark:bg-gray-800">Cancel</button>
+                            <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white ml-3">Save Changes</button>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private AccountModel model = new();
+
+    private class AccountModel
+    {
+        public string BusinessName { get; set; } = "";
+        public string BusinessId { get; set; } = "";
+        public string Location { get; set; } = "";
+        public string Email { get; set; } = "";
+        public bool SmartSync { get; set; } = false;
+    }
+
+}

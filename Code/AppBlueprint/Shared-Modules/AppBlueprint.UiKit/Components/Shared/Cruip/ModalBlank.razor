@@ -1,0 +1,31 @@
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+@if (IsOpen)
+{
+    <!-- Modal backdrop -->
+    <div class="fixed inset-0 bg-gray-900/30 z-50 transition-opacity" aria-hidden="true" @onclick="Close"></div>
+
+    <!-- Modal dialog -->
+    <div id="@Id" class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center px-4 sm:px-6" role="dialog" aria-modal="true">
+        <div @ref="modalContentRef" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-auto max-w-lg w-full max-h-full">
+            @ChildContent
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private ElementReference modalContentRef;
+
+    private async Task Close()
+    {
+        IsOpen = false;
+        await IsOpenChanged.InvokeAsync(false);
+    }
+
+}

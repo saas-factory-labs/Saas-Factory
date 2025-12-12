@@ -1,0 +1,74 @@
+<tr class="cursor-pointer" @onclick="OnRowClick">
+    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+        <div class="flex items-center">
+            <label class="inline-flex">
+                <span class="sr-only">Select</span>
+                <input id="@Transaction.Id" class="form-checkbox" type="checkbox" checked="@IsSelected" @onchange="@HandleCheckboxChange" @onclick:stopPropagation />
+            </label>
+        </div>
+    </td>
+    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap md:w-1/2">
+        <div class="flex items-center">
+            <div class="w-9 h-9 shrink-0 mr-2 sm:mr-3">
+                <img class="rounded-full" src="@Transaction.Image" width="36" height="36" alt="@Transaction.Name" />
+            </div>
+            <div class="font-medium text-gray-800 dark:text-gray-100">@Transaction.Name</div>
+        </div>
+    </td>
+    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+        <div class="text-left">@Transaction.Date</div>
+    </td>
+    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+        <div class="text-left">
+            <div class="text-xs inline-flex font-medium rounded-full text-center px-2.5 py-1 @GetStatusColor(Transaction.Status)">@Transaction.Status</div>
+        </div>
+    </td>
+    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+        <div class="text-right font-medium @GetAmountColor(Transaction.Amount)">@Transaction.Amount</div>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public TransactionItem Transaction { get; set; } = new();
+
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<(string Id, bool IsChecked)> OnSelectionChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnRowClick { get; set; }
+
+    private void HandleCheckboxChange(ChangeEventArgs e)
+    {
+        var isChecked = (bool)(e.Value ?? false);
+        OnSelectionChanged.InvokeAsync((Transaction.Id, isChecked));
+    }
+
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "Completed" => "bg-green-500/20 text-green-700",
+            "Canceled" => "bg-red-500/20 text-red-700",
+            _ => "bg-gray-400/20 text-gray-500 dark:text-gray-400"
+        };
+    }
+
+    private string GetAmountColor(string amount)
+    {
+        return amount.StartsWith("+") ? "text-green-500" : "text-gray-800 dark:text-gray-300";
+    }
+
+    public class TransactionItem
+    {
+        public string Id { get; set; } = "";
+        public string Image { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string Date { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Amount { get; set; } = "";
+    }
+}

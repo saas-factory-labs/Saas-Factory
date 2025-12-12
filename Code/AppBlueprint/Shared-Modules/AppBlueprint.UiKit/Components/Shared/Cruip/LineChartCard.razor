@@ -1,0 +1,127 @@
+@* Line Chart Card component using Blazorise.Charts *@
+@using Blazorise.Charts
+
+<div class="@GetContainerClasses()">
+    @* Header *@
+    @if (!string.IsNullOrEmpty(Title) || HeaderActions != null)
+    {
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                @if (!string.IsNullOrEmpty(Title))
+                {
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@Title</h3>
+                }
+                @if (!string.IsNullOrEmpty(Subtitle))
+                {
+                    <p class="text-sm text-gray-500 dark:text-gray-400">@Subtitle</p>
+                }
+            </div>
+            @if (HeaderActions != null)
+            {
+                @HeaderActions
+            }
+        </div>
+    }
+
+    @* Stats summary *@
+    @if (ShowSummary && !string.IsNullOrEmpty(SummaryValue))
+    {
+        <div class="mb-4">
+            <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-bold text-gray-800 dark:text-gray-100">@SummaryValue</span>
+                @if (!string.IsNullOrEmpty(TrendValue))
+                {
+                    <span class="inline-flex items-center text-sm font-medium text-green-500">
+                        <svg class="w-3 h-3 mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                        @TrendValue
+                    </span>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(SummaryLabel))
+            {
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">@SummaryLabel</p>
+            }
+        </div>
+    }
+
+    @* Chart *@
+    <div style="height: @Height;">
+        <LineChart @ref="chart" TItem="double" Options="@chartOptions" />
+    </div>
+
+    @* Legend *@
+    @if (ShowLegend && Datasets != null && Datasets.Any())
+    {
+        <div class="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            @foreach (var dataset in Datasets)
+            {
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full" style="background-color: @dataset.Color"></span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">@dataset.Label</span>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string? SummaryValue { get; set; }
+    [Parameter] public string? SummaryLabel { get; set; }
+    [Parameter] public string? TrendValue { get; set; }
+    [Parameter] public bool ShowSummary { get; set; } = false;
+    [Parameter] public bool ShowLegend { get; set; } = true;
+    [Parameter] public string Height { get; set; } = "300px";
+    [Parameter] public List<string>? Labels { get; set; }
+    [Parameter] public List<ChartDataset>? Datasets { get; set; }
+    [Parameter] public RenderFragment? HeaderActions { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    private LineChart<double>? chart;
+    private LineChartOptions chartOptions = new()
+    {
+        Responsive = true,
+        MaintainAspectRatio = false
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && chart != null && Labels != null && Datasets != null)
+        {
+            await chart.Clear();
+
+            await chart.AddLabelsDatasetsAndUpdate(
+                Labels,
+                Datasets.Select(d => new LineChartDataset<double>
+                {
+                    Label = d.Label,
+                    Data = d.Data,
+                    BorderColor = d.Color,
+                    BackgroundColor = d.FillColor ?? "transparent",
+                    Fill = d.Fill,
+                    Tension = 0.4f,
+                    PointRadius = 0,
+                    PointHoverRadius = 4,
+                    BorderWidth = 2
+                }).ToArray()
+            );
+        }
+    }
+
+    private string GetContainerClasses()
+    {
+        return $"bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 {Class}".Trim();
+    }
+
+    public class ChartDataset
+    {
+        public string Label { get; set; } = "";
+        public List<double> Data { get; set; } = new();
+        public string Color { get; set; } = "#8B5CF6";
+        public string? FillColor { get; set; }
+        public bool Fill { get; set; } = false;
+    }
+}

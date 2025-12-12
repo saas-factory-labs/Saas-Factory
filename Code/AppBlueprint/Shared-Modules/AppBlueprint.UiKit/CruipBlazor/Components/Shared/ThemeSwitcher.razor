@@ -1,0 +1,194 @@
+@* Theme Switcher component with light/dark/system modes *@
+@inject IJSRuntime JS
+
+<div class="relative inline-flex">
+    @if (Variant == "dropdown")
+    {
+        <button type="button"
+                class="@GetButtonClasses()"
+                @onclick="ToggleDropdown"
+                title="Change theme">
+            @GetCurrentThemeIcon()
+            @if (ShowLabel)
+            {
+                <span class="ml-2">@GetCurrentThemeLabel()</span>
+            }
+            <svg class="shrink-0 ml-2 text-gray-400" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" fill="currentColor"/>
+            </svg>
+        </button>
+
+        @if (IsOpen)
+        {
+            <div class="@GetDropdownClasses()" @onclick="() => IsOpen = false">
+                @foreach (var theme in Themes)
+                {
+                    <button type="button"
+                            class="@GetOptionClasses(theme.Id)"
+                            @onclick="() => SelectTheme(theme.Id)">
+                        <span class="flex items-center w-full">
+                            @if (theme.Id == CurrentTheme)
+                            {
+                                <svg class="shrink-0 mr-2 text-violet-500" width="12" height="12" viewBox="0 0 12 12">
+                                    <path d="M10.28 1.28L3.989 7.575 1.695 5.28A1 1 0 00.28 6.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 1.28z" fill="currentColor"/>
+                                </svg>
+                            }
+                            else
+                            {
+                                <span class="shrink-0 mr-2 w-3"></span>
+                            }
+                            <span>@theme.Label</span>
+                        </span>
+                    </button>
+                }
+            </div>
+        }
+
+        @if (IsOpen)
+        {
+            <div class="fixed inset-0 z-40" @onclick="() => IsOpen = false"></div>
+        }
+    }
+    else if (Variant == "toggle")
+    {
+        <div class="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-700 rounded-lg">
+            @foreach (var theme in Themes)
+            {
+                <button type="button"
+                        class="@GetToggleButtonClasses(theme.Id)"
+                        @onclick="() => SelectTheme(theme.Id)"
+                        title="@theme.Label">
+                    @theme.Icon
+                </button>
+            }
+        </div>
+    }
+    else
+    {
+        @* Simple button toggle *@
+        <button type="button"
+                class="@GetButtonClasses()"
+                @onclick="ToggleTheme"
+                title="Toggle theme">
+            @GetCurrentThemeIcon()
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter] public string Variant { get; set; } = "simple";
+    [Parameter] public bool ShowLabel { get; set; } = false;
+    [Parameter] public string Size { get; set; } = "md";
+    [Parameter] public EventCallback<string> OnThemeChanged { get; set; }
+
+    private bool IsOpen { get; set; }
+    private string CurrentTheme { get; set; } = "system";
+
+    private List<ThemeOption> Themes = new();
+
+    protected override void OnInitialized()
+    {
+        Themes = new List<ThemeOption>
+        {
+            new() { Id = "light", Label = "Light", Icon = GetLightIcon() },
+            new() { Id = "dark", Label = "Dark", Icon = GetDarkIcon() },
+            new() { Id = "system", Label = "System", Icon = GetSystemIcon() }
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            CurrentTheme = await JS.InvokeAsync<string>("themeManager.getTheme") ?? "system";
+            StateHasChanged();
+        }
+    }
+
+    private void ToggleDropdown() => IsOpen = !IsOpen;
+
+    private async Task ToggleTheme()
+    {
+        await JS.InvokeVoidAsync("themeManager.toggleDarkMode");
+        CurrentTheme = await JS.InvokeAsync<string>("themeManager.getTheme") ?? "system";
+        await OnThemeChanged.InvokeAsync(CurrentTheme);
+    }
+
+    private async Task SelectTheme(string themeId)
+    {
+        CurrentTheme = themeId;
+        await JS.InvokeVoidAsync("themeManager.setTheme", themeId);
+        IsOpen = false;
+        await OnThemeChanged.InvokeAsync(themeId);
+    }
+
+    private string GetCurrentThemeLabel() => Themes.FirstOrDefault(t => t.Id == CurrentTheme)?.Label ?? "System";
+
+    private RenderFragment GetCurrentThemeIcon() => CurrentTheme switch
+    {
+        "light" => GetLightIcon(),
+        "dark" => GetDarkIcon(),
+        _ => GetSystemIcon()
+    };
+
+    private string GetButtonClasses()
+    {
+        var sizeClasses = Size switch
+        {
+            "sm" => "p-1.5",
+            "lg" => "p-3",
+            _ => "p-2"
+        };
+
+        return $"flex items-center justify-center {sizeClasses} rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors";
+    }
+
+    private string GetDropdownClasses()
+    {
+        return "absolute z-50 top-full right-0 mt-2 w-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden py-1";
+    }
+
+    private string GetOptionClasses(string themeId)
+    {
+        var baseClasses = "flex items-center w-full px-3 py-2 text-sm transition-colors";
+        return themeId == CurrentTheme
+            ? $"{baseClasses} text-violet-500"
+            : $"{baseClasses} text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50";
+    }
+
+    private string GetToggleButtonClasses(string themeId)
+    {
+        var sizeClasses = Size switch
+        {
+            "sm" => "p-1",
+            "lg" => "p-2.5",
+            _ => "p-1.5"
+        };
+
+        var baseClasses = $"flex items-center justify-center {sizeClasses} rounded-md transition-colors";
+        return themeId == CurrentTheme
+            ? $"{baseClasses} bg-white dark:bg-gray-600 text-violet-500 shadow-sm"
+            : $"{baseClasses} text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200";
+    }
+
+    private static RenderFragment GetLightIcon() => @<svg class="w-4 h-4 fill-current" viewBox="0 0 16 16">
+                                                        <path d="M7 0h2v2H7zM12.88 1.637l1.414 1.415-1.415 1.413-1.413-1.414zM14 7h2v2h-2zM12.95 14.433l-1.414-1.413 1.413-1.415 1.415 1.414zM7 14h2v2H7zM2.98 14.364l-1.413-1.415 1.414-1.414 1.414 1.415zM0 7h2v2H0zM3.05 1.706 4.463 3.12 3.05 4.535 1.636 3.12z"/>
+                                                        <path d="M8 4C5.8 4 4 5.8 4 8s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4z"/>
+                                                    </svg>;
+
+    private static RenderFragment GetDarkIcon() => @<svg class="w-4 h-4 fill-current" viewBox="0 0 16 16">
+                                                       <path d="M6.2 1C3.2 1.8 1 4.6 1 7.9 1 11.8 4.2 15 8.1 15c3.3 0 6-2.2 6.9-5.2C9.7 11.2 4.8 6.3 6.2 1z"/>
+                                                   </svg>;
+
+    private static RenderFragment GetSystemIcon() => @<svg class="w-4 h-4 fill-current" viewBox="0 0 16 16">
+                                                         <path d="M8 1c-3.9 0-7 3.1-7 7s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7zM8 13c-2.8 0-5-2.2-5-5s2.2-5 5-5V13z"/>
+                                                     </svg>;
+
+    private class ThemeOption
+    {
+        public string Id { get; set; } = "";
+        public string Label { get; set; } = "";
+        public RenderFragment? Icon { get; set; }
+    }
+
+}

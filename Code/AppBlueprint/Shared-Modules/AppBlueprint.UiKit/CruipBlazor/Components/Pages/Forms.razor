@@ -1,0 +1,307 @@
+@page "/forms"
+@using MosaicPortal.Web.Components.Shared
+
+<PageTitle>Form Components - Mosaic</PageTitle>
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+@* Page header *@
+<div class="mb-8">
+    <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Form Components</h1>
+    <p class="text-gray-600 dark:text-gray-400 mt-1">A collection of styled form elements for building interfaces.</p>
+</div>
+
+<div class="grid grid-cols-12 gap-6">
+@* Text Inputs *@
+<div class="col-span-full xl:col-span-6">
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Text Inputs</h2>
+        <div class="space-y-4">
+            <FormInput
+                Label="Default Input"
+                Placeholder="Enter text..."
+                @bind-Value="textValue"/>
+
+            <FormInput
+                Label="With Help Text"
+                Placeholder="Enter email..."
+                Type="email"
+                HelpText="We'll never share your email with anyone."
+                @bind-Value="emailValue"/>
+
+            <FormInput
+                Label="With Error"
+                Placeholder="Enter username..."
+                HasError="true"
+                ErrorMessage="Username is already taken."
+                Value="johndoe"/>
+
+            <FormInput
+                Label="With Icon"
+                Placeholder="Search..."
+                @bind-Value="searchValue">
+                <PrefixIcon>
+                    <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16">
+                        <path d="M7 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zM7 2C4.243 2 2 4.243 2 7s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5z"/>
+                        <path d="M15.707 14.293L13.314 11.9a8.019 8.019 0 01-1.414 1.414l2.393 2.393a.997.997 0 001.414 0 .999.999 0 000-1.414z"/>
+                    </svg>
+                </PrefixIcon>
+            </FormInput>
+
+            <FormInput
+                Label="Disabled"
+                Placeholder="Disabled input"
+                Disabled="true"
+                Value="Cannot edit this"/>
+
+            <div class="grid grid-cols-3 gap-3">
+                <FormInput Label="Small" Size="sm" Placeholder="Small"/>
+                <FormInput Label="Medium" Size="md" Placeholder="Medium"/>
+                <FormInput Label="Large" Size="lg" Placeholder="Large"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* TextArea *@
+<div class="col-span-full xl:col-span-6">
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Text Areas</h2>
+        <div class="space-y-4">
+            <FormTextArea
+                Label="Description"
+                Placeholder="Enter a description..."
+                @bind-Value="descriptionValue"/>
+
+            <FormTextArea
+                Label="With Error"
+                Placeholder="Enter content..."
+                HasError="true"
+                ErrorMessage="Content is required."
+                Rows="3"/>
+
+            <FormTextArea
+                Label="Non-resizable"
+                Placeholder="Fixed size textarea..."
+                Resizable="false"
+                Rows="3"/>
+        </div>
+    </div>
+</div>
+
+@* Select Dropdowns *@
+<div class="col-span-full xl:col-span-6">
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Select Dropdowns</h2>
+        <div class="space-y-4">
+            <FormSelect
+                Label="Country"
+                Placeholder="Select a country..."
+                Options="@countryOptions"
+                @bind-Value="selectedCountry"/>
+
+            <FormSelect
+                Label="With Error"
+                Placeholder="Select an option..."
+                Options="@categoryOptions"
+                HasError="true"
+                ErrorMessage="Please select a category."/>
+
+            <FormSelect
+                Label="Disabled"
+                Placeholder="Cannot select..."
+                Options="@categoryOptions"
+                Disabled="true"/>
+
+            <div class="grid grid-cols-3 gap-3">
+                <FormSelect Label="Small" Size="sm" Options="@sizeOptions" Placeholder="Small"/>
+                <FormSelect Label="Medium" Size="md" Options="@sizeOptions" Placeholder="Medium"/>
+                <FormSelect Label="Large" Size="lg" Options="@sizeOptions" Placeholder="Large"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Checkboxes and Radio Buttons *@
+<div class="col-span-full xl:col-span-6">
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Checkboxes & Radio Buttons</h2>
+        <div class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">Checkboxes</label>
+                <div class="space-y-2">
+                    <FormCheckbox Label="Default checkbox" @bind-Checked="check1"/>
+                    <FormCheckbox Label="Checked by default" @bind-Checked="check2"/>
+                    <FormCheckbox Label="Disabled checkbox" Disabled="true"/>
+                    <FormCheckbox Label="With help text" HelpText="Additional information about this option." @bind-Checked="check3"/>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">Checkbox Colors</label>
+                <div class="flex flex-wrap gap-4">
+                    <FormCheckbox Label="Violet" Variant="violet" Checked="true"/>
+                    <FormCheckbox Label="Sky" Variant="sky" Checked="true"/>
+                    <FormCheckbox Label="Green" Variant="green" Checked="true"/>
+                    <FormCheckbox Label="Red" Variant="red" Checked="true"/>
+                </div>
+            </div>
+
+            <div>
+                <FormRadioGroup
+                    Label="Radio Group (Vertical)"
+                    Name="plan"
+                    Options="@planOptions"
+                    @bind-Value="selectedPlan"/>
+            </div>
+
+            <div>
+                <FormRadioGroup
+                    Label="Radio Group (Horizontal)"
+                    Name="size"
+                    Layout="horizontal"
+                    Options="@shirtSizeOptions"
+                    @bind-Value="selectedSize"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Toggle Switches *@
+<div class="col-span-full xl:col-span-6">
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Toggle Switches</h2>
+        <div class="space-y-4">
+            <FormToggle Label="Enable notifications" @bind-Checked="toggle1"/>
+            <FormToggle Label="Dark mode" @bind-Checked="toggle2"/>
+            <FormToggle Label="Disabled toggle" Disabled="true"/>
+            <FormToggle Label="With help text" HelpText="Turn this on to receive updates." @bind-Checked="toggle3"/>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">Toggle Colors</label>
+                <div class="space-y-2">
+                    <FormToggle Label="Violet" Variant="violet" Checked="true"/>
+                    <FormToggle Label="Sky" Variant="sky" Checked="true"/>
+                    <FormToggle Label="Green" Variant="green" Checked="true"/>
+                    <FormToggle Label="Red" Variant="red" Checked="true"/>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">Toggle Sizes</label>
+                <div class="space-y-2">
+                    <FormToggle Label="Small" Size="sm" Checked="true"/>
+                    <FormToggle Label="Medium" Size="md" Checked="true"/>
+                    <FormToggle Label="Large" Size="lg" Checked="true"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Date Pickers *@
+<div class="col-span-full xl:col-span-6">
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Date Pickers</h2>
+        <div class="space-y-4">
+            <FormDatePicker
+                Label="Date"
+                @bind-Value="dateValue"/>
+
+            <FormDatePicker
+                Label="Date with Time"
+                IncludeTime="true"
+                @bind-Value="dateTimeValue"/>
+
+            <FormDatePicker
+                Label="With Min/Max"
+                MinDate="@DateTime.Today"
+                MaxDate="@DateTime.Today.AddMonths(3)"
+                HelpText="Select a date within the next 3 months."
+                @bind-Value="constrainedDate"/>
+
+            <FormDatePicker
+                Label="With Error"
+                HasError="true"
+                ErrorMessage="Please select a valid date."
+                @bind-Value="errorDate"/>
+
+            <FormDatePicker
+                Label="Disabled"
+                Disabled="true"
+                Value="@DateTime.Today"/>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+@code {
+
+    // Text inputs
+    private string textValue = "";
+    private string emailValue = "";
+    private string searchValue = "";
+    private string descriptionValue = "";
+
+    // Select options
+    private string selectedCountry = "";
+
+    private List<FormSelect.SelectOption> countryOptions = new()
+    {
+        new() { Value = "us", Label = "United States" },
+        new() { Value = "uk", Label = "United Kingdom" },
+        new() { Value = "ca", Label = "Canada" },
+        new() { Value = "au", Label = "Australia" },
+        new() { Value = "de", Label = "Germany" },
+        new() { Value = "fr", Label = "France" }
+    };
+
+    private List<FormSelect.SelectOption> categoryOptions = new()
+    {
+        new() { Value = "tech", Label = "Technology" },
+        new() { Value = "design", Label = "Design" },
+        new() { Value = "marketing", Label = "Marketing" }
+    };
+
+    private List<FormSelect.SelectOption> sizeOptions = new()
+    {
+        new() { Value = "1", Label = "Option 1" },
+        new() { Value = "2", Label = "Option 2" }
+    };
+
+    // Checkboxes
+    private bool check1;
+    private bool check2 = true;
+    private bool check3;
+
+    // Radio options
+    private string selectedPlan = "starter";
+
+    private List<FormRadioGroup.RadioOption> planOptions = new()
+    {
+        new() { Value = "starter", Label = "Starter Plan" },
+        new() { Value = "pro", Label = "Pro Plan" },
+        new() { Value = "enterprise", Label = "Enterprise Plan" }
+    };
+
+    private string selectedSize = "m";
+
+    private List<FormRadioGroup.RadioOption> shirtSizeOptions = new()
+    {
+        new() { Value = "s", Label = "S" },
+        new() { Value = "m", Label = "M" },
+        new() { Value = "l", Label = "L" },
+        new() { Value = "xl", Label = "XL" }
+    };
+
+    // Toggles
+    private bool toggle1 = true;
+    private bool toggle2;
+    private bool toggle3;
+
+    // Date pickers
+    private DateTime? dateValue = DateTime.Today;
+    private DateTime? dateTimeValue = DateTime.Now;
+    private DateTime? constrainedDate;
+    private DateTime? errorDate;
+}

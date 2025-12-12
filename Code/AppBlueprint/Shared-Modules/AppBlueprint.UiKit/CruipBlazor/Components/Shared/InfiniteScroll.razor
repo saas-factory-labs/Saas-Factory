@@ -1,0 +1,104 @@
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+@if (IsLoading)
+{
+    <div class="@GetLoadingClasses()">
+        @if (LoadingTemplate != null)
+        {
+            @LoadingTemplate
+        }
+        else
+        {
+            <div class="flex items-center justify-center gap-3">
+                <div class="animate-spin rounded-full h-6 w-6 border-2 border-violet-500 border-t-transparent"></div>
+                <span class="text-sm text-gray-500 dark:text-gray-400">@LoadingText</span>
+            </div>
+        }
+    </div>
+}
+
+@* End of content *@
+@if (HasReachedEnd && !IsLoading)
+{
+    <div class="@GetEndClasses()">
+        @if (EndTemplate != null)
+        {
+            @EndTemplate
+        }
+        else
+        {
+            <span class="text-sm text-gray-400 dark:text-gray-500">@EndText</span>
+        }
+    </div>
+}
+
+@* Sentinel element for intersection observer *@
+@if (!HasReachedEnd)
+{
+    <div @ref="sentinelRef" class="h-px w-full"></div>
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? LoadingTemplate { get; set; }
+    [Parameter] public RenderFragment? EndTemplate { get; set; }
+    [Parameter] public EventCallback OnLoadMore { get; set; }
+    [Parameter] public bool IsLoading { get; set; } = false;
+    [Parameter] public bool HasReachedEnd { get; set; } = false;
+    [Parameter] public string LoadingText { get; set; } = "Loading more...";
+    [Parameter] public string EndText { get; set; } = "You've reached the end";
+    [Parameter] public int Threshold { get; set; } = 100;
+    [Parameter] public string? Class { get; set; }
+
+    private ElementReference sentinelRef;
+    private DotNetObjectReference<InfiniteScroll>? objRef;
+    private bool isInitialized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("infiniteScrollManager.initialize", sentinelRef, objRef, Threshold);
+            isInitialized = true;
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnIntersect()
+    {
+        if (!IsLoading && !HasReachedEnd)
+        {
+            await OnLoadMore.InvokeAsync();
+        }
+    }
+
+    private string GetLoadingClasses()
+    {
+        return "flex items-center justify-center py-8";
+    }
+
+    private string GetEndClasses()
+    {
+        return "flex items-center justify-center py-8 border-t border-gray-200 dark:border-gray-700";
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (isInitialized)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("infiniteScrollManager.disconnect", sentinelRef);
+            }
+            catch
+            {
+                // Ignored
+            }
+        }
+
+        objRef?.Dispose();
+    }
+
+}

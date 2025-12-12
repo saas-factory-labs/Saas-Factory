@@ -1,0 +1,289 @@
+@page "/layouts"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Layout Components</h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-2">Grids, cards, galleries, and content layouts</p>
+    </div>
+
+    <div class="space-y-8">
+
+        <!-- Content Cards Section -->
+        <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Content Cards</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Versatile cards with multiple layout variants</p>
+
+            <div class="space-y-8">
+                <!-- Default Cards -->
+                <div>
+                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Default Cards</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <ContentCard ImageUrl="https://picsum.photos/seed/card1/400/225"
+                                     Category="Technology"
+                                     Title="Getting Started with Blazor"
+                                     Description="Learn the fundamentals of building interactive web applications with Blazor and .NET."
+                                     Href="#">
+                            <Meta>
+                                <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                                    <span>5 min read</span>
+                                    <span>•</span>
+                                    <span>Nov 20, 2024</span>
+                                </div>
+                            </Meta>
+                        </ContentCard>
+
+                        <ContentCard ImageUrl="https://picsum.photos/seed/card2/400/225"
+                                     Badge="New"
+                                     BadgeVariant="success"
+                                     Category="Design"
+                                     Title="Tailwind CSS v4 Features"
+                                     Description="Explore the latest features and improvements in Tailwind CSS version 4."
+                                     Href="#">
+                            <Footer>
+                                <div class="flex items-center gap-2">
+                                    <img src="https://i.pravatar.cc/32?img=1" class="w-6 h-6 rounded-full" alt="Author"/>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">Jane Doe</span>
+                                </div>
+                                <button class="text-violet-500 hover:text-violet-600 text-sm font-medium">Read More</button>
+                            </Footer>
+                        </ContentCard>
+
+                        <ContentCard ImageUrl="https://picsum.photos/seed/card3/400/225"
+                                     Badge="Featured"
+                                     Category="Tutorial"
+                                     Title="Building Real-time Apps"
+                                     Description="A comprehensive guide to creating real-time applications with SignalR."
+                                     Href="#"/>
+                    </div>
+                </div>
+
+                <!-- Horizontal Cards -->
+                <div>
+                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Horizontal Cards</h3>
+                    <div class="space-y-4">
+                        <ContentCard Variant="horizontal"
+                                     ImageUrl="https://picsum.photos/seed/hcard1/200/200"
+                                     Title="Horizontal Card Layout"
+                                     Description="Great for article listings, search results, or compact content displays."
+                                     Category="Layout"
+                                     Href="#"/>
+
+                        <ContentCard Variant="horizontal"
+                                     ImageUrl="https://picsum.photos/seed/hcard2/200/200"
+                                     Title="Product Showcase"
+                                     Description="Perfect for e-commerce product listings with side-by-side image and details."
+                                     Category="E-Commerce"
+                                     Badge="Sale"
+                                     BadgeVariant="danger"
+                                     Href="#"/>
+                    </div>
+                </div>
+
+                <!-- Minimal Cards -->
+                <div>
+                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Minimal Cards</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        @foreach (var i in Enumerable.Range(1, 4))
+                        {
+                            <ContentCard Variant="minimal"
+                                         Title="@($"Card Item {i}")"
+                                         Description="A simple, minimal card style with subtle borders."
+                                         AvatarUrl="@($"https://i.pravatar.cc/40?img={i}")"
+                                         Href="#">
+                                <Header>
+                                    <div class="text-sm font-medium text-gray-800 dark:text-gray-100">User @i</div>
+                                    <div class="text-xs text-gray-500">2 hours ago</div>
+                                </Header>
+                            </ContentCard>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Masonry Grid Section -->
+        <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Masonry Grid</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Pinterest-style layout with variable height items</p>
+
+            <MasonryGrid Items="@masonryItems"
+                         ColumnsSm="1"
+                         ColumnsMd="2"
+                         ColumnsLg="3"
+                         ColumnsXl="4"
+                         Gap="1rem">
+                <ItemTemplate>
+                    <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg overflow-hidden">
+                        <img src="@context.ImageUrl" alt="@context.Title" class="w-full"/>
+                        <div class="p-4">
+                            <h4 class="font-medium text-gray-800 dark:text-gray-100 mb-1">@context.Title</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">@context.Description</p>
+                        </div>
+                    </div>
+                </ItemTemplate>
+            </MasonryGrid>
+        </div>
+
+        <!-- Image Gallery Section -->
+        <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Image Gallery</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Grid gallery with lightbox viewer</p>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Grid Layout</h3>
+                    <ImageGallery Images="@galleryImages"
+                                  Layout="grid"
+                                  ColumnsSm="2"
+                                  ColumnsMd="3"
+                                  ColumnsLg="4"
+                                  AspectRatio="square"
+                                  Gap="4"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- Infinite Scroll Section -->
+        <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Infinite Scroll</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Load more content as you scroll</p>
+
+            <div class="max-h-[400px] overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg">
+                <InfiniteScroll OnLoadMore="LoadMoreItems"
+                                IsLoading="@isLoadingMore"
+                                HasReachedEnd="@hasReachedEnd"
+                                Threshold="100">
+                    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                        @foreach (var (item, index) in scrollItems.Select((x, i) => (x, i)))
+                        {
+                            <div class="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 font-medium">
+                                    @(index + 1)
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-medium text-gray-800 dark:text-gray-100">@item.Title</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400 truncate">@item.Description</div>
+                                </div>
+                                <span class="text-xs text-gray-400 dark:text-gray-500">@item.Time</span>
+                            </div>
+                        }
+                    </div>
+                </InfiniteScroll>
+            </div>
+            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                Loaded @scrollItems.Count items. Scroll down to load more.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+@code {
+
+    // Masonry Grid Data
+    private List<MasonryItem> masonryItems = new()
+    {
+        new() { Title = "Mountain View", Description = "Beautiful landscape photography", ImageUrl = "https://picsum.photos/seed/m1/400/300" },
+        new() { Title = "City Lights", Description = "Urban nightscape", ImageUrl = "https://picsum.photos/seed/m2/400/500" },
+        new() { Title = "Ocean Waves", Description = "Calming beach scene", ImageUrl = "https://picsum.photos/seed/m3/400/250" },
+        new() { Title = "Forest Path", Description = "Nature trail adventure", ImageUrl = "https://picsum.photos/seed/m4/400/400" },
+        new() { Title = "Desert Sunset", Description = "Golden hour in the desert", ImageUrl = "https://picsum.photos/seed/m5/400/350" },
+        new() { Title = "Snow Peaks", Description = "Winter mountain scenery", ImageUrl = "https://picsum.photos/seed/m6/400/280" },
+        new() { Title = "Waterfall", Description = "Majestic waterfall", ImageUrl = "https://picsum.photos/seed/m7/400/450" },
+        new() { Title = "Flower Field", Description = "Spring blooms", ImageUrl = "https://picsum.photos/seed/m8/400/320" }
+    };
+
+    // Image Gallery Data
+    private List<ImageGallery.GalleryImage> galleryImages = Enumerable.Range(1, 8).Select(i => new ImageGallery.GalleryImage
+    {
+        ThumbnailUrl = $"https://picsum.photos/seed/gallery{i}/300/300",
+        FullUrl = $"https://picsum.photos/seed/gallery{i}/1200/800",
+        Alt = $"Gallery Image {i}",
+        Caption = $"Photo {i} - Beautiful landscape photography"
+    }).ToList();
+
+    // Infinite Scroll Data
+    private List<ScrollItem> scrollItems = new();
+    private bool isLoadingMore;
+    private bool hasReachedEnd;
+    private int loadedBatches;
+    private const int MaxBatches = 5;
+    private const int BatchSize = 10;
+
+    protected override void OnInitialized()
+    {
+        // Load initial items
+        LoadInitialItems();
+    }
+
+    private void LoadInitialItems()
+    {
+        scrollItems = GenerateItems(0, BatchSize);
+        loadedBatches = 1;
+    }
+
+    private async Task LoadMoreItems()
+    {
+        if (isLoadingMore || hasReachedEnd) return;
+
+        isLoadingMore = true;
+        StateHasChanged();
+
+        // Simulate network delay
+        await Task.Delay(1000);
+
+        var newItems = GenerateItems(scrollItems.Count, BatchSize);
+        scrollItems.AddRange(newItems);
+        loadedBatches++;
+
+        if (loadedBatches >= MaxBatches)
+        {
+            hasReachedEnd = true;
+        }
+
+        isLoadingMore = false;
+        StateHasChanged();
+    }
+
+    private List<ScrollItem> GenerateItems(int startIndex, int count)
+    {
+        var titles = new[] { "Project Update", "Meeting Notes", "Task Completed", "New Feature", "Bug Report", "Design Review", "Code Review", "Documentation", "Release Notes", "Sprint Planning" };
+        var descriptions = new[]
+        {
+            "Updated the project timeline and milestones",
+            "Notes from the weekly team sync meeting",
+            "Successfully completed the assigned task",
+            "New feature implementation is ready for review",
+            "Critical bug identified in production",
+            "UI/UX design review session scheduled",
+            "Pull request needs code review",
+            "Technical documentation has been updated",
+            "Version 2.0 release notes published",
+            "Next sprint planning session agenda"
+        };
+
+        return Enumerable.Range(startIndex, count).Select(i => new ScrollItem
+        {
+            Title = titles[i % titles.Length],
+            Description = descriptions[i % descriptions.Length],
+            Time = $"{(i % 24) + 1}h ago"
+        }).ToList();
+    }
+
+    private class MasonryItem
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string ImageUrl { get; set; } = "";
+    }
+
+    private class ScrollItem
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Time { get; set; } = "";
+    }
+
+}

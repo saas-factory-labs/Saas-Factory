@@ -1,0 +1,173 @@
+@* Image Gallery component with lightbox *@
+@inject IJSRuntime JS
+
+<div class="@GetContainerClasses()">
+    @foreach (var (image, index) in Images.Select((img, i) => (img, i)))
+    {
+        <div class="@GetImageWrapperClasses()"
+             @onclick="() => OpenLightbox(index)">
+            <img src="@image.ThumbnailUrl"
+                 alt="@image.Alt"
+                 class="@GetImageClasses()"
+                 loading="lazy"/>
+            <div class="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors duration-200 flex items-center justify-center opacity-0 hover:opacity-100">
+                <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                </svg>
+            </div>
+            @if (!string.IsNullOrEmpty(image.Caption))
+            {
+                <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity">
+                    <p class="text-sm text-white truncate">@image.Caption</p>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@* Lightbox *@
+@if (isLightboxOpen && currentIndex >= 0 && currentIndex < Images.Count)
+{
+    var currentImage = Images[currentIndex];
+
+    <div class="fixed inset-0 z-50 bg-black/95" @onclick="CloseLightbox">
+        @* Close button *@
+        <button type="button"
+                class="absolute top-4 right-4 z-10 p-2 text-white/70 hover:text-white transition-colors"
+                @onclick="CloseLightbox"
+                @onclick:stopPropagation="true">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+
+        @* Navigation buttons *@
+        @if (Images.Count > 1)
+        {
+            <button type="button"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 text-white/70 hover:text-white transition-colors disabled:opacity-30"
+                    disabled="@(currentIndex == 0)"
+                    @onclick="PreviousImage"
+                    @onclick:stopPropagation="true">
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
+            <button type="button"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 text-white/70 hover:text-white transition-colors disabled:opacity-30"
+                    disabled="@(currentIndex == Images.Count - 1)"
+                    @onclick="NextImage"
+                    @onclick:stopPropagation="true">
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+        }
+
+        @* Image *@
+        <div class="flex items-center justify-center h-full p-12" @onclick:stopPropagation="true">
+            <img src="@currentImage.FullUrl"
+                 alt="@currentImage.Alt"
+                 class="max-w-full max-h-full object-contain"/>
+        </div>
+
+        @* Caption and counter *@
+        <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+            <div class="flex items-center justify-between text-white">
+                <p class="text-sm">@currentImage.Caption</p>
+                <span class="text-sm text-white/70">@(currentIndex + 1) / @Images.Count</span>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter] public List<GalleryImage> Images { get; set; } = new();
+    [Parameter] public string Layout { get; set; } = "grid"; // grid, masonry
+    [Parameter] public int Columns { get; set; } = 4;
+    [Parameter] public int ColumnsSm { get; set; } = 2;
+    [Parameter] public int ColumnsMd { get; set; } = 3;
+    [Parameter] public int ColumnsLg { get; set; } = 4;
+    [Parameter] public string Gap { get; set; } = "4";
+    [Parameter] public string AspectRatio { get; set; } = "square"; // square, video, auto
+    [Parameter] public bool ShowLightbox { get; set; } = true;
+    [Parameter] public string? Class { get; set; }
+
+    private bool isLightboxOpen;
+    private int currentIndex;
+
+    private void OpenLightbox(int index)
+    {
+        if (ShowLightbox)
+        {
+            currentIndex = index;
+            isLightboxOpen = true;
+        }
+    }
+
+    private void CloseLightbox()
+    {
+        isLightboxOpen = false;
+    }
+
+    private void NextImage()
+    {
+        if (currentIndex < Images.Count - 1)
+        {
+            currentIndex++;
+        }
+    }
+
+    private void PreviousImage()
+    {
+        if (currentIndex > 0)
+        {
+            currentIndex--;
+        }
+    }
+
+    private string GetContainerClasses()
+    {
+        if (Layout == "masonry")
+        {
+            return $"columns-{ColumnsSm} md:columns-{ColumnsMd} lg:columns-{ColumnsLg} gap-{Gap} {Class}".Trim();
+        }
+
+        return $"grid grid-cols-{ColumnsSm} md:grid-cols-{ColumnsMd} lg:grid-cols-{ColumnsLg} gap-{Gap} {Class}".Trim();
+    }
+
+    private string GetImageWrapperClasses()
+    {
+        var baseClasses = "relative overflow-hidden rounded-lg cursor-pointer group";
+
+        if (Layout == "masonry")
+        {
+            return $"{baseClasses} mb-{Gap} break-inside-avoid";
+        }
+
+        var aspectClass = AspectRatio switch
+        {
+            "video" => "aspect-video",
+            "auto" => "",
+            _ => "aspect-square"
+        };
+
+        return $"{baseClasses} {aspectClass}";
+    }
+
+    private string GetImageClasses()
+    {
+        return "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300";
+    }
+
+    public class GalleryImage
+    {
+        public string ThumbnailUrl { get; set; } = "";
+        public string FullUrl { get; set; } = "";
+        public string? Alt { get; set; }
+        public string? Caption { get; set; }
+    }
+
+}

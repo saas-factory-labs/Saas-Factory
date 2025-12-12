@@ -1,0 +1,205 @@
+@* Progress Tracker component with steps/milestones *@
+
+<div class="@GetContainerClasses()">
+    @* Header *@
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@Title</h3>
+                @if (!string.IsNullOrEmpty(Description))
+                {
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">@Description</p>
+                }
+            </div>
+            @if (ShowPercentage)
+            {
+                <div class="text-right">
+                    <span class="text-2xl font-bold text-gray-800 dark:text-gray-100">@GetCompletionPercentage()%</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 block">Complete</span>
+                </div>
+            }
+        </div>
+    }
+
+    @* Progress bar (optional) *@
+    @if (ShowProgressBar)
+    {
+        <div class="mb-6">
+            <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div class="h-full bg-violet-500 rounded-full transition-all duration-500"
+                     style="width: @GetCompletionPercentage()%"></div>
+            </div>
+        </div>
+    }
+
+    @* Steps *@
+    <div class="@GetStepsContainerClasses()">
+        @foreach (var (step, index) in Steps.Select((s, i) => (s, i)))
+        {
+            var isCompleted = step.Status == "completed";
+            var isCurrent = step.Status == "current";
+            var isLast = index == Steps.Count - 1;
+
+            @if (Variant == "horizontal")
+            {
+                <div class="flex-1 relative">
+                    @* Connector line *@
+                    @if (!isLast)
+                    {
+                        <div class="absolute top-4 left-1/2 w-full h-0.5 @(isCompleted ? "bg-violet-500" : "bg-gray-200 dark:bg-gray-700")"></div>
+                    }
+
+                    <div class="relative flex flex-col items-center">
+                        @* Step indicator *@
+                        <div class="@GetStepIndicatorClasses(step.Status)">
+                            @if (isCompleted)
+                            {
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <span class="text-sm font-medium">@(index + 1)</span>
+                            }
+                        </div>
+
+                        @* Step content *@
+                        <div class="mt-3 text-center">
+                            <div class="text-sm font-medium @(isCurrent ? "text-violet-600 dark:text-violet-400" : "text-gray-800 dark:text-gray-100")">
+                                @step.Title
+                            </div>
+                            @if (!string.IsNullOrEmpty(step.Description))
+                            {
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">@step.Description</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="relative flex gap-4 @(isLast ? "" : "pb-8")">
+                    @* Connector line *@
+                    @if (!isLast)
+                    {
+                        <div class="absolute left-4 top-8 bottom-0 w-0.5 @(isCompleted ? "bg-violet-500" : "bg-gray-200 dark:bg-gray-700")"></div>
+                    }
+
+                    @* Step indicator *@
+                    <div class="relative z-10 flex-shrink-0">
+                        <div class="@GetStepIndicatorClasses(step.Status)">
+                            @if (isCompleted)
+                            {
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <span class="text-sm font-medium">@(index + 1)</span>
+                            }
+                        </div>
+                    </div>
+
+                    @* Step content *@
+                    <div class="flex-1 pt-0.5">
+                        <div class="flex items-center justify-between">
+                            <div class="font-medium @(isCurrent ? "text-violet-600 dark:text-violet-400" : "text-gray-800 dark:text-gray-100")">
+                                @step.Title
+                            </div>
+                            @if (!string.IsNullOrEmpty(step.Date))
+                            {
+                                <span class="text-sm text-gray-500 dark:text-gray-400">@step.Date</span>
+                            }
+                        </div>
+                        @if (!string.IsNullOrEmpty(step.Description))
+                        {
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">@step.Description</p>
+                        }
+                        @if (step.SubTasks != null && step.SubTasks.Any())
+                        {
+                            <div class="mt-3 space-y-2">
+                                @foreach (var subTask in step.SubTasks)
+                                {
+                                    <div class="flex items-center gap-2">
+                                        @if (subTask.Completed)
+                                        {
+                                            <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        }
+                                        else
+                                        {
+                                            <div class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-gray-600"></div>
+                                        }
+                                        <span class="text-sm @(subTask.Completed ? "text-gray-500 dark:text-gray-400 line-through" : "text-gray-700 dark:text-gray-300")">
+                                            @subTask.Title
+                                        </span>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public List<ProgressStep> Steps { get; set; } = new();
+    [Parameter] public string Variant { get; set; } = "vertical"; // vertical, horizontal
+    [Parameter] public bool ShowProgressBar { get; set; } = true;
+    [Parameter] public bool ShowPercentage { get; set; } = true;
+    [Parameter] public string? Class { get; set; }
+
+    private int GetCompletionPercentage()
+    {
+        if (!Steps.Any()) return 0;
+        var completed = Steps.Count(s => s.Status == "completed");
+        return (int)Math.Round((double)completed / Steps.Count * 100);
+    }
+
+    private string GetContainerClasses()
+    {
+        return $"bg-white dark:bg-gray-800 rounded-xl p-5 {Class}".Trim();
+    }
+
+    private string GetStepsContainerClasses()
+    {
+        return Variant == "horizontal"
+            ? "flex items-start"
+            : "space-y-0";
+    }
+
+    private string GetStepIndicatorClasses(string status)
+    {
+        var baseClasses = "w-8 h-8 rounded-full flex items-center justify-center";
+
+        return status switch
+        {
+            "completed" => $"{baseClasses} bg-violet-500 text-white",
+            "current" => $"{baseClasses} bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 ring-4 ring-violet-100 dark:ring-violet-500/20",
+            _ => $"{baseClasses} bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+        };
+    }
+
+    public class ProgressStep
+    {
+        public string Title { get; set; } = "";
+        public string? Description { get; set; }
+        public string Status { get; set; } = "pending"; // pending, current, completed
+        public string? Date { get; set; }
+        public List<SubTask>? SubTasks { get; set; }
+    }
+
+    public class SubTask
+    {
+        public string Title { get; set; } = "";
+        public bool Completed { get; set; } = false;
+    }
+}

@@ -1,0 +1,116 @@
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<div class="@ContainerClass">
+    <canvas id="@CanvasId" width="@Width" height="@Height"></canvas>
+</div>
+
+@code {
+    [Parameter] public string CanvasId { get; set; } = $"line-chart-{Guid.NewGuid():N}";
+    [Parameter] public int Width { get; set; } = 389;
+    [Parameter] public int Height { get; set; } = 128;
+    [Parameter] public string ContainerClass { get; set; } = "grow";
+    [Parameter] public List<string> Labels { get; set; } = new();
+    [Parameter] public List<ChartDataset> Datasets { get; set; } = new();
+    [Parameter] public bool ShowXAxis { get; set; } = false;
+    [Parameter] public bool ShowYAxis { get; set; } = false;
+    [Parameter] public bool UseTimeScale { get; set; } = true;
+
+    private bool _initialized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Labels.Any() && Datasets.Any())
+        {
+            await InitializeChart();
+        }
+    }
+
+    private async Task InitializeChart()
+    {
+        if (_initialized) return;
+
+        var config = new
+        {
+            data = new
+            {
+                labels = Labels,
+                datasets = Datasets.Select(d => new
+                {
+                    label = d.Label,
+                    data = d.Data,
+                    backgroundColor = d.BackgroundColor,
+                    borderColor = d.BorderColor,
+                    borderWidth = d.BorderWidth,
+                    fill = d.Fill,
+                    tension = d.Tension,
+                    pointRadius = d.PointRadius,
+                    pointHoverRadius = d.PointHoverRadius
+                }).ToArray()
+            },
+            showXAxis = ShowXAxis,
+            showYAxis = ShowYAxis,
+            useTimeScale = UseTimeScale
+        };
+
+        await JSRuntime.InvokeVoidAsync("chartJsInterop.createLineChart", CanvasId, config);
+        _initialized = true;
+    }
+
+    public async Task UpdateData(List<string> labels, List<ChartDataset> datasets)
+    {
+        Labels = labels;
+        Datasets = datasets;
+
+        if (_initialized)
+        {
+            var newData = new
+            {
+                labels = Labels,
+                datasets = Datasets.Select(d => new
+                {
+                    label = d.Label,
+                    data = d.Data,
+                    backgroundColor = d.BackgroundColor,
+                    borderColor = d.BorderColor,
+                    borderWidth = d.BorderWidth,
+                    fill = d.Fill,
+                    tension = d.Tension,
+                    pointRadius = d.PointRadius,
+                    pointHoverRadius = d.PointHoverRadius
+                }).ToArray()
+            };
+
+            await JSRuntime.InvokeVoidAsync("chartJsInterop.updateChart", CanvasId, newData);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_initialized)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("chartJsInterop.destroyChart", CanvasId);
+            }
+            catch (JSDisconnectedException)
+            {
+                // Ignore - circuit is already disconnected
+            }
+        }
+    }
+
+    public class ChartDataset
+    {
+        public string Label { get; set; } = "";
+        public List<double> Data { get; set; } = new();
+        public string BackgroundColor { get; set; } = "rgba(99, 102, 241, 0.1)";
+        public string BorderColor { get; set; } = "rgb(99, 102, 241)";
+        public int BorderWidth { get; set; } = 2;
+        public bool Fill { get; set; } = true;
+        public double Tension { get; set; } = 0.4;
+        public int PointRadius { get; set; } = 0;
+        public int PointHoverRadius { get; set; } = 3;
+    }
+
+}

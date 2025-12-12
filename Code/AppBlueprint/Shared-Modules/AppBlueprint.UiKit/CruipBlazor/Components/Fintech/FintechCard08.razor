@@ -1,0 +1,55 @@
+@using MosaicPortal.Web.Components.Charts
+
+<div class="flex flex-col col-span-full sm:col-span-12 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">Growth Portfolio</h2>
+    </header>
+    <div class="px-5 py-3">
+        <div class="flex items-start">
+            <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">+$347,09</div>
+            <div class="text-sm font-medium text-green-600 px-1.5 rounded-full">+7.2%</div>
+        </div>
+    </div>
+    <!-- Chart -->
+    <div class="grow">
+        <MosaicPortal.Web.Components.Charts.LineChart
+            CanvasId="growth-portfolio-chart"
+            Height="168"
+            Labels="@labels"
+            Datasets="@datasets"
+            ShowXAxis="false"
+            ShowYAxis="false"
+            UseTimeScale="false"
+            ContainerClass="grow"/>
+    </div>
+</div>
+
+@code {
+    private List<string> labels = Enumerable.Range(0, 26).Select(i => $"Point {i}").ToList();
+
+    private List<MosaicPortal.Web.Components.Charts.LineChart.ChartDataset> datasets = new();
+
+    protected override void OnInitialized()
+    {
+        datasets = new()
+        {
+            new MosaicPortal.Web.Components.Charts.LineChart.ChartDataset
+            {
+                Label = "Growth",
+                Data = new List<double>
+                {
+                    0, 5, 7, 10, 14, 17, 21, 25, 29, 23, 34, 39, 42,
+                    120, 130, 120, 140, 130, 150, 160, 120, 140, 160, 150, 170, 168
+                },
+                BorderColor = "rgb(62, 201, 114)", // custom green-500
+                BackgroundColor = "rgba(62, 201, 114, 0.1)", // custom green-500 with opacity
+                Fill = true,
+                Tension = 0,
+                PointRadius = 0,
+                PointHoverRadius = 3,
+                BorderWidth = 2
+            }
+        };
+    }
+
+}

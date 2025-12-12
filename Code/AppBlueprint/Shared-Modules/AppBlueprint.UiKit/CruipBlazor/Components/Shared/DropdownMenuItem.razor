@@ -1,0 +1,69 @@
+@* Dropdown menu item component *@
+
+@if (IsDivider)
+{
+    <hr class="my-1.5 border-gray-200 dark:border-gray-700/60" />
+}
+else if (IsHeader)
+{
+    <div class="px-3 py-1 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase">
+        @ChildContent
+    </div>
+}
+else
+{
+    <button type="button"
+            class="@GetItemClasses()"
+            disabled="@Disabled"
+            @onclick="OnClick">
+        @if (IconContent != null)
+        {
+            <span class="mr-2 text-gray-400 dark:text-gray-500">
+                @IconContent
+            </span>
+        }
+        <span class="flex-1 text-left">@ChildContent</span>
+        @if (HasSubmenu)
+        {
+            <svg class="shrink-0 ml-2 fill-current text-gray-400" width="8" height="8" viewBox="0 0 8 8">
+                <path d="M2 0l4 4-4 4z" />
+            </svg>
+        }
+    </button>
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? IconContent { get; set; }
+    [Parameter] public bool IsDivider { get; set; } = false;
+    [Parameter] public bool IsHeader { get; set; } = false;
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public bool HasSubmenu { get; set; } = false;
+    [Parameter] public string Variant { get; set; } = "default"; // default, danger
+    [Parameter] public EventCallback OnItemClick { get; set; }
+
+    private async Task OnClick()
+    {
+        if (!Disabled)
+        {
+            await OnItemClick.InvokeAsync();
+        }
+    }
+
+    private string GetItemClasses()
+    {
+        var baseClasses = "flex items-center w-full px-3 py-1 text-sm";
+
+        var colorClasses = Variant switch
+        {
+            "danger" => Disabled
+                ? "text-red-300 dark:text-red-800 cursor-not-allowed"
+                : "text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10",
+            _ => Disabled
+                ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+        };
+
+        return $"{baseClasses} {colorClasses}";
+    }
+}

@@ -1,0 +1,14 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  
+  > mosaic-portal-web@1.0.0 build:css
+  > postcss Styles/app.css -o wwwroot/css/app.css
+  
+  MosaicPortal.ServiceDefaults -> C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.ServiceDefaults\bin\Debug\net9.0\MosaicPortal.ServiceDefaults.dll
+  MosaicPortal.Web -> C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.Web\bin\Debug\net9.0\MosaicPortal.Web.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:11.73

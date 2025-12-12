@@ -1,0 +1,18 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  
+  > mosaic-portal-web@1.0.0 build:css
+  > postcss Styles/app.css -o wwwroot/css/app.css
+  
+  MosaicPortal.ServiceDefaults -> C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.ServiceDefaults\bin\Debug\net9.0\MosaicPortal.ServiceDefaults.dll
+C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.Web\Components\Shared\ModalBasic.razor(30,5): error CS0246: The type or namespace name 'await' could not be found (are you missing a using directive or an assembly reference?) [C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.Web\MosaicPortal.Web.csproj]
+C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.Web\Components\Shared\ModalBasic.razor(30,11): error CS0501: 'ModalBasic.Close()' must declare a body because it is not marked abstract, extern, or partial [C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.Web\MosaicPortal.Web.csproj]
+
+Build FAILED.
+
+C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.Web\Components\Shared\ModalBasic.razor(30,5): error CS0246: The type or namespace name 'await' could not be found (are you missing a using directive or an assembly reference?) [C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.Web\MosaicPortal.Web.csproj]
+C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.Web\Components\Shared\ModalBasic.razor(30,11): error CS0501: 'ModalBasic.Close()' must declare a body because it is not marked abstract, extern, or partial [C:\Development\Development-Projects\Cruip-Templates\Mosaic-Portal\Blazor-Tailwindcss\MosaicPortal.Web\MosaicPortal.Web.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:15.56

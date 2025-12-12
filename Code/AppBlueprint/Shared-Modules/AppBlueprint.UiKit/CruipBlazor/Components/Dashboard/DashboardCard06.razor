@@ -1,0 +1,34 @@
+<div class="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">Top Countries</h2>
+    </header>
+    <!-- Chart -->
+    <div class="grow flex flex-col justify-center p-5">
+        <MosaicPortal.Web.Components.Charts.DoughnutChart
+            CanvasId="dashboard-card-06-chart"
+            Labels="@labels"
+            Data="@data"
+            BackgroundColors="@backgroundColors"
+            HoverBackgroundColors="@hoverBackgroundColors"
+            Width="389"
+            Height="260"
+            Cutout="80%" />
+    </div>
+</div>
+
+@code {
+    private List<string> labels = new() { "United States", "Italy", "Other" };
+    private List<double> data = new() { 35, 30, 35 };
+    private List<string> backgroundColors = new()
+    {
+        "rgb(139, 92, 246)",   // violet-500
+        "rgb(14, 165, 233)",   // sky-500
+        "rgb(109, 40, 217)"    // violet-800
+    };
+    private List<string> hoverBackgroundColors = new()
+    {
+        "rgb(124, 58, 237)",   // violet-600
+        "rgb(2, 132, 199)",    // sky-600
+        "rgb(91, 33, 182)"     // violet-900
+    };
+}

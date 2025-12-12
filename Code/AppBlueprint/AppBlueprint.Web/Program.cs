@@ -217,6 +217,9 @@ Console.WriteLine("========================================");
 app.UseRouting();
 // app.UseHttpsRedirection(); // Temporarily disabled for design review
 
+// Serve static files FIRST - before security headers to ensure proper Content-Type is set
+app.UseStaticFiles();
+
 // Security Headers Middleware - Add security headers to all responses
 app.Use(async (context, next) =>
 {
@@ -236,8 +239,8 @@ app.Use(async (context, next) =>
     // Note: Adjust this policy based on your application's requirements
     context.Response.Headers.Append("Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https:; " +
         "connect-src 'self' https://32nkyp.logto.app wss://localhost:* ws://localhost:*;");
@@ -249,7 +252,6 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.UseStaticFiles();
 app.UseAntiforgery();
 
 // Add authentication and authorization middleware for Logto
