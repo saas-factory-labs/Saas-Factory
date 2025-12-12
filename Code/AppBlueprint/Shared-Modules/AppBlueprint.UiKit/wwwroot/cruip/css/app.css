@@ -1300,9 +1300,6 @@
   .min-w-\[18px\] {
     min-width: 18px;
   }
-  .min-w-\[140px\] {
-    min-width: 140px;
-  }
   .min-w-\[400px\] {
     min-width: 400px;
   }
@@ -1430,9 +1427,6 @@
   }
   .animate-spin {
     animation: var(--animate-spin);
-  }
-  .cursor-default {
-    cursor: default;
   }
   .cursor-move {
     cursor: move;
@@ -2137,9 +2131,6 @@
   }
   .bg-red-100 {
     background-color: var(--color-red-100);
-  }
-  .bg-red-400 {
-    background-color: var(--color-red-400);
   }
   .bg-red-500 {
     background-color: var(--color-red-500);
@@ -2883,9 +2874,6 @@
   }
   .text-inherit {
     color: inherit;
-  }
-  .text-red-50 {
-    color: var(--color-red-50);
   }
   .text-red-300 {
     color: var(--color-red-300);
@@ -3904,13 +3892,6 @@
   .max-sm\:max-h-\[128px\] {
     @media (width < 40rem) {
       max-height: 128px;
-    }
-  }
-  .max-sm\:\*\:w-1\/2 {
-    @media (width < 40rem) {
-      :is(& > *) {
-        width: calc(1/2 * 100%);
-      }
     }
   }
   .xs\:block {
@@ -5373,14 +5354,6 @@
       }
     }
   }
-  .dark\:bg-green-400\/30 {
-    &:is(.dark *) {
-      background-color: color-mix(in srgb, #4bd37d 30%, transparent);
-      @supports (color: color-mix(in lab, red, red)) {
-        background-color: color-mix(in oklab, var(--color-green-400) 30%, transparent);
-      }
-    }
-  }
   .dark\:bg-green-500\/10 {
     &:is(.dark *) {
       background-color: color-mix(in srgb, #3ec972 10%, transparent);
@@ -5418,14 +5391,6 @@
       background-color: color-mix(in srgb, oklch(64.5% 0.246 16.439) 30%, transparent);
       @supports (color: color-mix(in lab, red, red)) {
         background-color: color-mix(in oklab, var(--color-rose-500) 30%, transparent);
-      }
-    }
-  }
-  .dark\:bg-sky-400\/30 {
-    &:is(.dark *) {
-      background-color: color-mix(in srgb, #7bc8ff 30%, transparent);
-      @supports (color: color-mix(in lab, red, red)) {
-        background-color: color-mix(in oklab, var(--color-sky-400) 30%, transparent);
       }
     }
   }
