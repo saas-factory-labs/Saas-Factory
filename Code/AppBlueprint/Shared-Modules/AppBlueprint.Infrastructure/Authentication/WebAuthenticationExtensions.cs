@@ -75,6 +75,11 @@ public static class WebAuthenticationExtensions
                 options.Endpoint = logtoEndpoint;
                 options.AppId = logtoAppId;
                 options.AppSecret = logtoAppSecret;
+
+                // IMPORTANT: Explicitly set the callback path to match Logto dashboard configuration
+                // The default is /signin-oidc but Logto may use /Callback
+                // Make sure this matches the redirect URI in your Logto application settings
+                // Example: https://localhost/Callback or https://localhost/signin-oidc
             });
 
             // Configure the underlying OpenID Connect options to save tokens
@@ -86,6 +91,105 @@ public static class WebAuthenticationExtensions
                 // Save tokens (access_token, id_token, refresh_token) to authentication properties
                 // This enables API authentication using JWT tokens from Logto
                 options.SaveTokens = true;
+
+                // Configure correlation cookie for OAuth flow
+                // SameSite=Lax allows cookies to be sent on top-level navigation (redirects from Logto)
+                // In development, use None policy to avoid issues with self-signed certificates
+                options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+                options.CorrelationCookie.SecurePolicy = environment.IsDevelopment()
+                    ? CookieSecurePolicy.None  // Allow HTTP in development
+                    : CookieSecurePolicy.SameAsRequest;  // Require HTTPS in production
+                options.CorrelationCookie.HttpOnly = true;
+
+                // Configure nonce cookie similarly
+                options.NonceCookie.SameSite = SameSiteMode.Lax;
+                options.NonceCookie.SecurePolicy = environment.IsDevelopment()
+                    ? CookieSecurePolicy.None  // Allow HTTP in development
+                    : CookieSecurePolicy.SameAsRequest;  // Require HTTPS in production
+                options.NonceCookie.HttpOnly = true;
+
+                // Log the callback path being used
+                Console.WriteLine($"[Web] OpenID Connect callback path: {options.CallbackPath}");
+                Console.WriteLine($"[Web] Cookie SecurePolicy: {(environment.IsDevelopment() ? "None (dev - allows HTTP)" : "SameAsRequest (prod)")}");
+                Console.WriteLine($"[Web] Correlation & Nonce cookies: SameSite=Lax");
+                
+                // Add OnRemoteFailure handler to log and handle correlation failures
+                var existingOnRemoteFailure = options.Events.OnRemoteFailure;
+                options.Events.OnRemoteFailure = async context =>
+                {
+                    Console.WriteLine("========================================");
+                    Console.WriteLine("[Web] OnRemoteFailure - Authentication error occurred");
+                    Console.WriteLine($"[Web] Error: {context.Failure?.Message}");
+                    Console.WriteLine($"[Web] Error Type: {context.Failure?.GetType().Name}");
+                    Console.WriteLine($"[Web] Request Path: {context.Request.Path}");
+                    Console.WriteLine($"[Web] Request Host: {context.Request.Host}");
+                    Console.WriteLine($"[Web] Request Scheme: {context.Request.Scheme}");
+                    Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+                    Console.WriteLine($"[Web] Cookies Received: {string.Join(", ", context.Request.Cookies.Keys)}");
+                    Console.WriteLine($"[Web] Cookies Count: {context.Request.Cookies.Count}");
+
+                    // Log specific cookies we're looking for
+                    var correlationCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Correlation"));
+                    var nonceCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Nonce"));
+                    Console.WriteLine($"[Web] Correlation Cookie Present: {correlationCookie != null} ({correlationCookie ?? "not found"})");
+                    Console.WriteLine($"[Web] Nonce Cookie Present: {nonceCookie != null} ({nonceCookie ?? "not found"})");
+
+                    // Log query string parameters
+                    if (context.Request.Query.Count > 0)
+                    {
+                        Console.WriteLine($"[Web] Query Parameters: {string.Join(", ", context.Request.Query.Keys)}");
+                    }
+
+                    // Check for common OAuth error parameters
+                    if (context.Request.Query.ContainsKey("error"))
+                    {
+                        Console.WriteLine($"[Web] OAuth Error: {context.Request.Query["error"]}");
+                        Console.WriteLine($"[Web] OAuth Error Description: {context.Request.Query["error_description"]}");
+                    }
+
+                    Console.WriteLine("========================================");
+                    
+                    if (existingOnRemoteFailure != null)
+                    {
+                        await existingOnRemoteFailure(context);
+                    }
+                    
+                    // Handle the failure gracefully - redirect to signin page with error message
+                    // We redirect to /signin (the actual login page) with a flag to show error, not /
+                    // This prevents the infinite loop: / -> signin -> logto -> callback (fail) -> / -> signin...
+                    if (!context.Response.HasStarted)
+                    {
+                        // Return HTML that shows the error - don't redirect to avoid loops
+                        context.Response.StatusCode = 200;
+                        context.Response.ContentType = "text/html";
+                        await context.Response.WriteAsync(@"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication Error</title>
+    <style>
+        body { font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #1a1a2e; color: white; }
+        .error-box { background: #16213e; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; }
+        h1 { color: #e94560; }
+        a { color: #0f4c75; background: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class='error-box'>
+        <h1>Authentication Failed</h1>
+        <p>The browser didn't send the required cookies. This typically happens when:</p>
+        <ul style='text-align: left;'>
+            <li>Using a self-signed certificate on mobile</li>
+            <li>Browser security settings block cookies</li>
+        </ul>
+        <p><strong>Solution:</strong> Use ngrok for a trusted HTTPS connection, or access from localhost on your PC.</p>
+        <a href='/dashboard'>Go to Dashboard (without auth)</a>
+    </div>
+</body>
+</html>");
+                        context.HandleResponse();
+                    }
+                };
 
                 // Add event handler to ensure tokens are saved
                 var existingOnTokenValidated = options.Events.OnTokenValidated;
@@ -176,16 +280,21 @@ public static class WebAuthenticationExtensions
             Console.WriteLine($"[Web] User authenticated: {context.User?.Identity?.IsAuthenticated ?? false}");
             Console.WriteLine($"[Web] User name: {context.User?.Identity?.Name ?? "null"}");
             Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
-            
+            Console.WriteLine($"[Web] Existing cookies: {string.Join(", ", context.Request.Cookies.Keys)}");
+
             if (!(context.User?.Identity?.IsAuthenticated ?? false))
             {
                 Console.WriteLine("[Web] User NOT authenticated - calling ChallengeAsync to redirect to Logto");
                 Console.WriteLine("[Web] Redirect URI after login: /");
-                
+                Console.WriteLine($"[Web] Expected callback URL: {context.Request.Scheme}://{context.Request.Host}/signin-oidc");
+
                 try
                 {
                     await context.ChallengeAsync(new AuthenticationProperties { RedirectUri = "/" });
                     Console.WriteLine("[Web] ✅ ChallengeAsync completed - should redirect to Logto now");
+                    Console.WriteLine("[Web] ⚠️ IMPORTANT: Make sure your Logto application has these redirect URIs configured:");
+                    Console.WriteLine($"[Web]    - {context.Request.Scheme}://{context.Request.Host}/signin-oidc");
+                    Console.WriteLine($"[Web]    - {context.Request.Scheme}://{context.Request.Host}/Callback");
                 }
                 catch (Exception ex)
                 {
@@ -198,7 +307,7 @@ public static class WebAuthenticationExtensions
                 Console.WriteLine("[Web] User already authenticated - redirecting to /");
                 context.Response.Redirect("/");
             }
-            
+
             Console.WriteLine("========================================");
         });
 

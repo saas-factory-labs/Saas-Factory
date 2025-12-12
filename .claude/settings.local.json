@@ -5,7 +5,10 @@
       "Bash(Sort-Object)",
       "Bash(dotnet test:*)",
       "Bash(git add:*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(Get-Process -Name \"dotnet\")",
+      "Bash(Select-Object Id,ProcessName,StartTime)",
+      "Bash(Sort-Object StartTime -Descending)"
     ],
     "deny": [],
     "ask": []

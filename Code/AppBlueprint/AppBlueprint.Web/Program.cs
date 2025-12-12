@@ -88,9 +88,13 @@ builder.Services.AddSingleton(navigationRoutes);
 // Configure Kestrel to listen on all interfaces for both development and production
 builder.WebHost.ConfigureKestrel(options =>
 {
-    // Listen on all interfaces (0.0.0.0) for LAN access
-    options.ListenAnyIP(80);
-    Console.WriteLine("[Web] Kestrel configured - Listening on 0.0.0.0:80 (HTTP)");
+    // Listen on all interfaces for LAN access
+    options.ListenAnyIP(80); // HTTP
+    options.ListenAnyIP(443, listenOptions =>
+    {
+        listenOptions.UseHttps(); // Uses the ASP.NET Core dev certificate
+    });
+    Console.WriteLine("[Web] Kestrel configured - Listening on 0.0.0.0:80 (HTTP) and 0.0.0.0:443 (HTTPS)");
 });
 
 builder.Services.ConfigureHttpClientDefaults(http =>
@@ -103,6 +107,17 @@ builder.Services.ConfigureHttpClientDefaults(http =>
         });
     }
 });
+
+// Configure cookie policy for HTTP LAN access (fixes "Correlation failed" error)
+// This allows authentication cookies to work over HTTP in development
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.Configure<CookiePolicyOptions>(options =>
+    {
+        options.MinimumSameSitePolicy = SameSiteMode.Lax;
+        options.Secure = CookieSecurePolicy.SameAsRequest;
+    });
+}
 
 builder.Services.AddOutputCache();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
@@ -207,7 +222,17 @@ Console.WriteLine($"[Web] Environment: {app.Environment.EnvironmentName}");
 Console.WriteLine("========================================");
 
 app.UseRouting();
-// app.UseHttpsRedirection(); // Temporarily disabled for design review
+// Force HTTPS for OAuth authentication to work correctly
+// Disabled in development to avoid cookie issues with self-signed certificates
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+    Console.WriteLine("[Web] HTTPS redirection enabled (production)");
+}
+else
+{
+    Console.WriteLine("[Web] HTTPS redirection disabled (development - avoiding cookie issues)");
+}
 
 // Serve static files FIRST - before security headers to ensure proper Content-Type is set
 app.UseStaticFiles();
@@ -245,6 +270,9 @@ app.Use(async (context, next) =>
 });
 
 app.UseAntiforgery();
+
+// Cookie policy middleware - must come before authentication
+app.UseCookiePolicy();
 
 // Add authentication and authorization middleware for Logto
 app.UseAuthentication();

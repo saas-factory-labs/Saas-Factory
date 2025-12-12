@@ -69,7 +69,7 @@
             // Non-authenticated users go to login
             Console.WriteLine("[RedirectRoot] ❌ User is NOT authenticated - redirecting to /login");
             Console.WriteLine("========================================");
-            Navigation.NavigateTo("/dashboard", forceLoad: false);
+            Navigation.NavigateTo("/signin", forceLoad: false);
         }
     }
 }

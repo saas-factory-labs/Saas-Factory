@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 
 <head>
     <meta charset="utf-8"/>
@@ -20,20 +20,21 @@
 <body class="font-inter antialiased bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 sidebar-expanded">
 <script>
     // Initialize sidebar state for Cruip template
-    /*
     if (localStorage.getItem('sidebar-expanded') == 'true') {
         document.querySelector('body').classList.add('sidebar-expanded');
     } else {
         document.querySelector('body').classList.remove('sidebar-expanded');
     }
 
-    // Initialize dark mode
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage))) {
+    // Initialize dark mode from localStorage
+    // Default to light mode if no preference is stored
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark');
     } else {
+        // Light mode is default (no 'dark' class)
         document.documentElement.classList.remove('dark');
     }
-    */
 </script>
 <Routes @rendermode="RenderMode.InteractiveServer"/>
 
