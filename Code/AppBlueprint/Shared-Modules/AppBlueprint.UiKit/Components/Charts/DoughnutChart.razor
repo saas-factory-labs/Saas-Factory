@@ -1,0 +1,98 @@
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<div class="@ContainerClass">
+    <canvas id="@CanvasId" width="@Width" height="@Height"></canvas>
+</div>
+
+@code {
+    [Parameter] public string CanvasId { get; set; } = $"doughnut-chart-{Guid.NewGuid():N}";
+    [Parameter] public int Width { get; set; } = 389;
+    [Parameter] public int Height { get; set; } = 260;
+    [Parameter] public string ContainerClass { get; set; } = "";
+    [Parameter] public List<string> Labels { get; set; } = new();
+    [Parameter] public List<double> Data { get; set; } = new();
+    [Parameter] public List<string> BackgroundColors { get; set; } = new();
+    [Parameter] public List<string> HoverBackgroundColors { get; set; } = new();
+    [Parameter] public string Cutout { get; set; } = "80%";
+
+    private bool _initialized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Labels.Any() && Data.Any())
+        {
+            await InitializeChart();
+        }
+    }
+
+    private async Task InitializeChart()
+    {
+        if (_initialized) return;
+
+        var config = new
+        {
+            data = new
+            {
+                labels = Labels,
+                datasets = new[]
+                {
+                    new
+                    {
+                        data = Data,
+                        backgroundColor = BackgroundColors,
+                        hoverBackgroundColor = HoverBackgroundColors.Any() ? HoverBackgroundColors : BackgroundColors,
+                        borderWidth = 0
+                    }
+                }
+            },
+            cutout = Cutout
+        };
+
+        await JSRuntime.InvokeVoidAsync("chartJsInterop.createDoughnutChart", CanvasId, config);
+        _initialized = true;
+    }
+
+    public async Task UpdateData(List<string> labels, List<double> data)
+    {
+        Labels = labels;
+        Data = data;
+
+        if (_initialized)
+        {
+            var newData = new
+            {
+                labels = Labels,
+                datasets = new[]
+                {
+                    new
+                    {
+                        data = Data,
+                        backgroundColor = BackgroundColors,
+                        hoverBackgroundColor = HoverBackgroundColors.Any() ? HoverBackgroundColors : BackgroundColors,
+                        borderWidth = 0
+                    }
+                }
+            };
+
+            await JSRuntime.InvokeVoidAsync("chartJsInterop.updateChart", CanvasId, newData);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_initialized)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("chartJsInterop.destroyChart", CanvasId);
+            }
+            catch (JSDisconnectedException)
+            {
+                // Ignore - circuit is already disconnected
+            }
+        }
+    }
+
+}

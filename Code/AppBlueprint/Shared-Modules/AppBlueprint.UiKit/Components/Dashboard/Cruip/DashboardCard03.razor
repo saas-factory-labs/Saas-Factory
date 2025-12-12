@@ -27,15 +27,20 @@
 </div>
 
 @using Microsoft.JSInterop
+@using Microsoft.Extensions.Logging
 @inject IJSRuntime JS
+@inject ILogger<DashboardCard03> Logger
 
 @code {
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        Logger.LogInformation("▶ DashboardCard03 OnAfterRenderAsync - FirstRender: {FirstRender}", firstRender);
         try
         {
             if (firstRender)
             {
+                Logger.LogInformation("▶ DashboardCard03 Initializing chart...");
+
                 var config = new
                 {
                     data = new
@@ -72,11 +77,12 @@
                 };
 
                 await JS.InvokeVoidAsync("chartJsInterop.createLineChart", "dashboard-card-03", config);
+                Logger.LogInformation("▶ DashboardCard03 Chart initialized successfully");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in DashboardCard03: {ex.Message}");
+            Logger.LogError(ex, "❌ Error in DashboardCard03");
         }
     }
 }

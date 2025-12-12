@@ -1,5 +1,7 @@
 @using Microsoft.JSInterop
+@using Microsoft.Extensions.Logging
 @inject IJSRuntime JS
+@inject ILogger<DropdownFilter> Logger
 
 <div class="relative inline-flex" @ref="dropdownRef">
     <button @ref="triggerRef"
@@ -78,18 +80,26 @@
     private ElementReference dropdownRef;
     private ElementReference triggerRef;
 
+    protected override void OnInitialized()
+    {
+        Logger.LogInformation("▶ DropdownFilter OnInitialized");
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        Logger.LogInformation("▶ DropdownFilter OnAfterRenderAsync - FirstRender: {FirstRender}", firstRender);
         try
         {
             if (firstRender)
             {
+                Logger.LogInformation("▶ DropdownFilter Initializing dropdown manager...");
                 await JS.InvokeVoidAsync("dropdownManager.initialize", dropdownRef, triggerRef, DotNetObjectReference.Create(this));
+                Logger.LogInformation("▶ DropdownFilter Initialized successfully");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in DropdownFilter: {ex.Message}");
+            Logger.LogError(ex, "❌ Error in DropdownFilter");
         }
     }
 

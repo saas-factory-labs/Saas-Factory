@@ -1,13 +1,15 @@
 @using Microsoft.JSInterop
+@using Microsoft.Extensions.Logging
 @inject IJSRuntime JSRuntime
+@inject ILogger<DashboardCard05> Logger
 @implements IAsyncDisposable
 
 <div class="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
     <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center">
         <h2 class="font-semibold text-gray-800 dark:text-gray-100">Real Time Value</h2>
-        <MosaicPortal.Web.Components.Shared.Tooltip Size="lg">
+        <Tooltip Size="lg">
             <div class="text-xs text-center whitespace-nowrap">Built with <a class="underline" href="https://www.chartjs.org/" target="_blank" rel="noreferrer">Chart.js</a></div>
-        </MosaicPortal.Web.Components.Shared.Tooltip>
+        </Tooltip>
     </header>
     <!-- Value Display -->
     <div class="px-5 py-3">
@@ -50,6 +52,7 @@
 
     protected override void OnInitialized()
     {
+        Logger.LogInformation("▶ DashboardCard05 OnInitialized");
         var now = DateTime.Now;
         for (int i = 0; i < range; i++)
         {
@@ -61,11 +64,15 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        Logger.LogInformation("▶ DashboardCard05 OnAfterRenderAsync - FirstRender: {FirstRender}", firstRender);
         try
         {
             if (firstRender && labels.Any() && data.Any())
             {
+                Logger.LogInformation("▶ DashboardCard05 Initializing REAL-TIME line chart...");
+
                 await InitializeChart();
+                Logger.LogInformation("▶ DashboardCard05 REAL-TIME chart initialized successfully");
 
                 // Start real-time updates
                 timer = new System.Timers.Timer(2000);
@@ -75,7 +82,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in DashboardCard05: {ex.Message}");
+            Logger.LogError(ex, "❌ Error in DashboardCard05");
         }
     }
 

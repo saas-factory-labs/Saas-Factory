@@ -52,12 +52,33 @@
     <Compile Remove="Examples\**" />
     <EmbeddedResource Remove="Examples\**" />
     <None Include="Examples\**" />
-    
+
     <!-- Exclude CruipBlazor source directory - components have been copied to Components/Layout/Cruip, Components/Dashboard/Cruip, Components/Shared/Cruip -->
     <Compile Remove="CruipBlazor\**" />
     <Content Remove="CruipBlazor\**" />
     <EmbeddedResource Remove="CruipBlazor\**" />
     <None Remove="CruipBlazor\**" />
   </ItemGroup>
+
+  <!-- Automatically build Tailwind CSS before compilation -->
+  <Target Name="BuildTailwindCSS" BeforeTargets="BeforeBuild" Condition="Exists('CruipBlazor\package.json')">
+    <PropertyGroup>
+      <NpmCommand Condition="'$(OS)' == 'Windows_NT'">npm.cmd</NpmCommand>
+      <NpmCommand Condition="'$(OS)' != 'Windows_NT'">npm</NpmCommand>
+    </PropertyGroup>
+
+    <Message Text="Building Tailwind CSS..." Importance="high" />
+
+    <!-- Run npm install if node_modules doesn't exist -->
+    <Exec Command="$(NpmCommand) install"
+          WorkingDirectory="CruipBlazor"
+          Condition="!Exists('CruipBlazor\node_modules')"
+          ContinueOnError="false" />
+
+    <!-- Build Tailwind CSS -->
+    <Exec Command="$(NpmCommand) run build:css"
+          WorkingDirectory="CruipBlazor"
+          ContinueOnError="true" />
+  </Target>
 
 </Project>

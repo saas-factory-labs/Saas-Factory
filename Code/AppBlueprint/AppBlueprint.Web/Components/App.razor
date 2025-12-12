@@ -31,34 +31,22 @@
     // Default to light mode if no preference is stored
     var savedTheme = localStorage.getItem('theme') || 'light';
 
-    // Debug logging - remove this after fixing
-    console.log('[Theme Debug] Saved theme:', savedTheme);
-    console.log('[Theme Debug] System prefers dark:', window.matchMedia('(prefers-color-scheme: dark)').matches);
-
     if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark');
         document.documentElement.style.colorScheme = 'dark';
-        console.log('[Theme Debug] Applied: DARK mode');
     } else if (savedTheme === 'light') {
         document.documentElement.classList.remove('dark');
         document.documentElement.style.colorScheme = 'light';
-        console.log('[Theme Debug] Applied: LIGHT mode');
     } else if (savedTheme === 'system') {
         // System preference
         if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
             document.documentElement.style.colorScheme = 'dark';
-            console.log('[Theme Debug] Applied: DARK mode (from system preference)');
         } else {
             document.documentElement.classList.remove('dark');
             document.documentElement.style.colorScheme = 'light';
-            console.log('[Theme Debug] Applied: LIGHT mode (from system preference)');
         }
     }
-
-    // Additional debug info
-    console.log('[Theme Debug] HTML has dark class:', document.documentElement.classList.contains('dark'));
-    console.log('[Theme Debug] Body background classes:', document.body.className);
 </script>
 <Routes @rendermode="RenderMode.InteractiveServer"/>
 

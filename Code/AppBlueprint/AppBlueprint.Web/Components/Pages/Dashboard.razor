@@ -1,6 +1,8 @@
 @page "/dashboard"
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Logging
+@inject ILogger<Dashboard> Logger
 
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
@@ -59,5 +61,25 @@
 </div>
 
 @code {
-    // This is the main dashboard using Cruip template components
+    protected override void OnInitialized()
+    {
+        Logger.LogInformation("==== Dashboard OnInitialized ====");
+    }
+
+    protected override void OnParametersSet()
+    {
+        Logger.LogInformation("==== Dashboard OnParametersSet ====");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Logger.LogInformation("==== Dashboard OnAfterRender (First Render) ====");
+        }
+        else
+        {
+            Logger.LogInformation("==== Dashboard OnAfterRender (Re-render) ====");
+        }
+    }
 }

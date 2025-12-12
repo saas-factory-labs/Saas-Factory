@@ -4,7 +4,7 @@
     </header>
     <!-- Chart -->
     <div class="grow p-3">
-        <BarChart
+        <AppBlueprint.UiKit.Components.Charts.BarChart
             CanvasId="analytics-card-03-chart"
             Labels="@labels"
             Datasets="@datasets"
@@ -21,7 +21,7 @@
         "03-01-2023", "04-01-2023", "05-01-2023"
     };
 
-    private List<BarChart.BarChartDataset> datasets = new()
+    private List<AppBlueprint.UiKit.Components.Charts.BarChart.BarChartDataset> datasets = new()
     {
         new()
         {

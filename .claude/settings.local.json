@@ -13,7 +13,11 @@
       "Bash(Select-Object Id,ProcessName,StartTime,Path)",
       "Bash(Select-Object -First 5)",
       "Bash(npm run build:css:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(Select-String -Pattern \"error|warning\" -Context 0,2)",
+      "Bash(Select-String -Pattern \"error\")",
+      "Bash(Out-String)",
+      "Bash(powershell -Command:*)"
     ],
     "deny": [],
     "ask": []
