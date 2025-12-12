@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=fallback');
 
 @import 'tailwindcss';
-@source "C:/Users/caspe/.gemini/antigravity/brain/f4b53a9f-637d-409a-b05a-e551d752d83f/test-tailwind.html";
+@source "./safelist.html";
 @import './utility-patterns.css' layer(components);
 @import './flatpickr-custom.css';
 
@@ -11,6 +11,23 @@
 
 @custom-variant dark (&:is(.dark *));
 @custom-variant sidebar-expanded (&:is(.sidebar-expanded *));
+
+/* Manually added classes to ensure they exist */
+.dark\:bg-gray-900 {
+  background-color: var(--color-gray-900);
+}
+
+.dark .dark\:bg-gray-900 {
+  background-color: var(--color-gray-900);
+}
+
+.dark\:text-gray-400 {
+  color: var(--color-gray-400);
+}
+
+.dark .dark\:text-gray-400 {
+  color: var(--color-gray-400);
+}
 
 @theme {
   --shadow-sm: 0 1px 1px 0 rgb(0 0 0 / 0.05), 0 1px 2px 0 rgb(0 0 0 / 0.02);

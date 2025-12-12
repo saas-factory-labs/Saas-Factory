@@ -10,7 +10,7 @@
 
     <!-- NuGet Package Configuration -->
     <Version>$(GITVERSION_SemVer)</Version>
-    <PackageId>SaaS-Factory.AppBlueprint.UiKit</PackageId>
+
     <Authors>Casper Rubæk</Authors>
     <Description>Reusable Razor Class Library with Blazor UI components built on MudBlazor</Description>
     <PackageTags>blazor razor components mudblazor ui-kit razor-class-library</PackageTags>
