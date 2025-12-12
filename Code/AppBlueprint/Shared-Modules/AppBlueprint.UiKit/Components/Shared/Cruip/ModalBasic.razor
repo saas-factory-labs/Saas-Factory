@@ -32,6 +32,23 @@
     [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    // Alias parameters for backward compatibility
+    [Parameter] 
+    public bool ModalOpen 
+    { 
+        get => IsOpen; 
+        set => IsOpen = value; 
+    }
+    
+    private EventCallback _onCloseModalBackingField;
+    
+    [Parameter] 
+    public EventCallback OnCloseModal 
+    { 
+        get => _onCloseModalBackingField;
+        set => _onCloseModalBackingField = value;
+    }
 
     private ElementReference modalContentRef;
 
@@ -39,6 +56,10 @@
     {
         IsOpen = false;
         await IsOpenChanged.InvokeAsync(false);
+        if (_onCloseModalBackingField.HasDelegate)
+        {
+            await _onCloseModalBackingField.InvokeAsync();
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 @using Microsoft.JSInterop
 @inject IJSRuntime Js
 
-<div class="relative inline-flex" @ref="_dropdownRef">
+<div class="@Class" @ref="_dropdownRef">
     <button @ref="_triggerRef"
             class="rounded-full @(_dropdownOpen ? "bg-gray-100 dark:bg-gray-700/60 text-gray-500 dark:text-gray-400" : "text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400")"
             aria-haspopup="true"
@@ -24,6 +24,7 @@
 </div>
 
 @code {
+    [Parameter] public string Class { get; set; } = "relative inline-flex";
     [Parameter] public string Align { get; set; } = "right";
     [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = default!;
 

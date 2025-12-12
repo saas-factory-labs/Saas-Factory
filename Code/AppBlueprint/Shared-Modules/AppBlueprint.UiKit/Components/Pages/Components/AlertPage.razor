@@ -1,0 +1,194 @@
+@page "/component/alert"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Alert & Banner</h1>
+    </div>
+
+    <div>
+
+        <!-- Components -->
+        <div class="space-y-8 mt-8">
+
+            <!-- Banner -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Banner</h2>
+                <div class="space-y-3">
+
+                    <Banner Type="warning" Open="@bannerWarningOpen">
+                        We're currently experiencing an increase in inquiries. There may be a delay in responses from the Support.
+                    </Banner>
+
+                    <Banner Type="success" Open="@bannerSuccessOpen">
+                        We're currently experiencing an increase in inquiries. There may be a delay in responses from the Support.
+                    </Banner>
+
+                    <Banner Type="error" Open="@bannerErrorOpen">
+                        We're currently experiencing an increase in inquiries. There may be a delay in responses from the Support.
+                    </Banner>
+
+                    <Banner Open="@bannerInfoOpen">
+                        We're currently experiencing an increase in inquiries. There may be a delay in responses from the Support.
+                    </Banner>
+
+                </div>
+            </div>
+
+            <!-- Banner 2 -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Banner 2</h2>
+                <div class="space-y-3">
+
+                    <Banner2 Type="warning" Open="@banner2WarningOpen">
+                        We're currently experiencing an increase in inquiries. There may be a delay in responses from the Support.
+                    </Banner2>
+
+                    <Banner2 Type="success" Open="@banner2SuccessOpen">
+                        We're currently experiencing an increase in inquiries. There may be a delay in responses from the Support.
+                    </Banner2>
+
+                    <Banner2 Type="error" Open="@banner2ErrorOpen">
+                        We're currently experiencing an increase in inquiries. There may be a delay in responses from the Support.
+                    </Banner2>
+
+                    <Banner2 Open="@banner2InfoOpen">
+                        We're currently experiencing an increase in inquiries. There may be a delay in responses from the Support.
+                    </Banner2>
+
+                </div>
+            </div>
+
+            <!-- Toast -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Toast</h2>
+                <div class="space-y-3">
+
+                    <AppBlueprint.UiKit.Components.Shared.Cruip.Toast Type="warning" IsOpen="@toastWarningOpen">
+                        A warning toast.
+                    </AppBlueprint.UiKit.Components.Shared.Cruip.Toast>
+
+                    <AppBlueprint.UiKit.Components.Shared.Cruip.Toast Type="success" IsOpen="@toastSuccessOpen">
+                        A successful toast.
+                    </AppBlueprint.UiKit.Components.Shared.Cruip.Toast>
+
+                    <AppBlueprint.UiKit.Components.Shared.Cruip.Toast Type="error" IsOpen="@toastErrorOpen">
+                        A dangerous toast.
+                    </AppBlueprint.UiKit.Components.Shared.Cruip.Toast>
+
+                    <AppBlueprint.UiKit.Components.Shared.Cruip.Toast IsOpen="@toastInfoOpen">
+                        An informational toast.
+                    </AppBlueprint.UiKit.Components.Shared.Cruip.Toast>
+
+                </div>
+            </div>
+
+            <!-- Toast 2 -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Toast 2</h2>
+                <div class="space-y-3">
+
+                    <Toast2 Type="warning" Open="@toast2WarningOpen">
+                        A warning toast.
+                    </Toast2>
+
+                    <Toast2 Type="success" Open="@toast2SuccessOpen">
+                        A successful toast.
+                    </Toast2>
+
+                    <Toast2 Type="error" Open="@toast2ErrorOpen">
+                        A dangerous toast.
+                    </Toast2>
+
+                    <Toast2 Open="@toast2InfoOpen">
+                        An informational toast.
+                    </Toast2>
+
+                </div>
+            </div>
+
+            <!-- Toast 3 -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Toast 3</h2>
+                <div class="space-y-3">
+
+                    <Toast3 Type="warning" Open="@toast3WarningOpen">
+                        A warning toast.
+                    </Toast3>
+
+                    <Toast3 Type="success" Open="@toast3SuccessOpen">
+                        A successful toast.
+                    </Toast3>
+
+                    <Toast3 Type="error" Open="@toast3ErrorOpen">
+                        A dangerous toast.
+                    </Toast3>
+
+                    <Toast3 Open="@toast3InfoOpen">
+                        An informational toast.
+                    </Toast3>
+
+                </div>
+            </div>
+
+            <!-- Notification -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Notification</h2>
+                <div class="space-y-3">
+
+                    <Notification Type="warning" Open="@notificationWarningOpen">
+                        <div class="font-medium text-gray-800 dark:text-gray-100 mb-1">Merged Pull Request</div>
+                        <div>Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore.</div>
+                    </Notification>
+
+                    <Notification Type="success" Open="@notificationSuccessOpen">
+                        <div class="font-medium text-gray-800 dark:text-gray-100 mb-1">Merged Pull Request</div>
+                        <div>Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore.</div>
+                    </Notification>
+
+                    <Notification Type="error" Open="@notificationErrorOpen">
+                        <div class="font-medium text-gray-800 dark:text-gray-100 mb-1">Merged Pull Request</div>
+                        <div>Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore.</div>
+                    </Notification>
+
+                    <Notification Open="@notificationInfoOpen">
+                        <div class="font-medium text-gray-800 dark:text-gray-100 mb-1">Merged Pull Request</div>
+                        <div>Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore.</div>
+                    </Notification>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private bool bannerWarningOpen = true;
+    private bool bannerErrorOpen = true;
+    private bool bannerSuccessOpen = true;
+    private bool bannerInfoOpen = true;
+    private bool banner2WarningOpen = true;
+    private bool banner2ErrorOpen = true;
+    private bool banner2SuccessOpen = true;
+    private bool banner2InfoOpen = true;
+    private bool toastWarningOpen = true;
+    private bool toastErrorOpen = true;
+    private bool toastSuccessOpen = true;
+    private bool toastInfoOpen = true;
+    private bool toast2WarningOpen = true;
+    private bool toast2ErrorOpen = true;
+    private bool toast2SuccessOpen = true;
+    private bool toast2InfoOpen = true;
+    private bool toast3WarningOpen = true;
+    private bool toast3ErrorOpen = true;
+    private bool toast3SuccessOpen = true;
+    private bool toast3InfoOpen = true;
+    private bool notificationWarningOpen = true;
+    private bool notificationErrorOpen = true;
+    private bool notificationSuccessOpen = true;
+    private bool notificationInfoOpen = true;
+}

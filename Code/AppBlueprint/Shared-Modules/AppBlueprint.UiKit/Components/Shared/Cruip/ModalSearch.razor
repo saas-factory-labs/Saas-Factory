@@ -109,6 +109,26 @@
     [Parameter] public string SearchId { get; set; } = "";
     [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+    
+    // Alias parameters for backward compatibility
+    [Parameter] 
+    public bool ModalOpen 
+    { 
+        get => IsOpen; 
+        set => IsOpen = value; 
+    }
+    
+    private EventCallback _onCloseModalBackingField;
+    
+    [Parameter] 
+    public EventCallback OnCloseModal 
+    { 
+        get => _onCloseModalBackingField;
+        set => _onCloseModalBackingField = value;
+    }
+    
+    [Parameter] 
+    public EventCallback OnOpenModal { get; set; }
 
     private ElementReference modalContentRef;
     private ElementReference searchInputRef;
@@ -123,6 +143,10 @@
             await Task.Delay(1); // Allow render
             showContent = true;
             StateHasChanged();
+            if (OnOpenModal.HasDelegate)
+            {
+                await OnOpenModal.InvokeAsync();
+            }
         }
         else if (!IsOpen && isVisible)
         {
@@ -156,6 +180,10 @@
         await Task.Delay(200);
         isVisible = false;
         await IsOpenChanged.InvokeAsync(false);
+        if (_onCloseModalBackingField.HasDelegate)
+        {
+            await _onCloseModalBackingField.InvokeAsync();
+        }
     }
 
 }
