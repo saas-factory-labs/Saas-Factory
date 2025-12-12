@@ -4,9 +4,11 @@ window.themeManager = {
         const html = document.documentElement;
         if (html.classList.contains('dark')) {
             html.classList.remove('dark');
+            html.style.colorScheme = 'light';
             localStorage.setItem('theme', 'light');
         } else {
             html.classList.add('dark');
+            html.style.colorScheme = 'dark';
             localStorage.setItem('theme', 'dark');
         }
     },
@@ -25,14 +27,18 @@ window.themeManager = {
 
         if (theme === 'dark') {
             html.classList.add('dark');
+            html.style.colorScheme = 'dark';
         } else if (theme === 'light') {
             html.classList.remove('dark');
+            html.style.colorScheme = 'light';
         } else {
             // System preference
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 html.classList.add('dark');
+                html.style.colorScheme = 'dark';
             } else {
                 html.classList.remove('dark');
+                html.style.colorScheme = 'light';
             }
         }
     }
