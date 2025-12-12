@@ -85,21 +85,13 @@ var navigationRoutes = builder.Configuration
     .Get<List<NavLinkMetadata>>() ?? new List<NavLinkMetadata>();
 builder.Services.AddSingleton(navigationRoutes);
 
-// Only configure Kestrel ports for production (Railway)
-// In development, Aspire AppHost controls the ports
-if (!builder.Environment.IsDevelopment())
+// Configure Kestrel to listen on all interfaces for both development and production
+builder.WebHost.ConfigureKestrel(options =>
 {
-    builder.WebHost.ConfigureKestrel(options =>
-    {
-        // Production (Railway): Use port 80
-        options.ListenAnyIP(80);
-        Console.WriteLine("[Web] Production mode - HTTP (80), HTTPS handled by Railway edge");
-    });
-}
-else
-{
-    Console.WriteLine("[Web] Development mode - Ports controlled by Aspire AppHost");
-}
+    // Listen on all interfaces (0.0.0.0) for LAN access
+    options.ListenAnyIP(80);
+    Console.WriteLine("[Web] Kestrel configured - Listening on 0.0.0.0:80 (HTTP)");
+});
 
 builder.Services.ConfigureHttpClientDefaults(http =>
 {
@@ -243,7 +235,7 @@ app.Use(async (context, next) =>
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' https://32nkyp.logto.app wss://localhost:* ws://localhost:* https://cdn.jsdelivr.net;");
+        "connect-src 'self' https://32nkyp.logto.app wss: ws: https://cdn.jsdelivr.net;");
 
     // Permissions Policy - control browser features
     context.Response.Headers.Append("Permissions-Policy",
