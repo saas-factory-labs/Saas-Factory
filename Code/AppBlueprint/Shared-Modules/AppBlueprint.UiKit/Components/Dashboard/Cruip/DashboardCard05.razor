@@ -52,7 +52,6 @@
 
     protected override void OnInitialized()
     {
-        Logger.LogInformation("▶ DashboardCard05 OnInitialized");
         var now = DateTime.Now;
         for (int i = 0; i < range; i++)
         {
@@ -64,15 +63,15 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Logger.LogInformation("▶ DashboardCard05 OnAfterRenderAsync - FirstRender: {FirstRender}", firstRender);
+        
         try
         {
             if (firstRender && labels.Any() && data.Any())
             {
-                Logger.LogInformation("▶ DashboardCard05 Initializing REAL-TIME line chart...");
+
 
                 await InitializeChart();
-                Logger.LogInformation("▶ DashboardCard05 REAL-TIME chart initialized successfully");
+
 
                 // Start real-time updates
                 timer = new System.Timers.Timer(2000);

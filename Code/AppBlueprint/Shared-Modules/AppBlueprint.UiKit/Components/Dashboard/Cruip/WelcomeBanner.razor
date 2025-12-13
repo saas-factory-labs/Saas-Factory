@@ -56,14 +56,12 @@
 @code {
     protected override void OnInitialized()
     {
-        Logger.LogInformation("▶ WelcomeBanner OnInitialized");
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            Logger.LogInformation("▶ WelcomeBanner OnAfterRender (First Render)");
         }
     }
 }

@@ -34,13 +34,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Logger.LogInformation("▶ DashboardCard04 OnAfterRenderAsync - FirstRender: {FirstRender}", firstRender);
+        
         try
         {
             if (firstRender)
             {
-                Logger.LogInformation("▶ DashboardCard04 Initializing BAR chart...");
-
                 var config = new
                 {
                     data = new
@@ -73,7 +71,6 @@
                 };
 
                 await JS.InvokeVoidAsync("chartJsInterop.createBarChart", "dashboard-card-04", config);
-                Logger.LogInformation("▶ DashboardCard04 BAR chart initialized successfully");
             }
         }
         catch (Exception ex)

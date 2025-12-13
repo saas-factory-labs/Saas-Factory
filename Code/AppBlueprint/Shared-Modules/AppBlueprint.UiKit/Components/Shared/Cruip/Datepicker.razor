@@ -25,19 +25,18 @@
 
     protected override void OnInitialized()
     {
-        Logger.LogInformation("▶ Datepicker OnInitialized");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Logger.LogInformation("▶ Datepicker OnAfterRenderAsync - FirstRender: {FirstRender}", firstRender);
+        
         try
         {
             if (firstRender)
             {
-                Logger.LogInformation("▶ Datepicker Initializing flatpickr...");
+                
                 await JS.InvokeVoidAsync("datepickerManager.initialize", inputRef, Align);
-                Logger.LogInformation("▶ Datepicker Initialized successfully");
+                
             }
         }
         catch (Exception ex)

@@ -34,13 +34,11 @@
 @code {
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Logger.LogInformation("▶ DashboardCard02 OnAfterRenderAsync - FirstRender: {FirstRender}", firstRender);
+
         try
         {
             if (firstRender)
             {
-                Logger.LogInformation("▶ DashboardCard02 Initializing chart...");
-
                 var config = new
                 {
                     data = new
@@ -77,7 +75,6 @@
                 };
 
                 await JS.InvokeVoidAsync("chartJsInterop.createLineChart", "dashboard-card-02", config);
-                Logger.LogInformation("▶ DashboardCard02 Chart initialized successfully");
             }
         }
         catch (Exception ex)

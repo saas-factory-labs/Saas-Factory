@@ -82,19 +82,16 @@
 
     protected override void OnInitialized()
     {
-        Logger.LogInformation("▶ DropdownFilter OnInitialized");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Logger.LogInformation("▶ DropdownFilter OnAfterRenderAsync - FirstRender: {FirstRender}", firstRender);
+        
         try
         {
             if (firstRender)
             {
-                Logger.LogInformation("▶ DropdownFilter Initializing dropdown manager...");
                 await JS.InvokeVoidAsync("dropdownManager.initialize", dropdownRef, triggerRef, DotNetObjectReference.Create(this));
-                Logger.LogInformation("▶ DropdownFilter Initialized successfully");
             }
         }
         catch (Exception ex)
