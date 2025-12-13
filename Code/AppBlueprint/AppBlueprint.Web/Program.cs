@@ -10,8 +10,20 @@ using Microsoft.Kiota.Http.HttpClientLibrary;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 using _Imports = AppBlueprint.UiKit._Imports;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure forwarded headers for Railway (reverse proxy)
+// This ensures the app knows it's behind HTTPS even though it receives HTTP internally
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+    Console.WriteLine("[Web] Configured to trust forwarded headers from Railway proxy");
+});
 
 // Configure telemetry - must come before AddServiceDefaults
 // In Production/Railway, disable OTLP to prevent connection errors
@@ -213,6 +225,10 @@ Console.WriteLine("========================================");
 Console.WriteLine("[Web] Application built successfully");
 Console.WriteLine($"[Web] Environment: {app.Environment.EnvironmentName}");
 Console.WriteLine("========================================");
+
+// IMPORTANT: UseForwardedHeaders must come BEFORE UseRouting
+// This ensures redirect URIs use HTTPS when behind Railway's proxy
+app.UseForwardedHeaders();
 
 app.UseRouting();
 // Force HTTPS for OAuth authentication to work correctly
