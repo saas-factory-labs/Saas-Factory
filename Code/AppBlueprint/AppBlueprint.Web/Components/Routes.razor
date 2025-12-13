@@ -11,7 +11,7 @@
         <Router AppAssembly="@typeof(Program).Assembly"
                 AdditionalAssemblies="@AdditionalAssemblies">
             <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(AppBlueprint.UiKit.Components.Layout.Cruip.MainLayout)">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(AppBlueprint.UiKit.Components.Layout.MainLayout)">
                     <NotAuthorized>
                         @if (context.User.Identity?.IsAuthenticated != true)
                         {
