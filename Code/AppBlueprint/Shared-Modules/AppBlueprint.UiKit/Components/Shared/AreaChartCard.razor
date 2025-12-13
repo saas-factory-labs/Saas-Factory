@@ -1,5 +1,28 @@
-@* Area Chart Card component using Blazorise.Charts (Line chart with fill) *@
-@using Blazorise.Charts
+@* Chart component placeholder - Blazorise removed. Implement with Chart.js or ApexCharts if needed *@
+
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
+    <div class="text-center py-8">
+        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+        </svg>
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">@Title</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Chart component removed - charting library needed</p>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; } = "Area Chart";
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string Height { get; set; } = "300px";
+    [Parameter] public bool ShowLegend { get; set; }
+    [Parameter] public bool ShowSummary { get; set; }
+    [Parameter] public bool Stacked { get; set; }
+    [Parameter] public object? Labels { get; set; }
+    [Parameter] public object? Datasets { get; set; }
+    [Parameter] public object? SummaryItems { get; set; }
+    [Parameter] public RenderFragment? HeaderActions { get; set; }
+    [Parameter] public string? Class { get; set; }
+}
 
 <div class="@GetContainerClasses()">
     @* Header *@

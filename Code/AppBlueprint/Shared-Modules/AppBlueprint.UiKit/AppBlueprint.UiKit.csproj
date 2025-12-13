@@ -6,14 +6,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>12.0</LangVersion>
-    <NoWarn>$(NoWarn);MUD0002</NoWarn>
 
     <!-- NuGet Package Configuration -->
     <Version>$(GITVERSION_SemVer)</Version>
 
     <Authors>Casper Rubæk</Authors>
-    <Description>Reusable Razor Class Library with Blazor UI components built on MudBlazor</Description>
-    <PackageTags>blazor razor components mudblazor ui-kit razor-class-library</PackageTags>
+    <Description>Reusable Razor Class Library with Blazor UI components using Tailwind CSS</Description>
+    <PackageTags>blazor razor components tailwindcss ui-kit razor-class-library</PackageTags>
     <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/README.md</PackageProjectUrl>
     <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -25,13 +24,8 @@
         <None Include="..\assets\icons\uikit-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
-    <PropertyGroup>
-        <!-- MUD0002: MudBlazor components use PascalCase attributes which is correct syntax -->
-    </PropertyGroup>
-
     <ItemGroup>
         <SupportedPlatform Include="browser" />
-    <PackageReference Include="Blazorise.Charts" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 
   </ItemGroup>

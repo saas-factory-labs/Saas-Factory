@@ -1,12 +1,7 @@
-<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@data" InputLabels="@labels">
-    <CustomGraphics>
-        <text class="donut-inner-text" x="50%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black"
-              font-family="Helvetica" font-size="20">Total
-        </text>
-        <text class="donut-inner-text" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black"
-              font-family="Helvetica" font-size="50">@data.Sum().ToString()</text>
-    </CustomGraphics>
-</MudChart>
+@* Chart components removed - implement with Chart.js or ApexCharts if needed *@
+<div class="p-4">
+    <p class="text-gray-600">Chart component placeholder - MudBlazor removed</p>
+</div>
 
 @code {
     public double[] data = { 25, 77, 28, 5 };
