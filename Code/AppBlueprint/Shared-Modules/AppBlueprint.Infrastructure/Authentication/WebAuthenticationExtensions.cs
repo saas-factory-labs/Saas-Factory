@@ -121,25 +121,30 @@ public static class WebAuthenticationExtensions
                 options.SaveTokens = true;
 
                 // Configure correlation cookie for OAuth flow
-                // SameSite=Lax allows cookies to be sent on top-level navigation (redirects from Logto)
-                // In development, use None policy to avoid issues with self-signed certificates
-                options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+                // IMPORTANT: For Railway/production behind reverse proxy with external OAuth (Logto):
+                // - Must use SameSite=None to allow cross-site cookies during OAuth redirect
+                // - Must use Secure=Always since Railway provides HTTPS via X-Forwarded-Proto
+                options.CorrelationCookie.SameSite = environment.IsDevelopment() 
+                    ? SameSiteMode.Lax  // Lax is fine for local development
+                    : SameSiteMode.None;  // None required for production OAuth redirects
                 options.CorrelationCookie.SecurePolicy = environment.IsDevelopment()
                     ? CookieSecurePolicy.None  // Allow HTTP in development
-                    : CookieSecurePolicy.SameAsRequest;  // Require HTTPS in production
+                    : CookieSecurePolicy.Always;  // Always require HTTPS in production (Railway provides via proxy)
                 options.CorrelationCookie.HttpOnly = true;
 
                 // Configure nonce cookie similarly
-                options.NonceCookie.SameSite = SameSiteMode.Lax;
+                options.NonceCookie.SameSite = environment.IsDevelopment()
+                    ? SameSiteMode.Lax
+                    : SameSiteMode.None;
                 options.NonceCookie.SecurePolicy = environment.IsDevelopment()
                     ? CookieSecurePolicy.None  // Allow HTTP in development
-                    : CookieSecurePolicy.SameAsRequest;  // Require HTTPS in production
+                    : CookieSecurePolicy.Always;  // Always require HTTPS in production
                 options.NonceCookie.HttpOnly = true;
 
                 // Log the callback path being used
                 Console.WriteLine($"[Web] OpenID Connect callback path: {options.CallbackPath}");
-                Console.WriteLine($"[Web] Cookie SecurePolicy: {(environment.IsDevelopment() ? "None (dev - allows HTTP)" : "SameAsRequest (prod)")}");
-                Console.WriteLine($"[Web] Correlation & Nonce cookies: SameSite=Lax");
+                Console.WriteLine($"[Web] Cookie SecurePolicy: {(environment.IsDevelopment() ? "None (dev - allows HTTP)" : "Always (prod - HTTPS required)")}");
+                Console.WriteLine($"[Web] Cookie SameSite: {(environment.IsDevelopment() ? "Lax (dev)" : "None (prod - required for OAuth)")}");
                 
                 // Add OnRemoteFailure handler to log and handle correlation failures
                 var existingOnRemoteFailure = options.Events.OnRemoteFailure;
