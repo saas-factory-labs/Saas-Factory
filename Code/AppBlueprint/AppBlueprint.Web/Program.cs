@@ -85,26 +85,10 @@ var navigationRoutes = builder.Configuration
     .Get<List<NavLinkMetadata>>() ?? new List<NavLinkMetadata>();
 builder.Services.AddSingleton(navigationRoutes);
 
-// Configure Kestrel to listen on all interfaces for both development and production
-builder.WebHost.ConfigureKestrel(options =>
-{
-    if (builder.Environment.IsDevelopment())
-    {
-        // Development: HTTP and HTTPS with dev certificates
-        options.ListenAnyIP(80); // HTTP
-        options.ListenAnyIP(443, listenOptions =>
-        {
-            listenOptions.UseHttps(); // Uses the ASP.NET Core dev certificate
-        });
-        Console.WriteLine("[Web] Development mode - Listening on 0.0.0.0:80 (HTTP) and 0.0.0.0:443 (HTTPS)");
-    }
-    else
-    {
-        // Production (Railway): Only HTTP, SSL/TLS handled by Railway's load balancer
-        options.ListenAnyIP(80); // HTTP only
-        Console.WriteLine("[Web] Production mode - Listening on 0.0.0.0:80 (HTTP only), TLS handled by Railway");
-    }
-});
+// Port configuration handled by ASPNETCORE_URLS environment variable:
+// - Development: Set via launchSettings.json (http://localhost:5000;https://localhost:5001)
+// - Production: Set via Dockerfile ENV ASPNETCORE_URLS=http://+:80 (Railway handles SSL termination)
+// No ConfigureKestrel needed - avoids conflicts with environment variables
 
 builder.Services.ConfigureHttpClientDefaults(http =>
 {
