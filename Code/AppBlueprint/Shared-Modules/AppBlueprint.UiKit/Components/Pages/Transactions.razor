@@ -1,0 +1,190 @@
+@page "/finance/transactions"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="sm:flex sm:justify-between sm:items-center mb-4 md:mb-2">
+        <div class="mb-4 sm:mb-0">
+            <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">$47,347.09</h1>
+        </div>
+        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+            <div class="hidden sm:block">
+                <div class="relative">
+                    <label for="search" class="sr-only">Search</label>
+                    <input id="search" class="form-input pl-9" type="search" placeholder="Search..." @bind="searchQuery"/>
+                    <button class="absolute inset-0 right-auto group" type="submit" aria-label="Search">
+                        <svg class="w-4 h-4 shrink-0 fill-current text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400 ml-3 mr-2" viewBox="0 0 16 16">
+                            <path d="M7 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zM7 2C4.243 2 2 4.243 2 7s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5z"/>
+                            <path d="M15.707 14.293L13.314 11.9a8.019 8.019 0 01-1.414 1.414l2.393 2.393a.997.997 0 001.414 0 .999.999 0 000-1.414z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <button class="btn bg-violet-500 hover:bg-violet-600 text-white">Export Transactions</button>
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <span class="text-gray-600 dark:text-gray-400">Transactions from </span>
+        <select class="form-select text-sm" @bind="selectedPeriod">
+            <option>Last 12 Months</option>
+            <option>Last 6 Months</option>
+            <option>Last 30 Days</option>
+            <option>Last 7 Days</option>
+        </select>
+    </div>
+
+    <!-- Filters -->
+    <div class="mb-5">
+        <ul class="flex flex-wrap -m-1">
+            <li class="m-1">
+                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-transparent shadow-sm @(selectedFilter == "all" ? "bg-violet-500 text-white" : "bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700") duration-150 ease-in-out" @onclick="@(() => selectedFilter = "all")">View All</button>
+            </li>
+            <li class="m-1">
+                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border @(selectedFilter == "completed" ? "bg-violet-500 text-white border-transparent" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400") shadow-sm duration-150 ease-in-out" @onclick="@(() => selectedFilter = "completed")">Completed</button>
+            </li>
+            <li class="m-1">
+                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border @(selectedFilter == "pending" ? "bg-violet-500 text-white border-transparent" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400") shadow-sm duration-150 ease-in-out" @onclick="@(() => selectedFilter = "pending")">Pending</button>
+            </li>
+            <li class="m-1">
+                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border @(selectedFilter == "canceled" ? "bg-violet-500 text-white border-transparent" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400") shadow-sm duration-150 ease-in-out" @onclick="@(() => selectedFilter = "canceled")">Canceled</button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700 relative">
+        <header class="px-5 py-4">
+            <h2 class="font-semibold text-gray-800 dark:text-gray-100">All Transactions <span class="text-gray-400 dark:text-gray-500 font-medium">@FilteredTransactions.Count()</span></h2>
+        </header>
+        <div>
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full dark:text-gray-300">
+                    <thead class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                            <div class="flex items-center">
+                                <label class="inline-flex">
+                                    <span class="sr-only">Select all</span>
+                                    <input class="form-checkbox" type="checkbox" @bind="selectAll"/>
+                                </label>
+                            </div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Counterparty</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Payment Date</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Status</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-right">Amount</div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach (var transaction in FilteredTransactions)
+                    {
+                        <tr>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                                <div class="flex items-center">
+                                    <label class="inline-flex">
+                                        <span class="sr-only">Select</span>
+                                        <input class="form-checkbox" type="checkbox" @bind="transaction.Selected"/>
+                                    </label>
+                                </div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-9 h-9 shrink-0 mr-2 sm:mr-3">
+                                        <img class="rounded-full" src="@transaction.Image" width="36" height="36" alt="@transaction.Name"/>
+                                    </div>
+                                    <div class="font-medium text-gray-800 dark:text-gray-100">@transaction.Name</div>
+                                </div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div>@transaction.Date</div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="inline-flex font-medium rounded-full text-center px-2.5 py-0.5 @GetStatusClass(transaction.Status)">@transaction.Status</div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="text-right font-medium @(transaction.Amount.StartsWith("-") ? "text-rose-500" : "text-emerald-500")">@transaction.Amount</div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-8">
+        <nav class="mb-4 sm:mb-0 sm:order-1" role="navigation" aria-label="Navigation">
+            <ul class="flex justify-center">
+                <li class="ml-3 first:ml-0">
+                    <span class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600">&lt;- Previous</span>
+                </li>
+                <li class="ml-3 first:ml-0">
+                    <a class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-violet-500" href="#">Next -&gt;</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="text-sm text-gray-500 text-center sm:text-left">
+            Showing <span class="font-medium text-gray-600 dark:text-gray-300">1</span> to <span class="font-medium text-gray-600 dark:text-gray-300">10</span> of <span class="font-medium text-gray-600 dark:text-gray-300">@transactions.Count</span> results
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private List<Transaction> transactions = new();
+    private string searchQuery = "";
+    private string selectedPeriod = "Last 12 Months";
+    private string selectedFilter = "all";
+    private bool selectAll;
+
+    private IEnumerable<Transaction> FilteredTransactions => transactions
+        .Where(t => selectedFilter == "all" || t.Status.ToLower() == selectedFilter)
+        .Where(t => string.IsNullOrEmpty(searchQuery) || t.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+
+    protected override void OnInitialized()
+    {
+        transactions = new List<Transaction>
+        {
+            new() { Name = "Form Builder CP", Image = "_content/AppBlueprint.UiKit/images/transactions-image-01.svg", Date = "22/01/2024", Status = "Completed", Amount = "-$1,299.22" },
+            new() { Name = "Imperial Hotel & Spa", Image = "_content/AppBlueprint.UiKit/images/transactions-image-02.svg", Date = "22/01/2024", Status = "Completed", Amount = "-$1,029.77" },
+            new() { Name = "Appleseeds Store", Image = "_content/AppBlueprint.UiKit/images/transactions-image-03.svg", Date = "22/01/2024", Status = "Pending", Amount = "-$43.87" },
+            new() { Name = "Google Limited UK", Image = "_content/AppBlueprint.UiKit/images/transactions-image-04.svg", Date = "22/01/2024", Status = "Completed", Amount = "+$2,767.99" },
+            new() { Name = "Uber Technologies Inc", Image = "_content/AppBlueprint.UiKit/images/transactions-image-05.svg", Date = "22/01/2024", Status = "Canceled", Amount = "-$54.23" },
+            new() { Name = "Facebook UK", Image = "_content/AppBlueprint.UiKit/images/transactions-image-06.svg", Date = "21/01/2024", Status = "Completed", Amount = "-$236.57" },
+            new() { Name = "Flavor Flavor UK", Image = "_content/AppBlueprint.UiKit/images/transactions-image-07.svg", Date = "21/01/2024", Status = "Completed", Amount = "-$31.99" },
+            new() { Name = "Flavor Flavor UK", Image = "_content/AppBlueprint.UiKit/images/transactions-image-08.svg", Date = "20/01/2024", Status = "Pending", Amount = "-$78.49" }
+        };
+    }
+
+    private string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "Completed" => "bg-emerald-100 dark:bg-emerald-400/30 text-emerald-600 dark:text-emerald-400",
+            "Pending" => "bg-amber-100 dark:bg-amber-400/30 text-amber-600 dark:text-amber-400",
+            "Canceled" => "bg-rose-100 dark:bg-rose-400/30 text-rose-500 dark:text-rose-400",
+            _ => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+        };
+    }
+
+    private class Transaction
+    {
+        public string Name { get; set; } = "";
+        public string Image { get; set; } = "";
+        public string Date { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Amount { get; set; } = "";
+        public bool Selected { get; set; }
+    }
+
+}

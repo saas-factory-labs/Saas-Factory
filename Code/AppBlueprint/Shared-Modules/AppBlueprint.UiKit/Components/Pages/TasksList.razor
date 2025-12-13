@@ -1,0 +1,230 @@
+@page "/tasks/list"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Smaller container -->
+    <div class="max-w-3xl mx-auto">
+
+        <!-- Page header -->
+        <div class="sm:flex sm:justify-between sm:items-center mb-8">
+            <div class="mb-4 sm:mb-0">
+                <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Acme Inc. Tasks</h1>
+            </div>
+            <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-4">
+                <!-- Avatars -->
+                <div class="flex shrink-0 -space-x-3 -ml-px">
+                    <a class="block" href="#"><img class="rounded-full border-2 border-gray-100 dark:border-gray-900 box-content" src="_content/AppBlueprint.UiKit/images/user-32-08.jpg" width="32" height="32" alt="User 08" /></a>
+                    <a class="block" href="#"><img class="rounded-full border-2 border-gray-100 dark:border-gray-900 box-content" src="_content/AppBlueprint.UiKit/images/user-32-07.jpg" width="32" height="32" alt="User 07" /></a>
+                    <a class="block" href="#"><img class="rounded-full border-2 border-gray-100 dark:border-gray-900 box-content" src="_content/AppBlueprint.UiKit/images/user-32-05.jpg" width="32" height="32" alt="User 05" /></a>
+                    <button class="flex justify-center items-center w-9 h-9 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-violet-500 shadow-sm transition duration-150 ml-2">
+                        <span class="sr-only">Add new user</span>
+                        <svg class="w-3 h-3 fill-current" viewBox="0 0 12 12">
+                            <path d="M11 5H7V1a1 1 0 0 0-2 0v4H1a1 1 0 0 0 0 2h4v4a1 1 0 0 0 2 0V7h4a1 1 0 0 0 0-2Z" />
+                        </svg>
+                    </button>
+                </div>
+                <button class="btn bg-violet-500 hover:bg-violet-600 text-white">
+                    <svg class="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
+                        <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
+                    </svg>
+                    <span class="ml-2">Add Task</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tasks -->
+        <div class="space-y-6">
+            @foreach (var group in taskGroups)
+            {
+                <div>
+                    <h2 class="grow font-semibold text-gray-800 dark:text-gray-100 truncate mb-4">@group.Title</h2>
+                    <div class="space-y-2">
+                        @foreach (var task in group.Tasks)
+                        {
+                            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700 p-4 @(task.Completed ? "opacity-60" : "")" draggable="true">
+                                <div class="sm:flex sm:justify-between sm:items-start">
+                                    <div class="grow mt-0.5 mb-3 sm:mb-0 space-y-3">
+                                        <div class="flex items-center">
+                                            <button class="cursor-move mr-2">
+                                                <span class="sr-only">Drag</span>
+                                                <svg class="w-3 h-3 fill-gray-300 dark:fill-gray-600" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M0 1h12v2H0V1Zm0 4h12v2H0V5Zm0 4h12v2H0V9Z" fill-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                            <label class="flex items-center">
+                                                <input type="checkbox" class="form-checkbox w-5 h-5 rounded-full peer" checked="@task.Completed" @onchange="() => task.Completed = !task.Completed" />
+                                                <span class="font-medium text-gray-800 dark:text-gray-100 @(task.Completed ? "line-through" : "") ml-2">@task.Title</span>
+                                            </label>
+                                        </div>
+                                        @if (task.Subtasks.Any())
+                                        {
+                                            <ul class="pl-12 space-y-3">
+                                                @foreach (var subtask in task.Subtasks)
+                                                {
+                                                    <li>
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" class="form-checkbox w-5 h-5 rounded-full peer" checked="@subtask.Completed" @onchange="() => subtask.Completed = !subtask.Completed" />
+                                                            <span class="text-sm text-gray-800 dark:text-gray-100 @(subtask.Completed ? "line-through" : "") ml-3">@subtask.Title</span>
+                                                        </label>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    </div>
+                                    <div class="flex items-center justify-end space-x-3">
+                                        @if (task.Avatars.Any())
+                                        {
+                                            <div class="flex shrink-0 -space-x-3 -ml-px">
+                                                @foreach (var avatar in task.Avatars)
+                                                {
+                                                    <a class="block" href="#"><img class="rounded-full border-2 border-white dark:border-gray-800 box-content" src="@avatar" width="24" height="24" alt="User" /></a>
+                                                }
+                                            </div>
+                                        }
+                                        @if (!string.IsNullOrEmpty(task.DueDate))
+                                        {
+                                            <div class="flex items-center text-amber-500">
+                                                <svg class="w-4 h-4 shrink-0 fill-current mr-1.5" viewBox="0 0 16 16">
+                                                    <path d="M15 2h-2V0h-2v2H9V0H7v2H5V0H3v2H1a1 1 0 00-1 1v12a1 1 0 001 1h14a1 1 0 001-1V3a1 1 0 00-1-1zm-1 12H2V6h12v8z" />
+                                                </svg>
+                                                <div class="text-sm text-amber-600">@task.DueDate</div>
+                                            </div>
+                                        }
+                                        @if (task.Likes > 0)
+                                        {
+                                            <button class="flex items-center text-gray-400 dark:text-gray-500 hover:text-violet-500 dark:hover:text-violet-500">
+                                                <svg class="w-4 h-4 shrink-0 fill-current mr-1.5" viewBox="0 0 16 16">
+                                                    <path d="M14.682 2.318A4.485 4.485 0 0011.5 1 4.377 4.377 0 008 2.707 4.383 4.383 0 004.5 1a4.5 4.5 0 00-3.182 7.682L8 15l6.682-6.318a4.5 4.5 0 000-6.364zm-1.4 4.933L8 12.247l-5.285-5A2.5 2.5 0 014.5 3c1.437 0 2.312.681 3.5 2.625C9.187 3.681 10.062 3 11.5 3a2.5 2.5 0 011.785 4.251h-.003z" />
+                                                </svg>
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">@task.Likes</div>
+                                            </button>
+                                        }
+                                        @if (task.Comments > 0)
+                                        {
+                                            <button class="flex items-center text-gray-400 dark:text-gray-500 hover:text-violet-500 dark:hover:text-violet-500">
+                                                <svg class="w-4 h-4 shrink-0 fill-current mr-1.5" viewBox="0 0 16 16">
+                                                    <path d="M8 0C3.6 0 0 3.1 0 7s3.6 7 8 7h.6l5.4 2v-4.4c1.2-1.2 2-2.8 2-4.6 0-3.9-3.6-7-8-7zm4 10.8v2.3L8.9 12H8c-3.3 0-6-2.2-6-5s2.7-5 6-5 6 2.2 6 5c0 2.2-2 3.8-2 3.8z" />
+                                                </svg>
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">@task.Comments</div>
+                                            </button>
+                                        }
+                                        @if (task.Subtasks.Any())
+                                        {
+                                            <div class="flex items-center text-gray-400 dark:text-gray-500 ml-3">
+                                                <svg class="w-4 h-4 shrink-0 fill-current mr-1.5" viewBox="0 0 16 16">
+                                                    <path d="M6.974 14c-.3 0-.7-.2-.9-.5l-2.2-3.7-2.1 2.8c-.3.4-1 .5-1.4.2-.4-.3-.5-1-.2-1.4l3-4c.2-.3.5-.4.9-.4.3 0 .6.2.8.5l2 3.3 3.3-8.1c0-.4.4-.7.8-.7s.8.2.9.6l4 8c.2.5 0 1.1-.4 1.3-.5.2-1.1 0-1.3-.4l-3-6-3.2 7.9c-.2.4-.6.6-1 .6z" />
+                                                </svg>
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">@task.Subtasks.Count(s => s.Completed)/@task.Subtasks.Count</div>
+                                            </div>
+                                        }
+                                        <button class="text-gray-400 dark:text-gray-500 hover:text-violet-500 dark:hover:text-violet-500">
+                                            <svg class="w-4 h-4 shrink-0 fill-current mr-1.5" viewBox="0 0 16 16">
+                                                <path d="M11 0c1.3 0 2.6.5 3.5 1.5 1 .9 1.5 2.2 1.5 3.5 0 1.3-.5 2.6-1.4 3.5l-1.2 1.2c-.2.2-.5.3-.7.3-.2 0-.5-.1-.7-.3-.4-.4-.4-1 0-1.4l1.1-1.2c.6-.5.9-1.3.9-2.1s-.3-1.6-.9-2.2C12 1.7 10 1.7 8.9 2.8L7.7 4c-.4.4-1 .4-1.4 0-.4-.4-.4-1 0-1.4l1.2-1.1C8.4.5 9.7 0 11 0zM8.3 12c.4-.4 1-.5 1.4-.1.4.4.4 1 0 1.4l-1.2 1.2C7.6 15.5 6.3 16 5 16c-1.3 0-2.6-.5-3.5-1.5C.5 13.6 0 12.3 0 11c0-1.3.5-2.6 1.5-3.5l1.1-1.2c.4-.4 1-.4 1.4 0 .4.4.4 1 0 1.4L2.9 8.9c-.6.5-.9 1.3-.9 2.1s.3 1.6.9 2.2c1.1 1.1 3.1 1.1 4.2 0L8.3 12zm1.1-6.8c.4-.4 1-.4 1.4 0 .4.4.4 1 0 1.4l-4.2 4.2c-.2.2-.5.3-.7.3-.2 0-.5-.1-.7-.3-.4-.4-.4-1 0-1.4l4.2-4.2z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private List<TaskGroup> taskGroups = new();
+
+    protected override void OnInitialized()
+    {
+        taskGroups = new List<TaskGroup>
+        {
+            new()
+            {
+                Title = "To Do's",
+                Tasks = new List<TaskItem>
+                {
+                    new() { Title = "Senior Software Engineer Backend", Avatars = new[] { "_content/AppBlueprint.UiKit/images/user-32-07.jpg", "_content/AppBlueprint.UiKit/images/user-32-05.jpg" }, Likes = 4, Comments = 7 },
+                    new() { Title = "User should receive a daily digest email", DueDate = "Mar 27", Comments = 6 },
+                    new() { Title = "Change license and remove products", Avatars = new[] { "_content/AppBlueprint.UiKit/images/user-32-08.jpg", "_content/AppBlueprint.UiKit/images/user-32-07.jpg" }, Comments = 4 }
+                }
+            },
+            new()
+            {
+                Title = "In Progress",
+                Tasks = new List<TaskItem>
+                {
+                    new()
+                    {
+                        Title = "Managing teams (book)",
+                        Avatars = new[] { "_content/AppBlueprint.UiKit/images/user-32-05.jpg" },
+                        Subtasks = new List<SubtaskItem>
+                        {
+                            new() { Title = "Finish the presentation", Completed = true },
+                            new() { Title = "Finish the design", Completed = false },
+                            new() { Title = "Publish the content", Completed = false }
+                        }
+                    },
+                    new() { Title = "Product Update - Q4 2021", DueDate = "Mar 27" },
+                    new() { Title = "Design marketing assets", Avatars = new[] { "_content/AppBlueprint.UiKit/images/user-32-07.jpg" }, DueDate = "Mar 27" }
+                }
+            },
+            new()
+            {
+                Title = "Completed",
+                Tasks = new List<TaskItem>
+                {
+                    new()
+                    {
+                        Title = "Design new diagrams",
+                        Completed = true,
+                        Avatars = new[] { "_content/AppBlueprint.UiKit/images/user-32-08.jpg" },
+                        Subtasks = new List<SubtaskItem>
+                        {
+                            new() { Title = "Step 1", Completed = true },
+                            new() { Title = "Step 2", Completed = true },
+                            new() { Title = "Step 3", Completed = true }
+                        }
+                    },
+                    new()
+                    {
+                        Title = "Update the contact page",
+                        Completed = true,
+                        Avatars = new[] { "_content/AppBlueprint.UiKit/images/user-32-08.jpg", "_content/AppBlueprint.UiKit/images/user-32-07.jpg" },
+                        Subtasks = new List<SubtaskItem>
+                        {
+                            new() { Title = "Step 1", Completed = true },
+                            new() { Title = "Step 2", Completed = true }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private class TaskGroup
+    {
+        public string Title { get; set; } = "";
+        public List<TaskItem> Tasks { get; set; } = new();
+    }
+
+    private class TaskItem
+    {
+        public string Title { get; set; } = "";
+        public bool Completed { get; set; }
+        public string[] Avatars { get; set; } = Array.Empty<string>();
+        public string DueDate { get; set; } = "";
+        public int Likes { get; set; }
+        public int Comments { get; set; }
+        public List<SubtaskItem> Subtasks { get; set; } = new();
+    }
+
+    private class SubtaskItem
+    {
+        public string Title { get; set; } = "";
+        public bool Completed { get; set; }
+    }
+}

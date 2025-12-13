@@ -1,58 +1,107 @@
-@* @using MudBlazor
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
 
-<MudPaper Class="doc-section-component-container">
-    <MudChart ChartType="ChartType.Bar"
-              ChartSeries="_series"
-              XAxisLabels="_xAxisLabels"
-              @bind-SelectedIndex="_index"
-              Width="_width"
-              Height="_height"
-              ChartOptions="_chartOptions" />
-</MudPaper>
-
-<MudGrid>
-    <MudItem xs="6">
-        <MudText Typo="Typo.body1" Class="py-3">
-            Selected: @(_index < 0 ? "None" : _series[_index].Name)
-        </MudText>
-    </MudItem>
-
-    <MudItem md="6" xs="12">
-        <MudCheckBox @bind-Value="_chartOptions.MatchBoundsToSize"
-                     Label="MatchBoundsToSize"
-                     Color="Color.Primary" />
-    </MudItem>
-
-    <MudItem md="6" xs="12">
-        <MudTextField @bind-Value="_width" Label="Chart Width" />
-    </MudItem>
-
-    <MudItem md="6" xs="12">
-        <MudTextField @bind-Value="_height" Label="Chart Height" />
-    </MudItem>
-
-    <MudItem md="6" xs="12">
-        <MudStack>
-            <MudText Typo="Typo.body1">XAxis Label Rotation</MudText>
-            <MudSlider @bind-Value="_chartOptions.XAxisLabelRotation"
-                       Min="0" Max="90" Step="15" />
-        </MudStack>
-    </MudItem>
-</MudGrid>
+<div class="@ContainerClass">
+    <canvas id="@CanvasId" width="@Width" height="@Height"></canvas>
+</div>
 
 @code {
-    private int _index = -1;
-    private string _width = "650px";
-    private string _height = "350px";
-    private ChartOptions _chartOptions = new();
+    [Parameter] public string CanvasId { get; set; } = $"bar-chart-{Guid.NewGuid():N}";
+    [Parameter] public int Width { get; set; } = 595;
+    [Parameter] public int Height { get; set; } = 248;
+    [Parameter] public string ContainerClass { get; set; } = "grow";
+    [Parameter] public List<string> Labels { get; set; } = new();
+    [Parameter] public List<BarChartDataset> Datasets { get; set; } = new();
+    [Parameter] public bool UseTimeScale { get; set; } = true;
 
-    private readonly List<ChartSeries> _series =
-    [
-        new() { Name = "United States", Data = [ 40, 20, 25, 27, 46, 60, 48, 80, 15 ] },
-        new() { Name = "Germany",       Data = [ 19, 24, 35, 13, 28, 15, 13, 16, 31 ] },
-        new() { Name = "Sweden",        Data = [  8,  6, 11, 13,  4, 16, 10, 16, 18 ] }
-    ];
+    private bool _initialized;
 
-    private readonly string[] _xAxisLabels =
-        [ "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep" ];
-} *@
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Labels.Any() && Datasets.Any())
+        {
+            await InitializeChart();
+        }
+    }
+
+    private async Task InitializeChart()
+    {
+        if (_initialized) return;
+
+        var config = new
+        {
+            data = new
+            {
+                labels = Labels,
+                datasets = Datasets.Select(d => new
+                {
+                    label = d.Label,
+                    data = d.Data,
+                    backgroundColor = d.BackgroundColor,
+                    hoverBackgroundColor = d.HoverBackgroundColor,
+                    barPercentage = d.BarPercentage,
+                    categoryPercentage = d.CategoryPercentage,
+                    borderRadius = d.BorderRadius
+                }).ToArray()
+            },
+            useTimeScale = UseTimeScale
+        };
+
+        await JSRuntime.InvokeVoidAsync("chartJsInterop.createBarChart", CanvasId, config);
+        _initialized = true;
+    }
+
+    public async Task UpdateData(List<string> labels, List<BarChartDataset> datasets)
+    {
+        Labels = labels;
+        Datasets = datasets;
+
+        if (_initialized)
+        {
+            var newData = new
+            {
+                labels = Labels,
+                datasets = Datasets.Select(d => new
+                {
+                    label = d.Label,
+                    data = d.Data,
+                    backgroundColor = d.BackgroundColor,
+                    hoverBackgroundColor = d.HoverBackgroundColor,
+                    barPercentage = d.BarPercentage,
+                    categoryPercentage = d.CategoryPercentage,
+                    borderRadius = d.BorderRadius
+                }).ToArray()
+            };
+
+            await JSRuntime.InvokeVoidAsync("chartJsInterop.updateChart", CanvasId, newData);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_initialized)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("chartJsInterop.destroyChart", CanvasId);
+            }
+            catch (JSDisconnectedException)
+            {
+                // Ignore - circuit is already disconnected
+            }
+        }
+    }
+
+    public class BarChartDataset
+    {
+        public string Label { get; set; } = "";
+        public List<double> Data { get; set; } = new();
+        public string BackgroundColor { get; set; } = "rgb(99, 102, 241)";
+        public string HoverBackgroundColor { get; set; } = "rgb(79, 70, 229)";
+        public double BarPercentage { get; set; } = 0.7;
+        public double CategoryPercentage { get; set; } = 0.7;
+        public int BorderRadius { get; set; } = 4;
+    }
+
+}

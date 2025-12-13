@@ -1,0 +1,50 @@
+<div class="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">Cash Flow</h2>
+    </header>
+    <!-- Chart -->
+    <div class="grow px-5 py-3">
+        <AppBlueprint.UiKit.Components.Charts.BarChart
+            CanvasId="fintech-bar-chart"
+            Height="248"
+            Labels="@labels"
+            Datasets="@datasets"
+            UseTimeScale="false"
+            ContainerClass="grow"/>
+    </div>
+</div>
+
+@code {
+    private List<string> labels = new() { "Jan", "Feb", "Mar", "Apr", "May", "Jun" };
+
+    private List<AppBlueprint.UiKit.Components.Charts.BarChart.BarChartDataset> datasets = new();
+
+    protected override void OnInitialized()
+    {
+        datasets = new()
+        {
+            new AppBlueprint.UiKit.Components.Charts.BarChart.BarChartDataset
+            {
+                Label = "Income",
+                Data = new List<double> { 800, 2600, 4000, 1200, 3200, 1700 },
+                BackgroundColor = "rgb(99, 102, 241)", // violet-500
+                HoverBackgroundColor = "rgb(79, 70, 229)", // violet-600
+                BarPercentage = 0.66,
+                CategoryPercentage = 0.66,
+                BorderRadius = 4
+            },
+            // Gray bars (Outflow)
+            new AppBlueprint.UiKit.Components.Charts.BarChart.BarChartDataset
+            {
+                Label = "Outflow",
+                Data = new List<double> { 2800, 1700, 900, 2900, 1950, 3100 },
+                BackgroundColor = "rgb(221, 214, 254)", // violet-200
+                HoverBackgroundColor = "rgb(196, 181, 253)", // violet-300
+                BarPercentage = 0.66,
+                CategoryPercentage = 0.66,
+                BorderRadius = 4
+            }
+        };
+    }
+
+}

@@ -1,0 +1,84 @@
+@* Skeleton Table - Loading placeholder for table components *@
+
+<div class="@GetContainerClasses()">
+    @* Header *@
+    @if (ShowHeader)
+    {
+        <div class="flex items-center gap-4 px-5 py-3 bg-gray-50 dark:bg-gray-700/30 border-b border-gray-200 dark:border-gray-700">
+            @if (Selectable)
+            {
+                <LoadingSkeleton Variant="rounded" Width="20px" Height="20px" />
+            }
+            @for (int col = 0; col < Columns; col++)
+            {
+                <div class="flex-1">
+                    <LoadingSkeleton Variant="text" Width="@GetColumnWidth(col)" Height="14px" />
+                </div>
+            }
+        </div>
+    }
+
+    @* Rows *@
+    @for (int row = 0; row < Rows; row++)
+    {
+        <div class="flex items-center gap-4 px-5 py-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+            @if (Selectable)
+            {
+                <LoadingSkeleton Variant="rounded" Width="20px" Height="20px" />
+            }
+            @if (ShowAvatar)
+            {
+                <LoadingSkeleton Variant="circular" Width="36px" Height="36px" />
+            }
+            @for (int col = 0; col < Columns; col++)
+            {
+                <div class="flex-1">
+                    @if (col == 0 && ShowAvatar)
+                    {
+                        <LoadingSkeleton Variant="text" Width="70%" Height="14px" Class="mb-1" />
+                        <LoadingSkeleton Variant="text" Width="50%" Height="12px" />
+                    }
+                    else
+                    {
+                        <LoadingSkeleton Variant="text" Width="@GetRandomWidth()" Height="14px" />
+                    }
+                </div>
+            }
+            @if (ShowActions)
+            {
+                <div class="flex items-center gap-2">
+                    <LoadingSkeleton Variant="circular" Width="32px" Height="32px" />
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public int Rows { get; set; } = 5;
+    [Parameter] public int Columns { get; set; } = 4;
+    [Parameter] public bool ShowHeader { get; set; } = true;
+    [Parameter] public bool ShowAvatar { get; set; } = false;
+    [Parameter] public bool ShowActions { get; set; } = true;
+    [Parameter] public bool Selectable { get; set; } = false;
+    [Parameter] public string? Class { get; set; }
+
+    private Random random = new();
+
+    private string GetContainerClasses()
+    {
+        return $"bg-white dark:bg-gray-800 rounded-xl shadow-xs overflow-hidden {Class}";
+    }
+
+    private string GetColumnWidth(int index)
+    {
+        var widths = new[] { "60%", "50%", "40%", "30%", "45%" };
+        return widths[index % widths.Length];
+    }
+
+    private string GetRandomWidth()
+    {
+        var widths = new[] { "40%", "50%", "60%", "70%", "80%" };
+        return widths[random.Next(widths.Length)];
+    }
+}

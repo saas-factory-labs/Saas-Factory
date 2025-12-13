@@ -5,7 +5,19 @@
       "Bash(Sort-Object)",
       "Bash(dotnet test:*)",
       "Bash(git add:*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(Get-Process -Name \"dotnet\")",
+      "Bash(Select-Object Id,ProcessName,StartTime)",
+      "Bash(Sort-Object StartTime -Descending)",
+      "Bash(Where-Object {$_rocessName -eq \"dotnet\"})",
+      "Bash(Select-Object Id,ProcessName,StartTime,Path)",
+      "Bash(Select-Object -First 5)",
+      "Bash(npm run build:css:*)",
+      "Bash(echo:*)",
+      "Bash(Select-String -Pattern \"error|warning\" -Context 0,2)",
+      "Bash(Select-String -Pattern \"error\")",
+      "Bash(Out-String)",
+      "Bash(powershell -Command:*)"
     ],
     "deny": [],
     "ask": []

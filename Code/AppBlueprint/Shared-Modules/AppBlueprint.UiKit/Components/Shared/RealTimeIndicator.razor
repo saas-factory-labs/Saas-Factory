@@ -1,0 +1,92 @@
+@* Real-time update indicator with toggle *@
+
+<div class="flex items-center gap-2">
+    @if (IsEnabled)
+    {
+        <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+        </span>
+    }
+    else
+    {
+        <span class="relative flex h-2 w-2">
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-gray-400"></span>
+        </span>
+    }
+
+    <button type="button"
+            class="@GetButtonClasses()"
+            @onclick="Toggle"
+            title="@(IsEnabled ? "Disable real-time updates" : "Enable real-time updates")">
+        <svg class="fill-current shrink-0" width="14" height="14" viewBox="0 0 14 14">
+            @if (IsEnabled)
+            {
+                <path d="M7 0a7 7 0 1 0 0 14A7 7 0 0 0 7 0Zm0 12.5A5.5 5.5 0 1 1 7 1.5a5.5 5.5 0 0 1 0 11ZM6.25 3.75v3.5l2.5 1.5.75-1.25-1.75-1V3.75h-1.5Z"/>
+            }
+            else
+            {
+                <path d="M7 0a7 7 0 1 0 0 14A7 7 0 0 0 7 0Zm0 12.5A5.5 5.5 0 1 1 7 1.5a5.5 5.5 0 0 1 0 11ZM9.5 6.5H4.5v1h5v-1Z"/>
+            }
+        </svg>
+        <span class="@TextClasses">@StatusText</span>
+    </button>
+
+    @if (ShowLastUpdated && LastUpdated.HasValue)
+    {
+        <span class="text-xs text-gray-400 dark:text-gray-500">
+            Last updated: @GetTimeAgo(LastUpdated.Value)
+        </span>
+    }
+</div>
+
+@code {
+    [Parameter] public bool IsEnabled { get; set; } = false;
+    [Parameter] public EventCallback<bool> IsEnabledChanged { get; set; }
+    [Parameter] public EventCallback<bool> OnToggle { get; set; }
+    [Parameter] public DateTime? LastUpdated { get; set; }
+    [Parameter] public bool ShowLastUpdated { get; set; } = true;
+    [Parameter] public string Size { get; set; } = "sm"; // xs, sm, md
+
+    private string StatusText => IsEnabled ? "Live" : "Paused";
+
+    private async Task Toggle()
+    {
+        IsEnabled = !IsEnabled;
+        await IsEnabledChanged.InvokeAsync(IsEnabled);
+        await OnToggle.InvokeAsync(IsEnabled);
+    }
+
+    private string GetTimeAgo(DateTime time)
+    {
+        var diff = DateTime.Now - time;
+        if (diff.TotalSeconds < 5) return "just now";
+        if (diff.TotalSeconds < 60) return $"{(int)diff.TotalSeconds}s ago";
+        if (diff.TotalMinutes < 60) return $"{(int)diff.TotalMinutes}m ago";
+        if (diff.TotalHours < 24) return $"{(int)diff.TotalHours}h ago";
+        return time.ToString("MMM d, HH:mm");
+    }
+
+    private string GetButtonClasses()
+    {
+        var sizeClasses = Size switch
+        {
+            "xs" => "text-xs px-1.5 py-0.5",
+            "md" => "text-sm px-3 py-1.5",
+            _ => "text-xs px-2 py-1"
+        };
+
+        var colorClasses = IsEnabled
+            ? "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20"
+            : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600";
+
+        return $"inline-flex items-center gap-1.5 rounded-full transition-colors {sizeClasses} {colorClasses}";
+    }
+
+    private string TextClasses => Size switch
+    {
+        "xs" => "text-xs",
+        "md" => "text-sm",
+        _ => "text-xs"
+    };
+}

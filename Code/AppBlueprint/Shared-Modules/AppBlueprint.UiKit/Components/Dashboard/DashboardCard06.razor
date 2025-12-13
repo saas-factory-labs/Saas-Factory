@@ -1,0 +1,64 @@
+<div class="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">Top Countries</h2>
+    </header>
+    <!-- Chart -->
+    <div class="grow flex flex-col justify-center p-5">
+        <canvas id="dashboard-card-06" width="389" height="260"></canvas>
+    </div>
+</div>
+
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+@code {
+    private List<string> labels = new() { "United States", "Italy", "Other" };
+    private List<double> data = new() { 35, 30, 35 };
+    private List<string> backgroundColors = new()
+    {
+        "rgb(139, 92, 246)",   // violet-500
+        "rgb(14, 165, 233)",   // sky-500
+        "rgb(109, 40, 217)"    // violet-800
+    };
+    private List<string> hoverBackgroundColors = new()
+    {
+        "rgb(124, 58, 237)",   // violet-600
+        "rgb(2, 132, 199)",    // sky-600
+        "rgb(91, 33, 182)"     // violet-900
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (firstRender)
+            {
+                var config = new
+                {
+                    data = new
+                    {
+                        labels = labels,
+                        datasets = new[]
+                        {
+                            new
+                            {
+                                label = "Top Countries",
+                                data = data,
+                                backgroundColor = backgroundColors,
+                                hoverBackgroundColor = hoverBackgroundColors,
+                                hoverBorderColor = "white"
+                            }
+                        }
+                    },
+                    cutout = "80%"
+                };
+
+                await JS.InvokeVoidAsync("chartJsInterop.createDoughnutChart", "dashboard-card-06", config);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in DashboardCard06: {ex.Message}");
+        }
+    }
+}

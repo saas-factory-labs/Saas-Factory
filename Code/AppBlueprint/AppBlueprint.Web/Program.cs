@@ -7,7 +7,7 @@ using AppBlueprint.Web.Components;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
-using MudBlazor.Services;
+using Microsoft.Kiota.Http.HttpClientLibrary;
 using _Imports = AppBlueprint.UiKit._Imports;
 using System.Security.Cryptography.X509Certificates;
 
@@ -85,21 +85,17 @@ var navigationRoutes = builder.Configuration
     .Get<List<NavLinkMetadata>>() ?? new List<NavLinkMetadata>();
 builder.Services.AddSingleton(navigationRoutes);
 
-// Only configure Kestrel ports for production (Railway)
-// In development, Aspire AppHost controls the ports
-if (!builder.Environment.IsDevelopment())
+// Configure Kestrel to listen on all interfaces for both development and production
+builder.WebHost.ConfigureKestrel(options =>
 {
-    builder.WebHost.ConfigureKestrel(options =>
+    // Listen on all interfaces for LAN access
+    options.ListenAnyIP(80); // HTTP
+    options.ListenAnyIP(443, listenOptions =>
     {
-        // Production (Railway): Use port 80
-        options.ListenAnyIP(80);
-        Console.WriteLine("[Web] Production mode - HTTP (80), HTTPS handled by Railway edge");
+        listenOptions.UseHttps(); // Uses the ASP.NET Core dev certificate
     });
-}
-else
-{
-    Console.WriteLine("[Web] Development mode - Ports controlled by Aspire AppHost");
-}
+    Console.WriteLine("[Web] Kestrel configured - Listening on 0.0.0.0:80 (HTTP) and 0.0.0.0:443 (HTTPS)");
+});
 
 builder.Services.ConfigureHttpClientDefaults(http =>
 {
@@ -112,11 +108,22 @@ builder.Services.ConfigureHttpClientDefaults(http =>
     }
 });
 
+// Configure cookie policy for HTTP LAN access (fixes "Correlation failed" error)
+// This allows authentication cookies to work over HTTP in development
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.Configure<CookiePolicyOptions>(options =>
+    {
+        options.MinimumSameSitePolicy = SameSiteMode.Lax;
+        options.Secure = CookieSecurePolicy.SameAsRequest;
+    });
+}
+
 builder.Services.AddOutputCache();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authentication
-builder.Services.AddMudServices();
-builder.Services.AddSingleton<BreadcrumbService>();
+builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authentication
+
 builder.Services.AddUiKit();
 
 // Add HttpContextAccessor for accessing authentication tokens in delegating handlers
@@ -215,7 +222,20 @@ Console.WriteLine($"[Web] Environment: {app.Environment.EnvironmentName}");
 Console.WriteLine("========================================");
 
 app.UseRouting();
-// app.UseHttpsRedirection(); // Temporarily disabled for design review
+// Force HTTPS for OAuth authentication to work correctly
+// Disabled in development to avoid cookie issues with self-signed certificates
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+    Console.WriteLine("[Web] HTTPS redirection enabled (production)");
+}
+else
+{
+    Console.WriteLine("[Web] HTTPS redirection disabled (development - avoiding cookie issues)");
+}
+
+// Serve static files FIRST - before security headers to ensure proper Content-Type is set
+app.UseStaticFiles();
 
 // Security Headers Middleware - Add security headers to all responses
 app.Use(async (context, next) =>
@@ -236,11 +256,11 @@ app.Use(async (context, next) =>
     // Note: Adjust this policy based on your application's requirements
     context.Response.Headers.Append("Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' https://32nkyp.logto.app wss://localhost:* ws://localhost:*;");
+        "connect-src 'self' https://32nkyp.logto.app wss: ws: https://cdn.jsdelivr.net;");
 
     // Permissions Policy - control browser features
     context.Response.Headers.Append("Permissions-Policy",
@@ -249,8 +269,10 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.UseStaticFiles();
 app.UseAntiforgery();
+
+// Cookie policy middleware - must come before authentication
+app.UseCookiePolicy();
 
 // Add authentication and authorization middleware for Logto
 app.UseAuthentication();

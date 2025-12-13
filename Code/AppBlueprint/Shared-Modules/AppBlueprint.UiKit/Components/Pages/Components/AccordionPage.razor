@@ -1,0 +1,237 @@
+@page "/component/accordion"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Accordion</h1>
+    </div>
+
+    <div>
+
+        <!-- Components -->
+        <div class="space-y-8 mt-8">
+
+            <!-- Basic Accordion -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Basic Accordion</h2>
+                <div class="px-5 py-4 rounded-lg border border-gray-200 dark:border-gray-700/60">
+                    <button class="flex items-center justify-between w-full group mb-1"
+                            @onclick="() => basicAccordionOpen = !basicAccordionOpen"
+                            aria-expanded="@basicAccordionOpen">
+                        <div class="text-sm text-gray-800 dark:text-gray-100 font-medium">Accordion Title</div>
+                        <svg class="w-8 h-8 shrink-0 fill-current text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400 ml-3 @(basicAccordionOpen ? "rotate-180" : "")" viewBox="0 0 32 32">
+                            <path d="M16 20l-5.4-5.4 1.4-1.4 4 4 4-4 1.4 1.4z"/>
+                        </svg>
+                    </button>
+                    <div class="text-sm" hidden="@(!basicAccordionOpen)">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis. Ut enim ad minim veniam quis. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Row with Accordion -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Table Row with Accordion</h2>
+                <!-- Start -->
+                <div class="rounded-lg border border-gray-200 dark:border-gray-700/60">
+                    <div class="overflow-x-auto">
+                        <table class="table-auto w-full dark:text-gray-300 divide-y divide-gray-100 dark:divide-gray-700/60">
+                            @foreach (var item in items)
+                            {
+                                <tbody class="text-sm">
+                                <tr>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="flex items-center text-gray-800">
+                                            <div class="w-10 h-10 shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-full mr-2 sm:mr-3">
+                                                <img class="rounded-full ml-1" src="@item.Image" width="40" height="40" alt="@item.Customer"/>
+                                            </div>
+                                            <div class="font-medium text-gray-800 dark:text-gray-100">@item.Customer</div>
+                                        </div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="text-left font-medium text-green-600">@item.Total</div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="inline-flex font-medium bg-yellow-500/20 text-yellow-700 rounded-full text-center px-2.5 py-0.5">@item.Status</div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="text-center">@item.Items</div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="text-left">@item.Location</div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <svg class="fill-current text-gray-400 dark:text-gray-500 shrink-0 mr-2" width="16" height="16" viewBox="0 0 16 16">
+                                                <path d="M4.3 4.5c1.9-1.9 5.1-1.9 7 0 .7.7 1.2 1.7 1.4 2.7l2-.3c-.2-1.5-.9-2.8-1.9-3.8C10.1.4 5.7.4 2.9 3.1L.7.9 0 7.3l6.4-.7-2.1-2.1zM15.6 8.7l-6.4.7 2.1 2.1c-1.9 1.9-5.1 1.9-7 0-.7-.7-1.2-1.7-1.4-2.7l-2 .3c.2 1.5.9 2.8 1.9 3.8 1.4 1.4 3.1 2 4.9 2 1.8 0 3.6-.7 4.9-2l2.2 2.2.8-6.4z"/>
+                                            </svg>
+                                            <div>@item.Type</div>
+                                        </div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                                        <div class="flex items-center">
+                                            <button class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 transform @(item.IsOpen ? "rotate-180" : "")"
+                                                    @onclick="() => item.IsOpen = !item.IsOpen"
+                                                    aria-expanded="@item.IsOpen"
+                                                    aria-controls="description-@item.Id">
+                                                <span class="sr-only">Menu</span>
+                                                <svg class="w-8 h-8 fill-current" viewBox="0 0 32 32">
+                                                    <path d="M16 20l-5.4-5.4 1.4-1.4 4 4 4-4 1.4 1.4z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="description-@item.Id" role="region" class="@(!item.IsOpen ? "hidden" : "")">
+                                    <td colspan="10" class="px-2 first:pl-5 last:pr-5 py-3">
+                                        <div class="flex items-center bg-gray-50 dark:bg-gray-950/[0.15] dark:text-gray-400 p-3 -mt-3">
+                                            <svg class="shrink-0 fill-current text-gray-400 dark:text-gray-500 mr-2" width="16" height="16">
+                                                <path d="M1 16h3c.3 0 .5-.1.7-.3l11-11c.4-.4.4-1 0-1.4l-3-3c-.4-.4-1-.4-1.4 0l-11 11c-.2.2-.3.4-.3.7v3c0 .6.4 1 1 1zm1-3.6l10-10L13.6 4l-10 10H2v-1.6z"/>
+                                            </svg>
+                                            <div class="italic">@item.Description</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                </div>
+                <!-- End -->
+            </div>
+
+            <!-- Rich Table Row with Accordion -->
+            <div>
+                <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Rich Table Row with Accordion</h2>
+                <!-- Start -->
+                <div class="rounded-lg border border-gray-200 dark:border-gray-700/60">
+                    <div class="overflow-x-auto">
+                        <table class="table-auto w-full dark:text-gray-300 divide-y divide-gray-100 dark:divide-gray-700/60">
+                            @foreach (var item in items2)
+                            {
+                                <tbody class="text-sm">
+                                <tr>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="flex items-center text-gray-800">
+                                            <div class="w-10 h-10 shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-full mr-2 sm:mr-3">
+                                                <img class="rounded-full ml-1" src="@item.Image" width="40" height="40" alt="@item.Customer"/>
+                                            </div>
+                                            <div class="font-medium text-gray-800 dark:text-gray-100">@item.Customer</div>
+                                        </div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="text-left">@item.Email</div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="text-left">@item.Location</div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="text-left">@item.Date</div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="text-left text-green-500 font-medium">@item.Amount</div>
+                                    </td>
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                                        <div class="flex items-center">
+                                            <button class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 transform @(item.IsOpen ? "rotate-180" : "")"
+                                                    @onclick="() => item.IsOpen = !item.IsOpen"
+                                                    aria-expanded="@item.IsOpen"
+                                                    aria-controls="description-@item.Id">
+                                                <span class="sr-only">Menu</span>
+                                                <svg class="w-8 h-8 fill-current" viewBox="0 0 32 32">
+                                                    <path d="M16 20l-5.4-5.4 1.4-1.4 4 4 4-4 1.4 1.4z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="description-@item.Id" role="region" class="@(!item.IsOpen ? "hidden" : "")">
+                                    <td colspan="10" class="px-2 first:pl-5 last:pr-5 py-3">
+                                        <div class="bg-gray-50 dark:bg-gray-950/[0.15] dark:text-gray-400 p-3 -mt-3">
+                                            <div class="text-sm mb-3">
+                                                <div class="font-medium text-gray-800 dark:text-gray-100 mb-1">@item.DescriptionTitle</div>
+                                                <div>@item.DescriptionBody</div>
+                                            </div>
+                                            <button class="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">Approve</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                </div>
+                <!-- End -->
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private bool basicAccordionOpen;
+
+    private List<AccordionItemData> items = new()
+    {
+        new AccordionItemData
+        {
+            Id = "0",
+            Image = "_content/AppBlueprint.UiKit/images/user-40-07.jpg",
+            Customer = "Mark Cameron",
+            Total = "$129.00",
+            Status = "Refunded",
+            Items = "1",
+            Location = "🇲🇽 New Mexico, MX",
+            Type = "Subscription",
+            Description = "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        }
+    };
+
+    private List<AccordionRichItemData> items2 = new()
+    {
+        new AccordionRichItemData
+        {
+            Id = "0",
+            Image = "_content/AppBlueprint.UiKit/images/user-40-07.jpg",
+            Customer = "Mark Cameron",
+            Email = "mark.cameron@app.com",
+            Location = "🇬🇧 London, UK",
+            Date = "22/01/2024",
+            Amount = "+249.88",
+            DescriptionTitle = "Excepteur sint occaecat cupidatat.",
+            DescriptionBody = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis. Ut enim ad minim veniam quis. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        }
+    };
+
+    public class AccordionItemData
+    {
+        public string Id { get; set; } = "";
+        public string Image { get; set; } = "";
+        public string Customer { get; set; } = "";
+        public string Total { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Items { get; set; } = "";
+        public string Location { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Description { get; set; } = "";
+        public bool IsOpen { get; set; }
+    }
+
+    public class AccordionRichItemData
+    {
+        public string Id { get; set; } = "";
+        public string Image { get; set; } = "";
+        public string Customer { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Location { get; set; } = "";
+        public string Date { get; set; } = "";
+        public string Amount { get; set; } = "";
+        public string DescriptionTitle { get; set; } = "";
+        public string DescriptionBody { get; set; } = "";
+        public bool IsOpen { get; set; }
+    }
+
+}

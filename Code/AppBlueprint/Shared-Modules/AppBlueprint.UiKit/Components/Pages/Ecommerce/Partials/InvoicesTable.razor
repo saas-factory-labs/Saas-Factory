@@ -1,0 +1,115 @@
+<div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl relative">
+    <header class="px-5 py-4">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">Invoices <span class="text-gray-400 dark:text-gray-500 font-medium">67</span></h2>
+    </header>
+    <div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full dark:text-gray-300">
+                <!-- Table header -->
+                <thead class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-b border-gray-100 dark:border-gray-700/60">
+                    <tr>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                            <div class="flex items-center">
+                                <label class="inline-flex">
+                                    <span class="sr-only">Select all</span>
+                                    <input class="form-checkbox" type="checkbox" @onchange="CheckAll" checked="@selectAll" />
+                                </label>
+                            </div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Invoice</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Total</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Status</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Customer</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Issued on</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Paid on</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Type</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Actions</div>
+                        </th>
+                    </tr>
+                </thead>
+                <!-- Table body -->
+                <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
+                    @foreach (var invoice in invoices)
+                    {
+                        <InvoicesTableItem Invoice="@invoice" IsSelected="@selected.Contains(invoice.Id)" OnSelectionChanged="@HandleSelectionChanged" />
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<List<string>> OnSelectionChanged { get; set; }
+
+    private bool selectAll;
+    private List<string> selected = new();
+    private List<InvoicesTableItem.InvoiceItem> invoices = new();
+
+    protected override void OnInitialized()
+    {
+        invoices = new List<InvoicesTableItem.InvoiceItem>
+        {
+            new() { Id = "0", Invoice = "#123567", Total = "$129.00", Status = "Overdue", Customer = "Dominik Lamakani", IssuedDate = "22/07/2024", PaidDate = "-", Type = "Subscription" },
+            new() { Id = "1", Invoice = "#779912", Total = "$59.00", Status = "Paid", Customer = "Mark Cameron", IssuedDate = "19/07/2024", PaidDate = "20/07/2024", Type = "Subscription" },
+            new() { Id = "2", Invoice = "#889924", Total = "$89.00", Status = "Paid", Customer = "Sergio Gonnelli", IssuedDate = "17/07/2024", PaidDate = "19/07/2024", Type = "One-time" },
+            new() { Id = "3", Invoice = "#897726", Total = "$129.00", Status = "Due", Customer = "Manuel Garbaya", IssuedDate = "04/07/2024", PaidDate = "-", Type = "Subscription" },
+            new() { Id = "4", Invoice = "#123567", Total = "$129.00", Status = "Due", Customer = "Cool Robot", IssuedDate = "04/07/2024", PaidDate = "-", Type = "Subscription" },
+            new() { Id = "5", Invoice = "#896644", Total = "$129.00", Status = "Paid", Customer = "Mark Cameron", IssuedDate = "04/07/2024", PaidDate = "09/07/2024", Type = "One-time" },
+            new() { Id = "6", Invoice = "#136988", Total = "$69.00", Status = "Paid", Customer = "Glenn Thomas", IssuedDate = "01/07/2024", PaidDate = "01/07/2024", Type = "One-time" },
+            new() { Id = "7", Invoice = "#442206", Total = "$129.00", Status = "Overdue", Customer = "Dominik Lamakani", IssuedDate = "22/06/2024", PaidDate = "-", Type = "Subscription" },
+            new() { Id = "8", Invoice = "#764321", Total = "$89.00", Status = "Paid", Customer = "Brian Halligan", IssuedDate = "21/06/2024", PaidDate = "29/06/2024", Type = "One-time" },
+            new() { Id = "9", Invoice = "#908764", Total = "$129.00", Status = "Due", Customer = "Carolyn McNeail", IssuedDate = "17/06/2024", PaidDate = "-", Type = "Subscription" }
+        };
+    }
+
+    private void CheckAll()
+    {
+        if (!selectAll)
+        {
+            selected = invoices.Select(i => i.Id).ToList();
+        }
+        else
+        {
+            selected.Clear();
+        }
+        selectAll = !selectAll;
+        OnSelectionChanged.InvokeAsync(selected);
+    }
+
+    private void HandleSelectionChanged((string Id, bool IsChecked) args)
+    {
+        if (args.IsChecked)
+        {
+            if (!selected.Contains(args.Id))
+            {
+                selected.Add(args.Id);
+            }
+        }
+        else
+        {
+            selected.Remove(args.Id);
+        }
+        selectAll = invoices.Count == selected.Count;
+        OnSelectionChanged.InvokeAsync(selected);
+    }
+}

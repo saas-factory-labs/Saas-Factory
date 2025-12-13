@@ -42,7 +42,13 @@ public static class ServiceCollectionExtensions
 
         services.AddDatabaseContexts(configuration);
         services.AddRepositories();
-        services.AddWebAuthentication(configuration, environment);
+        
+        // Only add web authentication for non-API environments (Blazor Server)
+        // API services handle authentication differently (JWT Bearer)
+        // Check if this is being called from a Web project by looking for Blazor services
+        // For API services, authentication is configured separately in their Program.cs
+        // services.AddWebAuthentication(configuration, environment); // Commented out - add explicitly in Web project
+        
         services.AddUnitOfWork();
         services.AddExternalServices(configuration);
         services.AddHealthChecksServices(configuration);

@@ -1,0 +1,11 @@
+@page "/signin"
+@page "/login"
+@inject NavigationManager Navigation
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Redirect to the authentication endpoint which triggers Logto sign-in
+        Navigation.NavigateTo("/auth/signin", forceLoad: true);
+    }
+}

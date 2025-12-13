@@ -1,0 +1,76 @@
+@page "/settings/feedback"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Account Settings</h1>
+    </div>
+
+    <!-- Content -->
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl mb-8">
+        <div class="flex flex-col md:flex-row md:-mr-px">
+            <AppBlueprint.UiKit.Components.Settings.SettingsSidebar />
+
+            <!-- Feedback Panel -->
+            <div class="grow">
+                <!-- Panel body -->
+                <div class="p-6 space-y-6">
+                    <div>
+                        <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-4">Give Feedback</h2>
+                        <div class="text-sm">Our product depends on customer feedback to improve the overall experience!</div>
+                    </div>
+
+                    <!-- Rate -->
+                    <section>
+                        <h3 class="text-xl leading-snug text-gray-800 dark:text-gray-100 font-bold mb-6">How likely would you recommend us to a friend or colleague?</h3>
+                        <div class="w-full max-w-xl">
+                            <div class="relative">
+                                <div class="absolute left-0 top-1/2 -mt-px w-full h-0.5 bg-gray-200 dark:bg-gray-700" aria-hidden="true"></div>
+                                <ul class="relative flex justify-between w-full">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        var rating = i;
+                                        <li class="flex">
+                                            <button class="w-3 h-3 rounded-full @(selectedRating == rating ? "bg-violet-500 border-2 border-violet-500" : "bg-white dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-500")"
+                                                    @onclick="() => selectedRating = rating">
+                                                <span class="sr-only">@rating</span>
+                                            </button>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="w-full flex justify-between text-sm text-gray-500 dark:text-gray-400 italic mt-3">
+                                <div>Not at all</div>
+                                <div>Extremely likely</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tell us in words -->
+                    <section>
+                        <h3 class="text-xl leading-snug text-gray-800 dark:text-gray-100 font-bold mb-5">Tell us in words</h3>
+                        <label class="sr-only" for="feedback">Leave a feedback</label>
+                        <textarea id="feedback" class="form-textarea w-full focus:border-gray-300" rows="4" placeholder="I really enjoy..." @bind="feedbackText"></textarea>
+                    </section>
+                </div>
+
+                <!-- Panel footer -->
+                <footer>
+                    <div class="flex flex-col px-6 py-5 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex self-end">
+                            <button class="btn dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-600 dark:text-gray-300">Cancel</button>
+                            <button class="btn bg-violet-500 hover:bg-violet-600 text-white ml-3">Save Changes</button>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private int selectedRating = 3;
+    private string feedbackText = "";
+}

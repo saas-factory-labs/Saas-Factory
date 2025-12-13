@@ -1,0 +1,37 @@
+@* Breadcrumb navigation component *@
+
+<nav aria-label="Breadcrumb">
+    <ol class="flex items-center flex-wrap text-sm">
+        @for (int i = 0; i < Items.Count; i++)
+        {
+            var item = Items[i];
+            var isLast = i == Items.Count - 1;
+
+            <li class="flex items-center">
+                @if (isLast)
+                {
+                    <span class="font-medium text-gray-800 dark:text-gray-100">@item.Label</span>
+                }
+                else
+                {
+                    <a href="@item.Href" class="text-gray-500 dark:text-gray-400 hover:text-violet-500 dark:hover:text-violet-400">
+                        @item.Label
+                    </a>
+                    <svg class="shrink-0 mx-2 fill-current text-gray-400 dark:text-gray-600" width="8" height="10" viewBox="0 0 8 10">
+                        <path d="M1.707.293a1 1 0 00-1.414 1.414L4.586 6 .293 10.293a1 1 0 001.414 1.414l5-5a1 1 0 000-1.414l-5-5z" />
+                    </svg>
+                }
+            </li>
+        }
+    </ol>
+</nav>
+
+@code {
+    [Parameter] public List<BreadcrumbItem> Items { get; set; } = new();
+
+    public class BreadcrumbItem
+    {
+        public string Label { get; set; } = "";
+        public string Href { get; set; } = "#";
+    }
+}

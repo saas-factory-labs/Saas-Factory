@@ -1,6 +1,8 @@
 using AppBlueprint.Infrastructure;
+using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.Presentation.ApiModule.Middleware;
+using AppBlueprint.TodoAppKernel.Infrastructure;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
@@ -51,18 +53,16 @@ internal static class Program // Make class static
         // Add services to the container.
         builder.Services.AddProblemDetails();
 
-        builder.Services.AddAppBlueprintServices();
+        // Add HttpContextAccessor - required by Infrastructure layer
+        builder.Services.AddHttpContextAccessor();
 
-        // Add CORS support for development
-        builder.Services.AddCors(options =>
-        {
-            options.AddDefaultPolicy(policy =>
-            {
-                policy.AllowAnyOrigin()
-                      .AllowAnyMethod()
-                      .AllowAnyHeader();
-            });
-        });
+        builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
+        
+        // Add TodoAppKernel module (includes TodoDbContext and TodoRepository)
+        builder.Services.AddTodoAppKernel(builder.Configuration);
+        
+        // Add Presentation layer (includes Controllers, API Versioning, CORS, etc.)
+        builder.Services.AddAppBlueprintPresentation();
 
         // Add JWT authentication
         builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -86,7 +86,7 @@ internal static class Program // Make class static
             config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("BearerAuth"));
         });
 
-        builder.Services.AddControllers(); var app = builder.Build();
+        var app = builder.Build();
 
         app.UseCustomMiddlewares();
 
@@ -99,18 +99,11 @@ internal static class Program // Make class static
             await MigrationExtensions.ApplyDatabaseSeedingAsync(app);
         }
 
-        // Add TenantMiddleware AFTER OpenAPI/Swagger middleware to allow access to documentation
+        // Add TenantMiddleware AFTER authentication middleware
         app.UseMiddleware<TenantMiddleware>();
 
         // Configure the HTTP request pipeline.
         app.UseExceptionHandler();
-        
-        // Add CORS middleware (must be before authentication)
-        app.UseCors();
-        
-        // Re-enabled authentication and authorization middleware
-        app.UseAuthentication();
-        app.UseAuthorization();
 
         // Redirect root path to Swagger UI for easier access from Aspire dashboard
         app.MapGet("/", () => Results.Redirect("/swagger"));

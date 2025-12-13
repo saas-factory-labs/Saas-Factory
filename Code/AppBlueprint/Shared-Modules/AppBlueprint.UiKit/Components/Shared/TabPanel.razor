@@ -1,0 +1,17 @@
+@* Tab panel content component *@
+
+@if (IsActive)
+{
+    <div role="tabpanel" class="@CssClass">
+        @ChildContent
+    </div>
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string Id { get; set; } = "";
+    [Parameter] public string ActiveTab { get; set; } = "";
+    [Parameter] public string? CssClass { get; set; }
+
+    private bool IsActive => Id == ActiveTab;
+}

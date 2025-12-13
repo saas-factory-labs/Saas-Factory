@@ -1,0 +1,224 @@
+@page "/finance/credit-cards"
+
+<div class="lg:relative lg:flex">
+
+    <!-- Content -->
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+        <!-- Page header -->
+        <div class="sm:flex sm:justify-between sm:items-center mb-5">
+            <div class="mb-4 sm:mb-0">
+                <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Cards</h1>
+            </div>
+            <button class="btn bg-violet-500 hover:bg-violet-600 text-white">
+                <svg class="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
+                    <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
+                </svg>
+                <span class="hidden xs:block ml-2">Add Card</span>
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="mb-5">
+            <ul class="flex flex-wrap -m-1">
+                <li class="m-1">
+                    <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-transparent shadow-sm bg-violet-500 text-white duration-150 ease-in-out">View All</button>
+                </li>
+                <li class="m-1">
+                    <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 duration-150 ease-in-out">Physical Cards</button>
+                </li>
+                <li class="m-1">
+                    <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 duration-150 ease-in-out">Virtual Cards</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Credit cards -->
+        <div class="space-y-2">
+            @foreach (var card in cards)
+            {
+                <label class="relative block cursor-pointer text-left w-full" @onclick="() => SelectCard(card)">
+                    <input type="radio" name="radio-buttons" class="peer sr-only" checked="@(card == selectedCard)" />
+                    <div class="p-4 rounded dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm duration-150 ease-in-out">
+                        <div class="grid grid-cols-12 items-center gap-x-2">
+                            <div class="col-span-6 order-1 sm:order-none sm:col-span-3 flex items-center space-x-4">
+                                <svg class="shrink-0" width="32" height="24" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient x1="1.829%" y1="100%" x2="100%" y2="2.925%" id="@($"c-{card.Id}")">
+                                            <stop stop-color="@card.GradientStart" offset="0%" />
+                                            <stop stop-color="@card.GradientEnd" offset="100%" />
+                                        </linearGradient>
+                                    </defs>
+                                    <g fill="none" fill-rule="evenodd">
+                                        <rect fill="url(#@($"c-{card.Id}"))" width="32" height="24" rx="3" />
+                                        <ellipse fill="#E61C24" fill-rule="nonzero" cx="12.522" cy="12" rx="5.565" ry="5.647" />
+                                        <ellipse fill="#F99F1B" fill-rule="nonzero" cx="19.432" cy="12" rx="5.565" ry="5.647" />
+                                        <path d="M15.977 7.578A5.667 5.667 0 0 0 13.867 12c0 1.724.777 3.353 2.11 4.422A5.667 5.667 0 0 0 18.087 12a5.667 5.667 0 0 0-2.11-4.422Z" fill="#F26622" fill-rule="nonzero" />
+                                    </g>
+                                </svg>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-800 dark:text-gray-100">@card.Name</div>
+                                    <div class="text-xs">**@card.LastFour</div>
+                                </div>
+                            </div>
+                            <div class="col-span-6 order-2 sm:order-none sm:col-span-3 text-left sm:text-center">
+                                <div class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">@card.HolderName</div>
+                            </div>
+                            <div class="col-span-6 order-1 sm:order-none sm:col-span-4 text-right sm:text-center">
+                                <div class="text-sm">@card.Spent / @card.Limit</div>
+                            </div>
+                            <div class="col-span-6 order-2 sm:order-none sm:col-span-2 text-right">
+                                <div class="text-xs inline-flex font-medium @GetStatusClass(card.Status) rounded-full text-center px-2.5 py-1">@card.Status</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute inset-0 border-2 border-transparent peer-checked:border-violet-400 dark:peer-checked:border-violet-500 rounded pointer-events-none" aria-hidden="true"></div>
+                </label>
+            }
+        </div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <div>
+        <div class="lg:sticky lg:top-16 bg-gray-50 dark:bg-gradient-to-b dark:from-gray-800 dark:to-gray-900 lg:overflow-x-hidden lg:overflow-y-auto no-scrollbar lg:shrink-0 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 lg:w-[390px] lg:h-[calc(100dvh-64px)]">
+            <div class="py-8 px-4 lg:px-8">
+                <div class="max-w-sm mx-auto lg:max-w-none">
+
+                    <div class="text-gray-800 dark:text-gray-100 font-semibold text-center mb-6">@selectedCard?.Name Summary</div>
+
+                    <!-- Credit Card Visual -->
+                    <div class="relative aspect-[7/4] bg-gradient-to-tr from-gray-600 to-gray-800 p-5 rounded-xl shadow-xs overflow-hidden">
+                        <div class="relative h-full flex flex-col justify-between">
+                            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="icon1-b">
+                                        <stop stop-color="#E2E8F0" offset="0%" />
+                                        <stop stop-color="#94A3B8" offset="100%" />
+                                    </linearGradient>
+                                </defs>
+                                <g transform="rotate(90 16 16)" fill="none" fill-rule="evenodd">
+                                    <path id="icon1-a" d="M16 0l16 32-16-5-16 5z" fill="url(#icon1-b)" />
+                                </g>
+                            </svg>
+                            <div class="flex justify-between text-lg font-bold text-gray-200 tracking-widest drop-shadow-sm">
+                                <span>****</span>
+                                <span>****</span>
+                                <span>****</span>
+                                <span>@selectedCard?.LastFour</span>
+                            </div>
+                            <div class="relative flex justify-between items-center z-10 mb-0.5">
+                                <div class="text-sm font-bold text-gray-200 tracking-widest drop-shadow-sm space-x-3">
+                                    <span>EXP @selectedCard?.Expiry</span>
+                                    <span>CVC ***</span>
+                                </div>
+                            </div>
+                            <svg class="absolute bottom-0 right-0" width="48" height="28" viewBox="0 0 48 28">
+                                <circle fill="#F59E0B" cx="34" cy="14" r="14" fill-opacity=".8" />
+                                <circle fill="#F43F5E" cx="14" cy="14" r="14" fill-opacity=".8" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="mt-6">
+                        <div class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-1">Details</div>
+                        <ul>
+                            <li class="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
+                                <div class="text-sm">Card Name</div>
+                                <div class="text-sm font-medium text-gray-800 dark:text-gray-100 ml-2">@selectedCard?.Name</div>
+                            </li>
+                            <li class="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
+                                <div class="text-sm">Status</div>
+                                <div class="flex items-center whitespace-nowrap">
+                                    <div class="w-2 h-2 rounded-full @(selectedCard?.Status == "Active" ? "bg-emerald-500" : "bg-amber-500") mr-2"></div>
+                                    <div class="text-sm font-medium text-gray-800 dark:text-gray-100">@selectedCard?.Status</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Payment Limits -->
+                    <div class="mt-6">
+                        <div class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-4">Payment Limits</div>
+                        <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex justify-between text-sm mb-2">
+                                <div>Spent This Month</div>
+                                <div class="italic">@selectedCard?.Spent <span class="text-gray-400 dark:text-gray-500">/</span> @selectedCard?.Limit</div>
+                            </div>
+                            <div class="relative w-full h-2 bg-gray-300 dark:bg-gray-700 rounded">
+                                <div class="absolute inset-0 bg-emerald-500 rounded" aria-hidden="true" style="width: 50%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center space-x-3 mt-6">
+                        <div class="w-1/2">
+                            <button class="btn w-full dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-600 dark:text-gray-300">
+                                <svg class="w-4 h-4 fill-current text-gray-500 dark:text-gray-400 shrink-0" viewBox="0 0 16 16">
+                                    <path d="M11.7.3c-.4-.4-1-.4-1.4 0l-10 10c-.2.2-.3.4-.3.7v4c0 .6.4 1 1 1h4c.3 0 .5-.1.7-.3l10-10c.4-.4.4-1 0-1.4l-4-4zM4.6 14H2v-2.6l6-6L10.6 8l-6 6zM12 6.6L9.4 4 11 2.4 13.6 5 12 6.6z" />
+                                </svg>
+                                <span class="ml-2">Edit Card</span>
+                            </button>
+                        </div>
+                        <div class="w-1/2">
+                            <button class="btn w-full dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-rose-500">
+                                <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 16 16">
+                                    <path d="M14.574 5.67a13.292 13.292 0 0 1 1.298 1.842 1 1 0 0 1 0 .98C15.743 8.716 12.706 14 8 14a6.391 6.391 0 0 1-1.557-.2l1.815-1.815C10.97 11.82 13.06 9.13 13.82 8c-.163-.243-.39-.56-.669-.907l1.424-1.424ZM.294 15.706a.999.999 0 0 1-.002-1.413l2.53-2.529C1.171 10.291.197 8.615.127 8.49a.998.998 0 0 1-.002-.975C.251 7.29 3.246 2 8 2c1.331 0 2.515.431 3.548 1.038L14.293.293a.999.999 0 1 1 1.414 1.414l-14 14a.997.997 0 0 1-1.414 0ZM2.18 8a12.603 12.603 0 0 0 2.06 2.347l1.833-1.834A1.925 1.925 0 0 1 6 8a2 2 0 0 1 2-2c.178 0 .348.03.512.074l1.566-1.566C9.438 4.201 8.742 4 8 4 5.146 4 2.958 6.835 2.181 8Z" />
+                                </svg>
+                                <span class="ml-2">Block Card</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private List<CreditCard> cards = new();
+    private CreditCard? selectedCard;
+
+    protected override void OnInitialized()
+    {
+        cards = new List<CreditCard>
+        {
+            new() { Id = 1, Name = "Physical Metal", LastFour = "7328", HolderName = "Dominik Lamakani", Spent = "$780,00", Limit = "$20,000", Status = "Active", Expiry = "12/24", GradientStart = "#475569", GradientEnd = "#1E293B" },
+            new() { Id = 2, Name = "Virtual Card", LastFour = "7377", HolderName = "Dominik Lamakani", Spent = "$0", Limit = "$20,000", Status = "Blocked", Expiry = "06/25", GradientStart = "#6366F1", GradientEnd = "#9FA1FF" }
+        };
+        selectedCard = cards.FirstOrDefault();
+    }
+
+    private void SelectCard(CreditCard card)
+    {
+        selectedCard = card;
+    }
+
+    private string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "Active" => "bg-emerald-100 dark:bg-emerald-400/30 text-emerald-600 dark:text-emerald-400",
+            "Blocked" => "bg-amber-100 dark:bg-amber-400/30 text-amber-600 dark:text-amber-400",
+            _ => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+        };
+    }
+
+    private class CreditCard
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string LastFour { get; set; } = "";
+        public string HolderName { get; set; } = "";
+        public string Spent { get; set; } = "";
+        public string Limit { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Expiry { get; set; } = "";
+        public string GradientStart { get; set; } = "";
+        public string GradientEnd { get; set; } = "";
+    }
+}

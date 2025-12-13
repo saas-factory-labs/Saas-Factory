@@ -1,4 +1,4 @@
-using MudBlazor;
+using AppBlueprint.UiKit.Models;
 
 namespace AppBlueprint.UiKit.Services;
 

@@ -1,0 +1,403 @@
+@* Global Search Modal with recent searches and quick actions *@
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+@if (IsOpen)
+{
+    @* Backdrop *@
+    <div class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80 z-50 transition-opacity"
+         @onclick="Close">
+    </div>
+
+    @* Search modal *@
+    <div class="fixed inset-0 z-50 overflow-y-auto p-4 sm:p-6 md:p-20">
+        <div class="mx-auto max-w-2xl transform overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 transition-all">
+
+            @* Search input *@
+            <div class="relative border-b border-gray-200 dark:border-gray-700">
+                <svg class="pointer-events-none absolute left-4 top-4 h-5 w-5 text-gray-400 dark:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd"/>
+                </svg>
+                <input type="text"
+                       class="h-14 w-full border-0 bg-transparent pl-12 pr-4 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-0 text-base"
+                       placeholder="@Placeholder"
+                       @bind="searchQuery"
+                       @bind:event="oninput"
+                       @onkeydown="HandleKeyDown"
+                       @ref="searchInput"/>
+                @if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    <button type="button"
+                            class="absolute right-4 top-4 text-gray-400 hover:text-gray-500"
+                            @onclick="ClearSearch">
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"/>
+                        </svg>
+                    </button>
+                }
+            </div>
+
+            @* Results area *@
+            <div class="max-h-[400px] overflow-y-auto">
+                @if (IsSearching)
+                {
+                    <div class="flex items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-8 w-8 border-4 border-violet-500 border-t-transparent"></div>
+                    </div>
+                }
+                else if (!string.IsNullOrEmpty(searchQuery) && FilteredResults.Any())
+                {
+                    @* Search results *@
+                    @foreach (var group in FilteredResults.GroupBy(r => r.Category))
+                    {
+                        <div class="px-4 py-2 bg-gray-50 dark:bg-gray-700/30">
+                            <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">@group.Key</h3>
+                        </div>
+                        <ul>
+                            @foreach (var result in group)
+                            {
+                                var isSelected = selectedIndex == GetResultIndex(result);
+                                <li>
+                                    <button type="button"
+                                            class="@GetResultClasses(isSelected)"
+                                            @onclick="() => SelectResult(result)"
+                                            @onmouseenter="() => selectedIndex = GetResultIndex(result)">
+                                        <div class="@GetIconClasses(result.Category)">
+                                            @result.Icon
+                                        </div>
+                                        <div class="flex-1 min-w-0 text-left">
+                                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                @((MarkupString)HighlightMatch(result.Title, searchQuery))
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(result.Description))
+                                            {
+                                                <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@result.Description</div>
+                                            }
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(result.Badge))
+                                        {
+                                            <span class="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                                                @result.Badge
+                                            </span>
+                                        }
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                    }
+                }
+                else if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    @* No results *@
+                    <div class="px-6 py-14 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <h3 class="mt-4 text-sm font-medium text-gray-900 dark:text-gray-100">No results found</h3>
+                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            No results for "<strong>@searchQuery</strong>". Try a different search term.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    @* Recent searches and quick actions *@
+                    @if (RecentSearches.Any())
+                    {
+                        <div class="px-4 py-2 bg-gray-50 dark:bg-gray-700/30 flex items-center justify-between">
+                            <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Recent Searches</h3>
+                            <button type="button" class="text-xs text-violet-500 hover:text-violet-600" @onclick="ClearRecentSearches">Clear all</button>
+                        </div>
+                        <ul class="py-2">
+                            @foreach (var recent in RecentSearches.Take(5))
+                            {
+                                <li>
+                                    <button type="button"
+                                            class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                                            @onclick="() => UseRecentSearch(recent)">
+                                        <svg class="shrink-0 mr-3 h-4 w-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        <span>@recent</span>
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                    }
+
+                    @if (QuickActions.Any())
+                    {
+                        <div class="px-4 py-2 bg-gray-50 dark:bg-gray-700/30">
+                            <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Quick Actions</h3>
+                        </div>
+                        <ul class="py-2">
+                            @foreach (var action in QuickActions)
+                            {
+                                <li>
+                                    <button type="button"
+                                            class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                                            @onclick="() => ExecuteQuickAction(action)">
+                                        <span class="shrink-0 mr-3 flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700">
+                                            @action.Icon
+                                        </span>
+                                        <span class="flex-1 text-left">@action.Label</span>
+                                        @if (!string.IsNullOrEmpty(action.Shortcut))
+                                        {
+                                            <kbd class="ml-2 px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 rounded">@action.Shortcut</kbd>
+                                        }
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                    }
+                }
+            </div>
+
+            @* Footer *@
+            <div class="flex flex-wrap items-center justify-between bg-gray-50 dark:bg-gray-700/30 px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-4">
+                    <span class="flex items-center gap-1">
+                        <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700">↑↓</kbd>
+                        navigate
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700">↵</kbd>
+                        select
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700">esc</kbd>
+                        close
+                    </span>
+                </div>
+                <span>Press <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700">Ctrl+/</kbd> for help</span>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsOpen { get; set; } = false;
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Search pages, actions, settings...";
+    [Parameter] public List<SearchResult>? SearchableItems { get; set; }
+    [Parameter] public EventCallback<SearchResult> OnResultSelected { get; set; }
+
+    private ElementReference searchInput;
+    private string searchQuery = "";
+    private int selectedIndex;
+    private bool IsSearching;
+    private List<string> RecentSearches { get; set; } = new() { "dashboard", "customers", "settings" };
+
+    private List<SearchResult> DefaultSearchableItems => new()
+    {
+        new() { Id = "dashboard", Title = "Dashboard", Description = "Main dashboard overview", Category = "Pages", Href = "/", Icon = GetPageIcon() },
+        new() { Id = "customers", Title = "Customers", Description = "Customer management", Category = "Pages", Href = "/customers", Icon = GetPageIcon() },
+        new() { Id = "forms", Title = "Forms", Description = "Form components demo", Category = "Pages", Href = "/forms", Icon = GetPageIcon() },
+        new() { Id = "modals", Title = "Modals", Description = "Modal dialogs demo", Category = "Pages", Href = "/modals", Icon = GetPageIcon() },
+        new() { Id = "navigation", Title = "Navigation", Description = "Navigation components", Category = "Pages", Href = "/navigation", Icon = GetPageIcon() },
+        new() { Id = "settings-account", Title = "Account Settings", Description = "Manage your account", Category = "Settings", Href = "/settings/account", Icon = GetSettingsIcon() },
+        new() { Id = "settings-notifications", Title = "Notification Settings", Description = "Configure notifications", Category = "Settings", Href = "/settings/notifications", Icon = GetSettingsIcon() },
+        new() { Id = "add-customer", Title = "Add New Customer", Description = "Create a customer record", Category = "Actions", Icon = GetActionIcon() },
+        new() { Id = "export-data", Title = "Export Data", Description = "Export dashboard data", Category = "Actions", Icon = GetActionIcon() }
+    };
+
+    private List<QuickAction> QuickActions => new()
+    {
+        new() { Id = "new-customer", Label = "Add New Customer", Shortcut = "Ctrl+N", Icon = GetAddIcon() },
+        new() { Id = "toggle-theme", Label = "Toggle Dark Mode", Shortcut = "Ctrl+D", Icon = GetThemeIcon() },
+        new() { Id = "view-profile", Label = "View Profile", Icon = GetProfileIcon() }
+    };
+
+    private List<SearchResult> AllItems => SearchableItems ?? DefaultSearchableItems;
+
+    private List<SearchResult> FilteredResults
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery)) return new();
+
+            var query = searchQuery.ToLower();
+            return AllItems
+                .Where(r => r.Title.ToLower().Contains(query) ||
+                            (r.Description?.ToLower().Contains(query) ?? false))
+                .OrderByDescending(r => r.Title.ToLower().StartsWith(query))
+                .ThenBy(r => r.Category)
+                .ToList();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (IsOpen)
+        {
+            await Task.Delay(50);
+            try
+            {
+                await searchInput.FocusAsync();
+            }
+            catch
+            {
+            }
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        var results = FilteredResults;
+        switch (e.Key)
+        {
+            case "Escape":
+                await Close();
+                break;
+            case "ArrowDown":
+                selectedIndex = Math.Min(selectedIndex + 1, results.Count - 1);
+                break;
+            case "ArrowUp":
+                selectedIndex = Math.Max(selectedIndex - 1, 0);
+                break;
+            case "Enter":
+                if (results.Any() && selectedIndex < results.Count)
+                {
+                    await SelectResult(results[selectedIndex]);
+                }
+
+                break;
+        }
+    }
+
+    private int GetResultIndex(SearchResult result)
+    {
+        return FilteredResults.IndexOf(result);
+    }
+
+    private async Task ExecuteQuickAction(QuickAction action)
+    {
+        switch (action.Id)
+        {
+            case "new-customer":
+                Navigation.NavigateTo("/ecommerce/customers");
+                break;
+            case "toggle-theme":
+                // Theme toggling would typically be handled by a layout service or JS
+                break;
+            case "view-profile":
+                Navigation.NavigateTo("/settings/account");
+                break;
+        }
+
+        await Close();
+    }
+
+    private async Task Close()
+    {
+        IsOpen = false;
+        await IsOpenChanged.InvokeAsync(false);
+    }
+
+    private void ClearSearch()
+    {
+        searchQuery = "";
+        selectedIndex = 0;
+    }
+
+    private void UseRecentSearch(string term)
+    {
+        searchQuery = term;
+    }
+
+    private void ClearRecentSearches()
+    {
+        RecentSearches.Clear();
+    }
+
+    private async Task SelectResult(SearchResult result)
+    {
+        if (!RecentSearches.Contains(searchQuery) && !string.IsNullOrEmpty(searchQuery))
+        {
+            RecentSearches.Insert(0, searchQuery);
+            if (RecentSearches.Count > 10) RecentSearches.RemoveAt(RecentSearches.Count - 1);
+        }
+
+        await OnResultSelected.InvokeAsync(result);
+
+        if (!string.IsNullOrEmpty(result.Href))
+        {
+            Navigation.NavigateTo(result.Href);
+        }
+
+        await Close();
+    }
+
+    private string GetResultClasses(bool isSelected)
+    {
+        var baseClasses = "flex items-center w-full px-4 py-3 transition-colors";
+        return isSelected
+            ? $"{baseClasses} bg-violet-50 dark:bg-violet-500/10"
+            : $"{baseClasses} hover:bg-gray-50 dark:hover:bg-gray-700/30";
+    }
+
+    private string GetIconClasses(string category)
+    {
+        var baseClasses = "shrink-0 mr-3 flex items-center justify-center w-10 h-10 rounded-lg";
+        return category switch
+        {
+            "Pages" => $"{baseClasses} bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400",
+            "Settings" => $"{baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
+            "Actions" => $"{baseClasses} bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400",
+            _ => $"{baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+        };
+    }
+
+    private string HighlightMatch(string text, string query)
+    {
+        if (string.IsNullOrEmpty(query)) return text;
+        var index = text.ToLower().IndexOf(query.ToLower());
+        if (index < 0) return text;
+        return $"{text[..index]}<mark class=\"bg-yellow-200 dark:bg-yellow-500/30 text-inherit rounded px-0.5\">{text.Substring(index, query.Length)}</mark>{text[(index + query.Length)..]}";
+    }
+
+    private static RenderFragment GetPageIcon() => @<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                       <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                                   </svg>;
+
+    private static RenderFragment GetSettingsIcon() => @<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                           <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                       </svg>;
+
+    private static RenderFragment GetActionIcon() => @<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                                     </svg>;
+
+    private static RenderFragment GetAddIcon() => @<svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                                                  </svg>;
+
+    private static RenderFragment GetThemeIcon() => @<svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                                                    </svg>;
+
+    private static RenderFragment GetProfileIcon() => @<svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                                      </svg>;
+
+    public class SearchResult
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string? Description { get; set; }
+        public string Category { get; set; } = "Pages";
+        public string? Href { get; set; }
+        public RenderFragment? Icon { get; set; }
+        public string? Badge { get; set; }
+    }
+
+    public class QuickAction
+    {
+        public string Id { get; set; } = "";
+        public string Label { get; set; } = "";
+        public string? Shortcut { get; set; }
+        public RenderFragment? Icon { get; set; }
+    }
+
+}

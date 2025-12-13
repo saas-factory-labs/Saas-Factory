@@ -33,6 +33,8 @@
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj"/>
         <!-- TodoAppKernel module reference -->
         <ProjectReference Include="..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj"/>
+        <!-- SeedTest project reference for DataSeeder -->
+        <ProjectReference Include="..\SeedTest\SeedTest.csproj"/>
 
     </ItemGroup>
 

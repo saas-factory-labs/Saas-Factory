@@ -1,0 +1,201 @@
+@* Dashboard Layout Editor - Widget visibility and arrangement *@
+
+<div class="relative inline-flex">
+    <button type="button"
+            class="btn px-2.5 bg-white dark:bg-gray-800 border-gray-200 hover:border-gray-300 dark:border-gray-700/60 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400"
+            @onclick="TogglePanel"
+            title="Customize Dashboard">
+        <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16">
+            <path d="M14.3.3c.4-.4 1-.4 1.4 0 .4.4.4 1 0 1.4l-1.2 1.2-1.4-1.4L14.3.3zM12.6 2.8l1.4 1.4-9.1 9.1c-.4.4-.9.6-1.4.7l-2.1.3.3-2.1c.1-.5.3-1 .7-1.4l9.2-9z"/>
+        </svg>
+        @if (!string.IsNullOrEmpty(ButtonText))
+        {
+            <span class="ml-2">@ButtonText</span>
+        }
+    </button>
+
+    @if (IsOpen)
+    {
+        @* Backdrop *@
+        <div class="fixed inset-0 z-40" @onclick="Close"></div>
+
+        @* Panel *@
+        <div class="@GetPanelClasses()">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700/60">
+                <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Customize Dashboard</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-500" @onclick="Close">
+                    <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16">
+                        <path d="M12.72 3.293a1 1 0 0 0-1.415 0L8.012 6.586 4.72 3.293a1 1 0 0 0-1.414 1.414L6.598 8l-3.293 3.293a1 1 0 1 0 1.414 1.414l3.293-3.293 3.293 3.293a1 1 0 0 0 1.414-1.414L9.426 8l3.293-3.293a1 1 0 0 0 0-1.414z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-4 max-h-96 overflow-y-auto">
+                <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-3">Visible Widgets</div>
+
+                <ul class="space-y-2">
+                    @foreach (var widget in Widgets)
+                    {
+                        <li class="@GetWidgetItemClasses(widget)" draggable="true">
+                            <div class="flex items-center gap-3">
+                                @* Drag handle *@
+                                <svg class="shrink-0 text-gray-400 dark:text-gray-500 cursor-move" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                                    <circle cx="3" cy="2" r="1.5"/>
+                                    <circle cx="9" cy="2" r="1.5"/>
+                                    <circle cx="3" cy="6" r="1.5"/>
+                                    <circle cx="9" cy="6" r="1.5"/>
+                                    <circle cx="3" cy="10" r="1.5"/>
+                                    <circle cx="9" cy="10" r="1.5"/>
+                                </svg>
+
+                                @* Toggle *@
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="checkbox"
+                                           class="sr-only peer"
+                                           checked="@widget.IsVisible"
+                                           @onchange="() => ToggleWidget(widget)" />
+                                    <div class="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 dark:peer-focus:ring-violet-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-violet-500"></div>
+                                </label>
+
+                                @* Widget info *@
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">@widget.Title</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">@widget.Description</div>
+                                </div>
+
+                                @* Size selector *@
+                                <select class="form-select text-xs py-1 px-2 w-auto"
+                                        value="@widget.Size"
+                                        @onchange="e => OnSizeChange(widget, e)">
+                                    <option value="small">Small</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="large">Large</option>
+                                    <option value="full">Full Width</option>
+                                </select>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            @* Footer *@
+            <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700/60 bg-gray-50 dark:bg-gray-700/20 flex justify-between">
+                <button type="button"
+                        class="btn-xs bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-red-500"
+                        @onclick="ResetToDefaults">
+                    Reset to Defaults
+                </button>
+                <button type="button"
+                        class="btn-xs bg-violet-500 hover:bg-violet-600 text-white"
+                        @onclick="ApplyChanges">
+                    Apply Changes
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string ButtonText { get; set; } = "";
+    [Parameter] public string Align { get; set; } = "right"; // left, right
+    [Parameter] public List<DashboardWidget>? InitialWidgets { get; set; }
+    [Parameter] public EventCallback<List<DashboardWidget>> OnLayoutChanged { get; set; }
+
+    private bool IsOpen { get; set; } = false;
+    private List<DashboardWidget> Widgets { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        if (InitialWidgets != null && InitialWidgets.Any())
+        {
+            Widgets = InitialWidgets.Select(w => new DashboardWidget
+            {
+                Id = w.Id,
+                Title = w.Title,
+                Description = w.Description,
+                IsVisible = w.IsVisible,
+                Size = w.Size,
+                Order = w.Order
+            }).ToList();
+        }
+        else
+        {
+            // Default widgets
+            Widgets = new List<DashboardWidget>
+            {
+                new() { Id = "card01", Title = "Acme Plus", Description = "Sales line chart", IsVisible = true, Size = "medium", Order = 1 },
+                new() { Id = "card02", Title = "Acme Advanced", Description = "Sales line chart", IsVisible = true, Size = "medium", Order = 2 },
+                new() { Id = "card03", Title = "Acme Professional", Description = "Sales line chart", IsVisible = true, Size = "medium", Order = 3 },
+                new() { Id = "card04", Title = "Direct vs Indirect", Description = "Bar chart comparison", IsVisible = true, Size = "large", Order = 4 },
+                new() { Id = "card05", Title = "Real Time Value", Description = "Live value indicator", IsVisible = true, Size = "large", Order = 5 },
+                new() { Id = "card06", Title = "Top Countries", Description = "Doughnut chart", IsVisible = true, Size = "medium", Order = 6 },
+                new() { Id = "card07", Title = "Top Channels", Description = "Channel data table", IsVisible = true, Size = "large", Order = 7 },
+                new() { Id = "card08", Title = "Sales Over Time", Description = "Monthly line chart", IsVisible = true, Size = "large", Order = 8 },
+                new() { Id = "card09", Title = "Sales vs Refunds", Description = "Stacked bar chart", IsVisible = true, Size = "large", Order = 9 },
+                new() { Id = "card10", Title = "Recent Activity", Description = "Activity feed", IsVisible = true, Size = "medium", Order = 10 },
+                new() { Id = "card11", Title = "Income/Expenses", Description = "Financial summary", IsVisible = true, Size = "medium", Order = 11 }
+            };
+        }
+    }
+
+    private void TogglePanel()
+    {
+        IsOpen = !IsOpen;
+    }
+
+    private void Close() => IsOpen = false;
+
+    private void ToggleWidget(DashboardWidget widget)
+    {
+        widget.IsVisible = !widget.IsVisible;
+    }
+
+    private void OnSizeChange(DashboardWidget widget, ChangeEventArgs e)
+    {
+        widget.Size = e.Value?.ToString() ?? "medium";
+    }
+
+    private void ChangeWidgetSize(DashboardWidget widget, string size)
+    {
+        widget.Size = size;
+    }
+
+    private void ResetToDefaults()
+    {
+        foreach (var widget in Widgets)
+        {
+            widget.IsVisible = true;
+            widget.Size = widget.Id is "card04" or "card05" or "card07" or "card08" or "card09" ? "large" : "medium";
+        }
+    }
+
+    private async Task ApplyChanges()
+    {
+        await OnLayoutChanged.InvokeAsync(Widgets.ToList());
+        Close();
+    }
+
+    private string GetPanelClasses()
+    {
+        var alignClass = Align == "right" ? "right-0" : "left-0";
+        return $"absolute z-50 top-full {alignClass} mt-1 w-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/60 rounded-lg shadow-lg overflow-hidden";
+    }
+
+    private string GetWidgetItemClasses(DashboardWidget widget)
+    {
+        var baseClasses = "p-2 rounded-lg border transition-colors";
+        if (widget.IsVisible)
+            return $"{baseClasses} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60";
+        return $"{baseClasses} bg-gray-50 dark:bg-gray-700/30 border-gray-200/50 dark:border-gray-700/30 opacity-60";
+    }
+
+    public class DashboardWidget
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public bool IsVisible { get; set; } = true;
+        public string Size { get; set; } = "medium"; // small, medium, large, full
+        public int Order { get; set; }
+    }
+}

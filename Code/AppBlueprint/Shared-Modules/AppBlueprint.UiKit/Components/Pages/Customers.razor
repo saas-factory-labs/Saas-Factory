@@ -1,0 +1,187 @@
+@page "/ecommerce/customers"
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="sm:flex sm:justify-between sm:items-center mb-8">
+        <div class="mb-4 sm:mb-0">
+            <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Customers</h1>
+        </div>
+        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+            <select class="form-select" @bind="dateRange">
+                <option>Today</option>
+                <option>Last 7 Days</option>
+                <option>Last Month</option>
+                <option>Last 12 Months</option>
+                <option>All Time</option>
+            </select>
+            <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
+                <svg class="fill-current shrink-0" width="16" height="16" viewBox="0 0 16 16">
+                    <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z"/>
+                </svg>
+                <span class="ml-2">Add Customer</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700 relative">
+        <header class="px-5 py-4">
+            <h2 class="font-semibold text-gray-800 dark:text-gray-100">All Customers <span class="text-gray-400 dark:text-gray-500 font-medium">@customers.Count</span></h2>
+        </header>
+        <div>
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full dark:text-gray-300">
+                    <thead class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                            <div class="flex items-center">
+                                <label class="inline-flex">
+                                    <span class="sr-only">Select all</span>
+                                    <input class="form-checkbox" type="checkbox" @bind="selectAll"/>
+                                </label>
+                            </div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                            <span class="sr-only">Favourite</span>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Name</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Email</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Location</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Orders</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Last Order</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-right">Total Spent</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <span class="sr-only">Menu</span>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach (var customer in customers)
+                    {
+                        <tr>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                                <div class="flex items-center">
+                                    <label class="inline-flex">
+                                        <span class="sr-only">Select</span>
+                                        <input class="form-checkbox" type="checkbox" @bind="customer.Selected"/>
+                                    </label>
+                                </div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                                <button class="@(customer.Favorite ? "text-amber-500" : "text-gray-300 dark:text-gray-600 hover:text-amber-500")">
+                                    <span class="sr-only">Favourite</span>
+                                    <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 16 16">
+                                        <path d="M8 0L6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934h-6L8 0z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 shrink-0 mr-2 sm:mr-3">
+                                        <img class="rounded-full" src="@customer.Image" width="40" height="40" alt="@customer.Name"/>
+                                    </div>
+                                    <div class="font-medium text-gray-800 dark:text-gray-100">@customer.Name</div>
+                                </div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="text-left">@customer.Email</div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="text-left flex items-center">
+                                    <span class="mr-1">@customer.Flag</span>
+                                    @customer.Location
+                                </div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="text-center">@customer.Orders</div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="text-left">@customer.LastOrder</div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="text-right font-medium text-emerald-500">@customer.TotalSpent</div>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                                <button class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 rounded-full">
+                                    <span class="sr-only">Menu</span>
+                                    <svg class="w-8 h-8 fill-current" viewBox="0 0 32 32">
+                                        <circle cx="16" cy="16" r="2"/>
+                                        <circle cx="10" cy="16" r="2"/>
+                                        <circle cx="22" cy="16" r="2"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-8">
+        <nav class="mb-4 sm:mb-0 sm:order-1" role="navigation" aria-label="Navigation">
+            <ul class="flex justify-center">
+                <li class="ml-3 first:ml-0">
+                    <span class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600">&lt;- Previous</span>
+                </li>
+                <li class="ml-3 first:ml-0">
+                    <a class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-violet-500" href="#">Next -&gt;</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="text-sm text-gray-500 text-center sm:text-left">
+            Showing <span class="font-medium text-gray-600 dark:text-gray-300">1</span> to <span class="font-medium text-gray-600 dark:text-gray-300">10</span> of <span class="font-medium text-gray-600 dark:text-gray-300">@customers.Count</span> results
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private List<Customer> customers = new();
+    private string dateRange = "Last 7 Days";
+    private bool selectAll;
+
+    protected override void OnInitialized()
+    {
+        customers = new List<Customer>
+        {
+            new() { Name = "Alex Shatov", Email = "alexshatov@gmail.com", Image = "_content/AppBlueprint.UiKit/images/user-40-01.jpg", Location = "Georgia, USA", Flag = "\ud83c\uddfa\ud83c\uddf8", Orders = 24, LastOrder = "#123567", TotalSpent = "$2,890.66", Favorite = true },
+            new() { Name = "Philip Harbach", Email = "philip.h@gmail.com", Image = "_content/AppBlueprint.UiKit/images/user-40-02.jpg", Location = "London, UK", Flag = "\ud83c\uddec\ud83c\udde7", Orders = 18, LastOrder = "#123456", TotalSpent = "$1,569.00" },
+            new() { Name = "Mirko Fisuk", Email = "mirkofisuk@gmail.com", Image = "_content/AppBlueprint.UiKit/images/user-40-03.jpg", Location = "Milan, IT", Flag = "\ud83c\uddee\ud83c\uddf9", Orders = 12, LastOrder = "#123345", TotalSpent = "$949.99" },
+            new() { Name = "Olga Semklo", Email = "olga.s@cool.design", Image = "_content/AppBlueprint.UiKit/images/user-40-04.jpg", Location = "Kyiv, UA", Flag = "\ud83c\uddfa\ud83c\udde6", Orders = 7, LastOrder = "#123234", TotalSpent = "$456.77" },
+            new() { Name = "Burak Long", Email = "longburak@gmail.com", Image = "_content/AppBlueprint.UiKit/images/user-40-05.jpg", Location = "Istanbul, TR", Flag = "\ud83c\uddf9\ud83c\uddf7", Orders = 15, LastOrder = "#123123", TotalSpent = "$1,230.50", Favorite = true },
+            new() { Name = "Mary Rossum", Email = "mary@rossum.co", Image = "_content/AppBlueprint.UiKit/images/user-40-06.jpg", Location = "Stockholm, SE", Flag = "\ud83c\uddf8\ud83c\uddea", Orders = 33, LastOrder = "#122987", TotalSpent = "$4,890.00" },
+            new() { Name = "Rodrigo Lippi", Email = "rodrigolippi@gmail.com", Image = "_content/AppBlueprint.UiKit/images/user-40-07.jpg", Location = "Sao Paulo, BR", Flag = "\ud83c\udde7\ud83c\uddf7", Orders = 9, LastOrder = "#122876", TotalSpent = "$699.45" }
+        };
+    }
+
+    private class Customer
+    {
+        public string Name { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Image { get; set; } = "";
+        public string Location { get; set; } = "";
+        public string Flag { get; set; } = "";
+        public int Orders { get; set; }
+        public string LastOrder { get; set; } = "";
+        public string TotalSpent { get; set; } = "";
+        public bool Favorite { get; set; }
+        public bool Selected { get; set; }
+    }
+
+}

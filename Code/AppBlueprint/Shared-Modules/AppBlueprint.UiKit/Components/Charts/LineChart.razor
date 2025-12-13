@@ -1,59 +1,117 @@
-@* <MudPaper Class="doc-section-component-container">
-    <MudChart ChartType="ChartType.Line" ChartSeries="@_series" @bind-SelectedIndex="_index" XAxisLabels="@_xAxisLabels"
-              Width="@_width" Height="@_height" ChartOptions="@_options" AxisChartOptions="_axisChartOptions"/>
-</MudPaper>
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
 
-<MudGrid>
-    <MudItem md="6" xs="12">
-        <MudText Typo="Typo.body1" Class="py-3">Selected: @(_index < 0 ? "None" : _series[_index].Name)</MudText>
-    </MudItem>
-    <MudItem md="6" xs="12">
-        <MudTextField @bind-Value="_width" Label="Chart Width"></MudTextField>
-    </MudItem>
-    <MudItem md="6" xs="12">
-        <MudCheckBox @bind-Value="_axisChartOptions.MatchBoundsToSize" Label="MatchBoundsToSize"></MudCheckBox>
-    </MudItem>
-    <MudItem md="6" xs="12">
-        <MudTextField @bind-Value="_height" Label="Chart Height"></MudTextField>
-    </MudItem>
-    <MudItem md="6" xs="12">
-        <MudCheckBox T="bool"
-                     ValueChanged="v=> _series[0].LineDisplayType = v ? LineDisplayType.Area : LineDisplayType.Line"
-                     Label="Fossil as Area"></MudCheckBox>
-    </MudItem>
-    <MudItem md="6" xs="12">
-        <MudSlider @bind-Value="_options.LineStrokeWidth" Min="1" Max="10">Line
-            Width: @_options.LineStrokeWidth.ToString()</MudSlider>
-    </MudItem>
-    <MudItem md="6" xs="12">
-        <MudCheckBox T="bool"
-                     ValueChanged="v=> _series[1].LineDisplayType = v ? LineDisplayType.Area : LineDisplayType.Line"
-                     Label="Renewable as Area"></MudCheckBox>
-    </MudItem>
-    <MudItem md="6" xs="12">
-        <MudStack>
-            <MudText Typo="Typo.body1">XAxis Label Rotation</MudText>
-            <MudSlider @bind-Value="_axisChartOptions.XAxisLabelRotation" Min="0" Max="90" Step="15"></MudSlider>
-        </MudStack>
-    </MudItem>
-    <MudItem md="6" xs="12">
-        <MudCheckBox T="bool" ValueChanged="v=> _series.ForEach(x => x.ShowDataMarkers = v)"
-                     Label="Show Data Markers"></MudCheckBox>
-    </MudItem>
-</MudGrid>
+<div class="@ContainerClass">
+    <canvas id="@CanvasId" width="@Width" height="@Height"></canvas>
+</div>
 
 @code {
-    private int _index = -1; //default value cannot be 0 -> first selectedindex is 0.
-    private ChartOptions _options = new();
-    private AxisChartOptions _axisChartOptions = new();
-    private string _width = "650px";
-    private string _height = "350px";
+    [Parameter] public string CanvasId { get; set; } = $"line-chart-{Guid.NewGuid():N}";
+    [Parameter] public int Width { get; set; } = 389;
+    [Parameter] public int Height { get; set; } = 128;
+    [Parameter] public string ContainerClass { get; set; } = "grow";
+    [Parameter] public List<string> Labels { get; set; } = new();
+    [Parameter] public List<ChartDataset> Datasets { get; set; } = new();
+    [Parameter] public bool ShowXAxis { get; set; } = false;
+    [Parameter] public bool ShowYAxis { get; set; } = false;
+    [Parameter] public bool UseTimeScale { get; set; } = true;
 
-    private List<ChartSeries> _series = new()
+    private bool _initialized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        new ChartSeries { Name = "Fossil", Data = new double[] { 90, 79, 72, 69, 62, 62, 55, 65, 70 } },
-        new ChartSeries { Name = "Renewable", Data = new double[] { 10, 41, 35, 51, 49, 62, 69, 91, 148 } }
-    };
+        if (firstRender && Labels.Any() && Datasets.Any())
+        {
+            await InitializeChart();
+        }
+    }
 
-    private string[] _xAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
-} *@
+    private async Task InitializeChart()
+    {
+        if (_initialized) return;
+
+        var config = new
+        {
+            data = new
+            {
+                labels = Labels,
+                datasets = Datasets.Select(d => new
+                {
+                    label = d.Label,
+                    data = d.Data,
+                    backgroundColor = d.BackgroundColor,
+                    borderColor = d.BorderColor,
+                    borderWidth = d.BorderWidth,
+                    fill = d.Fill,
+                    tension = d.Tension,
+                    pointRadius = d.PointRadius,
+                    pointHoverRadius = d.PointHoverRadius
+                }).ToArray()
+            },
+            showXAxis = ShowXAxis,
+            showYAxis = ShowYAxis,
+            useTimeScale = UseTimeScale
+        };
+
+        await JSRuntime.InvokeVoidAsync("chartJsInterop.createLineChart", CanvasId, config);
+        _initialized = true;
+    }
+
+    public async Task UpdateData(List<string> labels, List<ChartDataset> datasets)
+    {
+        Labels = labels;
+        Datasets = datasets;
+
+        if (_initialized)
+        {
+            var newData = new
+            {
+                labels = Labels,
+                datasets = Datasets.Select(d => new
+                {
+                    label = d.Label,
+                    data = d.Data,
+                    backgroundColor = d.BackgroundColor,
+                    borderColor = d.BorderColor,
+                    borderWidth = d.BorderWidth,
+                    fill = d.Fill,
+                    tension = d.Tension,
+                    pointRadius = d.PointRadius,
+                    pointHoverRadius = d.PointHoverRadius
+                }).ToArray()
+            };
+
+            await JSRuntime.InvokeVoidAsync("chartJsInterop.updateChart", CanvasId, newData);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_initialized)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("chartJsInterop.destroyChart", CanvasId);
+            }
+            catch (JSDisconnectedException)
+            {
+                // Ignore - circuit is already disconnected
+            }
+        }
+    }
+
+    public class ChartDataset
+    {
+        public string Label { get; set; } = "";
+        public List<double> Data { get; set; } = new();
+        public string BackgroundColor { get; set; } = "rgba(99, 102, 241, 0.1)";
+        public string BorderColor { get; set; } = "rgb(99, 102, 241)";
+        public int BorderWidth { get; set; } = 2;
+        public bool Fill { get; set; } = true;
+        public double Tension { get; set; } = 0.4;
+        public int PointRadius { get; set; } = 0;
+        public int PointHoverRadius { get; set; } = 3;
+    }
+
+}

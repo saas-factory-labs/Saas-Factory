@@ -1,0 +1,228 @@
+<div class="col-span-full bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">Market Trends</h2>
+    </header>
+    <div class="p-3">
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full dark:text-gray-300">
+                <!-- Table header -->
+                <thead class="text-xs uppercase text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700/50 rounded-xs">
+                <tr>
+                    <th class="p-2 whitespace-nowrap">
+                        <div class="font-semibold text-left">Market</div>
+                    </th>
+                    <th class="p-2 whitespace-nowrap">
+                        <div class="font-semibold text-left">Mkt Cap</div>
+                    </th>
+                    <th class="p-2 whitespace-nowrap">
+                        <div class="font-semibold text-left">Chart</div>
+                    </th>
+                    <th class="p-2 whitespace-nowrap">
+                        <div class="font-semibold text-left">Price</div>
+                    </th>
+                    <th class="p-2 whitespace-nowrap">
+                        <div class="font-semibold text-left">Chg. (24h)</div>
+                    </th>
+                </tr>
+                </thead>
+                <!-- Table body -->
+                <tbody class="text-sm font-medium divide-y divide-gray-100 dark:divide-gray-700/60">
+                @foreach (var item in items)
+                {
+                    <tr>
+                        <td class="p-2 whitespace-nowrap md:w-1/2">
+                            <div class="flex items-center">
+                                <div class="shrink-0 mr-2 sm:mr-3 w-9 h-9 rounded-full flex items-center justify-center bg-gray-800 text-white">
+                                    @if (item.Symbol == "Gvolt")
+                                    {
+                                        <svg width="36" height="36" viewBox="0 0 36 36">
+                                            <circle fill="#1F2937" cx="18" cy="18" r="18"/>
+                                            <path fill="#12C57C" d="M18 10h-.189v2.926h.19c1.355 0 2.63.527 3.587 1.486a5.08 5.08 0 0 1 1.273 2.125h-5.05v2.926h8.057l.026-.159c.13-.79.14-1.593.033-2.389h.002l-.013-.085-.022-.134c0-.007-.002-.013-.003-.02l-.023-.139h-.002A8 8 0 0 0 18 10Zm-4.867 6.537h-3l-.026.16c-.071.43-.107.87-.107 1.303 0 4.411 3.589 8 8 8h.19v-2.926H18a5.04 5.04 0 0 1-3.588-1.486A5.041 5.041 0 0 1 12.926 18c0-.415.05-.828.149-1.228l.058-.235Z"/>
+                                        </svg>
+                                    }
+                                    else if (item.Symbol == "Fb")
+                                    {
+                                        <svg width="36" height="36" viewBox="0 0 36 36">
+                                            <circle fill="#1877F2" cx="18" cy="18" r="18"/>
+                                            <path d="M16.023 26 16 19h-3v-3h3v-2c0-2.7 1.672-4 4.08-4 1.153 0 2.144.086 2.433.124v2.821h-1.67c-1.31 0-1.563.623-1.563 1.536V16H23l-1 3h-2.72v7h-3.257Z" fill="#FFF" fill-rule="nonzero"/>
+                                        </svg>
+                                    }
+                                    else if (item.Symbol == "Googl")
+                                    {
+                                        <svg width="36" height="36" viewBox="0 0 36 36">
+                                            <circle fill="#EA4335" cx="18" cy="18" r="18"/>
+                                            <path d="M18 17v2.4h4.1c-.2 1-1.2 3-4 3-2.4 0-4.3-2-4.3-4.4 0-2.4 2-4.4 4.3-4.4 1.4 0 2.3.6 2.8 1.1l1.9-1.8C21.6 11.7 20 11 18.1 11c-3.9 0-7 3.1-7 7s3.1 7 7 7c4 0 6.7-2.8 6.7-6.8 0-.5 0-.8-.1-1.2H18Z" fill="#FFF" fill-rule="nonzero"/>
+                                        </svg>
+                                    }
+                                    else if (item.Symbol == "Aapl")
+                                    {
+                                        <svg width="36" height="36" viewBox="0 0 36 36">
+                                            <circle fill="#1F2937" cx="18" cy="18" r="18"/>
+                                            <path d="M18.725 10.48C19.853 9.006 21.422 9 21.422 9s.233 1.384-.888 2.717c-1.197 1.424-2.557 1.191-2.557 1.191s-.256-1.12.748-2.429Zm-.605 3.398c.58 0 1.658-.79 3.06-.79 2.414 0 3.364 1.7 3.364 1.7s-1.858.94-1.858 3.221c0 2.573 2.314 3.46 2.314 3.46s-1.617 4.506-3.802 4.506c-1.003 0-1.783-.67-2.84-.67-1.078 0-2.147.695-2.843.695C13.52 26 11 21.725 11 18.29c0-3.381 2.133-5.155 4.134-5.155 1.3 0 2.31.743 2.986.743Z" fill="#FFF" fill-opacity=".9" fill-rule="nonzero"/>
+                                        </svg>
+                                    }
+                                    else if (item.Symbol == "Coin")
+                                    {
+                                        <svg width="36" height="36" viewBox="0 0 36 36">
+                                            <circle fill="#3B7AFF" cx="18" cy="18" r="18"/>
+                                            <path d="M18.12 13.894c1.673 0 3.002 1.016 3.506 2.528H25C24.389 13.19 21.679 11 18.146 11 14.135 11 11 13.998 11 18.013S14.055 25 18.146 25c3.454 0 6.216-2.19 6.828-5.449h-3.348c-.478 1.512-1.807 2.555-3.48 2.555-2.312 0-3.932-1.747-3.932-4.093 0-2.372 1.595-4.12 3.905-4.12Z" fill="#FFF" fill-rule="nonzero"/>
+                                        </svg>
+                                    }
+                                </div>
+                                <div>
+                                    <div class="text-gray-800 dark:text-gray-100 uppercase">@item.Symbol</div>
+                                    <div class="text-xs text-gray-500">@item.Name</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-2 whitespace-nowrap">
+                            <div class="font-normal text-left">@item.MarketCap</div>
+                        </td>
+                        <td class="p-2 whitespace-nowrap">
+                            <div class="w-[96px]">
+                                <AppBlueprint.UiKit.Components.Charts.LineChart
+                                    CanvasId="@($"trend-chart-{item.Symbol}")"
+                                    Height="32"
+                                    Width="96"
+                                    Labels="@labels"
+                                    Datasets="@item.ChartDatasets"
+                                    ShowXAxis="false"
+                                    ShowYAxis="false"
+                                    UseTimeScale="false"
+                                    ContainerClass=""/>
+                            </div>
+                        </td>
+                        <td class="p-2 whitespace-nowrap">
+                            <div class="text-left">@item.Price</div>
+                        </td>
+                        <td class="p-2 whitespace-nowrap">
+                            <div class="text-left @(item.Change.StartsWith("+") ? "text-[#3ec972]" : "text-[#ff5656]")">@item.Change</div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<string> labels = Enumerable.Range(0, 26).Select(i => $"Point {i}").ToList();
+
+    private class MarketItem
+    {
+        public string Symbol { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string MarketCap { get; set; } = "";
+        public string Price { get; set; } = "";
+        public string Change { get; set; } = "";
+        public List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset> ChartDatasets { get; set; } = new();
+    }
+
+    private List<MarketItem> items = new();
+
+    protected override void OnInitialized()
+    {
+        items = new List<MarketItem>
+        {
+            new MarketItem
+            {
+                Symbol = "Gvolt",
+                Name = "Greenvolt Energias",
+                MarketCap = "33.94B",
+                Price = "$43.07",
+                Change = "+$4.20 (4%)",
+                ChartDatasets = new List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset>
+                {
+                    new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+                    {
+                        Data = new List<double> { 540, 466, 540, 466, 385, 432, 334, 334, 289, 289, 200, 289, 222, 289, 289, 403, 554, 304, 289, 270, 134, 270, 829, 644, 688, 664 },
+                        BorderColor = "rgb(62, 201, 114)", // custom green-500
+                        BorderWidth = 2,
+                        PointRadius = 0,
+                        Fill = false
+                    }
+                }
+            },
+            new MarketItem
+            {
+                Symbol = "Fb",
+                Name = "Meta Inc.",
+                MarketCap = "903.71B",
+                Price = "$324.81",
+                Change = "+$12.20 (3.7%)",
+                ChartDatasets = new List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset>
+                {
+                    new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+                    {
+                        Data = new List<double> { 245, 288, 332, 404, 404, 314, 314, 314, 314, 314, 234, 314, 234, 234, 314, 314, 314, 388, 314, 202, 202, 202, 202, 514, 720, 642 },
+                        BorderColor = "rgb(62, 201, 114)", // custom green-500
+                        BorderWidth = 2,
+                        PointRadius = 0,
+                        Fill = false
+                    }
+                }
+            },
+            new MarketItem
+            {
+                Symbol = "Googl",
+                Name = "Alphabet Inc.",
+                MarketCap = "1.70T",
+                Price = "$2,860.96",
+                Change = "-$12.20 (3.7%)",
+                ChartDatasets = new List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset>
+                {
+                    new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+                    {
+                        Data = new List<double> { 732, 610, 610, 504, 504, 504, 349, 349, 504, 342, 504, 610, 391, 192, 154, 273, 191, 191, 126, 263, 349, 252, 323, 322, 270, 232 },
+                        BorderColor = "rgb(255, 86, 86)", // custom red-500
+                        BorderWidth = 2,
+                        PointRadius = 0,
+                        Fill = false
+                    }
+                }
+            },
+            new MarketItem
+            {
+                Symbol = "Aapl",
+                Name = "Apple Inc.",
+                MarketCap = "2.77T",
+                Price = "$168.55",
+                Change = "+$7.44 (1.4%)",
+                ChartDatasets = new List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset>
+                {
+                    new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+                    {
+                        Data = new List<double> { 222, 222, 226, 271, 365, 365, 238, 324, 288, 206, 324, 324, 500, 409, 409, 273, 232, 273, 500, 570, 767, 808, 685, 767, 685, 685 },
+                        BorderColor = "rgb(62, 201, 114)", // custom green-500
+                        BorderWidth = 2,
+                        PointRadius = 0,
+                        Fill = false
+                    }
+                }
+            },
+            new MarketItem
+            {
+                Symbol = "Coin",
+                Name = "Coinbase Global Inc.",
+                MarketCap = "50.89B",
+                Price = "$236.48",
+                Change = "-$24,30 (6.2%)",
+                ChartDatasets = new List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset>
+                {
+                    new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+                    {
+                        Data = new List<double> { 632, 510, 610, 404, 504, 404, 449, 349, 404, 542, 404, 410, 491, 392, 254, 273, 291, 191, 226, 363, 449, 252, 223, 222, 170, 132 },
+                        BorderColor = "rgb(255, 86, 86)", // custom red-500
+                        BorderWidth = 2,
+                        PointRadius = 0,
+                        Fill = false
+                    }
+                }
+            }
+        };
+    }
+
+}

@@ -1,0 +1,107 @@
+<div class="bg-white dark:bg-gray-900">
+    <div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full dark:text-gray-300">
+                <!-- Table header -->
+                <thead class="text-xs font-semibold uppercase text-gray-500 border-t border-b border-gray-200 dark:border-gray-700/60">
+                    <tr>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                            <div class="flex items-center">
+                                <label class="inline-flex">
+                                    <span class="sr-only">Select all</span>
+                                    <input id="parent-checkbox" class="form-checkbox" type="checkbox" @onchange="CheckAll" checked="@selectAll" />
+                                </label>
+                            </div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Counterparty</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Payment Date</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-left">Status</div>
+                        </th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                            <div class="font-semibold text-right">Amount</div>
+                        </th>
+                    </tr>
+                </thead>
+                <!-- Table body -->
+                <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60 border-b border-gray-200 dark:border-gray-700/60">
+                    @foreach (var transaction in transactions)
+                    {
+                        <TransactionsTableItem02
+                            Transaction="@transaction"
+                            IsSelected="@selected.Contains(transaction.Id)"
+                            OnSelectionChanged="@HandleSelectionChanged"
+                            OnRowClick="@OnOpenTransactionPanel" />
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<List<string>> OnSelectionChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnOpenTransactionPanel { get; set; }
+
+    private bool selectAll;
+    private List<string> selected = new();
+    private List<TransactionsTableItem02.TransactionItem> transactions = new();
+
+    protected override void OnInitialized()
+    {
+        transactions = new List<TransactionsTableItem02.TransactionItem>
+        {
+            new() { Id = "0", Image = "_content/AppBlueprint.UiKit/images/transactions-image-01.svg", Name = "Form Builder CP", Date = "22/01/2024", Status = "Pending", Amount = "-$1,299.22" },
+            new() { Id = "1", Image = "_content/AppBlueprint.UiKit/images/transactions-image-02.svg", Name = "Imperial Hotel ****", Date = "22/01/2024", Status = "Completed", Amount = "-$1,029.77" },
+            new() { Id = "2", Image = "_content/AppBlueprint.UiKit/images/user-36-05.jpg", Name = "Aprilynne Pills", Date = "22/01/2024", Status = "Pending", Amount = "+$499.99" },
+            new() { Id = "3", Image = "_content/AppBlueprint.UiKit/images/transactions-image-03.svg", Name = "Google Limited UK", Date = "22/01/2024", Status = "Completed", Amount = "-$1,029.77" },
+            new() { Id = "4", Image = "_content/AppBlueprint.UiKit/images/transactions-image-04.svg", Name = "Acme LTD UK", Date = "22/01/2024", Status = "Pending", Amount = "+$2,179.36" },
+            new() { Id = "5", Image = "_content/AppBlueprint.UiKit/images/transactions-image-03.svg", Name = "Google Limited UK", Date = "22/01/2024", Status = "Canceled", Amount = "-$1,029.77" },
+            new() { Id = "6", Image = "_content/AppBlueprint.UiKit/images/transactions-image-05.svg", Name = "Uber", Date = "22/01/2024", Status = "Completed", Amount = "-$272.88" },
+            new() { Id = "7", Image = "_content/AppBlueprint.UiKit/images/transactions-image-06.svg", Name = "PublicOne Inc.", Date = "22/01/2024", Status = "Completed", Amount = "-$199.87" },
+            new() { Id = "8", Image = "_content/AppBlueprint.UiKit/images/transactions-image-07.svg", Name = "Github Inc.", Date = "22/01/2024", Status = "Completed", Amount = "-$42.87" },
+            new() { Id = "9", Image = "_content/AppBlueprint.UiKit/images/transactions-image-08.svg", Name = "Form Builder PRO", Date = "22/01/2024", Status = "Completed", Amount = "-$112.44" }
+        };
+    }
+
+    private void CheckAll()
+    {
+        if (!selectAll)
+        {
+            selected = transactions.Select(t => t.Id).ToList();
+        }
+        else
+        {
+            selected.Clear();
+        }
+        selectAll = !selectAll;
+        OnSelectionChanged.InvokeAsync(selected);
+    }
+
+    private void HandleSelectionChanged((string Id, bool IsChecked) args)
+    {
+        if (args.IsChecked)
+        {
+            if (!selected.Contains(args.Id))
+            {
+                selected.Add(args.Id);
+            }
+        }
+        else
+        {
+            selected.Remove(args.Id);
+        }
+        selectAll = transactions.Count == selected.Count;
+        OnSelectionChanged.InvokeAsync(selected);
+    }
+}

@@ -1,0 +1,73 @@
+@* Checkbox component with label *@
+
+<div class="@ContainerClass">
+    <label class="flex items-center @(Disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer")">
+        <input
+            type="checkbox"
+            id="@Id"
+            name="@Name"
+            class="@GetCheckboxClasses()"
+            checked="@Checked"
+            disabled="@Disabled"
+            @onchange="OnChange"
+            @attributes="AdditionalAttributes" />
+        @if (!string.IsNullOrEmpty(Label) || ChildContent != null)
+        {
+            <span class="text-sm @(Disabled ? "text-gray-400" : "text-gray-600 dark:text-gray-400") ml-2">
+                @if (ChildContent != null)
+                {
+                    @ChildContent
+                }
+                else
+                {
+                    @Label
+                }
+            </span>
+        }
+    </label>
+    @if (!string.IsNullOrEmpty(HelpText))
+    {
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-6">@HelpText</p>
+    }
+    @if (HasError && !string.IsNullOrEmpty(ErrorMessage))
+    {
+        <p class="text-xs text-red-500 mt-1 ml-6">@ErrorMessage</p>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool Checked { get; set; } = false;
+    [Parameter] public EventCallback<bool> CheckedChanged { get; set; }
+    [Parameter] public string? HelpText { get; set; }
+    [Parameter] public string? ErrorMessage { get; set; }
+    [Parameter] public bool HasError { get; set; } = false;
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public string Variant { get; set; } = "violet"; // violet, sky, green, red
+    [Parameter] public string? ContainerClass { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetCheckboxClasses()
+    {
+        var colorClass = Variant switch
+        {
+            "sky" => "text-sky-500 focus:ring-sky-500/20",
+            "green" => "text-green-500 focus:ring-green-500/20",
+            "red" => "text-red-500 focus:ring-red-500/20",
+            _ => "text-violet-500 focus:ring-violet-500/20"
+        };
+
+        var stateClass = HasError ? "border-red-500" : "border-gray-300 dark:border-gray-600";
+
+        return $"form-checkbox rounded {stateClass} {colorClass}";
+    }
+
+    private async Task OnChange(ChangeEventArgs e)
+    {
+        Checked = (bool)(e.Value ?? false);
+        await CheckedChanged.InvokeAsync(Checked);
+    }
+}

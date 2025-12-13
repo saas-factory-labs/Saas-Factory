@@ -152,8 +152,6 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
     <PackageVersion Include="Microsoft.JSInterop" Version="10.0.0" />
-      <PackageVersion Include="MudBlazor" Version="8.14.0" />
-      <PackageVersion Include="MudBlazor.ThemeManager" Version="3.0.0" />
     <PackageVersion Include="Z.Blazor.Diagrams" Version="3.0.3" />
     <PackageVersion Include="Z.Blazor.Diagrams.Core" Version="3.0.3" />
     <PackageVersion Include="Z.Blazor.Diagrams.Algorithms" Version="3.0.3" />

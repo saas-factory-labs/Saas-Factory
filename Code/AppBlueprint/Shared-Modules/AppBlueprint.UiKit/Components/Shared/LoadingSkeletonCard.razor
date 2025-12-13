@@ -1,0 +1,60 @@
+@* Skeleton Card - Loading placeholder for card components *@
+
+<div class="@GetContainerClasses()">
+    @if (ShowImage)
+    {
+        <LoadingSkeleton Variant="rectangular" Height="@ImageHeight" Class="w-full" />
+    }
+
+    <div class="@GetContentClasses()">
+        @if (ShowAvatar)
+        {
+            <div class="flex items-center gap-3 mb-4">
+                <LoadingSkeleton Variant="circular" Width="40px" Height="40px" />
+                <div class="flex-1 space-y-2">
+                    <LoadingSkeleton Variant="text" Width="60%" />
+                    <LoadingSkeleton Variant="text" Width="40%" Height="12px" />
+                </div>
+            </div>
+        }
+
+        @if (ShowTitle)
+        {
+            <LoadingSkeleton Variant="text" Width="70%" Height="20px" Class="mb-2" />
+        }
+
+        @for (int i = 0; i < TextLines; i++)
+        {
+            var width = i == TextLines - 1 ? "60%" : "100%";
+            <LoadingSkeleton Variant="text" Width="@width" Class="mb-2" />
+        }
+
+        @if (ShowActions)
+        {
+            <div class="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <LoadingSkeleton Variant="rounded" Width="80px" Height="32px" />
+                <LoadingSkeleton Variant="rounded" Width="80px" Height="32px" />
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool ShowImage { get; set; } = false;
+    [Parameter] public string ImageHeight { get; set; } = "160px";
+    [Parameter] public bool ShowAvatar { get; set; } = false;
+    [Parameter] public bool ShowTitle { get; set; } = true;
+    [Parameter] public int TextLines { get; set; } = 3;
+    [Parameter] public bool ShowActions { get; set; } = false;
+    [Parameter] public string? Class { get; set; }
+
+    private string GetContainerClasses()
+    {
+        return $"bg-white dark:bg-gray-800 rounded-xl shadow-xs overflow-hidden {Class}";
+    }
+
+    private string GetContentClasses()
+    {
+        return "p-5";
+    }
+}

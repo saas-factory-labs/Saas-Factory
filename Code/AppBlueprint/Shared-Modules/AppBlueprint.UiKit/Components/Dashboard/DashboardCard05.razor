@@ -1,0 +1,216 @@
+@using Microsoft.JSInterop
+@using Microsoft.Extensions.Logging
+@inject IJSRuntime JSRuntime
+@inject ILogger<DashboardCard05> Logger
+@implements IAsyncDisposable
+
+<div class="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">Real Time Value</h2>
+        <Tooltip Size="lg">
+            <div class="text-xs text-center whitespace-nowrap">Built with <a class="underline" href="https://www.chartjs.org/" target="_blank" rel="noreferrer">Chart.js</a></div>
+        </Tooltip>
+    </header>
+    <!-- Value Display -->
+    <div class="px-5 py-3">
+        <div class="flex items-start">
+            <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2 tabular-nums">$<span id="chart-value-05">@currentValue.ToString("F2")</span></div>
+            <div id="chart-deviation-05" class="text-sm font-medium px-1.5 rounded-full @deviationClass">@deviationText</div>
+        </div>
+    </div>
+    <!-- Chart -->
+    <div class="grow">
+        <canvas id="dashboard-card-05-chart" width="595" height="248"></canvas>
+    </div>
+</div>
+
+@code {
+    private System.Timers.Timer? timer;
+    private bool _initialized;
+    private int counter;
+    private int range = 35;
+
+    // Sample data to be looped (same as Vue template)
+    private readonly double[] sampleData = new[]
+    {
+        57.81, 57.75, 55.48, 54.28, 53.14, 52.25, 51.04, 52.49, 55.49, 56.87,
+        53.73, 56.42, 58.06, 55.62, 58.16, 55.22, 58.67, 60.18, 61.31, 63.25,
+        65.91, 64.44, 65.97, 62.27, 60.96, 59.34, 55.07, 59.85, 53.79, 51.92,
+        50.95, 49.65, 48.09, 49.81, 47.85, 49.52, 50.21, 52.22, 54.42, 53.42,
+        50.91, 58.52, 53.37, 57.58, 59.09, 59.36, 58.71, 59.42, 55.93, 57.71,
+        50.62, 56.28, 57.37, 53.08, 55.94, 55.82, 53.94, 52.65, 50.25
+    };
+
+    private List<string> labels = new();
+    private List<double> data = new();
+
+    // Value display fields
+    private double currentValue = 57.81;
+    private double previousValue = 57.81;
+    private string deviationText = "+0.00%";
+    private string deviationClass = "bg-green-500/20 text-green-700";
+
+    protected override void OnInitialized()
+    {
+        var now = DateTime.Now;
+        for (int i = 0; i < range; i++)
+        {
+            var time = now.AddMilliseconds(-2000 * (range - 1 - i));
+            labels.Add(time.ToString("HH:mm:ss")); // Short time format for category scale
+            data.Add(sampleData[i]);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        
+        try
+        {
+            if (firstRender && labels.Any() && data.Any())
+            {
+
+
+                await InitializeChart();
+
+
+                // Start real-time updates
+                timer = new System.Timers.Timer(2000);
+                timer.Elapsed += async (sender, e) => await UpdateChart();
+                timer.Start();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "❌ Error in DashboardCard05");
+        }
+    }
+
+    private async Task InitializeChart()
+    {
+        if (_initialized) return;
+
+        var config = new
+        {
+            data = new
+            {
+                labels = labels,
+                datasets = new[]
+                {
+                    new
+                    {
+                        label = "Value",
+                        data = data,
+                        backgroundColor = "rgba(139, 92, 246, 0.08)",
+                        borderColor = "rgb(139, 92, 246)",
+                        borderWidth = 2,
+                        fill = true,
+                        tension = 0.2,
+                        pointRadius = 0,
+                        pointHoverRadius = 3
+                    }
+                }
+            },
+            showXAxis = true,
+            showYAxis = true,
+            useTimeScale = false,
+            disableAnimation = true,
+            suggestedMin = 30,
+            suggestedMax = 80
+        };
+
+        await JSRuntime.InvokeVoidAsync("chartJsInterop.createLineChart", "dashboard-card-05-chart", config);
+        _initialized = true;
+    }
+
+    private async Task UpdateChart()
+    {
+        try
+        {
+            if (!_initialized) return;
+
+            counter++;
+            range++;
+            if (range >= sampleData.Length)
+            {
+                range = 0;
+            }
+
+            // Remove oldest point and add new one
+            labels.RemoveAt(0);
+            data.RemoveAt(0);
+
+            labels.Add(DateTime.Now.ToString("HH:mm:ss"));
+            data.Add(sampleData[range]);
+
+            // Update value display
+            previousValue = currentValue;
+            currentValue = sampleData[range];
+            var diff = ((currentValue - previousValue) / previousValue) * 100;
+            deviationText = $"{(diff > 0 ? "+" : "")}{diff:F2}%";
+            deviationClass = diff < 0
+                ? "bg-red-500/20 text-red-700"
+                : "bg-green-500/20 text-green-700";
+
+
+            await InvokeAsync(async () =>
+            {
+                var newData = new
+                {
+                    labels = labels,
+                    datasets = new[]
+                    {
+                        new
+                        {
+                            label = "Value",
+                            data = data,
+                            backgroundColor = "rgba(139, 92, 246, 0.08)",
+                            borderColor = "rgb(139, 92, 246)",
+                            borderWidth = 2,
+                            fill = true,
+                            tension = 0.2,
+                            pointRadius = 0,
+                            pointHoverRadius = 3
+                        }
+                    }
+                };
+
+                await JSRuntime.InvokeVoidAsync("chartJsInterop.updateChart", "dashboard-card-05-chart", newData);
+                StateHasChanged();
+            });
+        }
+        catch
+        {
+            // Ignore errors when component is disposed
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            timer?.Stop();
+            timer?.Dispose();
+
+            if (_initialized)
+            {
+                try
+                {
+                    await JSRuntime.InvokeVoidAsync("chartJsInterop.destroyChart", "dashboard-card-05-chart");
+                }
+                catch (JSDisconnectedException)
+                {
+                    // Ignore - circuit is already disconnected
+                }
+                catch (Exception)
+                {
+                    // Ignore other errors during disposal
+                }
+            }
+        }
+        catch
+        {
+            // Ignore all errors during disposal
+        }
+    }
+
+}

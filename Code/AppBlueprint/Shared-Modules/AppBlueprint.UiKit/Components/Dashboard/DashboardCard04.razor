@@ -1,0 +1,81 @@
+<div class="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">Direct VS Indirect</h2>
+    </header>
+    <div class="px-5 py-3">
+        <div class="flex flex-wrap gap-8">
+            <div class="flex items-center">
+                <div class="w-3 h-3 border-2 border-sky-500 rounded-full mr-2"></div>
+                <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">@($"${(DirectTotal / 1000):0.##}K")</div>
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Direct</div>
+            </div>
+            <div class="flex items-center">
+                <div class="w-3 h-3 border-2 border-violet-500 rounded-full mr-2"></div>
+                <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">@($"${(IndirectTotal / 1000):0.##}K")</div>
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Indirect</div>
+            </div>
+        </div>
+    </div>
+    <!-- Chart -->
+    <div class="grow p-3">
+        <canvas id="dashboard-card-04" width="595" height="248"></canvas>
+    </div>
+</div>
+
+@using Microsoft.JSInterop
+@using Microsoft.Extensions.Logging
+@inject IJSRuntime JS
+@inject ILogger<DashboardCard04> Logger
+
+@code {
+    // Temporary hardcoded values until charts are migrated
+    private double DirectTotal = 9850;
+    private double IndirectTotal = 28850;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        
+        try
+        {
+            if (firstRender)
+            {
+                var config = new
+                {
+                    data = new
+                    {
+                        labels = new[] { "Dec 22", "Jan 23", "Feb 23", "Mar 23", "Apr 23", "May 23" },
+                        datasets = new[]
+                        {
+                            new
+                            {
+                                label = "Direct",
+                                data = new[] { 800, 1600, 900, 1300, 1950, 1700 },
+                                backgroundColor = "rgb(14, 165, 233)",
+                                hoverBackgroundColor = "rgb(2, 132, 199)",
+                                barPercentage = 0.7,
+                                categoryPercentage = 0.7,
+                                borderRadius = 4
+                            },
+                            new
+                            {
+                                label = "Indirect",
+                                data = new[] { 4900, 2600, 5350, 4800, 5200, 4800 },
+                                backgroundColor = "rgb(139, 92, 246)",
+                                hoverBackgroundColor = "rgb(124, 58, 237)",
+                                barPercentage = 0.7,
+                                categoryPercentage = 0.7,
+                                borderRadius = 4
+                            }
+                        }
+                    }
+                };
+
+                await JS.InvokeVoidAsync("chartJsInterop.createBarChart", "dashboard-card-04", config);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "❌ Error in DashboardCard04 (BAR CHART)");
+        }
+    }
+}

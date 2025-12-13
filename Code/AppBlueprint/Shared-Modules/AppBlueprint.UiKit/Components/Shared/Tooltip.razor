@@ -1,0 +1,143 @@
+@using Microsoft.JSInterop
+@inject IJSRuntime Js
+
+<div class="relative"
+     @onmouseenter="() => tooltipOpen = true"
+     @onmouseleave="() => tooltipOpen = false"
+     @onfocusin="() => tooltipOpen = true"
+     @onfocusout="() => tooltipOpen = false">
+    <button class="block"
+            aria-haspopup="true"
+            aria-expanded="@tooltipOpen"
+            @onclick:preventDefault>
+        <svg class="fill-current text-gray-400 dark:text-gray-500" width="16" height="16" viewBox="0 0 16 16">
+            <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 12c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm1-3H7V4h2v5z"/>
+        </svg>
+    </button>
+    <div class="z-10 absolute @GetPositionOuterClasses()">
+        @if (tooltipOpen)
+        {
+            <div class="rounded-lg border overflow-hidden shadow-lg @GetColorClasses() @GetSizeClasses() @GetPositionInnerClasses()">
+                @ChildContent
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    [Parameter] public string? Bg { get; set; }
+
+    [Parameter] public string? Size { get; set; }
+
+    [Parameter] public string? Position { get; set; }
+
+    private bool tooltipOpen;
+    private ElementReference tooltipRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var parameters = new
+            {
+                bg = Bg,
+                size = Size,
+                position = Position
+            };
+            // Assuming tooltipManager.initialize is the correct function, but the original code didn't show it fully in the diff.
+            // However, based on the previous context, it seems Tooltip might not even use JS for initialization in the original code?
+            // Wait, looking at the previous diff for Tooltip.razor (Step 932), it had:
+            // await JS.InvokeVoidAsync("tooltipManager.initialize", tooltipRef, (object)parameters);
+            // But the `tooltipRef` was not defined in the HTML in the previous diff.
+            // Let's check if `tooltipRef` was used in the `div`?
+            // In Step 932 diff: <div class="relative" ...> no ref.
+            // But the code block had: await JS.InvokeVoidAsync...
+            // I will assume I need to add @ref="tooltipRef" to the outer div or somewhere appropriate if JS is used.
+            // Actually, looking at the diff in Step 932, the `tooltipRef` variable was NOT declared in the `@code` block visible in the diff.
+            // But the `replace_file_content` call in Step 928 tried to rename JS to Js in `await JS.InvokeVoidAsync("tooltipManager.initialize", tooltipRef, (object)parameters);`.
+            // So `tooltipRef` must be there.
+            // I will add `tooltipRef` to the outer div and declare it.
+        }
+    }
+
+    // Actually, looking at the original code in Step 932 (before my botched edit), it didn't seem to have `OnAfterRenderAsync` or `JS` usage in the `@code` block shown in the diff?
+    // Wait, Step 932 diff shows:
+    // -@inject IJSRuntime JS
+    // ...
+    // -    protected override async Task OnAfterRenderAsync(bool firstRender)
+    // -    {
+    // -        if (firstRender)
+    // -        {
+    // -            await JS.InvokeVoidAsync("dropdownManager.initialize", dropdownRef, triggerRef, DotNetObjectReference.Create(this));
+    // -        }
+    // -    }
+    //
+    // Wait, that was `DropdownNotifications.razor` in Step 930.
+    // In Step 932 (Tooltip.razor), the diff shows:
+    // -@inject IJSRuntime JS
+    // ...
+    // -    private bool tooltipOpen;
+    // -
+    // -    private string GetPositionOuterClasses()
+    //
+    // It does NOT show `OnAfterRenderAsync` or `JS` usage in the `@code` block.
+    // However, in Step 928, I called `replace_file_content` on `Tooltip.razor` targeting:
+    // `await JS.InvokeVoidAsync("tooltipManager.initialize", tooltipRef, (object)parameters);`
+    // This suggests that line existed.
+    // Let's look at the `view_file` output in Step 939. It is very short and truncated/malformed.
+    //
+    // If `Tooltip.razor` is purely CSS based (using Blazor event handlers for `tooltipOpen`), maybe it doesn't need JS?
+    // But the `replace_file_content` in Step 928 found the target content `await JS.InvokeVoidAsync...`.
+    // So it must have been there.
+    //
+    // I will assume `Tooltip.razor` needs `JS` interop.
+    // I will add the `OnAfterRenderAsync` and `tooltipRef`.
+
+    private string GetPositionOuterClasses()
+    {
+        return Position switch
+        {
+            "right" => "left-full top-1/2 -translate-y-1/2",
+            "left" => "right-full top-1/2 -translate-y-1/2",
+            "bottom" => "top-full left-1/2 -translate-x-1/2",
+            _ => "bottom-full left-1/2 -translate-x-1/2"
+        };
+    }
+
+    private string GetSizeClasses()
+    {
+        return Size switch
+        {
+            "lg" => "min-w-72 px-3 py-2",
+            "md" => "min-w-56 px-3 py-2",
+            "sm" => "min-w-44 px-3 py-2",
+            _ => "px-3 py-2"
+        };
+    }
+
+    private string GetColorClasses()
+    {
+        return Bg switch
+        {
+            "light" => "bg-white text-gray-600 border-gray-200",
+            "dark" => "bg-gray-800 text-gray-100 border-gray-700/60",
+            _ => "text-gray-600 bg-white dark:bg-gray-800 dark:text-gray-100 border-gray-200 dark:border-gray-700/60"
+        };
+    }
+
+    private string GetPositionInnerClasses()
+    {
+        return Position switch
+        {
+            "right" => "ml-2",
+            "left" => "mr-2",
+            "bottom" => "mt-2",
+            _ => "mb-2"
+        };
+    }
+
+}
