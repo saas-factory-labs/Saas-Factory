@@ -61,12 +61,14 @@ public static class WebAuthenticationExtensions
             string? logtoAppId = configuration["Logto:AppId"];
             string? logtoEndpoint = configuration["Logto:Endpoint"];
             string? logtoAppSecret = configuration["Logto:AppSecret"];
+            string? logtoResource = configuration["Logto:Resource"]; // API resource identifier for JWT access tokens
             
             Console.WriteLine("[Web] ========================================");
             Console.WriteLine("[Web] Logto authentication configuration found");
             Console.WriteLine($"[Web] Endpoint: {logtoEndpoint}");
             Console.WriteLine($"[Web] AppId: {logtoAppId}");
             Console.WriteLine($"[Web] Has AppSecret: {!string.IsNullOrEmpty(logtoAppSecret)}");
+            Console.WriteLine($"[Web] API Resource: {logtoResource ?? "(not set - will receive opaque tokens)"}");
             Console.WriteLine("[Web] ========================================");
             
             // Add Logto authentication with token persistence for API calls
@@ -75,6 +77,29 @@ public static class WebAuthenticationExtensions
                 options.Endpoint = logtoEndpoint;
                 options.AppId = logtoAppId;
                 options.AppSecret = logtoAppSecret;
+
+                // Add API resource to get JWT access tokens instead of opaque tokens
+                // This is CRITICAL for API authentication - without it, Logto returns opaque tokens
+                // that cannot be validated by the API server
+                // Configure in Logto dashboard: API Resources → Create API → Set indicator (e.g., "https://api.yourdomain.com")
+                // Then set Logto:Resource in appsettings or environment variable
+                if (!string.IsNullOrEmpty(logtoResource))
+                {
+                    options.Resource = logtoResource;
+                    
+                    // Request the read:todos scope for the API resource
+                    options.Scopes.Add("read:todos");
+                    
+                    Console.WriteLine($"[Web] ✅ API Resource configured: {logtoResource} (will receive JWT access tokens)");
+                    Console.WriteLine($"[Web] ✅ Requesting scope: read:todos");
+                }
+                else
+                {
+                    Console.WriteLine("[Web] ⚠️ WARNING: No API Resource configured - will receive OPAQUE access tokens");
+                    Console.WriteLine("[Web] ⚠️ This will cause API calls to fail!");
+                    Console.WriteLine("[Web] ⚠️ Configure Logto:Resource in appsettings.json or environment variable");
+                    Console.WriteLine("[Web] ⚠️ Example: Logto__Resource=https://api.yourdomain.com");
+                }
 
                 // IMPORTANT: Explicitly set the callback path to match Logto dashboard configuration
                 // The default is /signin-oidc but Logto may use /Callback
@@ -87,6 +112,9 @@ public static class WebAuthenticationExtensions
             services.Configure<OpenIdConnectOptions>("Logto", options =>
             {
                 Console.WriteLine("[Web] Configuring OpenID Connect 'Logto' scheme to save tokens...");
+
+                // Use the default callback path /signin-oidc (more reliable than /Callback)
+                // options.CallbackPath = "/signin-oidc"; // This is the default, no need to set
 
                 // Save tokens (access_token, id_token, refresh_token) to authentication properties
                 // This enables API authentication using JWT tokens from Logto
@@ -147,6 +175,10 @@ public static class WebAuthenticationExtensions
                         Console.WriteLine($"[Web] OAuth Error Description: {context.Request.Query["error_description"]}");
                     }
 
+                    // IMPORTANT: Show the callback URL that Logto redirected to
+                    var callbackUrl = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}";
+                    Console.WriteLine($"[Web] ⚠️ CALLBACK URL: {callbackUrl}");
+                    Console.WriteLine($"[Web] ⚠️ Make sure this EXACT URL is in Logto's 'Redirect URIs' list!");
                     Console.WriteLine("========================================");
                     
                     if (existingOnRemoteFailure != null)
@@ -272,11 +304,11 @@ public static class WebAuthenticationExtensions
     /// <returns>The web application for chaining</returns>
     public static WebApplication MapAuthenticationEndpoints(this WebApplication app, IConfiguration configuration)
     {
-        // Sign in endpoint
-        app.MapGet("/SignIn", async context =>
+        // Sign in endpoint - triggers authentication challenge
+        app.MapGet("/auth/signin", async context =>
         {
             Console.WriteLine("========================================");
-            Console.WriteLine("[Web] SignIn endpoint called");
+            Console.WriteLine("[Web] /auth/signin endpoint called");
             Console.WriteLine($"[Web] User authenticated: {context.User?.Identity?.IsAuthenticated ?? false}");
             Console.WriteLine($"[Web] User name: {context.User?.Identity?.Name ?? "null"}");
             Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
@@ -313,7 +345,7 @@ public static class WebAuthenticationExtensions
 
         // Sign out endpoint - Full Logto sign-out (signs out from both app and Logto IdP)
         // Sign out endpoint - Full Logto sign-out
-        app.MapGet("/SignOut", async (HttpContext context, IConfiguration config) =>
+        app.MapGet("/auth/signout", async (HttpContext context, IConfiguration config) =>
         {
             Console.WriteLine("========================================");
             Console.WriteLine("[Web] SignOut endpoint called - FULL LOGTO SIGN-OUT");
@@ -409,7 +441,7 @@ public static class WebAuthenticationExtensions
 
         // Simple manual sign-out endpoint for debugging (bypasses Logto's end session endpoint)
         // This just clears local cookies without going to Logto
-        app.MapGet("/SignOut/Local", async (HttpContext context) =>
+        app.MapGet("/auth/signout/local", async (HttpContext context) =>
         {
             Console.WriteLine("========================================");
             Console.WriteLine("[Web] Local sign-out endpoint called (bypassing Logto end session)");

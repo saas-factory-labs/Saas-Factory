@@ -137,7 +137,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         // B2B Entities
         await SeedOrganizationsAsync(cancellationToken);
         await SeedApiKeysAsync(cancellationToken);
-        await SeedTodosAsync(cancellationToken);
+        // Note: Todos are seeded separately via TodoDbContext in TodoAppKernel module
         await SeedTeamMembersAsync(cancellationToken);
         await SeedTeamInvitesAsync(cancellationToken);
 
@@ -1096,43 +1096,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         }
     }
 
-    private async Task SeedTodosAsync(CancellationToken cancellationToken)
-    {
-        try
-        {
-            if (await dbContext.Todos.AnyAsync(cancellationToken)) return;
-
-            var users = await dbContext.Users.ToListAsync(cancellationToken);
-            var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
-
-            if (users.Count == 0 || tenants.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed Todos - Users or Tenants not found. Ensure related entities are seeded first.");
-            }
-
-            var faker = new Faker<AppBlueprint.TodoAppKernel.Domain.TodoEntity>()
-                .RuleFor(t => t.Title, f => f.Hacker.Phrase())
-                .RuleFor(t => t.Description, f => f.Lorem.Paragraph())
-                .RuleFor(t => t.IsCompleted, f => f.Random.Bool(0.3f))
-                .RuleFor(t => t.Priority, f => f.PickRandom<AppBlueprint.TodoAppKernel.Domain.TodoPriority>())
-                .RuleFor(t => t.DueDate, f => f.Random.Bool(0.7f) ? f.Date.Future() : null)
-                .RuleFor(t => t.CompletedAt, (f, t) => t.IsCompleted ? f.Date.Recent(30) : null)
-                .RuleFor(t => t.TenantId, f => f.PickRandom(tenants).Id)
-                .RuleFor(t => t.CreatedById, f => f.PickRandom(users).Id)
-                .RuleFor(t => t.AssignedToId, f => f.PickRandom(users).Id);
-
-            var todos = faker.Generate(150);
-            await dbContext.Todos.AddRangeAsync(todos, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            logger.LogInformation("Successfully seeded {Count} todos", todos.Count);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Todos");
-            throw;
-        }
-    }
+    // Note: SeedTodosAsync removed - Todos are managed by TodoDbContext in TodoAppKernel module
 
     private async Task SeedTeamMembersAsync(CancellationToken cancellationToken)
     {
