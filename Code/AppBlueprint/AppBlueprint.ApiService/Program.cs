@@ -28,27 +28,10 @@ internal static class Program // Make class static
            options.ValidateOnBuild = true;
        });
 
-        // Configure Kestrel ports based on environment
-        builder.WebHost.ConfigureKestrel(options =>
-        {
-            if (builder.Environment.IsDevelopment())
-            {
-                // Development: Use non-privileged ports that don't require admin
-                options.ListenAnyIP(8081); // HTTP on 8081
-                options.ListenAnyIP(8082, listenOptions =>
-                {
-                    listenOptions.UseHttps();
-                });
-                Console.WriteLine("[API] Development mode - HTTP (8081) and HTTPS (8082) enabled");
-            }
-            else
-            {
-                // Production (Railway): Use port 80 as Railway expects
-                // TLS is handled at the edge/load balancer
-                options.ListenAnyIP(80);
-                Console.WriteLine("[API] Production mode - HTTP (80) enabled, TLS handled by Railway");
-            }
-        });
+        // Port configuration handled by ASPNETCORE_URLS environment variable:
+        // - Development: Set via launchSettings.json or appsettings (http://localhost:8081)
+        // - Production: Set via Dockerfile ENV ASPNETCORE_URLS=http://+:80 (Railway handles SSL termination)
+        // No ConfigureKestrel needed - avoids conflicts with environment variables
 
         // Add services to the container.
         builder.Services.AddProblemDetails();
