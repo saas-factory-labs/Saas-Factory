@@ -48,6 +48,7 @@ RUN dotnet publish "AppBlueprint.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/p
 
 # Final runtime image
 FROM base AS final
+USER app
 WORKDIR /app
 COPY --from=publish /app/publish .
 

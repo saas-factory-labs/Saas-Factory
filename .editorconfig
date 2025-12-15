@@ -254,8 +254,10 @@ dotnet_diagnostic.CA1812.severity = none
 
 #### Entity Framework Migration Files ####
 # Suppress CA1062 for all migration files (auto-generated, migrationBuilder is never null)
+# Suppress CA1861 for all migration files (table names are repeated throughout migrations)
 [**/*Migrations*/*.cs]
 dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA1861.severity = none
 
 #### JavaScript/TypeScript files ####
 [*.{js,ts,jsx,tsx,mjs}]

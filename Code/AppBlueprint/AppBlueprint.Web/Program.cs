@@ -313,6 +313,6 @@ Console.WriteLine("[Web] Starting application...");
 Console.WriteLine("[Web] Navigate to the app and watch for logs");
 Console.WriteLine("========================================");
 
-app.Run();
+ await app.RunAsync();
 
 

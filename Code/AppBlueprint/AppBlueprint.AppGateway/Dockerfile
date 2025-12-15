@@ -30,4 +30,22 @@ WORKDIR "/src/AppBlueprint.AppGateway"
 # Build the Gateway service
 RUN dotnet build "AppBlueprint.AppGateway.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
+# Publish stage
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "AppBlueprint.AppGateway.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
+
+# Final runtime image
+FROM base AS final
+USER app
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+# Ensure Gateway only listens on 80
+ENV ASPNETCORE_URLS=http://+:80
+ENV DOTNET_GENERATE_ASPNET_CERTIFICATE=false
+
+# Start the Gateway service
+ENTRYPOINT ["dotnet", "AppBlueprint.AppGateway.dll"]
+
 

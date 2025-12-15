@@ -1,0 +1,79 @@
+name: Build
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+
+      - name: setup .net core
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: build
+        working-directory: ./RazorPress
+        run: dotnet build .
+
+      - name: Assign default GitHub URL base path
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          custom_domain=$(gh api "/repos/${{ github.repository }}/pages" | jq -r '.cname // empty')
+          echo "CNAME config detected: $custom_domain"
+          repo_name=$(echo ${{ github.repository }} | cut -d '/' -f 2)
+          org_name=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')
+          if [ ! -f "./RazorPress/wwwroot/CNAME" ] && [ -z "$custom_domain" ] 
+          then
+            echo "ssg_base_href=$(echo https://$org_name.github.io/$repo_name/)" 
+            echo "ssg_base_href=$(echo https://$org_name.github.io/$repo_name/)" >> $GITHUB_ENV
+          else
+            if [ ! -z "$custom_domain" ]
+            then
+              echo "Persist CNAME '$custom_domain' to ./RazorPress/wwwroot/CNAME"
+              echo "$custom_domain" >> ./RazorPress/wwwroot/CNAME
+              echo "custom_domain=$custom_domain" >> $GITHUB_ENV
+            fi
+          fi
+
+      - name: Install tailwindcss
+        run: |
+          mkdir -p /home/runner/.local/bin
+          curl -o "/home/runner/.local/bin/tailwindcss" -L "https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64"
+          chmod +x /home/runner/.local/bin/tailwindcss
+
+      - name: Build tailwind
+        working-directory: ./RazorPress
+        run: |
+          npm run build
+
+      - name: prerender
+        working-directory: ./RazorPress
+        run: |
+          site_base_href=${{ env.ssg_base_href }}
+          if [ ! -z "$site_base_href" ]
+          then
+            echo "Prerendering for deployment to $site_base_href"
+            dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production --BaseHref "$site_base_href"
+          else
+            echo "Prerendering for deployment to $(cat ./wwwroot/CNAME)"
+            dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production
+          fi
+
+      # Deploy UI to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./RazorPress/dist
+          user_name: 'GitHub Action'
+          user_email: 'action@github.com'

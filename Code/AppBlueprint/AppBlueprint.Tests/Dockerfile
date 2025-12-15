@@ -17,13 +17,13 @@ COPY ["Code/AppBlueprint/AppBlueprint.AppGateway/AppBlueprint.AppGateway.csproj"
 RUN dotnet restore "Code/AppBlueprint/AppBlueprint.Tests/AppBlueprint.Tests.csproj"
 COPY . .
 WORKDIR "/src/Code/AppBlueprint/AppBlueprint.Tests"
-RUN dotnet build "AppBlueprint.Tests.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "AppBlueprint.Tests.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "AppBlueprint.Tests.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
+RUN dotnet publish "AppBlueprint.Tests.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 FROM base AS final
+USER $APP_UID
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "AppBlueprint.Tests.dll"]

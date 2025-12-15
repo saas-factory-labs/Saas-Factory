@@ -1,0 +1,27 @@
+@page "/llms.txt"
+@inject MarkdownPages Markdown
+@inject AppConfig Config
+@attribute [RenderStatic]
+@{
+    Layout = "";
+    Response.ContentType = "text/plain";
+}
+# @Config.Title
+
+## Docs
+@foreach (var entry in Markdown.Sidebars.OrderBy(x => x.Key))
+{
+    @foreach (var sidebar in entry.Value)
+    {
+<text>
+@(sidebar.Text)
+</text>
+        foreach (var item in sidebar.Children.Safe().Where(x => x.Text != null && x.Link != null))
+        {
+            var page = Markdown!.GetBySlug(item.Link);
+            var suffix = !string.IsNullOrEmpty(page?.Title) && item.Text != page.Title ? $": {page.Title}" : "";
+<text> - [@item.Text](@(@Config.GitPagesRawBaseUrl.CombineWith($"_pages/").CombineWith(item.Link.LeftPart('#') + ".md")))@Html.Raw(suffix)
+</text>
+        }
+    }
+}
