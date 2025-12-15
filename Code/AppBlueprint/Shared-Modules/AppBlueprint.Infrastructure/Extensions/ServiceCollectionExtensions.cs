@@ -247,10 +247,11 @@ public static class ServiceCollectionExtensions
 
         if (!string.IsNullOrEmpty(resendApiKey))
         {
+            const string ResendApiBaseUrl = "https://api.resend.com";
             services.AddHttpClient<IResend, ResendClient>()
                 .ConfigureHttpClient(client =>
                 {
-                    client.BaseAddress = new Uri("https://api.resend.com");
+                    client.BaseAddress = new Uri(ResendApiBaseUrl);
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendApiKey}");
                 });
             services.AddScoped<TransactionEmailService>();

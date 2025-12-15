@@ -20,7 +20,6 @@ public static class WebAuthenticationExtensions
     // Constants for authentication schemes
     private const string LogtoCookieScheme = "Logto.Cookie";
     private const string LogtoScheme = "Logto";
-    private const string DefaultCallbackPath = "/signin-oidc";
     
     // Constants for configuration keys
     private const string LogtoEndpointKey = "Logto:Endpoint";
@@ -85,6 +84,8 @@ public static class WebAuthenticationExtensions
         IConfiguration configuration,
         IHostEnvironment environment)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+
         ConfigureDataProtection(services, environment);
 
         bool hasLogtoConfig = ConfigurationValidator.ValidateLogtoConfiguration(configuration, throwOnMissing: false);
@@ -146,8 +147,8 @@ public static class WebAuthenticationExtensions
         
         services.AddLogtoAuthentication(options =>
         {
-            options.Endpoint = logtoEndpoint;
-            options.AppId = logtoAppId;
+            options.Endpoint = logtoEndpoint ?? string.Empty;
+            options.AppId = logtoAppId ?? string.Empty;
             options.AppSecret = logtoAppSecret;
             
             ConfigureLogtoResource(options, logtoResource);
@@ -236,7 +237,7 @@ public static class WebAuthenticationExtensions
             Console.WriteLine($"[Web] Cookie SecurePolicy: {(environment.IsDevelopment() ? "None (dev - allows HTTP)" : "Always (prod - HTTPS required)")}");
             Console.WriteLine($"[Web] Cookie SameSite: {(environment.IsDevelopment() ? "Lax (dev)" : "None (prod - required for OAuth)")}");
             
-            ConfigureOpenIdConnectEvents(options, environment);
+            ConfigureOpenIdConnectEvents(options);
             
             Console.WriteLine("[Web] OpenID Connect configured to save tokens for API authentication");
         });
@@ -275,9 +276,7 @@ public static class WebAuthenticationExtensions
     /// <summary>
     /// Configures OpenID Connect event handlers.
     /// </summary>
-    private static void ConfigureOpenIdConnectEvents(
-        OpenIdConnectOptions options,
-        IHostEnvironment environment)
+    private static void ConfigureOpenIdConnectEvents(OpenIdConnectOptions options)
     {
         var existingOnRemoteFailure = options.Events.OnRemoteFailure;
         options.Events.OnRemoteFailure = context => HandleRemoteFailure(context, existingOnRemoteFailure);
@@ -334,7 +333,7 @@ public static class WebAuthenticationExtensions
         {
             context.Response.StatusCode = 200;
             context.Response.ContentType = "text/html";
-            await context.Response.WriteAsync(GetAuthenticationErrorHtml());
+            await context.Response.WriteAsync(AuthenticationErrorHtml);
             context.HandleResponse();
         }
     }
@@ -371,9 +370,9 @@ public static class WebAuthenticationExtensions
     }
 
     /// <summary>
-    /// Gets the HTML for authentication error page.
+    /// HTML content for authentication error page.
     /// </summary>
-    private static string GetAuthenticationErrorHtml() => @"
+    private const string AuthenticationErrorHtml = @"
 <!DOCTYPE html>
 <html>
 <head>

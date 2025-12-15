@@ -24,6 +24,8 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
         IConfiguration configuration,
         ILogger<LogtoAuthorizationCodeProvider> logger) : base(tokenStorage)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         
@@ -101,6 +103,8 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
         string redirectUri, 
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(state);
+
         try
         {
             _logger.LogInformation("Starting token exchange for authorization code");
@@ -222,7 +226,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
 
     public override async Task<AuthenticationResult> RefreshTokenAsync(CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(_refreshToken))
+        if (string.IsNullOrEmpty(RefreshToken))
         {
             return new AuthenticationResult
             {
@@ -238,7 +242,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 ["client_id"] = _configuration.ClientId,
                 ["client_secret"] = _configuration.ClientSecret,
                 ["grant_type"] = "refresh_token",
-                ["refresh_token"] = _refreshToken
+                ["refresh_token"] = RefreshToken
             });
 
             var response = await _httpClient.PostAsync(
@@ -262,7 +266,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                     {
                         IsSuccess = true,
                         AccessToken = tokenResponse.AccessToken,
-                        RefreshToken = tokenResponse.RefreshToken ?? _refreshToken,
+                        RefreshToken = tokenResponse.RefreshToken ?? RefreshToken,
                         ExpiresAt = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn)
                     };
 
@@ -292,14 +296,14 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     {
         try
         {
-            _accessToken = storedToken;
-            _tokenExpiration = DateTime.UtcNow.AddHours(1);
+            AccessToken = storedToken;
+            TokenExpiration = DateTime.UtcNow.AddHours(1);
             NotifyAuthenticationStateChanged();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error restoring token from storage");
-            await _tokenStorage.RemoveTokenAsync();
+            await TokenStorage.RemoveTokenAsync();
         }
     }
 

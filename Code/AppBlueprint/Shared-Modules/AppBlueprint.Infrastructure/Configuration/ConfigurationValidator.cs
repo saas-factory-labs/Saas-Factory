@@ -41,6 +41,8 @@ public static class ConfigurationValidator
     /// <exception cref="InvalidOperationException">Thrown when connection string is invalid</exception>
     public static void ValidateDatabaseConnectionString(string? connectionString, params string[] configKeys)
     {
+        ArgumentNullException.ThrowIfNull(configKeys);
+
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             var keysChecked = configKeys.Length > 0 
@@ -75,6 +77,8 @@ public static class ConfigurationValidator
     /// <exception cref="InvalidOperationException">Thrown when configuration is invalid and throwOnMissing is true</exception>
     public static bool ValidateLogtoConfiguration(IConfiguration configuration, bool throwOnMissing = false)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+
         string? logtoAppId = configuration["Logto:AppId"];
         string? logtoEndpoint = configuration["Logto:Endpoint"];
         string? logtoAppSecret = configuration["Logto:AppSecret"];
@@ -148,6 +152,8 @@ public static class ConfigurationValidator
     /// <exception cref="InvalidOperationException">Thrown when the value is missing</exception>
     public static string GetRequiredConfiguration(IConfiguration configuration, string key, string? helpMessage = null)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+
         string? value = configuration[key];
         RequireConfiguration(value, key, helpMessage);
         return value!;

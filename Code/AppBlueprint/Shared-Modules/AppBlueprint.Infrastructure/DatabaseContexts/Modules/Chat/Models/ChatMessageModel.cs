@@ -24,7 +24,16 @@ public class ChatMessageModel: BaseEntity
             Name = "Default Chat",
             IsActive = true,
             CreatedAt = DateTime.Now,
-            LastUpdatedAt = DateTime.Now
+            LastUpdatedAt = DateTime.Now,
+            Owner = new UserEntity
+            {
+                Email = "chat-owner@test.com",
+                FirstName = "ChatOwner",
+                LastName = "User",
+                UserName = "chatowner",
+                Profile = new ProfileEntity()
+            },
+            OwnerId = PrefixedUlid.Generate("user")
         };
 
         Owner = new UserEntity
@@ -49,7 +58,7 @@ public class ChatMessageModel: BaseEntity
     public required UserEntity Sender { get; set; }
 
     public required UserEntity Owner { get; set; }
-    public string OwnerId { get; set; } 
-    public string SenderId { get; set; } 
-    public string ChatId { get; set; } 
+    public required string OwnerId { get; set; } 
+    public required string SenderId { get; set; } 
+    public required string ChatId { get; set; } 
 }

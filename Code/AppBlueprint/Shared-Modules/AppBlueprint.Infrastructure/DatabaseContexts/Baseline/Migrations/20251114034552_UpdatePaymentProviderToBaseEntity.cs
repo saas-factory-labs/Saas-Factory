@@ -12,6 +12,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(migrationBuilder);
+
             migrationBuilder.AlterColumn<DateTime>(
                 name: "LastUpdatedAt",
                 table: "PaymentProviders",
@@ -57,6 +59,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(migrationBuilder);
+
             migrationBuilder.DropColumn(
                 name: "IsSoftDeleted",
                 table: "PaymentProviders");

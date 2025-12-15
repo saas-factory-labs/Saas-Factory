@@ -22,8 +22,8 @@ public class ChatModel: BaseEntity
     public required bool IsActive { get; set; }
     public string? Description { get; set; }
     
-    public UserEntity Owner { get; set; }
-    public string OwnerId { get; set; } 
+    public required UserEntity Owner { get; set; }
+    public required string OwnerId { get; set; } 
 
     public List<ChatMessageModel>? ChatMessages { get; set; }
 }

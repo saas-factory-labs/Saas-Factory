@@ -5,32 +5,32 @@ namespace AppBlueprint.Infrastructure.Authorization.Providers;
 
 public abstract class BaseAuthenticationProvider : IAuthenticationProvider
 {
-    protected readonly ITokenStorageService _tokenStorage;
-    protected string? _accessToken;
-    protected string? _refreshToken;
-    protected DateTime _tokenExpiration = DateTime.MinValue;
+    protected ITokenStorageService TokenStorage { get; }
+    protected string? AccessToken { get; set; }
+    protected string? RefreshToken { get; set; }
+    protected DateTime TokenExpiration { get; set; } = DateTime.MinValue;
 
     public event Action? OnAuthenticationStateChanged;
 
     protected BaseAuthenticationProvider(ITokenStorageService tokenStorage)
     {
-        _tokenStorage = tokenStorage ?? throw new ArgumentNullException(nameof(tokenStorage));
+        TokenStorage = tokenStorage ?? throw new ArgumentNullException(nameof(tokenStorage));
     }
 
     public virtual bool IsAuthenticated()
     {
-        return !string.IsNullOrEmpty(_accessToken) && DateTime.UtcNow < _tokenExpiration;
+        return !string.IsNullOrEmpty(AccessToken) && DateTime.UtcNow < TokenExpiration;
     }
 
     public abstract Task<AuthenticationResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);
     
     public virtual async Task LogoutAsync()
     {
-        _accessToken = null;
-        _refreshToken = null;
-        _tokenExpiration = DateTime.MinValue;
+        AccessToken = null;
+        RefreshToken = null;
+        TokenExpiration = DateTime.MinValue;
         
-        await _tokenStorage.RemoveTokenAsync();
+        await TokenStorage.RemoveTokenAsync();
         OnAuthenticationStateChanged?.Invoke();
     }
 
@@ -38,7 +38,7 @@ public abstract class BaseAuthenticationProvider : IAuthenticationProvider
 
     public virtual async Task InitializeAsync()
     {
-        var storedToken = await _tokenStorage.GetTokenAsync();
+        var storedToken = await TokenStorage.GetTokenAsync();
         if (!string.IsNullOrEmpty(storedToken))
         {
             await TryRestoreFromStoredToken(storedToken);
@@ -54,7 +54,7 @@ public abstract class BaseAuthenticationProvider : IAuthenticationProvider
 
         if (IsAuthenticated())
         {
-            request.Headers.Add("Authorization", $"Bearer {_accessToken}");
+            request.Headers.Add("Authorization", $"Bearer {AccessToken}");
         }
 
         return Task.CompletedTask;
@@ -62,13 +62,15 @@ public abstract class BaseAuthenticationProvider : IAuthenticationProvider
 
     protected virtual async Task StoreTokens(AuthenticationResult result)
     {
+        ArgumentNullException.ThrowIfNull(result);
+
         if (result.IsSuccess && !string.IsNullOrEmpty(result.AccessToken))
         {
-            _accessToken = result.AccessToken;
-            _refreshToken = result.RefreshToken;
-            _tokenExpiration = result.ExpiresAt ?? DateTime.UtcNow.AddHours(1);
+            AccessToken = result.AccessToken;
+            RefreshToken = result.RefreshToken;
+            TokenExpiration = result.ExpiresAt ?? DateTime.UtcNow.AddHours(1);
 
-            await _tokenStorage.StoreTokenAsync(result.AccessToken);
+            await TokenStorage.StoreTokenAsync(result.AccessToken);
             OnAuthenticationStateChanged?.Invoke();
         }
     }
