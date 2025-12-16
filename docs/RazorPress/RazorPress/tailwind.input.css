@@ -10,6 +10,11 @@
         --input: 214.3 31.8% 91.4%;
         --ring: 221.2 83.2% 53.3%;
         --radius: 0.5rem;
+        --search-button-bg: #f3f4f6;
+        --search-button-border: #e5e7eb;
+        --search-button-text: #9ca3af;
+        --search-button-hover-bg: #fff;
+        --search-button-hover-text: #4b5563;
     }
     :root.dark {
         --background: 222.2 84% 4.9%;
@@ -17,6 +22,11 @@
         --border: 217.2 32.6% 17.5%;
         --input: 217.2 32.6% 17.5%;
         --ring: 212.7 26.8% 83.9%;
+        --search-button-bg: #1e293b;
+        --search-button-border: #334155;
+        --search-button-text: #94a3b8;
+        --search-button-hover-bg: #334155;
+        --search-button-hover-text: #e2e8f0;
     }
 
     *,

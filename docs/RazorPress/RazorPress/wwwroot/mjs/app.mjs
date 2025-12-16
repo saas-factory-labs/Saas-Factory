@@ -7,6 +7,7 @@ import ShellCommand from "./components/ShellCommand.mjs"
 import VueComponentGallery from "./components/VueComponentGallery.mjs"
 import VueComponentLibrary from "./components/VueComponentLibrary.mjs"
 import { PagingNav, FileLayout } from './components/Docs.mjs'
+import Typesense from './components/Typesense.mjs'
 
 let client = null, Apps = []
 let AppData = {
@@ -51,6 +52,7 @@ const Components = {
     VueComponentLibrary,
     PagingNav,
     FileLayout,
+    Typesense,
 }
 const CustomElements = [
     'lite-youtube'

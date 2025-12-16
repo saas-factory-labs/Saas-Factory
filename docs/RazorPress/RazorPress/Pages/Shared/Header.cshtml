@@ -1,10 +1,7 @@
 @{
     var menuItems = new (string Href, string Text)[]
     {
-        ("/whatsnew", "What's New"),
-        ("/vue/", "Vue"),
-        ("/creatorkit/", "Creator Kit"),
-        ("/videos", "Videos"),
+        ("/whatsnew", "Coming soon")       
     };
 }
 <header id="header" class="top-0 fixed z-50 h-14 bg-white dark:bg-black opacity-90 w-full shadow">
@@ -34,7 +31,8 @@
                 }
             </div>
         </div>
-        <div class="hidden sm:ml-6 sm:flex sm:items-center">
+        <div class="flex ml-6 items-center">
+            <Typesense></Typesense>
             <dark-mode-toggle class="ml-2 w-10"></dark-mode-toggle>
         </div>
         <div class="-mr-2 flex items-center sm:hidden">
@@ -79,8 +77,12 @@
 <script type="module">
 import { ref } from "vue"
 import { mount } from "app.mjs"
+import Typesense from "/mjs/components/Typesense.mjs"
 
 const Header = {
+    components: {
+        Typesense
+    },
     setup() {
         const open = ref(false)
         return { open }

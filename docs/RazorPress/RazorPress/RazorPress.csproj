@@ -20,6 +20,27 @@
     </ItemGroup>
   </Target>
 
+  <!-- Tailwind CSS watch during development -->
+  <Target Name="CheckForNpm" BeforeTargets="PreBuildEvent">
+    <Exec Command="npm --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="NPM is not installed. Please install Node.js and NPM." />
+  </Target>
+
+  <Target Name="NpmInstall" BeforeTargets="PreBuildEvent" Condition="!Exists('node_modules')">
+    <Exec Command="npm install" WorkingDirectory="$(ProjectDir)" />
+  </Target>
+
+  <Target Name="BuildTailwind" BeforeTargets="BeforeBuild">
+    <Exec Command="npm run ui:build" WorkingDirectory="$(ProjectDir)" />
+  </Target>
+
+  <!-- Start Tailwind watcher in background during dotnet watch -->
+  <Target Name="StartTailwindWatch" BeforeTargets="CoreCompile" Condition="'$(DOTNET_WATCH)' == '1'">
+    <Exec Command="powershell -Command &quot;Start-Process powershell -ArgumentList '-NoExit', '-Command', 'cd $(ProjectDir); npm run ui:dev'&quot;" IgnoreExitCode="true" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.44.*" />
     <PackageReference Include="ServiceStack" Version="10.*" />

@@ -1,0 +1,21 @@
+{
+  "index_name": "saas_factory_docs",
+  "allowed_domains": ["saas-factory-labs.github.io"],
+  "start_urls": [
+    {
+      "url": "https://saas-factory-labs.github.io/Saas-Factory/docs/"
+    }
+  ],
+  "selectors": {
+    "default": {
+      "lvl0": "h1",
+      "lvl1": ".content h2",
+      "lvl2": ".content h3",
+      "lvl3": ".content h4",
+      "lvl4": ".content h5",
+      "text": ".content p, .content ul li, .content table tbody tr"
+    }
+  },
+  "scrape_start_urls": false,
+  "strip_chars": " .,;:#"
+}
