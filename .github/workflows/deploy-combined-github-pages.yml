@@ -2,10 +2,13 @@ name: Deploy Landing Page + Documentation to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: 
+      - "main"
+      - "Improve-stability-for-todo-app"
     paths:
       - "Code/Landingpage/**"
       - "docs/RazorPress/**"
+      - ".github/workflows/deploy-combined-github-pages.yml"
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
