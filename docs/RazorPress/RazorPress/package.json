@@ -4,9 +4,12 @@
         "dtos": "x mjs",
         "dev": "dotnet watch",
         "serve": "npx http-server ./dist",
-        "ui:dev": "tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --watch",
-        "ui:build": "tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify",
+        "ui:dev": "npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --watch",
+        "ui:build": "npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify",
         "build": "npm run ui:build",
         "prerender": "npm run build && dotnet run --AppTasks=prerender --environment Production"
+    },
+    "devDependencies": {
+        "tailwindcss": "^4.1.18"
     }
 }
