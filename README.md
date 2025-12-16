@@ -145,8 +145,11 @@ Provide a production-ready SaaS blueprint that eliminates months of boilerplate 
 SaaS-Factory is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) containing all application code, infrastructure, tools, libraries, documentation, etc. 
 A monorepo is a powerful way to organize a codebase, used by Google, Facebook, Uber, Microsoft, etc.
 
+> **📋 Repository Organization:** See [REPOSITORY_ORGANIZATION.md](REPOSITORY_ORGANIZATION.md) for details on the recent reorganization and directory structure improvements.
+
 ```bash
-├─ .github                            # Separate GitHub workflows for deploying Infrastructure and app
+├─ .github                            # GitHub workflows, CI/CD, and Copilot instructions
+├─ build-artifacts                    # Build output, logs, and temporary files (gitignored)
 ├─ Code                               # Contains the application source code
 │  ├─ AppBlueprint        
 │     ├─ Appblueprint.AppHost         # .NET Aspire project starting app and all dependencies in Docker
@@ -156,6 +159,11 @@ A monorepo is a powerful way to organize a codebase, used by Google, Facebook, U
 │      ├─ Appblueprint.Workers        # Background workers for long-running tasks and event processing
 │      ├─ Appblueprint.SharedKernel   # Shared code between all projects
 │      ├─ Appblueprint.UiKit          # Shared UI components
-│      ├─ Appblueprint.Tests          # Tests for all projects│  │   
+│      ├─ Appblueprint.Tests          # Tests for all projects
+├─ docs                               # Documentation and guides
+│  ├─ guides                          # Testing guides and quick references
+├─ scripts                            # Utility scripts
+│  ├─ powershell                      # PowerShell scripts for Windows development
+├─ Writerside                         # Comprehensive documentation source
 ```
 

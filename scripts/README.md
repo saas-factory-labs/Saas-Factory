@@ -1,116 +1,52 @@
-# Scripts
+# Scripts Directory
 
-Utility scripts for maintaining and validating AppBlueprint packages.
+This directory contains utility scripts for development, deployment, and maintenance tasks.
 
-## validate-nuget-packages.sh
+## Directory Structure
 
-Validates that NuGet packages can be consumed correctly before publishing.
+- **`powershell/`** - PowerShell scripts for Windows development environment
+- **`README.md`** - This file
+- **`test_ulid.sql`** - SQL script for testing ULID functionality
 
-### Purpose
+## PowerShell Scripts (`powershell/`)
 
-This script ensures that:
-- Packages build successfully
-- Packages can be installed in a consumer project
-- Consumer projects build successfully with the packages
-- Basic integration tests pass
+### Deployment & Version Control
+- **`commit-and-push.ps1`** - Quick commit script for Railway deployment fixes
 
-### Usage
+## SQL Scripts
 
+### Database Testing
+- **`test_ulid.sql`** - Test script for ULID (Universally Unique Lexicographically Sortable Identifier) functionality in PostgreSQL
+
+## Usage
+
+### PowerShell Scripts
+Run PowerShell scripts from the repository root:
+```powershell
+# Example: Run commit script
+.\scripts\powershell\commit-and-push.ps1
+```
+
+### SQL Scripts
+Execute SQL scripts against your PostgreSQL database:
 ```bash
-# From repository root
-./Scripts/validate-nuget-packages.sh
+# Using psql
+psql -U username -d database_name -f scripts/test_ulid.sql
 
-# Or from Scripts directory
-cd Scripts
-./validate-nuget-packages.sh
+# Or copy and paste into your SQL client
 ```
 
-### What It Does
+## Contributing
 
-1. **Builds packages** - Creates .nupkg files in `artifacts/packages/`
-2. **Creates test project** - Generates temporary Blazor Server app
-3. **Installs packages** - Adds packages from local build
-4. **Configures project** - Sets up Program.cs, imports, and test pages
-5. **Builds consumer project** - Verifies compilation succeeds
-6. **Runs integration tests** - Tests service registration and configuration
-7. **Cleans up** - Removes temporary test directory
+When adding new scripts:
+1. Place them in the appropriate subdirectory (`powershell/`, `bash/`, etc.)
+2. Include clear comments explaining purpose and usage
+3. Update this README with a description
+4. Ensure scripts are cross-platform compatible where possible
+5. Add error handling and validation
 
-### Requirements
+## Related
 
-- .NET 10 SDK
-- Bash shell (Git Bash on Windows, native on macOS/Linux)
-- Packages already built (or script will build them)
+- [Documentation](../docs/) - Project documentation
+- [Build Scripts](../Code/AppBlueprint/) - Project-specific build scripts
 
-### Output
-
-```
-==========================================
-AppBlueprint NuGet Package Validator
-==========================================
-
-Step 1: Building NuGet packages...
------------------------------------
-✓ Found 5 NuGet packages
-
-Step 2: Creating temporary test project...
--------------------------------------------
-✓ Created Blazor Server test project
-
-Step 3: Adding package references...
--------------------------------------
-✓ Installing AppBlueprint.UiKit version 0.1.0
-✓ Packages added successfully
-
-Step 4: Configuring test project...
-------------------------------------
-✓ Test project configured
-
-Step 5: Building test project...
----------------------------------
-✓ Build successful ✓
-
-Step 6: Running integration tests...
--------------------------------------
-✓ Integration tests passed ✓
-
-==========================================
-Validation Summary
-==========================================
-
-✓ Package build: SUCCESS
-✓ Package installation: SUCCESS
-✓ Project build: SUCCESS
-✓ Integration tests: SUCCESS
-
-✓ All validation checks passed!
-
-Packages are ready for publishing.
-```
-
-### When to Run
-
-- **Before publishing to NuGet.org** - Ensures packages work correctly
-- **After major changes** - Validates breaking changes don't break consumption
-- **In CI/CD pipeline** - Automated validation before release
-- **When adding new packages** - Verifies new package integrates correctly
-
-### Troubleshooting
-
-**Build fails:**
-- Ensure .NET 10 SDK is installed: `dotnet --version`
-- Clean and rebuild: `dotnet clean && dotnet build`
-
-**Package not found:**
-- Check `artifacts/packages/` directory exists
-- Script will build packages if missing
-
-**Integration tests fail:**
-- Check test output for specific failures
-- Temporary files left in `temp-nuget-validation/` for debugging
-- Remove temp directory manually if cleanup fails
-
-### Related Documentation
-
-- [VERSIONING.md](../VERSIONING.md) - Version strategy and compatibility
-- [MIGRATION.md](../MIGRATION.md) - Upgrade guides
-- [AppBlueprint.UiKit/USAGE.md](../Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/USAGE.md) - Package usage guide

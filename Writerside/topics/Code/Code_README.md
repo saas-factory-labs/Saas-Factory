@@ -1,8 +1,11 @@
-# 👨‍💻 Development Workflow
+
+Development workflow
+
+# Development Workflow
 
 _Complete guide to setup, develop, and maintain the AppBlueprint project_
 
-## 🚀 Quick Start
+## Quick Start
 
 Get up and running in three simple steps:
 
@@ -10,7 +13,7 @@ Get up and running in three simple steps:
 2. **Run the Application** - Start the AppHost with .NET Aspire
 3. **Start Developing** - Access Swagger UI and begin building features
 
-## 🛠️ Prerequisites
+## Prerequisites
 
 ### Windows Development Setup
 
@@ -65,7 +68,7 @@ gh --version
 ) | ForEach-Object { winget install --accept-package-agreements --accept-source-agreements --id $_ }
 ```
 
-## 🛜 Port Mappings
+## Port Mappings
 
 ### Development Environment
 
@@ -132,7 +135,7 @@ ASP.NET Core determines port mappings in the following order (highest to lowest 
    }
    ```
 
-## ⚙️ Running the Application
+## Running the Application
 
 ```powershell
 cd C:\Development\Development-Projects\saas-factory-labs\Code\AppBlueprint\AppBlueprint.AppHost
@@ -156,7 +159,7 @@ dotnet watch
 dotnet watch
 ```
 
-## 📚 API Documentation
+## API Documentation
 
 ### Swagger UI
 
@@ -184,7 +187,7 @@ cd Shared-Modules\AppBlueprint.Api.Client.Sdk
 dotnet build
 ```
 
-## 🗄️ Database Management
+## Database Management
 
 ### Entity Framework Core Migrations
 
@@ -234,9 +237,7 @@ Connection strings are configured via environment variables or `appsettings.json
 DATABASE_CONNECTION_STRING="Host=localhost;Database=appblueprint;Username=postgres;Password=your_password"
 ```
 
-## 🔧 Development Tools
-
-### Key Configuration Files
+## Key Configuration Files
 
 #### Directory.Packages.props
 
@@ -526,7 +527,7 @@ Add these steps in the workflow for publishing packages to GitHub at `.github/wo
   shell: bash
 ```
 
-## 🐳 Docker Configuration
+## Docker Configuration
 
 ### Building Docker Images
 
@@ -619,7 +620,7 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 Login Succeeded
 ```
 
-## 🔧 Development Tools
+## Development Tools
 
 ### Running GitHub Actions Locally with Act
 
@@ -667,7 +668,7 @@ upgrade-assistant upgrade
 
 **Reference:** [Microsoft .NET Aspire Upgrade Guide](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/upgrade-to-aspire-9?pivots=dotnet-cli)
 
-## 📖 Best Practices
+## Best Practices
 
 ### Null Reference Validation
 
@@ -714,7 +715,7 @@ var pattern = Pattern.With
 
 **Repository:** https://github.com/bcwood/FluentRegex
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -734,14 +735,14 @@ taskkill /PID <PID> /F
 2. Check connection string environment variables
 3. Ensure migrations are applied: `dotnet ef database update --context ApplicationDBContext`
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [.NET Aspire Documentation](https://learn.microsoft.com/en-us/dotnet/aspire/)
 - [Clean Architecture Guide](https://github.com/jasontaylordev/CleanArchitecture)
 - [Entity Framework Core Docs](https://learn.microsoft.com/en-us/ef/core/)
 - [Blazor Documentation](https://learn.microsoft.com/en-us/aspnet/core/blazor/)
 
-## 🆘 Getting Help
+## Getting Help
 
 - **GitHub Issues:** [Report a bug or request a feature](https://github.com/saas-factory-labs/Saas-Factory/issues)
 - **GitHub Discussions:** [Ask questions and share ideas](https://github.com/saas-factory-labs/Saas-Factory/discussions)
