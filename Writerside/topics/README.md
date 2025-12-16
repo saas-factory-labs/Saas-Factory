@@ -59,7 +59,7 @@ constraints.
 
 _Getting started guide to use and develop on the App Blueprint project_
 
-[Development Workflow](Code_README.md)
+[Development Workflow](Code/Code_README.md)
 
 
 
