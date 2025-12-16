@@ -273,6 +273,7 @@ export default {
     setup() {
         const openSearch = ref(false)
         const isDark = ref(document.documentElement.classList.contains('dark'))
+        
         function showSearch() {
             console.log('showSearch', openSearch.value, document.querySelector('#docsearch-input'))
             openSearch.value = true
@@ -283,7 +284,9 @@ export default {
                 el?.focus();
             })
         }
+        
         const hideSearch = () => openSearch.value = false
+        
         /** @param {KeyboardEvent} e */
         function onKeyDown(e) {
             if (e.code === 'Escape') {
@@ -298,6 +301,23 @@ export default {
         }
 
         onMounted(() => {
+            // Initial dark mode check
+            isDark.value = document.documentElement.classList.contains('dark')
+            
+            // Watch for dark mode changes
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        isDark.value = document.documentElement.classList.contains('dark')
+                    }
+                })
+            })
+            
+            observer.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ['class']
+            })
+            
             window.addEventListener('keydown', onKeyDown)
         })
 
