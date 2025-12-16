@@ -2,10 +2,13 @@ name: Deploy Landing Page + Documentation to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: 
+      - "main"
+      - "Improve-stability-for-todo-app"
     paths:
       - "Code/Landingpage/**"
       - "docs/RazorPress/**"
+      - ".github/workflows/deploy-combined-github-pages.yml"
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -165,6 +168,14 @@ jobs:
               ls -lh dist/css/app.css
             else
               echo "❌ Warning: app.css not found in dist!"
+            fi
+          else
+            echo "❌ Error: dist directory not created!"
+            exit 1
+          fi
+
+      - name: Copy documentation output
+        run: |
           echo "📋 Copying documentation output..."
           mkdir -p documentation
           
@@ -177,12 +188,14 @@ jobs:
           else
             echo "❌ Error: dist directory is empty or doesn't exist!"
             exit 1
-          fied!"
-            exit 1
           fi
 
-      - name: Copy documentation output
-        ruecho "🏗️ Creating combined deployment directory..."
+      # ========================================
+      # Combine Landing Page + Documentation
+      # ========================================
+      - name: Create combined deployment directory
+        run: |
+          echo "🏗️ Creating combined deployment directory..."
           mkdir -p combined-site
 
           # Verify landing page exists
@@ -219,17 +232,7 @@ jobs:
           echo "🔍 Verifying critical files:"
           [ -f "combined-site/index.html" ] && echo "✅ Landing page index.html" || echo "❌ Missing landing page index.html"
           [ -f "combined-site/docs/index.html" ] && echo "✅ Docs index.html" || echo "❌ Missing docs index.html"
-          [ -f "combined-site/docs/css/app.css" ] && echo "✅ Docs CSS" || echo "❌ Missing docs CSS
-          cp -r Code/Landingpage/Landingpage.Web/publish/wwwroot/* combined-site/
-
-          # Copy documentation to /docs subdirectory
-          mkdir -p combined-site/docs
-          cp -r documentation/* combined-site/docs/
-
-          echo "✅ Combined site structure created!"
-          echo "📁 Site structure:"
-          ls -la combined-site/
-          ls -la combined-site/docs/ || echo "No docs directory"
+          [ -f "combined-site/docs/css/app.css" ] && echo "✅ Docs CSS" || echo "❌ Missing docs CSS"
 
       # ========================================
       # Deploy to GitHub Pages
@@ -261,3 +264,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+# Trigger rebuild
