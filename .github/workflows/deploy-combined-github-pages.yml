@@ -68,31 +68,53 @@ jobs:
           ln -s ../../../content/guides guides
           echo "✅ Created symlinks to content directories"
 
-      - name: Install Tailwind CSS
+      - name: Install npm dependencies
+        working-directory: docs/RazorPress/RazorPress
         run: |
-          mkdir -p /home/runner/.local/bin
-          curl -o "/home/runner/.local/bin/tailwindcss" -L "https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64"
-          chmod +x /home/runner/.local/bin/tailwindcss
-          export PATH="/home/runner/.local/bin:$PATH"
+          echo "📦 Installing npm dependencies..."
+          npm install
+          echo "✅ npm dependencies installed"
 
-      - name: Build RazorPress documentation
+      - name: Build .NET project
+        working-directory: docs/RazorPress/RazorPress
         run: |
-          cd docs/RazorPress/RazorPress
-          
-          # Install npm dependencies if package.json exists
-          if [ -f package.json ]; then
-            npm install
-          fi
-          
-          # Build the .NET project
+          echo "🔨 Building .NET project..."
           dotnet build . --configuration Release
-          
-          # Build Tailwind CSS
-          export PATH="/home/runner/.local/bin:$PATH"
+          echo "✅ .NET project built"
+
+      - name: Build Tailwind CSS
+        working-directory: docs/RazorPress/RazorPress
+        run: |
+          echo "🎨 Building Tailwind CSS..."
           npm run build
+          echo "✅ Tailwind CSS built"
           
-          # Prerender static site
-          dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production --BaseHref "/Saas-Factory/docs/"
+          # Verify CSS was generated
+          if [ -f "wwwroot/css/app.css" ]; then
+            echo "✅ app.css generated successfully"
+            ls -lh wwwroot/css/app.css
+          else
+            echo "❌ Error: app.css not generated!"
+            exit 1
+          fi
+
+      - name: Configure PublicBaseUrl for GitHub Pages
+        working-directory: docs/RazorPress/RazorPress
+        run: |
+          echo "⚙️ Configuring PublicBaseUrl for GitHub Pages deployment..."
+          
+          # Update appsettings.json to set PublicBaseUrl
+          jq '.AppConfig.PublicBaseUrl = "https://saas-factory-labs.github.io/Saas-Factory/docs"' appsettings.json > appsettings.tmp.json
+          mv appsettings.tmp.json appsettings.json
+          
+          echo "✅ PublicBaseUrl configured"
+          cat appsettings.json
+
+      - name: Prerender static site
+        working-directory: docs/RazorPress/RazorPress
+        run: |
+          echo "🚀 Prerendering static site..."
+          dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production
           
           echo "✅ RazorPress documentation built successfully!"
           
@@ -100,6 +122,21 @@ jobs:
           if [ -d "dist" ]; then
             echo "📁 dist directory contents:"
             ls -la dist/
+            
+            # Verify critical files exist
+            if [ -f "dist/index.html" ]; then
+              echo "✅ index.html found"
+            else
+              echo "❌ Error: index.html not found!"
+              exit 1
+            fi
+            
+            if [ -f "dist/css/app.css" ]; then
+              echo "✅ app.css found in dist"
+              ls -lh dist/css/app.css
+            else
+              echo "❌ Warning: app.css not found in dist!"
+            fi
           else
             echo "❌ Error: dist directory not created!"
             exit 1
