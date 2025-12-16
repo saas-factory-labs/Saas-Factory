@@ -4,7 +4,7 @@
 
 <instance-profile id="sf"
                  name="SaaS-Factory"
-                 start-page="saas-factory.md">
+                 start-page="README.md">
 
     <toc-element topic="README.md"/>
     <toc-element topic="Architectural-decision-record.md"/>
@@ -13,44 +13,44 @@
         <toc-element topic="User-Login-Use-Case.md"/>
     </toc-element>
     <toc-element toc-title="AppBlueprint">
-        <toc-element topic="Code_README.md"/>
+        <toc-element topic="Code/Code_README.md"/>
         <toc-element toc-title="Shared-Modules">
             <toc-element toc-title="AppBlueprint.Application">
-                <toc-element topic="AppBlueprint.Baseline.Application_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Baseline.Application/AppBlueprint.Baseline.Application_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.Baseline.Core">
-                <toc-element topic="AppBlueprint.Baseline.Core_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Baseline.Core/AppBlueprint.Baseline.Core_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.Baseline.Domain.Auditing">
-                <toc-element topic="AppBlueprint.Baseline.Domain.Auditing_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Baseline.Domain.Auditing/AppBlueprint.Baseline.Domain.Auditing_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.Baseline.Domain.Integrations">
-                <toc-element topic="AppBlueprint.Baseline.Domain.Integrations_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Baseline.Domain.Integrations/AppBlueprint.Baseline.Domain.Integrations_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.Baseline.Domain.Logging">
-                <toc-element topic="AppBlueprint.Baseline.Domain.Logging_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Baseline.Domain.Logging/AppBlueprint.Baseline.Domain.Logging_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.Baseline.Domain.Security">
-                <toc-element topic="AppBlueprint.Baseline.Domain.Security_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Baseline.Domain.Security/AppBlueprint.Baseline.Domain.Security_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.Baseline.Domain.Subscriptions">
-                <toc-element topic="AppBlueprint.Baseline.Domain.Subscriptions_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Baseline.Domain.Subscriptions/AppBlueprint.Baseline.Domain.Subscriptions_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.Infrastructure">
-                <toc-element topic="AppBlueprint.Infrastructure_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.Presentation.ApiModule">
-                <toc-element topic="AppBlueprint.Presentation.ApiModule_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/AppBlueprint.Presentation.ApiModule_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.SharedKernel">
-                <toc-element topic="AppBlueprint.SharedKernel_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.UiKit">
-                <toc-element topic="AppBlueprint.UiKit_README.md"/>
+                <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit_README.md"/>
             </toc-element>
         </toc-element>
         <toc-element toc-title="AppBlueprint.ServiceDefaults">
-            <toc-element topic="AppBlueprint.ServiceDefaults_README.md"/>
+            <toc-element topic="Code/AppBlueprint/AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults_README.md"/>
         </toc-element>
     </toc-element>
 </instance-profile>
