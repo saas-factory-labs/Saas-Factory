@@ -104,7 +104,9 @@ builder.Services.AddSingleton(navigationRoutes);
 
 builder.Services.ConfigureHttpClientDefaults(http =>
 {
-    if (builder.Environment.IsDevelopment())
+    // Only bypass certificate validation in development AND with explicit flag
+    if (builder.Environment.IsDevelopment() && 
+        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
     {
         http.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
@@ -126,7 +128,6 @@ if (builder.Environment.IsDevelopment())
 
 builder.Services.AddOutputCache();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authentication
 builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authentication
 
 builder.Services.AddUiKit();
@@ -173,9 +174,10 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
 .ConfigurePrimaryHttpMessageHandler(() =>
 {
     var handler = new HttpClientHandler();
-    if (builder.Environment.IsDevelopment())
+    // Only bypass certificate validation in development AND with explicit flag
+    if (builder.Environment.IsDevelopment() && 
+        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
     {
-        // Accept self-signed certificates in development
         handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
     }
@@ -192,7 +194,9 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TeamService>(client =>
 .ConfigurePrimaryHttpMessageHandler(() =>
 {
     var handler = new HttpClientHandler();
-    if (builder.Environment.IsDevelopment())
+    // Only bypass certificate validation in development AND with explicit flag
+    if (builder.Environment.IsDevelopment() && 
+        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
     {
         handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
@@ -210,7 +214,9 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.RoleService>(client =>
 .ConfigurePrimaryHttpMessageHandler(() =>
 {
     var handler = new HttpClientHandler();
-    if (builder.Environment.IsDevelopment())
+    // Only bypass certificate validation in development AND with explicit flag
+    if (builder.Environment.IsDevelopment() && 
+        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
     {
         handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
@@ -307,6 +313,6 @@ Console.WriteLine("[Web] Starting application...");
 Console.WriteLine("[Web] Navigate to the app and watch for logs");
 Console.WriteLine("========================================");
 
-app.Run();
+ await app.RunAsync();
 
 

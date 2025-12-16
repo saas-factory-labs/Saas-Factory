@@ -218,6 +218,10 @@ dotnet_diagnostic.CA1034.severity = none
 dotnet_diagnostic.CA2007.severity = none
 dotnet_diagnostic.VSTHRD200.severity = none
 
+# CA1303: Do not pass literals as localized parameters
+# Suppressed for pragmatic approach - application does not require localization
+dotnet_diagnostic.CA1303.severity = suggestion
+
 # CA1848: For improved performance, use LoggerMessage delegates
 # Suppressed for code readability - following pragmatic approach
 # LoggerMessage is only beneficial for hot-path logging, not typical application logging
@@ -249,8 +253,11 @@ dotnet_diagnostic.CA1822.severity = suggestion
 dotnet_diagnostic.CA1812.severity = none
 
 #### Entity Framework Migration Files ####
-[Migrations/**/*.cs]
+# Suppress CA1062 for all migration files (auto-generated, migrationBuilder is never null)
+# Suppress CA1861 for all migration files (table names are repeated throughout migrations)
+[**/*Migrations*/*.cs]
 dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA1861.severity = none
 
 #### JavaScript/TypeScript files ####
 [*.{js,ts,jsx,tsx,mjs}]

@@ -17,7 +17,60 @@ namespace AppBlueprint.Infrastructure.Authentication;
 /// </summary>
 public static class WebAuthenticationExtensions
 {
-    private static readonly string[] LogtoSchemes = ["Logto.Cookie", "Logto"];
+    // Constants for authentication schemes
+    private const string LogtoCookieScheme = "Logto.Cookie";
+    private const string LogtoScheme = "Logto";
+    
+    // Constants for configuration keys
+    private const string LogtoEndpointKey = "Logto:Endpoint";
+    private const string LogtoAppIdKey = "Logto:AppId";
+    private const string LogtoAppSecretKey = "Logto:AppSecret";
+    private const string LogtoResourceKey = "Logto:Resource";
+    
+    // Constants for scopes and claims
+    private const string ReadTodosScope = "read:todos";
+    
+    // Constants for paths and URIs
+    private const string DataProtectionKeysPath = "/app";
+    private const string DataProtectionKeysFolderName = "DataProtection-Keys";
+    private const string ApplicationName = "AppBlueprint";
+    
+    // Constants for logging
+    private const string LogSeparator = "========================================";
+    
+    // HTML templates
+    private const string LogoutCompleteHtml = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signing out...</title>
+    <script>
+        console.log('[Logout] Redirecting to login page after sign-out');
+        window.location.href = '/login';
+    </script>
+</head>
+<body>
+    <p>Signing out... You will be redirected to the login page.</p>
+    <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
+</body>
+</html>";
+
+    private const string LocalSignOutHtml = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signing out...</title>
+    <meta http-equiv='refresh' content='0; url=/login'>
+    <script>
+        console.log('[SignOut/Local] Redirecting to login page');
+        window.location.replace('/login');
+    </script>
+</head>
+<body>
+    <p>Signing out... You will be redirected to the login page.</p>
+    <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
+</body>
+</html>";
     
     /// <summary>
     /// Configures authentication services for the web application including Logto, cookies, and data protection.
@@ -31,19 +84,42 @@ public static class WebAuthenticationExtensions
         IConfiguration configuration,
         IHostEnvironment environment)
     {
-        // Configure Data Protection for Railway deployment
-        // This fixes "Unable to unprotect the message.State" errors on callback
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        ConfigureDataProtection(services, environment);
+
+        bool hasLogtoConfig = ConfigurationValidator.ValidateLogtoConfiguration(configuration, throwOnMissing: false);
+
+        if (hasLogtoConfig)
+        {
+            ConfigureLogtoAuthentication(services, configuration, environment);
+        }
+        else
+        {
+            ConfigureFallbackAuthentication(services);
+        }
+
+        services.AddAuthorization();
+        services.AddScoped<Authorization.ITokenStorageService, Authorization.TokenStorageService>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Configures Data Protection for production deployments.
+    /// </summary>
+    private static void ConfigureDataProtection(IServiceCollection services, IHostEnvironment environment)
+    {
         if (!environment.IsDevelopment())
         {
             Console.WriteLine("[Web] Configuring Data Protection for production (Railway)");
             
-            // Use a persistent key storage location
-            var keysPath = Path.Combine("/app", "DataProtection-Keys");
+            var keysPath = Path.Combine(DataProtectionKeysPath, DataProtectionKeysFolderName);
             Directory.CreateDirectory(keysPath);
             
             services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
-                .SetApplicationName("AppBlueprint")
+                .SetApplicationName(ApplicationName)
                 .SetDefaultKeyLifetime(TimeSpan.FromDays(90));
             
             Console.WriteLine($"[Web] Data Protection keys will be stored at: {keysPath}");
@@ -52,154 +128,251 @@ public static class WebAuthenticationExtensions
         {
             Console.WriteLine("[Web] Using default Data Protection (development mode)");
         }
+    }
 
-        // Validate and check if Logto authentication is configured
-        bool hasLogtoConfig = ConfigurationValidator.ValidateLogtoConfiguration(configuration, throwOnMissing: false);
-
-        if (hasLogtoConfig)
+    /// <summary>
+    /// Configures Logto authentication with OpenID Connect.
+    /// </summary>
+    private static void ConfigureLogtoAuthentication(
+        IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment environment)
+    {
+        string? logtoAppId = configuration[LogtoAppIdKey];
+        string? logtoEndpoint = configuration[LogtoEndpointKey];
+        string? logtoAppSecret = configuration[LogtoAppSecretKey];
+        string? logtoResource = configuration[LogtoResourceKey];
+        
+        LogLogtoConfiguration(logtoEndpoint, logtoAppId, logtoAppSecret, logtoResource);
+        
+        services.AddLogtoAuthentication(options =>
         {
-            string? logtoAppId = configuration["Logto:AppId"];
-            string? logtoEndpoint = configuration["Logto:Endpoint"];
-            string? logtoAppSecret = configuration["Logto:AppSecret"];
-            string? logtoResource = configuration["Logto:Resource"]; // API resource identifier for JWT access tokens
+            options.Endpoint = logtoEndpoint ?? string.Empty;
+            options.AppId = logtoAppId ?? string.Empty;
+            options.AppSecret = logtoAppSecret;
             
-            Console.WriteLine("[Web] ========================================");
-            Console.WriteLine("[Web] Logto authentication configuration found");
-            Console.WriteLine($"[Web] Endpoint: {logtoEndpoint}");
-            Console.WriteLine($"[Web] AppId: {logtoAppId}");
-            Console.WriteLine($"[Web] Has AppSecret: {!string.IsNullOrEmpty(logtoAppSecret)}");
-            Console.WriteLine($"[Web] API Resource: {logtoResource ?? "(not set - will receive opaque tokens)"}");
-            Console.WriteLine("[Web] ========================================");
+            ConfigureLogtoResource(options, logtoResource);
+        });
+        
+        ConfigureOpenIdConnectOptions(services, environment);
+        
+        Console.WriteLine("[Web] Logto authentication configured successfully");
+    }
+
+    /// <summary>
+    /// Configures fallback authentication when Logto is not available.
+    /// </summary>
+    private static void ConfigureFallbackAuthentication(IServiceCollection services)
+    {
+        Console.WriteLine($"[Web] {LogSeparator}");
+        Console.WriteLine("[Web] Logto authentication NOT configured");
+        Console.WriteLine("[Web] Running without authentication");
+        Console.WriteLine("[Web] To enable authentication, set:");
+        Console.WriteLine("[Web]   - Logto__AppId");
+        Console.WriteLine("[Web]   - Logto__Endpoint");
+        Console.WriteLine("[Web]   - Logto__AppSecret");
+        Console.WriteLine($"[Web] {LogSeparator}");
+        
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+    }
+
+    /// <summary>
+    /// Logs Logto configuration details.
+    /// </summary>
+    private static void LogLogtoConfiguration(
+        string? endpoint,
+        string? appId,
+        string? appSecret,
+        string? resource)
+    {
+        Console.WriteLine($"[Web] {LogSeparator}");
+        Console.WriteLine("[Web] Logto authentication configuration found");
+        Console.WriteLine($"[Web] Endpoint: {endpoint}");
+        Console.WriteLine($"[Web] AppId: {appId}");
+        Console.WriteLine($"[Web] Has AppSecret: {!string.IsNullOrEmpty(appSecret)}");
+        Console.WriteLine($"[Web] API Resource: {resource ?? "(not set - will receive opaque tokens)"}");
+        Console.WriteLine($"[Web] {LogSeparator}");
+    }
+
+    /// <summary>
+    /// Configures Logto API resource and scopes.
+    /// </summary>
+    private static void ConfigureLogtoResource(
+        dynamic options,
+        string? logtoResource)
+    {
+        if (!string.IsNullOrEmpty(logtoResource))
+        {
+            options.Resource = logtoResource;
+            options.Scopes.Add(ReadTodosScope);
             
-            // Add Logto authentication with token persistence for API calls
-            services.AddLogtoAuthentication(options =>
+            Console.WriteLine($"[Web] ✅ API Resource configured: {logtoResource} (will receive JWT access tokens)");
+            Console.WriteLine($"[Web] ✅ Requesting scope: {ReadTodosScope}");
+        }
+        else
+        {
+            Console.WriteLine("[Web] ⚠️ WARNING: No API Resource configured - will receive OPAQUE access tokens");
+            Console.WriteLine("[Web] ⚠️ This will cause API calls to fail!");
+            Console.WriteLine("[Web] ⚠️ Configure Logto:Resource in appsettings.json or environment variable");
+            Console.WriteLine("[Web] ⚠️ Example: Logto__Resource=https://api.yourdomain.com");
+        }
+    }
+
+    /// <summary>
+    /// Configures OpenID Connect options for Logto.
+    /// </summary>
+    private static void ConfigureOpenIdConnectOptions(
+        IServiceCollection services,
+        IHostEnvironment environment)
+    {
+        services.Configure<OpenIdConnectOptions>(LogtoScheme, options =>
+        {
+            Console.WriteLine($"[Web] Configuring OpenID Connect '{LogtoScheme}' scheme to save tokens...");
+            
+            options.SaveTokens = true;
+            ConfigureCookieSettings(options, environment);
+            
+            Console.WriteLine($"[Web] OpenID Connect callback path: {options.CallbackPath}");
+            Console.WriteLine($"[Web] Cookie SecurePolicy: {(environment.IsDevelopment() ? "None (dev - allows HTTP)" : "Always (prod - HTTPS required)")}");
+            Console.WriteLine($"[Web] Cookie SameSite: {(environment.IsDevelopment() ? "Lax (dev)" : "None (prod - required for OAuth)")}");
+            
+            ConfigureOpenIdConnectEvents(options);
+            
+            Console.WriteLine("[Web] OpenID Connect configured to save tokens for API authentication");
+        });
+        
+        services.ConfigureAll<OpenIdConnectOptions>(options =>
+        {
+            if (!options.SaveTokens)
             {
-                options.Endpoint = logtoEndpoint;
-                options.AppId = logtoAppId;
-                options.AppSecret = logtoAppSecret;
-
-                // Add API resource to get JWT access tokens instead of opaque tokens
-                // This is CRITICAL for API authentication - without it, Logto returns opaque tokens
-                // that cannot be validated by the API server
-                // Configure in Logto dashboard: API Resources → Create API → Set indicator (e.g., "https://api.yourdomain.com")
-                // Then set Logto:Resource in appsettings or environment variable
-                if (!string.IsNullOrEmpty(logtoResource))
-                {
-                    options.Resource = logtoResource;
-                    
-                    // Request the read:todos scope for the API resource
-                    options.Scopes.Add("read:todos");
-                    
-                    Console.WriteLine($"[Web] ✅ API Resource configured: {logtoResource} (will receive JWT access tokens)");
-                    Console.WriteLine($"[Web] ✅ Requesting scope: read:todos");
-                }
-                else
-                {
-                    Console.WriteLine("[Web] ⚠️ WARNING: No API Resource configured - will receive OPAQUE access tokens");
-                    Console.WriteLine("[Web] ⚠️ This will cause API calls to fail!");
-                    Console.WriteLine("[Web] ⚠️ Configure Logto:Resource in appsettings.json or environment variable");
-                    Console.WriteLine("[Web] ⚠️ Example: Logto__Resource=https://api.yourdomain.com");
-                }
-
-                // IMPORTANT: Explicitly set the callback path to match Logto dashboard configuration
-                // The default is /signin-oidc but Logto may use /Callback
-                // Make sure this matches the redirect URI in your Logto application settings
-                // Example: https://localhost/Callback or https://localhost/signin-oidc
-            });
-
-            // Configure the underlying OpenID Connect options to save tokens
-            // The Logto SDK uses OpenID Connect internally, so we configure it to persist tokens
-            services.Configure<OpenIdConnectOptions>("Logto", options =>
-            {
-                Console.WriteLine("[Web] Configuring OpenID Connect 'Logto' scheme to save tokens...");
-
-                // Use the default callback path /signin-oidc (more reliable than /Callback)
-                // options.CallbackPath = "/signin-oidc"; // This is the default, no need to set
-
-                // Save tokens (access_token, id_token, refresh_token) to authentication properties
-                // This enables API authentication using JWT tokens from Logto
+                Console.WriteLine("[Web] Configuring OpenIdConnect scheme to SaveTokens (fallback for all schemes)");
                 options.SaveTokens = true;
+            }
+        });
+    }
 
-                // Configure correlation cookie for OAuth flow
-                // IMPORTANT: For Railway/production behind reverse proxy with external OAuth (Logto):
-                // - Must use SameSite=None to allow cross-site cookies during OAuth redirect
-                // - Must use Secure=Always since Railway provides HTTPS via X-Forwarded-Proto
-                options.CorrelationCookie.SameSite = environment.IsDevelopment() 
-                    ? SameSiteMode.Lax  // Lax is fine for local development
-                    : SameSiteMode.None;  // None required for production OAuth redirects
-                options.CorrelationCookie.SecurePolicy = environment.IsDevelopment()
-                    ? CookieSecurePolicy.None  // Allow HTTP in development
-                    : CookieSecurePolicy.Always;  // Always require HTTPS in production (Railway provides via proxy)
-                options.CorrelationCookie.HttpOnly = true;
+    /// <summary>
+    /// Configures cookie settings for OAuth flow.
+    /// </summary>
+    private static void ConfigureCookieSettings(
+        OpenIdConnectOptions options,
+        IHostEnvironment environment)
+    {
+        var sameSiteMode = environment.IsDevelopment() ? SameSiteMode.Lax : SameSiteMode.None;
+        var securePolicy = environment.IsDevelopment() 
+            ? CookieSecurePolicy.None 
+            : CookieSecurePolicy.Always;
+        
+        options.CorrelationCookie.SameSite = sameSiteMode;
+        options.CorrelationCookie.SecurePolicy = securePolicy;
+        options.CorrelationCookie.HttpOnly = true;
+        
+        options.NonceCookie.SameSite = sameSiteMode;
+        options.NonceCookie.SecurePolicy = securePolicy;
+        options.NonceCookie.HttpOnly = true;
+    }
 
-                // Configure nonce cookie similarly
-                options.NonceCookie.SameSite = environment.IsDevelopment()
-                    ? SameSiteMode.Lax
-                    : SameSiteMode.None;
-                options.NonceCookie.SecurePolicy = environment.IsDevelopment()
-                    ? CookieSecurePolicy.None  // Allow HTTP in development
-                    : CookieSecurePolicy.Always;  // Always require HTTPS in production
-                options.NonceCookie.HttpOnly = true;
+    /// <summary>
+    /// Configures OpenID Connect event handlers.
+    /// </summary>
+    private static void ConfigureOpenIdConnectEvents(OpenIdConnectOptions options)
+    {
+        var existingOnRemoteFailure = options.Events.OnRemoteFailure;
+        options.Events.OnRemoteFailure = context => HandleRemoteFailure(context, existingOnRemoteFailure);
+        
+        var existingOnTokenValidated = options.Events.OnTokenValidated;
+        options.Events.OnTokenValidated = context => HandleTokenValidated(context, existingOnTokenValidated);
+    }
 
-                // Log the callback path being used
-                Console.WriteLine($"[Web] OpenID Connect callback path: {options.CallbackPath}");
-                Console.WriteLine($"[Web] Cookie SecurePolicy: {(environment.IsDevelopment() ? "None (dev - allows HTTP)" : "Always (prod - HTTPS required)")}");
-                Console.WriteLine($"[Web] Cookie SameSite: {(environment.IsDevelopment() ? "Lax (dev)" : "None (prod - required for OAuth)")}");
-                
-                // Add OnRemoteFailure handler to log and handle correlation failures
-                var existingOnRemoteFailure = options.Events.OnRemoteFailure;
-                options.Events.OnRemoteFailure = async context =>
-                {
-                    Console.WriteLine("========================================");
-                    Console.WriteLine("[Web] OnRemoteFailure - Authentication error occurred");
-                    Console.WriteLine($"[Web] Error: {context.Failure?.Message}");
-                    Console.WriteLine($"[Web] Error Type: {context.Failure?.GetType().Name}");
-                    Console.WriteLine($"[Web] Request Path: {context.Request.Path}");
-                    Console.WriteLine($"[Web] Request Host: {context.Request.Host}");
-                    Console.WriteLine($"[Web] Request Scheme: {context.Request.Scheme}");
-                    Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
-                    Console.WriteLine($"[Web] Cookies Received: {string.Join(", ", context.Request.Cookies.Keys)}");
-                    Console.WriteLine($"[Web] Cookies Count: {context.Request.Cookies.Count}");
+    /// <summary>
+    /// Handles remote authentication failures.
+    /// </summary>
+    private static async Task HandleRemoteFailure(
+        RemoteFailureContext context,
+        Func<RemoteFailureContext, Task>? existingHandler)
+    {
+        Console.WriteLine(LogSeparator);
+        Console.WriteLine("[Web] OnRemoteFailure - Authentication error occurred");
+        Console.WriteLine($"[Web] Error: {context.Failure?.Message}");
+        Console.WriteLine($"[Web] Error Type: {context.Failure?.GetType().Name}");
+        Console.WriteLine($"[Web] Request Path: {context.Request.Path}");
+        Console.WriteLine($"[Web] Request Host: {context.Request.Host}");
+        Console.WriteLine($"[Web] Request Scheme: {context.Request.Scheme}");
+        Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+        Console.WriteLine($"[Web] Cookies Received: {string.Join(", ", context.Request.Cookies.Keys)}");
+        Console.WriteLine($"[Web] Cookies Count: {context.Request.Cookies.Count}");
 
-                    // Log specific cookies we're looking for
-                    var correlationCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Correlation"));
-                    var nonceCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Nonce"));
-                    Console.WriteLine($"[Web] Correlation Cookie Present: {correlationCookie != null} ({correlationCookie ?? "not found"})");
-                    Console.WriteLine($"[Web] Nonce Cookie Present: {nonceCookie != null} ({nonceCookie ?? "not found"})");
+        var correlationCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Correlation"));
+        var nonceCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Nonce"));
+        Console.WriteLine($"[Web] Correlation Cookie Present: {correlationCookie is not null} ({correlationCookie ?? "not found"})");
+        Console.WriteLine($"[Web] Nonce Cookie Present: {nonceCookie is not null} ({nonceCookie ?? "not found"})");
 
-                    // Log query string parameters
-                    if (context.Request.Query.Count > 0)
-                    {
-                        Console.WriteLine($"[Web] Query Parameters: {string.Join(", ", context.Request.Query.Keys)}");
-                    }
+        if (context.Request.Query.Count > 0)
+        {
+            Console.WriteLine($"[Web] Query Parameters: {string.Join(", ", context.Request.Query.Keys)}");
+        }
 
-                    // Check for common OAuth error parameters
-                    if (context.Request.Query.ContainsKey("error"))
-                    {
-                        Console.WriteLine($"[Web] OAuth Error: {context.Request.Query["error"]}");
-                        Console.WriteLine($"[Web] OAuth Error Description: {context.Request.Query["error_description"]}");
-                    }
+        if (context.Request.Query.ContainsKey("error"))
+        {
+            Console.WriteLine($"[Web] OAuth Error: {context.Request.Query["error"]}");
+            Console.WriteLine($"[Web] OAuth Error Description: {context.Request.Query["error_description"]}");
+        }
 
-                    // IMPORTANT: Show the callback URL that Logto redirected to
-                    var callbackUrl = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}";
-                    Console.WriteLine($"[Web] ⚠️ CALLBACK URL: {callbackUrl}");
-                    Console.WriteLine($"[Web] ⚠️ Make sure this EXACT URL is in Logto's 'Redirect URIs' list!");
-                    Console.WriteLine("========================================");
-                    
-                    if (existingOnRemoteFailure != null)
-                    {
-                        await existingOnRemoteFailure(context);
-                    }
-                    
-                    // Handle the failure gracefully - redirect to signin page with error message
-                    // We redirect to /signin (the actual login page) with a flag to show error, not /
-                    // This prevents the infinite loop: / -> signin -> logto -> callback (fail) -> / -> signin...
-                    if (!context.Response.HasStarted)
-                    {
-                        // Return HTML that shows the error - don't redirect to avoid loops
-                        context.Response.StatusCode = 200;
-                        context.Response.ContentType = "text/html";
-                        await context.Response.WriteAsync(@"
+        var callbackUrl = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}";
+        Console.WriteLine($"[Web] ⚠️ CALLBACK URL: {callbackUrl}");
+        Console.WriteLine("[Web] ⚠️ Make sure this EXACT URL is in Logto's 'Redirect URIs' list!");
+        Console.WriteLine(LogSeparator);
+        
+        if (existingHandler is not null)
+        {
+            await existingHandler(context);
+        }
+        
+        if (!context.Response.HasStarted)
+        {
+            context.Response.StatusCode = 200;
+            context.Response.ContentType = "text/html";
+            await context.Response.WriteAsync(AuthenticationErrorHtml);
+            context.HandleResponse();
+        }
+    }
+
+    /// <summary>
+    /// Handles token validation events.
+    /// </summary>
+    private static async Task HandleTokenValidated(
+        TokenValidatedContext context,
+        Func<TokenValidatedContext, Task>? existingHandler)
+    {
+        Console.WriteLine("[Web] OnTokenValidated event fired - saving tokens to authentication properties");
+
+        if (existingHandler is not null)
+        {
+            await existingHandler(context);
+        }
+
+        if (context.TokenEndpointResponse is not null)
+        {
+            var hasAccessToken = !string.IsNullOrEmpty(context.TokenEndpointResponse.AccessToken);
+            var hasIdToken = !string.IsNullOrEmpty(context.TokenEndpointResponse.IdToken);
+            var hasRefreshToken = !string.IsNullOrEmpty(context.TokenEndpointResponse.RefreshToken);
+
+            Console.WriteLine($"[Web] Tokens received - AccessToken: {hasAccessToken}, IdToken: {hasIdToken}, RefreshToken: {hasRefreshToken}");
+
+            if (hasAccessToken)
+            {
+                Console.WriteLine($"[Web] AccessToken length: {context.TokenEndpointResponse.AccessToken?.Length ?? 0}");
+            }
+        }
+
+        Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");
+    }
+
+    /// <summary>
+    /// HTML content for authentication error page.
+    /// </summary>
+    private const string AuthenticationErrorHtml = @"
 <!DOCTYPE html>
 <html>
 <head>
@@ -223,83 +396,7 @@ public static class WebAuthenticationExtensions
         <a href='/dashboard'>Go to Dashboard (without auth)</a>
     </div>
 </body>
-</html>");
-                        context.HandleResponse();
-                    }
-                };
-
-                // Add event handler to ensure tokens are saved
-                var existingOnTokenValidated = options.Events.OnTokenValidated;
-                options.Events.OnTokenValidated = async context =>
-                {
-                    Console.WriteLine("[Web] OnTokenValidated event fired - saving tokens to authentication properties");
-
-                    // Call existing handler if any
-                    if (existingOnTokenValidated != null)
-                    {
-                        await existingOnTokenValidated(context);
-                    }
-
-                    // Log token information for debugging
-                    if (context.TokenEndpointResponse != null)
-                    {
-                        var hasAccessToken = !string.IsNullOrEmpty(context.TokenEndpointResponse.AccessToken);
-                        var hasIdToken = !string.IsNullOrEmpty(context.TokenEndpointResponse.IdToken);
-                        var hasRefreshToken = !string.IsNullOrEmpty(context.TokenEndpointResponse.RefreshToken);
-
-                        Console.WriteLine($"[Web] Tokens received - AccessToken: {hasAccessToken}, IdToken: {hasIdToken}, RefreshToken: {hasRefreshToken}");
-
-                        if (hasAccessToken)
-                        {
-                            Console.WriteLine($"[Web] AccessToken length: {context.TokenEndpointResponse.AccessToken?.Length ?? 0}");
-                        }
-                    }
-
-                    Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");
-                };
-
-                Console.WriteLine("[Web] OpenID Connect configured to save tokens for API authentication");
-            });
-
-            // Also configure ALL OpenIdConnect options as a fallback
-            // in case Logto uses a different internal scheme name
-            services.ConfigureAll<OpenIdConnectOptions>(options =>
-            {
-                if (!options.SaveTokens)
-                {
-                    Console.WriteLine($"[Web] Configuring OpenIdConnect scheme to SaveTokens (fallback for all schemes)");
-                    options.SaveTokens = true;
-                }
-            });
-
-            Console.WriteLine("[Web] Logto authentication configured successfully");
-        }
-        else
-        {
-            Console.WriteLine("[Web] ========================================");
-            Console.WriteLine("[Web] Logto authentication NOT configured");
-            Console.WriteLine("[Web] Running without authentication");
-            Console.WriteLine("[Web] To enable authentication, set:");
-            Console.WriteLine("[Web]   - Logto__AppId");
-            Console.WriteLine("[Web]   - Logto__Endpoint");
-            Console.WriteLine("[Web]   - Logto__AppSecret");
-            Console.WriteLine("[Web] ========================================");
-            
-            // Add minimal authentication for API compatibility
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
-        }
-
-        // Add authorization services
-        services.AddAuthorization();
-
-        // Keep ITokenStorageService for backward compatibility with TodoService which uses it for API authentication
-        // This service stores and retrieves JWT tokens from the authentication cookie
-        services.AddScoped<Authorization.ITokenStorageService, 
-            Authorization.TokenStorageService>();
-
-        return services;
-    }
+</html>";
 
     /// <summary>
     /// Maps authentication endpoints (sign in, sign out) for the web application.
@@ -312,7 +409,7 @@ public static class WebAuthenticationExtensions
         // Sign in endpoint - triggers authentication challenge
         app.MapGet("/auth/signin", async context =>
         {
-            Console.WriteLine("========================================");
+            Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] /auth/signin endpoint called");
             Console.WriteLine($"[Web] User authenticated: {context.User?.Identity?.IsAuthenticated ?? false}");
             Console.WriteLine($"[Web] User name: {context.User?.Identity?.Name ?? "null"}");
@@ -345,31 +442,30 @@ public static class WebAuthenticationExtensions
                 context.Response.Redirect("/");
             }
 
-            Console.WriteLine("========================================");
+            Console.WriteLine(LogSeparator);
         });
 
         // Sign out endpoint - Full Logto sign-out (signs out from both app and Logto IdP)
-        // Sign out endpoint - Full Logto sign-out
         app.MapGet("/auth/signout", async (HttpContext context, IConfiguration config) =>
         {
-            Console.WriteLine("========================================");
+            Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] SignOut endpoint called - FULL LOGTO SIGN-OUT");
             Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
             Console.WriteLine($"[Web] User authenticated: {context.User?.Identity?.IsAuthenticated}");
             Console.WriteLine($"[Web] User name: {context.User?.Identity?.Name}");
             
             // Get the id_token from the authentication properties if available
-            var authenticateResult = await context.AuthenticateAsync("Logto");
+            var authenticateResult = await context.AuthenticateAsync(LogtoScheme);
             string? idToken = authenticateResult?.Properties?.GetTokenValue("id_token");
             
-            Console.WriteLine($"[Web] ID Token available: {idToken != null}");
+            Console.WriteLine($"[Web] ID Token available: {idToken is not null}");
             
             // Clear local authentication cookies first
-            await context.SignOutAsync("Logto.Cookie");
-            Console.WriteLine("[Web] ✅ Cleared Logto.Cookie");
+            await context.SignOutAsync(LogtoCookieScheme);
+            Console.WriteLine($"[Web] ✅ Cleared {LogtoCookieScheme}");
             
             // Build Logto's end session URL
-            var logtoEndpoint = config["Logto:Endpoint"];
+            var logtoEndpoint = config[LogtoEndpointKey];
             
             // Construct the post-logout redirect URI
             // The web runs on 8083 (HTTPS) and 8082 (HTTP) in development, port 80 in production
@@ -394,9 +490,9 @@ public static class WebAuthenticationExtensions
                 Console.WriteLine("[Web] ⚠️ No id_token available - sign-out might not work properly");
             }
             
-            Console.WriteLine($"[Web] ➡️  Redirecting to Logto end session:");
+            Console.WriteLine("[Web] ➡️  Redirecting to Logto end session:");
             Console.WriteLine($"[Web] {endSessionUrl}");
-            Console.WriteLine("========================================");
+            Console.WriteLine(LogSeparator);
             
             // Redirect to Logto's end session endpoint
             context.Response.Redirect(endSessionUrl);
@@ -405,15 +501,15 @@ public static class WebAuthenticationExtensions
         // Logout complete callback - where Logto redirects back after sign-out
         app.MapGet("/logout-complete", async (HttpContext context) =>
         {
-            Console.WriteLine("========================================");
+            Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] Logout complete callback - user returned from Logto");
             Console.WriteLine($"[Web] Current authentication state: {context.User?.Identity?.IsAuthenticated}");
             
             // Make absolutely sure cookies are cleared
             try
             {
-                await context.SignOutAsync("Logto.Cookie");
-                await context.SignOutAsync("Logto");
+                await context.SignOutAsync(LogtoCookieScheme);
+                await context.SignOutAsync(LogtoScheme);
                 Console.WriteLine("[Web] ✅ Cleared all authentication cookies");
             }
             catch (Exception ex)
@@ -424,67 +520,36 @@ public static class WebAuthenticationExtensions
             // Return HTML that uses JavaScript to navigate to login
             // This ensures a complete page reload and new Blazor circuit
             context.Response.ContentType = "text/html";
-            await context.Response.WriteAsync(@"
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Signing out...</title>
-    <script>
-        console.log('[Logout] Redirecting to login page after sign-out');
-        window.location.href = '/login';
-    </script>
-</head>
-<body>
-    <p>Signing out... You will be redirected to the login page.</p>
-    <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
-</body>
-</html>
-");
+            await context.Response.WriteAsync(LogoutCompleteHtml);
             Console.WriteLine("[Web] ✅ Sent HTML redirect to /login");
-            Console.WriteLine("========================================");
+            Console.WriteLine(LogSeparator);
         }).AllowAnonymous();
 
         // Simple manual sign-out endpoint for debugging (bypasses Logto's end session endpoint)
         // This just clears local cookies without going to Logto
         app.MapGet("/auth/signout/local", async (HttpContext context) =>
         {
-            Console.WriteLine("========================================");
+            Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] Local sign-out endpoint called (bypassing Logto end session)");
             Console.WriteLine($"[Web] User was: {context.User?.Identity?.Name ?? "unknown"}");
             
             try
             {
                 // Clear local authentication cookies
-                await context.SignOutAsync("Logto.Cookie");
-                Console.WriteLine("[Web] ✅ Cleared Logto.Cookie");
+                await context.SignOutAsync(LogtoCookieScheme);
+                Console.WriteLine($"[Web] ✅ Cleared {LogtoCookieScheme}");
                 
                 // Return HTML that forces a complete page reload to /login
                 // This ensures Blazor circuit is completely reset
                 context.Response.ContentType = "text/html";
-                await context.Response.WriteAsync(@"
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Signing out...</title>
-    <meta http-equiv='refresh' content='0; url=/login'>
-    <script>
-        console.log('[SignOut/Local] Redirecting to login page');
-        window.location.replace('/login');
-    </script>
-</head>
-<body>
-    <p>Signing out... You will be redirected to the login page.</p>
-    <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
-</body>
-</html>
-");
+                await context.Response.WriteAsync(LocalSignOutHtml);
                 Console.WriteLine("[Web] ✅ Sent HTML redirect to /login (forced reload)");
-                Console.WriteLine("========================================");
+                Console.WriteLine(LogSeparator);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[Web] ⚠️ ERROR during local sign-out: {ex.Message}");
-                Console.WriteLine("========================================");
+                Console.WriteLine(LogSeparator);
                 context.Response.Redirect("/login");
             }
         }).AllowAnonymous();

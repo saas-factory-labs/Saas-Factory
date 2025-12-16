@@ -16,6 +16,8 @@ public class LogtoProvider : BaseAuthenticationProvider
         IConfiguration configuration,
         ILogger<LogtoProvider> logger) : base(tokenStorage)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         
@@ -27,6 +29,8 @@ public class LogtoProvider : BaseAuthenticationProvider
 
     public override async Task<AuthenticationResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         try
         {
             _logger.LogInformation("Attempting Logto login for user: {Email}", request.Email);
@@ -121,7 +125,7 @@ public class LogtoProvider : BaseAuthenticationProvider
 
     public override async Task<AuthenticationResult> RefreshTokenAsync(CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(_refreshToken))
+        if (string.IsNullOrEmpty(RefreshToken))
         {
             return new AuthenticationResult
             {
@@ -137,7 +141,7 @@ public class LogtoProvider : BaseAuthenticationProvider
                 ["client_id"] = _configuration.ClientId,
                 ["client_secret"] = _configuration.ClientSecret,
                 ["grant_type"] = "refresh_token",
-                ["refresh_token"] = _refreshToken
+                ["refresh_token"] = RefreshToken
             });
 
             var response = await _httpClient.PostAsync($"{_configuration.Endpoint}/oidc/token", formContent, cancellationToken);
@@ -156,7 +160,7 @@ public class LogtoProvider : BaseAuthenticationProvider
                     {
                         IsSuccess = true,
                         AccessToken = tokenResponse.AccessToken,
-                        RefreshToken = tokenResponse.RefreshToken ?? _refreshToken,
+                        RefreshToken = tokenResponse.RefreshToken ?? RefreshToken,
                         ExpiresAt = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn)
                     };
 
@@ -188,15 +192,15 @@ public class LogtoProvider : BaseAuthenticationProvider
         {
             // For Logto, you would typically validate the token and extract expiration
             // This is a simplified version - in production you'd decode the JWT
-            _accessToken = storedToken;
-            _tokenExpiration = DateTime.UtcNow.AddHours(1); // Default expiration
+            AccessToken = storedToken;
+            TokenExpiration = DateTime.UtcNow.AddHours(1); // Default expiration
             
             NotifyAuthenticationStateChanged();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error restoring Logto token from storage");
-            await _tokenStorage.RemoveTokenAsync();
+            await TokenStorage.RemoveTokenAsync();
         }
     }
 

@@ -16,6 +16,8 @@ public class Auth0Provider : BaseAuthenticationProvider
         IConfiguration configuration,
         ILogger<Auth0Provider> logger) : base(tokenStorage)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         
@@ -27,6 +29,8 @@ public class Auth0Provider : BaseAuthenticationProvider
 
     public override async Task<AuthenticationResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         try
         {
             var auth0Request = new
@@ -85,7 +89,7 @@ public class Auth0Provider : BaseAuthenticationProvider
 
     public override async Task<AuthenticationResult> RefreshTokenAsync(CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(_refreshToken))
+        if (string.IsNullOrEmpty(RefreshToken))
         {
             return new AuthenticationResult
             {
@@ -101,7 +105,7 @@ public class Auth0Provider : BaseAuthenticationProvider
                 client_id = _configuration.ClientId,
                 client_secret = _configuration.ClientSecret,
                 grant_type = "refresh_token",
-                refresh_token = _refreshToken
+                refresh_token = RefreshToken
             };
 
             var jsonContent = JsonSerializer.Serialize(refreshRequest);
@@ -120,7 +124,7 @@ public class Auth0Provider : BaseAuthenticationProvider
                     {
                         IsSuccess = true,
                         AccessToken = tokenResponse.AccessToken,
-                        RefreshToken = tokenResponse.RefreshToken ?? _refreshToken,
+                        RefreshToken = tokenResponse.RefreshToken ?? RefreshToken,
                         ExpiresAt = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn)
                     };
 
@@ -152,15 +156,15 @@ public class Auth0Provider : BaseAuthenticationProvider
         {
             // For Auth0, you would typically validate the token and extract expiration
             // This is a simplified version - in production you'd decode the JWT
-            _accessToken = storedToken;
-            _tokenExpiration = DateTime.UtcNow.AddHours(1); // Default expiration
+            AccessToken = storedToken;
+            TokenExpiration = DateTime.UtcNow.AddHours(1); // Default expiration
             
             NotifyAuthenticationStateChanged();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error restoring Auth0 token from storage");
-            await _tokenStorage.RemoveTokenAsync();
+            await TokenStorage.RemoveTokenAsync();
         }
     }
 

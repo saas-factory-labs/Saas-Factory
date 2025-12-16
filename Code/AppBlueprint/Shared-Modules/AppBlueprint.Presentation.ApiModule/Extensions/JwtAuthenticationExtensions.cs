@@ -9,6 +9,8 @@ namespace AppBlueprint.Presentation.ApiModule.Extensions;
 /// </summary>
 public static class JwtAuthenticationExtensions
 {
+    private const string AuthenticationProviderConfigKey = "Authentication:Provider";
+
     /// <summary>
     /// Adds JWT Bearer authentication to the service collection.
     /// Supports multiple authentication providers (Auth0, Logto, or custom JWT).
@@ -20,7 +22,7 @@ public static class JwtAuthenticationExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
 
-        var authProvider = configuration["Authentication:Provider"] ?? "JWT";
+        var authProvider = configuration[AuthenticationProviderConfigKey] ?? "JWT";
 
         services.AddAuthentication(options =>
         {

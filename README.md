@@ -11,119 +11,111 @@
 
 </h5>
 
-<div align="center">
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?metric=alert_status)](https://sonarcloud.io/summary/new_code?)
+## 🔢 Project Status
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?metric=bugs)](https://sonarcloud.io/summary/new_code?)
+### CI/CD & Build Status
 
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?metric=code_smells)](https://sonarcloud.io/summary/new_code)
+[![SonarCloud Analysis](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/sonarcloud-analysis.yaml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/sonarcloud-analysis.yaml?query=branch%3Amain)
+[![Deploy to Railway](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/deploy-to-railway.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/deploy-to-railway.yml?query=branch%3Amain)
+[![Docker Scout Vulnerability Scan](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/docker-scout-vulnerability-scan.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/docker-scout-vulnerability-scan.yml?query=branch%3Amain)
+[![Publish NuGet Packages](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/publish-nuget-packages.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/publish-nuget-packages.yml?query=branch%3Amain)
 
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?metric=coverage)](https://sonarcloud.io/summary/new_code)
+### GitHub Issues & Project Management
 
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?)
+[![GitHub issues with enhancement label](https://img.shields.io/github/issues-raw/saas-factory-labs/Saas-Factory/enhancement?label=enhancements&logo=github&color=%23A2EEEF)](https://github.com/saas-factory-labs/Saas-Factory/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+[![GitHub issues with bug label](https://img.shields.io/github/issues-raw/saas-factory-labs/Saas-Factory/bug?label=bugs&logo=github&color=red)](https://github.com/saas-factory-labs/Saas-Factory/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+[![GitHub open issues](https://img.shields.io/github/issues-raw/saas-factory-labs/Saas-Factory?label=open%20issues&logo=github)](https://github.com/saas-factory-labs/Saas-Factory/issues?q=is%3Aissue+is%3Aopen)
 
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?&metric=security_rating)](https://sonarcloud.io/component_measures?id=&metric=Security)
+### Code Quality & Security (SonarCloud)
 
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=&metric=reliability_rating&)](https://sonarcloud.io/component_measures?id=&metric=Reliability)
-
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=&metric=sqale_rating&)](https://sonarcloud.io/component_measures?id=&metric=Maintainability)
-
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=&metric=vulnerabilities&)](https://sonarcloud.io/project/issues?id=&resolved=false&types=VULNERABILITY)
-
-[![Technical Debt ](https://sonarcloud.io/api/project_badges/measure?project=&metric=sqale_index&)](https://sonarcloud.io/component_measures?id=&metric=squale_index)
-
-</div>
-
- <details>
-
- <summary> 
-   <h4>Vision </h4>  
- </summary> 
-
- Deploying a new SaaS app project working with one command via the Developer Cli and then adding features specific to the application, while all the fundamental is in place already in under 30 minutes
-
- </details>
- 
- <details>
-
- <summary>
-  <h4>Purpose </h4>  
- </summary> 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=security_rating)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=Security)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=reliability_rating)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=Reliability)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=sqale_rating)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=Maintainability)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=bugs)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=vulnerabilities)](https://sonarcloud.io/project/issues?id=saas-factory-labs_Saas-Factory&resolved=false&types=VULNERABILITY)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=sqale_index)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=sqale_index)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
 
 
- </details>
- 
- <details>
+ ## 🎯 Project Overview
 
- <summary>
+<details>
+<summary><h4>Vision</h4></summary>
 
-<h4> Objectives </h4>
-  
- </summary>
-
-- Fun to work with and develop
-- Consolidated shared infrastructure
-- Fast continuous deployment of code to infrastructure (deploy automatically after passing automated QA environment testing processes)
-- Cost-effective
-- Secure
-- Fast development on new or existing software-as-a-service projects
-- familiar tech stack (C# as much as possible)
-- Minimal technical debt (standardized implementations, code clean up, modular flexible structure, tracking, and maintenance of code and database migration drift)
-- Mono repo for SaaS deployment manager system and boilerplate code for deploying SaaS web app project in a separate repo
-- Automated processes
-- Disaster recovery implementation
-- Automated documentation
-- Dev, QA (automated), staging, and production environment
-- Cloudagnostic (can easily be migrated to another cloud provider such as Digital Ocean/Hetzner/Linode/Render.com/Railway.com
+Deploy a fully functional SaaS application in under 30 minutes using a single command via the Developer CLI, with all foundational features already in place - ready for you to add your application-specific features.
 
 </details>
 
 <details>
+<summary><h4>Purpose</h4></summary>
 
-<summary>
-  <h4>  Complexities </h4>
-</summary>
+Provide a production-ready SaaS blueprint that eliminates months of boilerplate development, allowing developers to focus on building unique features that differentiate their product rather than rebuilding common infrastructure.
 
-- Maintaining and keeping multiple deployed SaaS web applications up to date to mitigate technical debt
-- Adhering to a high-level perspective and focus while being able to deepdive into low level programming and troubleshooting
-- MVP status - When and how can the first SaaS Factory App be deployed?
-- Should Deployment Manager be added in version 2 of SaaS Factory and how can existing deployed SaaS web apps be consolidated and migrated?
-  
-</details>  
+</details>
 
+<details>
+<summary><h4>Objectives</h4></summary>
 
+**Development Experience**
+- Enjoyable and productive development workflow
+- Familiar tech stack (C# wherever possible)
+- Minimal technical debt through standardized implementations
 
-> [!NOTE]
-> Useful information that users should know, even when skimming content.
+**Infrastructure & Deployment**
+- Consolidated shared infrastructure across all SaaS projects
+- Fast continuous deployment (automatic deployment after passing automated QA)
+- Cloud-agnostic architecture (easily migrate to Digital Ocean, Hetzner, Linode, Render, Railway, etc.)
 
-> [!TIP]
-> Helpful advice for doing things better or more easily.
+**Architecture & Quality**
+- Monorepo structure for deployment manager and SaaS application boilerplate
+- Modular, flexible structure with proper tracking of code and database migrations
+- Automated processes for testing, documentation, and deployment
+- Multiple environments: Dev, QA (automated), Staging, and Production
 
-> [!IMPORTANT]
-> Key information users need to know to achieve their goal.
+**Operations**
+- Cost-effective infrastructure management
+- Enterprise-grade security implementation
+- Disaster recovery capabilities
+- Comprehensive audit logging
 
-> [!WARNING]
-> Urgent info that needs immediate user attention to avoid problems.
+</details>
 
-> [!CAUTION]
-> Advises about risks or negative outcomes of certain actions.
+<details>
+<summary><h4>Challenges & Considerations</h4></summary>
 
-### ℹ️ Definitions
+**Technical Challenges**
+- Maintaining consistency across multiple deployed SaaS applications to minimize technical debt
+- Balancing high-level architectural vision with detailed low-level implementation
 
-- Entity
-- DTO
-  - Request
-  - Response
-- Interfaces
-- Services
-- Repositories
-- Database
-  - Migrations
-  - Contexts
+**Strategic Decisions**
+- **MVP Readiness**: Defining criteria for the first production SaaS Factory deployment
+- **Deployment Manager**: Should this be deferred to version 2.0? How to consolidate and migrate existing deployed applications?
 
+</details>
 
-### 🔗 Related repositories 
+---
+
+## 📚 Key Concepts
+
+### Domain-Driven Design Components
+
+- **Entity**: Core domain objects with unique identity
+- **DTO (Data Transfer Objects)**
+  - Request DTOs: API input models
+  - Response DTOs: API output models
+- **Interfaces**: Contracts defining service behaviors
+- **Services**: Business logic implementation
+- **Repositories**: Data persistence abstractions
+- **Database**
+  - Migrations: Version-controlled schema changes
+  - Contexts: Entity Framework DbContext configurations
+
+---
+
+## 🔗 Related Repositories 
 
 [Didact](https://github.com/DidactHQ/didact-engine)
 

@@ -18,4 +18,12 @@
         <description>Created after removal of "Next Steps after `azd init`" from API-Reference</description>
         <accepts>next-steps.html</accepts>
     </rule>
+    <rule id="4ed3de95">
+        <description>Created after removal of "Auditing" from API-Reference</description>
+        <accepts>AppBlueprint.Baseline.Domain.Auditing_README.html</accepts>
+    </rule>
+  <rule id="23ce42c3">
+    <description>Created after removal of "AppBlueprint.Baseline.Core" from API-Reference</description>
+    <accepts>AppBlueprint.Baseline.Core_README.html</accepts>
+  </rule>
 </rules>

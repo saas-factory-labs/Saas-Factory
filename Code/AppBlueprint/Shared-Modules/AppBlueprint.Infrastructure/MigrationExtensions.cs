@@ -100,7 +100,7 @@ public static class MigrationExtensions
             // Check if database exists
             await using var checkCommand = new NpgsqlCommand(
                 $"SELECT 1 FROM pg_database WHERE datname = @databaseName", connection);
-            checkCommand.Parameters.AddWithValue("databaseName", databaseName);
+            checkCommand.Parameters.AddWithValue("databaseName", databaseName ?? string.Empty);
             
             var exists = await checkCommand.ExecuteScalarAsync();
 

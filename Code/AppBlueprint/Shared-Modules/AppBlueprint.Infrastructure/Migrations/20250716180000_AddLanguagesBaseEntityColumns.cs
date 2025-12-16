@@ -11,6 +11,8 @@ namespace AppBlueprint.SharedKernel.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(migrationBuilder);
+
             // Add BaseEntity columns to Languages table
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreatedAt",
@@ -36,6 +38,8 @@ namespace AppBlueprint.SharedKernel.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(migrationBuilder);
+
             // Remove BaseEntity columns from Languages table
             migrationBuilder.DropColumn(
                 name: "CreatedAt",

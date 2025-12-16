@@ -62,6 +62,10 @@
 
         <!-- Reverse Proxy -->
         <PackageReference Include="Yarp.ReverseProxy"/>
+        
+        <!-- MSBuild (explicit override for vulnerable transitive dependencies) -->
+        <PackageReference Include="Microsoft.Build.Tasks.Core"/>
+        <PackageReference Include="Microsoft.Build.Utilities.Core"/>
     </ItemGroup>
 
     <ItemGroup>

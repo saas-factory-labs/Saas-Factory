@@ -16,6 +16,8 @@ public class MockProvider : BaseAuthenticationProvider
 
     public override async Task<AuthenticationResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         try
         {
             // Simulate network delay
@@ -59,7 +61,7 @@ public class MockProvider : BaseAuthenticationProvider
 
     public override async Task<AuthenticationResult> RefreshTokenAsync(CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(_refreshToken))
+        if (string.IsNullOrEmpty(RefreshToken))
         {
             return new AuthenticationResult
             {
@@ -74,14 +76,14 @@ public class MockProvider : BaseAuthenticationProvider
             await Task.Delay(300, cancellationToken);
 
             // Extract email from current token for mock refresh
-            var email = ExtractEmailFromToken(_accessToken);
+            var email = ExtractEmailFromToken(AccessToken);
             var mockToken = GenerateMockToken(email ?? "unknown@example.com");
 
             var result = new AuthenticationResult
             {
                 IsSuccess = true,
                 AccessToken = mockToken,
-                RefreshToken = _refreshToken, // Keep same refresh token
+                RefreshToken = RefreshToken, // Keep same refresh token
                 ExpiresAt = DateTime.UtcNow.AddHours(1)
             };
 
@@ -103,6 +105,8 @@ public class MockProvider : BaseAuthenticationProvider
 
     protected override async Task TryRestoreFromStoredToken(string storedToken)
     {
+        ArgumentNullException.ThrowIfNull(storedToken);
+
         try
         {
             var tokenParts = storedToken.Split('.');
@@ -120,8 +124,8 @@ public class MockProvider : BaseAuthenticationProvider
 
                     if (DateTime.UtcNow < expiration)
                     {
-                        _accessToken = storedToken;
-                        _tokenExpiration = expiration;
+                        AccessToken = storedToken;
+                        TokenExpiration = expiration;
                         NotifyAuthenticationStateChanged();
                         return;
                     }
@@ -129,12 +133,12 @@ public class MockProvider : BaseAuthenticationProvider
             }
 
             // Token is invalid or expired
-            await _tokenStorage.RemoveTokenAsync();
+            await TokenStorage.RemoveTokenAsync();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error restoring mock token from storage");
-            await _tokenStorage.RemoveTokenAsync();
+            await TokenStorage.RemoveTokenAsync();
         }
     }
 

@@ -43,6 +43,10 @@
     <PackageReference Include="MongoDB.Driver.Core" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Stripe.net" />
+    
+    <!-- MSBuild (explicit override for vulnerable transitive dependencies) -->
+    <PackageReference Include="Microsoft.Build.Tasks.Core"/>
+    <PackageReference Include="Microsoft.Build.Utilities.Core"/>
   </ItemGroup>
 
 </Project>

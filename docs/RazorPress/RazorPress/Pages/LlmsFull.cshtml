@@ -1,0 +1,32 @@
+@page "/llms-full.txt"
+@inject MarkdownPages Markdown
+@inject AppConfig Config
+@attribute [RenderStatic]
+@{
+    Layout = "";
+    Response.ContentType = "text/plain";
+}
+@foreach (var entry in Markdown.Sidebars.OrderBy(x => x.Key))
+{
+    @foreach (var sidebar in entry.Value)
+    {
+        foreach (var item in sidebar.Children.Safe().Where(x => x.Text != null && x.Link != null))
+        {
+            var page = Markdown!.GetBySlug(item.Link);
+            if (page?.Content == null) continue;
+            var content = page.Content.Trim();
+            if (content.StartsWith("---"))
+            {
+                content = content.Substring(3).RightPart("---").Trim();
+            }
+
+<text># @(page.Title)
+Source: @Config.PublicBaseUrl.CombineWith(item.Link)
+
+@(Html.Raw(content))
+
+
+</text>
+        }
+    }
+}

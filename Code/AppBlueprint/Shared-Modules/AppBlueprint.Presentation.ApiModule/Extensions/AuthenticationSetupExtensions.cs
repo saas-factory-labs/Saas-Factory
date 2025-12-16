@@ -8,6 +8,8 @@ namespace AppBlueprint.Presentation.ApiModule.Extensions;
 /// </summary>
 public static class AuthenticationSetupExtensions
 {
+    private const string AuthenticationProviderConfigKey = "Authentication:Provider";
+
     /// <summary>
     /// Quickly adds authentication to your application with sensible defaults.
     /// Perfect for dating apps and other consumer applications that need user login.
@@ -31,13 +33,13 @@ public static class AuthenticationSetupExtensions
         ArgumentNullException.ThrowIfNull(configuration);
 
         // Set the provider in configuration if not already set
-        var configProvider = configuration["Authentication:Provider"];
+        var configProvider = configuration[AuthenticationProviderConfigKey];
         if (string.IsNullOrEmpty(configProvider))
         {
             // Create a mutable configuration source
             var configDict = new Dictionary<string, string?>
             {
-                ["Authentication:Provider"] = providerType.ToString()
+                [AuthenticationProviderConfigKey] = providerType.ToString()
             };
             
             var tempConfig = new ConfigurationBuilder()
@@ -91,7 +93,7 @@ public static class AuthenticationSetupExtensions
         // Build in-memory configuration
         var configDict = new Dictionary<string, string?>
         {
-            ["Authentication:Provider"] = "Logto",
+            [AuthenticationProviderConfigKey] = "Logto",
             ["Authentication:Logto:Endpoint"] = endpoint,
             ["Authentication:Logto:ClientId"] = clientId
         };
@@ -146,7 +148,7 @@ public static class AuthenticationSetupExtensions
         // Build in-memory configuration
         var configDict = new Dictionary<string, string?>
         {
-            ["Authentication:Provider"] = "Auth0",
+            [AuthenticationProviderConfigKey] = "Auth0",
             ["Authentication:Auth0:Domain"] = domain,
             ["Authentication:Auth0:Audience"] = audience
         };
@@ -201,7 +203,7 @@ public static class AuthenticationSetupExtensions
         // Build in-memory configuration
         var configDict = new Dictionary<string, string?>
         {
-            ["Authentication:Provider"] = "JWT",
+            [AuthenticationProviderConfigKey] = "JWT",
             ["Authentication:JWT:SecretKey"] = secretKey,
             ["Authentication:JWT:Issuer"] = issuer,
             ["Authentication:JWT:Audience"] = audience

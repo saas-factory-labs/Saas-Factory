@@ -26,6 +26,7 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "AppBlueprint.AppHost.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+USER app
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "AppBlueprint.AppHost.dll"]

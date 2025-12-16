@@ -10,6 +10,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(migrationBuilder);
+
             migrationBuilder.AddColumn<string>(
                 name: "PermissionId",
                 table: "RolePermissions",
@@ -41,6 +43,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(migrationBuilder);
+
             migrationBuilder.DropForeignKey(
                 name: "FK_RolePermissions_Permissions_PermissionId",
                 table: "RolePermissions");
