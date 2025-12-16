@@ -38,13 +38,38 @@ jobs:
 
       - name: Publish Blazor WASM Landing Page
         run: |
+          echo "🏗️ Publishing Blazor WASM Landing Page..."
           cd Code/Landingpage/Landingpage.Web
           dotnet publish -c Release -o publish
+          
+          # Verify publish succeeded
+          if [ -d "publish/wwwroot" ] && [ -f "publish/wwwroot/index.html" ]; then
+            echo "✅ Landing page published successfully"
+            ls -lh publish/wwwroot/index.html
+          else
+            echo "❌ Error: Landing page publish failed!"
+            exit 1
+          fi
 
       - name: Change base href for Landing Page
         run: |
+          echo "🔧 Updating base href for Landing Page..."
           cd Code/Landingpage/Landingpage.Web/publish/wwwroot
+          
+          # Backup original
+          cp index.html index.html.bak
+          
+          # Update base href
           sed -i 's/<base href="\/" \/>/<base href="\/Saas-Factory\/" \/>/g' index.html
+          
+          # Verify change was made
+          if grep -q '<base href="/Saas-Factory/" />' index.html; then
+            echo "✅ Base href updated successfully"
+            grep '<base href=' index.html
+          else
+            echo "❌ Error: Base href update failed!"
+            exit 1
+          fi
 
       - name: Add 404.html for SPA routing
         run: |
@@ -61,19 +86,35 @@ jobs:
 
       - name: Create directory junctions for content
         run: |
+          echo "📂 Creating symlinks for content directories..."
           cd docs/RazorPress/RazorPress/_pages
+          
+          # Remove existing symlinks if they exist
+          rm -f architecture development getting-started guides
+          
+          # Create new symlinks
           ln -s ../../../content/architecture architecture
           ln -s ../../../content/development development
           ln -s ../../../content/getting-started getting-started
           ln -s ../../../content/guides guides
-          echo "✅ Created symlinks to content directories"
+          
+          echo "✅ Created symlinks:"
+          ls -la | grep "^l"
 
       - name: Install npm dependencies
         working-directory: docs/RazorPress/RazorPress
         run: |
           echo "📦 Installing npm dependencies..."
-          npm install
+          npm ci --prefer-offline --no-audit
           echo "✅ npm dependencies installed"
+          
+          # Verify tailwindcss is installed
+          if [ -f "node_modules/.bin/tailwindcss" ] || npx tailwindcss --help > /dev/null 2>&1; then
+            echo "✅ Tailwind CSS CLI available"
+          else
+            echo "❌ Error: Tailwind CSS CLI not found!"
+            exit 1
+          fi
 
       - name: Build .NET project
         working-directory: docs/RazorPress/RazorPress
@@ -98,23 +139,11 @@ jobs:
             exit 1
           fi
 
-      - name: Configure PublicBaseUrl for GitHub Pages
-        working-directory: docs/RazorPress/RazorPress
-        run: |
-          echo "⚙️ Configuring PublicBaseUrl for GitHub Pages deployment..."
-          
-          # Update appsettings.json to set PublicBaseUrl
-          jq '.AppConfig.PublicBaseUrl = "https://saas-factory-labs.github.io/Saas-Factory/docs"' appsettings.json > appsettings.tmp.json
-          mv appsettings.tmp.json appsettings.json
-          
-          echo "✅ PublicBaseUrl configured"
-          cat appsettings.json
-
       - name: Prerender static site
         working-directory: docs/RazorPress/RazorPress
         run: |
-          echo "🚀 Prerendering static site..."
-          dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production
+          echo "🚀 Prerendering static site with BaseHref..."
+          dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production --BaseHref "/Saas-Factory/docs/"
           
           echo "✅ RazorPress documentation built successfully!"
           
@@ -136,26 +165,61 @@ jobs:
               ls -lh dist/css/app.css
             else
               echo "❌ Warning: app.css not found in dist!"
-            fi
+          echo "📋 Copying documentation output..."
+          mkdir -p documentation
+          
+          # Verify source exists before copying
+          if [ -d "docs/RazorPress/RazorPress/dist" ] && [ "$(ls -A docs/RazorPress/RazorPress/dist)" ]; then
+            cp -r docs/RazorPress/RazorPress/dist/* documentation/
+            echo "✅ Documentation copied to staging!"
+            echo "📁 Documentation directory contents:"
+            ls -la documentation/ | head -20
           else
-            echo "❌ Error: dist directory not created!"
+            echo "❌ Error: dist directory is empty or doesn't exist!"
+            exit 1
+          fied!"
             exit 1
           fi
 
       - name: Copy documentation output
-        run: |
-          mkdir -p documentation
-          cp -r docs/RazorPress/RazorPress/dist/* documentation/
-          echo "✅ Documentation copied to staging!"
-
-      # ========================================
-      # Combine Landing Page + Documentation
-      # ========================================
-      - name: Create combined deployment directory
-        run: |
+        ruecho "🏗️ Creating combined deployment directory..."
           mkdir -p combined-site
 
+          # Verify landing page exists
+          if [ ! -d "Code/Landingpage/Landingpage.Web/publish/wwwroot" ]; then
+            echo "❌ Error: Landing page wwwroot not found!"
+            exit 1
+          fi
+
           # Copy landing page to root
+          echo "📄 Copying landing page..."
+          cp -r Code/Landingpage/Landingpage.Web/publish/wwwroot/* combined-site/
+          
+          # Copy documentation to /docs subdirectory
+          echo "📚 Copying documentation..."
+          mkdir -p combined-site/docs
+          
+          if [ -d "documentation" ] && [ "$(ls -A documentation)" ]; then
+            cp -r documentation/* combined-site/docs/
+            echo "✅ Documentation copied to /docs"
+          else
+            echo "❌ Error: documentation directory is empty!"
+            exit 1
+          fi
+
+          echo "✅ Combined site structure created!"
+          echo "📁 Root directory:"
+          ls -lah combined-site/ | head -15
+          echo ""
+          echo "📁 Docs directory:"
+          ls -lah combined-site/docs/ | head -15
+          
+          # Verify critical files
+          echo ""
+          echo "🔍 Verifying critical files:"
+          [ -f "combined-site/index.html" ] && echo "✅ Landing page index.html" || echo "❌ Missing landing page index.html"
+          [ -f "combined-site/docs/index.html" ] && echo "✅ Docs index.html" || echo "❌ Missing docs index.html"
+          [ -f "combined-site/docs/css/app.css" ] && echo "✅ Docs CSS" || echo "❌ Missing docs CSS
           cp -r Code/Landingpage/Landingpage.Web/publish/wwwroot/* combined-site/
 
           # Copy documentation to /docs subdirectory
