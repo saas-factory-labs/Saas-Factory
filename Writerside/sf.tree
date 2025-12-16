@@ -7,13 +7,58 @@
                  start-page="README.md">
 
     <toc-element topic="README.md"/>
-    <toc-element topic="Architectural-decision-record.md"/>
+    <toc-element topic="Architectural-decision-record.md" toc-title="Architectural Decision Record"/>
+    <toc-element toc-title="Guides">
+        <toc-element topic="Migration.md" toc-title="Migration Guide"/>
+        <toc-element topic="Versioning.md" toc-title="Versioning Strategy"/>
+    </toc-element>
+    <toc-element toc-title="Authentication">
+        <toc-element topic="AUTH0_SETUP_GUIDE.md" toc-title="Auth0 Setup"/>
+        <toc-element topic="AUTHENTICATION_QUICK_SETUP.md" toc-title="Authentication Quick Setup"/>
+        <toc-element topic="BLAZOR_JWT_GUIDE.md" toc-title="Blazor JWT Guide"/>
+        <toc-element topic="JWT_QUICK_REFERENCE.md" toc-title="JWT Quick Reference"/>
+        <toc-element topic="JWT_TESTING_GUIDE.md" toc-title="JWT Testing Guide"/>
+        <toc-element topic="JWT_VALIDATION_GUIDE.md" toc-title="JWT Validation Guide"/>
+        <toc-element topic="LOGTO_API_RESOURCE_SETUP.md" toc-title="Logto API Resource Setup"/>
+        <toc-element topic="LOGTO_CLOUD_SETUP.md" toc-title="Logto Cloud Setup"/>
+        <toc-element topic="LOGTO_QUICKSTART.md" toc-title="Logto Quickstart"/>
+        <toc-element topic="LOGTO_SETUP_GUIDE.md" toc-title="Logto Setup Guide"/>
+        <toc-element topic="LOGTO_SIGNOUT_CONFIGURATION.md" toc-title="Logto Signout Configuration"/>
+        <toc-element topic="QUICKSTART_JWT_TESTING.md" toc-title="Quickstart JWT Testing"/>
+    </toc-element>
+    <toc-element toc-title="Deployment">
+        <toc-element topic="RAILWAY_CHECKLIST.md" toc-title="Railway Checklist"/>
+        <toc-element topic="RAILWAY_DEPLOYMENT.md" toc-title="Railway Deployment"/>
+        <toc-element topic="RAILWAY_IMPLEMENTATION_SUMMARY.md" toc-title="Railway Implementation Summary"/>
+        <toc-element topic="RAILWAY_OVERVIEW.md" toc-title="Railway Overview"/>
+        <toc-element topic="RAILWAY_PORT_80_CONFIGURATION.md" toc-title="Railway Port 80 Configuration"/>
+        <toc-element topic="RAILWAY_QUICKSTART.md" toc-title="Railway Quickstart"/>
+        <toc-element topic="RAILWAY_README.md" toc-title="Railway README"/>
+        <toc-element topic="COMPLETE_RAILWAY_SOLUTION.md" toc-title="Complete Railway Solution"/>
+        <toc-element topic="DOCKER_BUILD_INSTRUCTIONS.md" toc-title="Docker Build Instructions"/>
+        <toc-element topic="DOCKER.md" toc-title="Docker Guide"/>
+        <toc-element topic="CLOUD_DATABASE_SETUP.md" toc-title="Cloud Database Setup"/>
+        <toc-element topic="HTTPS-SETUP.md" toc-title="HTTPS Setup"/>
+    </toc-element>
+    <toc-element toc-title="Development">
+        <toc-element topic="Code-Structure.md" toc-title="Code Structure Overview"/>
+    </toc-element>
     <toc-element topic="Use-Cases.md">
         <toc-element topic="User-Signup-Use-Case.md"/>
         <toc-element topic="User-Login-Use-Case.md"/>
     </toc-element>
+    <toc-element toc-title="Testing &amp; Reference Guides">
+        <toc-element topic="Testing-Guides-README.md"/>
+        <toc-element topic="LOGOUT_FIX_TESTING_GUIDE.md"/>
+        <toc-element topic="LOGTO_SDK_TESTING_CHECKLIST.md"/>
+        <toc-element topic="QUICK_REFERENCE_LOGTO.md"/>
+    </toc-element>
+    <toc-element toc-title="Repository Organization">
+        <toc-element topic="REPOSITORY_ORGANIZATION.md"/>
+        <toc-element topic="MOVED_FILES_EXPLAINED.md"/>
+    </toc-element>
     <toc-element toc-title="AppBlueprint">
-        <toc-element topic="Code/Code_README.md"/>
+        <toc-element topic-title="Development Workflow" topic="Code/Code_README.md"/>
         <toc-element toc-title="Shared-Modules">
             <toc-element toc-title="AppBlueprint.Application">
                 <toc-element topic="Code/AppBlueprint/Shared-Modules/AppBlueprint.Baseline.Application/AppBlueprint.Baseline.Application_README.md"/>

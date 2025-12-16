@@ -1,58 +1,41 @@
 [
   {
-    "text": "Introduction",
+    "text": "Getting Started",
     "link": "/",
     "children": [
       {
-        "text": "What is Razor Press?",
-        "link": "/what-is-razor-press"
-      },
+        "text": "Quick Start",
+        "link": "/quick-start"
+      },      
       {
-        "text": "Structure",
-        "link": "/structure"
-      },
-      {
-        "text": "Static Site Generation",
-        "link": "/ssg"
-      },
-      {
-        "text": "Deployments",
-        "link": "/deployments"
+        "text": "Architectural Decision Record",
+        "link": "/architectural-decision-record"
       }
     ]
   },
   {
-    "text": "Markdown",
+    "text": "Development",
     "children": [
       {
-        "text": "Markdown Syntax",
-        "link": "/syntax"
+        "text": "Code Structure Overview",
+        "link": "/code-structure"
       },
       {
-        "text": "Markdown Containers",
-        "link": "/containers"
+        "text": "Feature Development Overview",
+        "link": "/feature-development-guide"
       },
       {
-        "text": "Using Vue in Markdown",
-        "link": "/vue-in-markdown"
+        "text": "Adding Domain Entities",
+        "link": "/01-adding-domain-entities"
+      },
+      {
+        "text": "Adding Repositories",
+        "link": "/02-adding-repositories"
+      },
+      {
+        "text": "Creating API Controllers",
+        "link": "/03-creating-api-controllers"
       }
     ]
-  },
-  {
-    "text": "Features",
-    "children": [
-      {
-        "text": "Sidebars",
-        "link": "/sidebars"
-      },
-      {
-        "text": "Redirects",
-        "link": "/redirects"
-      },
-      {
-        "text": "Typesense Real-Time Search",
-        "link": "/typesense"
-      }
-    ]
-  }
+  }  
 ]
