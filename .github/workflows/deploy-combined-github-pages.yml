@@ -145,8 +145,8 @@ jobs:
       - name: Prerender static site
         working-directory: docs/RazorPress/RazorPress
         run: |
-          echo "🚀 Prerendering static site with BaseHref..."
-          dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production --BaseHref "/Saas-Factory/docs/"
+          echo "🚀 Prerendering static site..."
+          dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production
           
           echo "✅ RazorPress documentation built successfully!"
           
