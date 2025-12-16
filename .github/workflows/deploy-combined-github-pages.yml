@@ -92,8 +92,8 @@ jobs:
           echo "📂 Creating symlinks for content directories..."
           cd docs/RazorPress/RazorPress/_pages
           
-          # Remove existing symlinks if they exist
-          rm -f architecture development getting-started guides
+          # Remove existing symlinks/directories if they exist
+          rm -rf architecture development getting-started guides
           
           # Create new symlinks
           ln -s ../../../content/architecture architecture
