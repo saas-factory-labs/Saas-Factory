@@ -2,10 +2,14 @@
 
 We welcome contributions from the community. Here are some guidelines to help you get started:
 
+## Commit Message Convention
+
+This project uses **Conventional Commits** for automated semantic versioning. Please read our [Commit Convention Guide](COMMIT_CONVENTION.md) to understand how to format your commit messages correctly.
+
 ## How to Contribute
 1. Fork the repository.
 2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes and commit them (`git commit -m 'Add new feature'`).
+3. Make your changes and commit them following our [commit conventions](COMMIT_CONVENTION.md).
 4. Push to the branch (`git push origin feature-branch`).
 5. Create a pull request.
 
