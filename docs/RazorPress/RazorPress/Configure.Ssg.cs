@@ -79,30 +79,35 @@ public class ConfigureSsg : IHostingStartup
                     var razorFiles = appHost.VirtualFiles.GetAllMatchingFiles("*.cshtml");
                     RazorSsg.PrerenderAsync(appHost, razorFiles, distDir).GetAwaiter().GetResult();
                     
-                    // Post-process HTML files to make paths relative when BaseHref is set
-                    var baseHref = AppConfig.Instance.BaseHref;
-                    if (!string.IsNullOrEmpty(baseHref) && baseHref != "/")
+                    // Post-process HTML files to rewrite paths when BaseHref is set
+                    var baseHref = AppConfig.Instance.BaseHref?.TrimEnd('/');
+                    if (!string.IsNullOrEmpty(baseHref) && baseHref != "")
                     {
-                        Console.WriteLine($"Post-processing HTML files to convert absolute paths for BaseHref: {baseHref}");
+                        Console.WriteLine($"Post-processing HTML files to rewrite paths for BaseHref: {baseHref}/");
                         var htmlFiles = Directory.GetFiles(distDir, "*.html", SearchOption.AllDirectories);
                         foreach (var htmlFile in htmlFiles)
                         {
                             var content = File.ReadAllText(htmlFile);
-                            // Convert absolute paths for assets to relative paths (href/src attributes)
+                            
+                            // Replace absolute paths with baseHref-prefixed paths
+                            // Handle href and src attributes
                             content = System.Text.RegularExpressions.Regex.Replace(content, 
                                 @"(href|src)=""/(css|mjs|lib|img|js|pages)/", 
-                                "$1=\"$2/");
-                            // Convert absolute paths in import maps (JSON strings)
+                                $"$1=\"{baseHref}/$2/");
+                            
+                            // Handle import map paths (JSON strings)
                             content = System.Text.RegularExpressions.Regex.Replace(content,
                                 @"""/(mjs|lib)/",
-                                "\"$1/");
-                            // Convert root path "/" to relative
+                                $"\"{baseHref}/$1/");
+                            
+                            // Handle root path references
                             content = System.Text.RegularExpressions.Regex.Replace(content,
-                                @"href=""/""",
-                                "href=\"./\"");
+                                @"href=""/""(\s|>)",
+                                $"href=\"{baseHref}/\"$1");
+                            
                             File.WriteAllText(htmlFile, content);
                         }
-                        Console.WriteLine($"Post-processed {htmlFiles.Length} HTML files");
+                        Console.WriteLine($"Post-processed {htmlFiles.Length} HTML files with absolute paths");
                     }
                 });
             });
