@@ -1,18 +1,12 @@
-const defaultTheme = {
-  fontFamily: {
-    sans: [
-      'ui-sans-serif',
-      'system-ui',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-      '"Noto Color Emoji"'
-    ],
-  }
-}
+/** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme');
 
-export default {
+module.exports = {
+  content: [
+    './**/*.{html,cshtml,razor,cs}',
+    './_pages/**/*.md',
+  ],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -30,5 +24,6 @@ export default {
         success: 'rgb(22 101 52)',
       },
     },
-  }
+  },
+  plugins: [],
 }
