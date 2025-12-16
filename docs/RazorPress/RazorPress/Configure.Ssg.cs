@@ -90,7 +90,7 @@ public class ConfigureSsg : IHostingStartup
                             var content = File.ReadAllText(htmlFile);
                             
                             // Replace absolute paths with baseHref-prefixed paths
-                            // Handle href and src attributes
+                            // Handle asset paths (href and src attributes)
                             content = System.Text.RegularExpressions.Regex.Replace(content, 
                                 @"(href|src)=""/(css|mjs|lib|img|js|pages)/", 
                                 $"$1=\"{baseHref}/$2/");
@@ -100,10 +100,17 @@ public class ConfigureSsg : IHostingStartup
                                 @"""/(mjs|lib)/",
                                 $"\"{baseHref}/$1/");
                             
-                            // Handle root path references
+                            // Handle all other href absolute paths (navigation links)
+                            // Match href="/" followed by any path that's not already prefixed
                             content = System.Text.RegularExpressions.Regex.Replace(content,
-                                @"href=""/""(\s|>)",
-                                $"href=\"{baseHref}/\"$1");
+                                @"href=""(/[^""]*)""",
+                                match => {
+                                    var path = match.Groups[1].Value;
+                                    // Skip if already has the baseHref prefix or is an external link
+                                    if (path.StartsWith(baseHref) || path.StartsWith("http://") || path.StartsWith("https://"))
+                                        return match.Value;
+                                    return $"href=\"{baseHref}{path}\"";
+                                });
                             
                             File.WriteAllText(htmlFile, content);
                         }
