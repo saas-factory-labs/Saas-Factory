@@ -4,7 +4,6 @@ on:
   push:
     branches: 
       - "main"
-      - "Improve-stability-for-todo-app"
     paths:
       - "Code/Landingpage/**"
       - "docs/RazorPress/**"
@@ -210,6 +209,10 @@ jobs:
           echo "📄 Copying landing page..."
           cp -r Code/Landingpage/Landingpage.Web/publish/wwwroot/* combined-site/
           
+          # Add .nojekyll to prevent GitHub Pages from ignoring _framework directory
+          echo "📝 Adding .nojekyll file..."
+          touch combined-site/.nojekyll
+          
           # Copy documentation to /docs subdirectory
           echo "📚 Copying documentation..."
           mkdir -p combined-site/docs
@@ -228,6 +231,14 @@ jobs:
           echo ""
           echo "📁 Docs directory:"
           ls -lah combined-site/docs/ | head -15
+          echo ""
+          echo "📁 Checking for getting-started directory:"
+          if [ -d "combined-site/docs/getting-started" ]; then
+            echo "✅ getting-started directory exists"
+            ls -la combined-site/docs/getting-started/
+          else
+            echo "❌ getting-started directory NOT found!"
+          fi
           
           # Verify critical files
           echo ""
@@ -235,6 +246,7 @@ jobs:
           [ -f "combined-site/index.html" ] && echo "✅ Landing page index.html" || echo "❌ Missing landing page index.html"
           [ -f "combined-site/docs/index.html" ] && echo "✅ Docs index.html" || echo "❌ Missing docs index.html"
           [ -f "combined-site/docs/css/app.css" ] && echo "✅ Docs CSS" || echo "❌ Missing docs CSS"
+          [ -f "combined-site/docs/getting-started/quick-start.html" ] && echo "✅ quick-start.html" || echo "❌ Missing quick-start.html"
 
       # ========================================
       # Deploy to GitHub Pages
