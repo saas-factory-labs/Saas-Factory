@@ -26,4 +26,12 @@
     <description>Created after removal of "AppBlueprint.Baseline.Core" from API-Reference</description>
     <accepts>AppBlueprint.Baseline.Core_README.html</accepts>
   </rule>
+  <rule id="5297057e">
+    <description>Created after removal of "Notes" from API-Reference</description>
+    <accepts>Notes.html</accepts>
+  </rule>
+  <rule id="5371b90">
+    <description>Created after removal of "About SaaS Factory" from SaaS-Factory</description>
+    <accepts>saas-factory.html</accepts>
+  </rule>
 </rules>
