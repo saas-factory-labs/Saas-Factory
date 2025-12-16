@@ -78,6 +78,32 @@ public class ConfigureSsg : IHostingStartup
 
                     var razorFiles = appHost.VirtualFiles.GetAllMatchingFiles("*.cshtml");
                     RazorSsg.PrerenderAsync(appHost, razorFiles, distDir).GetAwaiter().GetResult();
+                    
+                    // Post-process HTML files to make paths relative when BaseHref is set
+                    var baseHref = AppConfig.Instance.BaseHref;
+                    if (!string.IsNullOrEmpty(baseHref) && baseHref != "/")
+                    {
+                        Console.WriteLine($"Post-processing HTML files to convert absolute paths for BaseHref: {baseHref}");
+                        var htmlFiles = Directory.GetFiles(distDir, "*.html", SearchOption.AllDirectories);
+                        foreach (var htmlFile in htmlFiles)
+                        {
+                            var content = File.ReadAllText(htmlFile);
+                            // Convert absolute paths for assets to relative paths (href/src attributes)
+                            content = System.Text.RegularExpressions.Regex.Replace(content, 
+                                @"(href|src)=""/(css|mjs|lib|img|js|pages)/", 
+                                "$1=\"$2/");
+                            // Convert absolute paths in import maps (JSON strings)
+                            content = System.Text.RegularExpressions.Regex.Replace(content,
+                                @"""/(mjs|lib)/",
+                                "\"$1/");
+                            // Convert root path "/" to relative
+                            content = System.Text.RegularExpressions.Regex.Replace(content,
+                                @"href=""/""",
+                                "href=\"./\"");
+                            File.WriteAllText(htmlFile, content);
+                        }
+                        Console.WriteLine($"Post-processed {htmlFiles.Length} HTML files");
+                    }
                 });
             });
 }
