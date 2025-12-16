@@ -140,13 +140,44 @@ Provide a production-ready SaaS blueprint that eliminates months of boilerplate 
     ```
 </details>
 
+### 🤖 GitHub Copilot Setup
+
+This repository is configured with comprehensive instructions for GitHub Copilot coding agent to help maintain code quality and consistency.
+
+<details>
+
+<summary>Learn about the Copilot instructions setup</summary>
+
+The repository includes:
+
+- **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - Main instructions for Copilot
+- **[.github/instructions/](.github/instructions/)** - Path-specific granular instructions
+- **[.github/.ai-rules/](.github/.ai-rules/)** - Comprehensive domain-specific development rules
+
+These instructions help Copilot:
+- Follow project-specific coding standards
+- Apply appropriate patterns for different areas (backend, frontend, tests)
+- Use the correct testing frameworks (TUnit, bUnit, FluentAssertions)
+- Maintain Clean Architecture and DDD principles
+- Generate consistent, high-quality code
+
+For more details, see [.github/README.md](.github/README.md).
+
+**Recommended Model**: Claude 4 Sonnet
+
+</details>
+
 # 🗂️ File structure in the git repository
 
 SaaS-Factory is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) containing all application code, infrastructure, tools, libraries, documentation, etc. 
 A monorepo is a powerful way to organize a codebase, used by Google, Facebook, Uber, Microsoft, etc.
 
 ```bash
-├─ .github                            # Separate GitHub workflows for deploying Infrastructure and app
+├─ .github                            # GitHub configuration, workflows, and AI assistant instructions
+│  ├─ copilot-instructions.md         # GitHub Copilot coding agent instructions
+│  ├─ instructions/                   # Path-specific granular instructions with YAML frontmatter
+│  ├─ .ai-rules/                      # Comprehensive domain-specific development rules
+│  └─ workflows/                      # GitHub Actions CI/CD workflows
 ├─ Code                               # Contains the application source code
 │  ├─ AppBlueprint        
 │     ├─ Appblueprint.AppHost         # .NET Aspire project starting app and all dependencies in Docker
