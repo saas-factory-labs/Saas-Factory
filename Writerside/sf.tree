@@ -6,12 +6,16 @@
                  name="SaaS-Factory"
                  start-page="saas-factory.md">
 
-    <toc-element topic="saas-factory.md"/>
+    <toc-element topic="README.md"/>
     <toc-element topic="Architectural-decision-record.md"/>
+    <toc-element topic="Use-Cases.md">
+        <toc-element topic="User-Signup-Use-Case.md"/>
+        <toc-element topic="User-Login-Use-Case.md"/>
+    </toc-element>
     <toc-element toc-title="AppBlueprint">
         <toc-element topic="Code_README.md"/>
         <toc-element toc-title="Shared-Modules">
-            <toc-element toc-title="AppBlueprint.Baseline.Application">
+            <toc-element toc-title="AppBlueprint.Application">
                 <toc-element topic="AppBlueprint.Baseline.Application_README.md"/>
             </toc-element>
             <toc-element toc-title="AppBlueprint.Baseline.Core">

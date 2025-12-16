@@ -5,15 +5,6 @@
 <instance-profile id="ar"
                   name="API-Reference" start-page="API_Reference.md">
 
-    <toc-element topic="README.md">
-        <toc-element toc-title="Use cases"/>
-        <toc-element topic="Use-Cases.md">
-            <toc-element topic="User-Signup-Use-Case.md"/>
-            <toc-element topic="User-Login-Use-Case.md"/>
-        </toc-element>
-        <toc-element toc-title="DeploymentManager">
-        </toc-element>
-    </toc-element>
     <toc-element toc-title="Code">
         <toc-element topic="CHANGELOG.md"/>
         <toc-element toc-title="AppBlueprint">
@@ -1941,6 +1932,5 @@
             </toc-element>
         </toc-element>
     </toc-element>
-    <toc-element topic="Notes.md"/>
     <toc-element topic="Code_AppBlueprint_README.md"/>
 </instance-profile>
