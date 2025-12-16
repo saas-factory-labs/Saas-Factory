@@ -5,11 +5,11 @@
     "children": [
       {
         "text": "Quick Start",
-        "link": "/quick-start"
+        "link": "/getting-started/quick-start"
       },      
       {
         "text": "Architectural Decision Record",
-        "link": "/architectural-decision-record"
+        "link": "/architecture/architectural-decision-record"
       }
     ]
   },
@@ -17,24 +17,24 @@
     "text": "Development",
     "children": [
       {
-        "text": "Code Structure Overview",
-        "link": "/code-structure"
+        "text": "Running GitHub Actions Locally",
+        "link": "/development/run-github-actions-locally"
       },
       {
         "text": "Feature Development Overview",
-        "link": "/feature-development-guide"
+        "link": "/development/feature-development-guide"
       },
       {
         "text": "Adding Domain Entities",
-        "link": "/01-adding-domain-entities"
+        "link": "/development/01-adding-domain-entities"
       },
       {
         "text": "Adding Repositories",
-        "link": "/02-adding-repositories"
+        "link": "/development/02-adding-repositories"
       },
       {
         "text": "Creating API Controllers",
-        "link": "/03-creating-api-controllers"
+        "link": "/development/03-creating-api-controllers"
       }
     ]
   }  

@@ -1,5 +1,6 @@
 ---
 title: Feature Development Overview
+slug: feature-development-guide
 ---
 
 This guide provides an overview of adding new features to AppBlueprint using Clean Architecture and Domain-Driven Design principles.

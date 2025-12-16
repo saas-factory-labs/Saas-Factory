@@ -54,26 +54,56 @@ jobs:
       # ========================================
       # Build Documentation (RazorPress)
       # ========================================
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create directory junctions for content
+        run: |
+          cd docs/RazorPress/RazorPress/_pages
+          ln -s ../../../content/architecture architecture
+          ln -s ../../../content/development development
+          ln -s ../../../content/getting-started getting-started
+          ln -s ../../../content/guides guides
+          echo "✅ Created symlinks to content directories"
+
       - name: Install Tailwind CSS
         run: |
           mkdir -p /home/runner/.local/bin
           curl -o "/home/runner/.local/bin/tailwindcss" -L "https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64"
           chmod +x /home/runner/.local/bin/tailwindcss
+          export PATH="/home/runner/.local/bin:$PATH"
 
       - name: Build RazorPress documentation
         run: |
           cd docs/RazorPress/RazorPress
           
-          # Build the project
-          dotnet build .
+          # Install npm dependencies if package.json exists
+          if [ -f package.json ]; then
+            npm install
+          fi
+          
+          # Build the .NET project
+          dotnet build . --configuration Release
           
           # Build Tailwind CSS
+          export PATH="/home/runner/.local/bin:$PATH"
           npm run build
           
           # Prerender static site
           dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production --BaseHref "/Saas-Factory/docs/"
           
           echo "✅ RazorPress documentation built successfully!"
+          
+          # Verify dist directory exists and has content
+          if [ -d "dist" ]; then
+            echo "📁 dist directory contents:"
+            ls -la dist/
+          else
+            echo "❌ Error: dist directory not created!"
+            exit 1
+          fi
 
       - name: Copy documentation output
         run: |
