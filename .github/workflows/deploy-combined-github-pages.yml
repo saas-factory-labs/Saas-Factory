@@ -73,6 +73,8 @@ jobs:
         run: |
           echo "📦 Installing npm dependencies..."
           npm install
+          # Install Tailwind CSS CLI globally as a workaround for npx issues
+          npm install -g @tailwindcss/cli@next
           echo "✅ npm dependencies installed"
 
       - name: Build .NET project
@@ -82,21 +84,12 @@ jobs:
           dotnet build . --configuration Release
           echo "✅ .NET project built"
 
-      - name: Install Tailwind CSS standalone binary
-        run: |
-          echo "📥 Installing Tailwind CSS standalone binary..."
-          mkdir -p /home/runner/.local/bin
-          curl -o "/home/runner/.local/bin/tailwindcss" -L "https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64"
-          chmod +x /home/runner/.local/bin/tailwindcss
-          export PATH="/home/runner/.local/bin:$PATH"
-          echo "/home/runner/.local/bin" >> $GITHUB_PATH
-          echo "✅ Tailwind CSS binary installed"
-
       - name: Build Tailwind CSS
         working-directory: docs/RazorPress/RazorPress
         run: |
           echo "🎨 Building Tailwind CSS..."
-          /home/runner/.local/bin/tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify
+          # Use the globally installed Tailwind CLI
+          tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify
           echo "✅ Tailwind CSS built"
           
           # Verify CSS was generated
