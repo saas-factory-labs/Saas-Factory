@@ -73,8 +73,6 @@ jobs:
         run: |
           echo "📦 Installing npm dependencies..."
           npm install
-          # Install Tailwind CSS CLI globally as a workaround for npx issues
-          npm install -g @tailwindcss/cli@next
           echo "✅ npm dependencies installed"
 
       - name: Build .NET project
@@ -88,8 +86,7 @@ jobs:
         working-directory: docs/RazorPress/RazorPress
         run: |
           echo "🎨 Building Tailwind CSS..."
-          # Use the globally installed Tailwind CLI
-          tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify
+          npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify
           echo "✅ Tailwind CSS built"
           
           # Verify CSS was generated

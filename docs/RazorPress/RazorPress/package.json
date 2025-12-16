@@ -10,6 +10,6 @@
         "prerender": "npm run build && dotnet run --AppTasks=prerender --environment Production"
     },
     "devDependencies": {
-        "tailwindcss": "^4.1.18"
+        "tailwindcss": "^3.4.17"
     }
 }
