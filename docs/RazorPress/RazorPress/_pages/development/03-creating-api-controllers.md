@@ -531,4 +531,3 @@ See existing implementations:
 - `TeamController` - Relationships and validation
 - `AuthenticationController` - Complex business logic
 - `Dashboard.razor` - Tailwind CSS admin dashboard
-- `Todos.razor` - Full CRUD page with Tailwind CSS
