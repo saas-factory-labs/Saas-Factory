@@ -42,21 +42,17 @@
 
  ## 🎯 Project Overview
 
-<details>
 <summary><h4>Vision</h4></summary>
 
 Deploy a fully functional SaaS application in under 30 minutes using a single command via the Developer CLI, with all foundational features already in place - ready for you to add your application-specific features.
 
-</details>
 
-<details>
+
 <summary><h4>Purpose</h4></summary>
 
 Provide a production-ready SaaS blueprint that eliminates months of boilerplate development, allowing developers to focus on building unique features that differentiate their product rather than rebuilding common infrastructure.
 
-</details>
 
-<details>
 <summary><h4>Objectives</h4></summary>
 
 **Development Experience**
@@ -81,9 +77,6 @@ Provide a production-ready SaaS blueprint that eliminates months of boilerplate 
 - Disaster recovery capabilities
 - Comprehensive audit logging
 
-</details>
-
-<details>
 <summary><h4>Challenges & Considerations</h4></summary>
 
 **Technical Challenges**
@@ -94,26 +87,8 @@ Provide a production-ready SaaS blueprint that eliminates months of boilerplate 
 - **MVP Readiness**: Defining criteria for the first production SaaS Factory deployment
 - **Deployment Manager**: Should this be deferred to version 2.0? How to consolidate and migrate existing deployed applications?
 
-</details>
-
 ---
 
-## 📚 Key Concepts
-
-### Domain-Driven Design Components
-
-- **Entity**: Core domain objects with unique identity
-- **DTO (Data Transfer Objects)**
-  - Request DTOs: API input models
-  - Response DTOs: API output models
-- **Interfaces**: Contracts defining service behaviors
-- **Services**: Business logic implementation
-- **Repositories**: Data persistence abstractions
-- **Database**
-  - Migrations: Version-controlled schema changes
-  - Contexts: Entity Framework DbContext configurations
-
----
 
 ## 🔗 Related Repositories 
 
@@ -168,269 +143,4 @@ A monorepo is a powerful way to organize a codebase, used by Google, Facebook, U
 │      ├─ Appblueprint.UiKit          # Shared UI components
 │      ├─ Appblueprint.Tests          # Tests for all projects│  │   
 ```
-
-
-<details>
-
-<summary>
-
-## Use case features of App Blueprint
- 
-</summary>
-
-- [ ] User management
-    - [ ] Register a new user account
-    - [ ] Login with existing user account
-    - [ ] Logout from user account
-    - [ ] Manage user profile
-    - [ ] Manage user account settings    
-    - [ ] File management
-      - [ ] Upload a file
-      - [ ] Download a file
-      - [ ] Delete a file
-      - [ ] Share a file
-      - [ ] Manage files
-      - [ ] Search and filter for a file
-      - [ ] Export user data
-    - [ ] Notification management
-      - [ ] View notifcations
-      - [ ] Check off notifications as read
-    - [ ] Data export
-        - [ ] Export user data
-
-- [ ] Role and Permission management
-  - [ ] Customer admin should be able to manage roles and permisions
-  - [ ] Customer admin should be able to create a team
-  - [ ] Customer admin should be able to assign members to a team
-  - [ ] Customer admin should be able to create API keys
-
-- [ ] Tenant management
-  - [ ] Automatically provision a new tenant for a customer that signs up
-    
-- [ ] Subscription management
-  -  [ ] Create a new subscription for a customer that signs up to a paid plan
-  -  [ ] Cancel existing subscription
-    
-- [ ] Payment management
-  - [ ] Create a payment intent for a customer that signs up to a paid subscription plan
-  - [ ] Create a payment intent for a customer that that purchases a perperual license
-  - [ ] Create a payment intent for a customer that that purchases credits
-
-- [ ] Admin Management (My own access to manage my customers and their subscriptions across deployed SaaS app products)
-  - [ ] Manage all users
-  - [ ] Manage all tenants
-  - [ ] Manage all subscriptions
-  - [ ] Manage all payment intents
-  - [ ] Manage all payment transactions
-  - [ ] Manage all roles and permissions
-  - [ ] Manage all customers
-
-- [ ] Invoice management
-  - [ ] Create a new invoice for a customer that signs up to a paid plan
-  - [ ] Send invoice to customer
-  - [ ] Manage invoices  
-
-- [ ] Audit log
-  - [ ] User activity
-  - [ ] User audit log
-- [ ] Settings
-- [ ] Dashboard
-- [ ] Reporting  
-
-- [ ] Onboarding flow for new customers
-  - [ ] Set user details such as name, age and so on
-  - [ ] Set business details such as company name, VAT and so on
- 
-</details>
-
-<details>
-
-<summary>
-
-## 📙 Architectural decision record for SaaS Factory
- 
-</summary>
-
-- Shared API vs. Separate API for each SaaS app project [Seperate API: APPROVED]
-    
-    - Purpose
-        - Shared API for all deployed SaaS apps
-        - Shared API for Deployment Manager
-        - Shared API for App Blueprint
-    - Disadvantages of shared API:
-        - Higher complexity
-          - Single point of failure for all projects
-          - Risk of calling database from API Controller that does not belong to the correct SaaS app and possible data leakage
-
-    - Advantages of shared API:
-        - Lower technical debt as there is no code drift between Appblueprint and the app projects' code
-        - No duplicated API code
-        - Easier to maintain and update
-
-- Deployment Manager
-
-  - Purpose
-    - Command center to control deployment, monitoring and management of deployed SaaS apps
-    - Shared Infrastructure with deployed SaaS apps
-    - Integration application landscape
-    - Manage customers and track growth metrics
-
-- App Blueprint
-
-  - Purpose
-    - Template for deploying a SaaS App
-
-- Deployed SaaS App
-  - Purpose
-    - Personal or commercial App (B2C or B2B or Developer first)
-
-### Application structure
-
-- Domain Driven Design
-- Clean Architecture
-  - Low technical debt
-  - Reliability
-
-### Self Contained Deployment Manager Modules
-
-- DeploymentManager.Web
-
-  - Command center portal
-
-- DeploymentManager.Api
-
-  - Rest API
-  - GraphQL API
-
-- DeploymentManager.Codeflow
-
-   - Dependency Tracker
-
-- DeploymentManager.Shared
-
-  - Shared DTOs
-  - Shared Enums
-  - Shared Entities
-
-- Shared Infrastructure
-
-#### Self Contained Deployed SaaS App
-
-- App-Blueprint template
-
-- FileDiscovery.Web
-
-  - Customer management portal
-  - Partner portal
-  - Admin portal
-
-- FileDiscovery.Api
-
-  - Rest API
-  - GraphQL API
-
-
-### Tech stack
-
-#### Frontend
-
-- Blazor
-  - Dotnet familiarity
-  - Performant
-  - Can run everywhere as Web Assembly or hosted server web app
-  - Strong integration with dotnet backend technologies
-  - Mudblazor framework for fast user interface development
-    - 3rd party mudextensions
-      - https://codebeam-mudextensions.pages.dev
-
-#### Backend
-
-- Dotnet
-  - Familiarity => High productivity
-  - Performant
-- YARP Proxy
-- Authentication solution eg. Supertokens
-
-#### : Infrastruture
-
-- Railway
-  - PostgreSQL databases 
-- Cloudflare R2 blob storage
-- Redis Cloud
-- Algolia
-- Grafana Cloud
-- Cloudflare
-- Stripe
-- Resend
-- Azure Key Vault
-- Logsnag
-- Cookiebot
-- Microsoft Clarity
-- Google Recaptcha
-- Google Analytics
-- Google Tag Manager
-
-#### Monitoring and observability
-
-- Open Telemetry
-
-#### CI/CD
-
-- Github Actions
-- Pulumi Automation API
-- Cloudcostify API
-- Sonarcloud
-
-#### Testing
-
-- NSubstitute
-- xUnit
-- Bogus
-- Architecture testing
-- Function testing
-- Integration testing
-- Performance test (Grafana K6)
-  - Smoke test
-  - Load test
-
-#### Documentation
-
-- Deployment Manager dependency tracking map
-- Dive (docker image analysis)
-- Github Copilot automatic documentation
-- Automatic swagger Rest API documentation
-- Automatic GraphQL schema documentation
-- Open Telemetry dependencies map
-- Standards
-  - Naming convention
-  - Sonarcloud Gate
-    - Technical debt under 1 hour
-  - Project file structure
-
-#### Security
-
-- CORS
-- CSRF
-- HSTS
-- CSP
-- Zero trust & no credentials
-- IP whitelisting
-- Monitoring
-- Pentesting
-- Cloudflare DDOS protection
-
-#### Development tools
-
-- Microsoft SQL Studio
-- Visual Studio 2022
-- Github Copilot (Chat & Voice)
-- VS Code
-- Docker Desktop
-- Postman
- 
-</details>
-
-![Visualization of the codebase](diagram.svg)
-
-https://themes.arctechonline.tech/export
 
