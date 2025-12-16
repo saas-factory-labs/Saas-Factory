@@ -1,5 +1,6 @@
 @page
 @model ErrorModel
+@inject AppConfig AppConfig
 @{
     Layout = "";
     ViewData["Title"] = Model.Status switch {
@@ -20,7 +21,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@ViewData["Title"]</title>
-    <base href="@(RazorSsg.GetBaseHref() ?? "/")"/>
+    <base href="@(RazorSsg.GetBaseHref() ?? AppConfig.BaseHref ?? "/")"/>
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>

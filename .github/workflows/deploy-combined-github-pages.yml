@@ -158,6 +158,8 @@ jobs:
             # Verify critical files exist
             if [ -f "dist/index.html" ]; then
               echo "✅ index.html found"
+              echo "🔍 Checking base href in index.html:"
+              grep -i "base href" dist/index.html || echo "⚠️ No base href found!"
             else
               echo "❌ Error: index.html not found!"
               exit 1
