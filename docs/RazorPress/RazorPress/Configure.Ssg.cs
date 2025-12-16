@@ -88,6 +88,7 @@ public class AppConfig
     public string Title { get; set; }
     public string LocalBaseUrl { get; set; }
     public string PublicBaseUrl { get; set; }
+    public string BaseHref { get; set; } = "/";
     public string? GitPagesBaseUrl { get; set; }
     public string? GitPagesRawBaseUrl { get; set; }
 
