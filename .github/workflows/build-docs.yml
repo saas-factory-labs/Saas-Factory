@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  INSTANCE: 'Writerside/ar'  # ✅ Ensure correct instance path
+  INSTANCE: 'Writerside/sf'  # ✅ Build SaaS-Factory instance
   DOCKER_VERSION: '243.22562'
 
 jobs:
@@ -85,7 +85,7 @@ jobs:
           mkdir -p Writerside/Build  # ✅ Extra safety to ensure directory exists
           cp -r artifacts/* Writerside/Build/ || echo "⚠️ No files found in artifacts/"
 
-      - name: Unzip the built documentation to webHelpAR2-all/
+      - name: Unzip the built documentation
         run: |
           ZIP_FILE="Writerside/Build/webHelp${{ env.INSTANCE_ID_UPPER }}2-all.zip"
           UNZIP_DIR="Writerside/Build/webHelp${{ env.INSTANCE_ID_UPPER }}2-all"
