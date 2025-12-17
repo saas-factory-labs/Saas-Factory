@@ -81,13 +81,16 @@ public class ConfigureSsg : IHostingStartup
                     
                     // Post-process HTML files to rewrite paths when BaseHref is set
                     var baseHref = AppConfig.Instance.BaseHref?.TrimEnd('/');
-                    if (!string.IsNullOrEmpty(baseHref) && baseHref != "")
+                    if (!string.IsNullOrEmpty(baseHref) && baseHref != "/" && baseHref != "")
                     {
                         Console.WriteLine($"Post-processing HTML files to rewrite paths for BaseHref: {baseHref}/");
                         var htmlFiles = Directory.GetFiles(distDir, "*.html", SearchOption.AllDirectories);
+                        var processedFiles = 0;
+                        
                         foreach (var htmlFile in htmlFiles)
                         {
                             var content = File.ReadAllText(htmlFile);
+                            var originalContent = content;
                             
                             // Ensure the <base href> tag is set correctly
                             content = System.Text.RegularExpressions.Regex.Replace(content,
@@ -95,8 +98,8 @@ public class ConfigureSsg : IHostingStartup
                                 $"<base href=\"{baseHref}/\"/>",
                                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                             
-                            // Replace absolute paths with baseHref-prefixed paths
-                            // Handle asset paths (href and src attributes)
+                            // Replace absolute paths with baseHref-prefixed paths for assets
+                            // Handle href and src attributes for common asset paths
                             content = System.Text.RegularExpressions.Regex.Replace(content, 
                                 @"(href|src)=""/(css|mjs|lib|img|js|pages)/", 
                                 $"$1=\"{baseHref}/$2/");
@@ -106,21 +109,34 @@ public class ConfigureSsg : IHostingStartup
                                 @"""/(mjs|lib)/",
                                 $"\"{baseHref}/$1/");
                             
+                            // Handle module imports in script tags
+                            content = System.Text.RegularExpressions.Regex.Replace(content,
+                                @"from\s+[""']/(mjs|lib)/",
+                                $"from \"{baseHref}/$1/");
+                            
                             // Handle all other href absolute paths (navigation links)
                             // Match href="/" followed by any path that's not already prefixed
                             content = System.Text.RegularExpressions.Regex.Replace(content,
                                 @"href=""(/[^""]*)""",
                                 match => {
                                     var path = match.Groups[1].Value;
-                                    // Skip if already has the baseHref prefix or is an external link
+                                    // Skip if already has the baseHref prefix, is external, or is just root "/"
                                     if (path.StartsWith(baseHref) || path.StartsWith("http://") || path.StartsWith("https://"))
                                         return match.Value;
+                                    // Don't double-prefix
+                                    if (path.StartsWith("/css/") || path.StartsWith("/mjs/") || path.StartsWith("/lib/") || 
+                                        path.StartsWith("/img/") || path.StartsWith("/js/") || path.StartsWith("/pages/"))
+                                        return match.Value; // Already handled above
                                     return $"href=\"{baseHref}{path}\"";
                                 });
                             
-                            File.WriteAllText(htmlFile, content);
+                            if (content != originalContent)
+                            {
+                                File.WriteAllText(htmlFile, content);
+                                processedFiles++;
+                            }
                         }
-                        Console.WriteLine($"Post-processed {htmlFiles.Length} HTML files with absolute paths");
+                        Console.WriteLine($"Post-processed {processedFiles} of {htmlFiles.Length} HTML files with path rewrites");
                     }
                 });
             });
