@@ -142,10 +142,17 @@ jobs:
           npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify
           echo "✅ Tailwind CSS built"
           
-          # Verify CSS was generated
+          # Verify CSS was generated and has content
           if [ -f "wwwroot/css/app.css" ]; then
-            echo "✅ app.css generated successfully"
+            FILE_SIZE=$(stat -f%z "wwwroot/css/app.css" 2>/dev/null || stat -c%s "wwwroot/css/app.css" 2>/dev/null || echo "0")
+            echo "✅ app.css generated successfully ($FILE_SIZE bytes)"
             ls -lh wwwroot/css/app.css
+            
+            if [ "$FILE_SIZE" -lt 1000 ]; then
+              echo "⚠️ Warning: app.css is suspiciously small!"
+              cat wwwroot/css/app.css
+              exit 1
+            fi
           else
             echo "❌ Error: app.css not generated!"
             exit 1
@@ -281,7 +288,20 @@ jobs:
           [ -d "combined-site/_framework" ] && echo "✅ Landing page _framework directory" || echo "❌ Missing _framework directory"
           [ -f "combined-site/_framework/blazor.webassembly.js" ] && echo "✅ Blazor WASM runtime" || echo "❌ Missing Blazor WASM runtime"
           [ -f "combined-site/docs/index.html" ] && echo "✅ Docs index.html" || echo "❌ Missing docs index.html"
-          [ -f "combined-site/docs/css/app.css" ] && echo "✅ Docs CSS" || echo "❌ Missing docs CSS"
+          
+          if [ -f "combined-site/docs/css/app.css" ]; then
+            FILE_SIZE=$(stat -f%z "combined-site/docs/css/app.css" 2>/dev/null || stat -c%s "combined-site/docs/css/app.css" 2>/dev/null || echo "0")
+            echo "✅ Docs CSS ($FILE_SIZE bytes)"
+            if [ "$FILE_SIZE" -lt 1000 ]; then
+              echo "⚠️ ERROR: app.css in combined-site is too small!"
+              cat combined-site/docs/css/app.css
+              exit 1
+            fi
+          else
+            echo "❌ Missing docs CSS"
+            exit 1
+          fi
+          
           [ -f "combined-site/docs/getting-started/quick-start.html" ] && echo "✅ quick-start.html" || echo "❌ Missing quick-start.html"
           
           echo ""
