@@ -1,3 +1,7 @@
+---
+title: AppBlueprint Tests
+---
+
 # AppBlueprint.Tests
 
 What should we test?

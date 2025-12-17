@@ -1,3 +1,7 @@
+---
+title: AppBlueprint Baseline Application
+---
+
 # AppBlueprint.Application Module
 
 ## Overview

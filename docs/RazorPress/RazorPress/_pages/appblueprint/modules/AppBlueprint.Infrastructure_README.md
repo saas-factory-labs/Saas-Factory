@@ -1,3 +1,7 @@
+---
+title: AppBlueprint Infrastructure
+---
+
 # AppBlueprint.Infrastructure
 
 - Data Context (EF Core code-first)

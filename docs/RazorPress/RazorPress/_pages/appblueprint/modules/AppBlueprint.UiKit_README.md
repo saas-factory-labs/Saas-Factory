@@ -1,3 +1,7 @@
+---
+title: AppBlueprint UiKit
+---
+
 # AppBlueprint.UiKit module
 
 ## Installation 

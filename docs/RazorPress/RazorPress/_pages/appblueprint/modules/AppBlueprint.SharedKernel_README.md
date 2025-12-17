@@ -1,3 +1,7 @@
+---
+title: AppBlueprint SharedKernel
+---
+
 # SharedKernel
 
 http://localhost/console/data/saas-template-dev-db/schema/public/tables/Country/browse

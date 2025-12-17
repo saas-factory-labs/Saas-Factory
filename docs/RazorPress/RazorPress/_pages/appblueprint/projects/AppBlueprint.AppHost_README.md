@@ -1,3 +1,7 @@
+---
+title: AppBlueprint AppHost
+---
+
 # AppBlueprint.AppHost
 
 

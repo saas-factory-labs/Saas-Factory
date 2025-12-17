@@ -1,3 +1,7 @@
+---
+title: AppBlueprint Web
+---
+
 # AppBlueprint.Web
 
 Customer, partner and customer management portal web app.
