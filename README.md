@@ -9,7 +9,7 @@
 
 [![Explore database with Azimutt](https://img.shields.io/badge/PostgreSQL-browse_online-gray?labelColor=4169E1&logo=postgresql&logoColor=fff&style=flat)](https://azimutt.app/create?sql=https://diagram-hosting-proxy.casper-c7c.workers.dev/schema.sql)
 
-![alt text](image.png)
+![Database Schema Diagram](docs/images/image.png)
 
 <a href="https://appblueprint-web-production-production.up.railway.app/dashboard"> View live demo site </a>
 

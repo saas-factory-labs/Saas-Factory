@@ -1,6 +1,5 @@
 ---
 title: Architectural Decision Record
-slug: architectural-decision-record
 ---
 
 ## 📙 Key Architectural Decisions
