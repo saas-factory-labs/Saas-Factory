@@ -1,3 +1,188 @@
 ---
 title: Saas Factory
 ---
+
+<div class="pb-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 text-center">
+        <h1 class="mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight text-slate-900 dark:text-slate-50 sm:text-7xl">
+            <span class="whitespace-nowrap" style="color: #f97316;">🏗️ Saas Factory</span>
+            <p>
+                Solution for Deploying and Managing Any Type of SaaS Application
+            </p>
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-slate-700 dark:text-slate-200">
+            The solution includes the App Blueprint project that serves as a blueprint for deploying SaaS applications and a
+            Deployment Manager to deploy and manage each SaaS application centrally for optimal efficiency.
+        </p>
+    </div>
+    
+    <div class="relative bg-white dark:bg-black mb-8 py-8">
+        <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:max-w-7xl lg:px-8">
+            <div class="mt-20">
+                <h2 class="text-center mb-4 text-4xl font-bold leading-8">Key Objectives</h2>
+            </div>
+            <div class="relative bg-white dark:bg-black mb-8 py-8">
+                <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:max-w-7xl lg:px-8">
+                    <div class="mt-12">
+                        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+
+                            <div class="pt-6">
+                                <div class="flow-root rounded-lg bg-gray-50 dark:bg-gray-900 px-6 pb-8">
+                                    <div class="-mt-6">
+                                        <div>
+                                            <span class="inline-flex items-center justify-center rounded-md p-2 shadow-lg text-white" style="background-color: #f97316;">
+                                                <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5l1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                            </span>
+                                        </div>
+                                        <h3 class="mt-8 text-lg font-medium tracking-tight text-gray-900 dark:text-gray-50">
+                                            Fun to Develop
+                                        </h3>
+                                        <p class="mt-5 text-base text-gray-500 dark:text-gray-400">
+                                            Enjoy working with modern tools and familiar tech stack using C# across the entire solution
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-6">
+                                <div class="flow-root rounded-lg bg-gray-50 dark:bg-gray-900 px-6 pb-8">
+                                    <div class="-mt-6">
+                                        <div>
+                                            <span class="inline-flex items-center justify-center rounded-md p-2 shadow-lg text-white" style="background-color: #f97316;">
+                                                <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                                            </span>
+                                        </div>
+                                        <h3 class="mt-8 text-lg font-medium tracking-tight text-gray-900 dark:text-gray-50">
+                                            Consolidated Infrastructure
+                                        </h3>
+                                        <p class="mt-5 text-base text-gray-500 dark:text-gray-400">
+                                            Share infrastructure across multiple SaaS applications for optimal efficiency and cost savings
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-6">
+                                <div class="flow-root rounded-lg bg-gray-50 dark:bg-gray-900 px-6 pb-8">
+                                    <div class="-mt-6">
+                                        <div>
+                                            <span class="inline-flex items-center justify-center rounded-md p-2 shadow-lg text-white" style="background-color: #f97316;">
+                                                <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12c5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                                            </span>
+                                        </div>
+                                        <h3 class="mt-8 text-lg font-medium tracking-tight text-gray-900 dark:text-gray-50">
+                                            Secure & Fast
+                                        </h3>
+                                        <p class="mt-5 text-base text-gray-500 dark:text-gray-400">
+                                            Built with security best practices and optimized for fast deployment and performance
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-6">
+                                <div class="flow-root rounded-lg bg-gray-50 dark:bg-gray-900 px-6 pb-8">
+                                    <div class="-mt-6">
+                                        <div>
+                                            <span class="inline-flex items-center justify-center rounded-md p-2 shadow-lg text-white" style="background-color: #f97316;">
+                                                <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6l6 6l1.4-1.4zm5.2 0l4.6-4.6l-4.6-4.6L16 6l6 6l-6 6l-1.4-1.4z"/></svg>
+                                            </span>
+                                        </div>
+                                        <h3 class="mt-8 text-lg font-medium tracking-tight text-gray-900 dark:text-gray-50">
+                                            Modern Tech Stack
+                                        </h3>
+                                        <p class="mt-5 text-base text-gray-500 dark:text-gray-400">
+                                            Built with .NET Aspire, Blazor, PostgreSQL, and modern C# practices
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-6">
+                                <div class="flow-root rounded-lg bg-gray-50 dark:bg-gray-900 px-6 pb-8">
+                                    <div class="-mt-6">
+                                        <div>
+                                            <span class="inline-flex items-center justify-center rounded-md p-2 shadow-lg text-white" style="background-color: #f97316;">
+                                                <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5z"/></svg>
+                                            </span>
+                                        </div>
+                                        <h3 class="mt-8 text-lg font-medium tracking-tight text-gray-900 dark:text-gray-50">
+                                            Automated Processes
+                                        </h3>
+                                        <p class="mt-5 text-base text-gray-500 dark:text-gray-400">
+                                            CI/CD, disaster recovery, and documentation all automated for seamless development
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-6">
+                                <div class="flow-root rounded-lg bg-gray-50 dark:bg-gray-900 px-6 pb-8">
+                                    <div class="-mt-6">
+                                        <div>
+                                            <span class="inline-flex items-center justify-center rounded-md p-2 shadow-lg text-white" style="background-color: #f97316;">
+                                                <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                                            </span>
+                                        </div>
+                                        <h3 class="mt-8 text-lg font-medium tracking-tight text-gray-900 dark:text-gray-50">
+                                            Multiple Environments
+                                        </h3>
+                                        <p class="mt-5 text-base text-gray-500 dark:text-gray-400">
+                                            Support for Dev, QA, staging, and production environments out of the box
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="mt-24 mb-16">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <img src="/img/demo-site.png" alt="Saas Factory Demo" class="rounded-lg shadow-2xl mx-auto" style="max-width: 900px; width: 100%;" />
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-16">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="flow-root rounded-lg px-6 pb-8" style="background: linear-gradient(to bottom right, #fff7ed, #fed7aa); border-left: 4px solid #f97316;">
+                    <div class="pt-6">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900">🎯 Vision</h3>
+                        <p class="text-gray-700">
+                            Deploy a new SaaS app project with one command via the Developer CLI, adding application-specific features while fundamental components are preconfigured. Complete deployment within 30 minutes.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flow-root rounded-lg px-6 pb-8" style="background: linear-gradient(to bottom right, #eff6ff, #bfdbfe); border-left: 4px solid #3b82f6;">
+                    <div class="pt-6">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900">🌲 Purpose</h3>
+                        <p class="text-gray-700">
+                            The purpose is to deploy SaaS products for personal and business use, achieve financial freedom, and escape corporate constraints.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="mb-24">
+        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <div class="rounded-lg py-16 px-12 text-white text-center shadow-2xl" style="background: linear-gradient(to right, #f97316, #ea580c);">
+                <h2 class="text-4xl font-bold mb-4">🚀 Getting Started</h2>
+                <p class="text-xl mb-8">Ready to deploy your SaaS application?</p>
+                <button onclick="window.location.href='/quick-start'" class="bg-white font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg text-lg cursor-pointer" style="color: #4b5563; padding: 1rem 5rem;">
+                    View quick start
+                </button>
+            </div>
+        </div>
+    </section>
+    
+</div>
