@@ -89,6 +89,12 @@ public class ConfigureSsg : IHostingStartup
                         {
                             var content = File.ReadAllText(htmlFile);
                             
+                            // Ensure the <base href> tag is set correctly
+                            content = System.Text.RegularExpressions.Regex.Replace(content,
+                                @"<base\s+href=""[^""]*""\s*/?>",
+                                $"<base href=\"{baseHref}/\"/>",
+                                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                            
                             // Replace absolute paths with baseHref-prefixed paths
                             // Handle asset paths (href and src attributes)
                             content = System.Text.RegularExpressions.Regex.Replace(content, 
