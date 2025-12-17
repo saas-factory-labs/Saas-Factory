@@ -118,13 +118,6 @@ jobs:
             exit 1
           fi
 
-      - name: Build .NET project
-        working-directory: docs/RazorPress/RazorPress
-        run: |
-          echo "🔨 Building .NET project..."
-          dotnet build . --configuration Release
-          echo "✅ .NET project built"
-
       - name: Build Tailwind CSS
         working-directory: docs/RazorPress/RazorPress
         run: |
@@ -140,6 +133,13 @@ jobs:
             echo "❌ Error: app.css not generated!"
             exit 1
           fi
+
+      - name: Build .NET project
+        working-directory: docs/RazorPress/RazorPress
+        run: |
+          echo "🔨 Building .NET project..."
+          dotnet build . --configuration Release
+          echo "✅ .NET project built"
 
       - name: Prerender static site
         working-directory: docs/RazorPress/RazorPress
