@@ -1,10 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 const defaultTheme = require('tailwindcss/defaultTheme');
+const path = require('path');
 
 module.exports = {
   content: [
-    './**/*.{html,cshtml,razor,cs}',
-    './_pages/**/*.md',
+    './Pages/**/*.{cshtml,razor,cs}',
+    './wwwroot/**/*.{html,js}',
+    './_pages/**/*.{md,html}',
+    './_includes/**/*.{md,html}',
+    './_whatsnew/**/*.{md,html}',
+    './_videos/**/*.{md,html}',
+    './MarkdownPagesBase.cs',
+    './Configure.Ssg.cs',
   ],
   darkMode: 'class',
   theme: {
