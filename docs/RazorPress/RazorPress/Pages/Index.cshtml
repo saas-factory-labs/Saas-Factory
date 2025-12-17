@@ -3,6 +3,15 @@
 @inject MarkdownPages Markdown
 @{
     ViewData["Title"] = "Saas Factory - Solution for Deploying and Managing SaaS Applications";
+    
+    // Load the sidebar dynamically like DocsPage does
+    var defaultMenu = new MarkdownMenu
+    {
+        Icon = Markdown.DefaultMenuIcon,
+        Text = "Getting Started",
+        Link = "/",
+    };
+    var sidebar = Markdown.GetSidebar("", defaultMenu);
 }
 
 <div class="w-full max-w-[100rem] mx-auto">
@@ -14,22 +23,51 @@
             <div :class="['fixed bg-white dark:bg-black h-screen overflow-y-auto scrolling-touch overflow-hidden shadow lg:shadow-none transform transition-transform duration-200', open ? '' : 'translate-x-[-100%]']">
                 <nav class="sidebar lg:w-64 xl:w-80 px-1 pt-6 pb-16 overflow-y-auto font-medium text-sm lg:text-base sm:px-3 xl:px-5" aria-label="Sidebar">
                     <close-button title="Close Sidebar" class="lg:hidden -mr-2" v-on:close="open=false"></close-button>
-                    <a href="/" class="block flex items-center whitespace-nowrap">
-                        @Html.Raw(Markdown.DefaultMenuIcon)
-                        <span class="p-2 pl-3 font-display font-medium text-slate-900 dark:text-white">Getting Started</span>
-                    </a>
-                    <ul role="list" class="mb-6 mt-2 ml-3 space-y-2 border-l-2 border-slate-100 dark:border-slate-800 lg:mt-4 lg:space-y-4 lg:border-slate-200">
-                        <li class="relative">
-                            <a href="/getting-started/quick-start" class="block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300">
-                                Quick Start
-                            </a>
-                        </li>
-                        <li class="relative">
-                            <a href="/architecture/architectural-decision-record" class="block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300">
-                                Architectural Decision Record
-                            </a>
-                        </li>
-                    </ul>
+                    @foreach (var menu in sidebar)
+                    {
+                        if (menu.Text != null)
+                        {
+                            if (menu.Link != null)
+                            {
+                                <a href="@("/".CombineWith(menu.Link))" class="block flex items-center whitespace-nowrap">
+                                    @if (menu.Icon != null)
+                                    {
+                                        @Html.Raw(menu.Icon)
+                                    }
+                                    <span class="p-2 pl-3 font-display font-medium text-slate-900 dark:text-white">
+                                        @if (!string.IsNullOrEmpty(menu.Text))
+                                        {
+                                            @menu.Text
+                                        }
+                                        else
+                                        {
+                                            <text>&nbsp;</text>
+                                        }
+                                    </span>
+                                </a>
+                            }
+                            else
+                            {
+                                <h2 class="font-display font-medium text-slate-900 dark:text-white whitespace-nowrap">
+                                    @if (!string.IsNullOrEmpty(menu.Icon))
+                                    {
+                                        @Html.Raw(menu.Icon)
+                                    }
+                                    @menu.Text
+                                </h2>
+                            }
+                        }
+                        <ul role="list" class="mb-6 mt-2 ml-3 space-y-2 border-l-2 border-slate-100 dark:border-slate-800 lg:mt-4 lg:space-y-4 lg:border-slate-200">
+                            @foreach (var menuItem in menu.Children.Safe())
+                            {
+                                <li class="relative">
+                                    <a href="@("/".CombineWith(menuItem.Link))" class="@Html.ClassNames("block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full", Html.MatchesPath("/".CombineWith(menuItem.Link)) ? "active font-semibold text-sky-500 before:bg-sky-500" : "text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300")">
+                                        @menuItem.Text
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
                 </nav>
             </div>
         </div>
