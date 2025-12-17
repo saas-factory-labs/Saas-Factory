@@ -4,20 +4,21 @@ on:
   workflow_dispatch: # Allows manual trigger
   push:
     paths:
-      - "./Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Migrations"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Migrations/**"
       - "!**.md"
     branches:
       - main    
 
 jobs:
   generate-schema:
-    #  self-hosted
     runs-on: ubuntu-latest
 
     steps:
       # Step 1: Check out the repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # Step 2: Install PostgreSQL client tools
       - name: Install PostgreSQL client
@@ -28,7 +29,7 @@ jobs:
       # Step 3: Generate the SQL schema dump
       - name: Generate schema dump
         env:
-          PGPASSWORD: ${{ secrets.PG_PASSWORD }} # Database password from secrets env variable is used implicit in the pg_dump command
+          PGPASSWORD: ${{ secrets.PG_PASSWORD }}
         run: |
           pg_dump --host=${{ secrets.PG_HOST }} \
                   --port=${{ secrets.PG_PORT }} \
@@ -37,25 +38,33 @@ jobs:
                   --schema-only \
                   --no-owner \
                   --no-privileges \
-                  --file=schema.sql     
+                  --file=schema.sql
+          
+          # Verify the file was created
+          if [ ! -f schema.sql ]; then
+            echo "Error: schema.sql was not generated"
+            exit 1
+          fi
+          
+          echo "Schema dump generated successfully"
+          ls -lh schema.sql
 
-     # - name: Generate azimutt export 
-     #   run: | 
-     #     npx azimutt export "postgresql://postgres:${{ secrets.PG_PASSWORD }}@{{ secrets.PG_HOST}}:40398/appblueprint-dev-db" > "schema.json"
-
-     # - name: Generate database analysis file
-     #   run: | 
-     #     npx azimutt analyze "postgresql://postgres:${{ secrets.PG_PASSWORD }}@{{ secrets.PG_HOST}}:40398/appblueprint-dev-db" > sql-analysis.txt
-
-       # Step 4: Commit and push the schema file
+      # Step 4: Commit and push the schema file
       - name: Commit and push schema file
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Only add files that exist
           git add schema.sql
-          git add schema.json
-          git add sql-analysis.txt
-          git commit -m "Update sql documentation [Automated]"
+          
+          # Check if there are changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
+          git commit -m "Update PostgreSQL schema dump [Automated]"
           git push
   
           
