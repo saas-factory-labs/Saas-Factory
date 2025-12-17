@@ -36,10 +36,13 @@
     ::file-selector-button {
         border-color: hsl(var(--border));
     }
-}
 
-@theme {
-    --default-ring-color: hsl(var(--ring));
+    /* Set default ring color for focus states */
+    *,
+    ::after,
+    ::before {
+        --tw-ring-color: hsl(var(--ring));
+    }
 }
 
 @layer base {
