@@ -3,16 +3,19 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const path = require('path');
 
 module.exports = {
-  content: [
-    './Pages/**/*.{cshtml,razor,cs}',
-    './wwwroot/**/*.{html,js}',
-    './_pages/**/*.{md,html}',
-    './_includes/**/*.{md,html}',
-    './_whatsnew/**/*.{md,html}',
-    './_videos/**/*.{md,html}',
-    './MarkdownPagesBase.cs',
-    './Configure.Ssg.cs',
-  ],
+  content: {
+    files: [
+      './Pages/**/*.{cshtml,razor,cs}',
+      './wwwroot/**/*.{html,js}',
+      './_pages/**/*.{md,html}',
+      './_includes/**/*.{md,html}',
+      './_whatsnew/**/*.{md,html}',
+      './_videos/**/*.{md,html}',
+      './MarkdownPagesBase.cs',
+      './Configure.Ssg.cs',
+      './dist/**/*.html', // Include prerendered HTML files
+    ],
+  },
   darkMode: 'class',
   theme: {
     extend: {
