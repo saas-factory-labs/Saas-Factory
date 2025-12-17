@@ -5,9 +5,13 @@
 
  <h5 align="center">
 
-<p> Database schema diagram for Appblueprint-Dev-Db </p>
+<p> Database schema diagram for appblueprintdb </p>
 
 [![Explore database with Azimutt](https://img.shields.io/badge/PostgreSQL-browse_online-gray?labelColor=4169E1&logo=postgresql&logoColor=fff&style=flat)](https://azimutt.app/create?sql=https://diagram-hosting-proxy.casper-c7c.workers.dev/schema.sql)
+
+![alt text](image.png)
+
+<a href="https://appblueprint-web-production-production.up.railway.app/dashboard"> View live demo site </a>
 
 </h5>
 
@@ -103,14 +107,6 @@ Provide a production-ready SaaS blueprint that eliminates months of boilerplate 
 - **Deployment Manager**: Should this be deferred to version 2.0? How to consolidate and migrate existing deployed applications?
 
 ---
-
-
-## 🔗 Related Repositories 
-
-[Didact](https://github.com/DidactHQ/didact-engine)
-
-[Blazor Diagrams](https://github.com/Blazor-Diagrams/Blazor.Diagrams)
-
 
 ### 🛠️  Prerequisites
 

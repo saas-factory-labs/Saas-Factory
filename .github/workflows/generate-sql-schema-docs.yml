@@ -20,25 +20,55 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 2: Install PostgreSQL client tools
-      - name: Install PostgreSQL client
+      # Step 2: Install PostgreSQL 17 client tools
+      - name: Install PostgreSQL 17 client
         run: |
+          # Add PostgreSQL APT repository
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
           sudo apt-get update
-          sudo apt-get install -y postgresql-client
+          
+          # Install PostgreSQL 17 client
+          sudo apt-get install -y postgresql-client-17
+          
+          # Verify version
+          pg_dump --version
 
-      # Step 3: Generate the SQL schema dump
+      # Step 3: Generate the SQL schema dump with retry logic
       - name: Generate schema dump
         env:
           PGPASSWORD: ${{ secrets.PG_PASSWORD }}
         run: |
-          pg_dump --host=${{ secrets.PG_HOST }} \
-                  --port=${{ secrets.PG_PORT }} \
-                  --username=${{ secrets.PG_USER }} \
-                  --dbname=${{ secrets.PG_DB }} \
-                  --schema-only \
-                  --no-owner \
-                  --no-privileges \
-                  --file=schema.sql
+          MAX_RETRIES=3
+          RETRY_DELAY=30
+          ATTEMPT=1
+          
+          while [ $ATTEMPT -le $MAX_RETRIES ]; do
+            echo "Attempt $ATTEMPT of $MAX_RETRIES..."
+            
+            if pg_dump --host=${{ secrets.PG_HOST }} \
+                       --port=${{ secrets.PG_PORT }} \
+                       --username=${{ secrets.PG_USER }} \
+                       --dbname=${{ secrets.PG_DB }} \
+                       --schema-only \
+                       --no-owner \
+                       --no-privileges \
+                       --file=schema.sql; then
+              echo "Schema dump generated successfully"
+              break
+            else
+              EXIT_CODE=$?
+              if [ $ATTEMPT -lt $MAX_RETRIES ]; then
+                echo "pg_dump failed with exit code $EXIT_CODE. Database might be sleeping..."
+                echo "Retrying in $RETRY_DELAY seconds..."
+                sleep $RETRY_DELAY
+                ATTEMPT=$((ATTEMPT + 1))
+              else
+                echo "pg_dump failed after $MAX_RETRIES attempts"
+                exit $EXIT_CODE
+              fi
+            fi
+          done
           
           # Verify the file was created
           if [ ! -f schema.sql ]; then
@@ -46,7 +76,6 @@ jobs:
             exit 1
           fi
           
-          echo "Schema dump generated successfully"
           ls -lh schema.sql
 
       # Step 4: Commit and push the schema file
