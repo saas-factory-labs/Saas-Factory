@@ -48,6 +48,23 @@ jobs:
           if [ -d "publish/wwwroot" ] && [ -f "publish/wwwroot/index.html" ]; then
             echo "✅ Landing page published successfully"
             ls -lh publish/wwwroot/index.html
+            
+            # Verify _framework directory exists with content
+            if [ -d "publish/wwwroot/_framework" ]; then
+              WASM_COUNT=$(find publish/wwwroot/_framework -name "*.wasm" -type f | wc -l)
+              DLL_COUNT=$(find publish/wwwroot/_framework -name "*.dll" -type f | wc -l)
+              echo "✅ _framework directory found"
+              echo "   📦 .wasm files: $WASM_COUNT"
+              echo "   📦 .dll files: $DLL_COUNT"
+              
+              if [ $WASM_COUNT -eq 0 ]; then
+                echo "❌ Error: No .wasm files found in _framework!"
+                exit 1
+              fi
+            else
+              echo "❌ Error: _framework directory not found!"
+              exit 1
+            fi
           else
             echo "❌ Error: Landing page publish failed!"
             exit 1
@@ -218,6 +235,13 @@ jobs:
           echo "📄 Copying landing page..."
           cp -r Code/Landingpage/Landingpage.Web/publish/wwwroot/* combined-site/
           
+          # Verify _framework was copied
+          if [ ! -d "combined-site/_framework" ]; then
+            echo "❌ Error: _framework directory not copied!"
+            ls -la Code/Landingpage/Landingpage.Web/publish/wwwroot/
+            exit 1
+          fi
+          
           # Add .nojekyll to prevent GitHub Pages from ignoring _framework directory
           echo "📝 Adding .nojekyll file..."
           touch combined-site/.nojekyll
@@ -264,7 +288,19 @@ jobs:
           echo "📦 _framework directory contents:"
           if [ -d "combined-site/_framework" ]; then
             ls -lh combined-site/_framework/ | head -20
+            echo ""
+            echo "📊 _framework file count: $(find combined-site/_framework -type f | wc -l)"
           fi
+          
+          # Verify .wasm files are present
+          echo ""
+          echo "🔍 Checking for .wasm files:"
+          find combined-site/_framework -name "*.wasm" -type f || echo "⚠️ No .wasm files found!"
+          
+          # Check for any symbolic links that might cause issues
+          echo ""
+          echo "🔗 Checking for symbolic links:"
+          find combined-site -type l || echo "✅ No symbolic links found"
 
       # ========================================
       # Deploy to GitHub Pages
