@@ -135,29 +135,6 @@ jobs:
             exit 1
           fi
 
-      - name: Build Tailwind CSS
-        working-directory: docs/RazorPress/RazorPress
-        run: |
-          echo "🎨 Building Tailwind CSS..."
-          npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify
-          echo "✅ Tailwind CSS built"
-          
-          # Verify CSS was generated and has content
-          if [ -f "wwwroot/css/app.css" ]; then
-            FILE_SIZE=$(stat -f%z "wwwroot/css/app.css" 2>/dev/null || stat -c%s "wwwroot/css/app.css" 2>/dev/null || echo "0")
-            echo "✅ app.css generated successfully ($FILE_SIZE bytes)"
-            ls -lh wwwroot/css/app.css
-            
-            if [ "$FILE_SIZE" -lt 1000 ]; then
-              echo "⚠️ Warning: app.css is suspiciously small!"
-              cat wwwroot/css/app.css
-              exit 1
-            fi
-          else
-            echo "❌ Error: app.css not generated!"
-            exit 1
-          fi
-
       - name: Build .NET project
         working-directory: docs/RazorPress/RazorPress
         run: |
@@ -165,14 +142,6 @@ jobs:
           dotnet clean --configuration Release
           dotnet build . --configuration Release --no-incremental
           echo "✅ .NET project built"
-          
-          # Verify app.css is still present after build
-          if [ -f "wwwroot/css/app.css" ]; then
-            echo "✅ app.css still present after build"
-            ls -lh wwwroot/css/app.css
-          else
-            echo "❌ Warning: app.css missing after build!"
-          fi
 
       - name: Prerender static site
         working-directory: docs/RazorPress/RazorPress
@@ -180,12 +149,12 @@ jobs:
           echo "🚀 Prerendering static site..."
           dotnet run --no-launch-profile --AppTasks=prerender --configuration Release --environment Production
           
-          echo "✅ RazorPress documentation built successfully!"
+          echo "✅ RazorPress documentation prerendered!"
           
           # Verify dist directory exists and has content
           if [ -d "dist" ]; then
             echo "📁 dist directory contents:"
-            ls -la dist/
+            ls -la dist/ | head -20
             
             # Verify critical files exist
             if [ -f "dist/index.html" ]; then
@@ -196,15 +165,46 @@ jobs:
               echo "❌ Error: index.html not found!"
               exit 1
             fi
-            
-            if [ -f "dist/css/app.css" ]; then
-              echo "✅ app.css found in dist"
-              ls -lh dist/css/app.css
-            else
-              echo "❌ Warning: app.css not found in dist!"
-            fi
           else
             echo "❌ Error: dist directory not created!"
+            exit 1
+          fi
+
+      - name: Build Tailwind CSS (after prerender)
+        working-directory: docs/RazorPress/RazorPress
+        run: |
+          echo "🎨 Building Tailwind CSS with prerendered content..."
+          npx tailwindcss -i ./tailwind.input.css -o ./wwwroot/css/app.css --minify
+          echo "✅ Tailwind CSS built"
+          
+          # Verify CSS was generated and has content
+          if [ -f "wwwroot/css/app.css" ]; then
+            FILE_SIZE=$(stat -f%z "wwwroot/css/app.css" 2>/dev/null || stat -c%s "wwwroot/css/app.css" 2>/dev/null || echo "0")
+            echo "✅ app.css generated successfully ($FILE_SIZE bytes)"
+            ls -lh wwwroot/css/app.css
+            
+            if [ "$FILE_SIZE" -lt 10000 ]; then
+              echo "⚠️ Warning: app.css is suspiciously small!"
+              head -20 wwwroot/css/app.css
+              exit 1
+            fi
+          else
+            echo "❌ Error: app.css not generated!"
+            exit 1
+          fi
+          
+          # Copy the rebuilt CSS to dist
+          echo "📋 Copying rebuilt CSS to dist..."
+          mkdir -p dist/css
+          cp wwwroot/css/app.css dist/css/app.css
+          
+          # Verify the copy
+          if [ -f "dist/css/app.css" ]; then
+            DIST_FILE_SIZE=$(stat -f%z "dist/css/app.css" 2>/dev/null || stat -c%s "dist/css/app.css" 2>/dev/null || echo "0")
+            echo "✅ app.css copied to dist ($DIST_FILE_SIZE bytes)"
+            ls -lh dist/css/app.css
+          else
+            echo "❌ Error: Failed to copy app.css to dist!"
             exit 1
           fi
 
