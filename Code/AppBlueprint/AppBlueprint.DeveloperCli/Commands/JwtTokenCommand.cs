@@ -269,12 +269,12 @@ internal static class JwtTokenCommand
 
                                         // Try to parse as JSON
                                         token = ExtractJwtFromJson(value);
-                                        if (!string.IsNullOrEmpty(token))
+                                        if (!string.IsNullOrWhiteSpace(token))
                                             break;
                                     }
 
                                     // Try sessionStorage if not found in localStorage
-                                    if (string.IsNullOrEmpty(token))
+                                    if (string.IsNullOrWhiteSpace(token))
                                     {
                                         foreach (var key in tokenKeys.Where(k => sessionStorageKeys.Contains(k)))
                                         {
@@ -294,13 +294,13 @@ internal static class JwtTokenCommand
 
                                             // Try to parse as JSON
                                             token = ExtractJwtFromJson(value);
-                                            if (!string.IsNullOrEmpty(token))
+                                            if (!string.IsNullOrWhiteSpace(token))
                                                 break;
                                         }
                                     }
 
                                     // Try cookies if still not found
-                                    if (string.IsNullOrEmpty(token))
+                                    if (string.IsNullOrWhiteSpace(token))
                                     {
                                         foreach (var cookie in tokenCookies)
                                         {
@@ -318,12 +318,12 @@ internal static class JwtTokenCommand
 
                                             // Try to parse as JSON
                                             token = ExtractJwtFromJson(value);
-                                            if (!string.IsNullOrEmpty(token))
+                                            if (!string.IsNullOrWhiteSpace(token))
                                                 break;
                                         }
                                     }
 
-                                    if (!string.IsNullOrEmpty(token))
+                                    if (!string.IsNullOrWhiteSpace(token))
                                         break;
                                 }
 
@@ -337,7 +337,7 @@ internal static class JwtTokenCommand
                         }
 
                         // If no token found, show what's available to help debug
-                        if (string.IsNullOrEmpty(token))
+                        if (string.IsNullOrWhiteSpace(token))
                         {
                             ctx.Status("[yellow]No JWT found. Gathering debug info...[/]");
                             
@@ -365,18 +365,23 @@ internal static class JwtTokenCommand
                     }
                 });
 
-            if (string.IsNullOrWhiteSpace(token))
+            // Check if token was successfully extracted
+            // Note: This condition is necessary - token may still be null if browser automation completes without finding a token
+#pragma warning disable S2583 // Conditionals should not unconditionally evaluate to "true" or to "false"
+            if (!string.IsNullOrWhiteSpace(token))
+#pragma warning restore S2583
+            {
+                // Validate and display the token
+                await DisplayToken(token, "Logto");
+            }
+            else
             {
                 AnsiConsole.MarkupLine("[red]✗ No JWT token found in localStorage, sessionStorage, or cookies[/]");
                 AnsiConsole.MarkupLine("[yellow]The token might be stored in memory or available through an API call.[/]");
                 AnsiConsole.WriteLine();
                 AnsiConsole.MarkupLine("[yellow]Falling back to manual token paste...[/]");
                 await GetTokenFromLogtoManual(endpoint);
-                return;
             }
-
-            // Validate and display the token
-            await DisplayToken(token, "Logto");
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("Playwright browsers"))
         {
