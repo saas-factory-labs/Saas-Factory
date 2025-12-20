@@ -15,7 +15,7 @@ internal sealed class ObjectStorageService : IDisposable
 
     private readonly AmazonS3Client _s3Client;
 
-    private ObjectStorageService(IConfiguration configuration, ILogger<ObjectStorageService> logger)
+    public ObjectStorageService(IConfiguration configuration, ILogger<ObjectStorageService> logger)
     {
         _configuration = configuration;
         _logger = logger;

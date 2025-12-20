@@ -23,6 +23,8 @@ namespace AppBlueprint.Infrastructure.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    private const string DefaultResendApiBaseUrl = "https://api.resend.com";
+
     /// <summary>
     /// Adds AppBlueprint Infrastructure services including database contexts, repositories, 
     /// external service integrations, and health checks.
@@ -249,7 +251,7 @@ public static class ServiceCollectionExtensions
         {
             string resendApiBaseUrl = Environment.GetEnvironmentVariable("RESEND_BASE_URL") ??
                                       configuration["Resend:BaseUrl"] ??
-                                      "https://api.resend.com";
+                                      DefaultResendApiBaseUrl;
             services.AddHttpClient<IResend, ResendClient>()
                 .ConfigureHttpClient(client =>
                 {
