@@ -17,6 +17,12 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
 - Writerside documentation at `/Writerside/topic/README.md`
 - Assess folder structure and project files for example to build and run each project
 - Assess the tech stack from the writerside documentation
+- **Consult Microsoft documentation for best practices**: Always refer to official Microsoft documentation for .NET, C#, and ASP.NET Core best practices. Key resources include:
+  - [C# Coding Conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
+  - [.NET API Browser](https://learn.microsoft.com/en-us/dotnet/api/)
+  - [ASP.NET Core Documentation](https://learn.microsoft.com/en-us/aspnet/core/)
+  - [Code Analysis Rules](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/)
+  - When in doubt about a coding pattern or best practice, verify against Microsoft's official guidance before implementing
 - **Null checks and error handling**: Implement runtime null validation at trust boundaries, complementing compile-time nullable reference types. Use `ArgumentNullException.ThrowIfNull()` for guard clauses and `is null`/`is not null` for logic checks. Do not use `??` or `??=` operators. Use `ThrowIfEmpty()` for string/collection validation where appropriate.
   - **When to add runtime guard clauses** (per [Microsoft CA1062](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1062) and [nullable reference types guidance](https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references)):
     - **Externally visible methods** (`public`/`protected`) - Can be called from unknown assemblies
