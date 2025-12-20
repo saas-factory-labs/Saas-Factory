@@ -133,18 +133,6 @@ public class AuthenticationSetupExtensionsTests
         await Assert.That(scheme).IsNotNull();
     }
 
-    [Test]
-    public void AddLogtoAuthentication_WithNullEndpoint_ShouldThrowArgumentException()
-    {
-        // Arrange
-        var services = new ServiceCollection();
-
-        // Act & Assert
-        await Assert.That(() => services.AddLogtoAuthentication(
-            endpoint: null!,
-            clientId: "my-client-id"))
-            .Throws<ArgumentException>();
-    }
 
     [Test]
     public void AddLogtoAuthentication_WithEmptyEndpoint_ShouldThrowArgumentException()
@@ -153,10 +141,10 @@ public class AuthenticationSetupExtensionsTests
         var services = new ServiceCollection();
 
         // Act & Assert
-        await Assert.That(() => services.AddLogtoAuthentication(
+        Action act = () => services.AddLogtoAuthentication(
             endpoint: "",
-            clientId: "my-client-id"))
-            .Throws<ArgumentException>();
+            clientId: "my-client-id");
+        act.Should().Throw<ArgumentException>();
     }
 
     [Test]
@@ -166,10 +154,10 @@ public class AuthenticationSetupExtensionsTests
         var services = new ServiceCollection();
 
         // Act & Assert
-        await Assert.That(() => services.AddLogtoAuthentication(
+        Action act = () => services.AddLogtoAuthentication(
             endpoint: "https://test.logto.app",
-            clientId: null!))
-            .Throws<ArgumentException>();
+            clientId: null!);
+        act.Should().Throw<ArgumentException>();
     }
 
     [Test]
@@ -201,10 +189,11 @@ public class AuthenticationSetupExtensionsTests
         var services = new ServiceCollection();
 
         // Act & Assert
-        await Assert.That(() => services.AddAuth0Authentication(
+        Action act = () => services.AddAuth0Authentication(
             domain: null!,
-            audience: "https://my-api"))
-            .Throws<ArgumentException>();
+            audience: "https://my-api",
+            clientId: "my-client-id");
+        act.Should().Throw<ArgumentException>();
     }
 
     [Test]
@@ -214,10 +203,11 @@ public class AuthenticationSetupExtensionsTests
         var services = new ServiceCollection();
 
         // Act & Assert
-        await Assert.That(() => services.AddAuth0Authentication(
-            domain: "https://test.auth0.com",
-            audience: null!))
-            .Throws<ArgumentException>();
+        Action act = () => services.AddAuth0Authentication(
+            domain: "https://my-tenant.auth0.com",
+            audience: null!,
+            clientId: "my-client-id");
+        act.Should().Throw<ArgumentException>();
     }
 
     [Test]
@@ -268,8 +258,8 @@ public class AuthenticationSetupExtensionsTests
         var services = new ServiceCollection();
 
         // Act & Assert
-        await Assert.That(() => services.AddSimpleJwtAuthentication(secretKey: null!))
-            .Throws<ArgumentException>();
+        Action act = () => services.AddSimpleJwtAuthentication(secretKey: null!);
+        act.Should().Throw<ArgumentException>();
     }
 
     [Test]
@@ -279,8 +269,8 @@ public class AuthenticationSetupExtensionsTests
         var services = new ServiceCollection();
 
         // Act & Assert
-        await Assert.That(() => services.AddSimpleJwtAuthentication(secretKey: ""))
-            .Throws<ArgumentException>();
+        Action act = () => services.AddSimpleJwtAuthentication(secretKey: "");
+        act.Should().Throw<ArgumentException>();
     }
 
     [Test]
@@ -290,8 +280,8 @@ public class AuthenticationSetupExtensionsTests
         var services = new ServiceCollection();
 
         // Act & Assert - Key less than 32 characters
-        await Assert.That(() => services.AddSimpleJwtAuthentication(secretKey: "TooShort"))
-            .Throws<ArgumentException>();
+        Action act = () => services.AddSimpleJwtAuthentication(secretKey: "TooShort");
+        act.Should().Throw<ArgumentException>();
     }
 
     [Test]
@@ -302,8 +292,8 @@ public class AuthenticationSetupExtensionsTests
         var configuration = new ConfigurationBuilder().Build();
 
         // Act & Assert
-        await Assert.That(() => services.AddQuickAuthentication(configuration, AuthProvider.Logto))
-            .Throws<ArgumentNullException>();
+        Action act = () => services.AddQuickAuthentication(configuration);
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
@@ -314,8 +304,8 @@ public class AuthenticationSetupExtensionsTests
         IConfiguration configuration = null!;
 
         // Act & Assert
-        await Assert.That(() => services.AddQuickAuthentication(configuration, AuthProvider.Logto))
-            .Throws<ArgumentNullException>();
+        Action act = () => services.AddQuickAuthentication(configuration, AuthProvider.Logto);
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]

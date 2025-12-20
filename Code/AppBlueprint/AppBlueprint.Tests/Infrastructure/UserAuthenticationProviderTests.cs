@@ -34,7 +34,7 @@ public class UserAuthenticationProviderTests
         bool result = await _authProvider.LoginAsync(email, password);
 
         // Assert
-        Assert.That(result, Is.True);
+        await Assert.That(result).IsTrue();
     }
 
     [Test]
@@ -44,17 +44,17 @@ public class UserAuthenticationProviderTests
         await _authProvider.LogoutAsync();
 
         // Assert
-        Assert.That(true, Is.True); // Token removal happens internally
+        await Assert.That(true).IsTrue(); // Token removal happens internally
     }
 
     [Test]
-    public void IsAuthenticated_ShouldReturnFalse_WhenTokenIsNull()
+    public async Task IsAuthenticated_ShouldReturnFalse_WhenTokenIsNull()
     {
         // Act
         bool isAuthenticated = _authProvider.IsAuthenticated();
 
         // Assert
-        Assert.That(isAuthenticated, Is.False);
+        await Assert.That(isAuthenticated).IsFalse();
     }
 
     [Test]
@@ -79,8 +79,8 @@ public class UserAuthenticationProviderTests
         await _authProvider.AuthenticateRequestAsync(request);
 
         // Assert
-        Assert.That(request.Headers.ContainsKey("Authorization"), Is.True);
-        Assert.That(request.Headers["Authorization"], Is.EqualTo($"Bearer {expectedToken}"));
+        await Assert.That(request.Headers.ContainsKey("Authorization")).IsTrue();
+        await Assert.That(request.Headers["Authorization"].First()).IsEqualTo($"Bearer {expectedToken}");
     }
 
     [Test]
@@ -112,7 +112,7 @@ public class UserAuthenticationProviderTests
         await authProvider.InitializeFromStorageAsync();
 
         // Assert
-        Assert.That(authProvider.IsAuthenticated(), Is.True);
+        await Assert.That(authProvider.IsAuthenticated()).IsTrue();
     }
 
     /// <summary>
