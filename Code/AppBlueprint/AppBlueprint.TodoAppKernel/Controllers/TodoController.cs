@@ -17,6 +17,9 @@ public class TodoController(
     ILogger<TodoController> logger,
     ITodoRepository todoRepository) : ControllerBase
 {
+    private const string TenantIdKey = "TenantId";
+    private const string DefaultTenantId = "default-tenant";
+
     private readonly ILogger<TodoController> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly ITodoRepository _todoRepository =
@@ -29,7 +32,7 @@ public class TodoController(
     public async Task<ActionResult<IEnumerable<TodoEntity>>> GetTodosAsync(
         CancellationToken cancellationToken)
     {
-        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
         string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
 
         _logger.LogInformation("Getting todos for tenant {TenantId} and user {UserId}", tenantId, userId);
@@ -51,7 +54,7 @@ public class TodoController(
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
         string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
 
         _logger.LogInformation("Creating new todo: {Title} for tenant {TenantId} and user {UserId}", 
@@ -72,7 +75,7 @@ public class TodoController(
         string id,
         CancellationToken cancellationToken)
     {
-        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
 
         _logger.LogInformation("Getting todo by ID: {Id} for tenant {TenantId}", id, tenantId);
 
@@ -100,7 +103,7 @@ public class TodoController(
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
 
         _logger.LogInformation("Updating todo: {Id} for tenant {TenantId}", id, tenantId);
 
@@ -126,7 +129,7 @@ public class TodoController(
         string id,
         CancellationToken cancellationToken)
     {
-        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
 
         _logger.LogInformation("Deleting todo: {Id} for tenant {TenantId}", id, tenantId);
 
@@ -144,7 +147,7 @@ public class TodoController(
         string id,
         CancellationToken cancellationToken)
     {
-        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
 
         _logger.LogInformation("Completing todo: {Id} for tenant {TenantId}", id, tenantId);
 
