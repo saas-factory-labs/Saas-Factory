@@ -63,7 +63,7 @@ internal sealed class ObjectStorageService : IDisposable
         }
         catch (AmazonS3Exception e)
         {
-            _logger.LogError(ObjectStorageMessages.ErrorReadingObject, e.Message);
+            _logger.LogError(e, ObjectStorageMessages.ErrorReadingObject);
         }
     }
 
@@ -87,7 +87,7 @@ internal sealed class ObjectStorageService : IDisposable
         }
         catch (AmazonS3Exception e)
         {
-            _logger.LogError(ObjectStorageMessages.ErrorWritingObject, e.Message);
+            _logger.LogError(e, ObjectStorageMessages.ErrorWritingObject);
         }
     }
 

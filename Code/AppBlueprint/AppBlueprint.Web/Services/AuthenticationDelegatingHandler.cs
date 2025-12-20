@@ -193,7 +193,7 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
         }
         catch (Exception ex)
         {
-            _logger.LogDebug("Could not retrieve tenant ID from storage: {Message}", ex.Message);
+            _logger.LogDebug(ex, "Could not retrieve tenant ID from storage");
         }
         
         // SECURITY: Fail-fast if tenant cannot be resolved to prevent tenant isolation bypass
