@@ -17,21 +17,18 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Produces("application/json")]
 public class UserController : BaseController
 {
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<AccountController> _logger;
     // Removed IUnitOfWork dependency for repository DI pattern
     private readonly IUserRepository _userRepository;
 
     public UserController(
-        ILogger<AccountController> logger,
         IConfiguration configuration,
         IUserRepository userRepository)
         : base(configuration)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-        // Removed IUnitOfWork assignment
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(userRepository);
+        
+        _userRepository = userRepository;
     }
 
     /// <summary>
