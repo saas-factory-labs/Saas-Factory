@@ -148,14 +148,3 @@ public class RoleController : BaseController
         return NoContent();
     }
 }
-
-//public class RoleRequestDto
-//{
-//    public string Name { get; set; }
-//}
-
-//public class RoleResponseDto
-//{
-//    public int Id { get; set; }
-//    public string Name { get; set; }
-//}
