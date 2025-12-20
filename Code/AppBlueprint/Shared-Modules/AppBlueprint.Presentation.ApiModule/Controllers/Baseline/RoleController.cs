@@ -140,9 +140,6 @@ public class RoleController : BaseController
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
         if (existingRole is null) return NotFound(new { Message = $"Role with ID {id} not found." });
 
-        // _roleRepository.Delete(existingRole);
-        // await _unitOfWork.SaveChangesAsync(cancellationToken);
-
         return NoContent();
     }
 }
