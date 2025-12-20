@@ -101,6 +101,8 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V2)]
     public async Task<ActionResult> GetUserById(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         UserEntity? user = await _userRepository.GetByIdAsync(id);
         if (user is null) return NotFound(new { Message = $"User with ID {id} not found." });
 
@@ -169,6 +171,7 @@ public class UserController : BaseController
     public async Task<ActionResult> UpdateUser(string id, [FromBody] CreateUserRequest createUser,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
         ArgumentNullException.ThrowIfNull(createUser);
 
         UserEntity? existingUser = await _userRepository.GetByIdAsync(id);
@@ -196,6 +199,8 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V2)]
     public async Task<ActionResult> DeleteUser(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         UserEntity? existingUser = await _userRepository.GetByIdAsync(id);
         if (existingUser is null) return NotFound(new { Message = $"User with ID {id} not found." });
 

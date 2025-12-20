@@ -35,6 +35,8 @@ public class AccountController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult> GetAccountByIdV1([FromHeader(Name = "Authorization")] string authorizationHeader, string idOrSlug, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(idOrSlug);
+
         AccountEntity? account = await _accountRepository.GetByIdAsync(idOrSlug, cancellationToken);
         if (account is null) return NotFound(new { Message = "No account found." });
 

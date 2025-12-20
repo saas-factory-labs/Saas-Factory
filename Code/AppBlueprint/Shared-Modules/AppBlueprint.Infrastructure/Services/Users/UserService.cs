@@ -44,6 +44,11 @@ public class UserServiceInfrastructure
 
     public async Task<UserEntity> RegisterAsync(string firstName, string lastName, string email, string userName, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(firstName);
+        ArgumentNullException.ThrowIfNull(lastName);
+        ArgumentNullException.ThrowIfNull(email);
+        ArgumentNullException.ThrowIfNull(userName);
+
         // Validate email doesn't already exist
         UserEntity? existingUser = await _userRepository.GetByEmailAsync(email);
         if (existingUser is not null)
@@ -72,15 +77,23 @@ public class UserServiceInfrastructure
     }
     public async Task<UserEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         return await _userRepository.GetByIdAsync(id);
     }
 
     public async Task<UserEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(email);
+
         return await _userRepository.GetByEmailAsync(email);
     }
     public async Task UpdateProfileAsync(string userId, string firstName, string lastName, string? phoneNumber, string? bio, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(firstName);
+        ArgumentNullException.ThrowIfNull(lastName);
+
         UserEntity user = await _userRepository.GetByIdAsync(userId)
             ?? throw new InvalidOperationException(UserNotFoundMessage);
 
@@ -95,6 +108,8 @@ public class UserServiceInfrastructure
     }
     public async Task DeactivateUserAsync(string userId, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(userId);
+
         UserEntity? user = await _userRepository.GetByIdAsync(userId)
             ?? throw new InvalidOperationException(UserNotFoundMessage);
 
@@ -104,6 +119,8 @@ public class UserServiceInfrastructure
     }
     public async Task<string> GenerateEmailVerificationTokenAsync(string userId, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(userId);
+
         UserEntity? user = await _userRepository.GetByIdAsync(userId)
             ?? throw new InvalidOperationException(UserNotFoundMessage);
 

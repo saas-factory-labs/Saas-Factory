@@ -17,7 +17,90 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
 - Writerside documentation at `/Writerside/topic/README.md`
 - Assess folder structure and project files for example to build and run each project
 - Assess the tech stack from the writerside documentation
-- Implement null checks and error handling where appropriate, but do not over-engineer the code. Null checks should be achieved with `is null` or `is not null` checks, and error handling should be done using exceptions. Do not use `??` or `??=` operators. In addition use `ThrowIfNull` and `ThrowIfEmpty` methods to throw exceptions when null or empty values are encountered.
+- **Null checks and error handling**: Implement runtime null validation at trust boundaries, complementing compile-time nullable reference types. Use `ArgumentNullException.ThrowIfNull()` for guard clauses and `is null`/`is not null` for logic checks. Do not use `??` or `??=` operators. Use `ThrowIfEmpty()` for string/collection validation where appropriate.
+  - **When to add runtime guard clauses** (per [Microsoft CA1062](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1062) and [nullable reference types guidance](https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references)):
+    - **Externally visible methods** (`public`/`protected`) - Can be called from unknown assemblies
+    - **Constructor parameters** - Especially for dependency injection to prevent invalid object state
+    - **After deserialization** - JSON/XML data from external sources
+    - **Database operations** - Repository methods and parameters going into DB calls (trust boundary)
+    - **Extension method `this` parameters** - Unless explicitly excluded via configuration
+    - **Critical operations** - Where null would cause data corruption, security issues, or silent failures
+  - **When to skip runtime guard clauses**:
+    - **Internal methods** - When [InternalsVisibleTo] controls callers and nullable reference types provide compile-time safety
+    - **Private methods** - The compiler already validates nullable reference types at compile-time
+    - **When null is valid** - Parameters explicitly marked with `?` that allow null as designed
+    - **After validation** - Private methods called only by public methods that already validated parameters
+    - **Performance-critical code** - Only when profiling shows measurable impact
+  - **Key insight from Microsoft**: *"Nullable reference types are a compile time feature... Library authors should include run-time checks against null argument values. The ArgumentNullException.ThrowIfNull is the preferred option for checking a parameter against null at run time."*
+  - **Examples**:
+    ```csharp
+    // ✅ Public API boundary - requires runtime validation
+    public async Task UpdateProfileAsync(string userId, string firstName)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(firstName);
+        
+        var user = await LoadUserAsync(userId);
+        SaveChanges(user, firstName);
+    }
+    
+    // ✅ Private helper - no runtime check needed (compile-time safety via nullable types)
+    private async Task<UserEntity> LoadUserAsync(string userId)
+    {
+        // userId already validated by caller, compiler ensures non-null
+        return await _db.Users.FindAsync(userId);
+    }
+    
+    // ✅ Internal method - no runtime check if [InternalsVisibleTo] controls all callers
+    internal void ProcessData(string data)
+    {
+        // Trusted callers, nullable reference types provide compile-time safety
+    }
+    
+    // ✅ Critical operation - validate even in private method
+    private void DeleteAllUserData(string userId)
+    {
+        ArgumentNullException.ThrowIfNull(userId); // Critical: prevents accidental data deletion
+        _db.Users.RemoveRange(_db.Users.Where(u => u.Id == userId));
+    }
+    
+    // ❌ Over-engineering - unnecessary runtime check in private method
+    private void UpdateCache(string key)
+    {
+        ArgumentNullException.ThrowIfNull(key); // Redundant - compiler already ensures non-null
+    }
+    
+    // ✅ Database operations - validate at repository boundary
+    public async Task<UserEntity?> GetUserByIdAsync(string userId)
+    {
+        ArgumentNullException.ThrowIfNull(userId); // Prevent invalid DB queries
+        return await _dbContext.Users.FindAsync(userId);
+    }
+    
+    public async Task AddUserAsync(UserEntity user)
+    {
+        ArgumentNullException.ThrowIfNull(user); // Trust boundary - prevent adding null
+        await _dbContext.Users.AddAsync(user);
+        await _dbContext.SaveChangesAsync();
+    }
+    ```
+- **Do NOT use ConfigureAwait(false)** in async/await code. ASP.NET Core has no SynchronizationContext since .NET Core 2.0, so there is no deadlock risk. Blazor Server UI code needs to return to the synchronization context to update the UI, and using ConfigureAwait(false) would break this. Only use ConfigureAwait(false) if explicitly working with a legacy .NET Framework application with a synchronization context.
+- **Use explicit types instead of `var` when using null-coalescing operators (`??`)**: When assigning values with the null-coalescing operator, always use explicit type declarations (e.g., `string userId = ...` instead of `var userId = ...`). This improves code readability and makes the type immediately clear without needing to trace back through the expression. This is especially important for simple built-in types like `string`, `int`, `bool`, etc.
+  - **Examples**:
+    ```csharp
+    // ✅ Correct - explicit type with null-coalescing
+    string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+    string userId = User.FindFirst("sub")?.Value ?? "unknown-user";
+    string authProvider = configuration["Authentication:Provider"] ?? "JWT";
+    
+    // ❌ Incorrect - var obscures the type
+    var tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+    var userId = User.FindFirst("sub")?.Value ?? "unknown-user";
+    
+    // ✅ Correct - var is fine for obvious assignments without ??
+    var person = new Person();
+    var users = await _repository.GetAllAsync();
+    ```
 - Use `dotnet format` to format the code according to the `.editorconfig` file. If you are unable to do so, please inform the user and ask for assistance.
 - Read the `.editorconfig` file to understand the coding style that need to be followed
 - Do not remove commented out code unless explicitly asked to do so. If you are unsure, please ask the user for clarification.

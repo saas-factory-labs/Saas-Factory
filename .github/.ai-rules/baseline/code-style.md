@@ -7,7 +7,7 @@
   - Pattern matching with `is null` and `is not null` instead of `== null` and `!= null`.
 - Records for immutable types.
 - Mark all C# types as sealed.
-- Use `var` when possible.
+- Use `var` when possible, **except when using null-coalescing operators (`??`)** - in those cases, always use explicit types (e.g., `string userId = User.FindFirst("sub")?.Value ?? "unknown"` instead of `var userId = ...`) for better readability and type clarity.
 - Use List collection types like `List<UserId>` instead of `UserId[]` when ever possible.
 - JetBrain/VS Code tooling is used for automatically formatting code, but automatic line breaking has been disabled for more readable code:
   - Wrap lines if "new language" constructs are started after 120 characters. This ensures that no important code is hidden after the 120 character mark.

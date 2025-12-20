@@ -22,7 +22,7 @@ public static class JwtAuthenticationExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
 
-        var authProvider = configuration[AuthenticationProviderConfigKey] ?? "JWT";
+        string authProvider = configuration[AuthenticationProviderConfigKey] ?? "JWT";
 
         services.AddAuthentication(options =>
         {
@@ -86,9 +86,9 @@ public static class JwtAuthenticationExtensions
                 var logger = context.HttpContext.RequestServices
                     .GetRequiredService<ILogger<JwtBearerEvents>>();
                 
-                var userName = context.Principal?.Identity?.Name ?? "Unknown";
-                var userId = context.Principal?.FindFirst("sub")?.Value ?? "Unknown";
-                var issuer = context.Principal?.FindFirst("iss")?.Value ?? "Unknown";
+                string userName = context.Principal?.Identity?.Name ?? "Unknown";
+                string userId = context.Principal?.FindFirst("sub")?.Value ?? "Unknown";
+                string issuer = context.Principal?.FindFirst("iss")?.Value ?? "Unknown";
                 
                 logger.LogInformation(
                     "Token validated successfully. User: {User}, UserId: {UserId}, Issuer: {Issuer}", 
@@ -218,8 +218,8 @@ public static class JwtAuthenticationExtensions
     private static void ConfigureCustomJwt(JwtBearerOptions options, IConfiguration configuration)
     {
         var secretKey = configuration["Authentication:JWT:SecretKey"];
-        var issuer = configuration["Authentication:JWT:Issuer"] ?? "AppBlueprintAPI";
-        var audience = configuration["Authentication:JWT:Audience"] ?? "AppBlueprintClient";
+        string issuer = configuration["Authentication:JWT:Issuer"] ?? "AppBlueprintAPI";
+        string audience = configuration["Authentication:JWT:Audience"] ?? "AppBlueprintClient";
 
         if (string.IsNullOrEmpty(secretKey))
         {

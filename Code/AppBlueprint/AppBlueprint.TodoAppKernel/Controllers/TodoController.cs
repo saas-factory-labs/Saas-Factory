@@ -29,8 +29,8 @@ public class TodoController(
     public async Task<ActionResult<IEnumerable<TodoEntity>>> GetTodosAsync(
         CancellationToken cancellationToken)
     {
-        var tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
-        var userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
+        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
 
         _logger.LogInformation("Getting todos for tenant {TenantId} and user {UserId}", tenantId, userId);
 
@@ -51,8 +51,8 @@ public class TodoController(
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
-        var userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
+        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
 
         _logger.LogInformation("Creating new todo: {Title} for tenant {TenantId} and user {UserId}", 
             request.Title, tenantId, userId);
@@ -72,7 +72,7 @@ public class TodoController(
         string id,
         CancellationToken cancellationToken)
     {
-        var tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
 
         _logger.LogInformation("Getting todo by ID: {Id} for tenant {TenantId}", id, tenantId);
 
@@ -100,7 +100,7 @@ public class TodoController(
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
 
         _logger.LogInformation("Updating todo: {Id} for tenant {TenantId}", id, tenantId);
 
@@ -126,7 +126,7 @@ public class TodoController(
         string id,
         CancellationToken cancellationToken)
     {
-        var tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
 
         _logger.LogInformation("Deleting todo: {Id} for tenant {TenantId}", id, tenantId);
 
@@ -144,7 +144,7 @@ public class TodoController(
         string id,
         CancellationToken cancellationToken)
     {
-        var tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
 
         _logger.LogInformation("Completing todo: {Id} for tenant {TenantId}", id, tenantId);
 

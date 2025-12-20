@@ -35,10 +35,10 @@ public class AuthDebugController : ControllerBase
     [Authorize]
     public IActionResult SecurePing()
     {
-        var userId = User.FindFirst("sub")?.Value ?? "Unknown";
-        var userName = User.Identity?.Name ?? "Unknown";
-        var issuer = User.FindFirst("iss")?.Value ?? "Unknown";
-        var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+        string userId = User.FindFirst("sub")?.Value ?? "Unknown";
+        string userName = User.Identity?.Name ?? "Unknown";
+        string issuer = User.FindFirst("iss")?.Value ?? "Unknown";
+        bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
         
         _logger.LogInformation(
             "Secure ping endpoint called. User: {User}, UserId: {UserId}, Issuer: {Issuer}, IsAuthenticated: {IsAuthenticated}",

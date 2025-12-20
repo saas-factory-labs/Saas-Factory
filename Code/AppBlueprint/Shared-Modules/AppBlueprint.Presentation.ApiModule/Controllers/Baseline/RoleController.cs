@@ -60,6 +60,8 @@ public class RoleController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RoleResponse>> Get(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         RoleEntity? role = await _roleRepository.GetByIdAsync(id);
         if (role is null) return NotFound(new { Message = $"Role with ID {id} not found." });
 
@@ -111,6 +113,7 @@ public class RoleController : BaseController
     public async Task<ActionResult> Put(string id, [FromBody] UpdateRoleRequest request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
         ArgumentNullException.ThrowIfNull(request);
 
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
@@ -134,6 +137,8 @@ public class RoleController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
         if (existingRole is null) return NotFound(new { Message = $"Role with ID {id} not found." });
 

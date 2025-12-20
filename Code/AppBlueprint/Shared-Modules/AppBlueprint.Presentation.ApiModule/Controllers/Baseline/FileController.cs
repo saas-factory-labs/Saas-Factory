@@ -59,6 +59,8 @@ public class FileController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         FileEntity? file = await _fileRepository.GetByIdAsync(id, cancellationToken);
         if (file is null) return NotFound(new { Message = $"File with ID {id} not found." });
 
@@ -88,7 +90,7 @@ public class FileController : BaseController
         if (string.IsNullOrEmpty(fileDto.FileName))
             return BadRequest(new { Message = "FileName is required" });
 
-        var fileExtension = Path.GetExtension(fileDto.FileName) ?? ".bin";
+        string fileExtension = Path.GetExtension(fileDto.FileName) ?? ".bin";
         var filePath = $"/files/{PrefixedUlid.Generate("file")}{fileExtension}";
 
         var newFile = new FileEntity
@@ -118,6 +120,7 @@ public class FileController : BaseController
     public async Task<ActionResult> Put(string id, [FromBody] UpdateFileRequest fileDto,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
         ArgumentNullException.ThrowIfNull(fileDto);
 
         FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken);
@@ -146,6 +149,8 @@ public class FileController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken);
         if (existingFile is null) return NotFound(new { Message = $"File with ID {id} not found." });
 

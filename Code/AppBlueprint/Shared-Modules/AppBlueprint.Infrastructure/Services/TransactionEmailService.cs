@@ -8,6 +8,10 @@ public class TransactionEmailService(ILogger logger, IResend resend)
 {
     public async Task SendSignUpWelcomeEmail(string from, string to, string siteName)
     {
+        ArgumentNullException.ThrowIfNull(from);
+        ArgumentNullException.ThrowIfNull(to);
+        ArgumentNullException.ThrowIfNull(siteName);
+
         var message = new EmailMessage
         {
             From = from,
@@ -25,6 +29,11 @@ public class TransactionEmailService(ILogger logger, IResend resend)
 
     public async Task SendOrderConfirmationEmail(string from, string to, string orderId, CustomerEntity customerEntity)
     {
+        ArgumentNullException.ThrowIfNull(from);
+        ArgumentNullException.ThrowIfNull(to);
+        ArgumentNullException.ThrowIfNull(orderId);
+        ArgumentNullException.ThrowIfNull(customerEntity);
+
         var message = new EmailMessage
         {
             From = from,

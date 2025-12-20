@@ -265,8 +265,8 @@ internal static class EnvironmentVariableCommand
 
             foreach (System.Collections.DictionaryEntry entry in variables)
             {
-                var key = entry.Key?.ToString() ?? string.Empty;
-                var value = entry.Value?.ToString() ?? string.Empty;
+                string key = entry.Key?.ToString() ?? string.Empty;
+                string value = entry.Value?.ToString() ?? string.Empty;
 
                 if (string.IsNullOrEmpty(prefix) || key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
                 {

@@ -40,7 +40,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
 
     public AuthenticationProviderType GetConfiguredProviderType()
     {
-        var providerName = _configuration["Authentication:Provider"] ?? "Mock";
+        string providerName = _configuration["Authentication:Provider"] ?? "Mock";
         
         if (!Enum.TryParse<AuthenticationProviderType>(providerName, true, out var providerType))
         {
