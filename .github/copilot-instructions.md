@@ -125,12 +125,12 @@ Only do work on the AppBlueprint directory and related projects.
 
 **Read the following additional instructions:**
 
-[Backend Rules](.ai-rules/backend/README.md) 
-[Baseline Rules](.ai-rules/baseline/README.md) 
-[Frontend Rules](.ai-rules/frontend/README.md)
-[Infrastructure Rules](.ai-rules/infrastructure/README.md)
-[Developer CLI Rules](.ai-rules/developer-cli/README.md)
-[Development Workflow](.ai-rules/development-workflow/README.md)
+[Backend Rules](.github/.ai-rules/backend/README.md) 
+[Baseline Rules](.github/.ai-rules/baseline/README.md) 
+[Frontend Rules](.github/.ai-rules/frontend/README.md)
+[Infrastructure Rules](.github/.ai-rules/infrastructure/README.md)
+[Developer CLI Rules](.github/.ai-rules/developer-cli/README.md)
+[Development Workflow](.github/.ai-rules/development-workflow/README.md)
 
 When we learn new things that deviate from the existing rules, suggest making changes to the rules files or creating new rules files. When creating new rules files, always make sure to add them to the relevant README.md file.
 

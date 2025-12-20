@@ -43,7 +43,7 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
     {
         if (_provider is null)
         {
-            Console.Error.WriteLine("Error: Authentication provider is null in LoginAsync()");
+            await Console.Error.WriteLineAsync("Error: Authentication provider is null in LoginAsync()");
             throw new InvalidOperationException("Authentication provider is not initialized. Check your authentication configuration.");
         }
         
@@ -61,32 +61,32 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
     {
         if (_provider is null)
         {
-            Console.Error.WriteLine("Error: Authentication provider is null in LogoutAsync()");
+            await Console.Error.WriteLineAsync("Error: Authentication provider is null in LogoutAsync()");
             return;
         }
         
         await _provider.LogoutAsync();
     }
 
-    public Task AuthenticateRequestAsync(
+    public async Task AuthenticateRequestAsync(
         RequestInformation request,
         Dictionary<string, object>? additionalAuthenticationContext = null,
         CancellationToken cancellationToken = default)
     {
         if (_provider is null)
         {
-            Console.Error.WriteLine("Error: Authentication provider is null in AuthenticateRequestAsync()");
-            return Task.CompletedTask;
+            await Console.Error.WriteLineAsync("Error: Authentication provider is null in AuthenticateRequestAsync()");
+            return;
         }
         
-        return _provider.AuthenticateRequestAsync(request, additionalAuthenticationContext, cancellationToken);
+        await _provider.AuthenticateRequestAsync(request, additionalAuthenticationContext, cancellationToken);
     }
 
     public async Task InitializeFromStorageAsync()
     {
         if (_provider is null)
         {
-            Console.Error.WriteLine("Error: Authentication provider is null in InitializeFromStorageAsync()");
+            await Console.Error.WriteLineAsync("Error: Authentication provider is null in InitializeFromStorageAsync()");
             return;
         }
         

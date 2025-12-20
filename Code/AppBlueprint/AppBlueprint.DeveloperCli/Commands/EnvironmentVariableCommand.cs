@@ -3,25 +3,27 @@ namespace AppBlueprint.DeveloperCli.Commands;
 internal static class EnvironmentVariableCommand
 {
     private const string AppBlueprintPrefix = "APPBLUEPRINT_";
+    private const string ScopeOption = "--scope";
+    private const string ScopeDescription = "Scope: User, Machine, or Process";
 
     public static Command Create()
     {
         var command = new Command("env", "Manage environment variables for AppBlueprint");
 
         // List subcommand
-        var listCommand = CreateListCommand();
+        Command listCommand = CreateListCommand();
         command.AddCommand(listCommand);
 
         // Get subcommand
-        var getCommand = CreateGetCommand();
+        Command getCommand = CreateGetCommand();
         command.AddCommand(getCommand);
 
         // Set subcommand
-        var setCommand = CreateSetCommand();
+        Command setCommand = CreateSetCommand();
         command.AddCommand(setCommand);
 
         // Delete subcommand
-        var deleteCommand = CreateDeleteCommand();
+        Command deleteCommand = CreateDeleteCommand();
         command.AddCommand(deleteCommand);
 
         return command;
@@ -37,8 +39,8 @@ internal static class EnvironmentVariableCommand
             getDefaultValue: () => AppBlueprintPrefix);
 
         var scopeOption = new Option<string>(
-            "--scope",
-            description: "Scope: User, Machine, or Process",
+            ScopeOption,
+            description: ScopeDescription,
             getDefaultValue: () => "User");
 
         command.AddOption(prefixOption);
@@ -64,8 +66,8 @@ internal static class EnvironmentVariableCommand
 
         var nameArgument = new Argument<string>("name", "Environment variable name");
         var scopeOption = new Option<string>(
-            "--scope",
-            description: "Scope: User, Machine, or Process",
+            ScopeOption,
+            description: ScopeDescription,
             getDefaultValue: () => "User");
 
         command.AddArgument(nameArgument);
@@ -92,8 +94,8 @@ internal static class EnvironmentVariableCommand
         var nameArgument = new Argument<string>("name", "Environment variable name");
         var valueArgument = new Argument<string>("value", "Environment variable value");
         var scopeOption = new Option<string>(
-            "--scope",
-            description: "Scope: User, Machine, or Process",
+            ScopeOption,
+            description: ScopeDescription,
             getDefaultValue: () => "User");
 
         command.AddArgument(nameArgument);
@@ -120,8 +122,8 @@ internal static class EnvironmentVariableCommand
 
         var nameArgument = new Argument<string>("name", "Environment variable name");
         var scopeOption = new Option<string>(
-            "--scope",
-            description: "Scope: User, Machine, or Process",
+            ScopeOption,
+            description: ScopeDescription,
             getDefaultValue: () => "User");
 
         command.AddArgument(nameArgument);
