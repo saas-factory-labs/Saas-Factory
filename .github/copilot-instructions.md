@@ -2,7 +2,7 @@
 
 This directory contains the rules for AI assistants to follow when working with this codebase from https://github.com/saas-factory-labs/Saas-Factory
 This directory contains specific guidance for AI assistants to follow when working with this codebase.
-Claude 4 Sonnet works best in this context in Github Copilot, possibly other models such as Gemini 2.5 Pro and GPT 5 could also work.
+Claude 4.5 Sonnet works best in this context in Github Copilot, possibly other models such as Gemini 3 Pro and GPT 5.2 could also work.
 
 ## Agent personality
 
@@ -131,12 +131,12 @@ Only do work on the AppBlueprint directory and related projects.
 
 **Read the following additional instructions:**
 
-[Backend Rules](.github/.ai-rules/backend/README.md) 
-[Baseline Rules](.github/.ai-rules/baseline/README.md) 
-[Frontend Rules](.github/.ai-rules/frontend/README.md)
-[Infrastructure Rules](.github/.ai-rules/infrastructure/README.md)
-[Developer CLI Rules](.github/.ai-rules/developer-cli/README.md)
-[Development Workflow](.github/.ai-rules/development-workflow/README.md)
+[Backend Rules](.ai-rules/backend/README.md)
+[Baseline - Entity Modeling](.ai-rules/baseline/entity-modeling.md)
+[Baseline - Code Style](.ai-rules/baseline/code-style.md)
+[Frontend Rules](.ai-rules/frontend/README.md)
+[Infrastructure Rules](.ai-rules/infrastructure/README.md)
+[Development Workflow](.ai-rules/development-workflow/README.md)
 
 When we learn new things that deviate from the existing rules, suggest making changes to the rules files or creating new rules files. When creating new rules files, always make sure to add them to the relevant README.md file.
 
