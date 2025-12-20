@@ -17,14 +17,12 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Produces("application/json")]
 public class RoleController : BaseController
 {
-    private readonly IConfiguration _configuration;
     private readonly IRoleRepository _roleRepository;
     // Removed IUnitOfWork dependency for repository DI pattern
 
     public RoleController(IConfiguration configuration, IRoleRepository roleRepository) :
         base(configuration)
     {
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _roleRepository = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
         // Removed IUnitOfWork assignment
     }

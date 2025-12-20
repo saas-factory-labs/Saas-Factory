@@ -18,7 +18,6 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Produces("application/json")]
 public class FileController : BaseController
 {
-    private readonly IConfiguration _configuration;
     private readonly IFileRepository _fileRepository;
     // Removed IUnitOfWork dependency for repository DI pattern
 
@@ -27,7 +26,6 @@ public class FileController : BaseController
     {
         _fileRepository = fileRepository ?? throw new ArgumentNullException(nameof(fileRepository));
         // Removed IUnitOfWork assignment
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
     /// <summary>
