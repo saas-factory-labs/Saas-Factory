@@ -15,17 +15,17 @@ internal sealed class ObjectStorageService : IDisposable
 
     private readonly AmazonS3Client _s3Client;
 
-    private ObjectStorageService(IConfiguration configuration, ILogger<ObjectStorageService> logger)
+    public ObjectStorageService(IConfiguration configuration, ILogger<ObjectStorageService> logger)
     {
         _configuration = configuration;
         _logger = logger;
 
         AccessKeyId = _configuration["ObjectStorage:AccessKeyId"] ?? throw new InvalidOperationException("ObjectStorage:AccessKeyId is not configured.");
-        _SecretAccessKey = _configuration["ObjectStorage:SecretAccessKey"] ?? throw new InvalidOperationException("ObjectStorage:SecretAccessKey is not configured.");
+        SecretAccessKey  = _configuration["ObjectStorage:SecretAccessKey"] ?? throw new InvalidOperationException("ObjectStorage:SecretAccessKey is not configured.");
         EndpointUrl = _configuration["ObjectStorage:EndpointUrl"] ?? throw new InvalidOperationException("ObjectStorage:EndpointUrl is not configured.");
         BucketName = _configuration["ObjectStorage:BucketName"] ?? throw new InvalidOperationException("ObjectStorage:BucketName is not configured.");
 
-        var credentials = new BasicAWSCredentials(AccessKeyId, _SecretAccessKey);
+        var credentials = new BasicAWSCredentials(AccessKeyId, SecretAccessKey);
         _s3Client = new AmazonS3Client(credentials, new AmazonS3Config
         {
             ServiceURL = EndpointUrl, // R2-specific endpoint
@@ -34,12 +34,16 @@ internal sealed class ObjectStorageService : IDisposable
     }
 
     public string AccessKeyId { get; set; }
-    public string _SecretAccessKey { get; set; }
+    public string SecretAccessKey  { get; set; }
     public string EndpointUrl { get; set; }
     public string BucketName { get; set; }
 
     public async Task DownloadObjectAsync(string bucketName, string filePath, string key)
     {
+        ArgumentNullException.ThrowIfNull(bucketName);
+        ArgumentNullException.ThrowIfNull(filePath);
+        ArgumentNullException.ThrowIfNull(key);
+
         try
         {
             var request = new GetObjectRequest
@@ -59,12 +63,16 @@ internal sealed class ObjectStorageService : IDisposable
         }
         catch (AmazonS3Exception e)
         {
-            _logger.LogError(ObjectStorageMessages.ErrorReadingObject, e.Message);
+            _logger.LogError(e, ObjectStorageMessages.ErrorReadingObject);
         }
     }
 
     public async Task UploadObjectAsync(string bucketName, string filePath, string key)
     {
+        ArgumentNullException.ThrowIfNull(bucketName);
+        ArgumentNullException.ThrowIfNull(filePath);
+        ArgumentNullException.ThrowIfNull(key);
+
         try
         {
             var request = new PutObjectRequest
@@ -79,7 +87,7 @@ internal sealed class ObjectStorageService : IDisposable
         }
         catch (AmazonS3Exception e)
         {
-            _logger.LogError(ObjectStorageMessages.ErrorWritingObject, e.Message);
+            _logger.LogError(e, ObjectStorageMessages.ErrorWritingObject);
         }
     }
 

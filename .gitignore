@@ -4,6 +4,16 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 .cache_ggshield
+.venv/
+.playwright-mcp/
+.workspace/
+.claude/
+.sonar/
+.idea/
+
+# Build artifacts
+build-artifacts/*
+!build-artifacts/README.md
 
 # custom files
 *\Debug
@@ -43,7 +53,9 @@ x86/
 [Aa][Rr][Mm]64/
 bld/
 [Bb]in/
+bin/
 [Oo]bj/
+obj/
 [Ll]og/
 [Ll]ogs/
 

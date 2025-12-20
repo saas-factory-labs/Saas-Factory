@@ -17,21 +17,18 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Produces("application/json")]
 public class UserController : BaseController
 {
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<AccountController> _logger;
     // Removed IUnitOfWork dependency for repository DI pattern
     private readonly IUserRepository _userRepository;
 
     public UserController(
-        ILogger<AccountController> logger,
         IConfiguration configuration,
         IUserRepository userRepository)
         : base(configuration)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-        // Removed IUnitOfWork assignment
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(userRepository);
+        
+        _userRepository = userRepository;
     }
 
     /// <summary>
@@ -127,6 +124,8 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V2)]
     public async Task<ActionResult> GetUserById(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         UserEntity? user = await _userRepository.GetByIdAsync(id);
         if (user is null) return NotFound(new { Message = $"User with ID {id} not found." });
 
@@ -224,6 +223,7 @@ public class UserController : BaseController
     public async Task<ActionResult> UpdateUser(string id, [FromBody] CreateUserRequest createUser,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
         ArgumentNullException.ThrowIfNull(createUser);
 
         UserEntity? existingUser = await _userRepository.GetByIdAsync(id);
@@ -260,6 +260,8 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V2)]
     public async Task<ActionResult> DeleteUser(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         UserEntity? existingUser = await _userRepository.GetByIdAsync(id);
         if (existingUser is null) return NotFound(new { Message = $"User with ID {id} not found." });
 

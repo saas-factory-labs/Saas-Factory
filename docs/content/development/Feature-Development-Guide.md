@@ -5,6 +5,49 @@ slug: feature-development-guide
 
 This guide provides an overview of adding new features to AppBlueprint using Clean Architecture and Domain-Driven Design principles.
 
+## 📚 Definitions
+
+### Domain-Driven Design Components
+
+- **Entity**: Core domain objects with unique identity
+- **DTO (Data Transfer Objects)**
+  - Request DTOs: API input models
+  - Response DTOs: API output models
+- **Interfaces**: Contracts defining service behaviors
+- **Services**: Business logic implementation
+- **Repositories**: Data persistence abstractions
+- **Database**
+  - Migrations: Version-controlled schema changes
+  - Contexts: Entity Framework DbContext configurations
+
+---
+
+## 📁 File Structure
+
+```
+├─ .github                            # GitHub workflows
+├─ Code                               # Application source code
+│  ├─ AppBlueprint                    # SaaS Blueprint projects
+│     ├─ ApiService                   # .NET API (REST API)    
+│     ├─ AppGateway                   # .NET API Gateway with YARP proxy
+│     ├─ AppHost                      # .NET Aspire AppHost
+│     ├─ DeveloperCli                 # .NET CLI for developers
+│     ├─ ServiceDefaults              # .NET Aspire service defaults
+│     ├─ Tests                        # .NET tests (unit, integration, architecture, bunit)
+│     ├─ Web                          # .NET Blazor server web app
+│     ├─ Shared-Modules               # Clean Architecture shared modules
+│       ├─ Api.Client.Sdk             # .NET architecture tests
+│       ├─ Application                # .NET architecture tests
+│       ├─ Contracts                  # .NET architecture tests
+│       ├─ Domain                     # .NET architecture tests
+│       ├─ Infrastructure             # .NET architecture tests
+│       ├─ Presentation.ApiModule     # .NET architecture tests
+│       ├─ SharedKernel               # .NET Aspire shared kernel
+│       ├─ UiKit                      # .NET architecture tests
+```
+
+---
+
 ## Development Process
 
 Adding a new feature typically involves these steps in order:

@@ -89,18 +89,24 @@ public class ApiKeyController : BaseController
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(apiKeyDto);
+        
         if (!ModelState.IsValid) return BadRequest(ModelState);
+        
+        string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
+        string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
+        string? userEmail = User.FindFirst("email")?.Value;
+        
         var newApiKey = new ApiKeyEntity
         {
             Name = apiKeyDto.Name,
             SecretRef = "adad",
-            TenantId = "tenant_placeholder", // TODO: Get from tenant context
+            TenantId = tenantId,
             Owner = new UserEntity
             {
-                Email = "test@test.com",
-                FirstName = "test",
-                LastName = "test",
-                UserName = "test",
+                Email = userEmail ?? "unknown@example.com",
+                FirstName = User.FindFirst("given_name")?.Value ?? "Unknown",
+                LastName = User.FindFirst("family_name")?.Value ?? "User",
+                UserName = User.Identity?.Name ?? userId,
                 Profile = new ProfileEntity()
             }
         };

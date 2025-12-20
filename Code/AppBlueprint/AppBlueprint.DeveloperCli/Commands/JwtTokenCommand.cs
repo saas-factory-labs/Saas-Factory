@@ -68,7 +68,7 @@ internal static class JwtTokenCommand
             {
                 try
                 {
-                    var directory = Path.GetDirectoryName(configPath) ?? Directory.GetCurrentDirectory();
+                    string directory = Path.GetDirectoryName(configPath) ?? Directory.GetCurrentDirectory();
                     var fileName = Path.GetFileName(configPath);
                     
                     // Load base appsettings.json first, then the specific file
@@ -87,7 +87,7 @@ internal static class JwtTokenCommand
                     
                     AnsiConsole.MarkupLine($"[green]✓[/] Loaded configuration from: {configPath}");
                     
-                    var provider = configuration["Authentication:Provider"] ?? "JWT";
+                    string provider = configuration["Authentication:Provider"] ?? "JWT";
                     AnsiConsole.MarkupLine($"[cyan]Using Provider:[/] {provider}");
                     
                     if (provider.Equals("Logto", StringComparison.OrdinalIgnoreCase))
@@ -118,7 +118,7 @@ internal static class JwtTokenCommand
         }
 
         // Get provider after config is loaded
-        var finalProvider = configuration?["Authentication:Provider"] ?? "Logto";
+        string finalProvider = configuration?["Authentication:Provider"] ?? "Logto";
         
         // For Logto, guide user to get token from browser
         if (finalProvider.Equals("Logto", StringComparison.OrdinalIgnoreCase))
@@ -165,7 +165,9 @@ internal static class JwtTokenCommand
             AnsiConsole.WriteLine();
 
             // Get the web app URL from configuration or use default
-            var webAppUrl = configuration?["WebApp:Url"] ?? "http://localhost:8092";
+            string webAppUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ??
+                               configuration?["WebApp:Url"] ??
+                               "http://localhost:8092";
             
             AnsiConsole.MarkupLine($"[yellow]Opening:[/] {webAppUrl}");
             AnsiConsole.MarkupLine("[dim]Waiting for you to log in...[/]");
@@ -574,9 +576,9 @@ Invoke-RestMethod -Uri 'https://localhost:8091/api/v1/authtest/echo' `
                 .AddColumn(new TableColumn("[yellow]Property[/]").Centered())
                 .AddColumn(new TableColumn("[yellow]Value[/]"));
 
-            var sub = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value ?? "N/A";
-            var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value ?? "N/A";
-            var nameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "name")?.Value ?? "N/A";
+            string sub = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value ?? "N/A";
+            string email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value ?? "N/A";
+            string nameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "name")?.Value ?? "N/A";
             
             table.AddRow("Subject (User ID)", sub);
             if (email != "N/A")

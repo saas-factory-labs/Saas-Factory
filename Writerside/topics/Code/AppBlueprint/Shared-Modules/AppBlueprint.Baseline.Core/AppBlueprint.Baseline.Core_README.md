@@ -1,2 +1,0 @@
-# AppBlueprint.Baseline.Core
-

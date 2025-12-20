@@ -1,3 +1,4 @@
+using AppBlueprint.Presentation.ApiModule.Middleware;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +32,9 @@ public static class ApplicationBuilderExtensions
         services.AddProblemDetails();
         services.AddAntiforgery();
         services.AddHttpContextAccessor();
+
+        // Register global exception handler for consistent error responses and detailed logging
+        services.AddExceptionHandler<GlobalExceptionHandler>();
 
         services.AddCorsPolicy();
         services.ConfigureApiVersioning();

@@ -77,7 +77,7 @@ public class MockProvider : BaseAuthenticationProvider
 
             // Extract email from current token for mock refresh
             var email = ExtractEmailFromToken(AccessToken);
-            var mockToken = GenerateMockToken(email ?? "unknown@example.com");
+            string mockToken = GenerateMockToken(email ?? "unknown@example.com");
 
             var result = new AuthenticationResult
             {

@@ -22,6 +22,8 @@ public class DawaAddressLookupService
 
     public async Task LookupAddress(string address, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(address);
+
         // Base URL for DAWA API
         string baseUrl = _configuration["DawaApi:BaseUrl"] ??
             "https://api.dataforsyningen.dk/adgangsadresser";

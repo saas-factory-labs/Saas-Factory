@@ -17,14 +17,12 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Produces("application/json")]
 public class RoleController : BaseController
 {
-    private readonly IConfiguration _configuration;
     private readonly IRoleRepository _roleRepository;
     // Removed IUnitOfWork dependency for repository DI pattern
 
     public RoleController(IConfiguration configuration, IRoleRepository roleRepository) :
         base(configuration)
     {
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _roleRepository = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
         // Removed IUnitOfWork assignment
     }
@@ -76,6 +74,8 @@ public class RoleController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RoleResponse>> Get(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         RoleEntity? role = await _roleRepository.GetByIdAsync(id);
         if (role is null) return NotFound(new { Message = $"Role with ID {id} not found." });
 
@@ -152,6 +152,7 @@ public class RoleController : BaseController
     public async Task<ActionResult> Put(string id, [FromBody] UpdateRoleRequest request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
         ArgumentNullException.ThrowIfNull(request);
 
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
@@ -185,23 +186,11 @@ public class RoleController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(id);
+
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
         if (existingRole is null) return NotFound(new { Message = $"Role with ID {id} not found." });
-
-        // _roleRepository.Delete(existingRole);
-        // await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
 }
-
-//public class RoleRequestDto
-//{
-//    public string Name { get; set; }
-//}
-
-//public class RoleResponseDto
-//{
-//    public int Id { get; set; }
-//    public string Name { get; set; }
-//}

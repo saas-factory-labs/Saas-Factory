@@ -23,6 +23,8 @@ namespace AppBlueprint.Infrastructure.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    private const string DefaultResendApiBaseUrl = "https://api.resend.com";
+
     /// <summary>
     /// Adds AppBlueprint Infrastructure services including database contexts, repositories, 
     /// external service integrations, and health checks.
@@ -175,7 +177,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var stripeApiKey = Environment.GetEnvironmentVariable("STRIPE_API_KEY") ??
+        string? stripeApiKey = Environment.GetEnvironmentVariable("STRIPE_API_KEY") ??
                           configuration.GetConnectionString("StripeApiKey");
 
         if (!string.IsNullOrEmpty(stripeApiKey))
@@ -200,13 +202,13 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var accessKeyId = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ACCESS_KEY_ID") ??
+        string? accessKeyId = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ACCESS_KEY_ID") ??
                          configuration["ObjectStorage:AccessKeyId"];
-        var secretAccessKey = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_SECRET_ACCESS_KEY") ??
+        string? secretAccessKey = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_SECRET_ACCESS_KEY") ??
                              configuration["ObjectStorage:SecretAccessKey"];
-        var endpointUrl = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ENDPOINT_URL") ??
+        string? endpointUrl = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ENDPOINT_URL") ??
                          configuration["ObjectStorage:EndpointUrl"];
-        var bucketName = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_BUCKET_NAME") ??
+        string? bucketName = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_BUCKET_NAME") ??
                         configuration["ObjectStorage:BucketName"];
 
         if (!string.IsNullOrEmpty(accessKeyId) &&
@@ -242,16 +244,18 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var resendApiKey = Environment.GetEnvironmentVariable("RESEND_API_KEY") ??
+        string? resendApiKey = Environment.GetEnvironmentVariable("RESEND_API_KEY") ??
                           configuration["Resend:ApiKey"];
 
         if (!string.IsNullOrEmpty(resendApiKey))
         {
-            const string ResendApiBaseUrl = "https://api.resend.com";
+            string resendApiBaseUrl = Environment.GetEnvironmentVariable("RESEND_BASE_URL") ??
+                                      configuration["Resend:BaseUrl"] ??
+                                      DefaultResendApiBaseUrl;
             services.AddHttpClient<IResend, ResendClient>()
                 .ConfigureHttpClient(client =>
                 {
-                    client.BaseAddress = new Uri(ResendApiBaseUrl);
+                    client.BaseAddress = new Uri(resendApiBaseUrl);
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendApiKey}");
                 });
             services.AddScoped<TransactionEmailService>();
@@ -276,7 +280,7 @@ public static class ServiceCollectionExtensions
         var healthChecksBuilder = services.AddHealthChecks();
 
         // Database health check
-        var dbConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ??
+        string? dbConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ??
                                 configuration.GetConnectionString("appblueprintdb");
 
         if (!string.IsNullOrEmpty(dbConnectionString))
@@ -288,7 +292,7 @@ public static class ServiceCollectionExtensions
         }
 
         // Redis health check (if configured)
-        var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ??
+        string? redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ??
                                    configuration.GetConnectionString("redis");
 
         if (!string.IsNullOrEmpty(redisConnectionString))
