@@ -165,7 +165,9 @@ internal static class JwtTokenCommand
             AnsiConsole.WriteLine();
 
             // Get the web app URL from configuration or use default
-            string webAppUrl = configuration?["WebApp:Url"] ?? "http://localhost:8092";
+            string webAppUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ??
+                               configuration?["WebApp:Url"] ??
+                               "http://localhost:8092";
             
             AnsiConsole.MarkupLine($"[yellow]Opening:[/] {webAppUrl}");
             AnsiConsole.MarkupLine("[dim]Waiting for you to log in...[/]");
