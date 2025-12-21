@@ -47,7 +47,7 @@ public class Auth0Provider : BaseAuthenticationProvider
             var jsonContent = JsonSerializer.Serialize(auth0Request);
             var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync($"{_configuration.Domain}/oauth/token", content, cancellationToken);
+            var response = await _httpClient.PostAsync(new Uri($"{_configuration.Domain}/oauth/token", UriKind.Absolute), content, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -111,7 +111,7 @@ public class Auth0Provider : BaseAuthenticationProvider
             var jsonContent = JsonSerializer.Serialize(refreshRequest);
             var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync($"{_configuration.Domain}/oauth/token", content, cancellationToken);
+            var response = await _httpClient.PostAsync(new Uri($"{_configuration.Domain}/oauth/token", UriKind.Absolute), content, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {

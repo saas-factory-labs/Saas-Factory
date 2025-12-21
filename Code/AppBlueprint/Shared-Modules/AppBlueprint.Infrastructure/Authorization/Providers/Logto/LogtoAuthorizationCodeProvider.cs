@@ -151,7 +151,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             });
 
             var response = await _httpClient.PostAsync(
-                $"{_configuration.Endpoint}/oidc/token", 
+                new Uri($"{_configuration.Endpoint}/oidc/token", UriKind.Absolute), 
                 formContent, 
                 cancellationToken);
 
@@ -246,7 +246,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             });
 
             var response = await _httpClient.PostAsync(
-                $"{_configuration.Endpoint}/oidc/token", 
+                new Uri($"{_configuration.Endpoint}/oidc/token", UriKind.Absolute), 
                 formContent, 
                 cancellationToken);
 

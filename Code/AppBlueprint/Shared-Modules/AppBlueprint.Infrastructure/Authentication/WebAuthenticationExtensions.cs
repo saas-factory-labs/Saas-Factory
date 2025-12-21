@@ -603,7 +603,7 @@ public static class WebAuthenticationExtensions
                 using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
                 var url = "https://32nkyp.logto.app/oidc/.well-known/openid-configuration";
                 var sw = System.Diagnostics.Stopwatch.StartNew();
-                var response = await client.GetAsync(url);
+                var response = await client.GetAsync(new Uri(url, UriKind.Absolute));
                 sw.Stop();
                 var content = await response.Content.ReadAsStringAsync();
                 

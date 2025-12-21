@@ -122,7 +122,7 @@ public class TodoService
         try
         {
             _logger.LogInformation("Testing connection to API at {BaseAddress}", _httpClient.BaseAddress);
-            var response = await _httpClient.GetAsync("/api/AuthDebug/ping", cancellationToken);
+            var response = await _httpClient.GetAsync(new Uri("/api/AuthDebug/ping", UriKind.Relative), cancellationToken);
             
             _logger.LogInformation(
                 "Connection test result: Status={StatusCode}, Success={IsSuccess}",
@@ -292,7 +292,7 @@ public class TodoService
 
         try
         {
-            var response = await _httpClient.GetAsync($"/api/v1.0/todo/{id}", cancellationToken);
+            var response = await _httpClient.GetAsync(new Uri($"/api/v1.0/todo/{id}", UriKind.Relative), cancellationToken);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
@@ -335,7 +335,7 @@ public class TodoService
 
         try
         {
-            var response = await _httpClient.DeleteAsync($"/api/v1.0/todo/{id}", cancellationToken);
+            var response = await _httpClient.DeleteAsync(new Uri($"/api/v1.0/todo/{id}", UriKind.Relative), cancellationToken);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
@@ -354,7 +354,7 @@ public class TodoService
 
         try
         {
-            var response = await _httpClient.PatchAsync($"/api/v1.0/todo/{id}/complete", null, cancellationToken);
+            var response = await _httpClient.PatchAsync(new Uri($"/api/v1.0/todo/{id}/complete", UriKind.Relative), null, cancellationToken);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
