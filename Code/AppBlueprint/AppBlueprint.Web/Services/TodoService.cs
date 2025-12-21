@@ -57,7 +57,7 @@ public class TodoService
             {
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 _logger.LogInformation("✅ Added authorization header to request. Token preview: {Preview}", 
-                    token.Substring(0, Math.Min(20, token.Length)) + "...");
+                    string.Concat(token.AsSpan(0, Math.Min(20, token.Length)), "..."));
             }
             else
             {

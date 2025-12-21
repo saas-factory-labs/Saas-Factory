@@ -126,7 +126,7 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
             {
                 // Add the Bearer token to the Authorization header
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var tokenPreview = token.Length > 50 ? token.Substring(0, 50) + "..." : token;
+                string tokenPreview = token.Length > 50 ? string.Concat(token.AsSpan(0, 50), "...") : token;
                 _logger.LogInformation("[AuthHandler] ✅ Added Bearer token to request: {Method} {Uri}, Token preview: {Preview}", 
                     request.Method, request.RequestUri, tokenPreview);
             }
