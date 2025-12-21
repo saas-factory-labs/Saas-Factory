@@ -74,7 +74,7 @@ public class TodoService
             _logger.LogInformation("=== AddAuthHeadersAsync SUCCESS ===");
             return true;
         }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("JavaScript interop"))
+        catch (InvalidOperationException ex) when (ex.Message.Contains("JavaScript interop", StringComparison.Ordinal))
         {
             _logger.LogWarning("❌ JavaScript interop not available (prerendering): {Message}", ex.Message);
             return false;

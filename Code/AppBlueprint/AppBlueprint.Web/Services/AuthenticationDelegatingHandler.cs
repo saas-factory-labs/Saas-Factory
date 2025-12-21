@@ -96,8 +96,8 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
                             if (authResult?.Properties?.Items != null)
                             {
                                 var tokenNames = authResult.Properties.Items
-                                    .Where(x => x.Key.StartsWith(".Token."))
-                                    .Select(x => x.Key.Replace(".Token.", ""));
+                                    .Where(x => x.Key.StartsWith(".Token.", StringComparison.Ordinal))
+                                    .Select(x => x.Key.Replace(".Token.", "", StringComparison.Ordinal));
                                 _logger.LogInformation("[AuthHandler] Available tokens in HttpContext: {Tokens}", 
                                     string.Join(", ", tokenNames));
                             }
