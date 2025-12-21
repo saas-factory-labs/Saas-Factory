@@ -29,10 +29,6 @@
         <!-- Authentication and Security -->
         <PackageReference Include="Logto.AspNetCore.Authentication"/>
         
-        <!-- API and Documentation -->
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" /> 
-
         <!-- Entity Framework and Database -->
         <PackageReference Include="Microsoft.EntityFrameworkCore"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
@@ -40,7 +36,6 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
         
         <!-- Configuration and Hosting -->
-        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
         <PackageReference Include="Microsoft.Extensions.Compliance.Redaction"/>
         <PackageReference Include="Microsoft.Extensions.Compliance.Abstractions"/>
         
