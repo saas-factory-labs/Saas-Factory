@@ -179,16 +179,16 @@
   </ItemGroup>
   <!-- ═══════════ LOGGING & OBSERVABILITY ═════════════════════════════ -->
   <ItemGroup>
-    <!-- OpenTelemetry (Corrected versions) -->
-    <PackageVersion Include="OpenTelemetry" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Api" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1" />
+    <!-- OpenTelemetry (Updated to 1.11.1+ to fix security vulnerability) -->
+    <PackageVersion Include="OpenTelemetry" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.10.0-beta.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.11.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.10.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.1" />
     <!-- Serilog -->
     <PackageVersion Include="Serilog" Version="4.2.0" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
