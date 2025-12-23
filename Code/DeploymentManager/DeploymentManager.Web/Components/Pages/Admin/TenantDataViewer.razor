@@ -1,0 +1,205 @@
+@page "/admin/tenant-viewer"
+@using AppBlueprint.Application.Services
+@using AppBlueprint.Infrastructure.DatabaseContexts
+@using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User
+@using Microsoft.EntityFrameworkCore
+@inject IAdminTenantAccessService AdminService
+@inject ILogger<TenantDataViewer> Logger
+
+<PageTitle>Tenant Data Viewer (Admin)</PageTitle>
+
+<div class="admin-tenant-viewer">
+    <div class="alert alert-warning admin-banner" role="alert">
+        <strong>⚠️ READ-ONLY ADMIN ACCESS</strong> - All access is logged for audit purposes
+    </div>
+
+    <h1>Tenant Data Viewer</h1>
+    <p class="text-muted">View tenant data for support and troubleshooting purposes</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Access Tenant Data</h5>
+            
+            <div class="mb-3">
+                <label for="tenantId" class="form-label">Tenant ID</label>
+                <input type="text" class="form-control" id="tenantId" @bind="TenantId" 
+                       placeholder="e.g., tenant-abc-123">
+            </div>
+
+            <div class="mb-3">
+                <label for="reason" class="form-label">Reason for Access (Required for Audit)</label>
+                <textarea class="form-control" id="reason" rows="3" @bind="Reason"
+                          placeholder="e.g., Support ticket #12345 - User unable to login"></textarea>
+            </div>
+
+            <button class="btn btn-primary" @onclick="LoadTenantData" disabled="@IsLoading">
+                @if (IsLoading)
+                {
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <span>Loading...</span>
+                }
+                else
+                {
+                    <span>Load Tenant Data</span>
+                }
+            </button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>Error:</strong> @ErrorMessage
+        </div>
+    }
+
+    @if (Users is not null && Users.Any())
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Users in Tenant: @TenantId</h5>
+                <p class="text-muted">Total users: @Users.Count</p>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Users)
+                            {
+                                <tr>
+                                    <td><code>@user.Id</code></td>
+                                    <td>@user.Email</td>
+                                    <td><span class="badge bg-primary">@user.Role</span></td>
+                                    <td>@user.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .admin-banner {
+        border-left: 5px solid #ff6b6b;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    .admin-tenant-viewer {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+</style>
+
+@code {
+    private string TenantId { get; set; } = string.Empty;
+    private string Reason { get; set; } = string.Empty;
+    private List<UserEntity>? Users { get; set; }
+    private string? ErrorMessage { get; set; }
+    private bool IsLoading { get; set; }
+
+    /// <summary>
+    /// Loads tenant data using AdminTenantAccessService for read-only admin access.
+    /// ⚠️ All access is logged for audit purposes.
+    /// ⚠️ Users retrieved with .AsNoTracking() to prevent modifications.
+    /// </summary>
+    private async Task LoadTenantData()
+    {
+        ErrorMessage = null;
+        Users = null;
+        IsLoading = true;
+
+        try
+        {
+            // Validate inputs
+            if (string.IsNullOrWhiteSpace(TenantId))
+            {
+                ErrorMessage = "Tenant ID is required";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Reason))
+            {
+                ErrorMessage = "Reason for access is required for audit logging";
+                return;
+            }
+
+            // Load tenant users using admin service
+            // ✅ This bypasses Named Query Filters
+            // ✅ RLS still enforces based on app.current_tenant_id session variable
+            // ✅ All access is logged with admin user, tenant, reason, timestamp
+            Users = await AdminService.ExecuteReadOnlyAsAdminAsync(
+                TenantId,
+                Reason,
+                async () =>
+                {
+                    // Note: In a real implementation, inject ApplicationDbContext
+                    // For this example, we're showing the pattern
+                    throw new NotImplementedException(
+                        "ApplicationDbContext must be injected. " +
+                        "This is a demonstration of the admin access pattern. " +
+                        "See AdminTenantAccessTests.cs for working examples.");
+                    
+                    // Real implementation would be:
+                    // return await _dbContext.Users
+                    //     .AsNoTracking() // ✅ Read-only - prevents EF Core change tracking
+                    //     .IgnoreQueryFilters() // Bypass Named Query Filters
+                    //     .Where(u => u.TenantId == TenantId)
+                    //     .OrderBy(u => u.CreatedAt)
+                    //     .ToListAsync();
+                });
+
+            Logger.LogInformation(
+                "Successfully loaded {UserCount} users for tenant {TenantId}",
+                Users.Count,
+                TenantId);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            ErrorMessage = $"Access denied: {ex.Message}. Only SuperAdmins can view tenant data.";
+            Logger.LogWarning(ex, "Unauthorized admin access attempt for tenant {TenantId}", TenantId);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Failed to load tenant data: {ex.Message}";
+            Logger.LogError(ex, "Error loading tenant data for tenant {TenantId}", TenantId);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    /// <summary>
+    /// Alternative approach: Load specific data types (messages, teams, etc.)
+    /// This demonstrates how to use the admin service for different entity types.
+    /// </summary>
+    private async Task<List<TEntity>> LoadTenantEntities<TEntity>(string entityType) where TEntity : class
+    {
+        return await AdminService.ExecuteReadOnlyAsAdminAsync(
+            TenantId,
+            $"{Reason} - Loading {entityType}",
+            async () =>
+            {
+                throw new NotImplementedException("See AdminTenantAccessTests.cs for examples");
+                
+                // Real implementation:
+                // return await _dbContext.Set<TEntity>()
+                //     .AsNoTracking() // ✅ Read-only
+                //     .IgnoreQueryFilters()
+                //     // Add tenant filter if entity has TenantId property
+                //     .ToListAsync();
+            });
+    }
+}
