@@ -1,4 +1,4 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
+﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities.EntityConfigurations;

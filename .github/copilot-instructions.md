@@ -17,6 +17,14 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
 - Writerside documentation at `/Writerside/topic/README.md`
 - Assess folder structure and project files for example to build and run each project
 - Assess the tech stack from the writerside documentation
+- **ALWAYS research official documentation and industry best practices**: Before implementing any architectural pattern, design decision, or technical solution, you MUST research and consult official documentation from Microsoft, relevant framework authors, or industry-standard sources. Use the `fetch_webpage` tool to retrieve authoritative guidance. This is MANDATORY for:
+  - Multi-tenancy patterns and database design
+  - Authentication and authorization strategies
+  - Performance optimization techniques
+  - Security implementations
+  - Cloud architecture patterns
+  - Framework-specific best practices
+  - When conflicting approaches exist, prefer patterns documented by Microsoft or the framework's official maintainers
 - **Consult Microsoft documentation for best practices**: Always refer to official Microsoft documentation for .NET, C#, and ASP.NET Core best practices. Key resources include:
   - [C# Coding Conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
   - [.NET API Browser](https://learn.microsoft.com/en-us/dotnet/api/)

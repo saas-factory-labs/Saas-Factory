@@ -42,7 +42,7 @@ public sealed class TeamEntityConfiguration : IEntityTypeConfiguration<TeamEntit
             .HasMaxLength(40);
 
         builder.HasOne(t => t.Tenant)
-            .WithMany(tenant => tenant.Teams)
+            .WithMany()
             .HasForeignKey(t => t.TenantId)
             .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("FK_Teams_Tenants_TenantId");

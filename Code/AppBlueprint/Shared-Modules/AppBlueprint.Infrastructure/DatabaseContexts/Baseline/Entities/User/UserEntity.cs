@@ -1,10 +1,10 @@
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailInvite;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.SharedKernel;
 using EmailVerificationEntity =
     AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.EmailVerification.EmailVerificationEntity;

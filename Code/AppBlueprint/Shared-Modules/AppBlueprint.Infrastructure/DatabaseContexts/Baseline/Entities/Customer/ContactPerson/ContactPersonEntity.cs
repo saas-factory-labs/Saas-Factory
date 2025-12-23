@@ -1,6 +1,6 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
+﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;

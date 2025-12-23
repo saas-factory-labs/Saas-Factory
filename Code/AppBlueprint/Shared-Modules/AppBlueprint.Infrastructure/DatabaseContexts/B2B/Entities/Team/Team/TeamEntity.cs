@@ -1,6 +1,6 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
+﻿using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
 
