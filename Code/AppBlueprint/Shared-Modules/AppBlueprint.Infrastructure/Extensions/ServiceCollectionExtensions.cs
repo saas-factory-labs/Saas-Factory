@@ -6,6 +6,7 @@ using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
@@ -28,6 +29,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds AppBlueprint Infrastructure services including database contexts, repositories, 
     /// external service integrations, and health checks.
+    /// Uses the new flexible DbContext configuration based on DatabaseContextOptions.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration (used as fallback if environment variables not set).</param>
@@ -42,7 +44,9 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(environment);
 
-        services.AddDatabaseContexts(configuration);
+        // Use new flexible DbContext configuration
+        services.AddConfiguredDbContext(configuration);
+        
         services.AddRepositories();
         
         // Only add web authentication for non-API environments (Blazor Server)
@@ -59,10 +63,40 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Registers database contexts (ApplicationDbContext and B2BDbContext).
-    /// Uses environment variable DATABASE_CONNECTION_STRING or falls back to configuration.
+    /// Adds AppBlueprint Infrastructure services using legacy database context registration.
+    /// This method is maintained for backward compatibility.
+    /// Consider migrating to AddAppBlueprintInfrastructure() with DatabaseContextOptions configuration.
     /// </summary>
-    private static IServiceCollection AddDatabaseContexts(
+    /// <param name="services">The service collection.</param>
+    /// <param name="configuration">The configuration (used as fallback if environment variables not set).</param>
+    /// <param name="environment">The hosting environment (required for authentication setup).</param>
+    /// <returns>The service collection for chaining.</returns>
+    [Obsolete("Use AddAppBlueprintInfrastructure() with DatabaseContextOptions configuration instead. This method will be removed in a future version.")]
+    public static IServiceCollection AddAppBlueprintInfrastructureLegacy(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment environment)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(environment);
+
+        services.AddDatabaseContextsLegacy(configuration);
+        services.AddRepositories();
+        services.AddUnitOfWork();
+        services.AddExternalServices(configuration);
+        services.AddHealthChecksServices(configuration);
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers database contexts (ApplicationDbContext and B2BDbContext) - LEGACY METHOD.
+    /// Uses environment variable DATABASE_CONNECTION_STRING or falls back to configuration.
+    /// This method is maintained for backward compatibility.
+    /// </summary>
+    [Obsolete("Use DbContextConfigurator.AddConfiguredDbContext() instead.")]
+    private static IServiceCollection AddDatabaseContextsLegacy(
         this IServiceCollection services,
         IConfiguration configuration)
     {
