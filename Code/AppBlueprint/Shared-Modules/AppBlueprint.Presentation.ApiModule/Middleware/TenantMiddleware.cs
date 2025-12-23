@@ -23,7 +23,9 @@ public class TenantMiddleware(RequestDelegate next)
         "/api/test",
         "/api/system", // System endpoints should not require tenant
         "/api/AuthDebug" // Debug endpoints for troubleshooting
-    ]; public async Task Invoke(HttpContext? context)
+    ];
+
+    public async Task Invoke(HttpContext? context)
     {
         ArgumentNullException.ThrowIfNull(context);
 
@@ -34,16 +36,36 @@ public class TenantMiddleware(RequestDelegate next)
 
         if (!shouldBypassTenantValidation)
         {
-            string? tenantId = context.Request.Headers["tenant-id"].FirstOrDefault();
-            if (string.IsNullOrEmpty(tenantId))
+            // SECURITY: For authenticated requests, ALWAYS extract tenant from JWT claims
+            // JWT tokens are cryptographically signed and cannot be tampered with
+            // Headers, subdomains, and path segments can all be forged by malicious clients
+            if (context.User.Identity?.IsAuthenticated == true)
             {
-                context.Response.StatusCode = 400; // Bad Request
+                // Try primary tenant claim name
+                string? tenantId = context.User.FindFirst("tenant_id")?.Value;
+                
+                // Fallback to alternative claim name
+                tenantId ??= context.User.FindFirst("tid")?.Value;
+                
+                if (string.IsNullOrEmpty(tenantId))
+                {
+                    context.Response.StatusCode = 401; // Unauthorized
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsync("{\"error\":\"Tenant claim missing from JWT\",\"message\":\"Authenticated users must have a tenant_id or tid claim in their JWT token.\"}\n");
+                    return;
+                }
+                
+                context.Items["TenantId"] = tenantId;
+            }
+            else
+            {
+                // Unauthenticated requests should not access tenant-scoped data
+                // Exception: Pre-authentication scenarios (login, registration) should be excluded via ShouldBypassTenantValidation
+                context.Response.StatusCode = 401; // Unauthorized
                 context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync("{\"error\":\"Tenant ID is required\",\"message\":\"Please provide a valid tenant-id header.\"}");
+                await context.Response.WriteAsync("{\"error\":\"Authentication required\",\"message\":\"This endpoint requires authentication with a valid tenant context.\"}\n");
                 return;
             }
-
-            context.Items["TenantId"] = tenantId;
         }
 
         await next(context);

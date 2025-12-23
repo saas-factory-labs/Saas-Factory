@@ -8,13 +8,16 @@ using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
+using AppBlueprint.Infrastructure.HealthChecks;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Resend;
 using Stripe;
@@ -305,6 +308,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers health check services for database, Redis, and external endpoints.
     /// Uses environment variables or configuration for connection strings.
+    /// CRITICAL: Includes Row-Level Security validation to prevent application startup without RLS.
     /// </summary>
     private static IServiceCollection AddHealthChecksServices(
         this IServiceCollection services,
@@ -322,6 +326,17 @@ public static class ServiceCollectionExtensions
                 dbConnectionString,
                 name: "postgresql",
                 tags: new[] { "db", "postgresql" });
+
+            // CRITICAL: Row-Level Security validation
+            // Application MUST NOT start if RLS is not properly configured
+            // This prevents tenant data leakage if RLS policies are missing
+            healthChecksBuilder.AddCheck(
+                "row-level-security",
+                new RowLevelSecurityHealthCheck(
+                    dbConnectionString,
+                    services.BuildServiceProvider().GetRequiredService<ILogger<RowLevelSecurityHealthCheck>>()),
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "db", "security", "rls", "critical" });
         }
 
         // Redis health check (if configured)
