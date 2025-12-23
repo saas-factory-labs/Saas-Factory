@@ -76,12 +76,12 @@ public class TodoService
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("JavaScript interop", StringComparison.Ordinal))
         {
-            _logger.LogWarning("❌ JavaScript interop not available (prerendering): {Message}", ex.Message);
+            _logger.LogWarning(ex, "❌ JavaScript interop not available (prerendering)");
             return false;
         }
         catch (JSException ex)
         {
-            _logger.LogWarning("❌ JavaScript exception: {Message}", ex.Message);
+            _logger.LogWarning(ex, "❌ JavaScript exception");
             return false;
         }
         catch (Exception ex)
@@ -108,7 +108,7 @@ public class TodoService
         }
         catch (Exception ex)
         {
-            _logger.LogDebug("Could not retrieve tenant ID: {Message}", ex.Message);
+            _logger.LogDebug(ex, "Could not retrieve tenant ID");
         }
 
         return "default-tenant";

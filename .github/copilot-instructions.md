@@ -107,6 +107,62 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
     var person = new Person();
     var users = await _repository.GetAllAsync();
     ```
+- **Use Uri objects instead of strings for HttpClient methods (CA2234)**: When calling HttpClient methods like GetAsync, PostAsync, PutAsync, DeleteAsync, use `new Uri(url, UriKind.Relative)` or `new Uri(url, UriKind.Absolute)` instead of passing strings directly. This provides better type safety and makes the API contract clearer.
+  - **Examples**:
+    ```csharp
+    // ✅ Correct - using Uri objects
+    var response = await _httpClient.GetAsync(new Uri($"api/todos/{tenantId}", UriKind.Relative));
+    var result = await _httpClient.PostAsync(new Uri("https://auth.example.com/token", UriKind.Absolute), content);
+    
+    // ❌ Incorrect - using strings
+    var response = await _httpClient.GetAsync($"api/todos/{tenantId}");
+    var result = await _httpClient.PostAsync("https://auth.example.com/token", content);
+    ```
+- **Use AsSpan for string operations to avoid allocations (CA1845)**: When you need a substring or slice of a string for temporary use (like logging previews), use `AsSpan` instead of `Substring` to avoid heap allocations. Combine with `string.Concat` for building strings.
+  - **Examples**:
+    ```csharp
+    // ✅ Correct - zero-allocation using AsSpan
+    string preview = string.Concat(token.AsSpan(0, Math.Min(20, token.Length)), "...");
+    
+    // ❌ Incorrect - allocates substring on heap
+    string preview = token.Substring(0, Math.Min(20, token.Length)) + "...";
+    ```
+- **Always specify StringComparison for string operations (CA1307/CA1310)**: When using string methods like Contains, StartsWith, EndsWith, Replace, IndexOf on technical/non-user-facing strings (URLs, tokens, error messages, configuration keys, cookie names), always specify `StringComparison.Ordinal` or `StringComparison.OrdinalIgnoreCase`. This ensures culture-independent, predictable, and performant comparisons.
+  - **When to use Ordinal**:
+    - Technical identifiers (cookie names, header names, configuration keys)
+    - Error messages and diagnostic strings
+    - Token parsing and authentication strings
+    - File paths and URLs (case-sensitive)
+  - **When to use OrdinalIgnoreCase**:
+    - File extensions
+    - Protocol names (http/https)
+    - Configuration values where case shouldn't matter
+  - **When to skip StringComparison**:
+    - User-facing text that needs culture-aware comparison
+    - Natural language processing
+    - When explicitly comparing in current culture
+  - **Examples**:
+    ```csharp
+    // ✅ Correct - technical strings use Ordinal
+    if (errorMessage.Contains("JavaScript interop", StringComparison.Ordinal))
+    if (key.StartsWith(".Token.", StringComparison.Ordinal))
+    string cleaned = key.Replace(".Token.", "", StringComparison.Ordinal);
+    var correlationCookie = cookies.Keys.FirstOrDefault(k => k.Contains("Correlation", StringComparison.Ordinal));
+    
+    // ✅ Correct - case-insensitive when appropriate
+    if (fileExtension.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+    
+    // ❌ Incorrect - missing StringComparison
+    if (errorMessage.Contains("JavaScript interop"))
+    if (key.StartsWith(".Token."))
+    ```
+- **Remove unnecessary package references (NU1510)**: Don't explicitly reference packages that are already included in the .NET SDK or available transitively through other dependencies. This reduces maintenance burden and avoids version conflicts. Common packages to avoid:
+  - `System.Text.Json` (included in .NET 6+)
+  - `Microsoft.Extensions.*` packages when already available through `Microsoft.AspNetCore.App` or other framework references
+  - Any package already referenced by a direct dependency (transitive references)
+  - Before adding a package reference, check if it's already available transitively
+- **Keep packages updated and secure (NU1902)**: Regularly check for and fix security vulnerabilities in NuGet packages. Use `Nuget MCP server` to find latest stable versions without known vulnerabilities. Upgrade to patch security issues promptly, ensuring all packages in a family use consistent versions (e.g., all OpenTelemetry packages at 1.11.1).
+- **Prefer stable package versions over prerelease**: For production code, always use stable (non-RC, non-preview) package versions when available. Use `Nuget MCP server` with `allow_prerelease=false` to find stable releases. Only use prerelease packages when no stable version exists or when explicitly required for bleeding-edge framework features.
 - Use `dotnet format` to format the code according to the `.editorconfig` file. If you are unable to do so, please inform the user and ask for assistance.
 - Read the `.editorconfig` file to understand the coding style that need to be followed
 - Do not remove commented out code unless explicitly asked to do so. If you are unsure, please ask the user for clarification.

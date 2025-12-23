@@ -230,6 +230,11 @@ dotnet_diagnostic.CA1303.severity = suggestion
 # LoggerMessage is only beneficial for hot-path logging, not typical application logging
 dotnet_diagnostic.CA1848.severity = suggestion
 
+# CA1859: Use concrete types when possible for improved performance
+# Suppressed for factory pattern methods where interface return types maintain encapsulation
+# The performance gain is negligible (nanoseconds) for non-hot-path code like authentication
+dotnet_diagnostic.CA1859.severity = suggestion
+
 # CA1062: Validate arguments of public methods
 # Suppressed for EF migrations and set to warning elsewhere
 dotnet_diagnostic.CA1062.severity = warning

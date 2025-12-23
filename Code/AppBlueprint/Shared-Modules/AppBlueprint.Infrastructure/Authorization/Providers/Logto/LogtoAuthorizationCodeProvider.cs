@@ -15,8 +15,6 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     private readonly HttpClient _httpClient;
     private readonly LogtoConfiguration _configuration;
     private readonly ILogger<LogtoAuthorizationCodeProvider> _logger;
-    private const string CodeVerifierKey = "logto_code_verifier";
-    private const string StateKey = "logto_state";
 
     public LogtoAuthorizationCodeProvider(
         ITokenStorageService tokenStorage,
@@ -120,7 +118,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 if (stateData.TryGetProperty("cv", out var cvElement))
                 {
                     codeVerifier = cvElement.GetString();
-                    _logger.LogInformation("Code verifier extracted from state parameter");
+                    _logger.LogDebug("Code verifier extracted from state parameter");
                 }
             }
             catch (Exception ex)
