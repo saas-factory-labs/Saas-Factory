@@ -36,7 +36,7 @@ public class TeamService
     {
         try
         {
-            var response = await _httpClient.GetAsync("/api/v1/teams", cancellationToken);
+            var response = await _httpClient.GetAsync(new Uri("/api/v1/teams", UriKind.Relative), cancellationToken);
 
             // If error, read response body for details before throwing
             if (!response.IsSuccessStatusCode)
@@ -65,7 +65,7 @@ public class TeamService
 
         try
         {
-            var response = await _httpClient.GetAsync($"/api/v1/teams/{id}", cancellationToken);
+            var response = await _httpClient.GetAsync(new Uri($"/api/v1/teams/{id}", UriKind.Relative), cancellationToken);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<TeamResponse>(_jsonOptions, cancellationToken);
@@ -127,7 +127,7 @@ public class TeamService
 
         try
         {
-            var response = await _httpClient.DeleteAsync($"/api/v1/teams/{id}", cancellationToken);
+            var response = await _httpClient.DeleteAsync(new Uri($"/api/v1/teams/{id}", UriKind.Relative), cancellationToken);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)

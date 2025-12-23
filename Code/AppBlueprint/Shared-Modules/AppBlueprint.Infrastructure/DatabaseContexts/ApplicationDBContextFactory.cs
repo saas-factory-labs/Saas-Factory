@@ -33,6 +33,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
         using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
         var logger = loggerFactory.CreateLogger<ApplicationDbContext>();
 
-        return new ApplicationDbContext(optionsBuilder.Options, configuration, httpContextAccessor, logger);
+        // Pass null for ITenantContextAccessor - migrations don't need tenant filtering
+        return new ApplicationDbContext(optionsBuilder.Options, configuration, httpContextAccessor, logger, null);
     }
 }

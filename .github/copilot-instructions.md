@@ -2,7 +2,7 @@
 
 This directory contains the rules for AI assistants to follow when working with this codebase from https://github.com/saas-factory-labs/Saas-Factory
 This directory contains specific guidance for AI assistants to follow when working with this codebase.
-Claude 4 Sonnet works best in this context in Github Copilot, possibly other models such as Gemini 2.5 Pro and GPT 5 could also work.
+Claude 4.5 Sonnet works best in this context in Github Copilot, possibly other models such as Gemini 3 Pro and GPT 5.2 could also work.
 
 ## Agent personality
 
@@ -17,6 +17,20 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
 - Writerside documentation at `/Writerside/topic/README.md`
 - Assess folder structure and project files for example to build and run each project
 - Assess the tech stack from the writerside documentation
+- **ALWAYS research official documentation and industry best practices**: Before implementing any architectural pattern, design decision, or technical solution, you MUST research and consult official documentation from Microsoft, relevant framework authors, or industry-standard sources. Use the `fetch_webpage` tool to retrieve authoritative guidance. This is MANDATORY for:
+  - Multi-tenancy patterns and database design
+  - Authentication and authorization strategies
+  - Performance optimization techniques
+  - Security implementations
+  - Cloud architecture patterns
+  - Framework-specific best practices
+  - When conflicting approaches exist, prefer patterns documented by Microsoft or the framework's official maintainers
+- **Consult Microsoft documentation for best practices**: Always refer to official Microsoft documentation for .NET, C#, and ASP.NET Core best practices. Key resources include:
+  - [C# Coding Conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
+  - [.NET API Browser](https://learn.microsoft.com/en-us/dotnet/api/)
+  - [ASP.NET Core Documentation](https://learn.microsoft.com/en-us/aspnet/core/)
+  - [Code Analysis Rules](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/)
+  - When in doubt about a coding pattern or best practice, verify against Microsoft's official guidance before implementing
 - **Null checks and error handling**: Implement runtime null validation at trust boundaries, complementing compile-time nullable reference types. Use `ArgumentNullException.ThrowIfNull()` for guard clauses and `is null`/`is not null` for logic checks. Do not use `??` or `??=` operators. Use `ThrowIfEmpty()` for string/collection validation where appropriate.
   - **When to add runtime guard clauses** (per [Microsoft CA1062](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1062) and [nullable reference types guidance](https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references)):
     - **Externally visible methods** (`public`/`protected`) - Can be called from unknown assemblies
@@ -101,6 +115,62 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
     var person = new Person();
     var users = await _repository.GetAllAsync();
     ```
+- **Use Uri objects instead of strings for HttpClient methods (CA2234)**: When calling HttpClient methods like GetAsync, PostAsync, PutAsync, DeleteAsync, use `new Uri(url, UriKind.Relative)` or `new Uri(url, UriKind.Absolute)` instead of passing strings directly. This provides better type safety and makes the API contract clearer.
+  - **Examples**:
+    ```csharp
+    // ✅ Correct - using Uri objects
+    var response = await _httpClient.GetAsync(new Uri($"api/todos/{tenantId}", UriKind.Relative));
+    var result = await _httpClient.PostAsync(new Uri("https://auth.example.com/token", UriKind.Absolute), content);
+    
+    // ❌ Incorrect - using strings
+    var response = await _httpClient.GetAsync($"api/todos/{tenantId}");
+    var result = await _httpClient.PostAsync("https://auth.example.com/token", content);
+    ```
+- **Use AsSpan for string operations to avoid allocations (CA1845)**: When you need a substring or slice of a string for temporary use (like logging previews), use `AsSpan` instead of `Substring` to avoid heap allocations. Combine with `string.Concat` for building strings.
+  - **Examples**:
+    ```csharp
+    // ✅ Correct - zero-allocation using AsSpan
+    string preview = string.Concat(token.AsSpan(0, Math.Min(20, token.Length)), "...");
+    
+    // ❌ Incorrect - allocates substring on heap
+    string preview = token.Substring(0, Math.Min(20, token.Length)) + "...";
+    ```
+- **Always specify StringComparison for string operations (CA1307/CA1310)**: When using string methods like Contains, StartsWith, EndsWith, Replace, IndexOf on technical/non-user-facing strings (URLs, tokens, error messages, configuration keys, cookie names), always specify `StringComparison.Ordinal` or `StringComparison.OrdinalIgnoreCase`. This ensures culture-independent, predictable, and performant comparisons.
+  - **When to use Ordinal**:
+    - Technical identifiers (cookie names, header names, configuration keys)
+    - Error messages and diagnostic strings
+    - Token parsing and authentication strings
+    - File paths and URLs (case-sensitive)
+  - **When to use OrdinalIgnoreCase**:
+    - File extensions
+    - Protocol names (http/https)
+    - Configuration values where case shouldn't matter
+  - **When to skip StringComparison**:
+    - User-facing text that needs culture-aware comparison
+    - Natural language processing
+    - When explicitly comparing in current culture
+  - **Examples**:
+    ```csharp
+    // ✅ Correct - technical strings use Ordinal
+    if (errorMessage.Contains("JavaScript interop", StringComparison.Ordinal))
+    if (key.StartsWith(".Token.", StringComparison.Ordinal))
+    string cleaned = key.Replace(".Token.", "", StringComparison.Ordinal);
+    var correlationCookie = cookies.Keys.FirstOrDefault(k => k.Contains("Correlation", StringComparison.Ordinal));
+    
+    // ✅ Correct - case-insensitive when appropriate
+    if (fileExtension.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+    
+    // ❌ Incorrect - missing StringComparison
+    if (errorMessage.Contains("JavaScript interop"))
+    if (key.StartsWith(".Token."))
+    ```
+- **Remove unnecessary package references (NU1510)**: Don't explicitly reference packages that are already included in the .NET SDK or available transitively through other dependencies. This reduces maintenance burden and avoids version conflicts. Common packages to avoid:
+  - `System.Text.Json` (included in .NET 6+)
+  - `Microsoft.Extensions.*` packages when already available through `Microsoft.AspNetCore.App` or other framework references
+  - Any package already referenced by a direct dependency (transitive references)
+  - Before adding a package reference, check if it's already available transitively
+- **Keep packages updated and secure (NU1902)**: Regularly check for and fix security vulnerabilities in NuGet packages. Use `Nuget MCP server` to find latest stable versions without known vulnerabilities. Upgrade to patch security issues promptly, ensuring all packages in a family use consistent versions (e.g., all OpenTelemetry packages at 1.11.1).
+- **Prefer stable package versions over prerelease**: For production code, always use stable (non-RC, non-preview) package versions when available. Use `Nuget MCP server` with `allow_prerelease=false` to find stable releases. Only use prerelease packages when no stable version exists or when explicitly required for bleeding-edge framework features.
 - Use `dotnet format` to format the code according to the `.editorconfig` file. If you are unable to do so, please inform the user and ask for assistance.
 - Read the `.editorconfig` file to understand the coding style that need to be followed
 - Do not remove commented out code unless explicitly asked to do so. If you are unsure, please ask the user for clarification.
@@ -125,11 +195,12 @@ Only do work on the AppBlueprint directory and related projects.
 
 **Read the following additional instructions:**
 
-[Backend Rules](.ai-rules/backend/README.md) 
-[Baseline Rules](.ai-rules/baseline/README.md) 
+[Backend Rules](.ai-rules/backend/README.md)
+[Baseline - Clean Architecture Dependencies](.ai-rules/baseline/clean-architecture-dependencies.md) - **CRITICAL: Read this FIRST before any code changes**
+[Baseline - Entity Modeling](.ai-rules/baseline/entity-modeling.md)
+[Baseline - Code Style](.ai-rules/baseline/code-style.md)
 [Frontend Rules](.ai-rules/frontend/README.md)
 [Infrastructure Rules](.ai-rules/infrastructure/README.md)
-[Developer CLI Rules](.ai-rules/developer-cli/README.md)
 [Development Workflow](.ai-rules/development-workflow/README.md)
 
 When we learn new things that deviate from the existing rules, suggest making changes to the rules files or creating new rules files. When creating new rules files, always make sure to add them to the relevant README.md file.

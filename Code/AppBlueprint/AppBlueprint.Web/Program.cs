@@ -1,5 +1,6 @@
 using AppBlueprint.Api.Client.Sdk;
 using AppBlueprint.Infrastructure.Authentication;
+using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.UiKit;
 using AppBlueprint.UiKit.Models;
 using AppBlueprint.Web;
@@ -91,6 +92,9 @@ builder.Host.UseDefaultServiceProvider((context, options) =>
     options.ValidateScopes = true;
     options.ValidateOnBuild = true;
 });
+
+// Register configuration options with validation
+builder.Services.AddAppBlueprintConfiguration(builder.Configuration, builder.Environment);
 
 var navigationRoutes = builder.Configuration
     .GetSection("Navigation:Routes")

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
 

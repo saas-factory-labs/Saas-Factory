@@ -1,19 +1,20 @@
+using AppBlueprint.Application.Options;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Stripe;
 
 namespace AppBlueprint.Infrastructure.Services;
 
 public class StripeSubscriptionService
 {
-    private readonly string _stripeApiKey;
+    private readonly StripeOptions _options;
 
-
-    public StripeSubscriptionService(IConfiguration configuration)
+    public StripeSubscriptionService(IOptions<StripeOptions> options)
     {
-        _stripeApiKey = configuration.GetConnectionString("StripeApiKey") ?? throw new InvalidOperationException("StripeApiKey connection string is not configured.");
-
-        StripeConfiguration.ApiKey = _stripeApiKey;
+        ArgumentNullException.ThrowIfNull(options);
+        
+        _options = options.Value;
+        StripeConfiguration.ApiKey = _options.ApiKey;
     }
 
     public CustomerEntity? CreateCustomer(string email, string paymentMethodId)

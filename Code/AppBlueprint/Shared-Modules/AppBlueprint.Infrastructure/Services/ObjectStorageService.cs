@@ -1,42 +1,35 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
+using AppBlueprint.Application.Options;
 using AppBlueprint.Infrastructure.Resources;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace AppBlueprint.Infrastructure.Services;
 
 // Cloudflare R2 Object Storage
 internal sealed class ObjectStorageService : IDisposable
 {
-    private readonly IConfiguration _configuration;
+    private readonly CloudflareR2Options _options;
     private readonly ILogger<ObjectStorageService> _logger;
-
     private readonly AmazonS3Client _s3Client;
 
-    public ObjectStorageService(IConfiguration configuration, ILogger<ObjectStorageService> logger)
+    public ObjectStorageService(IOptions<CloudflareR2Options> options, ILogger<ObjectStorageService> logger)
     {
-        _configuration = configuration;
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(logger);
+        
+        _options = options.Value;
         _logger = logger;
 
-        AccessKeyId = _configuration["ObjectStorage:AccessKeyId"] ?? throw new InvalidOperationException("ObjectStorage:AccessKeyId is not configured.");
-        SecretAccessKey  = _configuration["ObjectStorage:SecretAccessKey"] ?? throw new InvalidOperationException("ObjectStorage:SecretAccessKey is not configured.");
-        EndpointUrl = _configuration["ObjectStorage:EndpointUrl"] ?? throw new InvalidOperationException("ObjectStorage:EndpointUrl is not configured.");
-        BucketName = _configuration["ObjectStorage:BucketName"] ?? throw new InvalidOperationException("ObjectStorage:BucketName is not configured.");
-
-        var credentials = new BasicAWSCredentials(AccessKeyId, SecretAccessKey);
+        var credentials = new BasicAWSCredentials(_options.AccessKeyId, _options.SecretAccessKey);
         _s3Client = new AmazonS3Client(credentials, new AmazonS3Config
         {
-            ServiceURL = EndpointUrl, // R2-specific endpoint
+            ServiceURL = _options.EndpointUrl, // R2-specific endpoint
             ForcePathStyle = true // Required for R2 compatibility
         });
     }
-
-    public string AccessKeyId { get; set; }
-    public string SecretAccessKey  { get; set; }
-    public string EndpointUrl { get; set; }
-    public string BucketName { get; set; }
 
     public async Task DownloadObjectAsync(string bucketName, string filePath, string key)
     {
@@ -78,7 +71,7 @@ internal sealed class ObjectStorageService : IDisposable
             var request = new PutObjectRequest
             {
                 FilePath = filePath,
-                BucketName = BucketName,
+                BucketName = _options.BucketName,
                 Key = key
             };
 

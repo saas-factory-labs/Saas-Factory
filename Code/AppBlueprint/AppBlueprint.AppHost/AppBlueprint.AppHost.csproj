@@ -27,7 +27,6 @@
     <PackageReference Include="Npgsql" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="System.Text.Json" />
     <PackageReference Include="AspNetCore.HealthChecks.Uris" />
   </ItemGroup>
 </Project>

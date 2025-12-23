@@ -4,6 +4,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfi
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration.EntityConfigurations;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -56,6 +57,7 @@ public partial class BaselineDbContext : DbContext
         OnModelCreating_Payment(modelBuilder);
         OnModelCreating_Permissions(modelBuilder);
         OnModelCreating_Users(modelBuilder);
+        OnModelCreating_Tenants(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
         modelBuilder.ApplyConfiguration(new IntegrationEntityConfiguration());
@@ -80,6 +82,7 @@ public partial class BaselineDbContext : DbContext
 
     #region DbSets
 
+    public DbSet<TenantEntity> Tenants { get; set; }
     public DbSet<NotificationEntity> Notifications { get; set; }
     public DbSet<IntegrationEntity> Integrations { get; set; }
     public DbSet<LanguageEntity> Languages { get; set; }
@@ -99,6 +102,7 @@ public partial class BaselineDbContext : DbContext
     partial void OnModelCreating_Permissions(ModelBuilder modelBuilder);
     partial void OnModelCreating_Users(ModelBuilder modelBuilder);
     partial void OnModelCreating_Authorization(ModelBuilder modelBuilder);
+    partial void OnModelCreating_Tenants(ModelBuilder modelBuilder);
 
     #endregion
 }

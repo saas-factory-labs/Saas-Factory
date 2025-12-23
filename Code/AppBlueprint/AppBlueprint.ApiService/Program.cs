@@ -39,6 +39,9 @@ internal static class Program // Make class static
         // Add HttpContextAccessor - required by Infrastructure layer
         builder.Services.AddHttpContextAccessor();
 
+        // Register configuration options with validation
+        builder.Services.AddAppBlueprintConfiguration(builder.Configuration, builder.Environment);
+
         builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
         
         // Add TodoAppKernel module (includes TodoDbContext and TodoRepository)

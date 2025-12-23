@@ -18,6 +18,5 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
         <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" />
-        <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 </Project>

@@ -18,272 +18,10 @@ namespace AppBlueprint.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0-rc.1.25451.107")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team.TeamEntity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSoftDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("OrganizationId")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("OwnerId")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("TeamEntity");
-                });
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite.TeamInviteEntity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("ExpireAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSoftDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("TeamId")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("TeamInviteEntity");
-                });
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember.TeamMemberEntity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("Alias")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSoftDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("TeamId")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TeamId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TeamMemberEntity");
-                });
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(40)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(40)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CustomerEntityId")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsPrimary")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSoftDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
-                    b.Property<DateTime?>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("VatNumber")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Country")
-                        .HasDatabaseName("IX_Tenants_Country");
-
-                    b.HasIndex("CustomerEntityId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Tenants_Email");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.HasIndex("IsActive")
-                        .HasDatabaseName("IX_Tenants_IsActive");
-
-                    b.HasIndex("IsSoftDeleted")
-                        .HasDatabaseName("IX_Tenants_IsSoftDeleted");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_Tenants_Name");
-
-                    b.HasIndex("VatNumber")
-                        .HasDatabaseName("IX_Tenants_VatNumber");
-
-                    b.ToTable("Tenants", (string)null);
-                });
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyEntity", b =>
                 {
@@ -2358,6 +2096,124 @@ namespace AppBlueprint.Infrastructure.Migrations
                     b.ToTable("Sessions", (string)null);
                 });
 
+            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(40)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(40)")
+                        .HasComment("Unique tenant identifier with prefix (e.g., tenant_01ABCD...)");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(100)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(100)")
+                        .HasComment("Country code (B2B only)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasComment("Timestamp when tenant was created");
+
+                    b.Property<string>("CustomerEntityId")
+                        .HasMaxLength(1024)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(1024)");
+
+                    b.Property<string>("CustomerId")
+                        .HasMaxLength(1024)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(1024)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(500)")
+                        .HasComment("Optional description, typically used for Organization tenants");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(100)")
+                        .HasComment("Contact email for the tenant");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasComment("Whether tenant can access the system");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("boolean")
+                        .HasComment("Indicates primary tenant for multi-tenant B2C users");
+
+                    b.Property<bool>("IsSoftDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasComment("Soft delete flag");
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasComment("Timestamp when tenant was last modified");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(100)")
+                        .HasComment("Tenant name: Full name for Personal, Company name for Organization");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(20)")
+                        .HasComment("Contact phone for the tenant");
+
+                    b.Property<int>("TenantType")
+                        .HasColumnType("integer")
+                        .HasComment("0 = Personal (B2C), 1 = Organization (B2B)");
+
+                    b.Property<string>("VatNumber")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(50)")
+                        .HasComment("VAT/Tax number (B2B only)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Country")
+                        .HasDatabaseName("IX_Tenants_Country");
+
+                    b.HasIndex("CustomerEntityId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("Id")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Tenants_Id");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Tenants_IsActive");
+
+                    b.HasIndex("IsSoftDeleted")
+                        .HasDatabaseName("IX_Tenants_IsSoftDeleted");
+
+                    b.HasIndex("Name")
+                        .HasDatabaseName("IX_Tenants_Name");
+
+                    b.HasIndex("TenantType")
+                        .HasDatabaseName("IX_Tenants_TenantType");
+
+                    b.HasIndex("VatNumber")
+                        .HasDatabaseName("IX_Tenants_VatNumber");
+
+                    b.HasIndex("Email", "TenantType")
+                        .HasDatabaseName("IX_Tenants_Email_TenantType");
+
+                    b.HasIndex("TenantType", "IsActive", "IsSoftDeleted")
+                        .HasDatabaseName("IX_Tenants_Type_Active_NotDeleted");
+
+                    b.ToTable("Tenants", (string)null);
+                });
+
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.EmailVerification.EmailVerificationEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -2667,139 +2523,6 @@ namespace AppBlueprint.Infrastructure.Migrations
                     b.ToTable("Credits", (string)null);
                 });
 
-            modelBuilder.Entity("AppBlueprint.TodoAppKernel.Domain.TodoEntity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("AssignedToId")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<DateTime?>("DueDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSoftDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(1024)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Todos");
-                });
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team.TeamEntity", b =>
-                {
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
-
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", "Tenant")
-                        .WithMany("Teams")
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Teams_Tenants_TenantId");
-
-                    b.Navigation("Owner");
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite.TeamInviteEntity", b =>
-                {
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team.TeamEntity", "Team")
-                        .WithMany("TeamInvites")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-
-                    b.Navigation("Team");
-                });
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember.TeamMemberEntity", b =>
-                {
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team.TeamEntity", "Team")
-                        .WithMany("TeamMembers")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Team");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", b =>
-                {
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.CustomerEntity", null)
-                        .WithMany("Tenants")
-                        .HasForeignKey("CustomerEntityId");
-
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.CustomerEntity", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_Tenants_Customers_CustomerId");
-
-                    b.Navigation("Customer");
-                });
-
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyEntity", b =>
                 {
                     b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity", "Owner")
@@ -2884,7 +2607,7 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", "Tenant")
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2997,7 +2720,7 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_AuditLogs_Users_ModifiedByUserId");
 
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", "Tenant")
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -3050,7 +2773,7 @@ namespace AppBlueprint.Infrastructure.Migrations
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription.SubscriptionEntity", b =>
                 {
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", "Tenant")
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -3081,14 +2804,14 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId1");
 
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", null)
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", null)
                         .WithMany("ContactPersons")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_ContactPersons_Tenants_TenantId");
 
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", "Tenant")
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId1");
 
@@ -3115,7 +2838,7 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_Emails_Customers_CustomerId");
 
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", "Tenant")
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.SetNull)
@@ -3191,7 +2914,7 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId");
 
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", "Tenant")
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -3231,6 +2954,21 @@ namespace AppBlueprint.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", b =>
+                {
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.CustomerEntity", null)
+                        .WithMany("Tenants")
+                        .HasForeignKey("CustomerEntityId");
+
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.CustomerEntity", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_Tenants_Customers_CustomerId");
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.EmailVerification.EmailVerificationEntity", b =>
                 {
                     b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity", null)
@@ -3251,7 +2989,7 @@ namespace AppBlueprint.Infrastructure.Migrations
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity", b =>
                 {
-                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", "Tenant")
+                    b.HasOne("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", "Tenant")
                         .WithMany("Users")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -3279,22 +3017,6 @@ namespace AppBlueprint.Infrastructure.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team.TeamEntity", b =>
-                {
-                    b.Navigation("TeamInvites");
-
-                    b.Navigation("TeamMembers");
-                });
-
-            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant.TenantEntity", b =>
-                {
-                    b.Navigation("ContactPersons");
-
-                    b.Navigation("Teams");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyEntity", b =>
@@ -3340,6 +3062,13 @@ namespace AppBlueprint.Infrastructure.Migrations
                     b.Navigation("ContactPersons");
 
                     b.Navigation("Tenants");
+                });
+
+            modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity", b =>
+                {
+                    b.Navigation("ContactPersons");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity", b =>

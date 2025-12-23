@@ -303,8 +303,8 @@ public static class WebAuthenticationExtensions
         Console.WriteLine($"[Web] Cookies Received: {string.Join(", ", context.Request.Cookies.Keys)}");
         Console.WriteLine($"[Web] Cookies Count: {context.Request.Cookies.Count}");
 
-        var correlationCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Correlation"));
-        var nonceCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Nonce"));
+        var correlationCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Correlation", StringComparison.Ordinal));
+        var nonceCookie = context.Request.Cookies.Keys.FirstOrDefault(k => k.Contains("Nonce", StringComparison.Ordinal));
         Console.WriteLine($"[Web] Correlation Cookie Present: {correlationCookie is not null} ({correlationCookie ?? "not found"})");
         Console.WriteLine($"[Web] Nonce Cookie Present: {nonceCookie is not null} ({nonceCookie ?? "not found"})");
 
@@ -603,7 +603,7 @@ public static class WebAuthenticationExtensions
                 using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
                 var url = "https://32nkyp.logto.app/oidc/.well-known/openid-configuration";
                 var sw = System.Diagnostics.Stopwatch.StartNew();
-                var response = await client.GetAsync(url);
+                var response = await client.GetAsync(new Uri(url, UriKind.Absolute));
                 sw.Stop();
                 var content = await response.Content.ReadAsStringAsync();
                 

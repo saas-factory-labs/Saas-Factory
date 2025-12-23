@@ -14,6 +14,10 @@ public interface IAuthenticationProviderFactory
     AuthenticationProviderType GetConfiguredProviderType();
 }
 
+/// <summary>
+/// Factory for creating authentication providers based on configuration.
+/// Supports: Auth0, Logto, Azure AD B2C, AWS Cognito, JWT, Mock
+/// </summary>
 public class AuthenticationProviderFactory : IAuthenticationProviderFactory
 {
     private readonly IServiceProvider _serviceProvider;
@@ -33,6 +37,10 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
         {
             AuthenticationProviderType.Auth0 => CreateAuth0Provider(),
             AuthenticationProviderType.Logto => CreateLogtoProvider(),
+            AuthenticationProviderType.AzureAD => CreateAzureADProvider(),
+            AuthenticationProviderType.Cognito => CreateCognitoProvider(),
+            AuthenticationProviderType.Firebase => CreateFirebaseProvider(),
+            AuthenticationProviderType.JWT => CreateJwtProvider(),
             AuthenticationProviderType.Mock => CreateMockProvider(),
             _ => throw new InvalidOperationException($"Unsupported authentication provider: {providerType}")
         };
@@ -80,6 +88,42 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
         }
     }
 
+    private IAuthenticationProvider CreateAzureADProvider()
+    {
+        // TODO: Implement Azure AD B2C provider
+        throw new NotImplementedException(
+            "Azure AD B2C authentication provider is not yet implemented. " +
+            "Supported providers: Auth0, Logto, JWT, Mock. " +
+            "Please set Authentication:Provider to one of these in your configuration.");
+    }
+
+    private IAuthenticationProvider CreateCognitoProvider()
+    {
+        // TODO: Implement AWS Cognito provider
+        throw new NotImplementedException(
+            "AWS Cognito authentication provider is not yet implemented. " +
+            "Supported providers: Auth0, Logto, JWT, Mock. " +
+            "Please set Authentication:Provider to one of these in your configuration.");
+    }
+
+    private IAuthenticationProvider CreateFirebaseProvider()
+    {
+        // TODO: Implement Firebase Authentication provider
+        throw new NotImplementedException(
+            "Firebase Authentication provider is not yet implemented. " +
+            "Supported providers: Auth0, Logto, Mock. " +
+            "Please set Authentication:Provider to one of these in your configuration.");
+    }
+
+    private IAuthenticationProvider CreateJwtProvider()
+    {
+        // TODO: Implement simple JWT provider for development/testing
+        throw new NotImplementedException(
+            "JWT authentication provider is not yet implemented. " +
+            "Supported providers: Auth0, Logto, Mock. " +
+            "Please set Authentication:Provider to one of these in your configuration.");
+    }
+
     private IAuthenticationProvider CreateMockProvider()
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
@@ -89,9 +133,43 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
     }
 }
 
+/// <summary>
+/// Supported authentication provider types
+/// </summary>
 public enum AuthenticationProviderType
 {
+    /// <summary>
+    /// Mock provider for testing (no real authentication)
+    /// </summary>
     Mock,
+    
+    /// <summary>
+    /// Auth0 authentication platform
+    /// </summary>
     Auth0,
-    Logto
+    
+    /// <summary>
+    /// Logto open-source identity solution
+    /// </summary>
+    Logto,
+    
+    /// <summary>
+    /// Azure AD B2C (Coming soon)
+    /// </summary>
+    AzureAD,
+    
+    /// <summary>
+    /// AWS Cognito (Coming soon)
+    /// </summary>
+    Cognito,
+    
+    /// <summary>
+    /// Firebase Authentication (Coming soon)
+    /// </summary>
+    Firebase,
+    
+    /// <summary>
+    /// Simple JWT-based authentication (Coming soon - for development/testing only)
+    /// </summary>
+    JWT
 }

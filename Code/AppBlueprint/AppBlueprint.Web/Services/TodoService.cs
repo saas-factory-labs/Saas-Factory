@@ -57,7 +57,7 @@ public class TodoService
             {
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 _logger.LogInformation("✅ Added authorization header to request. Token preview: {Preview}", 
-                    token.Substring(0, Math.Min(20, token.Length)) + "...");
+                    string.Concat(token.AsSpan(0, Math.Min(20, token.Length)), "..."));
             }
             else
             {
@@ -74,14 +74,14 @@ public class TodoService
             _logger.LogInformation("=== AddAuthHeadersAsync SUCCESS ===");
             return true;
         }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("JavaScript interop"))
+        catch (InvalidOperationException ex) when (ex.Message.Contains("JavaScript interop", StringComparison.Ordinal))
         {
-            _logger.LogWarning("❌ JavaScript interop not available (prerendering): {Message}", ex.Message);
+            _logger.LogWarning(ex, "❌ JavaScript interop not available (prerendering)");
             return false;
         }
         catch (JSException ex)
         {
-            _logger.LogWarning("❌ JavaScript exception: {Message}", ex.Message);
+            _logger.LogWarning(ex, "❌ JavaScript exception");
             return false;
         }
         catch (Exception ex)
@@ -108,7 +108,7 @@ public class TodoService
         }
         catch (Exception ex)
         {
-            _logger.LogDebug("Could not retrieve tenant ID: {Message}", ex.Message);
+            _logger.LogDebug(ex, "Could not retrieve tenant ID");
         }
 
         return "default-tenant";
@@ -122,7 +122,7 @@ public class TodoService
         try
         {
             _logger.LogInformation("Testing connection to API at {BaseAddress}", _httpClient.BaseAddress);
-            var response = await _httpClient.GetAsync("/api/AuthDebug/ping", cancellationToken);
+            var response = await _httpClient.GetAsync(new Uri("/api/AuthDebug/ping", UriKind.Relative), cancellationToken);
             
             _logger.LogInformation(
                 "Connection test result: Status={StatusCode}, Success={IsSuccess}",
@@ -292,7 +292,7 @@ public class TodoService
 
         try
         {
-            var response = await _httpClient.GetAsync($"/api/v1.0/todo/{id}", cancellationToken);
+            var response = await _httpClient.GetAsync(new Uri($"/api/v1.0/todo/{id}", UriKind.Relative), cancellationToken);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
@@ -335,7 +335,7 @@ public class TodoService
 
         try
         {
-            var response = await _httpClient.DeleteAsync($"/api/v1.0/todo/{id}", cancellationToken);
+            var response = await _httpClient.DeleteAsync(new Uri($"/api/v1.0/todo/{id}", UriKind.Relative), cancellationToken);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
@@ -354,7 +354,7 @@ public class TodoService
 
         try
         {
-            var response = await _httpClient.PatchAsync($"/api/v1.0/todo/{id}/complete", null, cancellationToken);
+            var response = await _httpClient.PatchAsync(new Uri($"/api/v1.0/todo/{id}/complete", UriKind.Relative), null, cancellationToken);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);

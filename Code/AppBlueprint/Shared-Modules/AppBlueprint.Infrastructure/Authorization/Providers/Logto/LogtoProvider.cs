@@ -48,7 +48,7 @@ public class LogtoProvider : BaseAuthenticationProvider
 
             _logger.LogDebug("Posting to Logto token endpoint: {Endpoint}/oidc/token", _configuration.Endpoint);
 
-            var response = await _httpClient.PostAsync($"{_configuration.Endpoint}/oidc/token", formContent, cancellationToken);
+            var response = await _httpClient.PostAsync(new Uri($"{_configuration.Endpoint}/oidc/token", UriKind.Absolute), formContent, cancellationToken);
 
             var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
             
@@ -144,7 +144,7 @@ public class LogtoProvider : BaseAuthenticationProvider
                 ["refresh_token"] = RefreshToken
             });
 
-            var response = await _httpClient.PostAsync($"{_configuration.Endpoint}/oidc/token", formContent, cancellationToken);
+            var response = await _httpClient.PostAsync(new Uri($"{_configuration.Endpoint}/oidc/token", UriKind.Absolute), formContent, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {

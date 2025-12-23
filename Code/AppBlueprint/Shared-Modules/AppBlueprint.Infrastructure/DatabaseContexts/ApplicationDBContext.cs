@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
+using AppBlueprint.Infrastructure.Services;
 using AppBlueprint.SharedKernel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -12,14 +13,18 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts;
 
 public class ApplicationDbContext : B2CdbContext
 {
+    private readonly ITenantContextAccessor? _tenantContextAccessor;
+
     // Public constructor for direct DI registration
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<ApplicationDbContext> logger
+        ILogger<ApplicationDbContext> logger,
+        ITenantContextAccessor tenantContextAccessor
     ) : base((DbContextOptions)options, configuration, logger)
     {
+        _tenantContextAccessor = tenantContextAccessor;
     }
 
     // Protected constructor for derived module DbContext classes
@@ -27,9 +32,11 @@ public class ApplicationDbContext : B2CdbContext
         DbContextOptions options,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<ApplicationDbContext> logger
+        ILogger<ApplicationDbContext> logger,
+        ITenantContextAccessor? tenantContextAccessor = null
     ) : base(options, configuration, logger)
     {
+        _tenantContextAccessor = tenantContextAccessor;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,8 +46,7 @@ public class ApplicationDbContext : B2CdbContext
 
         ConfigureGdprDataClassification(modelBuilder);
         ConfigureSoftDeleteFilters(modelBuilder);
-
-        // Optional: add multi-tenancy query filters here when ready
+        ConfigureTenantQueryFilters(modelBuilder);
     }
 
     private static void ConfigureGdprDataClassification(ModelBuilder modelBuilder)
@@ -73,6 +79,52 @@ public class ApplicationDbContext : B2CdbContext
                 var queryFilter = CreateIsNotSoftDeletedFilter(entityType.ClrType);
                 modelBuilder.Entity(entityType.ClrType).HasQueryFilter(queryFilter);
             });
+    }
+
+    /// <summary>
+    /// Configures Named Query Filters for automatic tenant isolation.
+    /// This is Layer 1 of defense-in-depth (application-level).
+    /// Layer 2 is PostgreSQL Row-Level Security (database-level).
+    /// 
+    /// CRITICAL SECURITY: These filters prevent data leaks at the application level.
+    /// Even if developers forget to add tenant filters, EF Core applies them automatically.
+    /// 
+    /// Named Query Filters (.NET 10) combine multiple filters using AND logic:
+    /// - Soft delete filter: !IsSoftDeleted
+    /// - Tenant filter: TenantId == currentTenantId
+    /// 
+    /// Result query: WHERE !IsSoftDeleted AND TenantId = @p0
+    /// </summary>
+    private void ConfigureTenantQueryFilters(ModelBuilder modelBuilder)
+    {
+        if (_tenantContextAccessor is null)
+        {
+            // No tenant context available (e.g., during migrations)
+            // Skip tenant filtering - only soft delete filters will apply
+            return;
+        }
+
+        // Configure tenant isolation for all tenant-scoped entities
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (!typeof(ITenantScoped).IsAssignableFrom(entityType.ClrType))
+                continue;
+
+            // Build expression: entity => entity.TenantId == _tenantContextAccessor.TenantId
+            var parameter = Expression.Parameter(entityType.ClrType, "entity");
+            var tenantIdProperty = Expression.Property(parameter, nameof(ITenantScoped.TenantId));
+            
+            // Get current tenant ID from accessor
+            var tenantContextAccessor = Expression.Constant(_tenantContextAccessor);
+            var currentTenantId = Expression.Property(tenantContextAccessor, nameof(ITenantContextAccessor.TenantId));
+            
+            // Create comparison: entity.TenantId == currentTenantId
+            var comparison = Expression.Equal(tenantIdProperty, currentTenantId);
+            var lambda = Expression.Lambda(comparison, parameter);
+
+            // Apply named query filter (combines with existing filters using AND)
+            modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+        }
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

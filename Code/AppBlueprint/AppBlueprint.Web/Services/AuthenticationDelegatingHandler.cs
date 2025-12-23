@@ -96,8 +96,8 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
                             if (authResult?.Properties?.Items != null)
                             {
                                 var tokenNames = authResult.Properties.Items
-                                    .Where(x => x.Key.StartsWith(".Token."))
-                                    .Select(x => x.Key.Replace(".Token.", ""));
+                                    .Where(x => x.Key.StartsWith(".Token.", StringComparison.Ordinal))
+                                    .Select(x => x.Key.Replace(".Token.", "", StringComparison.Ordinal));
                                 _logger.LogInformation("[AuthHandler] Available tokens in HttpContext: {Tokens}", 
                                     string.Join(", ", tokenNames));
                             }
@@ -126,7 +126,7 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
             {
                 // Add the Bearer token to the Authorization header
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var tokenPreview = token.Length > 50 ? token.Substring(0, 50) + "..." : token;
+                string tokenPreview = token.Length > 50 ? string.Concat(token.AsSpan(0, 50), "...") : token;
                 _logger.LogInformation("[AuthHandler] ✅ Added Bearer token to request: {Method} {Uri}, Token preview: {Preview}", 
                     request.Method, request.RequestUri, tokenPreview);
             }
@@ -137,13 +137,9 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
                 _logger.LogError("[AuthHandler] API calls will fail with 401 Unauthorized");
             }
             
-            // Add tenant-id header (required by TenantMiddleware)
-            if (!request.Headers.Contains("tenant-id"))
-            {
-                var tenantId = await GetTenantIdAsync();
-                request.Headers.Add("tenant-id", tenantId);
-                _logger.LogDebug("[AuthHandler] Added tenant-id header: {TenantId}", tenantId);
-            }
+            // Note: Tenant ID is now extracted from JWT claims by TenantMiddleware on the API side
+            // We no longer need to send the tenant-id header - it's derived from the Bearer token
+            // This eliminates a potential security vulnerability where the header could be forged
         }
         catch (Exception ex)
         {
@@ -154,52 +150,6 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
         return await base.SendAsync(request, cancellationToken);
     }
 
-    private async Task<string> GetTenantIdAsync()
-    {
-        // First, try to get tenant ID from JWT claims in HttpContext
-        var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext?.User?.Identity?.IsAuthenticated == true)
-        {
-            // Try to get tenant_id from JWT claims
-            var tenantClaim = httpContext.User.FindFirst("tenant_id")?.Value;
-            
-            if (!string.IsNullOrEmpty(tenantClaim))
-            {
-                _logger.LogDebug("Retrieved tenant ID from JWT claims: {TenantId}", tenantClaim);
-                return tenantClaim;
-            }
-            
-            // Also check for "tid" claim (common alternative)
-            tenantClaim = httpContext.User.FindFirst("tid")?.Value;
-            if (!string.IsNullOrEmpty(tenantClaim))
-            {
-                _logger.LogDebug("Retrieved tenant ID from JWT 'tid' claim: {TenantId}", tenantClaim);
-                return tenantClaim;
-            }
-            
-            _logger.LogWarning("User is authenticated but no tenant_id or tid claim found in JWT");
-        }
-        
-        // Fallback: Try to get tenant ID from storage
-        try
-        {
-            var tenantId = await _tokenStorageService.GetValueAsync("tenant_id");
-            
-            if (!string.IsNullOrEmpty(tenantId))
-            {
-                _logger.LogDebug("Retrieved tenant ID from storage: {TenantId}", tenantId);
-                return tenantId;
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogDebug(ex, "Could not retrieve tenant ID from storage");
-        }
-        
-        // SECURITY: Fail-fast if tenant cannot be resolved to prevent tenant isolation bypass
-        string errorMessage = "Tenant ID could not be resolved from JWT claims or storage. This is required for tenant isolation.";
-        _logger.LogError("[AuthHandler] {ErrorMessage}", errorMessage);
-        throw new InvalidOperationException(errorMessage);
-    }
+
 }
 

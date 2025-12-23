@@ -1,18 +1,25 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
+using AppBlueprint.Application.Options;
 using AppBlueprint.Application.Services.DataExport;
 using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
+using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
+using AppBlueprint.Infrastructure.HealthChecks;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Resend;
 using Stripe;
 
@@ -28,6 +35,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds AppBlueprint Infrastructure services including database contexts, repositories, 
     /// external service integrations, and health checks.
+    /// Uses the new flexible DbContext configuration based on DatabaseContextOptions.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration (used as fallback if environment variables not set).</param>
@@ -42,8 +50,11 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(environment);
 
-        services.AddDatabaseContexts(configuration);
+        // Use new flexible DbContext configuration
+        services.AddConfiguredDbContext(configuration);
+        
         services.AddRepositories();
+        services.AddTenantServices();
         
         // Only add web authentication for non-API environments (Blazor Server)
         // API services handle authentication differently (JWT Bearer)
@@ -59,10 +70,40 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Registers database contexts (ApplicationDbContext and B2BDbContext).
-    /// Uses environment variable DATABASE_CONNECTION_STRING or falls back to configuration.
+    /// Adds AppBlueprint Infrastructure services using legacy database context registration.
+    /// This method is maintained for backward compatibility.
+    /// Consider migrating to AddAppBlueprintInfrastructure() with DatabaseContextOptions configuration.
     /// </summary>
-    private static IServiceCollection AddDatabaseContexts(
+    /// <param name="services">The service collection.</param>
+    /// <param name="configuration">The configuration (used as fallback if environment variables not set).</param>
+    /// <param name="environment">The hosting environment (required for authentication setup).</param>
+    /// <returns>The service collection for chaining.</returns>
+    [Obsolete("Use AddAppBlueprintInfrastructure() with DatabaseContextOptions configuration instead. This method will be removed in a future version.")]
+    public static IServiceCollection AddAppBlueprintInfrastructureLegacy(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment environment)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(environment);
+
+        services.AddDatabaseContextsLegacy(configuration);
+        services.AddRepositories();
+        services.AddUnitOfWork();
+        services.AddExternalServices(configuration);
+        services.AddHealthChecksServices(configuration);
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers database contexts (ApplicationDbContext and B2BDbContext) - LEGACY METHOD.
+    /// Uses environment variable DATABASE_CONNECTION_STRING or falls back to configuration.
+    /// This method is maintained for backward compatibility.
+    /// </summary>
+    [Obsolete("Use DbContextConfigurator.AddConfiguredDbContext() instead.")]
+    private static IServiceCollection AddDatabaseContextsLegacy(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -146,6 +187,22 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
+    /// Registers tenant-scoped services for multi-tenant isolation and admin access.
+    /// </summary>
+    private static IServiceCollection AddTenantServices(this IServiceCollection services)
+    {
+        // Multi-tenant isolation
+        services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
+        services.AddScoped<TenantConnectionInterceptor>();
+        
+        // User context and admin access
+        services.AddScoped<Application.Services.ICurrentUserService, CurrentUserService>();
+        services.AddScoped<Application.Services.IAdminTenantAccessService, AdminTenantAccessService>();
+        
+        return services;
+    }
+
+    /// <summary>
     /// Registers Unit of Work pattern implementation from AppBlueprint.Infrastructure.
     /// </summary>
     private static IServiceCollection AddUnitOfWork(this IServiceCollection services)
@@ -171,18 +228,18 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Registers Stripe payment service if API key is configured.
-    /// Looks for STRIPE_API_KEY environment variable or ConnectionStrings:StripeApiKey in configuration.
+    /// Uses StripeOptions from IOptions pattern.
     /// </summary>
     private static IServiceCollection AddStripeService(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        string? stripeApiKey = Environment.GetEnvironmentVariable("STRIPE_API_KEY") ??
-                          configuration.GetConnectionString("StripeApiKey");
-
-        if (!string.IsNullOrEmpty(stripeApiKey))
+        // Get Stripe options to check if configured
+        IServiceProvider tempProvider = services.BuildServiceProvider();
+        StripeOptions? stripeOptions = tempProvider.GetService<IOptions<StripeOptions>>()?.Value;
+        
+        if (stripeOptions is not null && !string.IsNullOrWhiteSpace(stripeOptions.ApiKey))
         {
-            StripeConfiguration.ApiKey = stripeApiKey;
             services.AddScoped<StripeSubscriptionService>();
             Console.WriteLine("[AppBlueprint.Infrastructure] Stripe service registered");
         }
@@ -196,36 +253,34 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Registers Cloudflare R2 object storage service if credentials are configured.
-    /// Requires ObjectStorage:AccessKeyId, ObjectStorage:SecretAccessKey, ObjectStorage:EndpointUrl, ObjectStorage:BucketName.
+    /// Uses CloudflareR2Options from IOptions pattern.
     /// </summary>
     private static IServiceCollection AddCloudflareR2Service(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        string? accessKeyId = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ACCESS_KEY_ID") ??
-                         configuration["ObjectStorage:AccessKeyId"];
-        string? secretAccessKey = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_SECRET_ACCESS_KEY") ??
-                             configuration["ObjectStorage:SecretAccessKey"];
-        string? endpointUrl = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ENDPOINT_URL") ??
-                         configuration["ObjectStorage:EndpointUrl"];
-        string? bucketName = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_BUCKET_NAME") ??
-                        configuration["ObjectStorage:BucketName"];
-
-        if (!string.IsNullOrEmpty(accessKeyId) &&
-            !string.IsNullOrEmpty(secretAccessKey) &&
-            !string.IsNullOrEmpty(endpointUrl) &&
-            !string.IsNullOrEmpty(bucketName))
+        // Get R2 options to check if configured
+        IServiceProvider tempProvider = services.BuildServiceProvider();
+        CloudflareR2Options? r2Options = tempProvider.GetService<IOptions<CloudflareR2Options>>()?.Value;
+        
+        if (r2Options is not null && 
+            !string.IsNullOrWhiteSpace(r2Options.AccessKeyId) &&
+            !string.IsNullOrWhiteSpace(r2Options.SecretAccessKey) &&
+            !string.IsNullOrWhiteSpace(r2Options.EndpointUrl) &&
+            !string.IsNullOrWhiteSpace(r2Options.BucketName))
         {
             services.AddSingleton<IAmazonS3>(sp =>
             {
-                var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+                CloudflareR2Options options = sp.GetRequiredService<IOptions<CloudflareR2Options>>().Value;
+                var credentials = new BasicAWSCredentials(options.AccessKeyId, options.SecretAccessKey);
                 return new AmazonS3Client(credentials, new AmazonS3Config
                 {
-                    ServiceURL = endpointUrl,
+                    ServiceURL = options.EndpointUrl,
                     ForcePathStyle = true // Required for R2 compatibility
                 });
             });
-
+            
+            services.AddSingleton<ObjectStorageService>();
             Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 storage service registered");
         }
         else
@@ -238,25 +293,24 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Registers Resend email service if API key is configured.
-    /// Looks for RESEND_API_KEY environment variable or Resend:ApiKey in configuration.
+    /// Uses ResendEmailOptions from IOptions pattern.
     /// </summary>
     private static IServiceCollection AddResendEmailService(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        string? resendApiKey = Environment.GetEnvironmentVariable("RESEND_API_KEY") ??
-                          configuration["Resend:ApiKey"];
-
-        if (!string.IsNullOrEmpty(resendApiKey))
+        // Get Resend options to check if configured
+        IServiceProvider tempProvider = services.BuildServiceProvider();
+        ResendEmailOptions? resendOptions = tempProvider.GetService<IOptions<ResendEmailOptions>>()?.Value;
+        
+        if (resendOptions is not null && !string.IsNullOrWhiteSpace(resendOptions.ApiKey))
         {
-            string resendApiBaseUrl = Environment.GetEnvironmentVariable("RESEND_BASE_URL") ??
-                                      configuration["Resend:BaseUrl"] ??
-                                      DefaultResendApiBaseUrl;
             services.AddHttpClient<IResend, ResendClient>()
                 .ConfigureHttpClient(client =>
                 {
-                    client.BaseAddress = new Uri(resendApiBaseUrl);
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendApiKey}");
+                    client.BaseAddress = new Uri(resendOptions.BaseUrl, UriKind.Absolute);
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendOptions.ApiKey}");
+                    client.Timeout = TimeSpan.FromSeconds(resendOptions.TimeoutSeconds);
                 });
             services.AddScoped<TransactionEmailService>();
             Console.WriteLine("[AppBlueprint.Infrastructure] Resend email service registered");
@@ -272,6 +326,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers health check services for database, Redis, and external endpoints.
     /// Uses environment variables or configuration for connection strings.
+    /// CRITICAL: Includes Row-Level Security validation to prevent application startup without RLS.
     /// </summary>
     private static IServiceCollection AddHealthChecksServices(
         this IServiceCollection services,
@@ -289,6 +344,17 @@ public static class ServiceCollectionExtensions
                 dbConnectionString,
                 name: "postgresql",
                 tags: new[] { "db", "postgresql" });
+
+            // CRITICAL: Row-Level Security validation
+            // Application MUST NOT start if RLS is not properly configured
+            // This prevents tenant data leakage if RLS policies are missing
+            healthChecksBuilder.AddCheck(
+                "row-level-security",
+                new RowLevelSecurityHealthCheck(
+                    dbConnectionString,
+                    services.BuildServiceProvider().GetRequiredService<ILogger<RowLevelSecurityHealthCheck>>()),
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "db", "security", "rls", "critical" });
         }
 
         // Redis health check (if configured)

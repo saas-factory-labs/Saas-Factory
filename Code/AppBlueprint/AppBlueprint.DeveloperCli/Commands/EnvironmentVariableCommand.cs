@@ -3,25 +3,27 @@ namespace AppBlueprint.DeveloperCli.Commands;
 internal static class EnvironmentVariableCommand
 {
     private const string AppBlueprintPrefix = "APPBLUEPRINT_";
+    private const string ScopeOption = "--scope";
+    private const string ScopeDescription = "Scope: User, Machine, or Process";
 
     public static Command Create()
     {
         var command = new Command("env", "Manage environment variables for AppBlueprint");
 
         // List subcommand
-        var listCommand = CreateListCommand();
+        Command listCommand = CreateListCommand();
         command.AddCommand(listCommand);
 
         // Get subcommand
-        var getCommand = CreateGetCommand();
+        Command getCommand = CreateGetCommand();
         command.AddCommand(getCommand);
 
         // Set subcommand
-        var setCommand = CreateSetCommand();
+        Command setCommand = CreateSetCommand();
         command.AddCommand(setCommand);
 
         // Delete subcommand
-        var deleteCommand = CreateDeleteCommand();
+        Command deleteCommand = CreateDeleteCommand();
         command.AddCommand(deleteCommand);
 
         return command;
@@ -37,8 +39,8 @@ internal static class EnvironmentVariableCommand
             getDefaultValue: () => AppBlueprintPrefix);
 
         var scopeOption = new Option<string>(
-            "--scope",
-            description: "Scope: User, Machine, or Process",
+            ScopeOption,
+            description: ScopeDescription,
             getDefaultValue: () => "User");
 
         command.AddOption(prefixOption);
@@ -64,8 +66,8 @@ internal static class EnvironmentVariableCommand
 
         var nameArgument = new Argument<string>("name", "Environment variable name");
         var scopeOption = new Option<string>(
-            "--scope",
-            description: "Scope: User, Machine, or Process",
+            ScopeOption,
+            description: ScopeDescription,
             getDefaultValue: () => "User");
 
         command.AddArgument(nameArgument);
@@ -92,15 +94,15 @@ internal static class EnvironmentVariableCommand
         var nameArgument = new Argument<string>("name", "Environment variable name");
         var valueArgument = new Argument<string>("value", "Environment variable value");
         var scopeOption = new Option<string>(
-            "--scope",
-            description: "Scope: User, Machine, or Process",
+            ScopeOption,
+            description: ScopeDescription,
             getDefaultValue: () => "User");
 
         command.AddArgument(nameArgument);
         command.AddArgument(valueArgument);
         command.AddOption(scopeOption);
 
-        command.SetHandler((name, value, scopeStr) =>
+        command.SetHandler([System.Runtime.Versioning.SupportedOSPlatform("windows")] (name, value, scopeStr) =>
         {
             if (!TryParseScope(scopeStr, out var scope))
             {
@@ -120,16 +122,16 @@ internal static class EnvironmentVariableCommand
 
         var nameArgument = new Argument<string>("name", "Environment variable name");
         var scopeOption = new Option<string>(
-            "--scope",
-            description: "Scope: User, Machine, or Process",
+            ScopeOption,
+            description: ScopeDescription,
             getDefaultValue: () => "User");
 
         command.AddArgument(nameArgument);
         command.AddOption(scopeOption);
 
-        command.SetHandler((name, scopeStr) =>
+        command.SetHandler([System.Runtime.Versioning.SupportedOSPlatform("windows")] (name, scopeStr) =>
         {
-            if (!TryParseScope(scopeStr, out var scope))
+            if (!TryParseScope(scopeStr, out EnvironmentVariableTarget scope))
             {
                 AnsiConsole.MarkupLine($"[red]Invalid scope: {scopeStr}. Use User, Machine, or Process[/]");
                 return;
@@ -141,6 +143,7 @@ internal static class EnvironmentVariableCommand
         return command;
     }
 
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public static void ExecuteInteractive()
     {
         AnsiConsole.Write(new FigletText("Environment Variables").Color(Color.Cyan1));
@@ -197,6 +200,7 @@ internal static class EnvironmentVariableCommand
         GetEnvironmentVariable(name, scope);
     }
 
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     private static void ExecuteSetInteractive()
     {
         var scope = PromptForScope();
@@ -214,6 +218,7 @@ internal static class EnvironmentVariableCommand
         SetEnvironmentVariable(name, value, scope);
     }
 
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     private static void ExecuteDeleteInteractive()
     {
         var scope = PromptForScope();
@@ -248,6 +253,7 @@ internal static class EnvironmentVariableCommand
 
     private static void ListEnvironmentVariables(string prefix, EnvironmentVariableTarget scope)
     {
+#pragma warning disable CA1031 // Generic catch acceptable for user-facing CLI error handling
         try
         {
             AnsiConsole.WriteLine();
@@ -305,12 +311,14 @@ internal static class EnvironmentVariableCommand
         {
             AnsiConsole.MarkupLine($"[red]Error listing environment variables:[/] {ex.Message}");
         }
+#pragma warning restore CA1031
     }
 
     private static void GetEnvironmentVariable(string name, EnvironmentVariableTarget scope)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
 
+#pragma warning disable CA1031 // Generic catch acceptable for user-facing CLI error handling
         try
         {
             var value = Environment.GetEnvironmentVariable(name, scope);
@@ -337,13 +345,16 @@ internal static class EnvironmentVariableCommand
         {
             AnsiConsole.MarkupLine($"[red]Error getting environment variable:[/] {ex.Message}");
         }
+#pragma warning restore CA1031
     }
 
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     private static void SetEnvironmentVariable(string name, string value, EnvironmentVariableTarget scope)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
         ArgumentNullException.ThrowIfNull(value);
 
+#pragma warning disable CA1031 // Generic catch acceptable for user-facing CLI error handling
         try
         {
             if (scope == EnvironmentVariableTarget.Machine && !IsAdministrator())
@@ -390,12 +401,15 @@ internal static class EnvironmentVariableCommand
         {
             AnsiConsole.MarkupLine($"[red]Error setting environment variable:[/] {ex.Message}");
         }
+#pragma warning restore CA1031
     }
 
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     private static void DeleteEnvironmentVariable(string name, EnvironmentVariableTarget scope)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
 
+#pragma warning disable CA1031 // Generic catch acceptable for user-facing CLI error handling
         try
         {
             if (scope == EnvironmentVariableTarget.Machine && !IsAdministrator())
@@ -443,6 +457,7 @@ internal static class EnvironmentVariableCommand
         {
             AnsiConsole.MarkupLine($"[red]Error deleting environment variable:[/] {ex.Message}");
         }
+#pragma warning restore CA1031
     }
 
     private static bool TryParseScope(string scopeStr, out EnvironmentVariableTarget scope)
@@ -450,8 +465,10 @@ internal static class EnvironmentVariableCommand
         return Enum.TryParse(scopeStr, ignoreCase: true, out scope);
     }
 
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     private static bool IsAdministrator()
     {
+#pragma warning disable CA1031 // Generic catch acceptable for platform-specific functionality fallback
         try
         {
             using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
@@ -462,5 +479,6 @@ internal static class EnvironmentVariableCommand
         {
             return false;
         }
+#pragma warning restore CA1031
     }
 }
