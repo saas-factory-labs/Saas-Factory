@@ -1,4 +1,5 @@
 using System.Net;
+using AppBlueprint.Application.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -7,7 +8,7 @@ namespace AppBlueprint.Infrastructure.Middleware;
 
 /// <summary>
 /// Middleware that restricts admin access to whitelisted IP addresses.
-/// Applies only to admin operations (SuperAdmin role required routes).
+/// Applies only to admin operations (DeploymentManagerAdmin role required routes).
 /// </summary>
 public sealed class AdminIpWhitelistMiddleware
 {
@@ -77,8 +78,8 @@ public sealed class AdminIpWhitelistMiddleware
             return;
         }
 
-        // Check if user has SuperAdmin role
-        bool isAdmin = context.User.IsInRole("SuperAdmin");
+        // Check if user has DeploymentManagerAdmin role
+        bool isAdmin = context.User.IsInRole(Roles.DeploymentManagerAdmin);
 
         if (!isAdmin)
         {

@@ -1,3 +1,4 @@
+using AppBlueprint.Application.Constants;
 using AppBlueprint.Application.Services;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
@@ -46,7 +47,7 @@ public class AdminTenantAccessTests : IAsyncDisposable
         // Mock ICurrentUserService for admin role verification
         _mockCurrentUserService = new Mock<ICurrentUserService>();
         _mockCurrentUserService.Setup(x => x.UserId).Returns(AdminUserId);
-        _mockCurrentUserService.Setup(x => x.IsInRole("SuperAdmin")).Returns(true);
+        _mockCurrentUserService.Setup(x => x.IsInRole(Roles.DeploymentManagerAdmin)).Returns(true);
 
         // Mock logger to verify audit logging
         _mockLogger = new Mock<ILogger<AdminTenantAccessService>>();
@@ -130,11 +131,11 @@ public class AdminTenantAccessTests : IAsyncDisposable
     [Test]
     public async Task NonAdminCannotAccessOtherTenant()
     {
-        // Arrange - User is NOT a SuperAdmin
+        // Arrange - User is NOT a SaaSProviderAdmin
         if (_mockCurrentUserService is null || _adminService is null || _dbContext is null)
             throw new InvalidOperationException("Test not properly initialized");
 
-        _mockCurrentUserService.Setup(x => x.IsInRole("SuperAdmin")).Returns(false);
+        _mockCurrentUserService.Setup(x => x.IsInRole(Roles.SaaSProviderAdmin)).Returns(false);
 
         // Act & Assert - Should throw UnauthorizedAccessException
         await Assert.That(async () => await _adminService.ExecuteReadOnlyAsAdminAsync(

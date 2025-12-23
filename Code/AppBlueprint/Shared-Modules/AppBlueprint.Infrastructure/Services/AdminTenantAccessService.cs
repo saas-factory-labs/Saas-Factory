@@ -1,4 +1,6 @@
+using AppBlueprint.Application.Constants;
 using AppBlueprint.Application.Services;
+using AppBlueprint.Infrastructure.Database;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,7 +16,7 @@ namespace AppBlueprint.Infrastructure.Services;
 /// strict security controls:
 /// 
 /// - READ-ONLY: Uses .AsNoTracking() to prevent modifications via EF Core
-/// - RBAC: Only SuperAdmin role can access
+/// - RBAC: Only DeploymentManagerAdmin role can access
 /// - AUDIT: All access logged with reason, timestamp, IP address
 /// - TEMPORARY: Tenant context cleared after operation
 /// - DEFENSE-IN-DEPTH: RLS enforces read-only at database level
@@ -68,7 +70,7 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
     /// <param name="reason">Business justification for accessing this tenant's data (required for audit)</param>
     /// <param name="queryAction">The READ-ONLY query to execute (must use .AsNoTracking())</param>
     /// <returns>The result of the query</returns>
-    /// <exception cref="UnauthorizedAccessException">Thrown if current user is not a SuperAdmin</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown if current user is not a DeploymentManagerAdmin</exception>
     /// <exception cref="ArgumentNullException">Thrown if parameters are null</exception>
     /// <exception cref="InvalidOperationException">Thrown if admin user ID cannot be determined</exception>
     public async Task<TResult> ExecuteReadOnlyAsAdminAsync<TResult>(
@@ -86,14 +88,14 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
         }
 
         // Verify current user has admin role
-        if (!_currentUserService.IsInRole("SuperAdmin"))
+        if (!_currentUserService.IsInRole(Roles.DeploymentManagerAdmin))
         {
             _logger.LogWarning(
-                "ADMIN_ACCESS_DENIED | User {UserId} attempted to access tenant {TenantId} without SuperAdmin role",
+                "ADMIN_ACCESS_DENIED | User {UserId} attempted to access tenant {TenantId} without DeploymentManagerAdmin role",
                 _currentUserService.UserId,
                 tenantId);
 
-            throw new UnauthorizedAccessException("Only SuperAdmins can access other tenants' data");
+            throw new UnauthorizedAccessException("Only Deployment Manager Admins can access other tenants' data.");
         }
 
         string adminUserId = _currentUserService.UserId 
@@ -109,13 +111,11 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
 
         try
         {
-            // Set PostgreSQL session variables for RLS
+            // Set PostgreSQL session variables for RLS using safe parameterized approach
             // - app.current_tenant_id: Allows RLS to filter by this tenant
             // - app.is_admin: Allows SELECT but blocks INSERT/UPDATE/DELETE
-            await _dbContext.Database.ExecuteSqlRawAsync(@"
-                SELECT set_config('app.current_tenant_id', {0}, FALSE);
-                SELECT set_config('app.is_admin', 'true', FALSE);
-            ", tenantId);
+            var sessionManager = new PostgreSqlSessionManager(_dbContext);
+            await sessionManager.SetSessionVariablesAsync(tenantId, isAdmin: true);
 
             // Execute the query with Named Query Filters bypassed
             // RLS still enforces based on session variables set above
@@ -146,13 +146,11 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
         }
         finally
         {
-            // Clear tenant context after operation (security hygiene)
+            // Clear session variables to prevent leakage to subsequent requests
             try
             {
-                await _dbContext.Database.ExecuteSqlRawAsync(@"
-                    SELECT set_config('app.current_tenant_id', NULL, FALSE);
-                    SELECT set_config('app.is_admin', 'false', FALSE);
-                ");
+                var sessionManager = new PostgreSqlSessionManager(_dbContext);
+                await sessionManager.ClearSessionVariablesAsync();
             }
             catch (Exception ex)
             {

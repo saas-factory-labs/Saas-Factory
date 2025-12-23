@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
-[Authorize(Roles = Roles.SaaSProviderAdmin)]
+[Authorize(Roles = Roles.DeploymentManagerAdmin)]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/audit-log")]

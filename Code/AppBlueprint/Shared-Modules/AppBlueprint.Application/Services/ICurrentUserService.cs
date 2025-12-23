@@ -21,7 +21,7 @@ public interface ICurrentUserService
     /// <summary>
     /// Checks if the current user has the specified role.
     /// </summary>
-    /// <param name="role">The role name to check (e.g., "SuperAdmin", "TenantAdmin")</param>
+    /// <param name="role">The role name to check (e.g., "DeploymentManagerAdmin", "TenantAdmin")</param>
     /// <returns>True if the user has the role, false otherwise</returns>
     bool IsInRole(string role);
 

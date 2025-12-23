@@ -10,7 +10,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Admin;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Admin;
 
-[Authorize(Roles = Roles.SaaSProviderAdmin)]
+[Authorize(Roles = Roles.DeploymentManagerAdmin)]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/admin")]
@@ -109,7 +109,7 @@ public class AdminController : BaseController
         var account = new AdminEntity
         {
             Email = request.Email,
-            Role = Roles.SaaSProviderAdmin
+            Role = Roles.DeploymentManagerAdmin
         };
 
         await _adminRepository.AddAsync(account);

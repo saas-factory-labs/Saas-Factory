@@ -66,8 +66,8 @@ public class TeamController : BaseController
         }
         catch (Exception ex)
         {
-            // Log the error and return 500 with details
-            return StatusCode(500, new { Message = "Error retrieving teams", Error = ex.Message });
+            // Log the error and return 500 with generic message
+            return StatusCode(500, new { Message = "Error retrieving teams. Please try again or contact support." });
         }
     }
 
