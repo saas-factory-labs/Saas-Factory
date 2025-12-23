@@ -1,6 +1,7 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
+using AppBlueprint.Application.Options;
 using AppBlueprint.Application.Services.DataExport;
 using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Configuration;
@@ -14,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Resend;
 using Stripe;
 
@@ -205,18 +207,18 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Registers Stripe payment service if API key is configured.
-    /// Looks for STRIPE_API_KEY environment variable or ConnectionStrings:StripeApiKey in configuration.
+    /// Uses StripeOptions from IOptions pattern.
     /// </summary>
     private static IServiceCollection AddStripeService(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        string? stripeApiKey = Environment.GetEnvironmentVariable("STRIPE_API_KEY") ??
-                          configuration.GetConnectionString("StripeApiKey");
-
-        if (!string.IsNullOrEmpty(stripeApiKey))
+        // Get Stripe options to check if configured
+        IServiceProvider tempProvider = services.BuildServiceProvider();
+        StripeOptions? stripeOptions = tempProvider.GetService<IOptions<StripeOptions>>()?.Value;
+        
+        if (stripeOptions is not null && !string.IsNullOrWhiteSpace(stripeOptions.ApiKey))
         {
-            StripeConfiguration.ApiKey = stripeApiKey;
             services.AddScoped<StripeSubscriptionService>();
             Console.WriteLine("[AppBlueprint.Infrastructure] Stripe service registered");
         }
@@ -230,36 +232,34 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Registers Cloudflare R2 object storage service if credentials are configured.
-    /// Requires ObjectStorage:AccessKeyId, ObjectStorage:SecretAccessKey, ObjectStorage:EndpointUrl, ObjectStorage:BucketName.
+    /// Uses CloudflareR2Options from IOptions pattern.
     /// </summary>
     private static IServiceCollection AddCloudflareR2Service(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        string? accessKeyId = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ACCESS_KEY_ID") ??
-                         configuration["ObjectStorage:AccessKeyId"];
-        string? secretAccessKey = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_SECRET_ACCESS_KEY") ??
-                             configuration["ObjectStorage:SecretAccessKey"];
-        string? endpointUrl = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_ENDPOINT_URL") ??
-                         configuration["ObjectStorage:EndpointUrl"];
-        string? bucketName = Environment.GetEnvironmentVariable("CLOUDFLARE_R2_BUCKET_NAME") ??
-                        configuration["ObjectStorage:BucketName"];
-
-        if (!string.IsNullOrEmpty(accessKeyId) &&
-            !string.IsNullOrEmpty(secretAccessKey) &&
-            !string.IsNullOrEmpty(endpointUrl) &&
-            !string.IsNullOrEmpty(bucketName))
+        // Get R2 options to check if configured
+        IServiceProvider tempProvider = services.BuildServiceProvider();
+        CloudflareR2Options? r2Options = tempProvider.GetService<IOptions<CloudflareR2Options>>()?.Value;
+        
+        if (r2Options is not null && 
+            !string.IsNullOrWhiteSpace(r2Options.AccessKeyId) &&
+            !string.IsNullOrWhiteSpace(r2Options.SecretAccessKey) &&
+            !string.IsNullOrWhiteSpace(r2Options.EndpointUrl) &&
+            !string.IsNullOrWhiteSpace(r2Options.BucketName))
         {
             services.AddSingleton<IAmazonS3>(sp =>
             {
-                var credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+                CloudflareR2Options options = sp.GetRequiredService<IOptions<CloudflareR2Options>>().Value;
+                var credentials = new BasicAWSCredentials(options.AccessKeyId, options.SecretAccessKey);
                 return new AmazonS3Client(credentials, new AmazonS3Config
                 {
-                    ServiceURL = endpointUrl,
+                    ServiceURL = options.EndpointUrl,
                     ForcePathStyle = true // Required for R2 compatibility
                 });
             });
-
+            
+            services.AddSingleton<ObjectStorageService>();
             Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 storage service registered");
         }
         else
@@ -272,25 +272,24 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Registers Resend email service if API key is configured.
-    /// Looks for RESEND_API_KEY environment variable or Resend:ApiKey in configuration.
+    /// Uses ResendEmailOptions from IOptions pattern.
     /// </summary>
     private static IServiceCollection AddResendEmailService(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        string? resendApiKey = Environment.GetEnvironmentVariable("RESEND_API_KEY") ??
-                          configuration["Resend:ApiKey"];
-
-        if (!string.IsNullOrEmpty(resendApiKey))
+        // Get Resend options to check if configured
+        IServiceProvider tempProvider = services.BuildServiceProvider();
+        ResendEmailOptions? resendOptions = tempProvider.GetService<IOptions<ResendEmailOptions>>()?.Value;
+        
+        if (resendOptions is not null && !string.IsNullOrWhiteSpace(resendOptions.ApiKey))
         {
-            string resendApiBaseUrl = Environment.GetEnvironmentVariable("RESEND_BASE_URL") ??
-                                      configuration["Resend:BaseUrl"] ??
-                                      DefaultResendApiBaseUrl;
             services.AddHttpClient<IResend, ResendClient>()
                 .ConfigureHttpClient(client =>
                 {
-                    client.BaseAddress = new Uri(resendApiBaseUrl);
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendApiKey}");
+                    client.BaseAddress = new Uri(resendOptions.BaseUrl, UriKind.Absolute);
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendOptions.ApiKey}");
+                    client.Timeout = TimeSpan.FromSeconds(resendOptions.TimeoutSeconds);
                 });
             services.AddScoped<TransactionEmailService>();
             Console.WriteLine("[AppBlueprint.Infrastructure] Resend email service registered");

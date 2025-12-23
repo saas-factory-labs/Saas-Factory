@@ -92,6 +92,9 @@ builder.Host.UseDefaultServiceProvider((context, options) =>
     options.ValidateOnBuild = true;
 });
 
+// Register configuration options with validation
+builder.Services.AddAppBlueprintConfiguration(builder.Configuration, builder.Environment);
+
 var navigationRoutes = builder.Configuration
     .GetSection("Navigation:Routes")
     .Get<List<NavLinkMetadata>>() ?? new List<NavLinkMetadata>();
