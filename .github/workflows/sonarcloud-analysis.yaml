@@ -1,4 +1,4 @@
-name: SonarQube Cloud
+name: " Code Quality: 💎 Sonarcloud"
 on:  
   workflow_dispatch:
   push:

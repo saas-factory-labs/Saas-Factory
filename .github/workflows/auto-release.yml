@@ -1,4 +1,4 @@
-name: Automated Semantic Release
+name: "🚀 Release: Automated Semantic Versioning"
 
 permissions:
   contents: write  # Required to create tags and releases

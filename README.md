@@ -42,14 +42,21 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=vulnerabilities)](https://sonarcloud.io/project/issues?id=saas-factory-labs_Saas-Factory&resolved=false&types=VULNERABILITY)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=sqale_index)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=sqale_index)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
+[![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
+
+[![Security: CodeQL](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-codeql.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-codeql.yml)
+[![Security: Snyk](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-snyk.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-snyk.yml)
 
 ---
+
+[![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
 
 ## 📚 Documentation
 
 **[📖 View Complete Documentation](https://saas-factory-labs.github.io/Saas-Factory/docs/)**
 
 The comprehensive documentation includes:
+
 - 🚀 **Getting Started Guide** - Quick setup and installation
 - 🏗️ **Architecture Overview** - System design and patterns
 - 📝 **Development Workflow** - Building and deploying
