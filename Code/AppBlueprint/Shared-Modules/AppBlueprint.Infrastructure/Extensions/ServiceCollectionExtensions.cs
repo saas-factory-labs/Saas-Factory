@@ -187,12 +187,18 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Registers tenant-scoped services for multi-tenant isolation.
+    /// Registers tenant-scoped services for multi-tenant isolation and admin access.
     /// </summary>
     private static IServiceCollection AddTenantServices(this IServiceCollection services)
     {
+        // Multi-tenant isolation
         services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
         services.AddScoped<TenantConnectionInterceptor>();
+        
+        // User context and admin access
+        services.AddScoped<Application.Services.ICurrentUserService, CurrentUserService>();
+        services.AddScoped<Application.Services.IAdminTenantAccessService, AdminTenantAccessService>();
+        
         return services;
     }
 

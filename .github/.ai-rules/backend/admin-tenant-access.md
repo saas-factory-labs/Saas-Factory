@@ -14,11 +14,12 @@ This document describes secure patterns for administrators to access tenant data
 
 ## Security Principles
 
-1. **Explicit Admin Intent** - Admin must explicitly specify which tenant they're accessing
-2. **Audit Logging** - All admin access to tenant data must be logged with timestamps and reasons
-3. **Role-Based Access Control (RBAC)** - Only users with `SuperAdmin` or `TenantAdmin` roles can access other tenants
-4. **Temporary Context Switching** - Admin context should be scoped to a single operation, not session-wide
-5. **Bypass RLS Safely** - Use PostgreSQL RLS policies that allow admins to switch tenants, not bypass completely
+1. **Read-Only Access** - ⚠️ **CRITICAL:** Admins can ONLY VIEW tenant data, never modify or delete
+2. **Explicit Admin Intent** - Admin must explicitly specify which tenant they're accessing
+3. **Audit Logging** - All admin access to tenant data must be logged with timestamps and reasons
+4. **Role-Based Access Control (RBAC)** - Only users with `SuperAdmin` or `TenantAdmin` roles can access other tenants
+5. **Temporary Context Switching** - Admin context should be scoped to a single operation, not session-wide
+6. **Bypass RLS Safely** - Use PostgreSQL RLS policies that allow admins to switch tenants, not bypass completely
 
 ---
 
@@ -38,6 +39,7 @@ namespace AppBlueprint.Application.Services;
 
 /// <summary>
 /// Service for administrators to access tenant data with audit logging.
+/// ⚠️ READ-ONLY: Admins can only VIEW tenant data, never modify or delete.
 /// </summary>
 public sealed class AdminTenantAccessService
 {
@@ -56,13 +58,16 @@ public sealed class AdminTenantAccessService
     }
 
     /// <summary>
-    /// Executes a query in the context of a specific tenant with admin privileges.
-    /// IMPORTANT: This bypasses Named Query Filters but RLS still enforces based on session variable.
+    /// Executes a READ-ONLY query in the context of a specific tenant with admin privileges.
+    /// ⚠️ IMPORTANT: 
+    /// - This bypasses Named Query Filters but RLS still enforces based on session variable
+    /// - Admin access is READ-ONLY - use AsNoTracking() to prevent accidental modifications
+    /// - Never use this for SaveChanges, Update, or Delete operations
     /// </summary>
     /// <param name="tenantId">The tenant to access</param>
     /// <param name="reason">Business justification (logged for audit)</param>
-    /// <param name="queryAction">The query to execute</param>
-    public async Task<TResult> ExecuteAsAdminAsync<TResult>(
+    /// <param name="queryAction">The READ-ONLY query to execute</param>
+    public async Task<TResult> ExecuteReadOnlyAsAdminAsync<TResult>(
         string tenantId,
         string reason,
         Func<ApplicationDbContext, Task<TResult>> queryAction)
@@ -118,31 +123,31 @@ public sealed class AdminTenantAccessService
         }
     }
 }
-
-// Usage in DeploymentManager or Admin API
-public async Task<UserProfile> GetUserProfileAsAdmin(string tenantId, string userId)
-{
-    return await _adminTenantAccessService.ExecuteAsAdminAsync(
+ReadOnlyAsAdminAsync(
         tenantId,
         reason: "Support ticket #12345 - user cannot login",
         async (dbContext) =>
         {
+            // ⚠️ READ-ONLY: Use AsNoTracking() to prevent accidental modifications
             // Use IgnoreQueryFilters to bypass Named Query Filters (Layer 1)
             // RLS (Layer 2) still enforces based on session variable
             return await dbContext.Users
+                .AsNoTracking() // ✅ Read-only - prevents SaveChanges from modifying data
                 .IgnoreQueryFilters()
                 .Where(u => u.Id == userId)
                 .Select(u => new UserProfile { /* ... */ })
                 .FirstOrDefaultAsync();
         });
 }
-```
 
----
+// ❌ FORBIDDEN: Never implement write operations for admin access
+// public async Task UpdateUserAsAdmin(...) { } // NO!
+// public async Task DeleteUserAsAdmin(...) { } // NO!               .Where(u => u.Id == userId)
+                .Select(u => new UserProfile { /* ... */ })
+                .FirstOrDefaultAsync();
+        }); (Read-Only)
 
-### Pattern 2: Admin-Specific PostgreSQL RLS Policy
-
-Modify the RLS setup to allow admin users to switch tenants without bypassing security completely.
+Modify the RLS setup to allow admin users to switch tenants for **read-only access**.
 
 ```sql
 -- SetupRowLevelSecurity.sql (enhanced version)
@@ -160,8 +165,9 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql STABLE;
 
--- Enhanced RLS policy for admin access
-CREATE POLICY tenant_isolation_with_admin ON users
+-- ⚠️ READ-ONLY: Admin policy for SELECT only (no INSERT, UPDATE, DELETE)
+CREATE POLICY tenant_isolation_with_admin_read ON users
+    FOR SELECT  -- ✅ Only SELECT allowed for admins
     USING (
         -- Normal users see only their tenant
         tenant_id = current_setting('app.current_tenant_id', TRUE)::TEXT
@@ -170,14 +176,29 @@ CREATE POLICY tenant_isolation_with_admin ON users
         is_admin_user()
     );
 
--- Apply to all tenant-scoped tables
--- (repeat for teams, messages, profiles, etc.)
-```
-
-```csharp
-// Enhanced AdminTenantAccessService with RLS admin flag
-public async Task<TResult> ExecuteAsAdminAsync<TResult>(
+-- ⚠️ WRITE PROTECTION: Normal tenant isolation for INSERT/UPDATE/DELETE (no admin bypass)
+CREATE POLICY tenant_isolation_write ON users
+    FOR ALL  -- Covers INSERT, UPDATE, DELETE
+    USING (tenant_id = current_setting('app.current_tenant_id', TRUE)::TEXT)
+    WITH CHECK (tenant_id = current_setting('app.current (READ-ONLY)
+public async Task<TResult> ExecuteReadOnlyAsAdminAsync<TResult>(
     string tenantId,
+    string reason,
+    Func<ApplicationDbContext, Task<TResult>> queryAction)
+{
+    // ... authorization checks ...
+
+    try
+    {
+        // Set BOTH tenant context AND admin flag for RLS
+        await _dbContext.Database.ExecuteSqlRawAsync(@"
+            SELECT set_config('app.current_tenant_id', {0}, FALSE);
+            SELECT set_config('app.is_admin', 'true', FALSE);
+        ", tenantId);
+
+        // ⚠️ Execute query in read-only mode
+        // PostgreSQL RLS policy only allows SELECT with is_admin_user() = true
+        // Any attempt to UPDATE/DELETE will be blocked by RLS write policies    string tenantId,
     string reason,
     Func<ApplicationDbContext, Task<TResult>> queryAction)
 {
@@ -240,12 +261,14 @@ public sealed class TenantDataViewerModel : ComponentBase
     private async Task LoadTenantDataAsync()
     {
         if (string.IsNullOrWhiteSpace(AccessReason))
-        {
-            ErrorMessage = "You must provide a reason for accessing this tenant's data (audit requirement)";
-            return;
-        }
-
-        IsLoading = true;
+        {// ⚠️ READ-ONLY access - AsNoTracking() prevents accidental modifications
+            Users = await AdminService.ExecuteReadOnlyAsAdminAsync(
+                TenantId,
+                AccessReason,
+                async (dbContext) =>
+                {
+                    return await dbContext.Users
+                        .AsNoTracking() // ✅ Read-only - prevents SaveChange
         ErrorMessage = null;
 
         try
@@ -286,8 +309,8 @@ public sealed class TenantDataViewerModel : ComponentBase
 @page "/admin/tenant/{TenantId}/data"
 @attribute [Authorize(Roles = "SuperAdmin")]
 
-<PageTitle>Admin: View Tenant Data</PageTitle>
-
+<PageTitle>Admin: View Tena (Read-Only):</strong> You are viewing another tenant's data. 
+    You cannot modify or delete this data.
 <h1>View Tenant Data - @TenantId</h1>
 
 <div class="alert alert-warning" role="alert">
@@ -418,10 +441,13 @@ CREATE INDEX idx_admin_audit_user ON admin_audit_log(admin_user_id, timestamp DE
 
 When implementing admin access, ensure:
 
+- [ ] **READ-ONLY ENFORCEMENT** - Use `.AsNoTracking()` on all queries
+- [ ] **NO WRITE METHODS** - Never implement Update/Delete admin methods
+- [ ] **RLS WRITE POLICIES** - Separate RLS policies for SELECT vs INSERT/UPDATE/DELETE
 - [ ] Admin role verification (RBAC)
 - [ ] Explicit tenant ID parameter (no implicit context)
 - [ ] Mandatory access reason (business justification)
-- [ ] Audit logging (admin user, tenant, timestamp, reason)
+- [ ] Audit logging (admin user, tenant, timestamp, reason, operation)
 - [ ] Temporary context switching (scoped to operation)
 - [ ] RLS session variable set correctly
 - [ ] Named Query Filters bypassed with `.IgnoreQueryFilters()`
@@ -429,7 +455,7 @@ When implementing admin access, ensure:
 - [ ] Error handling and logging
 - [ ] IP address logging
 - [ ] Separate audit log table (append-only)
-- [ ] UI warning banner (admin mode active)
+- [ ] UI warning banner ("Read-Only Admin Access")
 - [ ] Rate limiting (prevent bulk data extraction)
 - [ ] MFA requirement for admin operations
 
@@ -475,17 +501,14 @@ public sealed class AdminTenantController : ControllerBase
         [FromRoute] string tenantId,
         [FromQuery] string reason)
     {
-        if (string.IsNullOrWhiteSpace(reason))
-        {
-            return BadRequest("Reason for access is required for audit logging");
-        }
-
-        var users = await _adminService.ExecuteAsAdminAsync(
+        // ⚠️ READ-ONLY: AsNoTracking() prevents accidental modifications
+        var users = await _adminService.ExecuteReadOnlyAsAdminAsync(
             tenantId,
             reason,
             async (dbContext) =>
             {
                 return await dbContext.Users
+                    .AsNoTracking() // ✅ Read-only
                     .IgnoreQueryFilters()
                     .Where(u => u.TenantId == tenantId)
                     .Select(u => new UserDto
@@ -499,11 +522,22 @@ public sealed class AdminTenantController : ControllerBase
 
         return Ok(users);
     }
+    
+    // ❌ FORBIDDEN: No PUT/PATCH/DELETE endpoints for admin access
+    // [HttpPut("{tenantId}/users/{userId}")] // NO!
+    // [HttpDelete("{tenantId}/users/{userId}")] // NO!               })
+                    .ToListAsync();
+            });
+
+        return Ok(users);
+    }
 }
 ```
 
 ---
-
+Read/Write** | Read + Write | **READ-ONLY** (`.AsNoTracking()`) |
+| **Modifications** | Allowed (own tenant) | **FORBIDDEN** (all tenants) |
+| **
 ## Comparison: Admin Access vs Regular Access
 
 | Aspect | Regular User Access | Admin Access |
@@ -525,11 +559,13 @@ public sealed class AdminTenantController : ControllerBase
 ```csharp
 [Test]
 public async Task AdminCanAccessOtherTenant()
-{
-    // Arrange
-    string tenantA = "tenant-aaa";
-    string tenantB = "tenant-bbb";
-    
+{ (read-only)
+    var users = await _adminService.ExecuteReadOnlyAsAdminAsync(
+        tenantB,
+        "Test: Verify admin can access other tenant",
+        async (db) => await db.Users
+            .AsNoTracking() // ✅ Read-only
+            
     await SeedTenantData(tenantA, userCount: 5);
     await SeedTenantData(tenantB, userCount: 3);
 
@@ -547,10 +583,10 @@ public async Task AdminCanAccessOtherTenant()
 }
 ```
 
-### Test 2: Non-Admin Cannot Access Other Tenant
-
-```csharp
-[Test]
+### Test 2: Non-Admin Cannot Access Other TenantReadOnlyAsAdminAsync(
+        "tenant-bbb",
+        "Should fail",
+        async (db) => await db.Users.AsNoTracking()
 public async Task NonAdminCannotAccessOtherTenant()
 {
     // Arrange
@@ -566,25 +602,62 @@ public async Task NonAdminCannotAccessOtherTenant()
 ```
 
 ### Test 3: Audit Log Created
-
-```csharp
-[Test]
-public async Task AdminAccessCreatesAuditLog()
-{
-    // Arrange
-    string tenantId = "tenant-aaa";
-    string reason = "Test: Verify audit logging";
-
-    // Act
-    await _adminService.ExecuteAsAdminAsync(
+ReadOnlyAsAdminAsync(
         tenantId,
         reason,
-        async (db) => await db.Users.IgnoreQueryFilters().ToListAsync());
+        async (db) => await db.Users.AsNoTracking().IgnoreQueryFilters().ToListAsync());
 
     // Assert - Check logs contain admin access entry
     _testLogger.Verify(
         x => x.Log(
             LogLevel.Warning,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("ADMIN ACCESS") && v.ToString()!.Contains(tenantId)),
+            It.IsAny<Exception>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+        Times.AtLeastOnce);
+}
+
+### Test 4: Admin Cannot Modify Data
+
+```csharp
+[Test]
+public async Task AdminCannotModifyTenantData()
+{
+    // Arrange
+    string tenantId = "tenant-aaa";
+    aREAD-ONLY ONLY** - ⚠️ **NEVER** implement write/delete operations for admin access
+2. **Use AsNoTracking()** - Prevent accidental modifications through EF Core change tracking
+3. **Separate RLS policies** - Different policies for SELECT vs INSERT/UPDATE/DELETE
+4. **Always require a reason** - Never allow silent admin access
+5. **Log everything** - Use structured logging for easy querying
+6. **Use temporary context** - Never leave admin mode active longer than needed
+7. **Rate limit admin operations** - Prevent bulk data extraction
+8. **Monitor audit logs** - Alert on suspicious patterns (e.g., accessing 100+ tenants/hour)
+9. **Require MFA for admin** - Extra security layer
+10. **Use separate admin UI** - Don't mix admin and regular user interfaces
+11. **Clear visual indicators** - Always show "Read-Only Admin Access" banner
+12. **Time-bound admin sessions** - Expire admin privileges after X minutes
+13. **Regular audit reviews** - Review admin access logs weekly/monthly
+14. **Integration tests** - Test that admin cannot modify data (Test 4 above)
+                .FirstAsync(u => u.TenantId == tenantId);
+            
+            user.Email = "hacked@example.com"; // ❌ This will fail
+     ⚠️ READ-ONLY ACCESS ONLY** - Use `.AsNoTracking()` on all queries, never implement write operations
+2. **Create `AdminTenantAccessService`** with explicit tenant context switching
+3. **Require admin role** (`SuperAdmin`) and business justification
+4. **Set RLS session variable** to the target tenant
+5. **Bypass Named Query Filters** with `.IgnoreQueryFilters()`
+6. **Separate RLS policies** - Allow SELECT with admin flag, block INSERT/UPDATE/DELETE
+7. **Log all access** with admin user, tenant, reason, timestamp, IP, operation type
+8. **Store audit logs** in append-only table
+9. **Clear context** after operation (use `finally` block)
+10. **Show UI warning** "Read-Only Admin Access" banner
+11. **Integration tests** - Verify admin cannot modify/delete data
+
+This approach maintains security while allowing legitimate **read-only** administrative operations with full audit trail.
+
+**Security Guarantee:** Even if an admin tries to call `SaveChanges()`, the combination of `.AsNoTracking()` and RLS write policies prevents any modifications to tenant data
             It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("ADMIN ACCESS") && v.ToString()!.Contains(tenantId)),
             It.IsAny<Exception>(),

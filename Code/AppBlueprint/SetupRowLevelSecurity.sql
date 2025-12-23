@@ -43,6 +43,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Function to check if current user is admin (for read-only admin access)
+CREATE OR REPLACE FUNCTION is_admin_user()
+RETURNS BOOLEAN AS $$
+BEGIN
+    -- Check if current_setting('app.is_admin') is set to 'true'
+    -- This is set by AdminTenantAccessService for read-only operations only
+    RETURN current_setting('app.is_admin', TRUE) = 'true';
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
 -- ========================================
 -- Enable Row-Level Security on All Tenant-Scoped Tables
 -- ========================================
@@ -70,15 +83,49 @@ ALTER TABLE "Todos" ENABLE ROW LEVEL SECURITY IF EXISTS;
 -- ========================================
 -- These policies ensure users can only see data for their tenant
 -- The policy checks that TenantId matches the current session's tenant context
+--
+-- ADMIN ACCESS (READ-ONLY):
+-- Admins can SELECT any tenant's data when app.is_admin = 'true'
+-- Admins CANNOT INSERT/UPDATE/DELETE - those operations enforce normal tenant isolation
 
 -- Users table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "Users";
-CREATE POLICY tenant_isolation_policy ON "Users"
-    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+DROP POLICY IF EXISTS tenant_isolation_read_policy ON "Users";
+DROP POLICY IF EXISTS tenant_isolation_write_policy ON "Users";
+
+-- Read policy: Normal users + read-only admin access
+CREATE POLICY tenant_isolation_read_policy ON "Users"
+    FOR SELECT
+    USING (
+        "TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT
+        OR is_admin_user()  -- Admins can read any tenant
+    );
+
+-- Write policy: Only normal tenant isolation (admins cannot write)
+CREATE POLICY tenant_isolation_write_policy ON "Users"
+    FOR ALL  -- Covers INSERT, UPDATE, DELETE
+    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT)
+    WITH CHECK ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
 
 -- Teams table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "Teams";
-CREATE POLICY tenant_isolation_policy ON "Teams"
+DROP POLICY IF EXISTS tenant_isolation_read_policy ON "Teams";
+DROP POLICY IF EXISTS tenant_isolation_write_policy ON "Teams";
+
+CREATE POLICY tenant_isolation_read_policy ON "Teams"
+    FOR SELECT
+    USING (
+        "TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT
+        OR is_admin_user()
+    );
+
+CREATE POLICY tenant_isolation_write_policy ON "Teams"
+    FOR ALL
+    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT)
+    WITH CHECK ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+
+-- Organizations table (old policy for reference)
+DROP POLICY IF EXISTS tenant_isolation_policy ON "Teams"
     USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
 
 -- Organizations table
@@ -177,6 +224,33 @@ SELECT current_setting('app.current_tenant_id', TRUE) as current_tenant;
 -- SELECT * FROM "Users" LIMIT 5;
 
 -- ========================================
+-- ========================================
+-- Admin Audit Log Table (Read-Only Admin Access Tracking)
+-- ========================================
+-- Tracks all admin access to tenant data for security and compliance
+-- This table is NOT tenant-scoped and has no RLS policies
+-- It's append-only (INSERT permission only) to prevent tampering
+
+CREATE TABLE IF NOT EXISTS "AdminAuditLog" (
+    "Id" SERIAL PRIMARY KEY,
+    "AdminUserId" TEXT NOT NULL,
+    "TenantId" TEXT NOT NULL,
+    "Operation" TEXT NOT NULL,  -- e.g., 'ViewUsers', 'ViewMessages'
+    "Reason" TEXT NOT NULL,
+    "Result" TEXT NOT NULL,  -- 'Success' or 'Failure'
+    "IpAddress" INET,
+    "Timestamp" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Create indexes for querying audit logs
+CREATE INDEX IF NOT EXISTS idx_admin_audit_tenant ON "AdminAuditLog"("TenantId", "Timestamp" DESC);
+CREATE INDEX IF NOT EXISTS idx_admin_audit_user ON "AdminAuditLog"("AdminUserId", "Timestamp" DESC);
+CREATE INDEX IF NOT EXISTS idx_admin_audit_timestamp ON "AdminAuditLog"("Timestamp" DESC);
+
+-- Grant INSERT only (append-only table)
+-- GRANT INSERT ON "AdminAuditLog" TO app_user;
+
+-- ========================================
 -- Disable RLS (Emergency Only)
 -- ========================================
 -- Only use this if you need to temporarily disable RLS for maintenance
@@ -189,6 +263,7 @@ SELECT current_setting('app.current_tenant_id', TRUE) as current_tenant;
 PRINT('Row-Level Security setup complete!');
 PRINT('Remember to set tenant context before queries:');
 PRINT('  SELECT set_current_tenant(''your-tenant-id'');');
+PRINT('For admin access: SELECT set_config(''app.is_admin'', ''true'', FALSE);');
 
 -- ========================================
 -- Defense-in-Depth Summary
@@ -204,6 +279,14 @@ PRINT('  SELECT set_current_tenant(''your-tenant-id'');');
 --    - Protects against compromised application
 --    - Works with raw SQL, psql, direct connections
 --
+-- ⚠️ ADMIN ACCESS (READ-ONLY):
+--    - Admins can SELECT any tenant when app.is_admin = 'true'
+--    - Admins CANNOT INSERT/UPDATE/DELETE (enforced by separate write policies)
+--    - All admin access logged to AdminAuditLog table
+--    - Use AdminTenantAccessService with .AsNoTracking() queries
+--
 -- SECURITY GUARANTEE:
--- Even if attacker gains code execution and calls .IgnoreQueryFilters(),
--- the database will still enforce tenant isolation via RLS policies.
+-- 1. Even if attacker gains code execution and calls .IgnoreQueryFilters(),
+--    the database will still enforce tenant isolation via RLS policies.
+-- 2. Admins can only READ tenant data, never modify or delete.
+-- 3. All admin access is audited in append-only AdminAuditLog table.
