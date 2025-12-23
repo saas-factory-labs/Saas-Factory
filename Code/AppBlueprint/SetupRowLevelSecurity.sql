@@ -3,8 +3,18 @@
 -- for Multi-Tenant AppBlueprint Applications
 -- ========================================
 -- 
--- This script enables Row-Level Security (RLS) on all tenant-scoped tables
--- to provide database-level tenant isolation in a shared database architecture.
+-- DEFENSE-IN-DEPTH SECURITY ARCHITECTURE:
+-- This script implements Layer 2 (database-level) tenant isolation.
+-- Layer 1 is EF Core Named Query Filters (application-level).
+--
+-- WHY BOTH LAYERS?
+-- - Named Query Filters: Prevent developer mistakes, cleaner code
+-- - Row-Level Security: Cannot be bypassed even if application is compromised
+--
+-- CRITICAL FOR SENSITIVE DATA (Dating App, Healthcare, Finance):
+-- - User messages, profiles, health records protected at DB level
+-- - Attacker cannot use .IgnoreQueryFilters() or raw SQL to bypass RLS
+-- - Direct database access (psql, pgAdmin) still enforces isolation
 --
 -- IMPORTANT: Run this AFTER applying all Entity Framework migrations
 --
@@ -179,3 +189,21 @@ SELECT current_setting('app.current_tenant_id', TRUE) as current_tenant;
 PRINT('Row-Level Security setup complete!');
 PRINT('Remember to set tenant context before queries:');
 PRINT('  SELECT set_current_tenant(''your-tenant-id'');');
+
+-- ========================================
+-- Defense-in-Depth Summary
+-- ========================================
+-- ✅ Layer 1: EF Core Named Query Filters (Application-Level)
+--    - Automatically adds: WHERE TenantId = @currentTenant
+--    - Prevents developer mistakes
+--    - Can be bypassed with .IgnoreQueryFilters()
+--
+-- ✅ Layer 2: PostgreSQL Row-Level Security (Database-Level)  
+--    - Enforced by database regardless of client
+--    - Cannot be bypassed without BYPASSRLS privilege
+--    - Protects against compromised application
+--    - Works with raw SQL, psql, direct connections
+--
+-- SECURITY GUARANTEE:
+-- Even if attacker gains code execution and calls .IgnoreQueryFilters(),
+-- the database will still enforce tenant isolation via RLS policies.

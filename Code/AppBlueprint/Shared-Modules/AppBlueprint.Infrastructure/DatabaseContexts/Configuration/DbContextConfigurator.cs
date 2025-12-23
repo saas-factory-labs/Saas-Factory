@@ -1,6 +1,8 @@
 using AppBlueprint.Application.Options;
 using AppBlueprint.Infrastructure.Configuration;
+using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -211,6 +213,19 @@ public static class DbContextConfigurator
                 maxRetryDelay: TimeSpan.FromSeconds(options.MaxRetryDelaySeconds),
                 errorCodesToAdd: null);
         });
+
+        // Register TenantConnectionInterceptor for RLS session variable configuration
+        // This interceptor sets app.current_tenant_id on every database connection
+        // for PostgreSQL Row-Level Security (defense-in-depth Layer 2)
+        var serviceProvider = dbOptions.Options.FindExtension<CoreOptionsExtension>()?.ApplicationServiceProvider;
+        if (serviceProvider is not null)
+        {
+            var tenantInterceptor = serviceProvider.GetService<TenantConnectionInterceptor>();
+            if (tenantInterceptor is not null)
+            {
+                dbOptions.AddInterceptors(tenantInterceptor);
+            }
+        }
 
         dbOptions.ConfigureWarnings(warnings =>
         {

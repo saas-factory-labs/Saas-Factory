@@ -17,6 +17,8 @@ IMPORTANT: Always follow these steps very carefully when implementing changes:
 - [Database Repositories](./database-repositories.md) - Database access patterns and repository implementations.
 - [External Integrations](./external-integrations.md) - Implementation of integration to external services.
 - **[Multi-Tenancy](./multi-tenancy.md) - CRITICAL: Tenant resolution security rules (JWT-only policy).**
+- **[Tenant Isolation: Defense-in-Depth](./tenant-isolation-defense-in-depth.md) - CRITICAL: Named Query Filters + RLS implementation guide.**
+- **[Admin Tenant Access](./admin-tenant-access.md) - CRITICAL: Secure admin access patterns for DeploymentManager.**
 
 <!-- Future rules files:
 - [API Endpoints](./api-endpoints.md) - Guidelines for minimal API endpoints.  

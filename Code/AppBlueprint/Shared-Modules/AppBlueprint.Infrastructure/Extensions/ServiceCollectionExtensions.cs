@@ -8,6 +8,7 @@ using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
+using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
 using AppBlueprint.Infrastructure.HealthChecks;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
@@ -53,6 +54,7 @@ public static class ServiceCollectionExtensions
         services.AddConfiguredDbContext(configuration);
         
         services.AddRepositories();
+        services.AddTenantServices();
         
         // Only add web authentication for non-API environments (Blazor Server)
         // API services handle authentication differently (JWT Bearer)
@@ -181,6 +183,16 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDataExportRepository, DataExportRepository>();
         // Add more repositories as they are implemented
 
+        return services;
+    }
+
+    /// <summary>
+    /// Registers tenant-scoped services for multi-tenant isolation.
+    /// </summary>
+    private static IServiceCollection AddTenantServices(this IServiceCollection services)
+    {
+        services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
+        services.AddScoped<TenantConnectionInterceptor>();
         return services;
     }
 

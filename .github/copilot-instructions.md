@@ -196,6 +196,7 @@ Only do work on the AppBlueprint directory and related projects.
 **Read the following additional instructions:**
 
 [Backend Rules](.ai-rules/backend/README.md)
+[Baseline - Clean Architecture Dependencies](.ai-rules/baseline/clean-architecture-dependencies.md) - **CRITICAL: Read this FIRST before any code changes**
 [Baseline - Entity Modeling](.ai-rules/baseline/entity-modeling.md)
 [Baseline - Code Style](.ai-rules/baseline/code-style.md)
 [Frontend Rules](.ai-rules/frontend/README.md)
