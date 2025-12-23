@@ -136,7 +136,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 };
             }
 
-            _logger.LogInformation("Preparing token exchange request to {Endpoint}", $"{_configuration.Endpoint}/oidc/token");
+            _logger.LogDebug("Preparing token exchange request to {Endpoint}", $"{_configuration.Endpoint}/oidc/token");
 
             var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
             {
