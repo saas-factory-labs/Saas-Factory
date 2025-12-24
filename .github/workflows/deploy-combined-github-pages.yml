@@ -1,4 +1,4 @@
-name: Deploy Landing Page + Documentation to GitHub Pages
+name: "🚀 Deploy: Documentation & Landing Page to Github Pages"
 
 on:
   push:

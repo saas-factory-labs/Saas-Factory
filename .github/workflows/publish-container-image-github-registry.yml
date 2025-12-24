@@ -1,4 +1,4 @@
-name: Publish Container Image to GitHub Registry
+name: "Container: 📦 Publish Container Image to GitHub Registry"
 
 on:
 #  schedule:

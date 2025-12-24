@@ -3,8 +3,8 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 public static class Roles
 {
     public const string
-        SaaSProviderAdmin =
-            "SaaSProviderAdmin"; // Admin of the SaaS provider that owns the application and can manage all customers, users, and settings and subscriptions
+        DeploymentManagerAdmin =
+            "DeploymentManagerAdmin"; // DeploymentManager administrator with access to all tenants across deployed B2C/B2B SaaS apps
 
     public const string
         CustomerAdmin =

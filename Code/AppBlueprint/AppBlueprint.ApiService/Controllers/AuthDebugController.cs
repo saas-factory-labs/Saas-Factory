@@ -1,11 +1,14 @@
+using AppBlueprint.Application.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppBlueprint.ApiService.Controllers;
 
 /// <summary>
-/// Debug controller to help diagnose authentication issues
+/// Debug controller to help diagnose authentication issues.
+/// WARNING: Should be disabled in production or restricted to DeploymentManagerAdmin only.
 /// </summary>
+[Authorize(Roles = Roles.DeploymentManagerAdmin)]
 [ApiController]
 [Route("api/[controller]")]
 public class AuthDebugController : ControllerBase

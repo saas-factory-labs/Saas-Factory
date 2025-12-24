@@ -3,6 +3,7 @@ using AppBlueprint.Application.Services.Users;
 using AppBlueprint.Domain.Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
@@ -12,12 +13,15 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 public class AuthenticationController : BaseController
 {
     private readonly IUserService _userService;
+    private readonly ILogger<AuthenticationController> _logger;
 
     public AuthenticationController(
         IUserService userService,
-        IConfiguration configuration) : base(configuration)
+        IConfiguration configuration,
+        ILogger<AuthenticationController> logger) : base(configuration)
     {
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     /// <summary>
@@ -140,7 +144,8 @@ public class AuthenticationController : BaseController
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new { Message = ex.Message });
+            _logger.LogError(ex, "Error during profile creation");
+            return BadRequest(new { Message = "Unable to create profile. Please try again." });
         }
     }
 
@@ -160,7 +165,8 @@ public class AuthenticationController : BaseController
         }
         catch (InvalidOperationException ex)
         {
-            return NotFound(new { Message = ex.Message });
+            _logger.LogError(ex, "Error during profile deactivation for user {UserId}", userId);
+            return NotFound(new { Message = "User not found or unable to deactivate." });
         }
     }
 }

@@ -1,4 +1,4 @@
-name: GitGuardian secret scan
+name: "🛡️ Security: Secret Scanning (GitGuardian)"
 
 on:  
   push:

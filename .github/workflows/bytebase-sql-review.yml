@@ -1,4 +1,4 @@
-name: Bytebase SQL Review
+name: "🛡️ Security: Bytebase SQL Review"
 on:  
 #  push:
 #    branches: ["main"]

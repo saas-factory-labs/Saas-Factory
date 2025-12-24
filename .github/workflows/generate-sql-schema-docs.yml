@@ -1,4 +1,4 @@
-name: Generate PostgreSQL Schema Dump
+name: "📑 Quality: SQL Schema Documentation"
 
 on:
   workflow_dispatch: # Allows manual trigger

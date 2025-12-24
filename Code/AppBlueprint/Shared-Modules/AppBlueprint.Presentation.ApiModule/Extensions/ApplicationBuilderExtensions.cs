@@ -43,13 +43,36 @@ public static class ApplicationBuilderExtensions
     }
 
     /// <summary>
-    /// Configures CORS policy to allow any origin, method, and header.
+    /// Configures CORS policy.
+    /// In development: allows any origin for testing.
+    /// In production: restricts to specific allowed origins from configuration.
     /// </summary>
-    private static IServiceCollection AddCorsPolicy(this IServiceCollection services)
+    private static IServiceCollection AddCorsPolicy(this IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
     {
         services.AddCors(policy => policy.AddDefaultPolicy(builder =>
         {
-            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            if (environment.IsDevelopment())
+            {
+                // Development only - allow any origin for testing
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }
+            else
+            {
+                // Production - restrict to specific origins
+                string[] allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() 
+                    ?? Array.Empty<string>();
+                
+                if (allowedOrigins.Length == 0)
+                {
+                    throw new InvalidOperationException(
+                        "CORS allowed origins must be configured in production. Add 'Cors:AllowedOrigins' to appsettings.json");
+                }
+                
+                builder.WithOrigins(allowedOrigins)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            }
         }));
 
         return services;

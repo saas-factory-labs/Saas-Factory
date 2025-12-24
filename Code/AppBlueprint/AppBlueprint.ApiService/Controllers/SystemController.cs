@@ -10,6 +10,7 @@ using Npgsql;
 
 namespace AppBlueprint.ApiService.Controllers;
 
+[Authorize(Roles = Roles.DeploymentManagerAdmin)]
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/system")]
@@ -64,17 +65,17 @@ internal class SystemController : ControllerBase
         catch (NpgsqlException ex)
         {
             _logger.LogError(ex, "Database error while applying migrations");
-            return StatusCode(500, new { success = false, message = $"Database error applying migrations: {ex.Message}" });
+            return StatusCode(500, new { success = false, message = "Database error applying migrations. Please check logs for details." });
         }
         catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Entity Framework error while applying migrations");
-            return StatusCode(500, new { success = false, message = $"EF Core error applying migrations: {ex.Message}" });
+            return StatusCode(500, new { success = false, message = "EF Core error applying migrations. Please check logs for details." });
         }
         catch (TimeoutException ex)
         {
             _logger.LogError(ex, "Timeout error while applying migrations");
-            return StatusCode(500, new { success = false, message = $"Timeout error applying migrations: {ex.Message}" });
+            return StatusCode(500, new { success = false, message = "Timeout error applying migrations. Please check logs for details." });
         }
     }
 

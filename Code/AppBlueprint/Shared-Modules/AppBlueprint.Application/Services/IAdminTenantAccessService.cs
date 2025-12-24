@@ -9,7 +9,7 @@ namespace AppBlueprint.Application.Services;
 /// 
 /// Security guarantees:
 /// - READ-ONLY: Uses .AsNoTracking() to prevent modifications
-/// - RBAC: Only SuperAdmin role can access
+/// - RBAC: Only DeploymentManagerAdmin role can access
 /// - AUDIT: All access logged with reason and timestamp
 /// - TEMPORARY: Tenant context cleared after operation
 /// - DEFENSE-IN-DEPTH: RLS enforces read-only at database level
@@ -29,7 +29,7 @@ public interface IAdminTenantAccessService
     /// <param name="reason">Business justification for accessing this tenant's data (required for audit)</param>
     /// <param name="queryAction">The READ-ONLY query to execute (must use .AsNoTracking())</param>
     /// <returns>The result of the query</returns>
-    /// <exception cref="UnauthorizedAccessException">Thrown if current user is not a SuperAdmin</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown if current user is not a DeploymentManagerAdmin</exception>
     Task<TResult> ExecuteReadOnlyAsAdminAsync<TResult>(
         string tenantId,
         string reason,

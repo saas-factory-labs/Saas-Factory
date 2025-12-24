@@ -65,7 +65,7 @@ public sealed class CurrentUserService : ICurrentUserService
     /// Checks if the current user has the specified role.
     /// Checks both standard "role" claims and ClaimTypes.Role.
     /// </summary>
-    /// <param name="role">The role name to check (e.g., "SuperAdmin", "TenantAdmin")</param>
+    /// <param name="role">The role name to check (e.g., "DeploymentManagerAdmin", "TenantAdmin")</param>
     /// <returns>True if the user has the role, false otherwise</returns>
     public bool IsInRole(string role)
     {

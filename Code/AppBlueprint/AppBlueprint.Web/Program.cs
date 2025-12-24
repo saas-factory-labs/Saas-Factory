@@ -297,6 +297,9 @@ app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// ✅ Add admin IP whitelist (blocks non-whitelisted IPs from admin routes)
+app.UseAdminIpWhitelist();
+
 app.UseOutputCache();
 
 app.MapRazorComponents<App>()

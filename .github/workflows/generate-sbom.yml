@@ -1,4 +1,4 @@
-name: Generate SBOM
+name: "🛡️ Security: Generate SBOM"
 
 on:
 #  push:
