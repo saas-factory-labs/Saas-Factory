@@ -8,5 +8,5 @@ public interface INotificationRepository
     Task<NotificationEntity?> GetByIdAsync(string id);
     Task AddAsync(NotificationEntity notification);
     void Update(NotificationEntity notification);
-    void Delete(int id);
+    void Delete(string id);
 }
