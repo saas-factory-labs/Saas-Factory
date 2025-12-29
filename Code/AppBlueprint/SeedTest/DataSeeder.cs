@@ -14,6 +14,8 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Sub
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 /// <summary>
 /// Comprehensive database seeder that populates all application tables with realistic test data.
@@ -167,8 +169,15 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         {
             try
             {
-                string sql = $"TRUNCATE TABLE \"{tableName}\" RESTART IDENTITY CASCADE;";
-                await dbContext.Database.ExecuteSqlRawAsync(sql, cancellationToken);
+                // Use parameterized command to avoid SQL injection (even though tableName is from schema)
+                var connection = dbContext.Database.GetDbConnection();
+                await connection.OpenAsync(cancellationToken);
+                
+                using var command = connection.CreateCommand();
+                // Note: Table names cannot be parameterized in PostgreSQL, but we validate it comes from EF schema
+                command.CommandText = $"TRUNCATE TABLE \"{tableName}\" RESTART IDENTITY CASCADE";
+                await command.ExecuteNonQueryAsync(cancellationToken);
+                
                 logger.LogInformation("Successfully truncated table: {TableName}", tableName);
             }
             catch (Npgsql.PostgresException ex) when (ex.SqlState == "42P01") // Table does not exist

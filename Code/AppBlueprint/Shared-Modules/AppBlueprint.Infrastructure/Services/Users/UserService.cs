@@ -5,6 +5,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 
 namespace AppBlueprint.Infrastructure.Services.Users;
@@ -15,6 +16,7 @@ public class UserServiceInfrastructure
     private readonly IUserRepository _userRepository;
     private readonly ApplicationDbContext _dbContext;
     private readonly TransactionEmailService _emailService;
+    private readonly ILogger<UserServiceInfrastructure> _logger;
 
     private const string UserNotFoundMessage = "User not found";
     private const string EmailAlreadyRegisteredMessage = "Email is already registered";
@@ -34,12 +36,14 @@ public class UserServiceInfrastructure
         IUnitOfWork unitOfWork,
         IUserRepository userRepository,
         ApplicationDbContext dbContext,
-        TransactionEmailService emailService)
+        TransactionEmailService emailService,
+        ILogger<UserServiceInfrastructure> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<UserEntity> RegisterAsync(string firstName, string lastName, string email, string userName, CancellationToken cancellationToken)
@@ -159,8 +163,7 @@ public class UserServiceInfrastructure
         catch (InvalidOperationException ex)
         {
             // Log the error but don't fail the operation
-            // A proper implementation would use a logger
-            Console.WriteLine($"Failed to send verification email: {ex.Message}");
+            _logger.LogError(ex, "Failed to send verification email");
         }
 
         return token;
@@ -241,7 +244,7 @@ public class UserServiceInfrastructure
         catch (InvalidOperationException ex)
         {
             // Log the error but don't fail the operation
-            Console.WriteLine($"Failed to send password reset email: {ex.Message}");
+            _logger.LogError(ex, "Failed to send password reset email");
         }
 
         return token;

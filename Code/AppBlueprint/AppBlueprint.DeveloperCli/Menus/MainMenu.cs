@@ -8,6 +8,9 @@ internal static class MainMenu
     {
         string[] options =
         [
+            "Start development environment (run)",
+            "Install CLI globally (saas command)",
+            "Uninstall CLI from system",
             "Create a new SaaS app solution",
             "Create a new project in the solution",
             "Create a new item (e.g., API controller, DTO, Service)",
@@ -62,6 +65,18 @@ internal static class MainMenu
     {
         switch (choice)
         {
+            case "Start development environment (run)":
+                AnsiConsole.MarkupLine("[yellow]Starting development environment...[/]");
+                RunCommand.ExecuteInteractive();
+                break;
+            case "Install CLI globally (saas command)":
+                AnsiConsole.MarkupLine("[yellow]Installing CLI globally...[/]");
+                InstallCommand.ExecuteInteractive();
+                break;
+            case "Uninstall CLI from system":
+                AnsiConsole.MarkupLine("[yellow]Uninstalling CLI...[/]");
+                UninstallCommand.ExecuteInteractive();
+                break;
             case "Create a new SaaS app solution":
                 AnsiConsole.MarkupLine("[yellow]Creating new SaaS app solution...[/]");
                 SolutionCommand.ExecuteInteractive();
