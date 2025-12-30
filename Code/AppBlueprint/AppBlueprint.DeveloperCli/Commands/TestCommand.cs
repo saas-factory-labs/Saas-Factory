@@ -92,9 +92,19 @@ internal static class TestCommand
 
         args.Add("test");
 
+        // Default to AppBlueprint.Tests project if no project specified
         if (!string.IsNullOrEmpty(project))
         {
             args.Add($"\"{project}\"");
+        }
+        else
+        {
+            // Run tests only on the test project, not the entire solution (avoids docker-compose.dcproj issues)
+            string testProject = Path.Combine(workingDirectory, "AppBlueprint.Tests", "AppBlueprint.Tests.csproj");
+            if (File.Exists(testProject))
+            {
+                args.Add($"\"{testProject}\"");
+            }
         }
 
         if (!string.IsNullOrEmpty(filter))

@@ -20,6 +20,14 @@ internal static class EnvironmentInfoCommand
         return command;
     }
 
+    /// <summary>
+    /// Execute the command interactively (called from menu).
+    /// </summary>
+    public static void ExecuteInteractive()
+    {
+        DisplayEnvironmentInfo();
+    }
+
     private static void DisplayEnvironmentInfo()
     {
         AnsiConsole.Write(new FigletText("Environment Info").Color(Color.Cyan1));

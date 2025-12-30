@@ -154,6 +154,22 @@ public static class WebAuthenticationExtensions
             ConfigureLogtoResource(options, logtoResource);
         });
         
+        // Configure the Logto cookie scheme separately
+        services.ConfigureAll<CookieAuthenticationOptions>(options =>
+        {
+            // Configure authentication cookie for development
+            if (environment.IsDevelopment())
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            }
+            options.Cookie.HttpOnly = true;
+            options.Cookie.Path = "/";
+            options.Cookie.IsEssential = true;
+            
+            Console.WriteLine($"[Web] Configured authentication cookie: Path=/, IsEssential=true, SameSite={options.Cookie.SameSite}");
+        });
+        
         ConfigureOpenIdConnectOptions(services, environment);
         
         Console.WriteLine("[Web] Logto authentication configured successfully");
@@ -231,6 +247,11 @@ public static class WebAuthenticationExtensions
             Console.WriteLine($"[Web] Configuring OpenID Connect '{LogtoScheme}' scheme to save tokens...");
             
             options.SaveTokens = true;
+            
+            // Logto uses /Callback as the callback path (not the default /signin-oidc)
+            // This must match what's configured in Logto's redirect URIs
+            options.CallbackPath = "/Callback";
+            
             ConfigureCookieSettings(options, environment);
             
             Console.WriteLine($"[Web] OpenID Connect callback path: {options.CallbackPath}");
@@ -259,18 +280,27 @@ public static class WebAuthenticationExtensions
         OpenIdConnectOptions options,
         IHostEnvironment environment)
     {
-        var sameSiteMode = environment.IsDevelopment() ? SameSiteMode.Lax : SameSiteMode.None;
-        var securePolicy = environment.IsDevelopment() 
-            ? CookieSecurePolicy.None 
-            : CookieSecurePolicy.Always;
+        // OAuth cookies must use SameSite=None because they need to survive cross-site redirects
+        // (redirect to Logto and back is a cross-site navigation)
+        // SameSite=None requires Secure=true (HTTPS), so we always use HTTPS for OAuth
+        var sameSiteMode = SameSiteMode.None;
+        var securePolicy = CookieSecurePolicy.Always; // Always require HTTPS for SameSite=None
         
         options.CorrelationCookie.SameSite = sameSiteMode;
         options.CorrelationCookie.SecurePolicy = securePolicy;
         options.CorrelationCookie.HttpOnly = true;
+        options.CorrelationCookie.Path = "/";
+        options.CorrelationCookie.IsEssential = true;
+        options.CorrelationCookie.Domain = null; // Don't set domain - use current host
         
         options.NonceCookie.SameSite = sameSiteMode;
         options.NonceCookie.SecurePolicy = securePolicy;
         options.NonceCookie.HttpOnly = true;
+        options.NonceCookie.Path = "/";
+        options.NonceCookie.IsEssential = true;
+        options.NonceCookie.Domain = null; // Don't set domain - use current host
+        
+        Console.WriteLine($"[Web] Configured correlation/nonce cookies: Path=/, IsEssential=true, SameSite={sameSiteMode}, Secure={securePolicy}, Domain=null");
     }
 
     /// <summary>
@@ -283,6 +313,28 @@ public static class WebAuthenticationExtensions
         
         var existingOnTokenValidated = options.Events.OnTokenValidated;
         options.Events.OnTokenValidated = context => HandleTokenValidated(context, existingOnTokenValidated);
+        
+        // Debug: Log when redirect is happening
+        options.Events.OnRedirectToIdentityProvider = context =>
+        {
+            Console.WriteLine("[Web] OnRedirectToIdentityProvider - About to redirect to Logto");
+            Console.WriteLine($"[Web] Redirect URL: {context.ProtocolMessage.RedirectUri}");
+            Console.WriteLine($"[Web] Response cookies being set: {context.Response.Headers.ContainsKey("Set-Cookie")}");
+            
+            if (context.Response.Headers.ContainsKey("Set-Cookie"))
+            {
+                var cookies = context.Response.Headers["Set-Cookie"];
+                Console.WriteLine($"[Web] Set-Cookie headers count: {cookies.Count}");
+                foreach (var cookie in cookies)
+                {
+                    // Only log cookie names, not values
+                    var cookieName = cookie.ToString().Split('=')[0];
+                    Console.WriteLine($"[Web]   - Setting cookie: {cookieName}");
+                }
+            }
+            
+            return Task.CompletedTask;
+        };
     }
 
     /// <summary>
@@ -420,14 +472,13 @@ public static class WebAuthenticationExtensions
             {
                 Console.WriteLine("[Web] User NOT authenticated - calling ChallengeAsync to redirect to Logto");
                 Console.WriteLine("[Web] Redirect URI after login: /");
-                Console.WriteLine($"[Web] Expected callback URL: {context.Request.Scheme}://{context.Request.Host}/signin-oidc");
+                Console.WriteLine($"[Web] Expected callback URL: {context.Request.Scheme}://{context.Request.Host}/Callback");
 
                 try
                 {
                     await context.ChallengeAsync(new AuthenticationProperties { RedirectUri = "/" });
                     Console.WriteLine("[Web] ✅ ChallengeAsync completed - should redirect to Logto now");
-                    Console.WriteLine("[Web] ⚠️ IMPORTANT: Make sure your Logto application has these redirect URIs configured:");
-                    Console.WriteLine($"[Web]    - {context.Request.Scheme}://{context.Request.Host}/signin-oidc");
+                    Console.WriteLine("[Web] ⚠️ IMPORTANT: Make sure your Logto application has this redirect URI configured:");
                     Console.WriteLine($"[Web]    - {context.Request.Scheme}://{context.Request.Host}/Callback");
                 }
                 catch (Exception ex)

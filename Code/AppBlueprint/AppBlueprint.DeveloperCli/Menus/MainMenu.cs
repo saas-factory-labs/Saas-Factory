@@ -1,4 +1,5 @@
 using AppBlueprint.DeveloperCli.Commands;
+using RazorConsole;
 
 namespace AppBlueprint.DeveloperCli.Menus;
 
@@ -6,9 +7,17 @@ internal static class MainMenu
 {
     public static void Show()
     {
+        // Clear console for better presentation (safe clear that handles invalid console)
+        TryClearConsole();
+        
+        // Display beautiful header using RazorConsole
+        ShowHeader();
+
         string[] options =
         [
             "Start development environment (run)",
+            "Display environment info (env:info)",
+            "Run tests (test)",
             "Install CLI globally (saas command)",
             "Uninstall CLI from system",
             "Create a new SaaS app solution",
@@ -23,23 +32,91 @@ internal static class MainMenu
             "Exit"
         ];
 
-        // Check if terminal supports interactive prompts
-        if (!AnsiConsole.Profile.Capabilities.Interactive || !AnsiConsole.Profile.Capabilities.Ansi)
+        // Use RazorConsole for menu selection
+        var prompt = new SelectionPrompt<string>()
+            .Title("\n[bold yellow]⚡ What would you like to do?[/]")
+            .PageSize(20)
+            .HighlightStyle(new Style(foreground: Color.Cyan1, decoration: Decoration.Bold))
+            .AddChoiceGroup("[bold green]🚀 Development[/]", [
+                "Start development environment (run)",
+                "Display environment info (env:info)",
+                "Run tests (test)"
+            ])
+            .AddChoiceGroup("[bold blue]🔧 CLI Management[/]", [
+                "Install CLI globally (saas command)",
+                "Uninstall CLI from system"
+            ])
+            .AddChoiceGroup("[bold magenta]🏗️ Scaffolding[/]", [
+                "Create a new SaaS app solution",
+                "Create a new project in the solution",
+                "Create a new item (e.g., API controller, DTO, Service)"
+            ])
+            .AddChoiceGroup("[bold yellow]💾 Database & Tools[/]", [
+                "Migrate database",
+                "Scan API routes",
+                "Clone a GitHub repository"
+            ])
+            .AddChoiceGroup("[bold cyan]🔐 Authentication & Security[/]", [
+                "Generate JWT Token (for testing)",
+                "Validate PostGreSQL Password",
+                "Manage Environment Variable"
+            ])
+            .AddChoices(["[bold white]❌ Exit[/]"]);
+
+        try
         {
-            // Fallback to simple console menu for non-interactive terminals
-            ShowSimpleMenu(options);
-            return;
+            string choice = AnsiConsole.Prompt(prompt);
+            ProcessSelection(choice);
         }
-
-        string choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("Please select an option:")
-                .PageSize(10)
-                .AddChoices(options));
-
-        ProcessSelection(choice);
+        catch (NotSupportedException)
+        {
+            // Fallback to simple menu when ANSI is not supported
+            ShowSimpleMenu(options);
+        }
     }
 
+    private static void ShowHeader()
+    {
+        try
+        {
+            // Create a fancy ASCII art title using RazorConsole + Spectre.Console
+            AnsiConsole.Write(
+                new FigletText("SaaS Factory")
+                    .LeftJustified()
+                    .Color(Color.Cyan1));
+            
+            // Add a nice subtitle panel
+            AnsiConsole.Write(
+                new Panel(
+                    new Markup("[bold]Developer CLI[/] - [dim]Your development companion for building amazing SaaS[/]"))
+                    .Border(BoxBorder.Rounded)
+                    .BorderColor(Color.Cyan1)
+                    .Padding(1, 0));
+            
+            AnsiConsole.WriteLine();
+        }
+        catch
+        {
+            // Fallback for non-ANSI terminals
+            Console.WriteLine("\n=== SaaS Factory - Developer CLI ===\n");
+        }
+    }
+
+    private static void TryClearConsole()
+    {
+        try
+        {
+            if (AnsiConsole.Profile.Capabilities.Interactive)
+            {
+                Console.Clear();
+            }
+        }
+        catch (IOException)
+        {
+            // Console.Clear() fails when there's no valid console handle (e.g., in watch mode)
+            // Ignore the error and continue without clearing
+        }
+    }
     private static void ShowSimpleMenu(string[] options)
     {
         Console.WriteLine("\n=== Developer CLI Menu ===\n");
@@ -63,11 +140,41 @@ internal static class MainMenu
 
     private static void ProcessSelection(string choice)
     {
-        switch (choice)
+        // Remove markup tags for matching
+        string cleanChoice = choice.Replace("[bold green]", "", StringComparison.Ordinal)
+            .Replace("[bold blue]", "", StringComparison.Ordinal)
+            .Replace("[bold magenta]", "", StringComparison.Ordinal)
+            .Replace("[bold yellow]", "", StringComparison.Ordinal)
+            .Replace("[bold cyan]", "", StringComparison.Ordinal)
+            .Replace("[bold white]", "", StringComparison.Ordinal)
+            .Replace("[/]", "", StringComparison.Ordinal)
+            .Replace("🚀 ", "", StringComparison.Ordinal)
+            .Replace("🔧 ", "", StringComparison.Ordinal)
+            .Replace("🏗️ ", "", StringComparison.Ordinal)
+            .Replace("💾 ", "", StringComparison.Ordinal)
+            .Replace("🔐 ", "", StringComparison.Ordinal)
+            .Replace("❌ ", "", StringComparison.Ordinal);
+
+        switch (cleanChoice)
         {
+            case "Development":
+            case "CLI Management":
+            case "Scaffolding":
+            case "Database & Tools":
+            case "Authentication & Security":
+                // These are group headers, do nothing
+                return;
             case "Start development environment (run)":
                 AnsiConsole.MarkupLine("[yellow]Starting development environment...[/]");
                 RunCommand.ExecuteInteractive();
+                break;
+            case "Display environment info (env:info)":
+                AnsiConsole.MarkupLine("[yellow]Displaying environment info...[/]");
+                EnvironmentInfoCommand.ExecuteInteractive();
+                break;
+            case "Run tests (test)":
+                AnsiConsole.MarkupLine("[yellow]Running tests...[/]");
+                TestCommand.ExecuteInteractive();
                 break;
             case "Install CLI globally (saas command)":
                 AnsiConsole.MarkupLine("[yellow]Installing CLI globally...[/]");
