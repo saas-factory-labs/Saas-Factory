@@ -118,6 +118,16 @@ Signs out and clears session
 
 ## Troubleshooting
 
+### Browser Compatibility Issue
+
+⚠️ **Known Issue**: Authentication currently works in **Microsoft Edge** but not in **Firefox** or **Chrome**.
+
+**Cause**: Self-signed certificate trust issues. Firefox uses its own certificate store and doesn't trust the ASP.NET Core development certificate. Chrome may have stricter security policies that block cookies when certificates aren't fully trusted.
+
+**Workaround**: Use Microsoft Edge for development until certificates are properly configured.
+
+**Permanent Fix**: Configure Firefox to trust the development certificate or use HTTP for local development.
+
 ### Logout Not Working?
 
 1. **Check Logto Console** - Is `/SignedOutCallback` registered?

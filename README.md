@@ -1,6 +1,6 @@
 <h1 align="center">  🏗️ SaaS Factory </h1>
 
-<h4> Blueprint for deploying any type of B2B/B2C SaaS to massively accelerate development speed and time to market of a new SaaS web application by reducing the to create boilerplate code and infrastructure.
+<h4> A comprehensive platform framework that combines opinionated architecture, production-ready infrastructure, and developer-friendly tooling to deploy enterprise-grade B2B/B2C SaaS applications in minutes instead of months.
  </h4>
 
  <h5 align="center">
@@ -70,13 +70,15 @@ The comprehensive documentation includes:
 
 <summary><h4>Vision</h4></summary>
 
-Deploy a fully functional SaaS application in under 30 minutes using a single command via the Developer CLI, with all foundational features already in place - ready for you to add your application-specific features.
+Deploy a fully functional, production-ready SaaS application in under 30 minutes using a single command via the Developer CLI, with all foundational features already in place - ready for you to add your application-specific features.
+
+Inspired by Laravel's approach to developer experience and opinionated best practices, SaaS Factory brings the same philosophy to .NET - purpose-built for multi-tenant SaaS applications.
 
 
 
 <summary><h4>Purpose</h4></summary>
 
-Provide a production-ready SaaS blueprint that eliminates months of boilerplate development, allowing developers to focus on building unique features that differentiate their product rather than rebuilding common infrastructure.
+Provide a production-ready platform framework that eliminates months of foundational development work. This isn't just a boilerplate - it's an integrated, battle-tested system with proven security patterns, comprehensive multi-tenancy, enterprise DevOps, and deployment automation that lets you focus on building unique features that differentiate your product.
 
 
 <summary><h4>Objectives</h4></summary>

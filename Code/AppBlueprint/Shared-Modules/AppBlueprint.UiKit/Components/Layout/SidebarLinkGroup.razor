@@ -1,7 +1,9 @@
+@using Microsoft.JSInterop
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 @(ActiveCondition ? "bg-[linear-gradient(135deg,var(--tw-gradient-stops))] from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]" : "")">
-    @ChildContent(new Context { Expanded = expanded, HandleClick = ToggleExpanded })
+    @ChildContent(new Context { Expanded = expanded, HandleClick = ToggleExpanded, HandleOptionClick = OnOptionClick })
 </li>
 
 @code {
@@ -18,14 +20,51 @@
         expanded = ActiveCondition;
     }
 
-    private void ToggleExpanded()
+    private async Task ToggleExpanded()
     {
+        // Always expand the sidebar when clicking a section button
+        try
+        {
+            // Check if sidebarManager exists before calling it
+            bool hasManager = await JS.InvokeAsync<bool>("eval", "typeof window.sidebarManager !== 'undefined' && typeof window.sidebarManager.expand === 'function'");
+            if (hasManager)
+            {
+                await JS.InvokeVoidAsync("sidebarManager.expand");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log error for debugging
+            Console.WriteLine($"Error expanding sidebar: {ex.Message}");
+        }
+        
+        // Then toggle the section's expanded state
         expanded = !expanded;
+    }
+
+    private async Task OnOptionClick()
+    {
+        // When an option is clicked, collapse the sidebar on desktop
+        try
+        {
+            // Check if sidebarManager exists before calling it
+            bool hasManager = await JS.InvokeAsync<bool>("eval", "typeof window.sidebarManager !== 'undefined' && typeof window.sidebarManager.collapse === 'function'");
+            if (hasManager)
+            {
+                await JS.InvokeVoidAsync("sidebarManager.collapse");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log error for debugging
+            Console.WriteLine($"Error collapsing sidebar: {ex.Message}");
+        }
     }
 
     public class Context
     {
         public bool Expanded { get; set; }
-        public Action HandleClick { get; set; } = default!;
+        public Func<Task> HandleClick { get; set; } = default!;
+        public Func<Task> HandleOptionClick { get; set; } = default!;
     }
 }

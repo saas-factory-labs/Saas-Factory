@@ -63,10 +63,9 @@ public class AuthDebugController : ControllerBase
     }
 
     /// <summary>
-    /// Get authentication headers from request
+    /// Get authentication headers from request (DeploymentManagerAdmin only)
     /// </summary>
     [HttpGet("headers")]
-    [AllowAnonymous]
     public IActionResult GetHeaders()
     {
         var authHeader = Request.Headers.Authorization.ToString();
@@ -75,17 +74,20 @@ public class AuthDebugController : ControllerBase
         var hasAuth = !string.IsNullOrEmpty(authHeader);
         var hasTenantId = !string.IsNullOrEmpty(tenantIdHeader);
         
-        _logger.LogInformation(
-            "Headers endpoint called. HasAuth: {HasAuth}, HasTenantId: {HasTenantId}",
-            hasAuth, hasTenantId);
+        // Log to console for debugging, don't return sensitive data
+        Console.WriteLine($"Headers endpoint called. HasAuth: {hasAuth}, HasTenantId: {hasTenantId}");
+        Console.WriteLine($"Authorization header: {authHeader}");
+        Console.WriteLine($"Tenant ID: {tenantIdHeader}");
+        
+        foreach (var header in Request.Headers)
+        {
+            Console.WriteLine($"{header.Key}: {header.Value}");
+        }
 
         return Ok(new
         {
-            hasAuthorizationHeader = hasAuth,
-            authorizationHeaderPreview = hasAuth ? authHeader[..Math.Min(30, authHeader.Length)] + "..." : null,
-            hasTenantIdHeader = hasTenantId,
-            tenantId = tenantIdHeader,
-            allHeaders = Request.Headers.Select(h => new { h.Key, Value = h.Value.ToString() }).ToList()
+            message = "Headers logged to console. Check application logs for details.",
+            timestamp = DateTime.UtcNow
         });
     }
 }

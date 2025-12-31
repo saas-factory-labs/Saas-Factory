@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en" style="color-scheme: light;">
+<html lang="en" style="color-scheme: light;" class="bg-gray-100 dark:bg-gray-900">
 
 <head>
     <meta charset="utf-8"/>
@@ -34,17 +34,21 @@
     if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark');
         document.documentElement.style.colorScheme = 'dark';
+        document.documentElement.style.backgroundColor = '#111827'; // gray-900
     } else if (savedTheme === 'light') {
         document.documentElement.classList.remove('dark');
         document.documentElement.style.colorScheme = 'light';
+        document.documentElement.style.backgroundColor = '#f3f4f6'; // gray-100
     } else if (savedTheme === 'system') {
         // System preference
         if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
             document.documentElement.style.colorScheme = 'dark';
+            document.documentElement.style.backgroundColor = '#111827'; // gray-900
         } else {
             document.documentElement.classList.remove('dark');
             document.documentElement.style.colorScheme = 'light';
+            document.documentElement.style.backgroundColor = '#f3f4f6'; // gray-100
         }
     }
 </script>
@@ -57,9 +61,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="_content/AppBlueprint.UiKit/js/site.js?v=5"></script>
+<script src="_content/AppBlueprint.UiKit/js/site.js?v=6"></script>
 
-@* Blazor Framework *@
+@* Blazor Framework - must be last *@
 <script src="_framework/blazor.web.js"></script>
 
 </body>

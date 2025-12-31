@@ -10,6 +10,9 @@ internal static class CommandFactory
                 "SaaS Factory - AppBlueprint Developer Cli - A tool to streamline SaaS application development."
         };
 
+        rootCommand.AddCommand(RunCommand.Create());
+        rootCommand.AddCommand(InstallCommand.Create());
+        rootCommand.AddCommand(UninstallCommand.Create());
         rootCommand.AddCommand(SolutionCommand.Create());
         rootCommand.AddCommand(ProjectCommand.Create());
         rootCommand.AddCommand(ItemCommand.Create());
@@ -19,6 +22,8 @@ internal static class CommandFactory
         rootCommand.AddCommand(RouteCommand.Create());
         rootCommand.AddCommand(JwtTokenCommand.Create());
         rootCommand.AddCommand(EnvironmentVariableCommand.Create());
+        rootCommand.AddCommand(EnvironmentInfoCommand.Create());
+        rootCommand.AddCommand(TestCommand.Create());
 
         return rootCommand;
     }

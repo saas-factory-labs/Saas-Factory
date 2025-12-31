@@ -118,15 +118,18 @@ internal class SystemController : ControllerBase
         }
         catch (NpgsqlException ex)
         {
-            return StatusCode(500, new { success = false, message = $"Database error checking status: {ex.Message}" });
+            Console.WriteLine($"Database error checking status: {ex.Message}");
+            return StatusCode(500, new { success = false, message = "Database error checking status. Please check logs for details." });
         }
         catch (InvalidOperationException ex)
         {
-            return StatusCode(500, new { success = false, message = $"EF Core error checking database status: {ex.Message}" });
+            Console.WriteLine($"EF Core error checking database status: {ex.Message}");
+            return StatusCode(500, new { success = false, message = "EF Core error checking database status. Please check logs for details." });
         }
         catch (TimeoutException ex)
         {
-            return StatusCode(500, new { success = false, message = $"Timeout error checking database status: {ex.Message}" });
+            Console.WriteLine($"Timeout error checking database status: {ex.Message}");
+            return StatusCode(500, new { success = false, message = "Timeout error checking database status. Please check logs for details." });
         }
     }
 }
