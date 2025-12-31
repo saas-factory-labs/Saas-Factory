@@ -2,7 +2,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
-<div class="min-w-fit">
+<div class="min-w-fit bg-gray-100 dark:bg-gray-900">
 <!-- Sidebar backdrop (mobile only) -->
 <div class="fixed inset-0 bg-gray-900/30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 @(SidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none")"
      aria-hidden="true"
@@ -88,7 +88,7 @@
 <!-- Dashboard -->
 <SidebarLinkGroup ActiveCondition="@IsDashboardActive">
     <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsDashboardActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsDashboardActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
            href="#"
            @onclick="@(() => context.HandleClick())"
            @onclick:preventDefault="true">
@@ -111,17 +111,23 @@
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate @(IsMainActive ? "text-violet-500" : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")" href="/">
+                    <a class="block transition truncate @(IsMainActive ? "text-violet-500" : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")" 
+                       href="/"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Main</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/dashboard/analytics">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/dashboard/analytics"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Analytics</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/dashboard/fintech">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/dashboard/fintech"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Fintech</span>
                     </a>
                 </li>
@@ -133,7 +139,7 @@
 <!-- E-Commerce -->
 <SidebarLinkGroup ActiveCondition="@IsECommerceActive">
     <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsECommerceActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsECommerceActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
            href="#"
            @onclick="@(() => context.HandleClick())"
            @onclick:preventDefault="true">
@@ -155,52 +161,72 @@
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/customers">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/customers"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Customers</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/orders">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/orders"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Orders</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/invoices">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/invoices"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Invoices</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/shop">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/shop"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Shop</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/shop-2">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/shop-2"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Shop 2</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/product">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/product"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Single Product</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/cart">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/cart"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/cart2">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/cart2"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart 2</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/cart3">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/cart3"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart 3</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/ecommerce/pay">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/ecommerce/pay"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pay</span>
                     </a>
                 </li>
@@ -212,7 +238,7 @@
 <!-- Community -->
 <SidebarLinkGroup ActiveCondition="@IsCommunityActive">
     <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsCommunityActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsCommunityActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
            href="#"
            @onclick="@(() => context.HandleClick())"
            @onclick:preventDefault="true">
@@ -234,22 +260,30 @@
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/community/users">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/community/users"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Users</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/community/profile">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/community/profile"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Profile</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/community/feed">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/community/feed"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Feed</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/community/forum">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/community/forum"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Forum</span>
                     </a>
                 </li>
@@ -261,7 +295,7 @@
 <!-- Job Board -->
 <SidebarLinkGroup ActiveCondition="@IsJobBoardActive">
     <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsJobBoardActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsJobBoardActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
            href="#"
            @onclick="@(() => context.HandleClick())"
            @onclick:preventDefault="true">
@@ -283,17 +317,23 @@
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/job/job-listing">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/job/job-listing"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Listing</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/job/job-post">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/job/job-post"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Job Post</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/job/company-profile">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/job/company-profile"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Company Profile</span>
                     </a>
                 </li>
@@ -305,7 +345,7 @@
 <!-- Tasks -->
 <SidebarLinkGroup ActiveCondition="@IsTasksActive">
     <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsTasksActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsTasksActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
            href="#"
            @onclick="@(() => context.HandleClick())"
            @onclick:preventDefault="true">
@@ -327,12 +367,16 @@
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/tasks/kanban">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/tasks/kanban"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Kanban</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/tasks/list">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/tasks/list"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">List</span>
                     </a>
                 </li>
@@ -344,7 +388,7 @@
 <!-- Finance -->
 <SidebarLinkGroup ActiveCondition="@IsFinanceActive">
     <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsFinanceActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsFinanceActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
            href="#"
            @onclick="@(() => context.HandleClick())"
            @onclick:preventDefault="true">
@@ -366,12 +410,16 @@
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/finance/credit-cards">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/finance/credit-cards"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cards</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/finance/transactions">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/finance/transactions"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Transactions</span>
                     </a>
                 </li>
@@ -431,7 +479,7 @@
 <!-- Settings -->
 <SidebarLinkGroup ActiveCondition="@IsSettingsActive">
     <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsSettingsActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsSettingsActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
            href="#"
            @onclick="@(() => context.HandleClick())"
            @onclick:preventDefault="true">
@@ -453,22 +501,30 @@
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/settings/account">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/settings/account"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Account</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/settings/notifications">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/settings/notifications"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Notifications</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/settings/apps">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/settings/apps"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Apps</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/settings/billing">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/settings/billing"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Billing</span>
                     </a>
                 </li>
@@ -480,7 +536,7 @@
 <!-- Utility -->
 <SidebarLinkGroup ActiveCondition="@IsUtilityActive">
     <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsUtilityActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsUtilityActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
            href="#"
            @onclick="@(() => context.HandleClick())"
            @onclick:preventDefault="true">
@@ -503,27 +559,37 @@
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/utility/changelog">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/utility/changelog"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Changelog</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/utility/roadmap">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/utility/roadmap"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Roadmap</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/utility/faqs">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/utility/faqs"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">FAQs</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/utility/empty-state">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/utility/empty-state"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Empty State</span>
                     </a>
                 </li>
                 <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/utility/404">
+                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                       href="/utility/404"
+                       @onclick="@(() => context.HandleOptionClick())">
                         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">404</span>
                     </a>
                 </li>
@@ -543,7 +609,7 @@
         <!-- Authentication -->
         <SidebarLinkGroup ActiveCondition="false">
             <ChildContent>
-                <a class="block text-gray-800 dark:text-gray-100 truncate transition hover:text-gray-900 dark:hover:text-white"
+                <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 hover:text-gray-900 dark:hover:text-white cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
                    href="#"
                    @onclick="@(() => context.HandleClick())"
                    @onclick:preventDefault="true">
@@ -564,17 +630,23 @@
                 <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
                     <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                         <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" href="/signin">
+                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
+                               href="/signin"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Sign in</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" href="/signup">
+                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
+                               href="/signup"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Sign up</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" href="/reset-password">
+                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
+                               href="/reset-password"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Reset Password</span>
                             </a>
                         </li>
@@ -586,7 +658,7 @@
         <!-- Onboarding -->
         <SidebarLinkGroup ActiveCondition="false">
             <ChildContent>
-                <a class="block text-gray-800 dark:text-gray-100 truncate transition hover:text-gray-900 dark:hover:text-white"
+                <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 hover:text-gray-900 dark:hover:text-white cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
                    href="#"
                    @onclick="@(() => context.HandleClick())"
                    @onclick:preventDefault="true">
@@ -607,22 +679,30 @@
                 <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
                     <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                         <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" href="/onboarding-01">
+                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
+                               href="/onboarding-01"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Step 1</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" href="/onboarding-02">
+                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
+                               href="/onboarding-02"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Step 2</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" href="/onboarding-03">
+                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
+                               href="/onboarding-03"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Step 3</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" href="/onboarding-04">
+                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
+                               href="/onboarding-04"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Step 4</span>
                             </a>
                         </li>
@@ -634,7 +714,7 @@
         <!-- Components -->
         <SidebarLinkGroup ActiveCondition="@IsComponentsActive">
             <ChildContent>
-                <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsComponentsActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+                <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsComponentsActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
                    href="#"
                    @onclick="@(() => context.HandleClick())"
                    @onclick:preventDefault="true">
@@ -656,67 +736,93 @@
                 <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
                     <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/button">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/button"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Button</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/form">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/form"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Input Form</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/dropdown">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/dropdown"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Dropdown</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/alert">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/alert"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Alert & Banner</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/modal">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/modal"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Modal</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/pagination">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/pagination"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pagination</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/tabs">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/tabs"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Tabs</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/breadcrumb">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/breadcrumb"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Breadcrumb</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/badge">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/badge"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Badge</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/avatar">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/avatar"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Avatar</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/tooltip">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/tooltip"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Tooltip</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/accordion">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/accordion"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Accordion</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" href="/component/icons">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/icons"
+                               @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Icons</span>
                             </a>
                         </li>
