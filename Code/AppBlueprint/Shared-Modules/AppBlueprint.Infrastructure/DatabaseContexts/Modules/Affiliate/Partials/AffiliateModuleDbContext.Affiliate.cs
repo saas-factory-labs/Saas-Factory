@@ -7,15 +7,15 @@ public partial class AffiliateModuleDbContext
     private const string DecimalMoneyType = "decimal(18,2)";
     private const string DecimalRateType = "decimal(5,4)";
 
-    public required DbSet<Entities.Affiliate.Affiliate> Affiliates { get; set; }
+    public required DbSet<Entities.Affiliate.AffiliateEntity> Affiliates { get; set; }
     public required DbSet<Entities.Affiliate.Commission> Commissions { get; set; }
-    public required DbSet<Entities.Affiliate.Referral> Referrals { get; set; }
+    public required DbSet<Entities.Affiliate.ReferralEntity> Referrals { get; set; }
     public required DbSet<Entities.Affiliate.PayoutRequest> PayoutRequests { get; set; }
 
     partial void OnModelCreating_Affiliate(ModelBuilder modelBuilder)
     {
         // Affiliate entity configuration
-        modelBuilder.Entity<Entities.Affiliate.Affiliate>(entity =>
+        modelBuilder.Entity<Entities.Affiliate.AffiliateEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.ReferralCode).IsRequired().HasMaxLength(50);
@@ -47,7 +47,7 @@ public partial class AffiliateModuleDbContext
         });
 
         // Referral entity configuration
-        modelBuilder.Entity<Entities.Affiliate.Referral>(entity =>
+        modelBuilder.Entity<Entities.Affiliate.ReferralEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.ReferredEmail).IsRequired().HasMaxLength(255);

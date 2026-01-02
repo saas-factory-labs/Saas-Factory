@@ -17,6 +17,17 @@ namespace AppBlueprint.Infrastructure.Authentication;
 /// </summary>
 public static class WebAuthenticationExtensions
 {
+    // Static readonly arrays for test endpoint configuration (CA1861)
+    private static readonly string[] RequiredRedirectUris = new[]
+    {
+        "https://appblueprint-web-staging.up.railway.app/callback",
+        "https://appblueprint-web-staging.up.railway.app/signout-callback-logto"
+    };
+    
+    private static readonly string[] RequiredPostLogoutRedirectUris = new[]
+    {
+        "https://appblueprint-web-staging.up.railway.app/"
+    };
     // Constants for authentication schemes
     private const string LogtoCookieScheme = "Logto.Cookie";
     private const string LogtoScheme = "Logto";
@@ -321,9 +332,8 @@ public static class WebAuthenticationExtensions
             Console.WriteLine($"[Web] Redirect URL: {context.ProtocolMessage.RedirectUri}");
             Console.WriteLine($"[Web] Response cookies being set: {context.Response.Headers.ContainsKey("Set-Cookie")}");
             
-            if (context.Response.Headers.ContainsKey("Set-Cookie"))
+            if (context.Response.Headers.TryGetValue("Set-Cookie", out var cookies))
             {
-                var cookies = context.Response.Headers["Set-Cookie"];
                 Console.WriteLine($"[Web] Set-Cookie headers count: {cookies.Count}");
                 foreach (var cookie in cookies)
                 {
@@ -365,9 +375,9 @@ public static class WebAuthenticationExtensions
             Console.WriteLine($"[Web] Query Parameters: {string.Join(", ", context.Request.Query.Keys)}");
         }
 
-        if (context.Request.Query.ContainsKey("error"))
+        if (context.Request.Query.TryGetValue("error", out var error))
         {
-            Console.WriteLine($"[Web] OAuth Error: {context.Request.Query["error"]}");
+            Console.WriteLine($"[Web] OAuth Error: {error}");
             Console.WriteLine($"[Web] OAuth Error Description: {context.Request.Query["error_description"]}");
         }
 
@@ -689,15 +699,8 @@ public static class WebAuthenticationExtensions
                 appId = configuration["Logto:AppId"],
                 hasAppSecret = !string.IsNullOrEmpty(configuration["Logto:AppSecret"]),
                 environment = environment.EnvironmentName,
-                requiredRedirectUris = new[]
-                {
-                    "https://appblueprint-web-staging.up.railway.app/callback",
-                    "https://appblueprint-web-staging.up.railway.app/signout-callback-logto"
-                },
-                requiredPostLogoutRedirectUris = new[]
-                {
-                    "https://appblueprint-web-staging.up.railway.app/"
-                },
+                requiredRedirectUris = RequiredRedirectUris,
+                requiredPostLogoutRedirectUris = RequiredPostLogoutRedirectUris,
                 configurationInstructions = "Add these URIs to your Logto application configuration under 'Redirect URIs' and 'Post sign-out redirect URIs'"
             };
             results.Add(logtoConfig);

@@ -29,6 +29,7 @@ public sealed class CloudflareR2Options
     /// </summary>
     [Required]
     [Url]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI properties should not be strings", Justification = "Needs to be string for JSON configuration binding")]
     public string EndpointUrl { get; set; } = string.Empty;
     
     /// <summary>

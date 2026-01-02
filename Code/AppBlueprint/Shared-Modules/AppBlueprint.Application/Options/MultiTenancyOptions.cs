@@ -75,7 +75,7 @@ public sealed class MultiTenancyOptions
     /// <summary>
     /// Endpoints that don't require tenant context (regex patterns)
     /// </summary>
-    public string[] ExcludedPaths { get; set; } = new[]
+    public IReadOnlyCollection<string> ExcludedPaths { get; set; } = new[]
     {
         "/health",
         "/metrics",
@@ -102,7 +102,7 @@ public enum MultiTenancyStrategy
     SharedDatabase = 0,
 
     /// <summary>
-    /// Database-per-tenant (NOT SUPPORTED)
+    /// Database-per-tenant (NOT SUPPORTED yet)
     /// Each tenant gets their own database
     /// </summary>
     DatabasePerTenant = 1,

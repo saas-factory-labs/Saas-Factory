@@ -22,6 +22,6 @@ public class Commission : BaseEntity
     public string? Notes { get; set; }
 
     // Navigation properties
-    public Affiliate? Affiliate { get; set; }
-    public Referral? Referral { get; set; }
+    public AffiliateEntity? Affiliate { get; set; }
+    public ReferralEntity? Referral { get; set; }
 }

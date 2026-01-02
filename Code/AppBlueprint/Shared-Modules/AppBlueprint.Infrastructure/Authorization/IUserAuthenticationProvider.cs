@@ -34,5 +34,7 @@ public interface IUserAuthenticationProvider : IAuthenticationProvider
     /// <summary>
     ///     Get the logout URL for the authentication provider (for OIDC providers)
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1054:URI parameters should not be strings", Justification = "OAuth redirect URIs are provided as strings by authentication protocols")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI return values should not be strings", Justification = "OAuth redirect URIs are returned as strings for authentication protocols")]
     string? GetLogoutUrl(string postLogoutRedirectUri);
 }

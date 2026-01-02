@@ -31,6 +31,11 @@ namespace AppBlueprint.Infrastructure.Extensions;
 public static class ServiceCollectionExtensions
 {
     private const string DefaultResendApiBaseUrl = "https://api.resend.com";
+    
+    // Static readonly arrays for health check tags (CA1861)
+    private static readonly string[] PostgreSqlHealthCheckTags = new[] { "db", "postgresql" };
+    private static readonly string[] RlsHealthCheckTags = new[] { "db", "security", "rls", "critical" };
+    private static readonly string[] RedisHealthCheckTags = new[] { "cache", "redis" };
 
     /// <summary>
     /// Adds AppBlueprint Infrastructure services including database contexts, repositories, 
@@ -207,7 +212,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     private static IServiceCollection AddUnitOfWork(this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork.Implementation.UnitOfWork>();
+        services.AddScoped<IUnitOfWork, UnitOfWork.Implementation.UnitOfWorkImplementation>();
         return services;
     }
 
@@ -343,7 +348,7 @@ public static class ServiceCollectionExtensions
             healthChecksBuilder.AddNpgSql(
                 dbConnectionString,
                 name: "postgresql",
-                tags: new[] { "db", "postgresql" });
+                tags: PostgreSqlHealthCheckTags);
 
             // CRITICAL: Row-Level Security validation
             // Application MUST NOT start if RLS is not properly configured
@@ -354,7 +359,7 @@ public static class ServiceCollectionExtensions
                     dbConnectionString,
                     services.BuildServiceProvider().GetRequiredService<ILogger<RowLevelSecurityHealthCheck>>()),
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { "db", "security", "rls", "critical" });
+                tags: RlsHealthCheckTags);
         }
 
         // Redis health check (if configured)
@@ -366,7 +371,7 @@ public static class ServiceCollectionExtensions
             healthChecksBuilder.AddRedis(
                 redisConnectionString,
                 name: "redis",
-                tags: new[] { "cache", "redis" });
+                tags: RedisHealthCheckTags);
         }
 
         return services;

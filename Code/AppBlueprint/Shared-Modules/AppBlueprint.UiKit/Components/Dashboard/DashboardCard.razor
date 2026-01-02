@@ -1,0 +1,45 @@
+@* Basic Dashboard Card Component *@
+
+<div class="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
+    @if (!string.IsNullOrEmpty(ImageUrl))
+    {
+        <div class="px-5 pt-5">
+            <img class="rounded-lg" src="@ImageUrl" alt="@Title" />
+        </div>
+    }
+    <div class="px-5 pb-5 grow flex flex-col">
+        @if (!string.IsNullOrEmpty(Title))
+        {
+            <header class="mb-2">
+                @if (!string.IsNullOrEmpty(Link))
+                {
+                    <h3 class="text-lg text-gray-800 dark:text-gray-100 font-semibold">
+                        <a class="hover:underline" href="@Link">@Title</a>
+                    </h3>
+                }
+                else
+                {
+                    <h3 class="text-lg text-gray-800 dark:text-gray-100 font-semibold">@Title</h3>
+                }
+            </header>
+        }
+        @if (!string.IsNullOrEmpty(Body))
+        {
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">@Body</div>
+        }
+        @if (ChildContent != null)
+        {
+            <div class="mt-auto">
+                @ChildContent
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? ImageUrl { get; set; }
+    [Parameter] public string? Link { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Body { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

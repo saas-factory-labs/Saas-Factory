@@ -22,6 +22,10 @@ public sealed class AdminIpWhitelistMiddleware
         IConfiguration configuration,
         ILogger<AdminIpWhitelistMiddleware> logger)
     {
+        ArgumentNullException.ThrowIfNull(next);
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(logger);
+
         _next = next;
         _logger = logger;
 
@@ -61,6 +65,8 @@ public sealed class AdminIpWhitelistMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
+
         // Skip if middleware is disabled
         if (!_isEnabled)
         {

@@ -8,7 +8,7 @@ public class LogtoConfiguration
     public string? Scope { get; set; }
 }
 
-internal class LogtoTokenResponse
+internal sealed class LogtoTokenResponse
 {
     public string AccessToken { get; set; } = string.Empty;
     public string? RefreshToken { get; set; }

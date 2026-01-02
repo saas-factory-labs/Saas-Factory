@@ -8,7 +8,7 @@ public class Auth0Configuration
     public string Audience { get; set; } = string.Empty;
 }
 
-internal class Auth0TokenResponse
+internal sealed class Auth0TokenResponse
 {
     public string AccessToken { get; set; } = string.Empty;
     public string? RefreshToken { get; set; }

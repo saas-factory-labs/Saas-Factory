@@ -36,6 +36,8 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     /// <summary>
     /// Generate the Logto logout URL to properly end the session
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1054:URI parameters should not be strings", Justification = "OAuth redirect URIs are provided as strings by authentication protocols")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI return values should not be strings", Justification = "OAuth logout URLs are returned as strings for authentication protocols")]
     public string GetLogoutUrl(string postLogoutRedirectUri)
     {
         var logoutUrl = $"{_configuration.Endpoint}/oidc/session/end?" +
@@ -60,6 +62,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     /// For Authorization Code Flow, this method generates the authorization URL
     /// Users should be redirected to this URL to log in via Logto's hosted page
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1054:URI parameters should not be strings", Justification = "OAuth redirect URIs are provided as strings by authentication protocols")]
     public async Task<string> GetAuthorizationUrlAsync(string redirectUri)
     {
         // Generate PKCE parameters
@@ -95,6 +98,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     /// <summary>
     /// Exchange the authorization code for tokens after user is redirected back
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1054:URI parameters should not be strings", Justification = "OAuth redirect URIs are provided as strings by authentication protocols")]
     public async Task<AuthenticationResult> ExchangeCodeForTokensAsync(
         string code, 
         string state,

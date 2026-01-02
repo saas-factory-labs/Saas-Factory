@@ -85,6 +85,7 @@ namespace AppBlueprint.Infrastructure.Authorization
             await _tokenStorage.RemoveTokenAsync();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI return values should not be strings", Justification = "OAuth redirect URIs are returned as strings for authentication protocols")]
         public string? GetLogoutUrl(string postLogoutRedirectUri)
         {
             // This provider doesn't use OIDC logout URLs

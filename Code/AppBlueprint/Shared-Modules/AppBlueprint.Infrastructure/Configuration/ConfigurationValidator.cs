@@ -165,6 +165,7 @@ public static class ConfigurationValidator
     /// <param name="url">The URL to validate</param>
     /// <param name="configKey">The configuration key name</param>
     /// <exception cref="InvalidOperationException">Thrown when the URL is invalid</exception>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1054:URI parameters should not be strings", Justification = "This method validates string configuration values before converting to Uri")]
     public static void ValidateUrl(string? url, string configKey)
     {
         if (string.IsNullOrWhiteSpace(url))

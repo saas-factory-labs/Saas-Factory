@@ -33,6 +33,7 @@ public sealed class ResendEmailOptions
     /// Resend API base URL.
     /// </summary>
     [Url]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI properties should not be strings", Justification = "Needs to be string for JSON configuration binding")]
     public string BaseUrl { get; set; } = "https://api.resend.com";
     
     /// <summary>

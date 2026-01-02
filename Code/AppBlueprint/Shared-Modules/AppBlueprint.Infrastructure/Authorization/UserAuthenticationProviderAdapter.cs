@@ -93,6 +93,7 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
         await _provider.InitializeAsync();
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI return values should not be strings", Justification = "OAuth redirect URIs are returned as strings for authentication protocols")]
     public string? GetLogoutUrl(string postLogoutRedirectUri)
     {
         if (_provider is null)
