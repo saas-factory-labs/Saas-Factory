@@ -48,7 +48,7 @@ internal static class Program // Make class static
         builder.Services.AddTodoAppKernel(builder.Configuration);
         
         // Add Presentation layer (includes Controllers, API Versioning, CORS, etc.)
-        builder.Services.AddAppBlueprintPresentation();
+        builder.Services.AddAppBlueprintPresentation(builder.Environment, builder.Configuration);
 
         // Add JWT authentication
         builder.Services.AddJwtAuthentication(builder.Configuration);

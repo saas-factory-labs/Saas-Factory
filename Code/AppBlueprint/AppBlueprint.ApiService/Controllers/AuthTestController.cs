@@ -11,7 +11,7 @@ namespace AppBlueprint.ApiService.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class AuthTestController : ControllerBase
+internal sealed class AuthTestController : ControllerBase
 {
     private readonly ILogger<AuthTestController> _logger;
 
