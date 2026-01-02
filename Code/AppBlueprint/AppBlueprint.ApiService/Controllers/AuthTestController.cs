@@ -87,7 +87,7 @@ internal sealed class AuthTestController : ControllerBase
     /// </summary>
     [HttpGet("user")]
     [Authorize(Policy = "UserOrAdmin")]
-    public IActionResult GetUser()
+    public IActionResult GetUserEndpoint()
     {
         _logger.LogInformation("User endpoint accessed by user: {User}", User.Identity?.Name);
         
