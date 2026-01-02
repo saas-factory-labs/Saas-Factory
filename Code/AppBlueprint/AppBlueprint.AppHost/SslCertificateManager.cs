@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Aspire.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
@@ -10,6 +11,20 @@ namespace AppBlueprint.AppHost;
 
 internal static class SslCertificateManager
 {
+    /// <summary>
+    /// Generates a stable password based on the key and machine-specific information.
+    /// This creates a deterministic but unique password for development certificates.
+    /// </summary>
+    private static string GenerateStablePassword(string key)
+    {
+        // Use machine name and key to generate a stable password
+        string seed = $"{Environment.MachineName}_{key}";
+        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(seed));
+        
+        // Convert to base64 and take first 32 characters for a reasonable password length
+        return Convert.ToBase64String(hash)[..32];
+    }
+
     private static string? GetUserSecretsId()
     {
         try
@@ -68,7 +83,9 @@ internal static class SslCertificateManager
         }
         else
         {
-            certificatePassword = builder.CreateStablePassword(certificatePasswordKey).Resource.Value;
+            // Generate a stable password directly instead of using ParameterResource.Value (which is obsolete)
+            // This is acceptable for development certificates that are created once per machine
+            certificatePassword = GenerateStablePassword(certificatePasswordKey);
         }
 
         // Use web-service.pfx for consistency with the Web project

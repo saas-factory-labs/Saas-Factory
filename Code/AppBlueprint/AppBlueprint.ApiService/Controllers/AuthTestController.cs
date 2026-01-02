@@ -11,7 +11,7 @@ namespace AppBlueprint.ApiService.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class AuthTestController : ControllerBase
+internal sealed class AuthTestController : ControllerBase
 {
     private readonly ILogger<AuthTestController> _logger;
 
@@ -87,7 +87,7 @@ public class AuthTestController : ControllerBase
     /// </summary>
     [HttpGet("user")]
     [Authorize(Policy = "UserOrAdmin")]
-    public IActionResult GetUser()
+    public IActionResult GetUserEndpoint()
     {
         _logger.LogInformation("User endpoint accessed by user: {User}", User.Identity?.Name);
         

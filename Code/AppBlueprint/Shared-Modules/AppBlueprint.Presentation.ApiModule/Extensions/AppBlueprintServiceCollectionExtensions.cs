@@ -1,8 +1,8 @@
 using AppBlueprint.Application.Extensions;
 using AppBlueprint.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
@@ -18,7 +18,7 @@ public static class AppBlueprintServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration for infrastructure services.</param>
-    /// <param name="environment">The hosting environment (required for authentication setup).</param>
+    /// <param name="environment">The web host environment (required for authentication setup and CORS).</param>
     /// <returns>The service collection for chaining.</returns>
     /// <example>
     /// <code>
@@ -29,7 +29,7 @@ public static class AppBlueprintServiceCollectionExtensions
     public static IServiceCollection AddAppBlueprint(
         this IServiceCollection services,
         IConfiguration configuration,
-        IHostEnvironment environment)
+        IWebHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
@@ -38,7 +38,7 @@ public static class AppBlueprintServiceCollectionExtensions
         // Register all AppBlueprint layers
         services.AddAppBlueprintInfrastructure(configuration, environment);
         services.AddAppBlueprintApplication();
-        services.AddAppBlueprintPresentation();
+        services.AddAppBlueprintPresentation(environment, configuration);
 
         return services;
     }

@@ -22,5 +22,5 @@ public class PayoutRequest : BaseEntity
     public string? RejectionReason { get; set; }
 
     // Navigation properties
-    public Affiliate? Affiliate { get; set; }
+    public AffiliateEntity? Affiliate { get; set; }
 }

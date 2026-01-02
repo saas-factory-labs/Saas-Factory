@@ -2,9 +2,9 @@ using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate.Entities.Affiliate;
 
-public class Referral : BaseEntity
+public sealed class ReferralEntity : BaseEntity
 {
-    public Referral()
+    public ReferralEntity()
     {
         Id = PrefixedUlid.Generate("ref");
         AffiliateId = string.Empty;
@@ -22,5 +22,5 @@ public class Referral : BaseEntity
     public string? Campaign { get; set; }
 
     // Navigation properties
-    public Affiliate? Affiliate { get; set; }
+    public AffiliateEntity? Affiliate { get; set; }
 }

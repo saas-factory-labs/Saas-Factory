@@ -1,6 +1,7 @@
 using AppBlueprint.Presentation.ApiModule.Middleware;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,16 +17,20 @@ public static class ApplicationBuilderExtensions
     /// CORS, and endpoint configuration.
     /// </summary>
     /// <param name="services">The service collection.</param>
+    /// <param name="environment">The web host environment.</param>
+    /// <param name="configuration">The application configuration.</param>
     /// <example>
     /// <code>
     /// // In Program.cs - after adding Infrastructure and Application
-    /// builder.Services.AddAppBlueprintPresentation();
+    /// builder.Services.AddAppBlueprintPresentation(builder.Environment, builder.Configuration);
     /// </code>
     /// </example>
     /// <returns>The service collection for chaining.</returns>
-    public static IServiceCollection AddAppBlueprintPresentation(this IServiceCollection services)
+    public static IServiceCollection AddAppBlueprintPresentation(this IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(environment);
+        ArgumentNullException.ThrowIfNull(configuration);
 
         services.AddControllers();
         services.AddEndpointsApiExplorer();
@@ -36,7 +41,7 @@ public static class ApplicationBuilderExtensions
         // Register global exception handler for consistent error responses and detailed logging
         services.AddExceptionHandler<GlobalExceptionHandler>();
 
-        services.AddCorsPolicy();
+        services.AddCorsPolicy(environment, configuration);
         services.ConfigureApiVersioning();
 
         return services;

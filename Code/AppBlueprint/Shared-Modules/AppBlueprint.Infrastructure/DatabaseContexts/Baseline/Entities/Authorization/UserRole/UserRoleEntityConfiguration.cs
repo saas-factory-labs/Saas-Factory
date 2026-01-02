@@ -8,6 +8,9 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authori
 /// </summary>
 public sealed class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserRoleEntity>
 {
+    // Static readonly array for composite index (CA1861)
+    private static readonly string[] UserRoleCompositeIndex = new[] { "UserId", "RoleId" };
+    
     public void Configure(EntityTypeBuilder<UserRoleEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);        // Define table name
@@ -54,6 +57,6 @@ public sealed class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserR
         // Indexes for performance
         builder.HasIndex("UserId");
         builder.HasIndex(ur => ur.RoleId);
-        builder.HasIndex(new[] { "UserId", "RoleId" }).IsUnique(); // Prevent duplicate role assignments
+        builder.HasIndex(UserRoleCompositeIndex).IsUnique(); // Prevent duplicate role assignments
     }
 }

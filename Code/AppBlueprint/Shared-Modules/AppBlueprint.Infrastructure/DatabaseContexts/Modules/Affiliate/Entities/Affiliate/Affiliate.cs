@@ -2,13 +2,13 @@ using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate.Entities.Affiliate;
 
-public class Affiliate : BaseEntity
+public sealed class AffiliateEntity : BaseEntity
 {
     private readonly List<Commission> _commissions = new();
-    private readonly List<Referral> _referrals = new();
+    private readonly List<ReferralEntity> _referrals = new();
     private readonly List<PayoutRequest> _payoutRequests = new();
 
-    public Affiliate()
+    public AffiliateEntity()
     {
         Id = PrefixedUlid.Generate("aff");
         ReferralCode = string.Empty;
@@ -27,7 +27,7 @@ public class Affiliate : BaseEntity
 
     // Navigation properties
     public IReadOnlyCollection<Commission> Commissions => _commissions.AsReadOnly();
-    public IReadOnlyCollection<Referral> Referrals => _referrals.AsReadOnly();
+    public IReadOnlyCollection<ReferralEntity> Referrals => _referrals.AsReadOnly();
     public IReadOnlyCollection<PayoutRequest> PayoutRequests => _payoutRequests.AsReadOnly();
 
     // Domain methods for controlled collection management
@@ -48,7 +48,7 @@ public class Affiliate : BaseEntity
         _commissions.Remove(commission);
     }
 
-    public void AddReferral(Referral referral)
+    public void AddReferral(ReferralEntity referral)
     {
         ArgumentNullException.ThrowIfNull(referral);
 
@@ -59,7 +59,7 @@ public class Affiliate : BaseEntity
         referral.AffiliateId = Id;
     }
 
-    public void RemoveReferral(Referral referral)
+    public void RemoveReferral(ReferralEntity referral)
     {
         ArgumentNullException.ThrowIfNull(referral);
         _referrals.Remove(referral);

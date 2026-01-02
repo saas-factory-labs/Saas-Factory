@@ -4,7 +4,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;

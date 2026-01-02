@@ -10,12 +10,12 @@ using AppBlueprint.Infrastructure.Repositories.Interfaces;
 
 namespace AppBlueprint.Infrastructure.UnitOfWork.Implementation;
 
-public class UnitOfWork : IUnitOfWork
+public sealed class UnitOfWorkImplementation : IUnitOfWork
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly B2BDbContext _b2bDbContext;
 
-    public UnitOfWork(ApplicationDbContext context, B2BDbContext b2bDbContext)
+    public UnitOfWorkImplementation(ApplicationDbContext context, B2BDbContext b2bDbContext)
     {
         _applicationDbContext = context;
         _b2bDbContext = b2bDbContext;
@@ -177,7 +177,7 @@ public class UnitOfWork : IUnitOfWork
     /// Core dispose method.
     /// </summary>
     /// <param name="disposing">True if called from Dispose, false if called from finalizer.</param>
-    protected virtual void Dispose(bool disposing)
+    protected void Dispose(bool disposing)
     {
         if (disposing)
         {
@@ -187,7 +187,7 @@ public class UnitOfWork : IUnitOfWork
     }
 
     // Finalizer calls Dispose(false)
-    ~UnitOfWork()
+    ~UnitOfWorkImplementation()
     {
         Dispose(false);
     }

@@ -1,10 +1,14 @@
 <!-- This file is used to define the common properties for all projects in the solution -->
 <Project>
-    <PropertyGroup>
-
-        <Targetframework>net10.0</Targetframework>
+    <!-- Properties for .NET projects only (exclude docker-compose projects) -->
+    <PropertyGroup Condition="'$(MSBuildProjectExtension)' != '.dcproj'">
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+    </PropertyGroup>
+    
+    <!-- Common properties for all projects -->
+    <PropertyGroup>
 
         <!-- Enable source code analysis using sonar nuget package -->
         <AnalysisLevel>latest</AnalysisLevel>

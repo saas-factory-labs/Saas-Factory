@@ -68,12 +68,12 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
 
             foreach (string table in RequiredRlsTables)
             {
-                if (!rlsStatus.ContainsKey(table))
+                if (!rlsStatus.TryGetValue(table, out bool hasRls))
                 {
                     // Table doesn't exist yet - might be before migrations
                     missingTables.Add(table);
                 }
-                else if (!rlsStatus[table])
+                else if (!hasRls)
                 {
                     // Table exists but RLS not enabled - CRITICAL security issue
                     missingRls.Add(table);

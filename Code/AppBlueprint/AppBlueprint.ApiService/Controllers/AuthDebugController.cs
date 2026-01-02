@@ -11,7 +11,7 @@ namespace AppBlueprint.ApiService.Controllers;
 [Authorize(Roles = Roles.DeploymentManagerAdmin)]
 [ApiController]
 [Route("api/[controller]")]
-public class AuthDebugController : ControllerBase
+internal sealed class AuthDebugController : ControllerBase
 {
     private readonly ILogger<AuthDebugController> _logger;
 

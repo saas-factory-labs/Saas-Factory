@@ -104,6 +104,7 @@ public sealed class FirebaseOptions
     public string ProjectId { get; set; } = string.Empty;
     public string ApiKey { get; set; } = string.Empty;
     public string AuthDomain { get; set; } = string.Empty;
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI properties should not be strings", Justification = "Needs to be string for JSON configuration binding")]
     public string DatabaseUrl { get; set; } = string.Empty;
     public string StorageBucket { get; set; } = string.Empty;
     public string MessagingSenderId { get; set; } = string.Empty;
