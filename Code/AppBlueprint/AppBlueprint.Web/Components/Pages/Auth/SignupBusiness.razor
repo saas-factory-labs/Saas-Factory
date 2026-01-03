@@ -212,9 +212,9 @@
             // Get Logto configuration
             var logtoEndpoint = Configuration["Logto:Endpoint"];
             var appId = Configuration["Logto:AppId"];
-            var redirectUri = Configuration["Logto:RedirectUri"] ?? $"{Navigation.BaseUri}callback";
+            var redirectUri = $"{Navigation.BaseUri}signup/callback";
 
-            // Build Logto sign-up URL with state parameter
+            // Build Logto sign-up URL with custom redirect
             var signupUrl = $"{logtoEndpoint}/sign-up?client_id={appId}&redirect_uri={Uri.EscapeDataString(redirectUri)}&response_type=code&scope=openid%20profile%20email&state=business";
 
             // Redirect to Logto sign-up
