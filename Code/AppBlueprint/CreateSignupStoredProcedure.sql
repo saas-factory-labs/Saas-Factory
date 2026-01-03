@@ -47,15 +47,19 @@ ON "SignupAuditLog"("IpAddress", "CreatedAt" DESC);
 -- 2. Create Validation Functions
 -- ========================================
 
--- Validate ULID format with prefix
+-- Validate ID format with prefix (accepts both ULID and custom timestamp-based format)
 CREATE OR REPLACE FUNCTION validate_id_format(
     id TEXT,
     expected_prefix TEXT
 ) RETURNS BOOLEAN AS $$
 BEGIN
-    -- Check format: prefix_26_character_ulid
-    -- Example: tenant_01HX1234567890ABCDEFGHIJ
-    RETURN id ~ ('^' || expected_prefix || '_[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$');
+    -- Check format: prefix_timestamp_random or prefix_ULID
+    -- Examples: 
+    --   tenant_01HX1234567890ABCDEFGHIJ (ULID format - 26 chars)
+    --   tenant_18D5F3A8A5C_1234567890 (Custom format - timestamp_random)
+    -- Must start with prefix_ and have at least some content after
+    RETURN id ~ ('^' || expected_prefix || '_[0-9A-Za-z_]+$')
+           AND LENGTH(id) > LENGTH(expected_prefix) + 5; -- Minimum reasonable length
 END;
 $$ LANGUAGE plpgsql IMMUTABLE SECURITY DEFINER;
 
@@ -88,13 +92,14 @@ CREATE OR REPLACE FUNCTION create_tenant_and_user(
     -- Required parameters
     p_tenant_id TEXT,
     p_tenant_name TEXT,
+    p_tenant_type INTEGER,  -- 0 = Personal (B2C), 1 = Organization (B2B)
     p_user_id TEXT,
     p_user_first_name TEXT,
     p_user_last_name TEXT,
     p_user_email TEXT,
     p_external_auth_id TEXT,
     
-    -- Optional parameters for audit
+    -- Optional parameters for audit (must come after required params)
     p_ip_address TEXT DEFAULT NULL,
     p_user_agent TEXT DEFAULT NULL
 ) RETURNS JSON
@@ -109,9 +114,9 @@ DECLARE
     v_tenant_type INTEGER;
 BEGIN
     -- ========================================
-    -- STEP 1: Generate Audit ID
+    -- STEP 1: Generate Audit ID (using UUID since ULID extension not available)
     -- ========================================
-    v_audit_id := 'audit_' || gen_ulid();
+    v_audit_id := 'audit_' || REPLACE(gen_random_uuid()::text, '-', '');
     
     -- ========================================
     -- STEP 2: Input Validation
@@ -173,10 +178,11 @@ BEGIN
     END IF;
     
     -- ========================================
-    -- STEP 4: Create Tenant (Personal Type for B2C Signup)
+    -- STEP 4: Create Tenant
     -- ========================================
     -- TenantType enum: Personal = 0, Organization = 1
-    v_tenant_type := 0;
+    -- Use parameter value passed from application
+    v_tenant_type := p_tenant_type;
     
     INSERT INTO "Tenants" (
         "Id",
@@ -190,7 +196,7 @@ BEGIN
     ) VALUES (
         p_tenant_id,
         p_tenant_name,
-        v_tenant_type,  -- Personal tenant for B2C
+        v_tenant_type,  -- 0 = Personal (B2C), 1 = Organization (B2B)
         true,  -- Active by default
         true,  -- Primary tenant
         p_user_email,
@@ -199,28 +205,7 @@ BEGIN
     );
     
     -- ========================================
-    -- STEP 5: Create User Profile
-    -- ========================================
-    v_profile_id := 'profile_' || gen_ulid();
-    
-    INSERT INTO "Profiles" (
-        "Id",
-        "Bio",
-        "Headline",
-        "Location",
-        "CreatedAt",
-        "LastUpdatedAt"
-    ) VALUES (
-        v_profile_id,
-        NULL,  -- Empty profile initially
-        NULL,
-        NULL,
-        NOW(),
-        NOW()
-    );
-    
-    -- ========================================
-    -- STEP 6: Create User
+    -- STEP 5: Create User (ProfileEntity will be created after with UserId reference)
     -- ========================================
     INSERT INTO "Users" (
         "Id",
@@ -230,8 +215,8 @@ BEGIN
         "Email",
         "ExternalAuthId",
         "TenantId",
-        "ProfileId",
         "IsActive",
+        "IsSoftDeleted",
         "LastLogin",
         "CreatedAt",
         "LastUpdatedAt"
@@ -243,9 +228,42 @@ BEGIN
         p_user_email,
         p_external_auth_id,
         p_tenant_id,  -- Link to tenant
-        v_profile_id,  -- Link to profile
         true,
+        false,
         NOW(),
+        NOW(),
+        NOW()
+    );
+    
+    -- ========================================
+    -- STEP 6: Create User Profile (references User via UserId)
+    -- ========================================
+    v_profile_id := 'profile_' || REPLACE(gen_random_uuid()::text, '-', '');
+    
+    INSERT INTO "ProfileEntity" (
+        "Id",
+        "UserId",
+        "PhoneNumber",
+        "Bio",
+        "AvatarUrl",
+        "WebsiteUrl",
+        "TimeZone",
+        "Language",
+        "Country",
+        "IsSoftDeleted",
+        "CreatedAt",
+        "LastUpdatedAt"
+    ) VALUES (
+        v_profile_id,
+        p_user_id,  -- Link profile to user
+        NULL,  -- Empty profile initially
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        false,
         NOW(),
         NOW()
     );

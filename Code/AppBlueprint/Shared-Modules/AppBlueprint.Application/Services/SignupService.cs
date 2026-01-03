@@ -79,6 +79,7 @@ public sealed class SignupService : ISignupService
                 SELECT create_tenant_and_user(
                     @p_tenant_id,
                     @p_tenant_name,
+                    @p_tenant_type,
                     @p_user_id,
                     @p_user_first_name,
                     @p_user_last_name,
@@ -98,6 +99,7 @@ public sealed class SignupService : ISignupService
             command.Parameters.AddWithValue("@p_external_auth_id", request.ExternalAuthId ?? (object)DBNull.Value);
             command.Parameters.AddWithValue("@p_ip_address", request.IpAddress ?? (object)DBNull.Value);
             command.Parameters.AddWithValue("@p_user_agent", request.UserAgent ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@p_tenant_type", request.TenantType);
 
             // Execute and read JSON result
             object? result = await command.ExecuteScalarAsync(cancellationToken);
@@ -183,6 +185,10 @@ public sealed record SignupRequest
     public string? ExternalAuthId { get; init; }
     public string? IpAddress { get; init; }
     public string? UserAgent { get; init; }
+    /// <summary>
+    /// Tenant type: 0 = Personal (B2C), 1 = Organization (B2B).
+    /// </summary>
+    public required int TenantType { get; init; }
 }
 
 /// <summary>

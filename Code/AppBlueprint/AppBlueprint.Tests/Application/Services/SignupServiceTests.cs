@@ -59,7 +59,8 @@ public sealed class SignupServiceTests : IAsyncDisposable
             Email = "test@example.com",
             ExternalAuthId = "logto-sub-12345",
             IpAddress = "192.168.1.1",
-            UserAgent = "Mozilla/5.0 Test"
+            UserAgent = "Mozilla/5.0 Test",
+            TenantType = 0 // Personal
         };
 
         // Act
@@ -173,7 +174,8 @@ public sealed class SignupServiceTests : IAsyncDisposable
             FirstName = "Test",
             LastName = "User",
             Email = "test@example.com",
-            ExternalAuthId = "logto-12345"
+            ExternalAuthId = "logto-12345",
+            TenantType = 0
         };
 
         // Act & Assert
@@ -194,7 +196,8 @@ public sealed class SignupServiceTests : IAsyncDisposable
             FirstName = "Test",
             LastName = "User",
             Email = "not-an-email", // Invalid email format
-            ExternalAuthId = "logto-12345"
+            ExternalAuthId = "logto-12345",
+            TenantType = 0
         };
 
         // Act & Assert
@@ -263,7 +266,8 @@ public sealed class SignupServiceTests : IAsyncDisposable
             FirstName = "Test",
             LastName = "User",
             Email = "linked@example.com",
-            ExternalAuthId = "logto-12345"
+            ExternalAuthId = "logto-12345",
+            TenantType = 0
         };
 
         // Act
@@ -297,7 +301,8 @@ public sealed class SignupServiceTests : IAsyncDisposable
             Email = "audit@example.com",
             ExternalAuthId = "logto-12345",
             IpAddress = "192.168.1.100",
-            UserAgent = "Mozilla/5.0 (Test Browser)"
+            UserAgent = "Mozilla/5.0 (Test Browser)",
+            TenantType = 0
         };
 
         // Act

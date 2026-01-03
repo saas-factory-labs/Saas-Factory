@@ -147,9 +147,37 @@
 
             if (string.IsNullOrEmpty(sessionJson))
             {
-                Logger.LogInformation("[SignupComplete] No signup session found - user probably logged in normally, redirecting to dashboard");
-                Navigation.NavigateTo("/", forceLoad: true);
-                return;
+                Logger.LogInformation("[SignupComplete] No signup session found - checking if user needs automatic tenant creation");
+                
+                // Check if user has tenant_id claim
+                var currentAuthState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                var currentUser = currentAuthState.User;
+                string? tenantIdClaim = currentUser.FindFirst("tenant_id")?.Value;
+                
+                if (string.IsNullOrEmpty(tenantIdClaim))
+                {
+                    Logger.LogInformation("[SignupComplete] No tenant_id claim found - creating Personal (B2C) tenant automatically");
+                    
+                    // Create automatic Personal tenant for the user
+                    loadingMessage = "Setting up your personal workspace...";
+                    await InvokeAsync(StateHasChanged);
+                    
+                    await CreateAutomaticPersonalTenantAsync(currentUser);
+                    
+                    // Success - start redirect countdown
+                    isSuccess = true;
+                    isProcessing = false;
+                    StartRedirectCountdown();
+                    
+                    await InvokeAsync(StateHasChanged);
+                    return;
+                }
+                else
+                {
+                    Logger.LogInformation("[SignupComplete] User already has tenant_id claim: {TenantId} - redirecting to dashboard", tenantIdClaim);
+                    Navigation.NavigateTo("/", forceLoad: true);
+                    return;
+                }
             }
 
             var sessionData = JsonSerializer.Deserialize<SignupSessionData>(sessionJson);
@@ -200,6 +228,59 @@
         await InvokeAsync(StateHasChanged);
     }
 
+    private async Task CreateAutomaticPersonalTenantAsync(System.Security.Claims.ClaimsPrincipal user)
+    {
+        try
+        {
+            // Get Logto user ID from claims
+            string logtoUserId = user.FindFirst("sub")?.Value 
+                                ?? user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+                                ?? throw new InvalidOperationException("No user ID found in claims");
+            
+            string email = user.FindFirst("email")?.Value 
+                          ?? user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value 
+                          ?? throw new InvalidOperationException("No email found in claims");
+
+            Logger.LogInformation("[SignupComplete] Auto-creating Personal tenant for Logto user {LogtoUserId}, Email: {Email}", 
+                logtoUserId, email);
+
+            // Extract name from email if available, otherwise use "User"
+            string emailName = email.Split('@')[0];
+            string firstName = string.IsNullOrEmpty(emailName) ? "User" : emailName;
+            string lastName = "Account";
+
+            // Get IP address and user agent for audit logging
+            string? ipAddress = HttpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+            string? userAgent = HttpContextAccessor.HttpContext?.Request.Headers["User-Agent"].ToString();
+
+            // Create tenant and user atomically via secure stored procedure
+            SignupResult result = await SignupService.CreateTenantAndUserAsync(new SignupRequest
+            {
+                TenantId = PrefixedUlid.Generate("tenant"),
+                TenantName = $"{firstName}'s Workspace",
+                UserId = PrefixedUlid.Generate("user"),
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                ExternalAuthId = logtoUserId,
+                IpAddress = ipAddress,
+                UserAgent = userAgent,
+                TenantType = 0 // Personal account (B2C)
+            });
+
+            Logger.LogInformation(
+                "[SignupComplete] Auto-created Personal tenant - TenantId: {TenantId}, UserId: {UserId}, ProfileId: {ProfileId}",
+                result.TenantId, result.UserId, result.ProfileId);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "[SignupComplete] Failed to auto-create Personal tenant");
+            errorMessage = "Failed to set up your account. Please contact support.";
+            isProcessing = false;
+            throw;
+        }
+    }
+
     private async Task CreatePersonalAccountAsync(SignupSessionData sessionData, System.Security.Claims.ClaimsPrincipal user)
     {
         // Get Logto user ID from claims
@@ -229,7 +310,8 @@
             Email = email,
             ExternalAuthId = logtoUserId,
             IpAddress = ipAddress,
-            UserAgent = userAgent
+            UserAgent = userAgent,
+            TenantType = 0 // Personal account (B2C)
         });
 
         Logger.LogInformation(
@@ -267,7 +349,8 @@
             Email = email,
             ExternalAuthId = logtoUserId,
             IpAddress = ipAddress,
-            UserAgent = userAgent
+            UserAgent = userAgent,
+            TenantType = 1 // Organization account (B2B)
         });
 
         Logger.LogInformation(

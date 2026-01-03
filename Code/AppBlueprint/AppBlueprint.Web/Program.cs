@@ -358,6 +358,21 @@ if (app.Environment.IsDevelopment())
         
         return Results.Json(diagnostics);
     }).AllowAnonymous();
+    
+    // Auth diagnostic endpoint to check authentication status
+    app.MapGet("/auth-debug", (HttpContext context) =>
+    {
+        var diagnostics = new
+        {
+            IsAuthenticated = context.User?.Identity?.IsAuthenticated ?? false,
+            AuthenticationType = context.User?.Identity?.AuthenticationType,
+            UserName = context.User?.Identity?.Name,
+            Claims = context.User?.Claims.Select(c => new { c.Type, c.Value }).ToList(),
+            Cookies = context.Request.Cookies.Keys.ToList()
+        };
+        
+        return Results.Json(diagnostics);
+    }).AllowAnonymous();
 }
 
 app.MapDefaultEndpoints();
