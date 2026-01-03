@@ -58,7 +58,8 @@
 
     </ItemGroup>
 
-    <ItemGroup>       
+    <ItemGroup>
+        <PackageReference Include="Blazored.LocalStorage" />
         <PackageReference Include="Logto.AspNetCore.Authentication" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
 

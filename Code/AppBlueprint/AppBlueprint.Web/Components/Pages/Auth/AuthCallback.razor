@@ -1,0 +1,209 @@
+@page "/callback"
+@using AppBlueprint.Web.Models.Auth
+@using AppBlueprint.Infrastructure.DatabaseContexts.Baseline
+@using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User
+@using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+@using System.Text.Json
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@inject IHttpContextAccessor HttpContextAccessor
+@inject BaselineDbContext DbContext
+@inject ILogger<AuthCallback> Logger
+
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div class="text-center">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">@statusMessage</h2>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p class="text-red-600 dark:text-red-400 mt-2">@errorMessage</p>
+            <a href="/signup" class="mt-4 inline-block text-blue-600 hover:text-blue-700">Try again</a>
+        }
+    </div>
+</div>
+
+@code {
+    private string statusMessage = "Processing your authentication...";
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ProcessCallbackAsync();
+        }
+    }
+
+    private async Task ProcessCallbackAsync()
+    {
+        try
+        {
+            Logger.LogInformation("[AuthCallback] Processing authentication callback");
+
+            // Get the HTTP context
+            var httpContext = HttpContextAccessor.HttpContext;
+            if (httpContext is null)
+            {
+                throw new InvalidOperationException("HTTP context is not available");
+            }
+
+            // Check if user is authenticated
+            if (httpContext.User?.Identity?.IsAuthenticated != true)
+            {
+                Logger.LogWarning("[AuthCallback] User is not authenticated");
+                errorMessage = "Authentication failed. Please try again.";
+                await InvokeAsync(StateHasChanged);
+                return;
+            }
+
+            statusMessage = "Loading signup data...";
+            await InvokeAsync(StateHasChanged);
+
+            // Retrieve signup session data from local storage
+            var signupSessionJson = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "signupSession");
+            
+            if (string.IsNullOrEmpty(signupSessionJson))
+            {
+                Logger.LogWarning("[AuthCallback] No signup session data found");
+                // User might be logging in, not signing up - redirect to dashboard
+                Navigation.NavigateTo("/", forceLoad: true);
+                return;
+            }
+
+            var sessionData = JsonSerializer.Deserialize<SignupSessionData>(signupSessionJson);
+            if (sessionData is null)
+            {
+                throw new InvalidOperationException("Failed to deserialize signup session data");
+            }
+
+            Logger.LogInformation("[AuthCallback] Session data loaded for account type: {AccountType}", sessionData.AccountType);
+
+            statusMessage = "Retrieving user information...";
+            await InvokeAsync(StateHasChanged);
+
+            // Get user claims from authentication
+            var user = httpContext.User;
+            var email = user.FindFirst(ClaimTypes.Email)?.Value 
+                ?? user.FindFirst("email")?.Value 
+                ?? user.FindFirst("preferred_username")?.Value;
+                
+            var logtoUserId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                ?? user.FindFirst("sub")?.Value;
+
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(logtoUserId))
+            {
+                Logger.LogError("[AuthCallback] Missing required user claims. Email: {Email}, UserId: {UserId}", email, logtoUserId);
+                throw new InvalidOperationException("Required user information is missing from authentication token");
+            }
+
+            Logger.LogInformation("[AuthCallback] User email: {Email}, Logto ID: {LogtoUserId}", email, logtoUserId);
+
+            statusMessage = "Creating your account...";
+            await InvokeAsync(StateHasChanged);
+
+            // Check if user already exists
+            var existingUser = await DbContext.Users
+                .Include(u => u.Tenant)
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (existingUser is not null)
+            {
+                Logger.LogInformation("[AuthCallback] User already exists: {UserId}", existingUser.Id);
+                
+                // Clear signup session
+                await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "signupSession");
+                
+                // Redirect to dashboard
+                Navigation.NavigateTo("/", forceLoad: true);
+                return;
+            }
+
+            // Create user entity
+            var newUser = new UserEntity
+            {
+                FirstName = sessionData.FirstName,
+                LastName = sessionData.LastName,
+                UserName = email.Split('@')[0], // Use email prefix as username
+                Email = email,
+                IsActive = true,
+                Profile = new ProfileEntity()
+            };
+
+            Logger.LogInformation("[AuthCallback] Creating new user: {Email}", email);
+
+            statusMessage = "Setting up your workspace...";
+            await InvokeAsync(StateHasChanged);
+
+            // Create tenant based on account type
+            TenantEntity tenant;
+            if (sessionData.AccountType.Equals("business", StringComparison.OrdinalIgnoreCase))
+            {
+                Logger.LogInformation("[AuthCallback] Creating organization tenant: {CompanyName}", sessionData.CompanyName);
+                
+                tenant = TenantFactory.CreateOrganizationTenant(
+                    organizationName: sessionData.CompanyName ?? "My Organization",
+                    organizationEmail: email,
+                    vatNumber: sessionData.VatNumber,
+                    country: sessionData.Country
+                );
+            }
+            else
+            {
+                Logger.LogInformation("[AuthCallback] Creating personal tenant for user: {Name}", $"{sessionData.FirstName} {sessionData.LastName}");
+                
+                // Create a temporary user object for TenantFactory
+                var tempUser = new UserEntity
+                {
+                    FirstName = sessionData.FirstName,
+                    LastName = sessionData.LastName,
+                    UserName = email.Split('@')[0],
+                    Email = email,
+                    Profile = new ProfileEntity()
+                };
+                
+                tenant = TenantFactory.CreatePersonalTenant(tempUser);
+            }
+
+            // Set tenant as active and primary
+            tenant.IsActive = true;
+            tenant.IsPrimary = true;
+
+            // Link user to tenant
+            newUser.TenantId = tenant.Id;
+            newUser.Tenant = tenant;
+
+            // Save to database
+            Logger.LogInformation("[AuthCallback] Saving user and tenant to database");
+            
+            DbContext.Tenants.Add(tenant);
+            DbContext.Users.Add(newUser);
+            
+            await DbContext.SaveChangesAsync();
+
+            Logger.LogInformation("[AuthCallback] User and tenant created successfully. UserId: {UserId}, TenantId: {TenantId}", 
+                newUser.Id, tenant.Id);
+
+            // Clear signup session
+            await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "signupSession");
+
+            statusMessage = "Success! Redirecting to your dashboard...";
+            await InvokeAsync(StateHasChanged);
+
+            // Small delay to show success message
+            await Task.Delay(1000);
+
+            // Redirect to dashboard
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "[AuthCallback] Error processing callback");
+            errorMessage = $"An error occurred: {ex.Message}";
+            statusMessage = "Authentication Error";
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

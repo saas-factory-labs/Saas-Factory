@@ -4,8 +4,8 @@ using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.UiKit;
 using AppBlueprint.UiKit.Models;
 using AppBlueprint.Web;
-
 using AppBlueprint.Web.Components;
+using Blazored.LocalStorage;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
@@ -133,6 +133,9 @@ if (builder.Environment.IsDevelopment())
 builder.Services.AddOutputCache();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authentication
+
+// Add Blazored LocalStorage for signup session persistence
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddUiKit();
 
