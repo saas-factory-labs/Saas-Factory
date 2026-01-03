@@ -28,7 +28,7 @@ internal sealed class AuthTestController : ControllerBase
     public IActionResult GetPublic()
     {
         _logger.LogInformation("Public endpoint accessed");
-        
+
         return Ok(new
         {
             Message = "This is a public endpoint - no authentication required",
@@ -45,9 +45,9 @@ internal sealed class AuthTestController : ControllerBase
     public IActionResult GetProtected()
     {
         _logger.LogInformation("Protected endpoint accessed by user: {User}", User.Identity?.Name);
-        
+
         var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
-        
+
         return Ok(new
         {
             Message = "Successfully authenticated!",
@@ -73,7 +73,7 @@ internal sealed class AuthTestController : ControllerBase
     public IActionResult GetAdmin()
     {
         _logger.LogInformation("Admin endpoint accessed by user: {User}", User.Identity?.Name);
-        
+
         return Ok(new
         {
             Message = "You have admin access!",
@@ -90,9 +90,9 @@ internal sealed class AuthTestController : ControllerBase
     public IActionResult GetUserEndpoint()
     {
         _logger.LogInformation("User endpoint accessed by user: {User}", User.Identity?.Name);
-        
+
         var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-        
+
         return Ok(new
         {
             Message = "You have user or admin access!",
@@ -115,10 +115,10 @@ internal sealed class AuthTestController : ControllerBase
 #endif
 
         _logger.LogInformation("Token extraction endpoint accessed by user: {User}", User.Identity?.Name);
-        
+
         // Try to get token from Authorization header
         var authHeader = Request.Headers.Authorization.ToString();
-        
+
         if (string.IsNullOrEmpty(authHeader))
         {
             return Ok(new
@@ -133,8 +133,8 @@ internal sealed class AuthTestController : ControllerBase
         }
 
         // Extract token (remove "Bearer " prefix)
-        var token = authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase) 
-            ? authHeader.Substring(7) 
+        string token = authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+            ? authHeader.AsSpan(7).ToString()
             : authHeader;
 
         return Ok(new
@@ -156,13 +156,13 @@ internal sealed class AuthTestController : ControllerBase
     {
         var authHeader = Request.Headers.Authorization.ToString();
         var tokenPreview = string.Empty;
-        
+
         if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {
             var token = authHeader["Bearer ".Length..];
             tokenPreview = token.Length > 50 ? $"{token[..50]}..." : token;
         }
-        
+
         return Ok(new
         {
             Message = "Echo - Request received",

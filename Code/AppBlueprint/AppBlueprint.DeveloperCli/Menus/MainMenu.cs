@@ -1,4 +1,5 @@
 using AppBlueprint.DeveloperCli.Commands;
+using AppBlueprint.DeveloperCli.Utilities;
 using RazorConsole;
 
 namespace AppBlueprint.DeveloperCli.Menus;
@@ -9,7 +10,7 @@ internal static class MainMenu
     {
         // Clear console for better presentation (safe clear that handles invalid console)
         TryClearConsole();
-        
+
         // Display beautiful header using RazorConsole
         ShowHeader();
 
@@ -84,7 +85,7 @@ internal static class MainMenu
                 new FigletText("SaaS Factory")
                     .LeftJustified()
                     .Color(Color.Cyan1));
-            
+
             // Add a nice subtitle panel
             AnsiConsole.Write(
                 new Panel(
@@ -92,7 +93,7 @@ internal static class MainMenu
                     .Border(BoxBorder.Rounded)
                     .BorderColor(Color.Cyan1)
                     .Padding(1, 0));
-            
+
             AnsiConsole.WriteLine();
         }
         catch
@@ -120,14 +121,14 @@ internal static class MainMenu
     private static void ShowSimpleMenu(string[] options)
     {
         Console.WriteLine("\n=== Developer CLI Menu ===\n");
-        
+
         for (int i = 0; i < options.Length; i++)
         {
             Console.WriteLine($"{i + 1}. {options[i]}");
         }
-        
+
         Console.Write("\nPlease select an option (1-{0}): ", options.Length);
-        
+
         if (int.TryParse(Console.ReadLine(), out int selection) && selection >= 1 && selection <= options.Length)
         {
             ProcessSelection(options[selection - 1]);
@@ -214,7 +215,7 @@ internal static class MainMenu
                 break;
             case "Validate PostGreSQL Password":
                 AnsiConsole.MarkupLine("[yellow]Validating PostGreSQL Password...[/]");
-                // TODO: Implement password validation
+                ValidatePostgreSqlPassword();
                 break;
             case "Manage Environment Variable":
                 AnsiConsole.MarkupLine("[yellow]Managing Environment Variable...[/]");
@@ -227,5 +228,110 @@ internal static class MainMenu
                 AnsiConsole.MarkupLine("[red]Invalid option selected.[/]");
                 break;
         }
+    }
+
+    private static void ValidatePostgreSqlPassword()
+    {
+        AnsiConsole.MarkupLine("[cyan]═══════════════════════════════════════════════════════[/]");
+        AnsiConsole.MarkupLine("[bold cyan]PostgreSQL Connection Validator[/]");
+        AnsiConsole.MarkupLine("[cyan]═══════════════════════════════════════════════════════[/]");
+        AnsiConsole.WriteLine();
+
+        // Check for existing environment variable
+        string? envConnectionString = Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING", EnvironmentVariableTarget.User);
+
+        if (!string.IsNullOrWhiteSpace(envConnectionString))
+        {
+            AnsiConsole.MarkupLine("[green]✓[/] Found connection string in environment variable");
+
+            if (AnsiConsole.Confirm("Test the stored connection string?", true))
+            {
+                TestConnectionString(envConnectionString);
+                return;
+            }
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[yellow]⚠[/] No connection string found in environment variable [grey]APPBLUEPRINT_DATABASE_CONNECTIONSTRING[/]");
+            AnsiConsole.WriteLine();
+        }
+
+        // Prompt for connection string
+        AnsiConsole.MarkupLine("[yellow]Enter PostgreSQL connection details:[/]");
+        AnsiConsole.WriteLine();
+
+        string host = AnsiConsole.Ask<string>("Host (e.g., [grey]localhost[/]):", "localhost");
+        string port = AnsiConsole.Ask<string>("Port:", "5432");
+        string database = AnsiConsole.Ask<string>("Database name:", "appblueprintdb");
+        string username = AnsiConsole.Ask<string>("Username:", "postgres");
+        string password = AnsiConsole.Prompt(
+            new TextPrompt<string>("Password:")
+                .PromptStyle("yellow")
+                .Secret());
+
+        // Build connection string
+        string connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
+
+        AnsiConsole.WriteLine();
+        TestConnectionString(connectionString);
+
+        // Ask if user wants to save to environment variable
+        if (AnsiConsole.Confirm("[yellow]Save this connection string to environment variable?[/]"))
+        {
+            try
+            {
+                Environment.SetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING", connectionString, EnvironmentVariableTarget.User);
+                AnsiConsole.MarkupLine("[green]✓[/] Connection string saved to [cyan]APPBLUEPRINT_DATABASE_CONNECTIONSTRING[/]");
+                AnsiConsole.MarkupLine("[grey]Note: You may need to restart your terminal for changes to take effect[/]");
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[red]✗[/] Failed to save environment variable: {ex.Message}");
+            }
+        }
+    }
+
+    private static void TestConnectionString(string connectionString)
+    {
+        AnsiConsole.WriteLine();
+        AnsiConsole.Status()
+            .Spinner(Spinner.Known.Dots)
+            .Start("[yellow]Testing connection...[/]", ctx =>
+            {
+                try
+                {
+                    bool isValid = ConnectionStringValidator.ValidatePostgreSqlConnection(connectionString).GetAwaiter().GetResult();
+
+                    if (isValid)
+                    {
+                        AnsiConsole.MarkupLine("[green]✓ Connection successful![/]");
+                        AnsiConsole.WriteLine();
+
+                        // Display masked connection string
+                        string maskedConnectionString = MaskPassword(connectionString);
+                        AnsiConsole.MarkupLine($"[grey]Connection string: {maskedConnectionString}[/]");
+                    }
+                    else
+                    {
+                        AnsiConsole.MarkupLine("[red]✗ Connection failed[/]");
+                        AnsiConsole.MarkupLine("[yellow]Please verify your connection details[/]");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AnsiConsole.MarkupLine($"[red]✗ Connection failed: {ex.Message}[/]");
+                }
+            });
+
+        AnsiConsole.WriteLine();
+    }
+
+    private static string MaskPassword(string connectionString)
+    {
+        var regex = new System.Text.RegularExpressions.Regex(
+            @"Password=([^;]+)",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        return regex.Replace(connectionString, "Password=***");
     }
 }

@@ -156,18 +156,89 @@ public static class WebAuthenticationExtensions
         
         LogLogtoConfiguration(logtoEndpoint, logtoAppId, logtoAppSecret, logtoResource);
         
-        services.AddLogtoAuthentication(options =>
+        // AddLogtoAuthentication ONLY registers the cookie scheme, not OIDC
+        // We need to manually add the OpenID Connect handler with the "Logto" scheme
+        services.AddAuthentication(options =>
         {
-            options.Endpoint = logtoEndpoint ?? string.Empty;
-            options.AppId = logtoAppId ?? string.Empty;
-            options.AppSecret = logtoAppSecret;
+            options.DefaultScheme = LogtoCookieScheme;
+            options.DefaultChallengeScheme = LogtoScheme;
+            options.DefaultSignInScheme = LogtoCookieScheme;
+            options.DefaultAuthenticateScheme = LogtoCookieScheme;
+        })
+        .AddCookie(LogtoCookieScheme, options =>
+        {
+            options.LoginPath = "/auth/signin";
+            options.LogoutPath = "/auth/signout";
+            options.AccessDeniedPath = "/auth/signin";
             
-            ConfigureLogtoResource(options, logtoResource);
+            if (environment.IsDevelopment())
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            }
+            options.Cookie.HttpOnly = true;
+            options.Cookie.Path = "/";
+            options.Cookie.IsEssential = true;
+            
+            Console.WriteLine($"[Web] Configured Cookie scheme: LoginPath={options.LoginPath}");
+        })
+        .AddOpenIdConnect(LogtoScheme, options =>
+        {
+            options.Authority = logtoEndpoint;
+            options.ClientId = logtoAppId ?? string.Empty;
+            options.ClientSecret = logtoAppSecret;
+            
+            options.ResponseType = "code";
+            options.ResponseMode = "query";
+            
+            options.SaveTokens = true;
+            options.GetClaimsFromUserInfoEndpoint = true;
+            
+            options.Scope.Clear();
+            options.Scope.Add("openid");
+            options.Scope.Add("profile");
+            options.Scope.Add("email");
+            
+            if (!string.IsNullOrEmpty(logtoResource))
+            {
+                options.Scope.Add(logtoResource);
+            }
+            
+            options.CallbackPath = "/Callback";
+            options.SignedOutCallbackPath = "/signout-callback-logto";
+            
+            if (environment.IsDevelopment())
+            {
+                options.RequireHttpsMetadata = false;
+            }
+            
+            // Configure correlation cookie for development (HTTP localhost)
+            options.CorrelationCookie.SecurePolicy = environment.IsDevelopment() 
+                ? CookieSecurePolicy.None 
+                : CookieSecurePolicy.Always;
+            options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+            options.CorrelationCookie.HttpOnly = true;
+            options.CorrelationCookie.IsEssential = true;
+            
+            // Configure nonce cookie for development (HTTP localhost)
+            options.NonceCookie.SecurePolicy = environment.IsDevelopment() 
+                ? CookieSecurePolicy.None 
+                : CookieSecurePolicy.Always;
+            options.NonceCookie.SameSite = SameSiteMode.Lax;
+            options.NonceCookie.HttpOnly = true;
+            options.NonceCookie.IsEssential = true;
+            
+            Console.WriteLine($"[Web] Configured OpenID Connect 'Logto' scheme with Authority={options.Authority}");
         });
         
-        // Configure the Logto cookie scheme separately
-        services.ConfigureAll<CookieAuthenticationOptions>(options =>
+        // Configure the Logto cookie scheme (named "Logto.Cookie") specifically
+        services.Configure<CookieAuthenticationOptions>("Logto.Cookie", options =>
         {
+            // Set the correct login path for Logto authentication
+            options.LoginPath = "/auth/signin";
+            options.LogoutPath = "/auth/signout";
+            options.AccessDeniedPath = "/auth/signin";
+            
             // Configure authentication cookie for development
             if (environment.IsDevelopment())
             {
@@ -178,7 +249,28 @@ public static class WebAuthenticationExtensions
             options.Cookie.Path = "/";
             options.Cookie.IsEssential = true;
             
-            Console.WriteLine($"[Web] Configured authentication cookie: Path=/, IsEssential=true, SameSite={options.Cookie.SameSite}");
+            Console.WriteLine($"[Web] Configured Logto.Cookie scheme: LoginPath={options.LoginPath}, Path=/, IsEssential=true, SameSite={options.Cookie.SameSite}");
+        });
+        
+        // Also configure all cookie schemes as a fallback
+        services.ConfigureAll<CookieAuthenticationOptions>(options =>
+        {
+            // Set the correct login path for Logto authentication
+            options.LoginPath = "/auth/signin";
+            options.LogoutPath = "/auth/signout";
+            options.AccessDeniedPath = "/auth/signin";
+            
+            // Configure authentication cookie for development
+            if (environment.IsDevelopment())
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            }
+            options.Cookie.HttpOnly = true;
+            options.Cookie.Path = "/";
+            options.Cookie.IsEssential = true;
+            
+            Console.WriteLine($"[Web] Configured authentication cookie: LoginPath={options.LoginPath}, Path=/, IsEssential=true, SameSite={options.Cookie.SameSite}");
         });
         
         ConfigureOpenIdConnectOptions(services, environment);
@@ -201,7 +293,12 @@ public static class WebAuthenticationExtensions
         Console.WriteLine($"[Web] {LogSeparator}");
         
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            {
+                options.LoginPath = "/auth/signin";
+                options.LogoutPath = "/auth/signout";
+                options.AccessDeniedPath = "/auth/signin";
+            });
     }
 
     /// <summary>
@@ -291,11 +388,23 @@ public static class WebAuthenticationExtensions
         OpenIdConnectOptions options,
         IHostEnvironment environment)
     {
-        // OAuth cookies must use SameSite=None because they need to survive cross-site redirects
-        // (redirect to Logto and back is a cross-site navigation)
-        // SameSite=None requires Secure=true (HTTPS), so we always use HTTPS for OAuth
-        var sameSiteMode = SameSiteMode.None;
-        var securePolicy = CookieSecurePolicy.Always; // Always require HTTPS for SameSite=None
+        // In development (HTTP localhost), use Lax + None for cookies
+        // In production (HTTPS), use None + Always (required for OAuth cross-site redirects)
+        SameSiteMode sameSiteMode;
+        CookieSecurePolicy securePolicy;
+        
+        if (environment.IsDevelopment())
+        {
+            // Development: HTTP localhost
+            sameSiteMode = SameSiteMode.Lax;
+            securePolicy = CookieSecurePolicy.None; // Allow HTTP
+        }
+        else
+        {
+            // Production: HTTPS required
+            sameSiteMode = SameSiteMode.None;
+            securePolicy = CookieSecurePolicy.Always;
+        }
         
         options.CorrelationCookie.SameSite = sameSiteMode;
         options.CorrelationCookie.SecurePolicy = securePolicy;
@@ -486,25 +595,37 @@ public static class WebAuthenticationExtensions
 
                 try
                 {
-                    await context.ChallengeAsync(new AuthenticationProperties { RedirectUri = "/" });
-                    Console.WriteLine("[Web] ✅ ChallengeAsync completed - should redirect to Logto now");
+                    // CRITICAL: Use LogtoScheme explicitly to avoid redirect loop
+                    // If we don't specify the scheme, it uses the default (cookie), which redirects back to /auth/signin
+                    await context.ChallengeAsync(LogtoScheme, new AuthenticationProperties { RedirectUri = "/" });
+                    Console.WriteLine("[Web] ✅ ChallengeAsync(LogtoScheme) completed - should redirect to Logto now");
                     Console.WriteLine("[Web] ⚠️ IMPORTANT: Make sure your Logto application has this redirect URI configured:");
                     Console.WriteLine($"[Web]    - {context.Request.Scheme}://{context.Request.Host}/Callback");
+                    Console.WriteLine(LogSeparator);
+                    return; // CRITICAL: Return immediately after challenge to complete the response
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[Web] ❌ ERROR in ChallengeAsync: {ex.Message}");
-                    Console.WriteLine($"[Web] Stack trace: {ex.StackTrace}");
+                    Console.WriteLine($"[Web] ❌ ERROR in ChallengeAsync: {ex.GetType().Name}");
+                    Console.WriteLine($"[Web] ❌ Message: {ex.Message}");
+                    Console.WriteLine($"[Web] ❌ Stack trace: {ex.StackTrace}");
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine($"[Web] ❌ Inner exception: {ex.InnerException.GetType().Name}");
+                        Console.WriteLine($"[Web] ❌ Inner message: {ex.InnerException.Message}");
+                    }
+                    Console.WriteLine(LogSeparator);
+                    context.Response.StatusCode = 500;
+                    await context.Response.WriteAsync($"Authentication error: {ex.Message}");
+                    return;
                 }
             }
-            else
-            {
-                Console.WriteLine("[Web] User already authenticated - redirecting to /");
-                context.Response.Redirect("/");
-            }
-
+            
+            // User already authenticated - redirect to home
+            Console.WriteLine("[Web] User already authenticated - redirecting to /");
             Console.WriteLine(LogSeparator);
-        });
+            context.Response.Redirect("/");
+        }).AllowAnonymous();
 
         // Sign out endpoint - Full Logto sign-out (signs out from both app and Logto IdP)
         app.MapGet("/auth/signout", async (HttpContext context, IConfiguration config) =>
