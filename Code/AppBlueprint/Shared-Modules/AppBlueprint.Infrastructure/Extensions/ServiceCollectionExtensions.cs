@@ -7,6 +7,7 @@ using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
 using AppBlueprint.Infrastructure.HealthChecks;
@@ -95,6 +96,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDatabaseContextsLegacy(configuration);
         services.AddRepositories();
+        services.AddTenantServices();
         services.AddUnitOfWork();
         services.AddExternalServices(configuration);
         services.AddHealthChecksServices(configuration);
@@ -136,8 +138,29 @@ public static class ServiceCollectionExtensions
             "postgres-server", 
             "DefaultConnection");
 
-        // Register ApplicationDbContext
-        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+        // Register ApplicationDbContext factory only (required by SignupService)
+        // Note: Cannot use both AddDbContext and AddDbContextFactory - factory is Singleton, DbContext is Scoped
+        services.AddDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>
+        {
+            options.UseNpgsql(connectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.CommandTimeout(60);
+                npgsqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(10),
+                    errorCodesToAdd: null);
+            });
+
+            options.ConfigureWarnings(warnings =>
+            {
+                warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId
+                    .PendingModelChangesWarning);
+                warnings.Log(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.ShadowPropertyCreated);
+            });
+        });
+
+        // Register BaselineDbContext
+        services.AddDbContext<BaselineDbContext>((serviceProvider, options) =>
         {
             options.UseNpgsql(connectionString, npgsqlOptions =>
             {
@@ -186,6 +209,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<ITeamRepository, TeamRepository>();
         services.AddScoped<IDataExportRepository, DataExportRepository>();
+        services.AddScoped<ITenantRepository, TenantRepository>();
         // Add more repositories as they are implemented
 
         return services;
@@ -202,7 +226,11 @@ public static class ServiceCollectionExtensions
         
         // User context and admin access
         services.AddScoped<Application.Services.ICurrentUserService, CurrentUserService>();
+        services.AddScoped<Application.Services.ICurrentTenantService, CurrentTenantService>();
         services.AddScoped<Application.Services.IAdminTenantAccessService, AdminTenantAccessService>();
+        
+        // Signup database connection provider
+        services.AddScoped<Application.Services.ISignupDbConnectionProvider, SignupDbConnectionProvider>();
         
         return services;
     }

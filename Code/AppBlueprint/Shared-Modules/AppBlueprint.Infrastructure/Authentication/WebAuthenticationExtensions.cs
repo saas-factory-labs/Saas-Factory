@@ -56,13 +56,13 @@ public static class WebAuthenticationExtensions
 <head>
     <title>Signing out...</title>
     <script>
-        console.log('[Logout] Redirecting to login page after sign-out');
-        window.location.href = '/login';
+        console.log('[Logout] Redirecting to signup page after sign-out');
+        window.location.href = '/signup';
     </script>
 </head>
 <body>
-    <p>Signing out... You will be redirected to the login page.</p>
-    <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
+    <p>Signing out... You will be redirected to the signup page.</p>
+    <p>If not redirected automatically, <a href='/signup'>click here</a>.</p>
 </body>
 </html>";
 
@@ -112,6 +112,7 @@ public static class WebAuthenticationExtensions
 
         services.AddAuthorization();
         services.AddScoped<Authorization.ITokenStorageService, Authorization.TokenStorageService>();
+        services.AddScoped<Authorization.IAuthenticationTokenService, Authorization.AuthenticationTokenService>();
 
         return services;
     }
@@ -167,9 +168,9 @@ public static class WebAuthenticationExtensions
         })
         .AddCookie(LogtoCookieScheme, options =>
         {
-            options.LoginPath = "/auth/signin";
+            options.LoginPath = "/signup";
             options.LogoutPath = "/auth/signout";
-            options.AccessDeniedPath = "/auth/signin";
+            options.AccessDeniedPath = "/signup";
             
             if (environment.IsDevelopment())
             {
@@ -204,7 +205,7 @@ public static class WebAuthenticationExtensions
                 options.Scope.Add(logtoResource);
             }
             
-            options.CallbackPath = "/Callback";
+            options.CallbackPath = "/callback";
             options.SignedOutCallbackPath = "/signout-callback-logto";
             
             if (environment.IsDevelopment())
@@ -235,9 +236,9 @@ public static class WebAuthenticationExtensions
         services.Configure<CookieAuthenticationOptions>("Logto.Cookie", options =>
         {
             // Set the correct login path for Logto authentication
-            options.LoginPath = "/auth/signin";
+            options.LoginPath = "/signup";
             options.LogoutPath = "/auth/signout";
-            options.AccessDeniedPath = "/auth/signin";
+            options.AccessDeniedPath = "/signup";
             
             // Configure authentication cookie for development
             if (environment.IsDevelopment())
@@ -256,9 +257,9 @@ public static class WebAuthenticationExtensions
         services.ConfigureAll<CookieAuthenticationOptions>(options =>
         {
             // Set the correct login path for Logto authentication
-            options.LoginPath = "/auth/signin";
+            options.LoginPath = "/signup";
             options.LogoutPath = "/auth/signout";
-            options.AccessDeniedPath = "/auth/signin";
+            options.AccessDeniedPath = "/signup";
             
             // Configure authentication cookie for development
             if (environment.IsDevelopment())
@@ -295,9 +296,9 @@ public static class WebAuthenticationExtensions
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                options.LoginPath = "/auth/signin";
+                options.LoginPath = "/signup";
                 options.LogoutPath = "/auth/signout";
-                options.AccessDeniedPath = "/auth/signin";
+                options.AccessDeniedPath = "/signup";
             });
     }
 
@@ -356,9 +357,9 @@ public static class WebAuthenticationExtensions
             
             options.SaveTokens = true;
             
-            // Logto uses /Callback as the callback path (not the default /signin-oidc)
+            // Logto uses /callback as the callback path (not the default /signin-oidc)
             // This must match what's configured in Logto's redirect URIs
-            options.CallbackPath = "/Callback";
+            options.CallbackPath = "/callback";
             
             ConfigureCookieSettings(options, environment);
             
@@ -537,6 +538,12 @@ public static class WebAuthenticationExtensions
             }
         }
 
+        // Always redirect to /signup-complete after authentication
+        // The page will check localStorage for signup session data
+        // If no signup session exists, it will redirect to dashboard
+        context.Properties.RedirectUri = "/signup-complete";
+        Console.WriteLine("[Web] Redirecting to /signup-complete for signup flow processing");
+
         Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");
     }
 
@@ -649,17 +656,27 @@ public static class WebAuthenticationExtensions
             // Build Logto's end session URL
             var logtoEndpoint = config[LogtoEndpointKey];
             
-            // Construct the post-logout redirect URI
-            // The web runs on 8083 (HTTPS) and 8082 (HTTP) in development, port 80 in production
-            var request = context.Request;
-            var postLogoutRedirectUri = $"{request.Scheme}://{request.Host}/logout-complete";
+            // Construct the post-logout redirect URI using port 5000
+            var postLogoutRedirectUri = "http://localhost:5000/signup";
             
             Console.WriteLine($"[Web] Logto endpoint: {logtoEndpoint}");
-            Console.WriteLine($"[Web] Request Host: {request.Host}");
             Console.WriteLine($"[Web] Post-logout redirect URI: {postLogoutRedirectUri}");
             
+            // Clear local cookies first before redirecting to Logto
+            try
+            {
+                await context.SignOutAsync(LogtoCookieScheme);
+                await context.SignOutAsync(LogtoScheme);
+                Console.WriteLine("[Web] ✅ Cleared all authentication cookies before Logto redirect");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Web] Cookie clear warning: {ex.Message}");
+            }
+            
             // Construct the Logto end session URL according to OIDC spec
-            var endSessionUrl = $"{logtoEndpoint}oidc/session/end?post_logout_redirect_uri={Uri.EscapeDataString(postLogoutRedirectUri)}";
+            // Note: logtoEndpoint already includes /oidc (e.g., https://32nkyp.logto.app/oidc)
+            var endSessionUrl = $"{logtoEndpoint}/session/end?post_logout_redirect_uri={Uri.EscapeDataString(postLogoutRedirectUri)}";
             
             // Add id_token_hint if available (recommended for proper sign-out)
             if (!string.IsNullOrEmpty(idToken))

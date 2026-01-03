@@ -1,3 +1,4 @@
+using AppBlueprint.Application.Services;
 using AppBlueprint.Application.Services.DataExport;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +38,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IDataExportService, DataExportService>();
+        services.AddScoped<ISignupService, SignupService>();
         // Add more application services as they are implemented
 
         return services;

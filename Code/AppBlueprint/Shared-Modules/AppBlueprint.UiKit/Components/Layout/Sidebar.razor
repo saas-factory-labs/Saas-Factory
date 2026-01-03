@@ -844,7 +844,17 @@
 
     private async Task ToggleSidebarExpandedAsync()
     {
-        await JS.InvokeVoidAsync("sidebarManager.toggleExpanded");
+        try
+        {
+            Console.WriteLine("ToggleSidebarExpandedAsync called");
+            await JS.InvokeVoidAsync("sidebarManager.toggleExpanded");
+            Console.WriteLine("ToggleSidebarExpandedAsync completed");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error toggling sidebar: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        }
     }
 
     private bool IsTodosActive => Navigation.Uri.Contains("/settings/todos");

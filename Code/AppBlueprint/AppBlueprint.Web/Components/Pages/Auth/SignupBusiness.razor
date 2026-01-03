@@ -1,10 +1,11 @@
 @page "/signup/business"
+@layout AppBlueprint.UiKit.Components.Layout.AuthLayout
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @using AppBlueprint.Web.Models.Auth
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Text.Json
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
-@inject IConfiguration Configuration
 
 <main class="bg-white dark:bg-gray-900">
     <div class="relative flex">
@@ -61,6 +62,18 @@
                     <EditForm Model="@model" OnValidSubmit="@HandleSubmit" FormName="business-signup-form">
                         <DataAnnotationsValidator />
                         <ValidationSummary class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4 text-sm text-red-800 dark:text-red-300" />
+                        
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+                                <div class="flex items-start">
+                                    <svg class="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                    <p class="text-sm text-red-800 dark:text-red-300">@errorMessage</p>
+                                </div>
+                            </div>
+                        }
 
                         <div class="space-y-4">
                             <!-- Company Information -->
@@ -185,10 +198,12 @@
 @code {
     private BusinessSignupModel model = new();
     private bool isSubmitting = false;
+    private string errorMessage = string.Empty;
 
     private async Task HandleSubmit()
     {
         isSubmitting = true;
+        errorMessage = string.Empty;
         
         try
         {
@@ -209,21 +224,17 @@
             var json = JsonSerializer.Serialize(sessionData);
             await JSRuntime.InvokeVoidAsync("localStorage.setItem", "signupSession", json);
 
-            // Get Logto configuration
-            var logtoEndpoint = Configuration["Logto:Endpoint"];
-            var appId = Configuration["Logto:AppId"];
-            var redirectUri = $"{Navigation.BaseUri}signup/callback";
-
-            // Build Logto sign-up URL with custom redirect
-            var signupUrl = $"{logtoEndpoint}/sign-up?client_id={appId}&redirect_uri={Uri.EscapeDataString(redirectUri)}&response_type=code&scope=openid%20profile%20email&state=business";
-
-            // Redirect to Logto sign-up
-            Navigation.NavigateTo(signupUrl, forceLoad: true);
+            // Use the proper authentication flow via /auth/signin endpoint
+            // This ensures OpenID Connect middleware sets correlation/nonce cookies
+            Console.WriteLine("[SignupBusiness] Redirecting to /auth/signin for proper authentication flow");
+            Navigation.NavigateTo("/auth/signin", forceLoad: true);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[SignupBusiness] Error: {ex.Message}");
+            errorMessage = "An error occurred while preparing signup. Please try again.";
             isSubmitting = false;
+            await InvokeAsync(StateHasChanged);
         }
     }
 }

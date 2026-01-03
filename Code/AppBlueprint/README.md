@@ -1,4 +1,77 @@
-### Directory.Packages
+# AppBlueprint
+
+Multi-tenant SaaS application template built with .NET 10, Blazor Server, and PostgreSQL.
+
+## 🚀 Quick Start
+
+The AppBlueprint demo app uses **Hybrid Mode** to support both B2C (consumer) and B2B (organization) user flows with dynamic dashboards. See [Database Hybrid Mode Setup](./DATABASE_HYBRID_MODE_SETUP.md) for details.
+
+```bash
+# Clone the repository
+git clone https://github.com/saas-factory-labs/Saas-Factory.git
+cd Saas-Factory/Code/AppBlueprint
+
+# Run with Docker Compose
+docker-compose up
+
+# Or run with .NET Aspire
+cd AppBlueprint.AppHost
+dotnet run
+```
+
+## 📖 Documentation
+
+### 🎯 Start Here: Database Configuration
+
+**AppBlueprint uses Hybrid Mode for B2C/B2B dynamic dashboards.**
+
+| Quick Access | Description |
+|--------------|-------------|
+| [📑 **Documentation Index**](./DATABASE_CONTEXT_DOCUMENTATION_INDEX.md) | **Complete index** of all database context documentation |
+| [⚙️ **Hybrid Mode Setup**](./DATABASE_HYBRID_MODE_SETUP.md) | **Demo app configuration** - why and how Hybrid Mode works |
+| [📖 Flexibility Guide](./Shared-Modules/DATABASE_CONTEXT_FLEXIBILITY_GUIDE.md) | Complete reference (930+ lines) - all context types and scenarios |
+| [📋 Configuration Examples](./Shared-Modules/DatabaseContexts/Examples/README.md) | Copy-paste templates for B2C, B2B, Hybrid, Baseline |
+
+### Core Guides
+
+| Guide | Description |
+|-------|-------------|
+| [⚙️ **Database Hybrid Mode Setup**](./DATABASE_HYBRID_MODE_SETUP.md) | **Start here** - Demo app configuration for B2C/B2B dynamic dashboards |
+| [📖 Database Context Flexibility Guide](./Shared-Modules/DATABASE_CONTEXT_FLEXIBILITY_GUIDE.md) | Complete guide to B2C, B2B, Baseline, and Hybrid modes (900+ lines) |
+| [📋 Database Context Examples](./Shared-Modules/DatabaseContexts/Examples/README.md) | Configuration examples for different app types |
+| [🔐 Multi-Tenancy Guide](./Shared-Modules/MULTI_TENANCY_GUIDE.md) | Tenant isolation with Row-Level Security |
+
+### Architecture & Development
+
+| Resource | Description |
+|----------|-------------|
+| [🏗️ Clean Architecture Dependencies](./.github/.ai-rules/baseline/clean-architecture-dependencies.md) | Layer dependency rules and patterns |
+| [🧪 Testing Guide](./.github/.ai-rules/tests/README.md) | Unit, integration, and UI testing |
+| [🎨 Frontend Guidelines](./.github/.ai-rules/frontend/README.md) | Blazor UI/UX patterns |
+| [⚙️ Backend Guidelines](./.github/.ai-rules/backend/README.md) | C# backend patterns |
+
+### Services & APIs
+
+| Resource | Description |
+|----------|-------------|
+| [🚀 AppHost](./AppBlueprint.AppHost/README.md) | .NET Aspire orchestration |
+| [📡 API Service](./AppBlueprint.ApiService/README.md) | REST API documentation |
+| [📦 Shared Kernel](./AppBlueprint.SharedKernel/README.md) | Common types and utilities |
+| [📄 Contracts](./Shared-Modules/AppBlueprint.Contracts/README.md) | DTOs and API contracts |
+| [📦 TodoApp Module](./AppBlueprint.TodoAppKernel/) | Example feature module |
+| [🎨 UI Kit](./Shared-Modules/AppBlueprint.UiKit/) | Reusable Blazor components |
+
+### Infrastructure & Deployment
+
+| Resource | Description |
+|----------|-------------|
+| [🐳 Docker Compose](./docker-compose.yml) | Local development environment |
+| [☁️ Railway Deployment](./railway.toml) | Production deployment configuration |
+| [🔒 Logto Authentication](./LOGTO-AUTHENTICATION-SETUP.md) | SSO setup guide |
+
+## 🏗️ Architecture
+
+
 
 Central package management for all C# projects.
 The package is referenced in each C# project' .csproj file without a version which is sourced from the Directory.Packages.props file:

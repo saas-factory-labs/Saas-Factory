@@ -7,7 +7,28 @@ AppBlueprint supports flexible DbContext configuration, allowing you to choose t
 - **Baseline**: Core entities only (authentication, notifications, integrations, file management)
 - **B2C**: Consumer-focused applications (Baseline + family relationships, personal preferences)
 - **B2B**: Organization-focused applications (Baseline + organizations, teams, API keys)
-- **Hybrid**: Applications needing both B2C and B2B features
+- **Hybrid**: Applications needing both B2C and B2B features (marketplaces, platforms, **demo apps**)
+
+## Quick Reference
+
+| Configuration | Use Case | Entities | When to Use |
+|--------------|----------|----------|-------------|
+| **B2C** | Consumer apps | Baseline + consumer features | Individual user apps (fitness, finance) |
+| **B2B** | Enterprise apps | Baseline + organizational features | Team/org apps (CRM, project mgmt) |
+| **Hybrid** | Platform apps | **ALL** (Baseline + B2C + B2B) | Marketplaces, demo apps with dynamic UIs |
+| **Baseline** | Microservices | Core only | Auth services, minimal apps |
+
+### Environment Variables (Quick Setup)
+
+```bash
+# For Hybrid Mode (Demo Apps / Marketplaces)
+DatabaseContext__ContextType="B2C"          # or "B2B" - your primary context
+DatabaseContext__EnableHybridMode="true"    # Registers ALL contexts
+
+# For Single Mode
+DatabaseContext__ContextType="B2C"          # Only B2C context
+DatabaseContext__EnableHybridMode="false"   # (default)
+```
 
 ## Architecture
 
@@ -341,7 +362,175 @@ public class MarketplaceService
 }
 ```
 
-### Example 5: Custom Feature-Specific Context (Dating App)
+### Example 5: Demo App with Dynamic B2C/B2B Dashboards (Hybrid Mode)
+
+**Scenario:** AppBlueprint demo app where users choose B2C or B2B signup flow, and the UI adapts dynamically
+
+**Why Hybrid Mode?**
+- Users can sign up as **individual consumers** (B2C) or **organization members** (B2B)
+- Dashboard displays different features based on user type
+- Same codebase, same database, different entity sets accessed per user context
+- Repositories need access to both B2C entities (personal features) and B2B entities (teams, organizations)
+
+**launchSettings.json (Both Web and ApiService):**
+```json
+{
+  "environmentVariables": {
+    "ASPNETCORE_ENVIRONMENT": "Development",
+    "DatabaseContext__ContextType": "B2C",
+    "DatabaseContext__EnableHybridMode": "true"
+  }
+}
+```
+
+**Program.cs:**
+```csharp
+// AppBlueprint.Web/Program.cs
+builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
+
+// AppBlueprint.ApiService/Program.cs
+builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
+```
+
+**Dynamic Dashboard Service:**
+```csharp
+public class DashboardService
+{
+    private readonly B2BDbContext _b2bContext;
+    private readonly ApplicationDbContext _b2cContext;
+    private readonly ICurrentUserService _currentUser;
+    
+    public DashboardService(
+        B2BDbContext b2bContext,
+        ApplicationDbContext b2cContext,
+        ICurrentUserService currentUser)
+    {
+        _b2bContext = b2bContext;
+        _b2cContext = b2cContext;
+        _currentUser = currentUser;
+    }
+    
+    public async Task<DashboardViewModel> GetDashboardAsync()
+    {
+        var userId = _currentUser.GetCurrentUserId();
+        var user = await _b2cContext.Users.FindAsync(userId);
+        
+        if (user.AccountType == AccountType.Organization)
+        {
+            // Load B2B dashboard with Teams, Organizations, API Keys
+            var org = await _b2bContext.Organizations
+                .Include(o => o.Teams)
+                .FirstOrDefaultAsync(o => o.Id == user.OrganizationId);
+                
+            var apiKeys = await _b2bContext.ApiKeys
+                .Where(k => k.OrganizationId == user.OrganizationId)
+                .ToListAsync();
+            
+            return new DashboardViewModel
+            {
+                UserType = "B2B",
+                Organization = org,
+                Teams = org?.Teams,
+                ApiKeys = apiKeys,
+                ShowOrganizationFeatures = true
+            };
+        }
+        else
+        {
+            // Load B2C dashboard with personal features, notifications
+            var notifications = await _b2cContext.Notifications
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .Take(10)
+                .ToListAsync();
+            
+            return new DashboardViewModel
+            {
+                UserType = "B2C",
+                Notifications = notifications,
+                ShowPersonalFeatures = true
+            };
+        }
+    }
+}
+```
+
+**Blazor Dashboard Component:**
+```razor
+@page "/dashboard"
+@inject DashboardService DashboardService
+
+<MudContainer>
+    @if (_dashboard?.UserType == "B2B")
+    {
+        <MudText Typo="Typo.h4">Organization Dashboard</MudText>
+        
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudCard>
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h6">Teams</MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        @foreach (var team in _dashboard.Teams ?? [])
+                        {
+                            <MudText>@team.Name</MudText>
+                        }
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            
+            <MudItem xs="12" md="6">
+                <MudCard>
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h6">API Keys</MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        @foreach (var key in _dashboard.ApiKeys ?? [])
+                        {
+                            <MudText>@key.Name</MudText>
+                        }
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    }
+    else
+    {
+        <MudText Typo="Typo.h4">Personal Dashboard</MudText>
+        
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">Recent Notifications</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                @foreach (var notification in _dashboard?.Notifications ?? [])
+                {
+                    <MudAlert Severity="Severity.Info">@notification.Message</MudAlert>
+                }
+            </MudCardContent>
+        </MudCard>
+    }
+</MudContainer>
+
+@code {
+    private DashboardViewModel? _dashboard;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _dashboard = await DashboardService.GetDashboardAsync();
+    }
+}
+```
+
+**Key Benefits for Demo Apps:**
+- ✅ **Single codebase** supports both user types
+- ✅ **Dynamic UI** adapts based on signup choice
+- ✅ **All features available** without code duplication
+- ✅ **Easy to demo** different scenarios
+- ✅ **Repositories work seamlessly** with both contexts
+
+### Example 6: Custom Feature-Specific Context (Dating App)
 
 **Scenario:** Dating app with custom entities (Profiles, Matches, Messages) extending B2B for organization features
 

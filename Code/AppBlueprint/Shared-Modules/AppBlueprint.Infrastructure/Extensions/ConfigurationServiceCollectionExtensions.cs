@@ -101,7 +101,7 @@ public static class ConfigurationServiceCollectionExtensions
         // Stripe - optional, only validate if configured
         services.AddOptions<StripeOptions>()
             .BindConfiguration(StripeOptions.SectionName)
-            .ValidateDataAnnotations()
+            .ValidateOnStart()
             .Validate(options =>
             {
                 // Only validate if ApiKey is provided
@@ -115,7 +115,7 @@ public static class ConfigurationServiceCollectionExtensions
         // Cloudflare R2 - optional, only validate if configured
         services.AddOptions<CloudflareR2Options>()
             .BindConfiguration(CloudflareR2Options.SectionName)
-            .ValidateDataAnnotations()
+            .ValidateOnStart()
             .Validate(options =>
             {
                 // Only validate if any key is provided
@@ -130,7 +130,7 @@ public static class ConfigurationServiceCollectionExtensions
         // Resend Email - optional, only validate if configured
         services.AddOptions<ResendEmailOptions>()
             .BindConfiguration(ResendEmailOptions.SectionName)
-            .ValidateDataAnnotations()
+            .ValidateOnStart()
             .Validate(options =>
             {
                 // Only validate if ApiKey is provided

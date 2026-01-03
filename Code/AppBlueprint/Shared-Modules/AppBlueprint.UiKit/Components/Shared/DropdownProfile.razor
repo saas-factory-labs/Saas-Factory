@@ -1,5 +1,8 @@
 @using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@implements IDisposable
 
 <div class="relative inline-flex" @ref="dropdownRef">
     <button @ref="triggerRef"
@@ -10,7 +13,7 @@
             aria-expanded="@dropdownOpen">
         <img class="w-8 h-8 rounded-full" src="_content/AppBlueprint.UiKit/images/user-avatar-32.png" width="32" height="32" alt="User"/>
         <div class="flex items-center truncate">
-            <span class="truncate ml-2 text-sm font-medium text-gray-600 dark:text-gray-100 group-hover:text-gray-800 dark:group-hover:text-white">Acme Inc.</span>
+            <span class="truncate ml-2 text-sm font-medium text-gray-600 dark:text-gray-100 group-hover:text-gray-800 dark:group-hover:text-white">@displayName</span>
             <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500" viewBox="0 0 12 12">
                 <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
             </svg>
@@ -20,15 +23,15 @@
     {
         <div class="origin-top-right z-10 absolute top-full min-w-44 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/60 py-1.5 rounded-lg shadow-lg overflow-hidden mt-1 @(Align == "right" ? "right-0" : "left-0")">
             <div class="pt-0.5 pb-2 px-3 mb-1 border-b border-gray-200 dark:border-gray-700/60">
-                <div class="font-medium text-gray-800 dark:text-gray-100">Acme Inc.</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400 italic">Administrator</div>
+                <div class="font-medium text-gray-800 dark:text-gray-100">@displayName</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 italic">@userRole</div>
             </div>
             <ul>
                 <li>
                     <a class="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3" href="/settings/account" @onclick="CloseDropdown">Settings</a>
                 </li>
                 <li>
-                    <a class="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3" href="/signin" @onclick="CloseDropdown">Sign Out</a>
+                    <a class="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3" href="/auth/signout" @onclick="HandleSignOut">Sign Out</a>
                 </li>
             </ul>
         </div>
@@ -41,6 +44,97 @@
     private bool dropdownOpen;
     private ElementReference dropdownRef;
     private ElementReference triggerRef;
+    private string displayName = "Loading...";
+    private string userRole = "User";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserInfoAsync();
+        
+        // Subscribe to authentication state changes
+        if (AuthenticationStateProvider is IDisposable provider)
+        {
+            // AuthenticationStateProvider will notify when state changes
+            AuthenticationStateProvider.AuthenticationStateChanged += HandleAuthenticationStateChanged;
+        }
+    }
+
+    private async void HandleAuthenticationStateChanged(Task<AuthenticationState> task)
+    {
+        try
+        {
+            await LoadUserInfoAsync();
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[DropdownProfile] Error handling auth state change: {ex.Message}");
+        }
+    }
+
+    private async Task LoadUserInfoAsync()
+    {
+        try
+        {
+            Console.WriteLine("[DropdownProfile] LoadUserInfoAsync called");
+            
+            // Get authentication state
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            Console.WriteLine($"[DropdownProfile] AuthState retrieved - IsAuthenticated: {user?.Identity?.IsAuthenticated}");
+            
+            if (user?.Identity?.IsAuthenticated == true)
+            {
+                Console.WriteLine($"[DropdownProfile] User Identity Name: {user.Identity.Name}");
+                Console.WriteLine($"[DropdownProfile] User Claims Count: {user.Claims.Count()}");
+                
+                // Log all claims for debugging
+                foreach (var claim in user.Claims)
+                {
+                    Console.WriteLine($"[DropdownProfile] Claim: {claim.Type} = {claim.Value}");
+                }
+                
+                // Try to get name from claims (Logto provides username, name, email, etc.)
+                // Filter out null or empty/whitespace strings
+                string? GetNonEmptyClaim(string claimType)
+                {
+                    string? value = user.FindFirst(claimType)?.Value;
+                    return string.IsNullOrWhiteSpace(value) ? null : value;
+                }
+                
+                displayName = GetNonEmptyClaim("username")
+                             ?? GetNonEmptyClaim("preferred_username")
+                             ?? (string.IsNullOrWhiteSpace(user.Identity.Name) ? null : user.Identity.Name)
+                             ?? GetNonEmptyClaim("name")
+                             ?? GetNonEmptyClaim("email")
+                             ?? GetNonEmptyClaim(System.Security.Claims.ClaimTypes.Email)
+                             ?? GetNonEmptyClaim("sub")
+                             ?? "User";
+
+                // Get role if available (you can customize this based on your claims structure)
+                string roleFromClaim = user.FindFirst("role")?.Value 
+                                      ?? user.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+                                      ?? string.Empty;
+                userRole = !string.IsNullOrEmpty(roleFromClaim) ? roleFromClaim : "User";
+
+                Console.WriteLine($"[DropdownProfile] User loaded: {displayName}, Role: {userRole}");
+            }
+            else
+            {
+                displayName = "Guest";
+                userRole = "Not authenticated";
+                Console.WriteLine("[DropdownProfile] User not authenticated");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[DropdownProfile] Error loading user info: {ex.Message}");
+            Console.WriteLine($"[DropdownProfile] Stack trace: {ex.StackTrace}");
+            displayName = "Error";
+            userRole = "Unknown";
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -72,6 +166,19 @@
     private void CloseDropdown()
     {
         dropdownOpen = false;
+    }
+
+    private void HandleSignOut()
+    {
+        // Close dropdown before navigating to sign out
+        // The href="/auth/signout" will handle the actual logout via Logto
+        dropdownOpen = false;
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from authentication state changes to prevent memory leaks
+        AuthenticationStateProvider.AuthenticationStateChanged -= HandleAuthenticationStateChanged;
     }
 
 }

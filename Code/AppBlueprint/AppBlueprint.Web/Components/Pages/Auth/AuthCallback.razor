@@ -1,4 +1,5 @@
-@page "/signup/callback"
+@page "/callback"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @using AppBlueprint.Web.Models.Auth
 @using AppBlueprint.Infrastructure.DatabaseContexts.Baseline
 @using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User
@@ -137,6 +138,10 @@
             statusMessage = "Setting up your workspace...";
             await InvokeAsync(StateHasChanged);
 
+            // Show tenant creation notification
+            await JSRuntime.InvokeVoidAsync("eval", 
+                "console.log('[Signup] Creating your tenant workspace...');");
+
             // Create tenant based on account type
             TenantEntity tenant;
             if (sessionData.AccountType.Equals("business", StringComparison.OrdinalIgnoreCase))
@@ -186,10 +191,23 @@
             Logger.LogInformation("[SignupCallback] User and tenant created successfully. UserId: {UserId}, TenantId: {TenantId}", 
                 newUser.Id, tenant.Id);
 
+            // Show success alert about tenant creation
+            await JSRuntime.InvokeVoidAsync("eval", @"
+                console.log('[Signup] ✅ Tenant workspace created successfully!');
+                if (typeof window !== 'undefined') {
+                    const tenantType = '" + sessionData.AccountType + @"';
+                    const message = tenantType === 'business' 
+                        ? 'Your organization workspace has been created! Welcome aboard.' 
+                        : 'Your personal workspace has been created! Welcome aboard.';
+                    // This will be shown briefly before redirect
+                    console.log('[Signup] ' + message);
+                }
+            ");
+
             // Clear signup session
             await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "signupSession");
 
-            statusMessage = "Success! Redirecting to your dashboard...";
+            statusMessage = "Success! Your workspace is ready. Redirecting to your dashboard...";
             await InvokeAsync(StateHasChanged);
 
             // Small delay to show success message

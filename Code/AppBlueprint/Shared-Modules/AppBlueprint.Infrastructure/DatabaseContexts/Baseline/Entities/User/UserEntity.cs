@@ -41,6 +41,12 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
     [DataClassification(GDPRType.DirectlyIdentifiable)]
     public required string? Email { get; set; }
 
+    /// <summary>
+    /// External authentication provider user ID (e.g., Logto 'sub' claim).
+    /// Used to correlate this user with their identity in the external auth system.
+    /// </summary>
+    public string? ExternalAuthId { get; set; }
+
     public DateTimeOffset LastLogin { get; set; } = DateTimeOffset.Now;
 
     // ITenantScoped implementation

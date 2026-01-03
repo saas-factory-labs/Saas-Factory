@@ -34,19 +34,11 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
                 oldDefaultValueSql: "CURRENT_TIMESTAMP",
                 oldComment: "Timestamp when the payment provider was created");
 
-            // Drop identity before changing column type (PostgreSQL requirement)
-            migrationBuilder.Sql(@"ALTER TABLE ""PaymentProviders"" ALTER COLUMN ""Id"" DROP IDENTITY IF EXISTS;");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Id",
-                table: "PaymentProviders",
-                type: "character varying(40)",
-                maxLength: 40,
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "integer",
-                oldComment: "Unique identifier for the payment provider")
-                .OldAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+            // Drop identity and change column type manually to avoid EF generating invalid DROP IDENTITY
+            migrationBuilder.Sql(@"
+                ALTER TABLE ""PaymentProviders"" ALTER COLUMN ""Id"" DROP IDENTITY IF EXISTS;
+                ALTER TABLE ""PaymentProviders"" ALTER COLUMN ""Id"" TYPE character varying(40);
+            ");
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsSoftDeleted",

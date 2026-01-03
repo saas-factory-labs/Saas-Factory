@@ -39,7 +39,7 @@ public class LogtoUrlBuilder
 
         var redirectUri = $"{_baseUrl}{callbackPath}";
         
-        return $"{logtoEndpoint}/sign-up?client_id={appId}&redirect_uri={Uri.EscapeDataString(redirectUri)}&response_type=code&scope=openid%20profile%20email&state={state}";
+        return $"{logtoEndpoint}/auth?client_id={appId}&redirect_uri={Uri.EscapeDataString(redirectUri)}&response_type=code&scope=openid%20profile%20email&state={state}";
     }
 
     /// <summary>

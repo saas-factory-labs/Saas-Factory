@@ -1,5 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts;
-using Microsoft.AspNetCore.Http;
+using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -11,9 +11,9 @@ public partial class AffiliateModuleDbContext : ApplicationDbContext
     public AffiliateModuleDbContext(
         DbContextOptions<AffiliateModuleDbContext> options,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor,
-        ILogger<AffiliateModuleDbContext> logger) :
-        base((DbContextOptions)(DbContextOptions<AffiliateModuleDbContext>)options, configuration, httpContextAccessor, logger)
+        ILogger<AffiliateModuleDbContext> logger,
+        ITenantContextAccessor? tenantContextAccessor = null) :
+        base((DbContextOptions)(DbContextOptions<AffiliateModuleDbContext>)options, configuration, logger, tenantContextAccessor)
     {
     }
 

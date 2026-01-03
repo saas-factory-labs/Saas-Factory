@@ -1,4 +1,5 @@
 using AppBlueprint.Api.Client.Sdk;
+using AppBlueprint.Application.Extensions;
 using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.UiKit;
@@ -96,6 +97,13 @@ builder.Host.UseDefaultServiceProvider((context, options) =>
 // Register configuration options with validation
 builder.Services.AddAppBlueprintConfiguration(builder.Configuration, builder.Environment);
 
+// Register infrastructure services (database contexts, repositories, etc.)
+// Using Hybrid Mode to support both B2C and B2B user flows in the demo app
+builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
+
+// Register application services (command handlers, validators, services)
+builder.Services.AddAppBlueprintApplication();
+
 var navigationRoutes = builder.Configuration
     .GetSection("Navigation:Routes")
     .Get<List<NavLinkMetadata>>() ?? new List<NavLinkMetadata>();
@@ -126,12 +134,21 @@ if (builder.Environment.IsDevelopment())
     builder.Services.Configure<CookiePolicyOptions>(options =>
     {
         options.MinimumSameSitePolicy = SameSiteMode.Lax;
-        options.Secure = CookieSecurePolicy.SameAsRequest;
+        options.Secure = CookieSecurePolicy.None; // Allow cookies over HTTP in development
+        options.CheckConsentNeeded = _ => false; // Disable consent requirement for essential auth cookies
     });
 }
 
 builder.Services.AddOutputCache();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+// Configure Blazor Server Circuit Options for detailed error messages in development
+builder.Services.AddServerSideBlazor(options =>
+{
+    // Enable detailed errors in development to help diagnose circuit failures
+    options.DetailedErrors = builder.Environment.IsDevelopment();
+});
+
 builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authentication
 
 // Add Blazored LocalStorage for signup session persistence
@@ -301,7 +318,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // ✅ Add admin IP whitelist (blocks non-whitelisted IPs from admin routes)
-app.UseAdminIpWhitelist();
+// Only enabled in production - disabled in development to avoid local access issues
+if (!app.Environment.IsDevelopment())
+{
+    app.UseAdminIpWhitelist();
+    Console.WriteLine("[Web] Admin IP whitelist middleware enabled (production)");
+}
+else
+{
+    Console.WriteLine("[Web] Admin IP whitelist middleware disabled (development)");
+}
 
 app.UseOutputCache();
 
@@ -315,6 +341,24 @@ app.MapAuthenticationEndpoints(builder.Configuration);
 
 // Diagnostic endpoint to test Logto connectivity from Railway
 app.MapLogtoTestEndpoint(builder.Configuration, app.Environment);
+
+// Add callback diagnostic endpoint for debugging auth issues
+if (app.Environment.IsDevelopment())
+{
+    app.MapGet("/callback-debug", (HttpContext context) =>
+    {
+        var diagnostics = new
+        {
+            RequestUrl = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}",
+            Cookies = context.Request.Cookies.Keys.ToList(),
+            QueryParameters = context.Request.Query.ToDictionary(kv => kv.Key, kv => kv.Value.ToString()),
+            IsAuthenticated = context.User?.Identity?.IsAuthenticated ?? false,
+            UserName = context.User?.Identity?.Name
+        };
+        
+        return Results.Json(diagnostics);
+    }).AllowAnonymous();
+}
 
 app.MapDefaultEndpoints();
 
