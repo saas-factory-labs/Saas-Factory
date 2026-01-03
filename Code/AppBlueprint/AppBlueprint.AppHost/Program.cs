@@ -20,8 +20,11 @@ var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservic
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithExternalHttpEndpoints()
-    .WithHttpEndpoint(port: 8082, name: "web-http")
-    .WithReference(apiService);
+    .WithHttpEndpoint(port: 5000, name: "web-http")
+    .WithReference(apiService)
+    .WithEnvironment("Logto__Endpoint", "https://32nkyp.logto.app/oidc")
+    .WithEnvironment("Logto__AppId", "uovd1gg5ef7i1c4w46mt6")
+    .WithEnvironment("Logto__AppSecret", Environment.GetEnvironmentVariable("LOGTO_APP_SECRET") ?? "");
 
 string[] keys = new[]
 {
