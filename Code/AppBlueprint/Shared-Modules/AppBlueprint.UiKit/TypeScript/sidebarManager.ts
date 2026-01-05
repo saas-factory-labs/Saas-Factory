@@ -7,6 +7,7 @@ interface SidebarManager {
     expand(): void;
     collapse(): void;
     isExpanded(): boolean;
+    isAvailable(): boolean;
 }
 
 const sidebarManager: SidebarManager = {
@@ -74,6 +75,12 @@ const sidebarManager: SidebarManager = {
         const expanded = body.classList.contains('sidebar-expanded');
         console.log('sidebarManager.isExpanded:', expanded);
         return expanded;
+    },
+
+    isAvailable(): boolean {
+        return typeof window.sidebarManager !== 'undefined' && 
+               typeof window.sidebarManager.expand === 'function' &&
+               typeof window.sidebarManager.collapse === 'function';
     }
 };
 

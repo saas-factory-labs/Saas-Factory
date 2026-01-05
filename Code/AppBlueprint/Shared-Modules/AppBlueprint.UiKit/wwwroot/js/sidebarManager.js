@@ -64,6 +64,11 @@ const sidebarManager = {
         const expanded = body.classList.contains('sidebar-expanded');
         console.log('sidebarManager.isExpanded:', expanded);
         return expanded;
+    },
+    isAvailable() {
+        return typeof window.sidebarManager !== 'undefined' &&
+            typeof window.sidebarManager.expand === 'function' &&
+            typeof window.sidebarManager.collapse === 'function';
     }
 };
 console.log('sidebarManager initialized:', typeof sidebarManager);

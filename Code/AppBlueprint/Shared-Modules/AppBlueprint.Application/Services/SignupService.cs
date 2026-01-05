@@ -59,8 +59,8 @@ public sealed class SignupService : ISignupService
 
         try
         {
-            // Get database connection
-            DbConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
+            // Get database connection (wraps both connection and context)
+            await using DbConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
             
             if (connection is not NpgsqlConnection npgsqlConnection)
             {

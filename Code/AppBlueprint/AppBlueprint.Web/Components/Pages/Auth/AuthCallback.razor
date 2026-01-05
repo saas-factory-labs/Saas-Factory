@@ -1,0 +1,211 @@
+@page "/signup/callback"
+@layout AppBlueprint.UiKit.Components.Layout.AuthLayout
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@using AppBlueprint.Web.Models.Auth
+@using AppBlueprint.Application.Services
+@using AppBlueprint.SharedKernel
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Http
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISignupService SignupService
+@inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<AuthCallback> Logger
+
+<main class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div class="relative min-h-screen flex flex-col justify-center py-20 px-4">
+        <div class="w-full max-w-2xl mx-auto">
+            @if (isProcessing)
+            {
+                <!-- Loading State -->
+                <div class="text-center">
+                    <div class="mb-6">
+                        <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto"></div>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+                        @statusMessage
+                    </h1>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Please wait...
+                    </p>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <!-- Error State -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Signup Failed</h1>
+                        <p class="text-red-600 dark:text-red-400 mb-6">@errorMessage</p>
+                    </div>
+                    <button @onclick="RetrySignup" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                        Try Again
+                    </button>
+                </div>
+            }
+            else if (isSuccess)
+            {
+                <!-- Success State -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-12 h-12 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Welcome! 🎉</h1>
+                        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                            Your account has been created successfully.
+                        </p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Redirecting to your dashboard...
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</main>
+
+@code {
+    private bool isProcessing = true;
+    private bool isSuccess = false;
+    private string errorMessage = string.Empty;
+    private string statusMessage = "Processing your signup...";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ProcessSignupCallbackAsync();
+        }
+    }
+
+    private async Task ProcessSignupCallbackAsync()
+    {
+        try
+        {
+            Logger.LogInformation("[AuthCallback] Processing signup callback");
+            statusMessage = "Retrieving signup information...";
+            StateHasChanged();
+
+            // ✅ SAFE: Load session data from localStorage via JS interop
+            // This auto-serializes the data - no string concatenation or eval()
+            string? sessionDataJson = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "signup_session");
+            
+            if (string.IsNullOrEmpty(sessionDataJson))
+            {
+                Logger.LogWarning("[AuthCallback] No signup session data found");
+                errorMessage = "Signup session expired. Please start the signup process again.";
+                isProcessing = false;
+                StateHasChanged();
+                return;
+            }
+
+            SignupSessionData? sessionData = System.Text.Json.JsonSerializer.Deserialize<SignupSessionData>(sessionDataJson);
+            
+            if (sessionData is null)
+            {
+                Logger.LogError("[AuthCallback] Failed to deserialize signup session data");
+                errorMessage = "Invalid signup session data. Please try again.";
+                isProcessing = false;
+                StateHasChanged();
+                return;
+            }
+
+            Logger.LogInformation("[AuthCallback] Retrieved session data for AccountType: {AccountType}", sessionData.AccountType);
+
+            // ✅ SAFE: Call TypeScript function with parameter - values are auto-serialized
+            // NO eval(), NO string concatenation, NO inline script injection
+            await JSRuntime.InvokeVoidAsync("signupLogger.logSignupStep", "auth_callback_received", sessionData.AccountType);
+
+            // Get authenticated user info
+            statusMessage = "Verifying authentication...";
+            StateHasChanged();
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (!user.Identity?.IsAuthenticated ?? true)
+            {
+                Logger.LogWarning("[AuthCallback] User is not authenticated");
+                errorMessage = "Authentication failed. Please try signing up again.";
+                isProcessing = false;
+                StateHasChanged();
+                return;
+            }
+
+            string logtoUserId = user.FindFirst("sub")?.Value 
+                                ?? throw new InvalidOperationException("No user ID found in claims.");
+            
+            string email = user.FindFirst("email")?.Value 
+                          ?? throw new InvalidOperationException("No email found in claims.");
+
+            Logger.LogInformation("[AuthCallback] Authenticated user: {Email}, LogtoId: {LogtoUserId}", email, logtoUserId);
+
+            // Create tenant and user
+            statusMessage = "Creating your workspace...";
+            StateHasChanged();
+
+            string? ipAddress = HttpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+            string? userAgent = HttpContextAccessor.HttpContext?.Request.Headers.UserAgent.ToString();
+
+            SignupRequest signupRequest = new()
+            {
+                TenantId = PrefixedUlid.Generate("tenant"),
+                TenantName = sessionData.AccountType == "personal" 
+                    ? $"{sessionData.FirstName} {sessionData.LastName}" 
+                    : sessionData.CompanyName ?? $"{sessionData.FirstName} {sessionData.LastName}",
+                UserId = PrefixedUlid.Generate("user"),
+                FirstName = sessionData.FirstName,
+                LastName = sessionData.LastName,
+                Email = email,
+                ExternalAuthId = logtoUserId,
+                IpAddress = ipAddress,
+                UserAgent = userAgent,
+                TenantType = sessionData.AccountType == "personal" ? 0 : 1 // 0 = Personal (B2C), 1 = Organization (B2B)
+            };
+
+            SignupResult result = await SignupService.CreateTenantAndUserAsync(signupRequest);
+
+            Logger.LogInformation(
+                "[AuthCallback] Signup complete - TenantId: {TenantId}, UserId: {UserId}, AccountType: {AccountType}",
+                result.TenantId, result.UserId, sessionData.AccountType);
+
+            // ✅ SAFE: Log workspace creation with parameter
+            await JSRuntime.InvokeVoidAsync("signupLogger.logWorkspaceCreated", sessionData.AccountType);
+
+            // ✅ SAFE: Clear localStorage
+            await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "signup_session");
+
+            // Success!
+            isSuccess = true;
+            isProcessing = false;
+            StateHasChanged();
+
+            // Redirect to dashboard
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "[AuthCallback] Signup processing failed");
+            errorMessage = ex.Message.Contains("already registered") 
+                ? "This email is already registered. Please sign in instead."
+                : "An error occurred during signup. Please try again.";
+            isProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private void RetrySignup()
+    {
+        Navigation.NavigateTo("/signup", forceLoad: true);
+    }
+}

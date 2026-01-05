@@ -6,6 +6,7 @@ interface SidebarManager {
     expand(): void;
     collapse(): void;
     isExpanded(): boolean;
+    isAvailable(): boolean;
 }
 declare const sidebarManager: SidebarManager;
 declare global {
