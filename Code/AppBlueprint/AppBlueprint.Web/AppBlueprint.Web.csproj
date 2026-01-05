@@ -28,33 +28,14 @@
     <ItemGroup>
 
         <ProjectReference Include="../AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj" />
-
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Api.Client.Sdk\AppBlueprint.Api.Client.Sdk.csproj" />
-
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
-
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
-
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
-        <!--  <ProjectReference Include="../AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj" /> -->
-
-        <!--        Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit-->
-        <!--        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit/AppBlueprint.UiKit.csproj" />-->
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
-
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
-
         <!-- TodoAppKernel module for Todo DTOs and domain models -->
         <ProjectReference Include="..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj" />
-
-        <!--        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />-->
-
-        <!--        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj">-->
-        <!--            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>-->
-        <!--        </ProjectReference>-->
-
-
-        <!--        Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj-->
 
     </ItemGroup>
 
@@ -69,6 +50,7 @@
         <PackageReference Include="Microsoft.Kiota.Authentication.Azure" />
         <PackageReference Include="Microsoft.Kiota.Bundle" />
         <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="Microsoft.TypeScript.MSBuild" />
     </ItemGroup>
 
     <ItemGroup>

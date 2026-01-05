@@ -1,26 +1,40 @@
-"use strict";
 /**
  * Authentication module for token management
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-const auth = {
-    async fetchAndStoreToken() {
+
+interface AuthModule {
+    fetchAndStoreToken(): Promise<void>;
+}
+
+interface TokenResponse {
+    accessToken: string;
+}
+
+const auth: AuthModule = {
+    async fetchAndStoreToken(): Promise<void> {
         try {
             const response = await fetch('/api/token');
             if (response.ok) {
-                const data = await response.json();
+                const data: TokenResponse = await response.json();
                 const token = data.accessToken;
                 if (token) {
                     localStorage.setItem('auth_token', token);
                     console.log('Token stored in localStorage');
                 }
             }
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Error fetching or storing token:', error);
         }
     }
 };
+
+// Attach to window for Blazor interop
+declare global {
+    interface Window {
+        auth: AuthModule;
+    }
+}
+
 window.auth = auth;
-exports.default = auth;
-//# sourceMappingURL=auth.js.map
+
+export default auth;
