@@ -14,8 +14,17 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Sub
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
-using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
+using AppBlueprint.Infrastructure.Resources;
+using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel.Enums;
+using Bogus;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Comprehensive database seeder that populates all application tables with realistic test data.
@@ -62,20 +71,14 @@ using System.Data.Common;
 /// Implements proper dependency ordering for foreign key constraints.
 /// Includes comprehensive error handling and logging.
 /// </summary>
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
-using AppBlueprint.Infrastructure.Resources;
-using AppBlueprint.SharedKernel;
-using AppBlueprint.SharedKernel.Enums;
-using Bogus;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+
 
 namespace AppBlueprint.SeedTest;
 
-public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContext, ILogger<DataSeeder> logger)
+// CA1515 suppressed: DataSeeder is intentionally public for use by ApiService.SystemController
+#pragma warning disable CA1515
+public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContext, ILogger<DataSeeder> logger)
+#pragma warning restore CA1515
 {
     public async Task SeedDatabaseAsync(CancellationToken cancellationToken = default)
     {
@@ -163,20 +166,29 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             .Select(t => t.GetTableName())
             .Distinct()
             .Where(name => !string.IsNullOrEmpty(name))
+            .Cast<string>() // Ensure non-nullable
             .ToList();
 
-        foreach (string? tableName in tableNames)
+        foreach (string tableName in tableNames)
         {
             try
             {
-                // Use parameterized command to avoid SQL injection (even though tableName is from schema)
-                var connection = dbContext.Database.GetDbConnection();
-                await connection.OpenAsync(cancellationToken);
+                // Validate table name against EF Core schema (defense-in-depth)
+                if (!IsValidPostgreSqlIdentifier(tableName))
+                {
+                    logger.LogWarning("Skipping invalid table name: {TableName}", tableName);
+                    continue;
+                }
                 
-                using var command = connection.CreateCommand();
-                // Note: Table names cannot be parameterized in PostgreSQL, but we validate it comes from EF schema
-                command.CommandText = $"TRUNCATE TABLE \"{tableName}\" RESTART IDENTITY CASCADE";
-                await command.ExecuteNonQueryAsync(cancellationToken);
+                // Use EF Core's ExecuteSqlRaw with validated table name from schema
+                // Table names cannot be parameterized, but we validate it comes from EF schema
+#pragma warning disable CA2100 // Table name is validated from EF Core schema metadata
+#pragma warning disable EF1002 // Table name is validated from EF Core schema metadata
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    $"TRUNCATE TABLE \"{tableName}\" RESTART IDENTITY CASCADE",
+                    cancellationToken);
+#pragma warning restore EF1002
+#pragma warning restore CA2100
                 
                 logger.LogInformation("Successfully truncated table: {TableName}", tableName);
             }
@@ -191,6 +203,15 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
         }
 
         logger.LogInformation(DataSeederMessages.AllTablesProcessed);
+    }
+
+    private static bool IsValidPostgreSqlIdentifier(string identifier)
+    {
+        // PostgreSQL identifier validation: alphanumeric, underscore, max 63 chars
+        // Must start with letter or underscore
+        return !string.IsNullOrWhiteSpace(identifier) &&
+               identifier.Length <= 63 &&
+               System.Text.RegularExpressions.Regex.IsMatch(identifier, @"^[a-zA-Z_][a-zA-Z0-9_]*$");
     }
 
     private async Task SeedLanguagesAsync(CancellationToken cancellationToken)
@@ -479,6 +500,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             // - User: rest of users
 
             var userIndex = 0;
+#pragma warning disable CA5394 // Random is used for non-cryptographic test data generation, not security
             var random = new Random();
 
             // Assign Owner role to first 2-3 users
@@ -499,7 +521,9 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
             // Assign Admin role to next 3-5 users
             if (adminRole is not null && userIndex < users.Count)
             {
+#pragma warning disable CA5394 // Random is used for non-cryptographic test data generation, not security
                 var adminCount = Math.Min(random.Next(3, 6), users.Count - userIndex); // Random between 3 and 5
+#pragma warning restore CA5394
                 for (int i = 0; i < adminCount; i++)
                 {
                     userRoles.Add(new UserRoleEntity
@@ -544,6 +568,7 @@ public class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContex
 
             await dbContext.UserRoles.AddRangeAsync(userRoles, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
+#pragma warning restore CA5394
 
             logger.LogInformation("Successfully seeded {Count} user roles", userRoles.Count);
         }

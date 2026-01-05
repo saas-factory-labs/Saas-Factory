@@ -1,4 +1,6 @@
 @* Skeleton Table - Loading placeholder for table components *@
+@namespace AppBlueprint.UiKit.Components.Shared
+@using AppBlueprint.UiKit.Components.Shared
 
 <div class="@GetContainerClasses()">
     @* Header *@
@@ -63,7 +65,9 @@
     [Parameter] public bool Selectable { get; set; } = false;
     [Parameter] public string? Class { get; set; }
 
+#pragma warning disable CA5394 // Random is used for UI animation variety, not security
     private Random random = new();
+#pragma warning restore CA5394
 
     private string GetContainerClasses()
     {

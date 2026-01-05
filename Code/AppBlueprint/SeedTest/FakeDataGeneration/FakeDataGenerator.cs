@@ -5,7 +5,7 @@ using Assembly = System.Reflection.Assembly;
 
 namespace AppBlueprint.SeedTest.FakeDataGeneration;
 
-public class FakeDataGenerator
+internal sealed class FakeDataGenerator
 {
     private readonly Dictionary<Type, object> _fakerConfigurations = new();
 

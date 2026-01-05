@@ -3,7 +3,7 @@ using Bogus;
 
 namespace AppBlueprint.SeedTest.FakeDataGeneration.ModelSpecificDataGenerators;
 
-public class FakeUserDataGenerator
+internal sealed class FakeUserDataGenerator
 {
     private readonly Faker _faker;
 

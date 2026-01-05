@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AppBlueprint.Infrastructure.Configuration;
+using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace AppBlueprint.Infrastructure.Authentication;
 
@@ -538,11 +540,52 @@ public static class WebAuthenticationExtensions
             }
         }
 
-        // Always redirect to /signup-complete after authentication
-        // The page will check localStorage for signup session data
-        // If no signup session exists, it will redirect to dashboard
-        context.Properties.RedirectUri = "/signup-complete";
-        Console.WriteLine("[Web] Redirecting to /signup-complete for signup flow processing");
+        // Fetch user's tenant from database and add tenant_id claim
+        string? userEmail = context.Principal?.FindFirst(ClaimTypes.Email)?.Value 
+            ?? context.Principal?.FindFirst("email")?.Value;
+        
+        if (!string.IsNullOrEmpty(userEmail))
+        {
+            Console.WriteLine($"[Web] User email from JWT: {userEmail}");
+            
+            // Get UserRepository from DI container
+            IUserRepository? userRepository = context.HttpContext.RequestServices.GetService<IUserRepository>();
+            
+            if (userRepository is not null)
+            {
+                var user = await userRepository.GetByEmailAsync(userEmail);
+                
+                if (user is not null && !string.IsNullOrEmpty(user.TenantId))
+                {
+                    Console.WriteLine($"[Web] ✅ Found user's tenant: {user.TenantId}");
+                    
+                    // Add tenant_id claim to ClaimsIdentity
+                    var identity = context.Principal?.Identity as ClaimsIdentity;
+                    identity?.AddClaim(new Claim("tenant_id", user.TenantId));
+                    
+                    Console.WriteLine("[Web] ✅ Added tenant_id claim to ClaimsIdentity");
+                }
+                else
+                {
+                    Console.WriteLine("[Web] ⚠️ User not found or has no tenant - will redirect to onboarding");
+                }
+            }
+            else
+            {
+                Console.WriteLine("[Web] ⚠️ UserRepository not available in DI container");
+            }
+        }
+        else
+        {
+            Console.WriteLine("[Web] ⚠️ No email claim found in JWT");
+        }
+
+        // Redirect to /onboarding after authentication
+        // The onboarding page will check if user has tenant_id claim
+        // If user already has a tenant, redirect to dashboard
+        // If not, show profile form to complete registration
+        context.Properties.RedirectUri = "/onboarding";
+        Console.WriteLine("[Web] Redirecting to /onboarding for profile completion");
 
         Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");
     }
@@ -635,7 +678,7 @@ public static class WebAuthenticationExtensions
         }).AllowAnonymous();
 
         // Sign out endpoint - Full Logto sign-out (signs out from both app and Logto IdP)
-        app.MapGet("/auth/signout", async (HttpContext context, IConfiguration config) =>
+        app.MapGet("/auth/signout", async (HttpContext context, IConfiguration config, IHostEnvironment environment) =>
         {
             Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] SignOut endpoint called - FULL LOGTO SIGN-OUT");
@@ -649,15 +692,12 @@ public static class WebAuthenticationExtensions
             
             Console.WriteLine($"[Web] ID Token available: {idToken is not null}");
             
-            // Clear local authentication cookies first
-            await context.SignOutAsync(LogtoCookieScheme);
-            Console.WriteLine($"[Web] ✅ Cleared {LogtoCookieScheme}");
-            
             // Build Logto's end session URL
             var logtoEndpoint = config[LogtoEndpointKey];
             
-            // Construct the post-logout redirect URI using port 5000
-            var postLogoutRedirectUri = "http://localhost:5000/signup";
+            // Use the registered callback URI WITHOUT query parameters
+            // Logto requires EXACT match with registered redirect URIs
+            var postLogoutRedirectUri = $"{context.Request.Scheme}://{context.Request.Host}/signout-callback-logto";
             
             Console.WriteLine($"[Web] Logto endpoint: {logtoEndpoint}");
             Console.WriteLine($"[Web] Post-logout redirect URI: {postLogoutRedirectUri}");
@@ -695,6 +735,57 @@ public static class WebAuthenticationExtensions
             
             // Redirect to Logto's end session endpoint
             context.Response.Redirect(endSessionUrl);
+        }).AllowAnonymous();
+
+        // Logto post-logout callback - where Logto redirects after successful sign-out
+        app.MapGet("/signout-callback-logto", async (HttpContext context) =>
+        {
+            Console.WriteLine(LogSeparator);
+            Console.WriteLine("[Web] signout-callback-logto endpoint called - returned from Logto");
+            
+            // Always redirect to sign-in page after sign-out
+            // This is used for post-signup session refresh to get tenant_id claim
+            string returnUrl = "/auth/signin?returnUrl=/";
+            Console.WriteLine($"[Web] Post-logout return URL: {returnUrl}");
+            
+            // Make absolutely sure cookies are cleared
+            try
+            {
+                await context.SignOutAsync(LogtoCookieScheme);
+                await context.SignOutAsync(LogtoScheme);
+                Console.WriteLine("[Web] ✅ Cleared all authentication cookies");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Web] Cookie clear warning (might be already cleared): {ex.Message}");
+            }
+            
+            Console.WriteLine($"[Web] ➡️  Redirecting to: {returnUrl}");
+            Console.WriteLine(LogSeparator);
+            
+            // Use HTML with JavaScript redirect for more reliable navigation
+            context.Response.ContentType = "text/html";
+            await context.Response.WriteAsync($@"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Redirecting...</title>
+</head>
+<body>
+    <div style=""display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: system-ui, -apple-system, sans-serif;"">
+        <div style=""text-align: center;"">
+            <div style=""margin-bottom: 1rem; font-size: 1.5rem;"">🔄</div>
+            <h1 style=""font-size: 1.25rem; margin-bottom: 0.5rem;"">Completing Sign Out...</h1>
+            <p style=""color: #666;"">Redirecting you now...</p>
+        </div>
+    </div>
+    <script>
+        // Force a full page reload to the return URL
+        window.location.href = '{returnUrl}';
+    </script>
+</body>
+</html>");
         }).AllowAnonymous();
 
         // Logout complete callback - where Logto redirects back after sign-out

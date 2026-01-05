@@ -102,10 +102,12 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
                                     string.Join(", ", tokenNames));
                             }
                         }
+#pragma warning disable CA1031 // Generic catch for graceful degradation - diagnostic token checking should not fail the request
                         catch (Exception ex)
                         {
                             _logger.LogError(ex, "[AuthHandler] Error checking available tokens");
                         }
+#pragma warning restore CA1031
                     }
                 }
             }
@@ -141,11 +143,13 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
             // We no longer need to send the tenant-id header - it's derived from the Bearer token
             // This eliminates a potential security vulnerability where the header could be forged
         }
+#pragma warning disable CA1031 // Generic catch for graceful degradation - authentication errors should not prevent request from being sent
         catch (Exception ex)
         {
             // Log any errors but don't fail the request
             _logger.LogError(ex, "[AuthHandler] Error adding authentication to request: {Method} {Uri}", request.Method, request.RequestUri);
         }
+#pragma warning restore CA1031
 
         return await base.SendAsync(request, cancellationToken);
     }

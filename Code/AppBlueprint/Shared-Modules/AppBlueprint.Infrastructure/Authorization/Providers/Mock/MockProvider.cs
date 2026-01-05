@@ -48,6 +48,7 @@ public class MockProvider : BaseAuthenticationProvider
             _logger.LogInformation("Mock login successful for user: {Email}", request.Email);
             return result;
         }
+#pragma warning disable CA1031 // Mock provider - returns error result instead of throwing for test scenarios
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error during mock login");
@@ -57,6 +58,7 @@ public class MockProvider : BaseAuthenticationProvider
                 Error = "An error occurred during login. Please try again."
             };
         }
+#pragma warning restore CA1031
     }
 
     public override async Task<AuthenticationResult> RefreshTokenAsync(CancellationToken cancellationToken = default)
@@ -92,6 +94,7 @@ public class MockProvider : BaseAuthenticationProvider
             _logger.LogInformation("Mock token refresh successful");
             return result;
         }
+#pragma warning disable CA1031 // Mock provider - returns error result instead of throwing for test scenarios
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error during mock token refresh");
@@ -101,6 +104,7 @@ public class MockProvider : BaseAuthenticationProvider
                 Error = "Token refresh failed"
             };
         }
+#pragma warning restore CA1031
     }
 
     protected override async Task TryRestoreFromStoredToken(string storedToken)
@@ -135,11 +139,13 @@ public class MockProvider : BaseAuthenticationProvider
             // Token is invalid or expired
             await TokenStorage.RemoveTokenAsync();
         }
+#pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional in mock provider
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error restoring mock token from storage");
             await TokenStorage.RemoveTokenAsync();
         }
+#pragma warning restore CA1031
     }
 
     private static string GenerateMockToken(string email)

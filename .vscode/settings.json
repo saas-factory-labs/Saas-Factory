@@ -4,5 +4,6 @@
     "sonarlint.connectedMode.project": {
         "connectionId": "saas-factory-labs",
         "projectKey": "saas-factory-labs_Saas-Factory"
-    }
+    },
+    "tailwindCSS.lint.suggestCanonicalClasses": "ignore"
 }

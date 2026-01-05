@@ -16,17 +16,73 @@
                     </span>
                 </div>
                 <h1 class="text-6xl md:text-7xl font-black mb-8 bg-gradient-to-r from-blue-600 via-cyan-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
-                    Choose Your Account Type
+                    Create Your Account
                 </h1>
-                <p class="text-2xl md:text-3xl text-gray-600 dark:text-gray-300 font-semibold">Select the option that best fits your needs</p>
+                <p class="text-2xl md:text-3xl text-gray-600 dark:text-gray-300 font-semibold">You'll customize your workspace after signing in</p>
             </div>
 
-            <!-- Account Type Cards -->
-            <div class="grid lg:grid-cols-2 gap-8 mb-16">
+            <!-- Simplified CTA -->
+            <div class="max-w-2xl mx-auto">
                 
-                <!-- Personal Account Card -->
-                <div class="group relative bg-white dark:bg-slate-800 rounded-3xl shadow-xl hover:shadow-2xl p-12 border-4 border-blue-100 dark:border-blue-900 hover:border-blue-400 dark:hover:border-blue-500 hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden"
-                     @onclick="@(() => Navigation.NavigateTo("/signup/personal"))">
+                <!-- Main Signup Card -->
+                <div class="group relative bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-12 border-4 border-blue-100 dark:border-blue-900 hover:border-blue-400 dark:hover:border-blue-500 hover:-translate-y-2 transition-all duration-300 overflow-hidden">
+                    <!-- Background decoration -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-full -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-500"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="text-center mb-10">
+                            <div class="inline-flex items-center justify-center w-28 h-28 rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-500 mb-8 shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                </svg>
+                            </div>
+                            <h2 class="text-4xl font-black text-gray-900 dark:text-white mb-4">Sign Up with Logto</h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-400">Secure authentication powered by Logto</p>
+                        </div>
+                        
+                        <ul class="space-y-5 mb-10 text-left">
+                            <li class="flex items-center">
+                                <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mr-4">
+                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xl text-gray-800 dark:text-gray-100 font-semibold">Create your account in seconds</span>
+                            </li>
+                            <li class="flex items-center">
+                                <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mr-4">
+                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xl text-gray-800 dark:text-gray-100 font-semibold">Customize your workspace after signing in</span>
+                            </li>
+                            <li class="flex items-center">
+                                <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mr-4">
+                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xl text-gray-800 dark:text-gray-100 font-semibold">Enterprise-grade security</span>
+                            </li>
+                            <li class="flex items-center">
+                                <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mr-4">
+                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xl text-gray-800 dark:text-gray-100 font-semibold">No credit card required</span>
+                            </li>
+                        </ul>
+                        
+                        <button type="button" @onclick="HandleSignup" class="w-full py-5 px-8 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white text-xl font-bold rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-3">
+                            <span>Create Account</span>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
                     <!-- Background decoration -->
                     <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-full -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-500"></div>
                     
@@ -82,68 +138,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                             </svg>
                         </button>
-                    </div>
-                </div>
-
-                <!-- Business Account Card -->
-                <div class="group relative bg-white dark:bg-slate-800 rounded-3xl shadow-xl hover:shadow-2xl p-12 border-4 border-purple-100 dark:border-purple-900 hover:border-purple-400 dark:hover:border-purple-500 hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden"
-                     @onclick="@(() => Navigation.NavigateTo("/signup/business"))">
-                    <!-- Background decoration -->
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 rounded-full -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-500"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="text-center mb-10">
-                            <div class="inline-flex items-center justify-center w-28 h-28 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 mb-8 shadow-2xl group-hover:scale-110 transition-transform duration-300">
-                                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                            </div>
-                            <h2 class="text-4xl font-black text-gray-900 dark:text-white mb-4">Business Account</h2>
-                            <p class="text-xl text-purple-600 dark:text-purple-400 font-bold uppercase tracking-wide">For Organizations</p>
-                        </div>
-                        
-                        <ul class="space-y-5 mb-10 text-left">
-                            <li class="flex items-center">
-                                <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mr-4">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <span class="text-xl text-gray-800 dark:text-gray-100 font-semibold">Team collaboration tools</span>
-                            </li>
-                            <li class="flex items-center">
-                                <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mr-4">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <span class="text-xl text-gray-800 dark:text-gray-100 font-semibold">Multiple users and roles</span>
-                            </li>
-                            <li class="flex items-center">
-                                <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mr-4">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <span class="text-xl text-gray-800 dark:text-gray-100 font-semibold">Advanced features</span>
-                            </li>
-                            <li class="flex items-center">
-                                <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mr-4">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <span class="text-xl text-gray-800 dark:text-gray-100 font-semibold">Invoicing with VAT support</span>
-                            </li>
-                        </ul>
-                        
-                        <button type="button" class="w-full py-5 px-8 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl font-bold rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-3">
-                            <span>Get Started</span>
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                            </svg>
-                        </button>
-                    </div>
                 </div>
                 
             </div>
@@ -163,5 +157,13 @@
 </main>
 
 @code {
-    // No code needed - navigation handled by onclick events
+    /// <summary>
+    /// Redirects to Logto authentication.
+    /// After successful authentication, user will be redirected to /onboarding
+    /// where they can fill in their profile details and choose account type.
+    /// </summary>
+    private void HandleSignup()
+    {
+        Navigation.NavigateTo("/auth/signin", forceLoad: true);
+    }
 }

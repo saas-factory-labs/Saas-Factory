@@ -88,6 +88,18 @@ public static class MigrationExtensions
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
             var databaseName = builder.Database;
             
+            // Validate database name to prevent SQL injection
+            if (string.IsNullOrWhiteSpace(databaseName))
+            {
+                throw new InvalidOperationException("Database name cannot be null or empty.");
+            }
+            
+            // PostgreSQL identifier validation: alphanumeric, underscore, max 63 chars
+            if (!System.Text.RegularExpressions.Regex.IsMatch(databaseName, @"^[a-zA-Z_][a-zA-Z0-9_]{0,62}$"))
+            {
+                throw new InvalidOperationException($"Invalid database name: '{databaseName}'. Database names must start with a letter or underscore and contain only alphanumeric characters and underscores (max 63 chars).");
+            }
+            
             // Switch to postgres database to check if our database exists
             builder.Database = "postgres";
             var postgresConnectionString = builder.ToString();
@@ -100,7 +112,7 @@ public static class MigrationExtensions
             // Check if database exists
             await using var checkCommand = new NpgsqlCommand(
                 $"SELECT 1 FROM pg_database WHERE datname = @databaseName", connection);
-            checkCommand.Parameters.AddWithValue("databaseName", databaseName ?? string.Empty);
+            checkCommand.Parameters.AddWithValue("databaseName", databaseName);
             
             var exists = await checkCommand.ExecuteScalarAsync();
 
@@ -108,10 +120,12 @@ public static class MigrationExtensions
             {
                 Logger.LogInformation("Database '{DatabaseName}' does not exist. Creating it...", databaseName);
                 
-                // Create the database
+                // Create the database - databaseName is validated above
+#pragma warning disable CA2100 // Database name is validated against injection attacks
                 await using var createCommand = new NpgsqlCommand(
                     $"CREATE DATABASE \"{databaseName}\"", connection);
                 await createCommand.ExecuteNonQueryAsync();
+#pragma warning restore CA2100
                 
                 Logger.LogInformation("Database '{DatabaseName}' created successfully.", databaseName);
             }

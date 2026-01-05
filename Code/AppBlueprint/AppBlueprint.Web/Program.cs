@@ -15,6 +15,16 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
 
+// Environment variable names
+const string DotnetDashboardOtlpEndpointUrl = "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL";
+const string OtelExporterOtlpEndpoint = "OTEL_EXPORTER_OTLP_ENDPOINT";
+
+// Console output formatting
+const string ConsoleSeparator = "========================================";
+const string OtelExporterOtlpProtocol = "OTEL_EXPORTER_OTLP_PROTOCOL";
+const string ApiBaseUrl = "API_BASE_URL";
+const string BypassCertValidation = "BYPASS_CERT_VALIDATION";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure forwarded headers for Railway (reverse proxy)
@@ -33,19 +43,19 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 if (builder.Environment.IsDevelopment())
 {
     // Development mode - configure OTLP for Aspire Dashboard
-    string? dashboardEndpoint = Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
-    string? otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+    string? dashboardEndpoint = Environment.GetEnvironmentVariable(DotnetDashboardOtlpEndpointUrl);
+    string? otlpEndpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
     string otlpDefaultEndpoint = "http://localhost:18889";
 
     // Set OTLP endpoint with priority: DOTNET_DASHBOARD_OTLP_ENDPOINT_URL > OTEL_EXPORTER_OTLP_ENDPOINT > default
     if (!string.IsNullOrEmpty(dashboardEndpoint))
     {
-        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", dashboardEndpoint);
+        Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, dashboardEndpoint);
         Console.WriteLine($"[Web] Using dashboard OTLP endpoint: {dashboardEndpoint}");
     }
     else if (string.IsNullOrEmpty(otlpEndpoint))
     {
-        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", otlpDefaultEndpoint);
+        Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, otlpDefaultEndpoint);
         Console.WriteLine($"[Web] Using default OTLP endpoint: {otlpDefaultEndpoint}");
     }
     else
@@ -54,13 +64,13 @@ if (builder.Environment.IsDevelopment())
     }
 
     // Set OTLP protocol if not already set
-    if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")))
+    if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol)))
     {
-        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
+        Environment.SetEnvironmentVariable(OtelExporterOtlpProtocol, "http/protobuf");
     }
 
-    Console.WriteLine($"[Web] Final OTLP endpoint → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")}");
-    Console.WriteLine($"[Web] Final OTLP protocol → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")}");
+    Console.WriteLine($"[Web] Final OTLP endpoint → {Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint)}");
+    Console.WriteLine($"[Web] Final OTLP protocol → {Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol)}");
 }
 else
 {
@@ -70,7 +80,7 @@ else
     Console.WriteLine("[Web] Production mode - OTLP telemetry export disabled (no Aspire Dashboard)");
     
     // Only set if explicitly provided via environment variable (e.g., for external observability)
-    string? explicitOtlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+    string? explicitOtlpEndpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
     if (!string.IsNullOrEmpty(explicitOtlpEndpoint))
     {
         Console.WriteLine($"[Web] Using explicit OTLP endpoint: {explicitOtlpEndpoint}");
@@ -118,7 +128,7 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 {
     // Only bypass certificate validation in development AND with explicit flag
     if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
+        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
     {
         http.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
@@ -170,7 +180,7 @@ builder.Services.AddScoped<IAuthenticationProvider,
 
 // Get API base URL from environment variable or configuration
 // Priority: Environment variable > Configuration > Default localhost
-string apiBaseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") 
+string apiBaseUrl = Environment.GetEnvironmentVariable(ApiBaseUrl) 
     ?? builder.Configuration["ApiBaseUrl"] 
     ?? "http://localhost:8091";
 
@@ -200,7 +210,7 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
     var handler = new HttpClientHandler();
     // Only bypass certificate validation in development AND with explicit flag
     if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
+        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
     {
         handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
@@ -220,7 +230,7 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TeamService>(client =>
     var handler = new HttpClientHandler();
     // Only bypass certificate validation in development AND with explicit flag
     if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
+        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
     {
         handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
@@ -240,7 +250,7 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.RoleService>(client =>
     var handler = new HttpClientHandler();
     // Only bypass certificate validation in development AND with explicit flag
     if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
+        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
     {
         handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
@@ -251,10 +261,10 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.RoleService>(client =>
 
 var app = builder.Build();
 
-Console.WriteLine("========================================");
+Console.WriteLine(ConsoleSeparator);
 Console.WriteLine("[Web] Application built successfully");
 Console.WriteLine($"[Web] Environment: {app.Environment.EnvironmentName}");
-Console.WriteLine("========================================");
+Console.WriteLine(ConsoleSeparator);
 
 // IMPORTANT: UseForwardedHeaders must come BEFORE UseRouting
 // This ensures redirect URIs use HTTPS when behind Railway's proxy
@@ -377,10 +387,10 @@ if (app.Environment.IsDevelopment())
 
 app.MapDefaultEndpoints();
 
-Console.WriteLine("========================================");
+Console.WriteLine(ConsoleSeparator);
 Console.WriteLine("[Web] Starting application...");
 Console.WriteLine("[Web] Navigate to the app and watch for logs");
-Console.WriteLine("========================================");
+Console.WriteLine(ConsoleSeparator);
 
  await app.RunAsync();
 

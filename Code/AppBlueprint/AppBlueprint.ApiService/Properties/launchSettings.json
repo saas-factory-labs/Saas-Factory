@@ -5,20 +5,6 @@
   "//DatabaseContext__EnableHybridMode": "When true, registers ALL contexts (Baseline, B2C, B2B) for dynamic dashboards",
   "//Documentation": "See Code/AppBlueprint/DATABASE_HYBRID_MODE_SETUP.md",
   "profiles": {
-    "https": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "https://localhost:8081",
-      "environmentVariables": {
-       "ASPNETCORE_ENVIRONMENT": "Development",
-        "DOTNET_ENVIRONMENT": "Development",
-        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21250",
-        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:7200",
-        "DatabaseContext__ContextType": "B2C",
-        "DatabaseContext__EnableHybridMode": "true"
-      }
-    },
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
