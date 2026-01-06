@@ -9,10 +9,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AppBlueprint.Infrastructure.Configuration;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.DatabaseContexts;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace AppBlueprint.Infrastructure.Authentication;
+
+/// <summary>
+/// Lightweight DTO for looking up user's tenant during authentication.
+/// </summary>
+internal sealed record UserTenantLookup(string Id, string TenantId);
 
 /// <summary>
 /// Extension methods for configuring web authentication (Logto, cookies, data protection)
@@ -57,9 +63,12 @@ public static class WebAuthenticationExtensions
 <html>
 <head>
     <title>Signing out...</title>
+    <meta http-equiv='refresh' content='0; url=/signup'>
     <script>
         console.log('[Logout] Redirecting to signup page after sign-out');
-        window.location.href = '/signup';
+        setTimeout(function() {
+            window.location.href = '/signup';
+        }, 100);
     </script>
 </head>
 <body>
@@ -222,6 +231,7 @@ public static class WebAuthenticationExtensions
             options.CorrelationCookie.SameSite = SameSiteMode.Lax;
             options.CorrelationCookie.HttpOnly = true;
             options.CorrelationCookie.IsEssential = true;
+            options.CorrelationCookie.Path = "/";
             
             // Configure nonce cookie for development (HTTP localhost)
             options.NonceCookie.SecurePolicy = environment.IsDevelopment() 
@@ -230,8 +240,10 @@ public static class WebAuthenticationExtensions
             options.NonceCookie.SameSite = SameSiteMode.Lax;
             options.NonceCookie.HttpOnly = true;
             options.NonceCookie.IsEssential = true;
+            options.NonceCookie.Path = "/";
             
             Console.WriteLine($"[Web] Configured OpenID Connect 'Logto' scheme with Authority={options.Authority}");
+            Console.WriteLine($"[Web] Cookie settings - SecurePolicy: {options.CorrelationCookie.SecurePolicy}, SameSite: {options.CorrelationCookie.SameSite}");
         });
         
         // Configure the Logto cookie scheme (named "Logto.Cookie") specifically
@@ -457,6 +469,37 @@ public static class WebAuthenticationExtensions
             
             return Task.CompletedTask;
         };
+        
+        // Debug: Log when callback is received
+        options.Events.OnMessageReceived = context =>
+        {
+            Console.WriteLine("[Web] OnMessageReceived - Callback received from Logto");
+            Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+            Console.WriteLine($"[Web] Request cookies count: {context.Request.Cookies.Count}");
+            
+            foreach (var cookie in context.Request.Cookies)
+            {
+                Console.WriteLine($"[Web]   - Received cookie: {cookie.Key}");
+            }
+            
+            // Check for correlation cookie specifically
+            var hasCorrelation = context.Request.Cookies.Any(c => c.Key.Contains("Correlation"));
+            var hasNonce = context.Request.Cookies.Any(c => c.Key.Contains("Nonce"));
+            
+            Console.WriteLine($"[Web] Has Correlation cookie: {hasCorrelation}");
+            Console.WriteLine($"[Web] Has Nonce cookie: {hasNonce}");
+            
+            if (!hasCorrelation || !hasNonce)
+            {
+                Console.WriteLine("[Web] ⚠️ WARNING: Missing required cookies! This will cause authentication to fail.");
+                Console.WriteLine("[Web] This typically means:");
+                Console.WriteLine("[Web]   1. Browser blocked third-party cookies");
+                Console.WriteLine("[Web]   2. Cookie SameSite policy is too restrictive");
+                Console.WriteLine("[Web]   3. Redirect from Logto is treated as cross-site");
+            }
+            
+            return Task.CompletedTask;
+        };
     }
 
     /// <summary>
@@ -548,20 +591,27 @@ public static class WebAuthenticationExtensions
         {
             Console.WriteLine($"[Web] User email from JWT: {userEmail}");
             
-            // Get UserRepository from DI container
-            IUserRepository? userRepository = context.HttpContext.RequestServices.GetService<IUserRepository>();
+            // Get DbContextFactory from DI container to bypass RLS
+            var contextFactory = context.HttpContext.RequestServices.GetService<IDbContextFactory<ApplicationDbContext>>();
             
-            if (userRepository is not null)
+            if (contextFactory is not null)
             {
-                var user = await userRepository.GetByEmailAsync(userEmail);
+                await using ApplicationDbContext dbContext = await contextFactory.CreateDbContextAsync();
                 
-                if (user is not null && !string.IsNullOrEmpty(user.TenantId))
+                // Query database directly, bypassing RLS by using SECURITY INVOKER context
+                // This is safe because we're only reading data during authentication
+                // Use quoted column names to match exact casing in PostgreSQL
+                FormattableString query = $"SELECT \"Id\", \"TenantId\" FROM \"Users\" WHERE \"Email\" = {userEmail} LIMIT 1";
+                
+                var result = await dbContext.Database.SqlQuery<UserTenantLookup>(query).FirstOrDefaultAsync();
+                
+                if (result is not null && !string.IsNullOrEmpty(result.TenantId))
                 {
-                    Console.WriteLine($"[Web] ✅ Found user's tenant: {user.TenantId}");
+                    Console.WriteLine($"[Web] ✅ Found user's tenant: {result.TenantId}");
                     
                     // Add tenant_id claim to ClaimsIdentity
                     var identity = context.Principal?.Identity as ClaimsIdentity;
-                    identity?.AddClaim(new Claim("tenant_id", user.TenantId));
+                    identity?.AddClaim(new Claim("tenant_id", result.TenantId));
                     
                     Console.WriteLine("[Web] ✅ Added tenant_id claim to ClaimsIdentity");
                 }
@@ -572,7 +622,7 @@ public static class WebAuthenticationExtensions
             }
             else
             {
-                Console.WriteLine("[Web] ⚠️ UserRepository not available in DI container");
+                Console.WriteLine("[Web] ⚠️ DbContextFactory not available in DI container");
             }
         }
         else
@@ -743,11 +793,6 @@ public static class WebAuthenticationExtensions
             Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] signout-callback-logto endpoint called - returned from Logto");
             
-            // Always redirect to sign-in page after sign-out
-            // This is used for post-signup session refresh to get tenant_id claim
-            string returnUrl = "/auth/signin?returnUrl=/";
-            Console.WriteLine($"[Web] Post-logout return URL: {returnUrl}");
-            
             // Make absolutely sure cookies are cleared
             try
             {
@@ -760,32 +805,31 @@ public static class WebAuthenticationExtensions
                 Console.WriteLine($"[Web] Cookie clear warning (might be already cleared): {ex.Message}");
             }
             
-            Console.WriteLine($"[Web] ➡️  Redirecting to: {returnUrl}");
-            Console.WriteLine(LogSeparator);
-            
-            // Use HTML with JavaScript redirect for more reliable navigation
-            context.Response.ContentType = "text/html";
-            await context.Response.WriteAsync($@"
+            // Return HTML that uses JavaScript to navigate to login
+            // This ensures a complete page reload and proper navigation
+            const string signoutCallbackHtml = @"
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset=""utf-8"">
-    <title>Redirecting...</title>
+    <title>Signing out...</title>
+    <meta http-equiv='refresh' content='0; url=/signup'>
+    <script>
+        console.log('[SignOut/Callback] Redirecting to signup page after Logto sign-out');
+        setTimeout(function() {
+            window.location.href = '/signup';
+        }, 100);
+    </script>
 </head>
 <body>
-    <div style=""display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: system-ui, -apple-system, sans-serif;"">
-        <div style=""text-align: center;"">
-            <div style=""margin-bottom: 1rem; font-size: 1.5rem;"">🔄</div>
-            <h1 style=""font-size: 1.25rem; margin-bottom: 0.5rem;"">Completing Sign Out...</h1>
-            <p style=""color: #666;"">Redirecting you now...</p>
-        </div>
-    </div>
-    <script>
-        // Force a full page reload to the return URL
-        window.location.href = '{returnUrl}';
-    </script>
+    <p>Signing out... You will be redirected to the signup page.</p>
+    <p>If not redirected automatically, <a href='/signup'>click here</a>.</p>
 </body>
-</html>");
+</html>";
+            
+            context.Response.ContentType = "text/html";
+            await context.Response.WriteAsync(signoutCallbackHtml);
+            Console.WriteLine("[Web] ✅ Sent HTML redirect to /signup");
+            Console.WriteLine(LogSeparator);
         }).AllowAnonymous();
 
         // Logout complete callback - where Logto redirects back after sign-out

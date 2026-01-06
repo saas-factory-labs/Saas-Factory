@@ -1,5 +1,5 @@
-using System.Data.Common;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
@@ -20,30 +20,30 @@ public interface ISignupService
 }
 
 /// <summary>
-/// Database connection provider for signup operations.
-/// Abstraction to allow Application layer to access database without depending on Infrastructure.
+/// Database context provider for signup operations.
+/// Provides access to DbContext for EF Core operations.
 /// </summary>
-public interface ISignupDbConnectionProvider
+public interface ISignupDbContextProvider
 {
     /// <summary>
-    /// Gets a database connection for signup operations.
+    /// Gets a database context for signup operations.
     /// </summary>
-    Task<DbConnection> GetConnectionAsync(CancellationToken cancellationToken = default);
+    Task<DbContext> GetDbContextAsync(CancellationToken cancellationToken = default);
 }
 
 public sealed class SignupService : ISignupService
 {
-    private readonly ISignupDbConnectionProvider _connectionProvider;
+    private readonly ISignupDbContextProvider _contextProvider;
     private readonly ILogger<SignupService> _logger;
 
     public SignupService(
-        ISignupDbConnectionProvider connectionProvider,
+        ISignupDbContextProvider contextProvider,
         ILogger<SignupService> logger)
     {
-        ArgumentNullException.ThrowIfNull(connectionProvider);
+        ArgumentNullException.ThrowIfNull(contextProvider);
         ArgumentNullException.ThrowIfNull(logger);
 
-        _connectionProvider = connectionProvider;
+        _contextProvider = contextProvider;
         _logger = logger;
     }
 
@@ -59,60 +59,38 @@ public sealed class SignupService : ISignupService
 
         try
         {
-            // Get database connection (wraps both connection and context)
-            await using DbConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
+            // Get EF Core DbContext (properly manages connection lifecycle)
+            DbContext context = await _contextProvider.GetDbContextAsync(cancellationToken);
             
-            if (connection is not NpgsqlConnection npgsqlConnection)
-            {
-                throw new InvalidOperationException("Database connection is not PostgreSQL (Npgsql)");
-            }
-
-            // Ensure connection is open
-            if (connection.State != System.Data.ConnectionState.Open)
-            {
-                await connection.OpenAsync(cancellationToken);
-            }
-
-            // Call stored procedure with parameterized query (prevents SQL injection)
-            await using NpgsqlCommand command = npgsqlConnection.CreateCommand();
-            command.CommandText = @"
+            // Use EF Core's ExecuteSqlRawAsync to call stored procedure
+            // The stored procedure returns JSON, which we'll query using FromSqlRaw
+            FormattableString sql = $@"
                 SELECT create_tenant_and_user(
-                    @p_tenant_id,
-                    @p_tenant_name,
-                    @p_tenant_type,
-                    @p_user_id,
-                    @p_user_first_name,
-                    @p_user_last_name,
-                    @p_user_email,
-                    @p_external_auth_id,
-                    @p_ip_address,
-                    @p_user_agent
-                );";
-
-            // Add parameters (all properly typed to prevent injection)
-            command.Parameters.AddWithValue("@p_tenant_id", request.TenantId);
-            command.Parameters.AddWithValue("@p_tenant_name", request.TenantName);
-            command.Parameters.AddWithValue("@p_user_id", request.UserId);
-            command.Parameters.AddWithValue("@p_user_first_name", request.FirstName);
-            command.Parameters.AddWithValue("@p_user_last_name", request.LastName);
-            command.Parameters.AddWithValue("@p_user_email", request.Email);
-            command.Parameters.AddWithValue("@p_external_auth_id", request.ExternalAuthId ?? (object)DBNull.Value);
-            command.Parameters.AddWithValue("@p_ip_address", request.IpAddress ?? (object)DBNull.Value);
-            command.Parameters.AddWithValue("@p_user_agent", request.UserAgent ?? (object)DBNull.Value);
-            command.Parameters.AddWithValue("@p_tenant_type", request.TenantType);
-
-            // Execute and read JSON result
-            object? result = await command.ExecuteScalarAsync(cancellationToken);
+                    {request.TenantId},
+                    {request.TenantName},
+                    {request.TenantType},
+                    {request.UserId},
+                    {request.FirstName},
+                    {request.LastName},
+                    {request.Email},
+                    {request.ExternalAuthId},
+                    {request.IpAddress},
+                    {request.UserAgent}
+                ) AS ""JsonResult""";
             
-            if (result is null)
+            // Execute the stored procedure and get the JSON result
+            var results = await context.Database
+                .SqlQuery<SignupStoredProcedureResult>(sql)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+
+            if (results.Count == 0 || results[0] is null)
             {
-                throw new InvalidOperationException("Stored procedure returned null");
+                throw new InvalidOperationException("Stored procedure returned no results");
             }
 
-            string jsonResult = result.ToString() ?? throw new InvalidOperationException("Result is not valid JSON");
-
-            // Parse JSON response
-            JsonDocument jsonDoc = JsonDocument.Parse(jsonResult);
+            // Parse the JSON result from the stored procedure
+            JsonDocument jsonDoc = JsonDocument.Parse(results[0].JsonResult);
             JsonElement root = jsonDoc.RootElement;
 
             bool success = root.GetProperty("success").GetBoolean();
@@ -169,6 +147,19 @@ public sealed class SignupService : ISignupService
             throw;
         }
     }
+}
+
+/// <summary>
+/// Internal result type for mapping stored procedure JSON output.
+/// The stored procedure returns a single JSON column.
+/// </summary>
+internal sealed class SignupStoredProcedureResult
+{
+    /// <summary>
+    /// The JSON result returned by create_tenant_and_user stored procedure.
+    /// Maps to the single column returned by the function.
+    /// </summary>
+    public string JsonResult { get; init; } = string.Empty;
 }
 
 /// <summary>

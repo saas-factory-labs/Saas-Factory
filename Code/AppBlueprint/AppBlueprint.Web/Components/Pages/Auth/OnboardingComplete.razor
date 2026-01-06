@@ -90,11 +90,11 @@
         isRedirecting = true;
         StateHasChanged();
         
-        Logger.LogInformation("[OnboardingComplete] Triggering authentication refresh");
+        Logger.LogInformation("[OnboardingComplete] Account created - redirecting to dashboard");
         
-        // Sign out and redirect back to signin, which will then redirect to dashboard
-        // The ?returnUrl=/ ensures user goes to dashboard after re-authenticating
-        Navigation.NavigateTo("/auth/signout?returnUrl=/auth/signin?returnUrl=/", forceLoad: true);
+        // Simply navigate to dashboard - the user is already authenticated
+        // The dashboard will load with the new tenant data from the database
+        Navigation.NavigateTo("/", forceLoad: true);
         
         await Task.CompletedTask;
     }

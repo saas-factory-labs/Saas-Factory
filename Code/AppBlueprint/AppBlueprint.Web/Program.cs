@@ -341,13 +341,15 @@ else
 
 app.UseOutputCache();
 
-app.MapRazorComponents<App>()
-    .AddAdditionalAssemblies(typeof(_Imports).Assembly)
-    .AddInteractiveServerRenderMode();
-
+// ⚠️ CRITICAL: Map authentication endpoints BEFORE Blazor routing
+// Blazor's catch-all routing must not intercept auth callbacks
 // Logto authentication endpoints - EXACTLY as per documentation
 // https://docs.logto.io/quick-starts/dotnet-core/blazor-server
 app.MapAuthenticationEndpoints(builder.Configuration);
+
+app.MapRazorComponents<App>()
+    .AddAdditionalAssemblies(typeof(_Imports).Assembly)
+    .AddInteractiveServerRenderMode();
 
 // Diagnostic endpoint to test Logto connectivity from Railway
 app.MapLogtoTestEndpoint(builder.Configuration, app.Environment);
