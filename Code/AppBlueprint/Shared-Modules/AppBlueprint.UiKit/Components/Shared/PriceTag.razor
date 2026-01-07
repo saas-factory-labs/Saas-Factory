@@ -1,0 +1,73 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Reusable price tag component for products, subscriptions, and premium features *@
+
+<div class="inline-flex text-sm font-medium @GetColorClasses() rounded-full text-center px-2 py-0.5 @Class">
+    @if (!string.IsNullOrEmpty(Prefix))
+    {
+        <span>@Prefix</span>
+    }
+    @FormattedPrice
+    @if (!string.IsNullOrEmpty(Suffix))
+    {
+        <span>@Suffix</span>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// The price value to display
+    /// </summary>
+    [Parameter]
+    public decimal Price { get; set; }
+
+    /// <summary>
+    /// Currency symbol or code to display before the price
+    /// </summary>
+    [Parameter]
+    public string Currency { get; set; } = "$";
+
+    /// <summary>
+    /// Text to display before the price (e.g., "From ")
+    /// </summary>
+    [Parameter]
+    public string? Prefix { get; set; }
+
+    /// <summary>
+    /// Text to display after the price (e.g., "/mo", "/year")
+    /// </summary>
+    [Parameter]
+    public string? Suffix { get; set; }
+
+    /// <summary>
+    /// Color variant for the price tag
+    /// </summary>
+    [Parameter]
+    public string Variant { get; set; } = "green";
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Number format string for the price
+    /// </summary>
+    [Parameter]
+    public string Format { get; set; } = "F2";
+
+    private string FormattedPrice => $"{Currency}{Price.ToString(Format)}";
+
+    private string GetColorClasses() => Variant switch
+    {
+        "green" => "bg-green-500/20 text-green-700 dark:text-green-600",
+        "blue" => "bg-blue-500/20 text-blue-700 dark:text-blue-600",
+        "violet" => "bg-violet-500/20 text-violet-700 dark:text-violet-600",
+        "amber" => "bg-amber-500/20 text-amber-700 dark:text-amber-600",
+        "red" => "bg-red-500/20 text-red-700 dark:text-red-600",
+        "gray" => "bg-gray-500/20 text-gray-700 dark:text-gray-600",
+        "premium" => "bg-gradient-to-r from-violet-500 to-purple-500 text-white",
+        _ => "bg-green-500/20 text-green-700 dark:text-green-600"
+    };
+}

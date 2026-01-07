@@ -1,0 +1,72 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Status badge component - reusable for project status, deal stages, user status, etc. *@
+
+<div class="text-xs inline-flex font-medium rounded-full text-center px-2.5 py-1 @GetColorClass() @Class">
+    @if (ShowIcon && !string.IsNullOrEmpty(IconSvg))
+    {
+        @((MarkupString)IconSvg)
+    }
+    @Text
+</div>
+
+@code {
+    /// <summary>
+    /// Text to display in the badge
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Text { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Color variant for the badge
+    /// </summary>
+    [Parameter]
+    public string Variant { get; set; } = "default";
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Whether to show an icon before the text
+    /// </summary>
+    [Parameter]
+    public bool ShowIcon { get; set; } = false;
+
+    /// <summary>
+    /// SVG icon markup to display (if ShowIcon is true)
+    /// </summary>
+    [Parameter]
+    public string? IconSvg { get; set; }
+
+    private string GetColorClass() => Variant.ToLower() switch
+    {
+        // Success variants
+        "success" or "completed" or "active" or "online" or "one-time" => 
+            "bg-emerald-100 dark:bg-emerald-400/30 text-emerald-600 dark:text-emerald-400",
+        
+        // Warning variants
+        "warning" or "pending" or "at-risk" or "away" => 
+            "bg-amber-100 dark:bg-amber-400/30 text-amber-600 dark:text-amber-400",
+        
+        // Error/Danger variants
+        "error" or "danger" or "failed" or "off-track" or "offline" => 
+            "bg-rose-100 dark:bg-rose-500/30 text-rose-500 dark:text-rose-400",
+        
+        // Info variants
+        "info" or "in-progress" or "busy" => 
+            "bg-blue-100 dark:bg-blue-400/30 text-blue-600 dark:text-blue-400",
+        
+        // Violet/Primary variants
+        "primary" or "violet" or "premium" => 
+            "bg-violet-100 dark:bg-violet-400/30 text-violet-600 dark:text-violet-400",
+        
+        // Secondary/Gray variants
+        "secondary" or "default" or "inactive" or "draft" => 
+            "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400",
+        
+        _ => "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+    };
+}

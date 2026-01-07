@@ -1,0 +1,95 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Reusable product/profile rating component with stars and numeric score *@
+
+<div class="flex items-center space-x-2">
+    <!-- Stars -->
+    <div class="flex space-x-1">
+        @for (int i = 0; i < MaxStars; i++)
+        {
+            int starIndex = i;
+            <button type="button" disabled="@(!Interactive)" @onclick="() => OnStarClick(starIndex + 1)">
+                <span class="sr-only">@(starIndex + 1) star</span>
+                <svg class="fill-current @GetStarColorClass(starIndex)" width="@Size" height="@Size" viewBox="0 0 16 16">
+                    <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
+                </svg>
+            </button>
+        }
+    </div>
+    @if (ShowScore)
+    {
+        <!-- Numeric rating score -->
+        <div class="inline-flex text-sm font-medium @ScoreColorClass">@Rating.ToString("F1")</div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// The rating value (0-5)
+    /// </summary>
+    [Parameter]
+    public decimal Rating { get; set; } = 0;
+
+    /// <summary>
+    /// Maximum number of stars to display
+    /// </summary>
+    [Parameter]
+    public int MaxStars { get; set; } = 5;
+
+    /// <summary>
+    /// Whether to show the numeric score next to stars
+    /// </summary>
+    [Parameter]
+    public bool ShowScore { get; set; } = true;
+
+    /// <summary>
+    /// Size of stars in pixels
+    /// </summary>
+    [Parameter]
+    public int Size { get; set; } = 16;
+
+    /// <summary>
+    /// CSS class for the numeric score color
+    /// </summary>
+    [Parameter]
+    public string ScoreColorClass { get; set; } = "text-yellow-600";
+
+    /// <summary>
+    /// CSS class for filled stars
+    /// </summary>
+    [Parameter]
+    public string FilledStarClass { get; set; } = "text-yellow-500";
+
+    /// <summary>
+    /// CSS class for empty stars
+    /// </summary>
+    [Parameter]
+    public string EmptyStarClass { get; set; } = "text-gray-300 dark:text-gray-600";
+
+    /// <summary>
+    /// Whether the rating is interactive (clickable)
+    /// </summary>
+    [Parameter]
+    public bool Interactive { get; set; } = false;
+
+    /// <summary>
+    /// Event callback when a star is clicked (only if Interactive is true)
+    /// </summary>
+    [Parameter]
+    public EventCallback<decimal> RatingChanged { get; set; }
+
+    private string GetStarColorClass(int starIndex)
+    {
+        int filledStars = (int)Math.Floor(Rating);
+        return starIndex < filledStars ? FilledStarClass : EmptyStarClass;
+    }
+
+    private async Task OnStarClick(int stars)
+    {
+        if (Interactive)
+        {
+            Rating = stars;
+            await RatingChanged.InvokeAsync(Rating);
+        }
+    }
+}

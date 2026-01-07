@@ -1,0 +1,97 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Rating filter with star display - reusable for quality filters, satisfaction ratings, etc. *@
+
+<FilterGroup Title="@Title" Class="@Class">
+    <ul class="space-y-2">
+        @foreach (int rating in RatingLevels.OrderByDescending(r => r))
+        {
+            <li>
+                <button type="button" 
+                        class="flex items-center space-x-2 mr-2 @GetButtonClass(rating)"
+                        @onclick="() => OnRatingClick(rating)">
+                    <ProductRating Rating="@rating" ShowScore="false" Size="@StarSize" />
+                    <div class="inline-flex text-sm text-gray-500 dark:text-gray-400 @(IsSelected(rating) ? "font-semibold" : "italic")">
+                        <span class="sr-only">@rating Stars</span> @AndUpLabel
+                    </div>
+                </button>
+            </li>
+        }
+    </ul>
+</FilterGroup>
+
+@code {
+    /// <summary>
+    /// Title of the filter section
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = "Sort By Rating";
+
+    /// <summary>
+    /// Rating levels to display (e.g., [4, 3, 2, 1])
+    /// </summary>
+    [Parameter]
+    public List<int> RatingLevels { get; set; } = new() { 4, 3, 2, 1 };
+
+    /// <summary>
+    /// Currently selected minimum rating
+    /// </summary>
+    [Parameter]
+    public int? SelectedMinRating { get; set; }
+
+    /// <summary>
+    /// Event callback when a rating is selected
+    /// </summary>
+    [Parameter]
+    public EventCallback<int> SelectedMinRatingChanged { get; set; }
+
+    /// <summary>
+    /// Event callback when a rating is clicked
+    /// </summary>
+    [Parameter]
+    public EventCallback<int> OnRatingSelected { get; set; }
+
+    /// <summary>
+    /// Label to show after stars (e.g., "And up", "& above")
+    /// </summary>
+    [Parameter]
+    public string AndUpLabel { get; set; } = "And up";
+
+    /// <summary>
+    /// Size of the stars in pixels
+    /// </summary>
+    [Parameter]
+    public int StarSize { get; set; } = 16;
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    private bool IsSelected(int rating)
+    {
+        return SelectedMinRating == rating;
+    }
+
+    private string GetButtonClass(int rating)
+    {
+        return IsSelected(rating) ? "opacity-100" : "opacity-70 hover:opacity-100";
+    }
+
+    private async Task OnRatingClick(int rating)
+    {
+        // Toggle selection: if already selected, deselect; otherwise select
+        if (SelectedMinRating == rating)
+        {
+            SelectedMinRating = null;
+        }
+        else
+        {
+            SelectedMinRating = rating;
+        }
+
+        await SelectedMinRatingChanged.InvokeAsync(SelectedMinRating ?? 0);
+        await OnRatingSelected.InvokeAsync(rating);
+    }
+}
