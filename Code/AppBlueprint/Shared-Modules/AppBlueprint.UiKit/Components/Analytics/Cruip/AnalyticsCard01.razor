@@ -6,46 +6,44 @@
         <div class="flex flex-wrap max-sm:*:w-1/2">
             <!-- Unique Visitors -->
             <div class="flex items-center py-2">
-                <div class="mr-5">
-                    <div class="flex items-center">
-                        <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">24.7K</div>
-                        <div class="text-sm font-medium text-green-600">+49%</div>
-                    </div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Unique Visitors</div>
-                </div>
+                <MetricCard 
+                    Value="24.7M"
+                    Label="Unique Visitors"
+                    Trend="49"
+                    Suffix="K"
+                    ValueFormat="F1"
+                    Class="mr-5" />
                 <div class="hidden md:block w-px h-8 bg-gray-200 dark:bg-gray-700 mr-5" aria-hidden="true"></div>
             </div>
             <!-- Total Pageviews -->
             <div class="flex items-center py-2">
-                <div class="mr-5">
-                    <div class="flex items-center">
-                        <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">56.9K</div>
-                        <div class="text-sm font-medium text-green-600">+7%</div>
-                    </div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Total Pageviews</div>
-                </div>
+                <MetricCard 
+                    Value="56.9M"
+                    Label="Total Pageviews"
+                    Trend="7"
+                    Suffix="K"
+                    ValueFormat="F1"
+                    Class="mr-5" />
                 <div class="hidden md:block w-px h-8 bg-gray-200 dark:bg-gray-700 mr-5" aria-hidden="true"></div>
             </div>
             <!-- Bounce Rate -->
             <div class="flex items-center py-2">
-                <div class="mr-5">
-                    <div class="flex items-center">
-                        <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">54%</div>
-                        <div class="text-sm font-medium text-red-500">-7%</div>
-                    </div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Bounce Rate</div>
-                </div>
+                <MetricCard 
+                    Value="54"
+                    Label="Bounce Rate"
+                    Trend="-7"
+                    Suffix="%"
+                    ValueFormat="F0"
+                    Class="mr-5" />
                 <div class="hidden md:block w-px h-8 bg-gray-200 dark:bg-gray-700 mr-5" aria-hidden="true"></div>
             </div>
             <!-- Visit Duration -->
             <div class="flex items-center">
-                <div>
-                    <div class="flex items-center">
-                        <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">2m 56s</div>
-                        <div class="text-sm font-medium text-red-500">+7%</div>
-                    </div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Visit Duration</div>
-                </div>
+                <MetricCard 
+                    CustomValue="2m 56s"
+                    Label="Visit Duration"
+                    Trend="7"
+                    Class="" />
             </div>
         </div>
     </div>

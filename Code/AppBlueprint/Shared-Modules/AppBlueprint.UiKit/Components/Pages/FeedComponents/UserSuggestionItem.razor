@@ -1,0 +1,21 @@
+@* Suggested user item with avatar, name, and follow button *@
+
+<li>
+    <div class="flex items-center justify-between">
+        <div class="grow flex items-center">
+            <div class="relative mr-3">
+                <img class="w-8 h-8 rounded-full" src="@ImageUrl" width="32" height="32" alt="@Name" />
+            </div>
+            <div class="truncate">
+                <span class="text-sm font-medium text-gray-800 dark:text-gray-100">@Name</span>
+            </div>
+        </div>
+        <button class="btn-xs text-xs border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300 px-2.5 py-1 rounded-full shadow-none">Follow</button>
+    </div>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public string Name { get; set; } = "";
+    [Parameter, EditorRequired] public string ImageUrl { get; set; } = "";
+
+}

@@ -1,0 +1,30 @@
+@* Full mail message display with avatar, header, and content *@
+
+<div class="py-4">
+    <header class="flex items-start mb-2">
+        <img class="rounded-full shrink-0 mr-3" src="@Avatar" width="40" height="40" alt="@Name"/>
+        <div class="grow">
+            <div class="sm:flex items-start justify-between mb-0.5">
+                <div class="xl:flex items-center mb-2 sm:mb-0">
+                    <div class="text-sm font-semibold text-gray-800 dark:text-gray-100">@Name</div>
+                    <div class="text-sm text-gray-500 xl:ml-2">@Email</div>
+                </div>
+                <div class="text-xs font-medium text-gray-500">@Date</div>
+            </div>
+            <div class="text-xs font-medium text-gray-500">To: @Recipients</div>
+        </div>
+    </header>
+    <div class="text-sm text-gray-800 dark:text-gray-100 space-y-2">
+        @((MarkupString)Message)
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Avatar { get; set; } = "";
+    [Parameter, EditorRequired] public string Name { get; set; } = "";
+    [Parameter, EditorRequired] public string Email { get; set; } = "";
+    [Parameter, EditorRequired] public string Date { get; set; } = "";
+    [Parameter, EditorRequired] public string Recipients { get; set; } = "";
+    [Parameter, EditorRequired] public string Message { get; set; } = "";
+
+}

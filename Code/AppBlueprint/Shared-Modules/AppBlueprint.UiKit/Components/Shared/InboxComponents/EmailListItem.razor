@@ -1,0 +1,28 @@
+@* Email list item with avatar, sender, date, subject, and preview *@
+
+<li class="-mx-2">
+    <button class="flex w-full p-2 rounded @(IsSelected ? "bg-violet-100 dark:bg-violet-500/30" : "") text-left" @onclick="OnClick">
+        <img class="w-8 h-8 rounded-full mr-2" src="@Avatar" width="32" height="32" alt="@Sender"/>
+        <div class="grow truncate">
+            <div class="flex items-center justify-between mb-1.5">
+                <div class="truncate">
+                    <span class="text-sm font-semibold text-gray-800 dark:text-gray-100">@Sender</span>
+                </div>
+                <div class="text-xs text-gray-500 font-medium">@Date</div>
+            </div>
+            <div class="text-xs font-medium text-gray-800 dark:text-gray-100 truncate mb-0.5">@Subject</div>
+            <div class="text-xs whitespace-normal">@Preview</div>
+        </div>
+    </button>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public string Avatar { get; set; } = "";
+    [Parameter, EditorRequired] public string Sender { get; set; } = "";
+    [Parameter, EditorRequired] public string Date { get; set; } = "";
+    [Parameter, EditorRequired] public string Subject { get; set; } = "";
+    [Parameter, EditorRequired] public string Preview { get; set; } = "";
+    [Parameter] public bool IsSelected { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+}

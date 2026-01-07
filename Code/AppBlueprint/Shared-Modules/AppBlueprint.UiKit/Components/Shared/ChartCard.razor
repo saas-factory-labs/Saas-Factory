@@ -1,0 +1,83 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* 
+Universal chart card wrapper for analytics dashboards
+Provides consistent header, body, and optional footer structure for chart visualizations
+Reusable for bar charts, line charts, pie charts, doughnut charts, etc.
+*@
+
+<div class="flex flex-col col-span-full @GridColumnClass bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 @HeaderClass">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">@Title</h2>
+        @if (HeaderActions != null)
+        {
+            @HeaderActions
+        }
+    </header>
+    <!-- Chart content -->
+    <div class="@ContentClass">
+        @ChildContent
+    </div>
+    @if (FooterContent != null)
+    {
+        <div class="@FooterClass">
+            @FooterContent
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// The card title displayed in the header
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Chart content (BarChart, LineChart, PieChart, DoughnutChart, etc.)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Optional header actions (dropdown menus, filters, buttons)
+    /// </summary>
+    [Parameter]
+    public RenderFragment? HeaderActions { get; set; }
+
+    /// <summary>
+    /// Optional footer content (links, legends, additional info)
+    /// </summary>
+    [Parameter]
+    public RenderFragment? FooterContent { get; set; }
+
+    /// <summary>
+    /// Tailwind CSS classes for the grid column span
+    /// Default: sm:col-span-6 (2 columns on small screens, 1 on mobile)
+    /// Common: sm:col-span-6 xl:col-span-4 (half on tablet, third on desktop)
+    /// </summary>
+    [Parameter]
+    public string GridColumnClass { get; set; } = "sm:col-span-6";
+
+    /// <summary>
+    /// Tailwind CSS classes for the header section
+    /// Default: empty (just title), can add "flex items-center" for actions
+    /// </summary>
+    [Parameter]
+    public string HeaderClass { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Tailwind CSS classes for the content/chart area
+    /// Default: "grow p-3" for standard padding
+    /// Alternative: "grow flex flex-col justify-center p-5" for centered charts
+    /// </summary>
+    [Parameter]
+    public string ContentClass { get; set; } = "grow p-3";
+
+    /// <summary>
+    /// Tailwind CSS classes for the footer section
+    /// Default: centered footer with border
+    /// </summary>
+    [Parameter]
+    public string FooterClass { get; set; } = "text-center pt-4 pb-1 border-t border-gray-100 dark:border-gray-700/60";
+}

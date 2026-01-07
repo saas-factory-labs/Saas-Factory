@@ -11,7 +11,7 @@
     }
     <div class="@(Vertical ? "" : "grow")">
         <div class="flex items-center @(Vertical ? "justify-center" : "")">
-            <div class="@GetValueClass() mr-2">@FormatValue(Value)</div>
+            <div class="@GetValueClass() mr-2">@(string.IsNullOrEmpty(CustomValue) ? FormatValue(Value) : CustomValue)</div>
             @if (ShowTrend && Trend != 0)
             {
                 <div class="text-sm font-medium @GetTrendColorClass()">
@@ -27,8 +27,14 @@
     /// <summary>
     /// The metric value to display
     /// </summary>
-    [Parameter, EditorRequired]
+    [Parameter]
     public decimal Value { get; set; }
+
+    /// <summary>
+    /// Custom formatted value string (overrides Value if provided)
+    /// </summary>
+    [Parameter]
+    public string? CustomValue { get; set; }
 
     /// <summary>
     /// Label describing the metric

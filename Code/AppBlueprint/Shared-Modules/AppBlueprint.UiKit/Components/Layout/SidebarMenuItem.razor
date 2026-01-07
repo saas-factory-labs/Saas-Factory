@@ -1,0 +1,55 @@
+@* 
+    SidebarMenuItem - A reusable sidebar navigation link item
+    
+    Cross-Domain Examples:
+    - E-commerce: Product catalog, order management, customer list
+    - CRM: Contacts, deals pipeline, activities log
+    - Dating app: Matches, messages, user discovery
+    - Project management: Tasks board, team members, reports
+    
+    Features:
+    - Active state highlighting with violet accent
+    - Icon with customizable color based on active state
+    - Responsive text that fades on collapsed sidebar
+    - Smooth transitions for hover states
+    - Dark mode support
+*@
+
+<li class="@(IsActive ? "bg-gradient-to-r from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] rounded-lg" : "") px-3 py-2 rounded-lg mb-0.5 last:mb-0">
+    <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
+       href="@Href">
+        <div class="flex items-center">
+            <svg class="shrink-0 fill-current @(IsActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
+                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                @IconPath
+            </svg>
+            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">@Label</span>
+        </div>
+    </a>
+</li>
+
+@code {
+    /// <summary>
+    /// The URL to navigate to when clicking the menu item
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Href { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The display label for the menu item
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = string.Empty;
+
+    /// <summary>
+    /// SVG path data for the icon (just the <path> elements)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public RenderFragment IconPath { get; set; } = default!;
+
+    /// <summary>
+    /// Whether this menu item is currently active
+    /// </summary>
+    [Parameter]
+    public bool IsActive { get; set; }
+}

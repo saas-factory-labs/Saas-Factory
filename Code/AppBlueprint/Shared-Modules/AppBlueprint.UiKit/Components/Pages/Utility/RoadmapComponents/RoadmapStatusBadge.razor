@@ -1,0 +1,14 @@
+<div class="@Classes">@Status</div>
+
+@code {
+    [Parameter, EditorRequired] public string Status { get; set; } = string.Empty;
+    [Parameter] public string StatusType { get; set; } = "completed"; // completed, working, planned
+
+    private string Classes => StatusType switch
+    {
+        "completed" => "text-xs inline-flex font-medium bg-green-500/20 text-green-700 rounded-full text-center px-2.5 py-1",
+        "working" => "btn-xs text-xs bg-violet-500/20 text-violet-600 px-2.5 py-1 rounded-full shadow-none",
+        "planned" => "text-xs inline-flex font-medium bg-yellow-500/20 text-yellow-700 rounded-full text-center px-2.5 py-1",
+        _ => "text-xs inline-flex font-medium bg-gray-500/20 text-gray-700 rounded-full text-center px-2.5 py-1"
+    };
+}

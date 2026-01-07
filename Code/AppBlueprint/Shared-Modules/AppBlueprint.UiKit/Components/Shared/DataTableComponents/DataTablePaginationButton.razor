@@ -1,0 +1,29 @@
+<button class="@GetButtonClasses()"
+        disabled="@Disabled"
+        @onclick="OnClick">
+    <span class="sr-only">@Direction</span>
+    <svg class="fill-current" width="4" height="7" viewBox="0 0 4 7">
+        @if (Direction == "Previous")
+        {
+            <path d="M3.7.3c.4.4.4 1 0 1.4L1.4 4l2.3 2.3c.4.4.4 1 0 1.4-.4.4-1 .4-1.4 0L.3 5.7c-.4-.4-.4-1 0-1.4L2.3.3c.4-.4 1-.4 1.4 0z" />
+        }
+        else
+        {
+            <path d="M.3 6.7c-.4-.4-.4-1 0-1.4L2.6 3 .3.7C-.1.3-.1-.3.3-.7c.4-.4 1-.4 1.4 0l2 2c.4.4.4 1 0 1.4l-2 2c-.4.4-1 .4-1.4 0z" />
+        }
+    </svg>
+</button>
+
+@code {
+    [Parameter, EditorRequired] public string Direction { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public bool Disabled { get; set; }
+    [Parameter, EditorRequired] public EventCallback OnClick { get; set; }
+
+    private string GetButtonClasses()
+    {
+        string baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-2.5 py-2 border";
+        return Disabled
+            ? $"{baseClasses} border-gray-200 dark:border-gray-700/60 text-gray-300 dark:text-gray-600"
+            : $"{baseClasses} border-gray-200 dark:border-gray-700/60 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50";
+    }
+}

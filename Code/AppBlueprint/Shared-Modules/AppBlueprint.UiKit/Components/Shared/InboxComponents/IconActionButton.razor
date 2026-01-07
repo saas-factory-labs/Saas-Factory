@@ -1,0 +1,14 @@
+@* Reusable icon action button *@
+
+<button class="p-1.5 shrink-0 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm ml-2"
+        @onclick="OnClick"
+        aria-label="@AriaLabel">
+    @Icon
+</button>
+
+@code {
+    [Parameter, EditorRequired] public RenderFragment? Icon { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public string AriaLabel { get; set; } = "";
+
+}

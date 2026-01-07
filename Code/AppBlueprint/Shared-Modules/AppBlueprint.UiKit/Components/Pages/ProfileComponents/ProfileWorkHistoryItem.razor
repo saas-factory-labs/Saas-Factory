@@ -1,0 +1,37 @@
+<li class="sm:flex sm:items-center sm:justify-between">
+    <div class="sm:grow flex items-center text-sm">
+        <div class="w-8 h-8 rounded-full shrink-0 @IconBgClass my-2 mr-3">
+            <svg class="w-8 h-8 fill-current @IconTextClass" viewBox="0 0 32 32">
+                @((MarkupString)IconPath)
+            </svg>
+        </div>
+        <div>
+            <div class="font-medium text-gray-800 dark:text-gray-100">@Title</div>
+            <div class="flex flex-nowrap items-center space-x-2 whitespace-nowrap">
+                <div>@Location</div>
+                <div class="text-gray-400 dark:text-gray-600">·</div>
+                <div>@Period</div>
+            </div>
+        </div>
+    </div>
+    <div class="sm:ml-2 mt-2 sm:mt-0">
+        <ul class="flex flex-wrap sm:justify-end -m-1">
+            @foreach (var tag in Tags)
+            {
+                <li class="m-1">
+                    <button class="inline-flex items-center justify-center text-xs font-medium leading-5 rounded-full px-2.5 py-0.5 border border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 shadow-xs bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 transition">@tag</button>
+                </li>
+            }
+        </ul>
+    </div>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Location { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Period { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string IconBgClass { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string IconTextClass { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string IconPath { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string[] Tags { get; set; } = Array.Empty<string>();
+}

@@ -1,0 +1,28 @@
+<div class="relative bg-white dark:bg-gray-800 h-20 sm:h-28 lg:h-36 overflow-hidden">
+    <div class="h-full flex flex-col justify-between">
+        <!-- Events -->
+        <div class="grow flex flex-col relative p-0.5 sm:p-1.5 overflow-hidden">
+            @Events
+            <div class="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white dark:from-gray-800 to-transparent pointer-events-none" aria-hidden="true"></div>
+        </div>
+        <!-- Cell footer -->
+        <div class="flex justify-between items-center p-0.5 sm:p-1.5">
+            @if (ShowMoreButton)
+            {
+                <button class="text-xs text-gray-500 dark:text-gray-300 font-medium whitespace-nowrap text-center sm:py-0.5 px-0.5 sm:px-2 border border-gray-200 dark:border-gray-700 rounded">
+                    <span class="md:hidden">+</span><span>@MoreCount</span> <span class="hidden md:inline">more</span>
+                </button>
+            }
+            <!-- Day number -->
+            <button class="inline-flex ml-auto w-6 h-6 items-center justify-center text-xs sm:text-sm dark:text-gray-300 font-medium text-center rounded-full hover:bg-violet-100 dark:hover:bg-gray-600 @(IsToday ? "text-violet-500" : "")">@DayNumber</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public int DayNumber { get; set; }
+    [Parameter, EditorRequired] public RenderFragment Events { get; set; } = null!;
+    [Parameter] public bool ShowMoreButton { get; set; }
+    [Parameter] public int MoreCount { get; set; }
+    [Parameter] public bool IsToday { get; set; }
+}

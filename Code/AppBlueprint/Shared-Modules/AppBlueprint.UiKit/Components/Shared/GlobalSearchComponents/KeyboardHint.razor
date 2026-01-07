@@ -1,0 +1,12 @@
+@* Keyboard shortcut hint with key display and label *@
+
+<span class="flex items-center gap-1">
+    <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700">@Keys</kbd>
+    @Label
+</span>
+
+@code {
+    [Parameter, EditorRequired] public string Keys { get; set; } = "";
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+
+}

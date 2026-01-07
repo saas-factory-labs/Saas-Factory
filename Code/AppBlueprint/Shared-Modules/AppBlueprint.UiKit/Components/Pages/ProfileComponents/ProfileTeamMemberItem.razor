@@ -1,0 +1,24 @@
+<li class="-mx-2">
+    <button class="w-full p-2 rounded-lg @(IsActive ? "bg-linear-to-r from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]" : "")" @onclick="OnClick">
+        <div class="flex items-center">
+            <div class="relative mr-2">
+                <img class="w-8 h-8 rounded-full" src="@AvatarUrl" width="32" height="32" alt="@Name"/>
+                @if (IsOnline)
+                {
+                    <div class="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full"></div>
+                }
+            </div>
+            <div class="truncate">
+                <span class="text-sm font-medium text-gray-800 dark:text-gray-100">@Name</span>
+            </div>
+        </div>
+    </button>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public string Name { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string AvatarUrl { get; set; } = string.Empty;
+    [Parameter] public bool IsOnline { get; set; }
+    [Parameter] public bool IsActive { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+}

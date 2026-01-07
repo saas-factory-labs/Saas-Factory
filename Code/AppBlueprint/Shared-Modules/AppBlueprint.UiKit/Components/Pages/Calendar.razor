@@ -1,4 +1,5 @@
 @page "/calendar"
+@using AppBlueprint.UiKit.Components.Pages.CalendarComponents
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
@@ -54,34 +55,19 @@
         <div class="mb-4 sm:mb-0 mr-2">
             <ul class="flex flex-wrap items-center -m-1">
                 <li class="m-1">
-                    <button class="btn-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400">
-                        <div class="w-1 h-3.5 bg-sky-500 shrink-0"></div>
-                        <span class="ml-1.5">Acme Inc.</span>
-                    </button>
+                    <CalendarFilterButton ColorClass="bg-sky-500" Label="Acme Inc." />
                 </li>
                 <li class="m-1">
-                    <button class="btn-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400">
-                        <div class="w-1 h-3.5 bg-emerald-500 shrink-0"></div>
-                        <span class="ml-1.5">Life & Family</span>
-                    </button>
+                    <CalendarFilterButton ColorClass="bg-emerald-500" Label="Life & Family" />
                 </li>
                 <li class="m-1">
-                    <button class="btn-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400">
-                        <div class="w-1 h-3.5 bg-violet-500 shrink-0"></div>
-                        <span class="ml-1.5">Reservations</span>
-                    </button>
+                    <CalendarFilterButton ColorClass="bg-violet-500" Label="Reservations" />
                 </li>
                 <li class="m-1">
-                    <button class="btn-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400">
-                        <div class="w-1 h-3.5 bg-rose-400 shrink-0"></div>
-                        <span class="ml-1.5">Events</span>
-                    </button>
+                    <CalendarFilterButton ColorClass="bg-rose-400" Label="Events" />
                 </li>
                 <li class="m-1">
-                    <button class="btn-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400">
-                        <div class="w-1 h-3.5 bg-amber-500 shrink-0"></div>
-                        <span class="ml-1.5">Misc</span>
-                    </button>
+                    <CalendarFilterButton ColorClass="bg-amber-500" Label="Misc" />
                 </li>
                 <li class="m-1">
                     <button class="btn-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-violet-500">+Add New</button>
@@ -125,11 +111,7 @@
             <!-- Empty cells (previous month) -->
             @for (int i = 0; i < startingBlankDays; i++)
             {
-                <div class="bg-gray-50 dark:bg-gray-800 h-20 sm:h-28 lg:h-36">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-                        <rect width="100%" height="100%" fill="url(#stripes)"/>
-                    </svg>
-                </div>
+                <CalendarEmptyCell />
             }
 
             <!-- Days of the current month -->
@@ -137,53 +119,26 @@
             {
                 var currentDay = day;
                 var dayEvents = GetEventsForDay(currentDay);
-                <div class="relative bg-white dark:bg-gray-800 h-20 sm:h-28 lg:h-36 overflow-hidden">
-                    <div class="h-full flex flex-col justify-between">
-                        <!-- Events -->
-                        <div class="grow flex flex-col relative p-0.5 sm:p-1.5 overflow-hidden">
-                            @foreach (var evt in dayEvents.Take(2))
-                            {
-                                <button class="relative w-full text-left mb-1">
-                                    <div class="px-2 py-0.5 rounded overflow-hidden @GetEventColorClass(evt.Color)">
-                                        <div class="text-xs font-semibold truncate">@evt.Name</div>
-                                        <div class="text-xs uppercase truncate hidden sm:block">
-                                            @if (evt.StartTime.HasValue)
-                                            {
-                                                <span>@DateTime.Today.Add(evt.StartTime.Value).ToString("h:mm tt")</span>
-                                            }
-                                            @if (evt.EndTime.HasValue)
-                                            {
-                                                <span> - @DateTime.Today.Add(evt.EndTime.Value).ToString("h:mm tt")</span>
-                                            }
-                                        </div>
-                                    </div>
-                                </button>
-                            }
-                            <div class="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white dark:from-gray-800 to-transparent pointer-events-none" aria-hidden="true"></div>
-                        </div>
-                        <!-- Cell footer -->
-                        <div class="flex justify-between items-center p-0.5 sm:p-1.5">
-                            @if (dayEvents.Count > 2)
-                            {
-                                <button class="text-xs text-gray-500 dark:text-gray-300 font-medium whitespace-nowrap text-center sm:py-0.5 px-0.5 sm:px-2 border border-gray-200 dark:border-gray-700 rounded">
-                                    <span class="md:hidden">+</span><span>@(dayEvents.Count - 2)</span> <span class="hidden md:inline">more</span>
-                                </button>
-                            }
-                            <!-- Day number -->
-                            <button class="inline-flex ml-auto w-6 h-6 items-center justify-center text-xs sm:text-sm dark:text-gray-300 font-medium text-center rounded-full hover:bg-violet-100 dark:hover:bg-gray-600 @(IsToday(currentDay) ? "text-violet-500" : "")">@currentDay</button>
-                        </div>
-                    </div>
-                </div>
+                <CalendarDayCell DayNumber="@currentDay" 
+                                 IsToday="@IsToday(currentDay)" 
+                                 ShowMoreButton="@(dayEvents.Count > 2)" 
+                                 MoreCount="@(dayEvents.Count - 2)">
+                    <Events>
+                        @foreach (var evt in dayEvents.Take(2))
+                        {
+                            <CalendarEventButton EventName="@evt.Name" 
+                                                 ColorClass="@GetEventColorClass(evt.Color)" 
+                                                 StartTime="@evt.StartTime" 
+                                                 EndTime="@evt.EndTime" />
+                        }
+                    </Events>
+                </CalendarDayCell>
             }
 
             <!-- Empty cells (next month) -->
             @for (int i = 0; i < endingBlankDays; i++)
             {
-                <div class="bg-gray-50 dark:bg-gray-800 h-20 sm:h-28 lg:h-36">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-                        <rect width="100%" height="100%" fill="url(#stripes)"/>
-                    </svg>
-                </div>
+                <CalendarEmptyCell />
             }
         </div>
     </div>

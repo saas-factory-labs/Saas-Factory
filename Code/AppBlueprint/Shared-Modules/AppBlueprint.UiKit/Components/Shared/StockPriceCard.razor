@@ -1,0 +1,226 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Stock/Asset price card with mini chart - reusable for financial assets, metrics, subscriptions *@
+
+<div class="flex flex-col col-span-full sm:col-span-6 xl:col-span-3 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <div class="px-5 pt-5">
+        <header>
+            <h3 class="@GetTitleSizeClass() font-semibold text-gray-500 uppercase mb-1">
+                <span class="text-gray-800 dark:text-gray-100">@Name</span>@if (!string.IsNullOrEmpty(Subtitle))
+                {
+                    <text> - @Subtitle</text>
+                }
+            </h3>
+            <div class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1">@FormatPrice()</div>
+            @if (ShowChange && (ChangeAmount != 0 || !string.IsNullOrEmpty(CustomChangeDisplay)))
+            {
+                <div class="text-sm">
+                    @if (!string.IsNullOrEmpty(CustomChangeDisplay))
+                    {
+                        <span class="font-medium @GetChangeColorClass()">@CustomChangeDisplay</span>
+                    }
+                    else
+                    {
+                        <span class="font-medium @GetChangeColorClass()">@FormatChange()</span>
+                    }
+                    @if (!string.IsNullOrEmpty(ChangePeriod))
+                    {
+                        <text> - @ChangePeriod</text>
+                    }
+                </div>
+            }
+        </header>
+    </div>
+    <!-- Chart -->
+    @if (ShowChart && ChartData is not null && ChartData.Any())
+    {
+        <div class="grow">
+            <AppBlueprint.UiKit.Components.Charts.LineChart
+                CanvasId="@($"stock-chart-{Name.Replace(" ", "-").ToLower()}")"
+                Height="@ChartHeight"
+                Labels="@ChartLabels"
+                Datasets="@GetChartDatasets()"
+                ShowXAxis="false"
+                ShowYAxis="false"
+                UseTimeScale="false"
+                ContainerClass="grow"/>
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Primary name/symbol (e.g., "Google", "AAPL", "Premium Plan")
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Subtitle (e.g., "Alphabet", "Apple Inc.", "Monthly")
+    /// </summary>
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    /// <summary>
+    /// Current price/value
+    /// </summary>
+    [Parameter, EditorRequired]
+    public decimal Price { get; set; }
+
+    /// <summary>
+    /// Currency symbol
+    /// </summary>
+    [Parameter]
+    public string Currency { get; set; } = "$";
+
+    /// <summary>
+    /// Change amount (positive or negative)
+    /// </summary>
+    [Parameter]
+    public decimal ChangeAmount { get; set; }
+
+    /// <summary>
+    /// Change percentage
+    /// </summary>
+    [Parameter]
+    public decimal ChangePercentage { get; set; }
+
+    /// <summary>
+    /// Custom change display (e.g., "+$49 (4.7%) ↑") - overrides ChangeAmount/ChangePercentage
+    /// </summary>
+    [Parameter]
+    public string? CustomChangeDisplay { get; set; }
+
+    /// <summary>
+    /// Time period for change (e.g., "Today", "24h", "7d")
+    /// </summary>
+    [Parameter]
+    public string ChangePeriod { get; set; } = "Today";
+
+    /// <summary>
+    /// Whether to show the change information
+    /// </summary>
+    [Parameter]
+    public bool ShowChange { get; set; } = true;
+
+    /// <summary>
+    /// Whether to show the mini chart
+    /// </summary>
+    [Parameter]
+    public bool ShowChart { get; set; } = true;
+
+    /// <summary>
+    /// Chart height in pixels
+    /// </summary>
+    [Parameter]
+    public int ChartHeight { get; set; } = 98;
+
+    /// <summary>
+    /// Chart data points
+    /// </summary>
+    [Parameter]
+    public List<double>? ChartData { get; set; }
+
+    /// <summary>
+    /// Chart labels (dates/times)
+    /// </summary>
+    [Parameter]
+    public List<string>? ChartLabels { get; set; }
+
+    /// <summary>
+    /// Chart line color (overrides automatic color based on change direction)
+    /// </summary>
+    [Parameter]
+    public string? ChartColor { get; set; }
+
+    /// <summary>
+    /// Title size variant: xs, sm, md
+    /// </summary>
+    [Parameter]
+    public string TitleSize { get; set; } = "sm";
+
+    private string GetTitleSizeClass()
+    {
+        return TitleSize.ToLower() switch
+        {
+            "xs" => "text-xs",
+            "sm" => "text-sm",
+            "md" => "text-base",
+            _ => "text-sm"
+        };
+    }
+
+    private string FormatPrice()
+    {
+        return $"{Currency}{Price:N2}";
+    }
+
+    private string FormatChange()
+    {
+        string sign = ChangeAmount >= 0 ? "+" : "";
+        string amountStr = $"{sign}{Currency}{Math.Abs(ChangeAmount):N0}";
+        string percentageStr = $"({Math.Abs(ChangePercentage):F1}%)";
+        return $"{amountStr} {percentageStr}";
+    }
+
+    private string GetChangeColorClass()
+    {
+        if (!string.IsNullOrEmpty(CustomChangeDisplay))
+        {
+            // Auto-detect from custom display
+            if (CustomChangeDisplay.StartsWith("+", StringComparison.Ordinal) || 
+                CustomChangeDisplay.Contains("↑", StringComparison.Ordinal))
+                return "text-green-600 dark:text-green-500";
+            if (CustomChangeDisplay.StartsWith("-", StringComparison.Ordinal) || 
+                CustomChangeDisplay.Contains("↓", StringComparison.Ordinal))
+                return "text-red-500";
+        }
+
+        return ChangeAmount >= 0 ? "text-green-600 dark:text-green-500" : "text-red-500";
+    }
+
+    private List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset> GetChartDatasets()
+    {
+        if (ChartData is null || !ChartData.Any())
+            return [];
+
+        string borderColor = ChartColor;
+        string backgroundColor = ChartColor;
+
+        if (string.IsNullOrEmpty(borderColor))
+        {
+            // Auto-determine color based on change direction
+            if (ChangeAmount >= 0)
+            {
+                borderColor = "rgb(62, 201, 114)"; // green
+                backgroundColor = "rgba(62, 201, 114, 0.1)";
+            }
+            else
+            {
+                borderColor = "rgb(244, 63, 94)"; // rose-500
+                backgroundColor = "rgba(255, 86, 86, 0.1)";
+            }
+        }
+        else
+        {
+            // Parse hex color if provided
+            backgroundColor = borderColor.Replace("rgb", "rgba", StringComparison.Ordinal)
+                .Replace(")", ", 0.1)", StringComparison.Ordinal);
+        }
+
+        return
+        [
+            new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+            {
+                Data = ChartData,
+                BorderColor = borderColor,
+                BackgroundColor = backgroundColor,
+                Fill = true,
+                Tension = 0.2,
+                PointRadius = 0,
+                PointHoverRadius = 3,
+                BorderWidth = 2
+            }
+        ];
+    }
+}

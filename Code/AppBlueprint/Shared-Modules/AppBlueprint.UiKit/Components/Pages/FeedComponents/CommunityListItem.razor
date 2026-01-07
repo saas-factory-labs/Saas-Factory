@@ -1,0 +1,33 @@
+@* Community list item with avatar, name, and join/joined button *@
+
+<li>
+    <div class="flex items-center justify-between">
+        <div class="grow flex items-center">
+            <div class="relative mr-3">
+                <img class="w-8 h-8 rounded-full" src="@ImageUrl" width="32" height="32" alt="@Name" />
+            </div>
+            <div class="truncate">
+                <span class="text-sm font-medium text-gray-800 dark:text-gray-100">@Name</span>
+            </div>
+        </div>
+        @if (IsJoined)
+        {
+            <button class="text-xs inline-flex font-medium bg-green-500/20 text-green-700 rounded-full text-center px-2.5 py-1">
+                <svg class="fill-current shrink-0" width="16" height="16" viewBox="0 0 16 16">
+                    <path d="m2.457 8.516.969-.99 2.516 2.481 5.324-5.304.985.989-6.309 6.284z"></path>
+                </svg>
+            </button>
+        }
+        else
+        {
+            <button class="btn-xs text-xs border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300 px-2.5 py-1 rounded-full shadow-none">Join</button>
+        }
+    </div>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public string Name { get; set; } = "";
+    [Parameter, EditorRequired] public string ImageUrl { get; set; } = "";
+    [Parameter] public bool IsJoined { get; set; }
+
+}

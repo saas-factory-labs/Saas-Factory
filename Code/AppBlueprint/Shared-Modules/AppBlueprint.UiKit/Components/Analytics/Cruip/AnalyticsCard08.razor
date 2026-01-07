@@ -1,20 +1,17 @@
-<div class="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
-    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
-        <h2 class="font-semibold text-gray-800 dark:text-gray-100">Sessions By Device</h2>
-    </header>
-    <!-- Chart -->
-    <div class="grow flex flex-col justify-center p-5">
-        <AppBlueprint.UiKit.Components.Charts.DoughnutChart
-            CanvasId="analytics-card-08-chart"
-            Labels="@labels"
-            Data="@data"
-            BackgroundColors="@backgroundColors"
-            HoverBackgroundColors="@hoverBackgroundColors"
-            Width="389"
-            Height="260"
-            Cutout="80%" />
-    </div>
-</div>
+<ChartCard 
+    Title="Sessions By Device"
+    GridColumnClass="sm:col-span-6 xl:col-span-4"
+    ContentClass="grow flex flex-col justify-center p-5">
+    <AppBlueprint.UiKit.Components.Charts.DoughnutChart
+        CanvasId="analytics-card-08-chart"
+        Labels="@labels"
+        Data="@data"
+        BackgroundColors="@backgroundColors"
+        HoverBackgroundColors="@hoverBackgroundColors"
+        Width="389"
+        Height="260"
+        Cutout="80%" />
+</ChartCard>
 
 @code {
     private List<string> labels = new() { "Desktop", "Mobile", "Tablet" };

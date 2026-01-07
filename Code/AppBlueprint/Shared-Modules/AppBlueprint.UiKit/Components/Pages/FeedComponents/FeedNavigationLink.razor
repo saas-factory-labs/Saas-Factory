@@ -1,0 +1,34 @@
+@* Feed sidebar navigation link with icon and label *@
+
+<li class="mr-0.5 md:mr-0 md:mb-0.5">
+    <a class="@GetLinkClasses()" href="@Href">
+        <svg class="shrink-0 fill-current @GetIconColorClass() mr-2" width="16" height="16" viewBox="0 0 16 16">
+            @((MarkupString)IconPath)
+        </svg>
+        <span class="text-sm font-medium @GetTextColorClass()">@Label</span>
+    </a>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+    [Parameter, EditorRequired] public string Href { get; set; } = "#";
+    [Parameter, EditorRequired] public string IconPath { get; set; } = "";
+    [Parameter] public bool IsActive { get; set; }
+
+    private string GetLinkClasses()
+    {
+        string baseClasses = "flex items-center px-2.5 py-2 rounded-lg whitespace-nowrap";
+        return IsActive ? $"{baseClasses} bg-white dark:bg-gray-800" : baseClasses;
+    }
+
+    private string GetIconColorClass()
+    {
+        return IsActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500";
+    }
+
+    private string GetTextColorClass()
+    {
+        return IsActive ? "text-violet-500" : "text-gray-600 dark:text-gray-300";
+    }
+
+}

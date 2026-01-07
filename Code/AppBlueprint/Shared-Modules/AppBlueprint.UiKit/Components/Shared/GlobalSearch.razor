@@ -1,5 +1,6 @@
 @* Global Search Modal with recent searches and quick actions *@
 @using Microsoft.JSInterop
+@using AppBlueprint.UiKit.Components.Shared.GlobalSearchComponents
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
@@ -59,29 +60,14 @@
                             {
                                 var isSelected = selectedIndex == GetResultIndex(result);
                                 <li>
-                                    <button type="button"
-                                            class="@GetResultClasses(isSelected)"
-                                            @onclick="() => SelectResult(result)"
-                                            @onmouseenter="() => selectedIndex = GetResultIndex(result)">
-                                        <div class="@GetIconClasses(result.Category)">
-                                            @result.Icon
-                                        </div>
-                                        <div class="flex-1 min-w-0 text-left">
-                                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                                                @((MarkupString)HighlightMatch(result.Title, searchQuery))
-                                            </div>
-                                            @if (!string.IsNullOrEmpty(result.Description))
-                                            {
-                                                <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@result.Description</div>
-                                            }
-                                        </div>
-                                        @if (!string.IsNullOrEmpty(result.Badge))
-                                        {
-                                            <span class="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
-                                                @result.Badge
-                                            </span>
-                                        }
-                                    </button>
+                                    <SearchResultItem Icon="@result.Icon"
+                                                      HighlightedTitle="@HighlightMatch(result.Title, searchQuery)"
+                                                      Description="@result.Description"
+                                                      Badge="@result.Badge"
+                                                      Category="@result.Category"
+                                                      IsSelected="@isSelected"
+                                                      OnClick="() => SelectResult(result)"
+                                                      OnMouseEnter="() => selectedIndex = GetResultIndex(result)" />
                                 </li>
                             }
                         </ul>
@@ -113,14 +99,8 @@
                             @foreach (var recent in RecentSearches.Take(5))
                             {
                                 <li>
-                                    <button type="button"
-                                            class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
-                                            @onclick="() => UseRecentSearch(recent)">
-                                        <svg class="shrink-0 mr-3 h-4 w-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <span>@recent</span>
-                                    </button>
+                                    <RecentSearchItem SearchTerm="@recent"
+                                                      OnClick="() => UseRecentSearch(recent)" />
                                 </li>
                             }
                         </ul>
@@ -135,18 +115,10 @@
                             @foreach (var action in QuickActions)
                             {
                                 <li>
-                                    <button type="button"
-                                            class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
-                                            @onclick="() => ExecuteQuickAction(action)">
-                                        <span class="shrink-0 mr-3 flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700">
-                                            @action.Icon
-                                        </span>
-                                        <span class="flex-1 text-left">@action.Label</span>
-                                        @if (!string.IsNullOrEmpty(action.Shortcut))
-                                        {
-                                            <kbd class="ml-2 px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 rounded">@action.Shortcut</kbd>
-                                        }
-                                    </button>
+                                    <QuickActionItem Icon="@action.Icon"
+                                                     Label="@action.Label"
+                                                     Shortcut="@action.Shortcut"
+                                                     OnClick="() => ExecuteQuickAction(action)" />
                                 </li>
                             }
                         </ul>
@@ -157,18 +129,9 @@
             @* Footer *@
             <div class="flex flex-wrap items-center justify-between bg-gray-50 dark:bg-gray-700/30 px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex items-center gap-4">
-                    <span class="flex items-center gap-1">
-                        <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700">↑↓</kbd>
-                        navigate
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700">↵</kbd>
-                        select
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700">esc</kbd>
-                        close
-                    </span>
+                    <KeyboardHint Keys="↑↓" Label="navigate" />
+                    <KeyboardHint Keys="↵" Label="select" />
+                    <KeyboardHint Keys="esc" Label="close" />
                 </div>
                 <span>Press <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700">Ctrl+/</kbd> for help</span>
             </div>
@@ -327,26 +290,6 @@
         }
 
         await Close();
-    }
-
-    private string GetResultClasses(bool isSelected)
-    {
-        var baseClasses = "flex items-center w-full px-4 py-3 transition-colors";
-        return isSelected
-            ? $"{baseClasses} bg-violet-50 dark:bg-violet-500/10"
-            : $"{baseClasses} hover:bg-gray-50 dark:hover:bg-gray-700/30";
-    }
-
-    private string GetIconClasses(string category)
-    {
-        var baseClasses = "shrink-0 mr-3 flex items-center justify-center w-10 h-10 rounded-lg";
-        return category switch
-        {
-            "Pages" => $"{baseClasses} bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400",
-            "Settings" => $"{baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
-            "Actions" => $"{baseClasses} bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400",
-            _ => $"{baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-        };
     }
 
     private string HighlightMatch(string text, string query)

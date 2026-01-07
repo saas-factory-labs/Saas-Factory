@@ -1,0 +1,20 @@
+<th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap @(Sortable ? "cursor-pointer" : "")"
+    @onclick="OnClick">
+    <div class="flex items-center font-semibold text-left">
+        <span>@Title</span>
+        @if (Sortable && IsSorted)
+        {
+            <svg class="shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(SortDescending ? "rotate-180" : "")" width="8" height="8" viewBox="0 0 8 8">
+                <path d="M4 0L0 4h8z" />
+            </svg>
+        }
+    </div>
+</th>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public bool Sortable { get; set; }
+    [Parameter] public bool IsSorted { get; set; }
+    [Parameter] public bool SortDescending { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+}

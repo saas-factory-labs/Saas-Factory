@@ -1,0 +1,306 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+@using AppBlueprint.UiKit.Components.Shared.ProductCardComponents
+
+@* Unified product card component - reusable for e-commerce, profiles, services, listings *@
+
+<div class="@GetContainerClass()">
+    <div class="flex flex-col h-full">
+        <!-- Image -->
+        <div class="relative">
+            <img class="w-full" src="@ImageUrl" width="@ImageWidth" height="@ImageHeight" alt="@ImageAlt" />
+            
+            <!-- Top-right badge (Popular, Featured, etc.) -->
+            @if (!string.IsNullOrEmpty(TopRightBadgeText))
+            {
+                <ProductImageBadge Text="@TopRightBadgeText"
+                                   ShowIcon="@ShowTopRightBadgeIcon"
+                                   Position="top-0 right-0 mt-4 mr-4" />
+            }
+            
+            <!-- Bottom-right badge (Special Offer, etc.) -->
+            @if (!string.IsNullOrEmpty(BottomRightBadgeText))
+            {
+                <ProductImageBadge Text="@BottomRightBadgeText"
+                                   ShowIcon="@ShowBottomRightBadgeIcon"
+                                   Position="bottom-0 right-0 mb-4 mr-4" />
+            }
+            
+            <!-- Like/Favorite button -->
+            @if (ShowLikeButton)
+            {
+                <ProductLikeButton OnClick="@OnLikeClicked" />
+            }
+        </div>
+        
+        <!-- Card Content -->
+        <div class="grow flex flex-col p-5">
+            <!-- Card body -->
+            <div class="grow">
+                <!-- Header -->
+                <header class="mb-@(string.IsNullOrEmpty(Description) ? "2" : "3")">
+                    @if (!string.IsNullOrEmpty(LinkUrl))
+                    {
+                        <a href="@LinkUrl">
+                            <h3 class="text-lg text-gray-800 dark:text-gray-100 font-semibold @(string.IsNullOrEmpty(Description) ? "" : "mb-1")">@Title</h3>
+                        </a>
+                    }
+                    else
+                    {
+                        <h3 class="text-lg text-gray-800 dark:text-gray-100 font-semibold @(string.IsNullOrEmpty(Description) ? "" : "mb-1")">@Title</h3>
+                    }
+                    @if (!string.IsNullOrEmpty(Description))
+                    {
+                        <div class="text-sm">@Description</div>
+                    }
+                </header>
+                
+                <!-- Rating and Price (if shown before features) -->
+                @if (ShowRatingAndPriceBeforeFeatures && (ShowRating || ShowPrice))
+                {
+                    <ProductRatingPriceSection ShowRating="@ShowRating"
+                                               Rating="@Rating"
+                                               RatingCount="@RatingCount"
+                                               ShowRatingCount="@ShowRatingCount"
+                                               ShowPrice="@ShowPrice"
+                                               PriceAmount="@PriceAmount"
+                                               IsSale="@IsSale"
+                                               OriginalPriceText="@OriginalPriceText"
+                                               MarginClass="@("mb-" + (Features?.Count > 0 ? "4" : "5"))" />
+                }
+                
+                <!-- Features list -->
+                @if (Features?.Count > 0)
+                {
+                    <ul class="text-sm space-y-2 mb-5 dark:text-gray-300">
+                        @foreach (var feature in Features)
+                        {
+                            <ProductFeatureItem Text="@feature.Text"
+                                                IconSvg="@feature.IconSvg"
+                                                TextColor="@feature.TextColor" />
+                        }
+                    </ul>
+                }
+                
+                <!-- Rating and Price (if shown after features) -->
+                @if (!ShowRatingAndPriceBeforeFeatures && (ShowRating || ShowPrice))
+                {
+                    <ProductRatingPriceSection ShowRating="@ShowRating"
+                                               Rating="@Rating"
+                                               RatingCount="@RatingCount"
+                                               ShowRatingCount="@ShowRatingCount"
+                                               ShowPrice="@ShowPrice"
+                                               PriceAmount="@PriceAmount"
+                                               IsSale="@IsSale"
+                                               OriginalPriceText="@OriginalPriceText" />
+                }
+            </div>
+            
+            <!-- Card footer -->
+            @if (ShowButton && !string.IsNullOrEmpty(ButtonText))
+            {
+                <div class="@(ShowRatingAndPriceBeforeFeatures && (ShowRating || ShowPrice) ? "" : "mt-5")">
+                    <a class="btn-sm w-full bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" href="@ButtonUrl" @onclick="OnButtonClicked">@ButtonText</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Image URL
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string ImageUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Card title
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Image width for aspect ratio
+    /// </summary>
+    [Parameter]
+    public int ImageWidth { get; set; } = 286;
+
+    /// <summary>
+    /// Image height for aspect ratio
+    /// </summary>
+    [Parameter]
+    public int ImageHeight { get; set; } = 160;
+
+    /// <summary>
+    /// Image alt text
+    /// </summary>
+    [Parameter]
+    public string ImageAlt { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Optional description text
+    /// </summary>
+    [Parameter]
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// Optional link URL for title
+    /// </summary>
+    [Parameter]
+    public string? LinkUrl { get; set; }
+
+    /// <summary>
+    /// Badge text shown in top-right corner (e.g., "Popular", "Featured")
+    /// </summary>
+    [Parameter]
+    public string? TopRightBadgeText { get; set; }
+
+    /// <summary>
+    /// Show icon in top-right badge
+    /// </summary>
+    [Parameter]
+    public bool ShowTopRightBadgeIcon { get; set; } = true;
+
+    /// <summary>
+    /// Badge text shown in bottom-right corner (e.g., "Special Offer")
+    /// </summary>
+    [Parameter]
+    public string? BottomRightBadgeText { get; set; }
+
+    /// <summary>
+    /// Show icon in bottom-right badge
+    /// </summary>
+    [Parameter]
+    public bool ShowBottomRightBadgeIcon { get; set; } = true;
+
+    /// <summary>
+    /// Whether to show the like/favorite button
+    /// </summary>
+    [Parameter]
+    public bool ShowLikeButton { get; set; } = false;
+
+    /// <summary>
+    /// Event callback when like button is clicked
+    /// </summary>
+    [Parameter]
+    public EventCallback OnLikeClicked { get; set; }
+
+    /// <summary>
+    /// Whether to show rating
+    /// </summary>
+    [Parameter]
+    public bool ShowRating { get; set; } = true;
+
+    /// <summary>
+    /// Rating value (0-5)
+    /// </summary>
+    [Parameter]
+    public decimal Rating { get; set; }
+
+    /// <summary>
+    /// Number of ratings (optional)
+    /// </summary>
+    [Parameter]
+    public int? RatingCount { get; set; }
+
+    /// <summary>
+    /// Whether to show rating count
+    /// </summary>
+    [Parameter]
+    public bool ShowRatingCount { get; set; } = false;
+
+    /// <summary>
+    /// Whether to show price
+    /// </summary>
+    [Parameter]
+    public bool ShowPrice { get; set; } = true;
+
+    /// <summary>
+    /// Price amount (e.g., 89.00)
+    /// </summary>
+    [Parameter]
+    public decimal PriceAmount { get; set; }
+
+    /// <summary>
+    /// Whether this is a sale price (red badge instead of green)
+    /// </summary>
+    [Parameter]
+    public bool IsSale { get; set; } = false;
+
+    /// <summary>
+    /// Original price text (shown with strikethrough when on sale, e.g., "$199.00")
+    /// </summary>
+    [Parameter]
+    public string? OriginalPriceText { get; set; }
+
+    /// <summary>
+    /// List of features to display
+    /// </summary>
+    [Parameter]
+    public List<ProductFeature>? Features { get; set; }
+
+    /// <summary>
+    /// Whether to show rating and price before features list (true) or after (false)
+    /// </summary>
+    [Parameter]
+    public bool ShowRatingAndPriceBeforeFeatures { get; set; } = true;
+
+    /// <summary>
+    /// Whether to show the action button
+    /// </summary>
+    [Parameter]
+    public bool ShowButton { get; set; } = true;
+
+    /// <summary>
+    /// Button text (e.g., "Buy Now", "Buy Tickets", "View Details")
+    /// </summary>
+    [Parameter]
+    public string ButtonText { get; set; } = "Buy Now";
+
+    /// <summary>
+    /// Button URL
+    /// </summary>
+    [Parameter]
+    public string ButtonUrl { get; set; } = "#0";
+
+    /// <summary>
+    /// Event callback when button is clicked
+    /// </summary>
+    [Parameter]
+    public EventCallback OnButtonClicked { get; set; }
+
+    /// <summary>
+    /// Additional CSS classes for the container
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Grid column span variant (e.g., "sm:col-span-6 xl:col-span-3")
+    /// </summary>
+    [Parameter]
+    public string GridSpan { get; set; } = "col-span-full sm:col-span-6 xl:col-span-3";
+
+    private string GetContainerClass()
+    {
+        return $"{GridSpan} bg-white dark:bg-gray-800 shadow-xs rounded-xl overflow-hidden {Class}".Trim();
+    }
+
+    public sealed record ProductFeature
+    {
+        /// <summary>
+        /// Feature text
+        /// </summary>
+        public required string Text { get; init; }
+
+        /// <summary>
+        /// Optional SVG icon HTML (with classes like "fill-current text-gray-400 dark:text-gray-500 shrink-0 mr-3")
+        /// </summary>
+        public string? IconSvg { get; init; }
+
+        /// <summary>
+        /// Optional text color class (e.g., "text-red-500")
+        /// </summary>
+        public string? TextColor { get; init; }
+    }
+}

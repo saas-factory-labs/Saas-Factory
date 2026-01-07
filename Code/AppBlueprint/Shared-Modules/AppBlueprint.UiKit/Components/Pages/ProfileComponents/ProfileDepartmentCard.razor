@@ -1,0 +1,29 @@
+<div class="bg-white dark:bg-gray-900 p-4 border border-gray-200 dark:border-gray-700/60 rounded-lg shadow-xs">
+    <div class="grow flex items-center truncate mb-2">
+        <div class="w-8 h-8 shrink-0 flex items-center justify-center bg-gray-700 rounded-full mr-2">
+            <img class="ml-1" src="@IconUrl" width="14" height="14" alt="@Name"/>
+        </div>
+        <div class="truncate">
+            <span class="text-sm font-medium text-gray-800 dark:text-gray-100">@Name</span>
+        </div>
+    </div>
+    <div class="text-sm mb-3">@Description</div>
+    <div class="flex justify-between items-center">
+        <div class="flex -space-x-3 -ml-0.5">
+            @foreach (var avatar in Avatars.Take(4))
+            {
+                <img class="rounded-full border-2 border-white dark:border-gray-800 box-content" src="@avatar" width="24" height="24" alt="Avatar"/>
+            }
+        </div>
+        <div>
+            <a class="text-sm font-medium text-violet-500 hover:text-violet-600 dark:hover:text-violet-400" href="#">View -&gt;</a>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Name { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string IconUrl { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Description { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string[] Avatars { get; set; } = Array.Empty<string>();
+}

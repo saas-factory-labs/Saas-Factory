@@ -1,0 +1,11 @@
+<div class="flex items-center gap-2">
+    <span class="text-sm text-gray-500 dark:text-gray-400">
+        @SelectedCount selected
+    </span>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter, EditorRequired] public int SelectedCount { get; set; }
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = default!;
+}

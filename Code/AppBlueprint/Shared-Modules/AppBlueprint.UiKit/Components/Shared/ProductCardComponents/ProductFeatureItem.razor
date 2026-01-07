@@ -1,0 +1,16 @@
+@* Product feature list item with optional icon and custom text color *@
+
+<li class="flex items-center">
+    @if (!string.IsNullOrEmpty(IconSvg))
+    {
+        @((MarkupString)IconSvg)
+    }
+    <div class="@TextColor">@Text</div>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public string Text { get; set; } = "";
+    [Parameter] public string? IconSvg { get; set; }
+    [Parameter] public string? TextColor { get; set; }
+
+}

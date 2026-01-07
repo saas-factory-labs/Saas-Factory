@@ -1,0 +1,57 @@
+@* Individual search result item with icon, title, description, and optional badge *@
+
+<button type="button"
+        class="@GetResultClasses()"
+        @onclick="OnClick"
+        @onmouseenter="OnMouseEnter">
+    <div class="@GetIconClasses()">
+        @Icon
+    </div>
+    <div class="flex-1 min-w-0 text-left">
+        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+            @((MarkupString)HighlightedTitle)
+        </div>
+        @if (!string.IsNullOrEmpty(Description))
+        {
+            <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@Description</div>
+        }
+    </div>
+    @if (!string.IsNullOrEmpty(Badge))
+    {
+        <span class="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+            @Badge
+        </span>
+    }
+</button>
+
+@code {
+    [Parameter, EditorRequired] public RenderFragment? Icon { get; set; }
+    [Parameter, EditorRequired] public string HighlightedTitle { get; set; } = "";
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string? Badge { get; set; }
+    [Parameter, EditorRequired] public string Category { get; set; } = "";
+    [Parameter] public bool IsSelected { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public EventCallback OnMouseEnter { get; set; }
+
+    private string GetResultClasses()
+    {
+        string baseClasses = "flex items-center w-full px-4 py-3 transition-colors";
+        return IsSelected
+            ? $"{baseClasses} bg-violet-50 dark:bg-violet-500/10"
+            : $"{baseClasses} hover:bg-gray-50 dark:hover:bg-gray-700/30";
+    }
+
+    private string GetIconClasses()
+    {
+        string baseClasses = "shrink-0 mr-3 flex items-center justify-center w-10 h-10 rounded-lg";
+        return Category switch
+        {
+            "Pages" => $"{baseClasses} bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400",
+            "Settings" => $"{baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
+            "Actions" => $"{baseClasses} bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400",
+            _ => $"{baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+        };
+    }
+
+}
