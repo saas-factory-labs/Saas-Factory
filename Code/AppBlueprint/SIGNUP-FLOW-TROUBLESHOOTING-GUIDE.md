@@ -13,13 +13,13 @@ This document details the fixes implemented for the signup flow, database stored
 
 Users attempting to sign up encountered multiple progressive errors:
 
-1. **Function doesn't exist:** `create_tenant_and_user` stored procedure not installed
-2. **NULL constraint violation:** `SignupAuditLog.Id` was NULL 
-3. **Invalid ID format:** Validation function expected ULID, received custom timestamp format
-4. **Table not found:** Stored procedure referenced `Profiles` instead of `ProfileEntity`
-5. **Schema mismatch:** Stored procedure assumed `Users.ProfileId` FK, actual schema uses `ProfileEntity.UserId` FK
-6. **403 on dashboard:** Missing tenant_id claim after successful signup (requires Logto API Resource configuration)
-7. **TenantType always 0:** Both personal and business signups create Personal (0) tenants instead of Organization (1)
+1. **Function doesn't exist:** `create_tenant_and_user` stored procedure not installed ✅ FIXED
+2. **NULL constraint violation:** `SignupAuditLog.Id` was NULL ✅ FIXED
+3. **Invalid ID format:** Validation function expected ULID, received custom timestamp format ✅ FIXED (relaxed validation)
+4. **Table not found:** Stored procedure referenced `Profiles` instead of `ProfileEntity` ✅ FIXED
+5. **Schema mismatch:** Stored procedure assumed `Users.ProfileId` FK, actual schema uses `ProfileEntity.UserId` FK ✅ FIXED
+6. **403 on dashboard:** Missing tenant_id claim after successful signup ⚠️ WORKAROUND (requires Logto API Resource configuration)
+7. **TenantType always 0:** Both personal and business signups create Personal (0) tenants instead of Organization (1) ✅ FIXED
 
 ---
 
@@ -51,9 +51,19 @@ Users attempting to sign up encountered multiple progressive errors:
 
 **Problem:** Function `create_tenant_and_user` did not exist in database.
 
-**Root Cause:** Stored procedure not part of EF Core migrations, must be installed manually.
+**Root Cause:** ~~Stored procedure not part of EF Core migrations, must be installed manually.~~ ✅ **FIXED: Now part of migrations**
 
-**Solution:**
+**Solution (Updated - January 2026):**
+
+The stored procedure is now included in EF Core migration `20260107120000_AddSignupStoredProcedure.cs`.
+
+**Automatic deployment via migrations:**
+```bash
+cd /Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure
+dotnet ef database update --context ApplicationDbContext
+```
+
+**Manual deployment (legacy - if needed):**
 ```bash
 cd /Code/AppBlueprint
 docker run --rm -i \
@@ -273,62 +283,76 @@ INSERT INTO "ProfileEntity" (
 
 ---
 
-### Fix 6: TenantType Always 0 (Personal) - TO BE FIXED
+### Fix 6: TenantType Always 0 (Personal) - ✅ FIXED
 
 **Problem:** Both personal and business signups create tenants with `TenantType = 0` (Personal).
 
-**Root Cause:** 
-1. Stored procedure hardcodes `v_tenant_type := 0;` (Line 183)
-2. `SignupRequest` model doesn't include `TenantType` parameter
-3. No parameter passed from SignupComplete.razor to differentiate personal vs business
+**Status:** ✅ **RESOLVED** - All components correctly implemented
 
-**Current Code:**
+**Solution Implemented:**
 
-**CreateSignupStoredProcedure.sql (Line 183):**
+**1. CreateSignupStoredProcedure.sql:**
 ```sql
-v_tenant_type := 0; -- ❌ Always Personal
+-- Line 99: Parameter accepts tenant type
+CREATE OR REPLACE FUNCTION create_tenant_and_user(
+    p_tenant_type INTEGER,  -- 0 = Personal (B2C), 1 = Organization (B2B)
+    ...
+)
+
+-- Line 185: Uses parameter value
+v_tenant_type := p_tenant_type;
+
+-- Line 199: Stores in Tenants table
+INSERT INTO "Tenants" (..., "TenantType", ...)
+VALUES (..., v_tenant_type, ...);
 ```
 
-**SignupService.cs (Lines 173-181):**
+**2. SignupService.cs:**
 ```csharp
+// Line 71: Passes TenantType to stored procedure
+FormattableString sql = $@"
+    SELECT create_tenant_and_user(
+        {request.TenantId},
+        {request.TenantName},
+        {request.TenantType},  -- ✅ Included
+        ...
+    )";
+
+// SignupRequest includes TenantType
 public sealed record SignupRequest
 {
-    public required string TenantId { get; init; }
-    public required string TenantName { get; init; }
-    public required string UserId { get; init; }
-    public required string FirstName { get; init; }
-    public required string LastName { get; init; }
-    public required string Email { get; init; }
-    public string? ExternalAuthId { get; init; }
-    public string? IpAddress { get; init; }
-    public string? UserAgent { get; init; }
-    // ❌ Missing: TenantType
+    public required int TenantType { get; init; }  // ✅ Present
+    ...
 }
 ```
 
-**SignupComplete.razor (Lines 260-270):**
+**3. Onboarding.razor:**
 ```csharp
-// CreateBusinessAccountAsync calls same service without TenantType
+// Line 389: Personal signup
 SignupResult result = await SignupService.CreateTenantAndUserAsync(new SignupRequest
 {
-    TenantId = PrefixedUlid.Generate("tenant"),
-    TenantName = sessionData.CompanyName, // Different name, same type!
-    // ❌ No TenantType specified
+    TenantType = 0 // ✅ Personal (B2C)
+    ...
+});
+
+// Line 450: Business signup
+SignupResult result = await SignupService.CreateTenantAndUserAsync(new SignupRequest
+{
+    TenantType = 1 // ✅ Organization (B2B)
     ...
 });
 ```
 
-**Expected Behavior:**
-- Personal signup → `TenantType = 0`
-- Business signup → `TenantType = 1`
+**Verification:**
+- Personal signups create `TenantType = 0` ✅
+- Business signups create `TenantType = 1` ✅
 
-**Required Changes:**
-1. Add `TenantType` parameter to stored procedure
-2. Add `TenantType` property to `SignupRequest` record
-3. Update stored procedure call in `SignupService.cs` to pass tenant type
-4. Update `SignupComplete.razor` to pass `TenantType = 0` for personal, `TenantType = 1` for business
-
-**See Section:** "Outstanding Issues - TenantType Not Set for Business Accounts"
+**Test Query:**
+```sql
+SELECT "Id", "Name", "TenantType", "CreatedAt" 
+FROM "Tenants" 
+ORDER BY "CreatedAt" DESC;
+```
 
 ---
 
@@ -481,109 +505,86 @@ LIMIT 5;
 
 ### 1. TenantType Not Set for Business Accounts
 
-**Status:** ❌ NOT FIXED  
-**Priority:** HIGH  
-**Impact:** All tenants created as Personal (0), business signups don't get Organization (1) type
+**Status:** ✅ **RESOLVED** - Implementation complete  
+**Priority:** ~~HIGH~~ COMPLETED  
+**Impact:** ~~All tenants created as Personal (0)~~ Both Personal and Business signups now create correct tenant types
 
-**Changes Required:**
+**Implementation Confirmed:**
 
-#### Step 1: Update SignupRequest Model
-**File:** `AppBlueprint.Application/Services/SignupService.cs` (Lines 173-182)
+#### ✅ Step 1: SignupRequest Model
+**File:** `AppBlueprint.Application/Services/SignupService.cs`
 
 ```csharp
 public sealed record SignupRequest
 {
-    public required string TenantId { get; init; }
-    public required string TenantName { get; init; }
-    public required string UserId { get; init; }
-    public required string FirstName { get; init; }
-    public required string LastName { get; init; }
-    public required string Email { get; init; }
-    public string? ExternalAuthId { get; init; }
-    public string? IpAddress { get; init; }
-    public string? UserAgent { get; init; }
-    public int TenantType { get; init; } = 0; // 0 = Personal, 1 = Organization
+    public required int TenantType { get; init; }  // ✅ Present
+    // 0 = Personal, 1 = Organization
+    ...
 }
 ```
 
-#### Step 2: Update Stored Procedure
+#### ✅ Step 2: Stored Procedure
 **File:** `CreateSignupStoredProcedure.sql`
 
-**Add Parameter (Line ~19):**
 ```sql
+-- Line 99: Parameter exists
 CREATE OR REPLACE FUNCTION create_tenant_and_user(
-    p_tenant_id text,
-    p_tenant_name text,
-    p_user_id text,
-    p_user_first_name text,
-    p_user_last_name text,
-    p_user_email text,
-    p_external_auth_id text,
-    p_ip_address text,
-    p_user_agent text,
-    p_tenant_type integer DEFAULT 0  -- ✅ Add this parameter
+    p_tenant_id TEXT,
+    p_tenant_name TEXT,
+    p_tenant_type INTEGER,  -- ✅ Present
+    ...
 )
+
+-- Line 185: Uses parameter value
+v_tenant_type := p_tenant_type;  -- ✅ Correct
+
+-- Line 199: Stores in database
+INSERT INTO "Tenants" (..., "TenantType", ...)
+VALUES (..., v_tenant_type, ...);  -- ✅ Correct
 ```
 
-**Use Parameter Instead of Hardcoded Value (Line ~183):**
-```sql
--- OLD:
-v_tenant_type := 0;
-
--- NEW:
-v_tenant_type := p_tenant_type; -- ✅ Use parameter
-```
-
-#### Step 3: Update SignupService to Pass Parameter
-**File:** `AppBlueprint.Application/Services/SignupService.cs` (Lines 72-103)
+#### ✅ Step 3: SignupService Passes Parameter
+**File:** `AppBlueprint.Application/Services/SignupService.cs` (Line 71)
 
 ```csharp
-command.CommandText = @"
+FormattableString sql = $@"
     SELECT create_tenant_and_user(
-        @p_tenant_id,
-        @p_tenant_name,
-        @p_user_id,
-        @p_user_first_name,
-        @p_user_last_name,
-        @p_user_email,
-        @p_external_auth_id,
-        @p_ip_address,
-        @p_user_agent,
-        @p_tenant_type  -- ✅ Add this parameter
-    );";
-
-// Add parameters
-command.Parameters.AddWithValue("@p_tenant_id", request.TenantId);
-command.Parameters.AddWithValue("@p_tenant_name", request.TenantName);
-command.Parameters.AddWithValue("@p_user_id", request.UserId);
-command.Parameters.AddWithValue("@p_user_first_name", request.FirstName);
-command.Parameters.AddWithValue("@p_user_last_name", request.LastName);
-command.Parameters.AddWithValue("@p_user_email", request.Email);
-command.Parameters.AddWithValue("@p_external_auth_id", request.ExternalAuthId ?? (object)DBNull.Value);
-command.Parameters.AddWithValue("@p_ip_address", request.IpAddress ?? (object)DBNull.Value);
-command.Parameters.AddWithValue("@p_user_agent", request.UserAgent ?? (object)DBNull.Value);
-command.Parameters.AddWithValue("@p_tenant_type", request.TenantType); // ✅ Add this
+        {request.TenantId},
+        {request.TenantName},
+        {request.TenantType},  -- ✅ Included
+        {request.UserId},
+        ...
+    )";
 ```
 
-#### Step 4: Update SignupComplete.razor
-**File:** `AppBlueprint.Web/Components/Pages/Auth/SignupComplete.razor`
+#### ✅ Step 4: Onboarding Pages Set Correct Values
+**File:** `AppBlueprint.Web/Components/Pages/Auth/Onboarding.razor`
 
-**Personal Account (Line ~220):**
+**Personal Account (Line 389):**
 ```csharp
 SignupResult result = await SignupService.CreateTenantAndUserAsync(new SignupRequest
 {
-    TenantId = PrefixedUlid.Generate("tenant"),
-    TenantName = $"{sessionData.FirstName} {sessionData.LastName}",
-    UserId = PrefixedUlid.Generate("user"),
-    FirstName = sessionData.FirstName,
-    LastName = sessionData.LastName,
-    Email = email,
-    ExternalAuthId = logtoUserId,
-    IpAddress = ipAddress,
-    UserAgent = userAgent,
-    TenantType = 0 // ✅ Explicitly set Personal type
+    TenantType = 0 // ✅ Personal (B2C)
+    ...
 });
 ```
+
+**Business Account (Line 450):**
+```csharp
+SignupResult result = await SignupService.CreateTenantAndUserAsync(new SignupRequest
+{
+    TenantType = 1 // ✅ Organization (B2B)
+    ...
+});
+```
+
+**Verification Query:**
+```sql
+SELECT "Id", "Name", "TenantType", "Email", "CreatedAt" 
+FROM "Tenants" 
+WHERE "CreatedAt" > NOW() - INTERVAL '1 day'
+ORDER BY "CreatedAt" DESC;
+-- Expected: TenantType = 0 for personal, 1 for business
 
 **Business Account (Line ~260):**
 ```csharp
@@ -606,18 +607,6 @@ SignupResult result = await SignupService.CreateTenantAndUserAsync(new SignupReq
 ```bash
 cd /Code/AppBlueprint
 docker run --rm -i -e PGPASSWORD="<password>" postgres:17 psql \
-  -h switchyard.proxy.rlwy.net -p 58225 -U postgres -d appblueprintdb \
-  < CreateSignupStoredProcedure.sql
-```
-
-#### Step 6: Test Both Signup Flows
-1. Test personal signup → Verify `TenantType = 0`
-2. Test business signup → Verify `TenantType = 1`
-
-```sql
-SELECT "Id", "Name", "TenantType", "Email", "VatNumber", "Country" 
-FROM "Tenants" 
-ORDER BY "CreatedAt" DESC;
 ```
 
 ---
@@ -676,9 +665,10 @@ Logto__Resource=http://localhost:8091
 - **Alternative:** Consider using pgcrypto extension with true ULID generation
 
 ### 3. Stored Procedures vs EF Core Migrations
-- **Issue:** Stored procedures not part of migration pipeline, manual deployment required
-- **Lesson:** Document deployment steps clearly, consider automating via migration script
-- **Trade-off:** Stored procedures provide performance and security benefits but increase maintenance burden
+- **Issue:** ~~Stored procedures not part of migration pipeline, manual deployment required~~ ✅ **FIXED**
+- **Solution:** Added `20260107120000_AddSignupStoredProcedure.cs` migration that includes stored procedure SQL
+- **Lesson:** Complex SQL objects (functions, triggers) should be added to migrations using `migrationBuilder.Sql()`
+- **Trade-off:** Stored procedures provide performance and security benefits, now deployed automatically
 
 ### 4. Trust Boundaries Require Runtime Validation
 - **Issue:** Assumed column existence without verification
@@ -699,7 +689,7 @@ Logto__Resource=http://localhost:8091
 
 ## Future Improvements
 
-1. **Automate Stored Procedure Deployment:** Add to EF Core migration pipeline
+1. ~~**Automate Stored Procedure Deployment:** Add to EF Core migration pipeline~~ ✅ **COMPLETED** - See migration `20260107120000_AddSignupStoredProcedure.cs`
 2. **Switch to True ULIDs:** Install PostgreSQL ULID extension for standardized IDs
 3. **Add Stored Procedure Tests:** Integration tests validating SQL logic
 4. **Improve ID Column Consistency:** Standardize varchar lengths (currently varchar(40) vs varchar(1024))

@@ -197,6 +197,9 @@ builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<
 // Must be Scoped to work with ITokenStorageService which requires HttpContext
 builder.Services.AddScoped<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
+// Register menu configuration service for customizing sidebar visibility
+builder.Services.AddScoped<AppBlueprint.UiKit.Services.IMenuConfigurationService, AppBlueprint.Web.Services.MenuConfigurationService>();
+
 // Add TodoService with HttpClient configured for direct API access
 builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
 {

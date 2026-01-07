@@ -1,6 +1,8 @@
 @using Microsoft.JSInterop
+@using AppBlueprint.UiKit.Services
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
+@inject IMenuConfigurationService MenuConfigurationService
 
 <div class="min-w-fit bg-gray-100 dark:bg-gray-900">
 <!-- Sidebar backdrop (mobile only) -->
@@ -160,81 +162,104 @@
         </a>
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/customers"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Customers</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/orders"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Orders</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/invoices"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Invoices</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/shop"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Shop</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/shop-2"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Shop 2</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/product"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Single Product</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/cart"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/cart2"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart 2</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/cart3"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart 3</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/pay"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pay</span>
-                    </a>
-                </li>
+                @if (ShouldShowMenuItem("customers"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/ecommerce/customers"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Customers</span>
+                        </a>
+                    </li>
+                }
+                @if (ShouldShowMenuItem("Orders"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/ecommerce/orders"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Orders</span>
+                        </a>
+                    </li>
+                }
+                @if (ShouldShowMenuItem("Invoices"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/ecommerce/invoices"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Invoices</span>
+                        </a>
+                    </li>
+                }
+                @* Shop is hidden for all authenticated users *@
+                @if (ShouldShowMenuItem("Shop2"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/ecommerce/shop-2"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Shop 2</span>
+                        </a>
+                    </li>
+                }
+                @if (ShouldShowMenuItem("SingleProduct"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/ecommerce/product"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Single Product</span>
+                        </a>
+                    </li>
+                }
+                @if (ShouldShowMenuItem("Cart"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/ecommerce/cart"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart</span>
+                        </a>
+                    </li>
+                }
+                @if (ShouldShowMenuItem("cart2"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/ecommerce/cart2"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart 2</span>
+                        </a>
+                    </li>
+                }
+                @if (ShouldShowMenuItem("cart3"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/ecommerce/cart3"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart 3</span>
+                        </a>
+                    </li>
+                }
+                @if (ShouldShowMenuItem("Pay"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/ecommerce/pay"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pay</span>
+                        </a>
+                    </li>
+                }
             </ul>
         </div>
     </ChildContent>
 </SidebarLinkGroup>
 
+@if (ShouldShowMenuItem("community-users"))
+{
 <!-- Community -->
 <SidebarLinkGroup ActiveCondition="@IsCommunityActive">
     <ChildContent>
@@ -291,7 +316,10 @@
         </div>
     </ChildContent>
 </SidebarLinkGroup>
+}
 
+@if (ShouldShowMenuItem("job-board"))
+{
 <!-- Job Board -->
 <SidebarLinkGroup ActiveCondition="@IsJobBoardActive">
     <ChildContent>
@@ -341,7 +369,10 @@
         </div>
     </ChildContent>
 </SidebarLinkGroup>
+}
 
+@if (ShouldShowMenuItem("tasks"))
+{
 <!-- Tasks -->
 <SidebarLinkGroup ActiveCondition="@IsTasksActive">
     <ChildContent>
@@ -384,7 +415,10 @@
         </div>
     </ChildContent>
 </SidebarLinkGroup>
+}
 
+@if (ShouldShowMenuItem("finance"))
+{
 <!-- Finance -->
 <SidebarLinkGroup ActiveCondition="@IsFinanceActive">
     <ChildContent>
@@ -427,7 +461,10 @@
         </div>
     </ChildContent>
 </SidebarLinkGroup>
+}
 
+@if (_isDemo)
+{
 <!-- Messages -->
 <li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0">
     <a class="block text-gray-800 dark:text-gray-100 truncate transition hover:text-gray-900 dark:hover:text-white" href="/messages">
@@ -464,6 +501,10 @@
     </a>
 </li>
 
+}
+
+@if (_isDemo)
+{
 <!-- Campaigns -->
 <li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0">
     <a class="block text-gray-800 dark:text-gray-100 truncate transition hover:text-gray-900 dark:hover:text-white" href="/campaigns">
@@ -475,7 +516,10 @@
         </div>
     </a>
 </li>
+}
 
+@if (ShouldShowMenuItem("Account") || ShouldShowMenuItem("Notifications") || ShouldShowMenuItem("Billing"))
+{
 <!-- Settings -->
 <SidebarLinkGroup ActiveCondition="@IsSettingsActive">
     <ChildContent>
@@ -500,39 +544,55 @@
         </a>
         <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
             <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/settings/account"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Account</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/settings/notifications"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Notifications</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/settings/apps"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Apps</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/settings/billing"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Billing</span>
-                    </a>
-                </li>
+                @if (ShouldShowMenuItem("Account"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/settings/account"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Account</span>
+                        </a>
+                    </li>
+                }
+                @if (ShouldShowMenuItem("Notifications"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/settings/notifications"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Notifications</span>
+                        </a>
+                    </li>
+                }
+                @if (_isDemo)
+                {
+                    <!-- Demo mode: show Apps -->
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/settings/apps"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Apps</span>
+                        </a>
+                    </li>
+                }
+                @if (ShouldShowMenuItem("Billing"))
+                {
+                    <li class="mb-1 last:mb-0">
+                        <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                           href="/settings/billing"
+                           @onclick="@(() => context.HandleOptionClick())">
+                            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Billing</span>
+                        </a>
+                    </li>
+                }
             </ul>
         </div>
     </ChildContent>
 </SidebarLinkGroup>
+}
 
+@if (_isDemo)
+{
 <!-- Utility -->
 <SidebarLinkGroup ActiveCondition="@IsUtilityActive">
     <ChildContent>
@@ -597,9 +657,12 @@
         </div>
     </ChildContent>
 </SidebarLinkGroup>
+}
 </ul>
 </div>
 
+@if (_isDemo)
+{
 <!-- More group -->
 <div>
     <h3 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold pl-3">
@@ -832,6 +895,7 @@
         </SidebarLinkGroup>
     </ul>
 </div>
+}
 </div>
 
 </div>
@@ -841,6 +905,30 @@
     [Parameter] public bool SidebarOpen { get; set; }
 
     [Parameter] public EventCallback OnCloseSidebar { get; set; }
+
+    private readonly Dictionary<string, bool> _menuItemVisibility = new();
+    private bool _isDemo => _menuItemVisibility.GetValueOrDefault("shop", false); // If shop is visible, we're in demo mode
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMenuItemsAsync();
+    }
+
+    private async Task LoadMenuItemsAsync()
+    {
+        // Pre-load visibility for all menu items
+        string[] menuItems =
+        [
+            "dashboard", "orders", "invoices", "shop2", "single-product", "cart", "cart2", "cart3", "pay",
+            "shop", "customers", "community-users", "account", "notifications", "billing",
+            "tasks", "job-board", "finance"
+        ];
+
+        foreach (string menuItem in menuItems)
+        {
+            _menuItemVisibility[menuItem] = await MenuConfigurationService.ShouldShowMenuItemAsync(menuItem);
+        }
+    }
 
     private async Task ToggleSidebarExpandedAsync()
     {
@@ -857,15 +945,23 @@
         }
     }
 
-    private bool IsTodosActive => Navigation.Uri.Contains("/settings/todos");
-    private bool IsDashboardActive => Navigation.Uri == Navigation.BaseUri || Navigation.Uri.Contains("/dashboard");
+    // Helper method for conditional rendering - delegates to service
+    private bool ShouldShowMenuItem(string menuItem)
+    {
+        // Convert to lowercase for consistent key lookup
+        string key = menuItem.ToLowerInvariant();
+        return _menuItemVisibility.GetValueOrDefault(key, true); // Default to visible if not found
+    }
+
+    private bool IsTodosActive => Navigation.Uri.Contains("/settings/todos", StringComparison.Ordinal);
+    private bool IsDashboardActive => Navigation.Uri == Navigation.BaseUri || Navigation.Uri.Contains("/dashboard", StringComparison.Ordinal);
     private bool IsMainActive => Navigation.Uri == Navigation.BaseUri;
-    private bool IsECommerceActive => Navigation.Uri.Contains("/ecommerce");
-    private bool IsCommunityActive => Navigation.Uri.Contains("/community");
-    private bool IsFinanceActive => Navigation.Uri.Contains("/finance");
-    private bool IsJobBoardActive => Navigation.Uri.Contains("/job");
-    private bool IsTasksActive => Navigation.Uri.Contains("/tasks");
-    private bool IsSettingsActive => Navigation.Uri.Contains("/settings");
-    private bool IsUtilityActive => Navigation.Uri.Contains("/utility");
-    private bool IsComponentsActive => Navigation.Uri.Contains("/component");
+    private bool IsECommerceActive => Navigation.Uri.Contains("/ecommerce", StringComparison.Ordinal);
+    private bool IsCommunityActive => Navigation.Uri.Contains("/community", StringComparison.Ordinal);
+    private bool IsFinanceActive => Navigation.Uri.Contains("/finance", StringComparison.Ordinal);
+    private bool IsJobBoardActive => Navigation.Uri.Contains("/job", StringComparison.Ordinal);
+    private bool IsTasksActive => Navigation.Uri.Contains("/tasks", StringComparison.Ordinal);
+    private bool IsSettingsActive => Navigation.Uri.Contains("/settings", StringComparison.Ordinal);
+    private bool IsUtilityActive => Navigation.Uri.Contains("/utility", StringComparison.Ordinal);
+    private bool IsComponentsActive => Navigation.Uri.Contains("/component", StringComparison.Ordinal);
 }
