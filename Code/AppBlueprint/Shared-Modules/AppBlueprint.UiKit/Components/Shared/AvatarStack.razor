@@ -1,0 +1,113 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Overlapping avatar stack - reusable for team members, mutual friends, attendees, etc. *@
+
+<div class="flex shrink-0 -space-x-3 -ml-px @Class">
+    @foreach (var avatar in Avatars.Take(MaxDisplay))
+    {
+        if (!string.IsNullOrEmpty(avatar.Url))
+        {
+            <a class="block" href="@avatar.Link" title="@avatar.Name">
+                <img class="rounded-full border-2 @BorderColorClass box-content" 
+                     src="@avatar.Url" 
+                     width="@Size" 
+                     height="@Size" 
+                     alt="@avatar.Name" />
+            </a>
+        }
+        else
+        {
+            <div class="@GetInitialsClass() rounded-full border-2 @BorderColorClass box-content flex items-center justify-center" 
+                 style="width: @(Size)px; height: @(Size)px;"
+                 title="@avatar.Name">
+                <span class="text-xs font-semibold">@GetInitials(avatar.Name)</span>
+            </div>
+        }
+    }
+    @if (Avatars.Count > MaxDisplay)
+    {
+        <div class="@GetInitialsClass() rounded-full border-2 @BorderColorClass box-content flex items-center justify-center" 
+             style="width: @(Size)px; height: @(Size)px;"
+             title="@(Avatars.Count - MaxDisplay) more">
+            <span class="text-xs font-semibold">+@(Avatars.Count - MaxDisplay)</span>
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// List of avatars to display
+    /// </summary>
+    [Parameter, EditorRequired]
+    public List<AvatarItem> Avatars { get; set; } = new();
+
+    /// <summary>
+    /// Maximum number of avatars to display before showing "+N" indicator
+    /// </summary>
+    [Parameter]
+    public int MaxDisplay { get; set; } = 5;
+
+    /// <summary>
+    /// Size of each avatar in pixels
+    /// </summary>
+    [Parameter]
+    public int Size { get; set; } = 28;
+
+    /// <summary>
+    /// Border color class for avatars
+    /// </summary>
+    [Parameter]
+    public string BorderColorClass { get; set; } = "border-white dark:border-gray-800";
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Color variant for initials placeholders
+    /// </summary>
+    [Parameter]
+    public string InitialsVariant { get; set; } = "violet";
+
+    private string GetInitialsClass()
+    {
+        return InitialsVariant switch
+        {
+            "violet" => "bg-violet-500 text-white",
+            "blue" => "bg-blue-500 text-white",
+            "green" => "bg-green-500 text-white",
+            "amber" => "bg-amber-500 text-white",
+            "red" => "bg-red-500 text-white",
+            "gray" => "bg-gray-500 text-white",
+            _ => "bg-violet-500 text-white"
+        };
+    }
+
+    private string GetInitials(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return "?";
+
+        string[] parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        
+        if (parts.Length >= 2)
+            return $"{parts[0][0]}{parts[1][0]}".ToUpper();
+        
+        if (parts.Length == 1 && parts[0].Length >= 2)
+            return parts[0][..2].ToUpper();
+        
+        return parts[0][0].ToString().ToUpper();
+    }
+
+    /// <summary>
+    /// Model representing an avatar item
+    /// </summary>
+    public sealed class AvatarItem
+    {
+        public string Name { get; set; } = string.Empty;
+        public string? Url { get; set; }
+        public string Link { get; set; } = "#0";
+    }
+}

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.SeedTest;
 
-public class Program
+internal static class Program
 {
     public static async Task Main(string[] args)
     {

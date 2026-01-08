@@ -1,0 +1,118 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@using AppBlueprint.Application.Services
+@using AppBlueprint.SharedKernel.Enums
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ICurrentTenantService CurrentTenantService
+@inject NavigationManager Navigation
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+
+@if (_isLoading)
+{
+    <!-- Loading state -->
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 @ThemeService.GetPrimaryClass("border", "500")"></div>
+    </div>
+}
+else if (_isAuthorized)
+{
+    @ChildContent
+}
+else
+{
+    <!-- Not authorized - show nothing (redirect will happen) -->
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// List of tenant types allowed to access this page.
+    /// If null or empty, only unauthenticated users can access (demo mode).
+    /// </summary>
+    [Parameter]
+    public List<TenantType>? AllowedTenantTypes { get; set; }
+
+    /// <summary>
+    /// If true, unauthenticated users can access this page (demo mode).
+    /// </summary>
+    [Parameter]
+    public bool AllowUnauthenticated { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isAuthorized;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckAuthorizationAsync();
+        _isLoading = false;
+    }
+
+    private async Task CheckAuthorizationAsync()
+    {
+        try
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            bool isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
+
+            // If user is not authenticated
+            if (!isAuthenticated)
+            {
+                // Allow if demo mode is enabled for this page
+                if (AllowUnauthenticated)
+                {
+                    _isAuthorized = true;
+                    return;
+                }
+
+                // Otherwise redirect to login
+                Navigation.NavigateTo("/signup", forceLoad: true);
+                return;
+            }
+
+            // User is authenticated
+            
+            // If this page only allows unauthenticated users (demo mode), block authenticated users
+            if (AllowUnauthenticated && (AllowedTenantTypes == null || AllowedTenantTypes.Count == 0))
+            {
+                _isAuthorized = false;
+                Navigation.NavigateTo("/", forceLoad: true);
+                return;
+            }
+            
+            // Check tenant type for authenticated users
+            var tenantType = await CurrentTenantService.GetTenantTypeAsync();
+
+            if (tenantType == null)
+            {
+                // No tenant type found - shouldn't happen for authenticated users
+                _isAuthorized = false;
+                Navigation.NavigateTo("/", forceLoad: true);
+                return;
+            }
+
+            // Check if user's tenant type is in the allowed list
+            if (AllowedTenantTypes == null || AllowedTenantTypes.Count == 0)
+            {
+                // No tenant type restrictions and not demo-only - allow all authenticated users
+                _isAuthorized = true;
+            }
+            else
+            {
+                _isAuthorized = AllowedTenantTypes.Contains(tenantType.Value);
+                
+                if (!_isAuthorized)
+                {
+                    // User's tenant type not allowed - redirect to dashboard
+                    Navigation.NavigateTo("/", forceLoad: true);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking authorization: {ex.Message}");
+            _isAuthorized = false;
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+    }
+}

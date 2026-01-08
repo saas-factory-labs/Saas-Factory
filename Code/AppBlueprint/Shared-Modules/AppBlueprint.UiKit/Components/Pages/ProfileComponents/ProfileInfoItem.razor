@@ -1,0 +1,9 @@
+<div class="text-sm">
+    <h3 class="font-medium text-gray-800 dark:text-gray-100">@Label</h3>
+    <div>@Value</div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Value { get; set; } = string.Empty;
+}

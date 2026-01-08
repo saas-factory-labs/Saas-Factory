@@ -1,0 +1,86 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Progress list card - wrapper for displaying ranked items with progress bars *@
+
+<div class="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">@Title</h2>
+    </header>
+    <div class="grow p-3">
+        <div class="flex flex-col h-full">
+            <!-- Card content -->
+            <div class="grow">
+                <ul class="flex justify-between text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold px-2 space-x-2">
+                    <li>@LabelHeader</li>
+                    <li>@ValueHeader</li>
+                </ul>
+
+                <ul class="space-y-1 text-sm text-gray-800 dark:text-gray-100 mt-3 mb-4">
+                    @foreach (var item in Items)
+                    {
+                        <ProgressListItem Label="@item.Label"
+                                          Value="@item.Value"
+                                          ProgressPercentage="@item.ProgressPercentage"
+                                          Color="@Color" />
+                    }
+                </ul>
+            </div>
+            <!-- Card footer -->
+            @if (!string.IsNullOrEmpty(FooterLinkText) && !string.IsNullOrEmpty(FooterLinkUrl))
+            {
+                <div class="text-center pt-4 pb-1 border-t border-gray-100 dark:border-gray-700/60">
+                    <a class="text-sm font-medium text-violet-500 hover:text-violet-600 dark:hover:text-violet-400" href="@FooterLinkUrl">@FooterLinkText</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Card title
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Label column header (e.g., "Source", "Product")
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string LabelHeader { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Value column header (e.g., "Visitors", "Sales")
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string ValueHeader { get; set; } = string.Empty;
+
+    /// <summary>
+    /// List of progress items
+    /// </summary>
+    [Parameter, EditorRequired]
+    public List<ProgressItem> Items { get; set; } = [];
+
+    /// <summary>
+    /// Color variant for progress bars
+    /// </summary>
+    [Parameter]
+    public string Color { get; set; } = "violet";
+
+    /// <summary>
+    /// Footer link text (optional)
+    /// </summary>
+    [Parameter]
+    public string? FooterLinkText { get; set; }
+
+    /// <summary>
+    /// Footer link URL (optional)
+    /// </summary>
+    [Parameter]
+    public string? FooterLinkUrl { get; set; }
+
+    /// <summary>
+    /// Progress item model
+    /// </summary>
+    public sealed record ProgressItem(string Label, string Value, decimal ProgressPercentage);
+}

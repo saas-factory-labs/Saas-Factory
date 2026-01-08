@@ -5,18 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b1fdbdc8-2716-46ce-b5ab-8f9c8f6ec8b2" name="Changes" comment="updated build-docs.yml workflow">
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/CODE-QUALITY-IMPROVEMENTS-2026-01-02.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/PASSWORD-VALIDATION-IMPLEMENTATION.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/AppBlueprint/TODO-ANALYSIS.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2ea707b4-3e02-4bc3-845d-bdaaa42f7c4c.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/2ea707b4-3e02-4bc3-845d-bdaaa42f7c4c.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/9bbe0672-68f8-49b3-94f0-866e57890581.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/9bbe0672-68f8-49b3-94f0-866e57890581.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/9cc4f0b3-97a9-428e-94ae-34ce0c0fd799.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/9cc4f0b3-97a9-428e-94ae-34ce0c0fd799.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.ApiService/Controllers/AuthTestController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.ApiService/Controllers/AuthTestController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/Menus/MainMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/AppBlueprint.DeveloperCli/Menus/MainMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/AppBlueprint/SeedTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Code/AppBlueprint/SeedTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,9 +138,9 @@
     "RunOnceActivity.ToggleCodyToolWindowAfterMigration": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "fix/blazor-routing-ambiguity",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Development/Development-Projects/saas-factory-labs",
+    "last_opened_file_path": "/Users/casper/Development/Development-Projects/Saas-Factory",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "preferences.pluginManager",
@@ -204,24 +194,6 @@
     <MESSAGE value="Updated docs and added build-docs.yml workflow" />
     <MESSAGE value="updated build-docs.yml workflow" />
     <option name="LAST_COMMIT_MESSAGE" value="updated build-docs.yml workflow" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
-          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
-          <option name="timeStamp" value="1" />
-        </breakpoint>
-        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
-          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
-          <option name="timeStamp" value="2" />
-        </breakpoint>
-        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
-          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
-          <option name="timeStamp" value="3" />
-        </breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

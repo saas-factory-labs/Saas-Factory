@@ -1,0 +1,99 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Price range filter with dropdown - reusable for budget filters, deal value ranges, etc. *@
+
+<FilterGroup Title="@Title" Class="@Class">
+    <label class="sr-only">@Title</label>
+    <select class="form-select w-full" @bind="SelectedRange" @bind:after="OnRangeChanged">
+        @foreach (var range in PriceRanges)
+        {
+            <option value="@range.Value">@range.Label</option>
+        }
+    </select>
+</FilterGroup>
+
+@code {
+    /// <summary>
+    /// Title of the filter section
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = "Price Range";
+
+    /// <summary>
+    /// List of price ranges to display
+    /// </summary>
+    [Parameter, EditorRequired]
+    public List<PriceRangeItem> PriceRanges { get; set; } = new();
+
+    /// <summary>
+    /// Currently selected range value
+    /// </summary>
+    [Parameter]
+    public string? SelectedRange { get; set; }
+
+    /// <summary>
+    /// Event callback when a range is selected
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> SelectedRangeChanged { get; set; }
+
+    /// <summary>
+    /// Event callback when a range is selected (with full item details)
+    /// </summary>
+    [Parameter]
+    public EventCallback<PriceRangeItem> OnRangeSelected { get; set; }
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // If no ranges provided, use default price ranges
+        if (PriceRanges.Count == 0)
+        {
+            PriceRanges = GetDefaultPriceRanges();
+        }
+
+        // Set initial selection if not set
+        if (string.IsNullOrEmpty(SelectedRange) && PriceRanges.Count > 0)
+        {
+            SelectedRange = PriceRanges[0].Value;
+        }
+    }
+
+    private async Task OnRangeChanged()
+    {
+        await SelectedRangeChanged.InvokeAsync(SelectedRange);
+        
+        PriceRangeItem? selectedItem = PriceRanges.FirstOrDefault(r => r.Value == SelectedRange);
+        if (selectedItem != null)
+        {
+            await OnRangeSelected.InvokeAsync(selectedItem);
+        }
+    }
+
+    private List<PriceRangeItem> GetDefaultPriceRanges()
+    {
+        return new List<PriceRangeItem>
+        {
+            new() { Label = "Less than $20", Value = "0-20", MinValue = 0, MaxValue = 20 },
+            new() { Label = "$20 - $40", Value = "20-40", MinValue = 20, MaxValue = 40 },
+            new() { Label = "$40 - $80", Value = "40-80", MinValue = 40, MaxValue = 80 },
+            new() { Label = "More than $80", Value = "80+", MinValue = 80, MaxValue = null }
+        };
+    }
+
+    /// <summary>
+    /// Model representing a price range item
+    /// </summary>
+    public sealed class PriceRangeItem
+    {
+        public string Label { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+        public decimal MinValue { get; set; }
+        public decimal? MaxValue { get; set; }
+    }
+}

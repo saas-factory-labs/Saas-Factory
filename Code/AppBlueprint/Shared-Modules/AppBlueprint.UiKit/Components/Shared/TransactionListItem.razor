@@ -1,0 +1,194 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Transaction list item - reusable for financial transactions, activity feeds, payment history *@
+
+<tr>
+    <td class="p-2 whitespace-nowrap">
+        <div class="flex items-center">
+            <!-- Icon circle -->
+            <div class="w-@IconSize h-@IconSize rounded-full @GetIconBackgroundClass() flex items-center justify-center mr-2">
+                @if (!string.IsNullOrEmpty(IconSvg))
+                {
+                    @((MarkupString)IconSvg)
+                }
+                else if (!string.IsNullOrEmpty(IconText))
+                {
+                    <span class="@GetIconTextClass()">@IconText</span>
+                }
+            </div>
+            <!-- Description -->
+            <div class="font-medium text-gray-800 dark:text-gray-100">@Description</div>
+        </div>
+    </td>
+    @if (ShowCategory)
+    {
+        <td class="p-2 whitespace-nowrap">
+            <div class="text-left">@Category</div>
+        </td>
+    }
+    @if (ShowDate)
+    {
+        <td class="p-2 whitespace-nowrap">
+            <div class="text-left text-gray-500 dark:text-gray-400">@Date</div>
+        </td>
+    }
+    @if (ShowStatus && !string.IsNullOrEmpty(Status))
+    {
+        <td class="p-2 whitespace-nowrap">
+            <StatusBadge Text="@Status" Variant="@StatusVariant" />
+        </td>
+    }
+    <td class="p-2 whitespace-nowrap">
+        <div class="text-right font-medium @GetAmountColorClass()">@FormatAmount()</div>
+    </td>
+</tr>
+
+@code {
+    /// <summary>
+    /// Transaction description or title
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Transaction amount (positive for income, negative for expense)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public decimal Amount { get; set; }
+
+    /// <summary>
+    /// Transaction type (income, expense, transfer, pending)
+    /// </summary>
+    [Parameter]
+    public string Type { get; set; } = "expense";
+
+    /// <summary>
+    /// Category or classification (e.g., "Shopping", "Services", "Salary")
+    /// </summary>
+    [Parameter]
+    public string? Category { get; set; }
+
+    /// <summary>
+    /// Whether to show the category column
+    /// </summary>
+    [Parameter]
+    public bool ShowCategory { get; set; } = true;
+
+    /// <summary>
+    /// Transaction date
+    /// </summary>
+    [Parameter]
+    public string? Date { get; set; }
+
+    /// <summary>
+    /// Whether to show the date column
+    /// </summary>
+    [Parameter]
+    public bool ShowDate { get; set; } = false;
+
+    /// <summary>
+    /// Status text (e.g., "Completed", "Pending", "Failed")
+    /// </summary>
+    [Parameter]
+    public string? Status { get; set; }
+
+    /// <summary>
+    /// Status badge variant
+    /// </summary>
+    [Parameter]
+    public string StatusVariant { get; set; } = "success";
+
+    /// <summary>
+    /// Whether to show status column
+    /// </summary>
+    [Parameter]
+    public bool ShowStatus { get; set; } = false;
+
+    /// <summary>
+    /// SVG icon markup for the transaction
+    /// </summary>
+    [Parameter]
+    public string? IconSvg { get; set; }
+
+    /// <summary>
+    /// Text to display in icon (emoji, initials, etc.)
+    /// </summary>
+    [Parameter]
+    public string? IconText { get; set; }
+
+    /// <summary>
+    /// Icon size (8 for default, can be 6, 8, 10, 12)
+    /// </summary>
+    [Parameter]
+    public int IconSize { get; set; } = 8;
+
+    /// <summary>
+    /// Custom icon background color class (overrides automatic color based on type)
+    /// </summary>
+    [Parameter]
+    public string? CustomIconBackground { get; set; }
+
+    /// <summary>
+    /// Currency symbol
+    /// </summary>
+    [Parameter]
+    public string Currency { get; set; } = "$";
+
+    /// <summary>
+    /// Whether to show + sign for positive amounts
+    /// </summary>
+    [Parameter]
+    public bool ShowPlusSign { get; set; } = true;
+
+    private string GetIconBackgroundClass()
+    {
+        if (!string.IsNullOrEmpty(CustomIconBackground))
+            return CustomIconBackground;
+
+        return Type.ToLower() switch
+        {
+            "income" or "earning" or "deposit" => "bg-emerald-500",
+            "expense" or "payment" or "withdrawal" => "bg-rose-500",
+            "transfer" => "bg-blue-500",
+            "pending" => "bg-amber-500",
+            _ => "bg-gray-500"
+        };
+    }
+
+    private string GetIconTextClass()
+    {
+        return IconSize switch
+        {
+            >= 12 => "text-base font-semibold text-white",
+            >= 10 => "text-sm font-semibold text-white",
+            _ => "text-xs font-semibold text-white"
+        };
+    }
+
+    private string GetAmountColorClass()
+    {
+        if (Amount == 0)
+            return "text-gray-500 dark:text-gray-400";
+
+        return Type.ToLower() switch
+        {
+            "income" or "earning" or "deposit" => "text-emerald-500",
+            "expense" or "payment" or "withdrawal" => "text-rose-500",
+            "transfer" => "text-blue-500",
+            "pending" => "text-amber-500",
+            _ => Amount > 0 ? "text-emerald-500" : "text-rose-500"
+        };
+    }
+
+    private string FormatAmount()
+    {
+        string sign = "";
+        if (Amount > 0 && ShowPlusSign)
+            sign = "+";
+        else if (Amount < 0)
+            sign = "-";
+
+        decimal absAmount = Math.Abs(Amount);
+        return $"{sign}{Currency}{absAmount:N2}";
+    }
+}

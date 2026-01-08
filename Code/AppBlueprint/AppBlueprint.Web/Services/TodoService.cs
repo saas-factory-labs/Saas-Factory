@@ -84,6 +84,7 @@ public class TodoService
             _logger.LogWarning(ex, "❌ JavaScript exception");
             return false;
         }
+#pragma warning disable CA1031 // Generic catch needed to handle various JavaScript interop exceptions during Blazor prerendering
         catch (Exception ex)
         {
             _logger.LogError(ex, "❌ UNEXPECTED ERROR adding auth headers: {Type} - {Message}", 
@@ -91,6 +92,7 @@ public class TodoService
                 ex.Message);
             return false;
         }
+#pragma warning restore CA1031
     }
 
     /// <summary>
@@ -106,10 +108,12 @@ public class TodoService
                 return tenantId;
             }
         }
+#pragma warning disable CA1031 // Generic catch for graceful degradation - tenant ID is optional, use default on any error
         catch (Exception ex)
         {
             _logger.LogDebug(ex, "Could not retrieve tenant ID");
         }
+#pragma warning restore CA1031
 
         return "default-tenant";
     }
@@ -147,11 +151,13 @@ public class TodoService
             _logger.LogError(ex, "Connection test timed out");
             return false;
         }
+#pragma warning disable CA1031 // Diagnostic method - returns false on any error instead of throwing
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error testing API connection");
             return false;
         }
+#pragma warning restore CA1031
     }
 
     /// <summary>
@@ -163,7 +169,7 @@ public class TodoService
         {
             _logger.LogInformation("Testing authenticated connection to API");
             
-            var request = new HttpRequestMessage(HttpMethod.Get, "/api/AuthDebug/secure-ping");
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/AuthDebug/secure-ping");
             var headersAdded = await AddAuthHeadersAsync(request);
             
             if (!headersAdded)
@@ -198,11 +204,13 @@ public class TodoService
             _logger.LogError(ex, "Auth test timed out");
             return "❌ Request timed out";
         }
+#pragma warning disable CA1031 // Diagnostic method - returns error message instead of throwing
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error testing authenticated connection");
             return $"❌ Error: {ex.Message}";
         }
+#pragma warning restore CA1031
     }
 
     /// <summary>
@@ -214,7 +222,7 @@ public class TodoService
         {
             _logger.LogInformation("=== GetDiagnosticInfoAsync CALLED ===");
             
-            var request = new HttpRequestMessage(HttpMethod.Get, "/api/AuthDebug/headers");
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/AuthDebug/headers");
             
             _logger.LogInformation("Calling AddAuthHeadersAsync...");
             var headersAdded = await AddAuthHeadersAsync(request);
@@ -226,11 +234,13 @@ public class TodoService
             _logger.LogInformation("Diagnostic info received: {Content}", content);
             return content;
         }
+#pragma warning disable CA1031 // Diagnostic method - returns error message instead of throwing
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting diagnostic info");
             return $"Error: {ex.Message}";
         }
+#pragma warning restore CA1031
     }
 
     /// <summary>
@@ -238,22 +248,14 @@ public class TodoService
     /// </summary>
     public async Task<IEnumerable<TodoEntity>> GetTodosAsync(CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1.0/todo");
-            await AddAuthHeadersAsync(request);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1.0/todo");
+        await AddAuthHeadersAsync(request);
 
-            var response = await _httpClient.SendAsync(request, cancellationToken);
-            response.EnsureSuccessStatusCode();
+        var response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
 
-            var todos = await response.Content.ReadFromJsonAsync<IEnumerable<TodoEntity>>(_jsonOptions, cancellationToken);
-            return todos ?? Enumerable.Empty<TodoEntity>();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error fetching todos");
-            throw;
-        }
+        var todos = await response.Content.ReadFromJsonAsync<IEnumerable<TodoEntity>>(_jsonOptions, cancellationToken);
+        return todos ?? Enumerable.Empty<TodoEntity>();
     }
 
     /// <summary>
@@ -263,24 +265,16 @@ public class TodoService
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        try
+        using var httpRequest = new HttpRequestMessage(HttpMethod.Post, "/api/v1.0/todo")
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, "/api/v1.0/todo")
-            {
-                Content = JsonContent.Create(request)
-            };
-            await AddAuthHeadersAsync(httpRequest);
+            Content = JsonContent.Create(request)
+        };
+        await AddAuthHeadersAsync(httpRequest);
 
-            var response = await _httpClient.SendAsync(httpRequest, cancellationToken);
-            response.EnsureSuccessStatusCode();
+        var response = await _httpClient.SendAsync(httpRequest, cancellationToken);
+        response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creating todo");
-            throw;
-        }
+        return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
     }
 
     /// <summary>
@@ -290,18 +284,10 @@ public class TodoService
     {
         ArgumentException.ThrowIfNullOrEmpty(id);
 
-        try
-        {
-            var response = await _httpClient.GetAsync(new Uri($"/api/v1.0/todo/{id}", UriKind.Relative), cancellationToken);
-            response.EnsureSuccessStatusCode();
+        var response = await _httpClient.GetAsync(new Uri($"/api/v1.0/todo/{id}", UriKind.Relative), cancellationToken);
+        response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error fetching todo {TodoId}", id);
-            throw;
-        }
+        return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
     }
 
     /// <summary>
@@ -312,18 +298,10 @@ public class TodoService
         ArgumentException.ThrowIfNullOrEmpty(id);
         ArgumentNullException.ThrowIfNull(request);
 
-        try
-        {
-            var response = await _httpClient.PutAsJsonAsync($"/api/v1.0/todo/{id}", request, cancellationToken);
-            response.EnsureSuccessStatusCode();
+        var response = await _httpClient.PutAsJsonAsync($"/api/v1.0/todo/{id}", request, cancellationToken);
+        response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error updating todo {TodoId}", id);
-            throw;
-        }
+        return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
     }
 
     /// <summary>
@@ -333,16 +311,8 @@ public class TodoService
     {
         ArgumentException.ThrowIfNullOrEmpty(id);
 
-        try
-        {
-            var response = await _httpClient.DeleteAsync(new Uri($"/api/v1.0/todo/{id}", UriKind.Relative), cancellationToken);
-            response.EnsureSuccessStatusCode();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error deleting todo {TodoId}", id);
-            throw;
-        }
+        var response = await _httpClient.DeleteAsync(new Uri($"/api/v1.0/todo/{id}", UriKind.Relative), cancellationToken);
+        response.EnsureSuccessStatusCode();
     }
 
     /// <summary>
@@ -352,18 +322,9 @@ public class TodoService
     {
         ArgumentException.ThrowIfNullOrEmpty(id);
 
-        try
-        {
-            var response = await _httpClient.PatchAsync(new Uri($"/api/v1.0/todo/{id}/complete", UriKind.Relative), null, cancellationToken);
-            response.EnsureSuccessStatusCode();
+        var response = await _httpClient.PatchAsync(new Uri($"/api/v1.0/todo/{id}/complete", UriKind.Relative), null, cancellationToken);
+        response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error completing todo {TodoId}", id);
-            throw;
-        }
+        return await response.Content.ReadFromJsonAsync<TodoEntity>(_jsonOptions, cancellationToken);
     }
 }
-

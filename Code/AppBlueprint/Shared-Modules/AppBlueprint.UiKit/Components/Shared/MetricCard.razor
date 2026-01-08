@@ -1,0 +1,133 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Metric card component - reusable for KPIs, statistics, analytics *@
+
+<div class="flex items-center @(Vertical ? "flex-col text-center" : "") @Class">
+    @if (ShowIcon && !string.IsNullOrEmpty(IconSvg))
+    {
+        <div class="@(Vertical ? "mb-2" : "mr-5")">
+            @((MarkupString)IconSvg)
+        </div>
+    }
+    <div class="@(Vertical ? "" : "grow")">
+        <div class="flex items-center @(Vertical ? "justify-center" : "")">
+            <div class="@GetValueClass() mr-2">@(string.IsNullOrEmpty(CustomValue) ? FormatValue(Value) : CustomValue)</div>
+            @if (ShowTrend && Trend != 0)
+            {
+                <div class="text-sm font-medium @GetTrendColorClass()">
+                    @(Trend > 0 ? "+" : "")@Trend.ToString("F0")%
+                </div>
+            }
+        </div>
+        <div class="@GetLabelClass()">@Label</div>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// The metric value to display
+    /// </summary>
+    [Parameter]
+    public decimal Value { get; set; }
+
+    /// <summary>
+    /// Custom formatted value string (overrides Value if provided)
+    /// </summary>
+    [Parameter]
+    public string? CustomValue { get; set; }
+
+    /// <summary>
+    /// Label describing the metric
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Trend percentage (positive or negative)
+    /// </summary>
+    [Parameter]
+    public decimal Trend { get; set; } = 0;
+
+    /// <summary>
+    /// Whether to show the trend indicator
+    /// </summary>
+    [Parameter]
+    public bool ShowTrend { get; set; } = true;
+
+    /// <summary>
+    /// Format string for the value (e.g., "N0" for thousands, "C" for currency)
+    /// </summary>
+    [Parameter]
+    public string ValueFormat { get; set; } = "N0";
+
+    /// <summary>
+    /// Prefix for the value (e.g., "$", "€")
+    /// </summary>
+    [Parameter]
+    public string? Prefix { get; set; }
+
+    /// <summary>
+    /// Suffix for the value (e.g., "K", "M", "%")
+    /// </summary>
+    [Parameter]
+    public string? Suffix { get; set; }
+
+    /// <summary>
+    /// Size variant for the metric value
+    /// </summary>
+    [Parameter]
+    public string Size { get; set; } = "large"; // small, medium, large
+
+    /// <summary>
+    /// Whether to display vertically (stacked)
+    /// </summary>
+    [Parameter]
+    public bool Vertical { get; set; } = false;
+
+    /// <summary>
+    /// Whether to show an icon
+    /// </summary>
+    [Parameter]
+    public bool ShowIcon { get; set; } = false;
+
+    /// <summary>
+    /// SVG icon markup
+    /// </summary>
+    [Parameter]
+    public string? IconSvg { get; set; }
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    private string GetValueClass() => Size.ToLower() switch
+    {
+        "small" => "text-xl font-bold text-gray-800 dark:text-gray-100",
+        "medium" => "text-2xl font-bold text-gray-800 dark:text-gray-100",
+        "large" => "text-3xl font-bold text-gray-800 dark:text-gray-100",
+        _ => "text-3xl font-bold text-gray-800 dark:text-gray-100"
+    };
+
+    private string GetLabelClass() => Size.ToLower() switch
+    {
+        "small" => "text-xs text-gray-500 dark:text-gray-400",
+        "medium" => "text-sm text-gray-500 dark:text-gray-400",
+        "large" => "text-sm text-gray-500 dark:text-gray-400",
+        _ => "text-sm text-gray-500 dark:text-gray-400"
+    };
+
+    private string GetTrendColorClass()
+    {
+        return Trend >= 0 
+            ? "text-green-600" 
+            : "text-red-500";
+    }
+
+    private string FormatValue(decimal value)
+    {
+        string formatted = value.ToString(ValueFormat);
+        return $"{Prefix}{formatted}{Suffix}";
+    }
+}

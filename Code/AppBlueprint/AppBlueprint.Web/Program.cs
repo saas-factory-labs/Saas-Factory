@@ -1,4 +1,5 @@
 using AppBlueprint.Api.Client.Sdk;
+using AppBlueprint.Application.Extensions;
 using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.UiKit;
@@ -13,6 +14,16 @@ using _Imports = AppBlueprint.UiKit._Imports;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
+
+// Environment variable names
+const string DotnetDashboardOtlpEndpointUrl = "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL";
+const string OtelExporterOtlpEndpoint = "OTEL_EXPORTER_OTLP_ENDPOINT";
+
+// Console output formatting
+const string ConsoleSeparator = "========================================";
+const string OtelExporterOtlpProtocol = "OTEL_EXPORTER_OTLP_PROTOCOL";
+const string ApiBaseUrl = "API_BASE_URL";
+const string BypassCertValidation = "BYPASS_CERT_VALIDATION";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,19 +43,19 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 if (builder.Environment.IsDevelopment())
 {
     // Development mode - configure OTLP for Aspire Dashboard
-    string? dashboardEndpoint = Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
-    string? otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+    string? dashboardEndpoint = Environment.GetEnvironmentVariable(DotnetDashboardOtlpEndpointUrl);
+    string? otlpEndpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
     string otlpDefaultEndpoint = "http://localhost:18889";
 
     // Set OTLP endpoint with priority: DOTNET_DASHBOARD_OTLP_ENDPOINT_URL > OTEL_EXPORTER_OTLP_ENDPOINT > default
     if (!string.IsNullOrEmpty(dashboardEndpoint))
     {
-        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", dashboardEndpoint);
+        Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, dashboardEndpoint);
         Console.WriteLine($"[Web] Using dashboard OTLP endpoint: {dashboardEndpoint}");
     }
     else if (string.IsNullOrEmpty(otlpEndpoint))
     {
-        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", otlpDefaultEndpoint);
+        Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, otlpDefaultEndpoint);
         Console.WriteLine($"[Web] Using default OTLP endpoint: {otlpDefaultEndpoint}");
     }
     else
@@ -53,13 +64,13 @@ if (builder.Environment.IsDevelopment())
     }
 
     // Set OTLP protocol if not already set
-    if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")))
+    if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol)))
     {
-        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
+        Environment.SetEnvironmentVariable(OtelExporterOtlpProtocol, "http/protobuf");
     }
 
-    Console.WriteLine($"[Web] Final OTLP endpoint → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")}");
-    Console.WriteLine($"[Web] Final OTLP protocol → {Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")}");
+    Console.WriteLine($"[Web] Final OTLP endpoint → {Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint)}");
+    Console.WriteLine($"[Web] Final OTLP protocol → {Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol)}");
 }
 else
 {
@@ -69,7 +80,7 @@ else
     Console.WriteLine("[Web] Production mode - OTLP telemetry export disabled (no Aspire Dashboard)");
     
     // Only set if explicitly provided via environment variable (e.g., for external observability)
-    string? explicitOtlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+    string? explicitOtlpEndpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
     if (!string.IsNullOrEmpty(explicitOtlpEndpoint))
     {
         Console.WriteLine($"[Web] Using explicit OTLP endpoint: {explicitOtlpEndpoint}");
@@ -96,6 +107,13 @@ builder.Host.UseDefaultServiceProvider((context, options) =>
 // Register configuration options with validation
 builder.Services.AddAppBlueprintConfiguration(builder.Configuration, builder.Environment);
 
+// Register infrastructure services (database contexts, repositories, etc.)
+// Using Hybrid Mode to support both B2C and B2B user flows in the demo app
+builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
+
+// Register application services (command handlers, validators, services)
+builder.Services.AddAppBlueprintApplication();
+
 var navigationRoutes = builder.Configuration
     .GetSection("Navigation:Routes")
     .Get<List<NavLinkMetadata>>() ?? new List<NavLinkMetadata>();
@@ -110,7 +128,7 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 {
     // Only bypass certificate validation in development AND with explicit flag
     if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
+        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
     {
         http.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
@@ -126,12 +144,21 @@ if (builder.Environment.IsDevelopment())
     builder.Services.Configure<CookiePolicyOptions>(options =>
     {
         options.MinimumSameSitePolicy = SameSiteMode.Lax;
-        options.Secure = CookieSecurePolicy.SameAsRequest;
+        options.Secure = CookieSecurePolicy.None; // Allow cookies over HTTP in development
+        options.CheckConsentNeeded = _ => false; // Disable consent requirement for essential auth cookies
     });
 }
 
 builder.Services.AddOutputCache();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+// Configure Blazor Server Circuit Options for detailed error messages in development
+builder.Services.AddServerSideBlazor(options =>
+{
+    // Enable detailed errors in development to help diagnose circuit failures
+    options.DetailedErrors = builder.Environment.IsDevelopment();
+});
+
 builder.Services.AddCascadingAuthenticationState(); // Required for Blazor authentication
 
 // Add Blazored LocalStorage for signup session persistence
@@ -153,7 +180,7 @@ builder.Services.AddScoped<IAuthenticationProvider,
 
 // Get API base URL from environment variable or configuration
 // Priority: Environment variable > Configuration > Default localhost
-string apiBaseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") 
+string apiBaseUrl = Environment.GetEnvironmentVariable(ApiBaseUrl) 
     ?? builder.Configuration["ApiBaseUrl"] 
     ?? "http://localhost:8091";
 
@@ -170,6 +197,9 @@ builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<
 // Must be Scoped to work with ITokenStorageService which requires HttpContext
 builder.Services.AddScoped<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
+// Register menu configuration service for customizing sidebar visibility
+builder.Services.AddScoped<AppBlueprint.UiKit.Services.IMenuConfigurationService, AppBlueprint.Web.Services.MenuConfigurationService>();
+
 // Add TodoService with HttpClient configured for direct API access
 builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
 {
@@ -183,7 +213,7 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
     var handler = new HttpClientHandler();
     // Only bypass certificate validation in development AND with explicit flag
     if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
+        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
     {
         handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
@@ -203,7 +233,7 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TeamService>(client =>
     var handler = new HttpClientHandler();
     // Only bypass certificate validation in development AND with explicit flag
     if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
+        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
     {
         handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
@@ -223,7 +253,7 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.RoleService>(client =>
     var handler = new HttpClientHandler();
     // Only bypass certificate validation in development AND with explicit flag
     if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable("BYPASS_CERT_VALIDATION") == "true")
+        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
     {
         handler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
@@ -234,10 +264,10 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.RoleService>(client =>
 
 var app = builder.Build();
 
-Console.WriteLine("========================================");
+Console.WriteLine(ConsoleSeparator);
 Console.WriteLine("[Web] Application built successfully");
 Console.WriteLine($"[Web] Environment: {app.Environment.EnvironmentName}");
-Console.WriteLine("========================================");
+Console.WriteLine(ConsoleSeparator);
 
 // IMPORTANT: UseForwardedHeaders must come BEFORE UseRouting
 // This ensures redirect URIs use HTTPS when behind Railway's proxy
@@ -301,27 +331,71 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // ✅ Add admin IP whitelist (blocks non-whitelisted IPs from admin routes)
-app.UseAdminIpWhitelist();
+// Only enabled in production - disabled in development to avoid local access issues
+if (!app.Environment.IsDevelopment())
+{
+    app.UseAdminIpWhitelist();
+    Console.WriteLine("[Web] Admin IP whitelist middleware enabled (production)");
+}
+else
+{
+    Console.WriteLine("[Web] Admin IP whitelist middleware disabled (development)");
+}
 
 app.UseOutputCache();
+
+// ⚠️ CRITICAL: Map authentication endpoints BEFORE Blazor routing
+// Blazor's catch-all routing must not intercept auth callbacks
+// Logto authentication endpoints - EXACTLY as per documentation
+// https://docs.logto.io/quick-starts/dotnet-core/blazor-server
+app.MapAuthenticationEndpoints(builder.Configuration);
 
 app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(_Imports).Assembly)
     .AddInteractiveServerRenderMode();
 
-// Logto authentication endpoints - EXACTLY as per documentation
-// https://docs.logto.io/quick-starts/dotnet-core/blazor-server
-app.MapAuthenticationEndpoints(builder.Configuration);
-
 // Diagnostic endpoint to test Logto connectivity from Railway
 app.MapLogtoTestEndpoint(builder.Configuration, app.Environment);
 
+// Add callback diagnostic endpoint for debugging auth issues
+if (app.Environment.IsDevelopment())
+{
+    app.MapGet("/callback-debug", (HttpContext context) =>
+    {
+        var diagnostics = new
+        {
+            RequestUrl = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}",
+            Cookies = context.Request.Cookies.Keys.ToList(),
+            QueryParameters = context.Request.Query.ToDictionary(kv => kv.Key, kv => kv.Value.ToString()),
+            IsAuthenticated = context.User?.Identity?.IsAuthenticated ?? false,
+            UserName = context.User?.Identity?.Name
+        };
+        
+        return Results.Json(diagnostics);
+    }).AllowAnonymous();
+    
+    // Auth diagnostic endpoint to check authentication status
+    app.MapGet("/auth-debug", (HttpContext context) =>
+    {
+        var diagnostics = new
+        {
+            IsAuthenticated = context.User?.Identity?.IsAuthenticated ?? false,
+            AuthenticationType = context.User?.Identity?.AuthenticationType,
+            UserName = context.User?.Identity?.Name,
+            Claims = context.User?.Claims.Select(c => new { c.Type, c.Value }).ToList(),
+            Cookies = context.Request.Cookies.Keys.ToList()
+        };
+        
+        return Results.Json(diagnostics);
+    }).AllowAnonymous();
+}
+
 app.MapDefaultEndpoints();
 
-Console.WriteLine("========================================");
+Console.WriteLine(ConsoleSeparator);
 Console.WriteLine("[Web] Starting application...");
 Console.WriteLine("[Web] Navigate to the app and watch for logs");
-Console.WriteLine("========================================");
+Console.WriteLine(ConsoleSeparator);
 
  await app.RunAsync();
 

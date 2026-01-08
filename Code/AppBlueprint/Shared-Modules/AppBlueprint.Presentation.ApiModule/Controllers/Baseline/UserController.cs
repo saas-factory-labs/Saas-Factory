@@ -3,6 +3,7 @@ using AppBlueprint.Contracts.Baseline.User.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
+using AppBlueprint.Infrastructure.DatabaseContexts;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,16 +20,20 @@ public class UserController : BaseController
 {
     // Removed IUnitOfWork dependency for repository DI pattern
     private readonly IUserRepository _userRepository;
+    private readonly ApplicationDbContext _context;
 
     public UserController(
         IConfiguration configuration,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        ApplicationDbContext context)
         : base(configuration)
     {
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(userRepository);
+        ArgumentNullException.ThrowIfNull(context);
         
         _userRepository = userRepository;
+        _context = context;
     }
 
     /// <summary>
@@ -175,23 +180,29 @@ public class UserController : BaseController
 
         var newUser = new UserEntity
         {
-            FirstName = createUser.Name,
-            LastName = createUser.Name,
-            UserName = createUser.Name,
+            FirstName = createUser.FirstName,
+            LastName = createUser.LastName,
+            UserName = createUser.UserName,
             Email = createUser.Email,
-            Profile = new ProfileEntity
-            {
-                // FirstName = createUser.Name,
-                // LastName = createUser.Name,
-                // UserName = createUser.Name,
-                // Email = createUser.Email
-            }
+            TenantId = createUser.TenantId,
+            ExternalAuthId = createUser.ExternalAuthId,
+            IsActive = createUser.IsActive,
+            Profile = new ProfileEntity()
         };
 
         await _userRepository.AddAsync(newUser);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _context.SaveChangesAsync(cancellationToken);
 
-        return CreatedAtAction(nameof(GetUserById), new { id = newUser.Id }, newUser);
+        var response = new UserResponse
+        {
+            Id = newUser.Id,
+            FirstName = newUser.FirstName,
+            LastName = newUser.LastName,
+            UserName = newUser.UserName,
+            Email = newUser.Email
+        };
+
+        return CreatedAtAction(nameof(GetUserById), new { id = newUser.Id }, response);
     }
 
     /// <summary>
@@ -229,8 +240,12 @@ public class UserController : BaseController
         UserEntity? existingUser = await _userRepository.GetByIdAsync(id);
         if (existingUser is null) return NotFound(new { Message = $"User with ID {id} not found." });
 
-        existingUser.UserName = createUser.Name;
+        existingUser.FirstName = createUser.FirstName;
+        existingUser.LastName = createUser.LastName;
+        existingUser.UserName = createUser.UserName;
         existingUser.Email = createUser.Email;
+        existingUser.IsActive = createUser.IsActive;
+        // Note: TenantId and ExternalAuthId should not be changed after creation
 
         _userRepository.Update(existingUser);
         // If SaveChangesAsync is required, inject a service for it or handle in repository.

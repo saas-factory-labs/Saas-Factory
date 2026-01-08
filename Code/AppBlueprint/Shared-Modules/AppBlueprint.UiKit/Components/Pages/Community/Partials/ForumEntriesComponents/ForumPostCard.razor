@@ -1,0 +1,37 @@
+<article class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+    <div class="flex flex-start space-x-4">
+        <!-- Avatar -->
+        <div class="shrink-0 mt-1.5">
+            <img class="w-8 h-8 rounded-full" src="@AvatarUrl" width="32" height="32" alt="@AvatarAlt" />
+        </div>
+        <!-- Content -->
+        <div class="grow">
+            <!-- Title -->
+            <h2 class="font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                <a href="@Href">@Title</a>
+            </h2>
+            <!-- Footer -->
+            <footer class="flex flex-wrap text-sm">
+                @FooterContent
+            </footer>
+        </div>
+        <!-- Upvote button -->
+        @if (ShowUpvoteButton)
+        {
+            <div class="shrink-0">
+                <UpvoteButton Votes="@Votes" IsActive="@IsUpvoteActive" />
+            </div>
+        }
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired] public string AvatarUrl { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string AvatarAlt { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Href { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public RenderFragment FooterContent { get; set; } = default!;
+    [Parameter] public bool ShowUpvoteButton { get; set; } = true;
+    [Parameter] public int Votes { get; set; }
+    [Parameter] public bool IsUpvoteActive { get; set; }
+}

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
@@ -129,7 +130,7 @@ public static class DbContextConfigurator
     {
         services.AddDbContext<Baseline.BaselineDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
 
         Console.WriteLine("[DbContextConfigurator] Registered: BaselineDbContext");
@@ -143,13 +144,29 @@ public static class DbContextConfigurator
         // Register B2CDbContext (includes Baseline entities)
         services.AddDbContext<B2C.B2CdbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
 
-        // Also register ApplicationDbContext which extends B2CDbContext
+        // Register ApplicationDbContext as scoped (required by repositories and services)
         services.AddDbContext<ApplicationDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+        });
+
+        // Register ApplicationDbContext factory (required by SignupService for non-scoped scenarios)
+        // Note: Scoped interceptors cannot be added during factory configuration
+        // Custom factory to explicitly pass null for ITenantContextAccessor (cannot resolve scoped service from singleton factory)
+        services.AddSingleton<IDbContextFactory<ApplicationDbContext>>(serviceProvider =>
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            ConfigureNpgsqlOptions(serviceProvider, optionsBuilder, connectionString, options, isFactory: true);
+            var dbContextOptions = optionsBuilder.Options;
+            
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger<ApplicationDbContext>();
+            
+            return new ApplicationDbContextFactory(dbContextOptions, configuration, logger);
         });
 
         Console.WriteLine("[DbContextConfigurator] Registered: B2CdbContext, ApplicationDbContext");
@@ -163,7 +180,7 @@ public static class DbContextConfigurator
         // Register B2BDbContext (includes Baseline entities)
         services.AddDbContext<B2B.B2BDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
 
         Console.WriteLine("[DbContextConfigurator] Registered: B2BDbContext");
@@ -177,33 +194,53 @@ public static class DbContextConfigurator
         // Register Baseline
         services.AddDbContext<Baseline.BaselineDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
 
         // Register B2C
         services.AddDbContext<B2C.B2CdbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
 
+        // Register ApplicationDbContext as scoped (required by repositories and services)
         services.AddDbContext<ApplicationDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+        });
+
+        // Register ApplicationDbContext factory (required by SignupService for non-scoped scenarios)
+        // Note: Cannot use both AddDbContext and AddDbContextFactory - factory is Singleton, DbContext is Scoped
+        // Note: Scoped interceptors cannot be added during factory configuration
+        // Custom factory to explicitly pass null for ITenantContextAccessor (cannot resolve scoped service from singleton factory)
+        services.AddSingleton<IDbContextFactory<ApplicationDbContext>>(serviceProvider =>
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            ConfigureNpgsqlOptions(serviceProvider, optionsBuilder, connectionString, options, isFactory: true);
+            var dbContextOptions = optionsBuilder.Options;
+            
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger<ApplicationDbContext>();
+            
+            return new ApplicationDbContextFactory(dbContextOptions, configuration, logger);
         });
 
         // Register B2B
         services.AddDbContext<B2B.B2BDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
 
         Console.WriteLine("[DbContextConfigurator] Hybrid Mode: All contexts registered");
     }
 
     private static void ConfigureNpgsqlOptions(
+        IServiceProvider serviceProvider,
         DbContextOptionsBuilder dbOptions,
         string connectionString,
-        DatabaseContextOptions options)
+        DatabaseContextOptions options,
+        bool isFactory = false)
     {
         dbOptions.UseNpgsql(connectionString, npgsqlOptions =>
         {
@@ -217,8 +254,9 @@ public static class DbContextConfigurator
         // Register TenantConnectionInterceptor for RLS session variable configuration
         // This interceptor sets app.current_tenant_id on every database connection
         // for PostgreSQL Row-Level Security (defense-in-depth Layer 2)
-        var serviceProvider = dbOptions.Options.FindExtension<CoreOptionsExtension>()?.ApplicationServiceProvider;
-        if (serviceProvider is not null)
+        // Note: Cannot add scoped interceptors to DbContextFactory (which uses root provider)
+        // For factory contexts, interceptor must be added at context creation time
+        if (!isFactory)
         {
             var tenantInterceptor = serviceProvider.GetService<TenantConnectionInterceptor>();
             if (tenantInterceptor is not null)

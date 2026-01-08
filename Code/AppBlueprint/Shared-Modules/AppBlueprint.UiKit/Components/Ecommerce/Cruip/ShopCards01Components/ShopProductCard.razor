@@ -1,0 +1,45 @@
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+
+<div class="col-span-full sm:col-span-6 xl:col-span-3 bg-white dark:bg-gray-800 shadow-xs rounded-xl overflow-hidden">
+    <div class="flex flex-col h-full">
+        <!-- Image -->
+        <img class="w-full" src="@ImageUrl" width="286" height="160" alt="@ImageAlt" />
+        <!-- Card Content -->
+        <div class="grow flex flex-col p-5">
+            <!-- Card body -->
+            <div class="grow">
+                <!-- Header -->
+                <header class="mb-3">
+                    <h3 class="text-lg text-gray-800 dark:text-gray-100 font-semibold">@Title</h3>
+                </header>
+                <!-- Rating and price -->
+                <div class="flex flex-wrap justify-between items-center mb-4">
+                    <!-- Rating -->
+                    <StarRating FilledStars="@FilledStars" Rating="@Rating" />
+                    <!-- Price -->
+                    <div>
+                        <div class="inline-flex text-sm font-medium @ThemeService.GetAccentClass("bg", "500")/20 @ThemeService.GetAccentClass("text", "700") rounded-full text-center px-2 py-0.5">@Price</div>
+                    </div>
+                </div>
+                <!-- Features list -->
+                <ul class="text-sm space-y-2 mb-5 dark:text-gray-300">
+                    @Features
+                </ul>
+            </div>
+            <!-- Card footer -->
+            <div>
+                <a class="btn-sm w-full bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" href="#0">Buy Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string ImageUrl { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string ImageAlt { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public int FilledStars { get; set; }
+    [Parameter, EditorRequired] public double Rating { get; set; }
+    [Parameter, EditorRequired] public string Price { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public RenderFragment Features { get; set; } = default!;
+}

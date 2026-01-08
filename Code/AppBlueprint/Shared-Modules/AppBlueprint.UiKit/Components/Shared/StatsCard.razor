@@ -1,4 +1,5 @@
 @* Stats Card widget with trends and sparklines *@
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
 
 <div class="@GetContainerClasses()">
     <div class="flex items-start justify-between">
@@ -116,7 +117,7 @@
         var baseClasses = "w-12 h-12 rounded-xl flex items-center justify-center";
         return Variant switch
         {
-            "primary" => $"{baseClasses} bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400",
+            "primary" => $"{baseClasses} {ThemeService.GetPrimaryClass("bg", "100")} dark:{ThemeService.GetPrimaryClass("bg", "500")}/20 {ThemeService.GetPrimaryClass("text", "600")} dark:{ThemeService.GetPrimaryClass("text", "400")}",
             "success" => $"{baseClasses} bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400",
             "warning" => $"{baseClasses} bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400",
             "danger" => $"{baseClasses} bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400",
@@ -141,11 +142,11 @@
     {
         return Variant switch
         {
-            "primary" => "text-violet-500",
+            "primary" => ThemeService.GetPrimaryClass("text", "500"),
             "success" => "text-green-500",
             "warning" => "text-yellow-500",
             "danger" => "text-red-500",
-            _ => "text-violet-500"
+            _ => ThemeService.GetPrimaryClass("text", "500")
         };
     }
 
@@ -153,11 +154,11 @@
     {
         return Variant switch
         {
-            "primary" => "text-violet-500/10",
+            "primary" => $"{ThemeService.GetPrimaryClass("text", "500")}/10",
             "success" => "text-green-500/10",
             "warning" => "text-yellow-500/10",
             "danger" => "text-red-500/10",
-            _ => "text-violet-500/10"
+            _ => $"{ThemeService.GetPrimaryClass("text", "500")}/10"
         };
     }
 
@@ -165,11 +166,11 @@
     {
         return Variant switch
         {
-            "primary" => "bg-violet-500",
+            "primary" => ThemeService.GetPrimaryClass("bg", "500"),
             "success" => "bg-green-500",
             "warning" => "bg-yellow-500",
             "danger" => "bg-red-500",
-            _ => "bg-violet-500"
+            _ => ThemeService.GetPrimaryClass("bg", "500")
         };
     }
 

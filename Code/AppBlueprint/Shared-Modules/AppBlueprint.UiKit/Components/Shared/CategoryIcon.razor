@@ -1,0 +1,71 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Category icon component - reusable for project types, content categories, etc. *@
+
+<div class="w-@(Size) h-@(Size) rounded-full flex items-center justify-center shrink-0 @GetBackgroundClass()">
+    @if (!string.IsNullOrEmpty(IconSvg))
+    {
+        @((MarkupString)IconSvg)
+    }
+    else if (!string.IsNullOrEmpty(IconContent))
+    {
+        <span class="@GetIconTextClass()">@IconContent</span>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// SVG markup for the icon
+    /// </summary>
+    [Parameter]
+    public string? IconSvg { get; set; }
+
+    /// <summary>
+    /// Text content to display if no SVG is provided (e.g., emoji, initials)
+    /// </summary>
+    [Parameter]
+    public string? IconContent { get; set; }
+
+    /// <summary>
+    /// Size of the icon container (width and height in Tailwind units)
+    /// </summary>
+    [Parameter]
+    public int Size { get; set; } = 10;
+
+    /// <summary>
+    /// Color variant for the icon background
+    /// </summary>
+    [Parameter]
+    public string Variant { get; set; } = "violet";
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    private string GetBackgroundClass() => Variant.ToLower() switch
+    {
+        "rose" or "red" => "bg-rose-500",
+        "emerald" or "green" => "bg-emerald-500",
+        "sky" or "blue" => "bg-sky-500",
+        "violet" or "purple" => "bg-violet-500",
+        "amber" or "yellow" => "bg-amber-500",
+        "cyan" => "bg-cyan-500",
+        "pink" => "bg-pink-500",
+        "gray" => "bg-gray-500",
+        _ => "bg-violet-500"
+    };
+
+    private string GetIconTextClass()
+    {
+        return Size switch
+        {
+            >= 16 => "text-3xl",
+            >= 12 => "text-2xl",
+            >= 10 => "text-xl",
+            >= 8 => "text-lg",
+            _ => "text-base"
+        };
+    }
+}

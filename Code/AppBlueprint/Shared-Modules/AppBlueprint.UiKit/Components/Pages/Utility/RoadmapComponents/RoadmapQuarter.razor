@@ -1,0 +1,31 @@
+<article class="pt-6">
+    <div class="xl:flex">
+        <div class="w-32 shrink-0">
+            <h2 class="text-xl leading-snug font-bold text-gray-800 dark:text-gray-100 xl:leading-7 mb-4 xl:mb-0">@Quarter</h2>
+        </div>
+        <div class="grow pb-6 border-b border-gray-200 dark:border-gray-700/60">
+            <header>
+                <div class="flex flex-nowrap items-center space-x-2 mb-6">
+                    <!-- Avatars -->
+                    <RoadmapAvatarGroup Avatars="@Avatars" />
+                    <div class="text-gray-400 dark:text-gray-600">·</div>
+                    <div>
+                        <RoadmapStatusBadge Status="@Status" StatusType="@StatusType" />
+                    </div>
+                </div>
+            </header>
+            <!-- List -->
+            <ul class="-my-2">
+                @Items
+            </ul>
+        </div>
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired] public string Quarter { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public List<string> Avatars { get; set; } = [];
+    [Parameter, EditorRequired] public string Status { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string StatusType { get; set; } = "completed"; // completed, working, planned
+    [Parameter, EditorRequired] public RenderFragment Items { get; set; } = default!;
+}

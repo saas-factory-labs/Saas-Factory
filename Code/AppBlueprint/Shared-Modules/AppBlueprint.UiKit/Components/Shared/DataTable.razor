@@ -1,4 +1,5 @@
 @* Data table component with sorting, filtering, selection, and pagination *@
+@using AppBlueprint.UiKit.Components.Shared.DataTableComponents
 @typeparam TItem
 
 <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl">
@@ -8,27 +9,15 @@
             <div class="flex items-center gap-3">
                 @if (ShowSearch)
                 {
-                    <div class="relative">
-                        <input type="text"
-                               class="form-input pl-9 w-64 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60 focus:border-violet-300 dark:focus:border-violet-500/50 text-sm"
-                               placeholder="@SearchPlaceholder"
-                               @bind="SearchTerm"
-                               @bind:event="oninput"
-                               @onkeyup="OnSearchChanged" />
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 fill-current text-gray-400 dark:text-gray-500" width="16" height="16" viewBox="0 0 16 16">
-                            <path d="M7 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zM7 2C4.243 2 2 4.243 2 7s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5z" />
-                            <path d="M15.707 14.293L13.314 11.9a8.019 8.019 0 01-1.414 1.414l2.393 2.393a.997.997 0 001.414 0 .999.999 0 000-1.414z" />
-                        </svg>
-                    </div>
+                    <DataTableSearchBox @bind-Value="SearchTerm"
+                                        Placeholder="@SearchPlaceholder"
+                                        OnValueChanged="OnSearchChanged" />
                 }
                 @if (SelectedItems.Any() && BulkActions != null)
                 {
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                            @SelectedItems.Count selected
-                        </span>
+                    <DataTableBulkActionBar SelectedCount="@SelectedItems.Count">
                         @BulkActions
-                    </div>
+                    </DataTableBulkActionBar>
                 }
             </div>
             @if (HeaderActions != null)
@@ -58,18 +47,11 @@
                     }
                     @foreach (var column in Columns)
                     {
-                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap @(column.Sortable ? "cursor-pointer" : "")"
-                            @onclick="() => OnSort(column)">
-                            <div class="flex items-center font-semibold text-left">
-                                <span>@column.Title</span>
-                                @if (column.Sortable && SortColumn == column.PropertyName)
-                                {
-                                    <svg class="shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(SortDescending ? "rotate-180" : "")" width="8" height="8" viewBox="0 0 8 8">
-                                        <path d="M4 0L0 4h8z" />
-                                    </svg>
-                                }
-                            </div>
-                        </th>
+                        <DataTableHeaderCell Title="@column.Title"
+                                             Sortable="@column.Sortable"
+                                             IsSorted="@(SortColumn == column.PropertyName)"
+                                             SortDescending="@SortDescending"
+                                             OnClick="() => OnSort(column)" />
                     }
                     @if (RowActions != null)
                     {
@@ -133,40 +115,22 @@
     {
         <div class="px-5 py-4 border-t border-gray-100 dark:border-gray-700/60">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div class="text-sm text-gray-500 dark:text-gray-400">
-                    Showing <span class="font-medium text-gray-600 dark:text-gray-300">@StartIndex</span> to <span class="font-medium text-gray-600 dark:text-gray-300">@EndIndex</span> of <span class="font-medium text-gray-600 dark:text-gray-300">@FilteredItems.Count()</span> results
-                </div>
+                <DataTablePaginationInfo StartIndex="@StartIndex"
+                                         EndIndex="@EndIndex"
+                                         TotalCount="@FilteredItems.Count()" />
                 <nav class="flex items-center gap-1" aria-label="Pagination">
-                    <button class="@GetPaginationButtonClasses(CurrentPage == 1)"
-                            disabled="@(CurrentPage == 1)"
-                            @onclick="() => GoToPage(CurrentPage - 1)">
-                        <span class="sr-only">Previous</span>
-                        <svg class="fill-current" width="4" height="7" viewBox="0 0 4 7">
-                            <path d="M3.7.3c.4.4.4 1 0 1.4L1.4 4l2.3 2.3c.4.4.4 1 0 1.4-.4.4-1 .4-1.4 0L.3 5.7c-.4-.4-.4-1 0-1.4L2.3.3c.4-.4 1-.4 1.4 0z" />
-                        </svg>
-                    </button>
+                    <DataTablePaginationButton Direction="Previous"
+                                               Disabled="@(CurrentPage == 1)"
+                                               OnClick="() => GoToPage(CurrentPage - 1)" />
                     @foreach (var pageNum in GetPageNumbers())
                     {
-                        @if (pageNum == -1)
-                        {
-                            <span class="px-2 text-gray-400">...</span>
-                        }
-                        else
-                        {
-                            <button class="@GetPageNumberClasses(pageNum == CurrentPage)"
-                                    @onclick="() => GoToPage(pageNum)">
-                                @pageNum
-                            </button>
-                        }
+                        <DataTablePageNumber PageNumber="@pageNum"
+                                             IsActive="@(pageNum == CurrentPage)"
+                                             OnClick="() => GoToPage(pageNum)" />
                     }
-                    <button class="@GetPaginationButtonClasses(CurrentPage == TotalPages)"
-                            disabled="@(CurrentPage == TotalPages)"
-                            @onclick="() => GoToPage(CurrentPage + 1)">
-                        <span class="sr-only">Next</span>
-                        <svg class="fill-current" width="4" height="7" viewBox="0 0 4 7">
-                            <path d="M.3 6.7c-.4-.4-.4-1 0-1.4L2.6 3 .3.7C-.1.3-.1-.3.3-.7c.4-.4 1-.4 1.4 0l2 2c.4.4.4 1 0 1.4l-2 2c-.4.4-1 .4-1.4 0z" />
-                        </svg>
-                    </button>
+                    <DataTablePaginationButton Direction="Next"
+                                               Disabled="@(CurrentPage == TotalPages)"
+                                               OnClick="() => GoToPage(CurrentPage + 1)" />
                 </nav>
             </div>
         </div>
@@ -331,22 +295,6 @@
         }
 
         return pages;
-    }
-
-    private string GetPaginationButtonClasses(bool disabled)
-    {
-        var baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-2.5 py-2 border";
-        return disabled
-            ? $"{baseClasses} border-gray-200 dark:border-gray-700/60 text-gray-300 dark:text-gray-600"
-            : $"{baseClasses} border-gray-200 dark:border-gray-700/60 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50";
-    }
-
-    private string GetPageNumberClasses(bool isActive)
-    {
-        var baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-3.5 py-2";
-        return isActive
-            ? $"{baseClasses} bg-violet-500 text-white"
-            : $"{baseClasses} text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50";
     }
 
     public class DataTableColumn

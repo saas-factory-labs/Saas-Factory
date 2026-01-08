@@ -1,0 +1,53 @@
+@inject NavigationManager Navigation
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+
+@*
+    SidebarGroupChildItem - A child menu item within a SidebarMenuGroup
+    
+    Cross-Domain Examples:
+    - E-commerce group children: "Active Orders", "Pending Orders", "Completed Orders"
+    - CRM pipeline children: "New Leads", "Qualified Leads", "Won Deals"
+    - Dating app discovery children: "Nearby", "Popular", "New Members"
+    - Project management children: "My Tasks", "Team Tasks", "Backlog"
+    
+    Features:
+    - Active state highlighting with violet color
+    - Hover state transitions
+    - Click handler for closing mobile menu
+    - Responsive text that fades on collapsed sidebar
+    - Dark mode support
+*@
+
+<li class="mb-1 last:mb-0">
+    <a class="block transition truncate @(IsActive ? ThemeService.GetPrimaryClass("text", "500") : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")" 
+       href="@Href"
+       @onclick="@OnClick">
+        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">@Label</span>
+    </a>
+</li>
+
+@code {
+    /// <summary>
+    /// The URL to navigate to when clicking the menu item
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Href { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The display label for the menu item
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Whether this menu item is currently active
+    /// </summary>
+    [Parameter]
+    public bool IsActive { get; set; }
+
+    /// <summary>
+    /// Callback to invoke when the item is clicked (e.g., to close mobile menu)
+    /// </summary>
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

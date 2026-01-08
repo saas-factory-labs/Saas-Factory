@@ -26,7 +26,7 @@
         try
         {
             // Check if sidebarManager exists before calling it
-            bool hasManager = await JS.InvokeAsync<bool>("eval", "typeof window.sidebarManager !== 'undefined' && typeof window.sidebarManager.expand === 'function'");
+            bool hasManager = await JS.InvokeAsync<bool>("sidebarManager.isAvailable");
             if (hasManager)
             {
                 await JS.InvokeVoidAsync("sidebarManager.expand");
@@ -48,7 +48,7 @@
         try
         {
             // Check if sidebarManager exists before calling it
-            bool hasManager = await JS.InvokeAsync<bool>("eval", "typeof window.sidebarManager !== 'undefined' && typeof window.sidebarManager.collapse === 'function'");
+            bool hasManager = await JS.InvokeAsync<bool>("sidebarManager.isAvailable");
             if (hasManager)
             {
                 await JS.InvokeVoidAsync("sidebarManager.collapse");

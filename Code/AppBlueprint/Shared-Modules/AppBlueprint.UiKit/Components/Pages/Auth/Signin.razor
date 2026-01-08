@@ -1,11 +1,13 @@
 @page "/signin"
 @page "/login"
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
 @inject NavigationManager Navigation
 
 @code {
     protected override void OnInitialized()
     {
-        // Redirect to the authentication endpoint which triggers Logto sign-in
-        Navigation.NavigateTo("/auth/signin", forceLoad: true);
+        // Redirect to the signup flow page to choose B2C or B2B account
+        Navigation.NavigateTo("/signup", forceLoad: true);
     }
 }

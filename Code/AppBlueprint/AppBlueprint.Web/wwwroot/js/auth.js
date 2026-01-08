@@ -1,5 +1,10 @@
-window.auth = {
-    fetchAndStoreToken: async function () {
+"use strict";
+/**
+ * Authentication module for token management
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+const auth = {
+    async fetchAndStoreToken() {
         try {
             const response = await fetch('/api/token');
             if (response.ok) {
@@ -7,11 +12,15 @@ window.auth = {
                 const token = data.accessToken;
                 if (token) {
                     localStorage.setItem('auth_token', token);
-                    console.log('Token stored in localStorage.');
+                    console.log('Token stored in localStorage');
                 }
             }
-        } catch (e) {
-            console.error('Error fetching or storing token:', e);
+        }
+        catch (error) {
+            console.error('Error fetching or storing token:', error);
         }
     }
 };
+window.auth = auth;
+exports.default = auth;
+//# sourceMappingURL=auth.js.map

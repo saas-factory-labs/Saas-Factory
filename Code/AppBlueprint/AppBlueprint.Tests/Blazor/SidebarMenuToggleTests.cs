@@ -26,7 +26,7 @@ public sealed class SidebarMenuToggleTests
         var cut = context.RenderComponent<Sidebar>(parameters =>
             parameters.Add(p => p.SidebarOpen, true));
 
-        var buttons = cut.FindAll("button[data-sidebar-expand-toggle]");
+        var buttons = cut.FindAll("button[data-sidebar-toggle]");
         buttons.Should().NotBeEmpty();
     }
 }

@@ -1,4 +1,5 @@
 @page "/ecommerce/product"
+@using AppBlueprint.UiKit.Components.Pages.ProductComponents
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full">
 
@@ -39,23 +40,7 @@
                     <!-- Rating -->
                     <div class="flex items-center space-x-2 mr-2">
                         <!-- Stars -->
-                        <div class="flex space-x-1">
-                            @for (int i = 0; i < 4; i++)
-                            {
-                                <button>
-                                    <span class="sr-only">@(i + 1) star</span>
-                                    <svg class="fill-current text-yellow-500" width="16" height="16" viewBox="0 0 16 16">
-                                        <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
-                                    </svg>
-                                </button>
-                            }
-                            <button>
-                                <span class="sr-only">5 stars</span>
-                                <svg class="fill-current text-gray-300 dark:text-gray-600" width="16" height="16" viewBox="0 0 16 16">
-                                    <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
-                                </svg>
-                            </button>
-                        </div>
+                        <ProductStarRating FilledStars="4" />
                         <!-- Rate -->
                         <div class="inline-flex text-sm font-medium text-yellow-600">4.2</div>
                     </div>
@@ -91,41 +76,11 @@
                 <ul class="space-y-5 my-6">
                     @foreach (var review in reviews)
                     {
-                        <li>
-                            <div class="flex items-center mb-2">
-                                <img class="w-8 h-8 rounded-full mr-3" src="@review.Avatar" width="32" height="32" alt="@review.Name" />
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-1">@review.Name</div>
-                                    <!-- Rating -->
-                                    <div class="flex items-center space-x-2">
-                                        <!-- Stars -->
-                                        <div class="flex space-x-1">
-                                            @for (int i = 0; i < review.Rating; i++)
-                                            {
-                                                <button>
-                                                    <span class="sr-only">@(i + 1) star</span>
-                                                    <svg class="fill-current text-yellow-500" width="16" height="16" viewBox="0 0 16 16">
-                                                        <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
-                                                    </svg>
-                                                </button>
-                                            }
-                                            @for (int i = review.Rating; i < 5; i++)
-                                            {
-                                                <button>
-                                                    <span class="sr-only">@(i + 1) stars</span>
-                                                    <svg class="fill-current text-gray-300 dark:text-gray-600" width="16" height="16" viewBox="0 0 16 16">
-                                                        <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
-                                                    </svg>
-                                                </button>
-                                            }
-                                        </div>
-                                        <!-- Rate -->
-                                        <div class="inline-flex text-sm font-medium text-yellow-600">@review.Score</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-sm italic">"@review.Comment"</div>
-                        </li>
+                        <ProductReviewItem ReviewerName="@review.Name"
+                                           AvatarUrl="@review.Avatar"
+                                           Rating="@review.Rating"
+                                           Score="@review.Score"
+                                           Comment="@review.Comment" />
                     }
                 </ul>
                 <!-- Load More -->
@@ -142,48 +97,10 @@
                 <ul class="space-y-8 sm:space-y-5 my-6">
                     @foreach (var product in relatedProducts)
                     {
-                        <li class="sm:flex items-center">
-                            <a class="block mb-4 sm:mb-0 mr-5 md:w-32 xl:w-auto shrink-0" href="#0">
-                                <img class="rounded-xs" src="@product.Image" width="200" height="142" alt="@product.Title" />
-                            </a>
-                            <div class="grow">
-                                <a href="#0">
-                                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">@product.Title</h3>
-                                </a>
-                                <div class="text-sm mb-2">@product.Description</div>
-                                <!-- Rating and price -->
-                                <div class="flex flex-wrap items-center space-x-2">
-                                    <!-- Rating -->
-                                    <div class="flex items-center space-x-2">
-                                        <!-- Stars -->
-                                        <div class="flex space-x-1">
-                                            @for (int i = 0; i < 4; i++)
-                                            {
-                                                <button>
-                                                    <span class="sr-only">@(i + 1) star</span>
-                                                    <svg class="fill-current text-yellow-500" width="16" height="16" viewBox="0 0 16 16">
-                                                        <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
-                                                    </svg>
-                                                </button>
-                                            }
-                                            <button>
-                                                <span class="sr-only">5 stars</span>
-                                                <svg class="fill-current text-gray-300 dark:text-gray-600" width="16" height="16" viewBox="0 0 16 16">
-                                                    <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <!-- Rate -->
-                                        <div class="inline-flex text-sm font-medium text-yellow-600">4.2</div>
-                                    </div>
-                                    <div class="text-gray-400 dark:text-gray-600">·</div>
-                                    <!-- Price -->
-                                    <div>
-                                        <div class="inline-flex text-sm font-medium bg-green-500/20 text-green-700 rounded-full text-center px-2 py-0.5">@product.Price</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
+                        <RelatedProductItem Title="@product.Title"
+                                            ImageUrl="@product.Image"
+                                            Description="@product.Description"
+                                            Price="@product.Price" />
                     }
                 </ul>
                 <!-- Load More -->

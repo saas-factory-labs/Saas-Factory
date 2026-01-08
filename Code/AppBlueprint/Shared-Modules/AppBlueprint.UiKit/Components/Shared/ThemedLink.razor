@@ -1,0 +1,35 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+
+<a href="@Href" 
+   class="@GetLinkClasses()"
+   @onclick="OnClick"
+   @onclick:preventDefault="@PreventDefault">
+    @ChildContent
+</a>
+
+@code {
+    [Parameter, EditorRequired] public required string Href { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    [Parameter] public bool PreventDefault { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? AdditionalClasses { get; set; }
+    
+    /// <summary>
+    /// Link style: "default" (colored), "subtle" (gray with hover)
+    /// </summary>
+    [Parameter] public string Style { get; set; } = "default";
+
+    private string GetLinkClasses()
+    {
+        string baseClasses = Style switch
+        {
+            "subtle" => "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors duration-150",
+            _ => ThemeService.GetLinkClasses() // default colored
+        };
+
+        return string.IsNullOrWhiteSpace(AdditionalClasses) 
+            ? baseClasses 
+            : $"{baseClasses} {AdditionalClasses}";
+    }
+}

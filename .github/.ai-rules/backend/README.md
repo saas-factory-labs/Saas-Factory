@@ -15,6 +15,7 @@ IMPORTANT: Always follow these steps very carefully when implementing changes:
 
 - [API Controllers](./api-controllers.md) - Guidelines for API controller implementation.
 - [Database Repositories](./database-repositories.md) - Database access patterns and repository implementations.
+- [Exception Handling](./exception-handling.md) - **CRITICAL: When to use try-catch vs global exception handling.**
 - [External Integrations](./external-integrations.md) - Implementation of integration to external services.
 - **[Multi-Tenancy](./multi-tenancy.md) - CRITICAL: Tenant resolution security rules (JWT-only policy).**
 - **[Tenant Isolation: Defense-in-Depth](./tenant-isolation-defense-in-depth.md) - CRITICAL: Named Query Filters + RLS implementation guide.**

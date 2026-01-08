@@ -1,0 +1,21 @@
+<div class="absolute top-0 left-0">
+    <button class="text-xs font-semibold text-left w-6 rounded-xs flex flex-col justify-center items-center @Classes">
+        <svg class="inline-flex @IconClasses mt-1.5 mb-1.5" width="12" height="6" xmlns="http://www.w3.org/2000/svg">
+            <path d="m0 6 6-6 6 6z" />
+        </svg>
+        <div>@Votes</div>
+    </button>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public int Votes { get; set; }
+    [Parameter] public bool IsUpvoted { get; set; }
+
+    private string Classes => IsUpvoted 
+        ? "text-gray-600 dark:text-gray-300" 
+        : "text-gray-600 dark:text-gray-300 hover:text-violet-500 dark:hover:text-violet-500";
+
+    private string IconClasses => IsUpvoted 
+        ? "fill-violet-500" 
+        : "fill-gray-400 dark:fill-gray-500";
+}

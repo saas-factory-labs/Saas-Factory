@@ -1,4 +1,5 @@
 @page "/ecommerce/cart"
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full">
 
@@ -9,7 +10,7 @@
         <div class="mb-6 lg:mb-0">
             <div class="mb-3">
                 <div class="flex text-sm font-medium text-gray-400 dark:text-gray-500 space-x-2">
-                    <span class="text-violet-500">Review</span>
+                    <span class="@ThemeService.GetPrimaryClass("text", "500")">Review</span>
                     <span>-&gt;</span>
                     <span class="text-gray-500 dark:text-gray-400">Payment</span>
                     <span>-&gt;</span>

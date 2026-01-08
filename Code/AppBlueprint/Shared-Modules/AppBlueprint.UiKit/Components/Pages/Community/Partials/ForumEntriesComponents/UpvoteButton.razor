@@ -1,0 +1,19 @@
+<button class="@ButtonClasses">
+    <svg class="@IconClasses" width="12" height="6" xmlns="http://www.w3.org/2000/svg">
+        <path d="m0 6 6-6 6 6z" />
+    </svg>
+    <div>@Votes</div>
+</button>
+
+@code {
+    [Parameter, EditorRequired] public int Votes { get; set; }
+    [Parameter] public bool IsActive { get; set; }
+
+    private string ButtonClasses => IsActive
+        ? "text-xs font-semibold text-center h-12 w-12 border border-violet-500/60 rounded-lg flex flex-col justify-center items-center shadow-violet-500/20"
+        : "text-xs font-semibold text-center h-12 w-12 border border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 rounded-lg flex flex-col justify-center items-center";
+
+    private string IconClasses => IsActive
+        ? "inline-flex fill-violet-500 mt-1.5 mb-1.5"
+        : "inline-flex fill-gray-400 dark:fill-gray-500 mt-1.5 mb-1.5";
+}

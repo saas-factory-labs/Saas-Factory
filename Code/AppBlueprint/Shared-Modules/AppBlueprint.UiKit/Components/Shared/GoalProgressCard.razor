@@ -1,0 +1,91 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* 
+Universal goal progress card with motivational messaging and chart visualization
+Reusable for savings goals, profile completion, sales quotas, loyalty rewards, fitness goals
+*@
+
+<div class="flex flex-col col-span-full @GridColumnClass bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center">
+        <h2 class="font-semibold text-gray-800 dark:text-gray-100">@Title</h2>
+    </header>
+    <div class="px-5 py-3">
+        @if (!string.IsNullOrEmpty(MotivationalMessage))
+        {
+            <div class="text-sm italic mb-2">@MotivationalMessage</div>
+        }
+        <div class="flex items-center">
+            <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">@CurrentValue</div>
+            <div class="text-sm">
+                <span class="font-medium @PercentageColorClass">@Percentage%</span>
+            </div>
+        </div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">@SubtitleText @GoalValue</div>
+    </div>
+    @if (ChartContent != null)
+    {
+        <div class="grow">
+            @ChartContent
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// The card title (e.g., "Saving Goals", "Profile Completion", "Sales Quota")
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Optional motivational or contextual message displayed at the top
+    /// </summary>
+    [Parameter]
+    public string MotivationalMessage { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The current progress value (e.g., "$5,247.09", "87%", "45 leads")
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string CurrentValue { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The goal/target value (e.g., "$6,000", "100%", "50 leads")
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string GoalValue { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The percentage completed (0-100)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public double Percentage { get; set; }
+
+    /// <summary>
+    /// Tailwind CSS classes for the percentage display color
+    /// Default: yellow-600 (commonly used for progress indicators)
+    /// Examples: text-green-600, text-violet-600, text-amber-600
+    /// </summary>
+    [Parameter]
+    public string PercentageColorClass { get; set; } = "text-yellow-600";
+
+    /// <summary>
+    /// Text before the goal value (e.g., "Out of", "Target:", "Goal:")
+    /// </summary>
+    [Parameter]
+    public string SubtitleText { get; set; } = "Out of";
+
+    /// <summary>
+    /// Optional chart content to display below the progress information
+    /// Use RenderFragment to pass LineChart, BarChart, or any custom visualization
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChartContent { get; set; }
+
+    /// <summary>
+    /// Tailwind CSS classes for the grid column span
+    /// Default: sm:col-span-12 xl:col-span-4 (full width on mobile, 1/3 on desktop)
+    /// </summary>
+    [Parameter]
+    public string GridColumnClass { get; set; } = "sm:col-span-12 xl:col-span-4";
+}

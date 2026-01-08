@@ -1,28 +1,22 @@
 {
   "$schema": "https://json.schemastore.org/launchsettings.json",
+  "//": "AppBlueprint Demo App uses Hybrid Mode to support both B2C and B2B user flows.",
+  "//DatabaseContext__ContextType": "Primary context type (B2C or B2B)",
+  "//DatabaseContext__EnableHybridMode": "When true, registers ALL contexts (Baseline, B2C, B2B) for dynamic dashboards",
+  "//Documentation": "See Code/AppBlueprint/DATABASE_HYBRID_MODE_SETUP.md",
   "profiles": {
-    "https": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "https://localhost:8081",
-      "environmentVariables": {
-       "ASPNETCORE_ENVIRONMENT": "Development",
-        "DOTNET_ENVIRONMENT": "Development",
-        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21250",
-        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:7200"
-      }
-    },
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "applicationUrl": "http://localhost:8080",
+      "applicationUrl": "http://localhost:8091",
       "environmentVariables": {
        "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:21250",
-        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:7200"
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:7200",
+        "DatabaseContext__ContextType": "B2C",
+        "DatabaseContext__EnableHybridMode": "true"
       }
     }
   }

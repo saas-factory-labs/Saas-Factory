@@ -1,0 +1,101 @@
+@page "/onboarding-complete"
+@layout AppBlueprint.UiKit.Components.Layout.AuthLayout
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@inject NavigationManager Navigation
+@inject ILogger<OnboardingComplete> Logger
+
+<main class="bg-white dark:bg-gray-900">
+    <div class="min-h-[100dvh] flex items-center justify-center px-4 py-8">
+        <div class="max-w-md w-full">
+            <!-- Success State -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Account Created! 🎉</h1>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Your account has been created successfully.</p>
+                </div>
+                
+                <!-- Automatic redirect notice -->
+                <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg p-4 mb-6">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400 mt-0.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <div>
+                            <h3 class="text-sm font-semibold text-indigo-900 dark:text-indigo-100 mb-1">Refreshing Your Session</h3>
+                            <p class="text-sm text-indigo-700 dark:text-indigo-300">
+                                Signing you out and back in to activate your workspace...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Logto Configuration Warning (for developers) -->
+                @if (!string.IsNullOrEmpty(warningMessage))
+                {
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <h3 class="text-sm font-semibold text-yellow-900 dark:text-yellow-100 mb-1">Configuration Required</h3>
+                                <p class="text-sm text-yellow-800 dark:text-yellow-300 mb-2">@warningMessage</p>
+                                <p class="text-xs text-yellow-700 dark:text-yellow-400">
+                                    See <a href="https://docs.logto.io/docs/recipes/rbac/protect-resource/#configure-resource-permissions" target="_blank" class="underline">Logto API Resource docs</a> for setup instructions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                
+                <div class="space-y-3">
+                    <button @onclick="RefreshAuth" class="block w-full px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-center font-semibold">
+                        @if (isRedirecting)
+                        {
+                            <span>Redirecting...</span>
+                        }
+                        else
+                        {
+                            <span>Refresh Now</span>
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@code {
+    private bool isRedirecting = true;
+    private string warningMessage = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Automatically trigger the refresh after a short delay to let the UI render
+            await Task.Delay(1500);
+            await RefreshAuth();
+        }
+    }
+
+    private async Task RefreshAuth()
+    {
+        isRedirecting = true;
+        StateHasChanged();
+        
+        Logger.LogInformation("[OnboardingComplete] Account created - redirecting to dashboard");
+        
+        // Simply navigate to dashboard - the user is already authenticated
+        // The dashboard will load with the new tenant data from the database
+        Navigation.NavigateTo("/", forceLoad: true);
+        
+        await Task.CompletedTask;
+    }
+}

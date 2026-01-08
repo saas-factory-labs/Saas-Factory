@@ -1,0 +1,25 @@
+@if (PageNumber == -1)
+{
+    <span class="px-2 text-gray-400">...</span>
+}
+else
+{
+    <button class="@GetButtonClasses()"
+            @onclick="OnClick">
+        @PageNumber
+    </button>
+}
+
+@code {
+    [Parameter, EditorRequired] public int PageNumber { get; set; }
+    [Parameter] public bool IsActive { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private string GetButtonClasses()
+    {
+        string baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-3.5 py-2";
+        return IsActive
+            ? $"{baseClasses} bg-violet-500 text-white"
+            : $"{baseClasses} text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50";
+    }
+}

@@ -9,8 +9,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AppBlueprint.Infrastructure.Configuration;
+using AppBlueprint.Infrastructure.DatabaseContexts;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AppBlueprint.Infrastructure.Authentication;
+
+/// <summary>
+/// Lightweight DTO for looking up user's tenant during authentication.
+/// </summary>
+internal sealed record UserTenantLookup(string Id, string TenantId);
 
 /// <summary>
 /// Extension methods for configuring web authentication (Logto, cookies, data protection)
@@ -55,9 +63,14 @@ public static class WebAuthenticationExtensions
 <html>
 <head>
     <title>Signing out...</title>
+    <meta http-equiv='refresh' content='0; url=/login'>
+    <meta http-equiv='cache-control' content='no-cache, no-store, must-revalidate'>
+    <meta http-equiv='pragma' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
     <script>
         console.log('[Logout] Redirecting to login page after sign-out');
-        window.location.href = '/login';
+        // Use replace() instead of href to prevent browser back button issues
+        window.location.replace('/login');
     </script>
 </head>
 <body>
@@ -112,6 +125,7 @@ public static class WebAuthenticationExtensions
 
         services.AddAuthorization();
         services.AddScoped<Authorization.ITokenStorageService, Authorization.TokenStorageService>();
+        services.AddScoped<Authorization.IAuthenticationTokenService, Authorization.AuthenticationTokenService>();
 
         return services;
     }
@@ -164,12 +178,13 @@ public static class WebAuthenticationExtensions
             options.DefaultChallengeScheme = LogtoScheme;
             options.DefaultSignInScheme = LogtoCookieScheme;
             options.DefaultAuthenticateScheme = LogtoCookieScheme;
+            options.DefaultSignOutScheme = LogtoScheme; // OIDC scheme handles full sign-out including Logto session
         })
         .AddCookie(LogtoCookieScheme, options =>
         {
-            options.LoginPath = "/auth/signin";
+            options.LoginPath = "/signup";
             options.LogoutPath = "/auth/signout";
-            options.AccessDeniedPath = "/auth/signin";
+            options.AccessDeniedPath = "/signup";
             
             if (environment.IsDevelopment())
             {
@@ -204,7 +219,7 @@ public static class WebAuthenticationExtensions
                 options.Scope.Add(logtoResource);
             }
             
-            options.CallbackPath = "/Callback";
+            options.CallbackPath = "/callback";
             options.SignedOutCallbackPath = "/signout-callback-logto";
             
             if (environment.IsDevelopment())
@@ -219,6 +234,7 @@ public static class WebAuthenticationExtensions
             options.CorrelationCookie.SameSite = SameSiteMode.Lax;
             options.CorrelationCookie.HttpOnly = true;
             options.CorrelationCookie.IsEssential = true;
+            options.CorrelationCookie.Path = "/";
             
             // Configure nonce cookie for development (HTTP localhost)
             options.NonceCookie.SecurePolicy = environment.IsDevelopment() 
@@ -227,17 +243,19 @@ public static class WebAuthenticationExtensions
             options.NonceCookie.SameSite = SameSiteMode.Lax;
             options.NonceCookie.HttpOnly = true;
             options.NonceCookie.IsEssential = true;
+            options.NonceCookie.Path = "/";
             
             Console.WriteLine($"[Web] Configured OpenID Connect 'Logto' scheme with Authority={options.Authority}");
+            Console.WriteLine($"[Web] Cookie settings - SecurePolicy: {options.CorrelationCookie.SecurePolicy}, SameSite: {options.CorrelationCookie.SameSite}");
         });
         
         // Configure the Logto cookie scheme (named "Logto.Cookie") specifically
         services.Configure<CookieAuthenticationOptions>("Logto.Cookie", options =>
         {
             // Set the correct login path for Logto authentication
-            options.LoginPath = "/auth/signin";
+            options.LoginPath = "/signup";
             options.LogoutPath = "/auth/signout";
-            options.AccessDeniedPath = "/auth/signin";
+            options.AccessDeniedPath = "/signup";
             
             // Configure authentication cookie for development
             if (environment.IsDevelopment())
@@ -256,9 +274,9 @@ public static class WebAuthenticationExtensions
         services.ConfigureAll<CookieAuthenticationOptions>(options =>
         {
             // Set the correct login path for Logto authentication
-            options.LoginPath = "/auth/signin";
+            options.LoginPath = "/signup";
             options.LogoutPath = "/auth/signout";
-            options.AccessDeniedPath = "/auth/signin";
+            options.AccessDeniedPath = "/signup";
             
             // Configure authentication cookie for development
             if (environment.IsDevelopment())
@@ -295,9 +313,9 @@ public static class WebAuthenticationExtensions
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                options.LoginPath = "/auth/signin";
+                options.LoginPath = "/signup";
                 options.LogoutPath = "/auth/signout";
-                options.AccessDeniedPath = "/auth/signin";
+                options.AccessDeniedPath = "/signup";
             });
     }
 
@@ -356,9 +374,9 @@ public static class WebAuthenticationExtensions
             
             options.SaveTokens = true;
             
-            // Logto uses /Callback as the callback path (not the default /signin-oidc)
+            // Logto uses /callback as the callback path (not the default /signin-oidc)
             // This must match what's configured in Logto's redirect URIs
-            options.CallbackPath = "/Callback";
+            options.CallbackPath = "/callback";
             
             ConfigureCookieSettings(options, environment);
             
@@ -454,6 +472,37 @@ public static class WebAuthenticationExtensions
             
             return Task.CompletedTask;
         };
+        
+        // Debug: Log when callback is received
+        options.Events.OnMessageReceived = context =>
+        {
+            Console.WriteLine("[Web] OnMessageReceived - Callback received from Logto");
+            Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+            Console.WriteLine($"[Web] Request cookies count: {context.Request.Cookies.Count}");
+            
+            foreach (var cookie in context.Request.Cookies)
+            {
+                Console.WriteLine($"[Web]   - Received cookie: {cookie.Key}");
+            }
+            
+            // Check for correlation cookie specifically
+            var hasCorrelation = context.Request.Cookies.Any(c => c.Key.Contains("Correlation"));
+            var hasNonce = context.Request.Cookies.Any(c => c.Key.Contains("Nonce"));
+            
+            Console.WriteLine($"[Web] Has Correlation cookie: {hasCorrelation}");
+            Console.WriteLine($"[Web] Has Nonce cookie: {hasNonce}");
+            
+            if (!hasCorrelation || !hasNonce)
+            {
+                Console.WriteLine("[Web] ⚠️ WARNING: Missing required cookies! This will cause authentication to fail.");
+                Console.WriteLine("[Web] This typically means:");
+                Console.WriteLine("[Web]   1. Browser blocked third-party cookies");
+                Console.WriteLine("[Web]   2. Cookie SameSite policy is too restrictive");
+                Console.WriteLine("[Web]   3. Redirect from Logto is treated as cross-site");
+            }
+            
+            return Task.CompletedTask;
+        };
     }
 
     /// <summary>
@@ -535,6 +584,65 @@ public static class WebAuthenticationExtensions
             {
                 Console.WriteLine($"[Web] AccessToken length: {context.TokenEndpointResponse.AccessToken?.Length ?? 0}");
             }
+        }
+
+        // Fetch user's tenant from database and add tenant_id claim
+        string? userEmail = context.Principal?.FindFirst(ClaimTypes.Email)?.Value 
+            ?? context.Principal?.FindFirst("email")?.Value;
+        
+        if (!string.IsNullOrEmpty(userEmail))
+        {
+            Console.WriteLine($"[Web] User email from JWT: {userEmail}");
+            
+            // Get DbContextFactory from DI container to bypass RLS
+            var contextFactory = context.HttpContext.RequestServices.GetService<IDbContextFactory<ApplicationDbContext>>();
+            
+            if (contextFactory is not null)
+            {
+                await using ApplicationDbContext dbContext = await contextFactory.CreateDbContextAsync();
+                
+                // Query database directly, bypassing RLS by using SECURITY INVOKER context
+                // This is safe because we're only reading data during authentication
+                // Use quoted column names to match exact casing in PostgreSQL
+                FormattableString query = $"SELECT \"Id\", \"TenantId\" FROM \"Users\" WHERE \"Email\" = {userEmail} LIMIT 1";
+                
+                var result = await dbContext.Database.SqlQuery<UserTenantLookup>(query).FirstOrDefaultAsync();
+                
+                if (result is not null && !string.IsNullOrEmpty(result.TenantId))
+                {
+                    Console.WriteLine($"[Web] ✅ Found user's tenant: {result.TenantId}");
+                    
+                    // Add tenant_id claim to ClaimsIdentity
+                    var identity = context.Principal?.Identity as ClaimsIdentity;
+                    identity?.AddClaim(new Claim("tenant_id", result.TenantId));
+                    
+                    Console.WriteLine("[Web] ✅ Added tenant_id claim to ClaimsIdentity");
+                    
+                    // User has a tenant - redirect directly to dashboard (skip onboarding)
+                    context.Properties.RedirectUri = "/dashboard";
+                    Console.WriteLine("[Web] ✅ User has tenant - redirecting to /dashboard");
+                }
+                else
+                {
+                    Console.WriteLine("[Web] ⚠️ User not found or has no tenant - will redirect to onboarding");
+                    
+                    // User has no tenant - redirect to onboarding for profile completion
+                    context.Properties.RedirectUri = "/onboarding";
+                    Console.WriteLine("[Web] ⚠️ Redirecting to /onboarding for profile completion");
+                }
+            }
+            else
+            {
+                Console.WriteLine("[Web] ⚠️ DbContextFactory not available in DI container");
+                // Fallback to onboarding if we can't check database
+                context.Properties.RedirectUri = "/onboarding";
+            }
+        }
+        else
+        {
+            Console.WriteLine("[Web] ⚠️ No email claim found in JWT");
+            // Fallback to onboarding if we can't identify user
+            context.Properties.RedirectUri = "/onboarding";
         }
 
         Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");
@@ -627,57 +735,36 @@ public static class WebAuthenticationExtensions
             context.Response.Redirect("/");
         }).AllowAnonymous();
 
-        // Sign out endpoint - Full Logto sign-out (signs out from both app and Logto IdP)
-        app.MapGet("/auth/signout", async (HttpContext context, IConfiguration config) =>
+        // Sign out endpoint - Uses OIDC middleware to handle full sign-out flow
+        // This follows the official Logto Blazor Server documentation pattern
+        app.MapGet("/auth/signout", async (HttpContext context) =>
         {
             Console.WriteLine(LogSeparator);
-            Console.WriteLine("[Web] SignOut endpoint called - FULL LOGTO SIGN-OUT");
-            Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+            Console.WriteLine("[Web] SignOut endpoint called");
             Console.WriteLine($"[Web] User authenticated: {context.User?.Identity?.IsAuthenticated}");
-            Console.WriteLine($"[Web] User name: {context.User?.Identity?.Name}");
             
-            // Get the id_token from the authentication properties if available
-            var authenticateResult = await context.AuthenticateAsync(LogtoScheme);
-            string? idToken = authenticateResult?.Properties?.GetTokenValue("id_token");
-            
-            Console.WriteLine($"[Web] ID Token available: {idToken is not null}");
-            
-            // Clear local authentication cookies first
-            await context.SignOutAsync(LogtoCookieScheme);
-            Console.WriteLine($"[Web] ✅ Cleared {LogtoCookieScheme}");
-            
-            // Build Logto's end session URL
-            var logtoEndpoint = config[LogtoEndpointKey];
-            
-            // Construct the post-logout redirect URI
-            // The web runs on 8083 (HTTPS) and 8082 (HTTP) in development, port 80 in production
-            var request = context.Request;
-            var postLogoutRedirectUri = $"{request.Scheme}://{request.Host}/logout-complete";
-            
-            Console.WriteLine($"[Web] Logto endpoint: {logtoEndpoint}");
-            Console.WriteLine($"[Web] Request Host: {request.Host}");
-            Console.WriteLine($"[Web] Post-logout redirect URI: {postLogoutRedirectUri}");
-            
-            // Construct the Logto end session URL according to OIDC spec
-            var endSessionUrl = $"{logtoEndpoint}oidc/session/end?post_logout_redirect_uri={Uri.EscapeDataString(postLogoutRedirectUri)}";
-            
-            // Add id_token_hint if available (recommended for proper sign-out)
-            if (!string.IsNullOrEmpty(idToken))
+            if (context.User?.Identity?.IsAuthenticated ?? false)
             {
-                endSessionUrl += $"&id_token_hint={Uri.EscapeDataString(idToken)}";
-                Console.WriteLine("[Web] ✅ Added id_token_hint to sign-out URL");
+                Console.WriteLine("[Web] ✅ Signing out from both Cookie and OIDC schemes");
+                Console.WriteLine("[Web] ➡️  Will redirect to /login after sign-out completes");
+                Console.WriteLine(LogSeparator);
+                
+                // Sign out from both authentication schemes to ensure complete logout
+                // 1. Sign out from Cookie scheme (clears local authentication cookie)
+                // 2. Sign out from OIDC scheme with RedirectUri (triggers Logto end session flow)
+                //    - Redirects to Logto's end session endpoint
+                //    - Logto clears its session
+                //    - Logto redirects to SignedOutCallbackPath
+                //    - Middleware handles callback and redirects to RedirectUri
+                await context.SignOutAsync(LogtoCookieScheme);
+                await context.SignOutAsync(LogtoScheme, new AuthenticationProperties { RedirectUri = "/login" });
             }
             else
             {
-                Console.WriteLine("[Web] ⚠️ No id_token available - sign-out might not work properly");
+                Console.WriteLine("[Web] User not authenticated - redirecting directly to /login");
+                Console.WriteLine(LogSeparator);
+                context.Response.Redirect("/login");
             }
-            
-            Console.WriteLine("[Web] ➡️  Redirecting to Logto end session:");
-            Console.WriteLine($"[Web] {endSessionUrl}");
-            Console.WriteLine(LogSeparator);
-            
-            // Redirect to Logto's end session endpoint
-            context.Response.Redirect(endSessionUrl);
         }).AllowAnonymous();
 
         // Logout complete callback - where Logto redirects back after sign-out
@@ -701,10 +788,11 @@ public static class WebAuthenticationExtensions
             
             // Return HTML that uses JavaScript to navigate to login
             // This ensures a complete page reload and new Blazor circuit
-            context.Response.ContentType = "text/html";
-            await context.Response.WriteAsync(LogoutCompleteHtml);
-            Console.WriteLine("[Web] ✅ Sent HTML redirect to /login");
+            Console.WriteLine("[Web] ✅ Sending HTML redirect to /login");
             Console.WriteLine(LogSeparator);
+            
+            // Use Results.Content for proper minimal API response
+            return Results.Content(LogoutCompleteHtml, "text/html", null, statusCode: 200);
         }).AllowAnonymous();
 
         // Simple manual sign-out endpoint for debugging (bypasses Logto's end session endpoint)

@@ -1,0 +1,31 @@
+@* Combined product rating and price display section *@
+
+<div class="flex flex-wrap justify-between items-center @MarginClass">
+    @if (ShowRating)
+    {
+        <ProductRating Rating="@Rating" RatingCount="@RatingCount" Size="16" ShowScore="@ShowRatingCount" />
+    }
+    @if (ShowPrice)
+    {
+        <div class="flex items-center space-x-2">
+            <PriceTag Price="@PriceAmount" Variant="@(IsSale ? "red" : "green")" />
+            @if (!string.IsNullOrEmpty(OriginalPriceText))
+            {
+                <div class="inline-flex text-sm font-medium text-gray-400 dark:text-gray-500 line-through">@OriginalPriceText</div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public bool ShowRating { get; set; } = true;
+    [Parameter] public decimal Rating { get; set; }
+    [Parameter] public int? RatingCount { get; set; }
+    [Parameter] public bool ShowRatingCount { get; set; } = false;
+    [Parameter] public bool ShowPrice { get; set; } = true;
+    [Parameter] public decimal PriceAmount { get; set; }
+    [Parameter] public bool IsSale { get; set; } = false;
+    [Parameter] public string? OriginalPriceText { get; set; }
+    [Parameter] public string MarginClass { get; set; } = "";
+
+}

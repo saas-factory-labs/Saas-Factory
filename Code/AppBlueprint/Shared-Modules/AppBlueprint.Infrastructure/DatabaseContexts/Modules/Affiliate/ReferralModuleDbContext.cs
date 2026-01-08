@@ -1,5 +1,5 @@
 ﻿using AppBlueprint.Infrastructure.DatabaseContexts;
-using Microsoft.AspNetCore.Http;
+using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -11,9 +11,9 @@ public partial class ReferralModuleDbContext : ApplicationDbContext
     public ReferralModuleDbContext(
         DbContextOptions<ReferralModuleDbContext> options,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor,
-        ILogger<ReferralModuleDbContext> logger) :
-        base((DbContextOptions)(DbContextOptions<ReferralModuleDbContext>)options, configuration, httpContextAccessor, logger)
+        ILogger<ReferralModuleDbContext> logger,
+        ITenantContextAccessor? tenantContextAccessor = null) :
+        base((DbContextOptions)(DbContextOptions<ReferralModuleDbContext>)options, configuration, logger, tenantContextAccessor)
     {
     }
 

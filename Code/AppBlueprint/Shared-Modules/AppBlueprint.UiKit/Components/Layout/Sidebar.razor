@@ -1,6 +1,8 @@
 @using Microsoft.JSInterop
+@using AppBlueprint.UiKit.Services
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
+@inject IMenuConfigurationService MenuConfigurationService
 
 <div class="min-w-fit bg-gray-100 dark:bg-gray-900">
 <!-- Sidebar backdrop (mobile only) -->
@@ -72,534 +74,241 @@
 </h3>
 <ul class="mt-3">
 <!-- Todos -->
-<li class="@(IsTodosActive ? "bg-gradient-to-r from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] rounded-lg" : "") px-3 py-2 rounded-lg mb-0.5 last:mb-0">
-    <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsTodosActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
-       href="/settings/todos">
-        <div class="flex items-center">
-            <svg class="shrink-0 fill-current @(IsTodosActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
-                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                <path d="M14 0H2C.9 0 0 .9 0 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V2c0-1.1-.9-2-2-2ZM6 13c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1Zm0-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1Zm0-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1Zm6 7H9V9h3v3Zm0-4H9V5h3v3Z"/>
-            </svg>
-            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Todos</span>
-        </div>
-    </a>
-</li>
+<SidebarMenuItem
+    Href="/settings/todos"
+    Label="Todos"
+    IsActive="@IsTodosActive">
+    <IconPath>
+        <path d="M14 0H2C.9 0 0 .9 0 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V2c0-1.1-.9-2-2-2ZM6 13c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1Zm0-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1Zm0-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1Zm6 7H9V9h3v3Zm0-4H9V5h3v3Z"/>
+    </IconPath>
+</SidebarMenuItem>
 
 <!-- Dashboard -->
-<SidebarLinkGroup ActiveCondition="@IsDashboardActive">
-    <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsDashboardActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-           href="#"
-           @onclick="@(() => context.HandleClick())"
-           @onclick:preventDefault="true">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="shrink-0 fill-current @(IsDashboardActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
-                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path d="M5.936.278A7.983 7.983 0 0 1 8 0a8 8 0 1 1-8 8c0-.722.104-1.413.278-2.064a1 1 0 1 1 1.932.516A5.99 5.99 0 0 0 2 8a6 6 0 1 0 6-6c-.53 0-1.045.076-1.548.21A1 1 0 1 1 5.936.278Z"/>
-                        <path d="M6.068 7.482A2.003 2.003 0 0 0 8 10a2 2 0 1 0-.518-3.932L3.707 2.293a1 1 0 0 0-1.414 1.414l3.775 3.775Z"/>
-                    </svg>
-                    <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Dashboard</span>
-                </div>
-                <div class="flex shrink-0 ml-2">
-                    <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                    </svg>
-                </div>
-            </div>
-        </a>
-        <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-            <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate @(IsMainActive ? "text-violet-500" : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")" 
-                       href="/"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Main</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/dashboard/analytics"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Analytics</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/dashboard/fintech"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Fintech</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </ChildContent>
-</SidebarLinkGroup>
+<SidebarMenuGroup
+    Label="Dashboard"
+    IsActive="@IsDashboardActive">
+    <IconPath>
+        <path d="M5.936.278A7.983 7.983 0 0 1 8 0a8 8 0 1 1-8 8c0-.722.104-1.413.278-2.064a1 1 0 1 1 1.932.516A5.99 5.99 0 0 0 2 8a6 6 0 1 0 6-6c-.53 0-1.045.076-1.548.21A1 1 0 1 1 5.936.278Z"/>
+        <path d="M6.068 7.482A2.003 2.003 0 0 0 8 10a2 2 0 1 0-.518-3.932L3.707 2.293a1 1 0 0 0-1.414 1.414l3.775 3.775Z"/>
+    </IconPath>
+    <ChildMenuItems Context="ctx">
+        <SidebarGroupChildItem Href="/" Label="Main" IsActive="@IsMainActive" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/dashboard/analytics" Label="Analytics" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/dashboard/fintech" Label="Fintech" OnClick="@(() => ctx.HandleOptionClick())" />
+    </ChildMenuItems>
+</SidebarMenuGroup>
 
 <!-- E-Commerce -->
-<SidebarLinkGroup ActiveCondition="@IsECommerceActive">
-    <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsECommerceActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-           href="#"
-           @onclick="@(() => context.HandleClick())"
-           @onclick:preventDefault="true">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="shrink-0 fill-current @(IsECommerceActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
-                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path d="M9 6.855A3.502 3.502 0 0 0 8 0a3.5 3.5 0 0 0-1 6.855v1.656L5.534 9.65a3.5 3.5 0 1 0 1.229 1.578L8 10.267l1.238.962a3.5 3.5 0 1 0 1.229-1.578L9 8.511V6.855ZM6.5 3.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm4.803 8.095c.005-.005.01-.01.013-.016l.012-.016a1.5 1.5 0 1 1-.025.032ZM3.5 11c.474 0 .897.22 1.171.563l.013.016.013.017A1.5 1.5 0 1 1 3.5 11Z"/>
-                    </svg>
-                    <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">E-Commerce</span>
-                </div>
-                <div class="flex shrink-0 ml-2">
-                    <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                    </svg>
-                </div>
-            </div>
-        </a>
-        <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-            <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/customers"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Customers</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/orders"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Orders</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/invoices"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Invoices</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/shop"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Shop</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/shop-2"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Shop 2</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/product"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Single Product</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/cart"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/cart2"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart 2</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/cart3"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cart 3</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/ecommerce/pay"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pay</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </ChildContent>
-</SidebarLinkGroup>
+<SidebarMenuGroup
+    Label="E-Commerce"
+    IsActive="@IsECommerceActive">
+    <IconPath>
+        <path d="M9 6.855A3.502 3.502 0 0 0 8 0a3.5 3.5 0 0 0-1 6.855v1.656L5.534 9.65a3.5 3.5 0 1 0 1.229 1.578L8 10.267l1.238.962a3.5 3.5 0 1 0 1.229-1.578L9 8.511V6.855ZM6.5 3.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm4.803 8.095c.005-.005.01-.01.013-.016l.012-.016a1.5 1.5 0 1 1-.025.032ZM3.5 11c.474 0 .897.22 1.171.563l.013.016.013.017A1.5 1.5 0 1 1 3.5 11Z"/>
+    </IconPath>
+    <ChildMenuItems Context="ctx">
+        @if (ShouldShowMenuItem("customers"))
+        {
+            <SidebarGroupChildItem Href="/ecommerce/customers" Label="Customers" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("Orders"))
+        {
+            <SidebarGroupChildItem Href="/ecommerce/orders" Label="Orders" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("Invoices"))
+        {
+            <SidebarGroupChildItem Href="/ecommerce/invoices" Label="Invoices" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("Shop2"))
+        {
+            <SidebarGroupChildItem Href="/ecommerce/shop-2" Label="Shop 2" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("SingleProduct"))
+        {
+            <SidebarGroupChildItem Href="/ecommerce/product" Label="Single Product" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("Cart"))
+        {
+            <SidebarGroupChildItem Href="/ecommerce/cart" Label="Cart" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("cart2"))
+        {
+            <SidebarGroupChildItem Href="/ecommerce/cart2" Label="Cart 2" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("cart3"))
+        {
+            <SidebarGroupChildItem Href="/ecommerce/cart3" Label="Cart 3" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("Pay"))
+        {
+            <SidebarGroupChildItem Href="/ecommerce/pay" Label="Pay" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+    </ChildMenuItems>
+</SidebarMenuGroup>
 
+@if (ShouldShowMenuItem("community-users"))
+{
 <!-- Community -->
-<SidebarLinkGroup ActiveCondition="@IsCommunityActive">
-    <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsCommunityActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-           href="#"
-           @onclick="@(() => context.HandleClick())"
-           @onclick:preventDefault="true">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="shrink-0 fill-current @(IsCommunityActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
-                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path d="M14.14 9.585a2.5 2.5 0 0 0-3.522 3.194c-.845.63-1.87.97-2.924.971a4.979 4.979 0 0 1-1.113-.135 4.436 4.436 0 0 1-1.343 1.682 6.91 6.91 0 0 0 6.9-1.165 2.5 2.5 0 0 0 2.002-4.547ZM10.125 2.188a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5ZM5.683 8.27a2.5 2.5 0 1 0-2.5-2.5 2.5 2.5 0 0 0 2.5 2.5ZM.125 11.875a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5Z"/>
-                    </svg>
-                    <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Community</span>
-                </div>
-                <div class="flex shrink-0 ml-2">
-                    <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                    </svg>
-                </div>
-            </div>
-        </a>
-        <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-            <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/community/users"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Users</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/community/profile"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Profile</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/community/feed"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Feed</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/community/forum"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Forum</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </ChildContent>
-</SidebarLinkGroup>
+<SidebarMenuGroup
+    Label="Community"
+    IsActive="@IsCommunityActive">
+    <IconPath>
+        <path d="M14.14 9.585a2.5 2.5 0 0 0-3.522 3.194c-.845.63-1.87.97-2.924.971a4.979 4.979 0 0 1-1.113-.135 4.436 4.436 0 0 1-1.343 1.682 6.91 6.91 0 0 0 6.9-1.165 2.5 2.5 0 0 0 2.002-4.547ZM10.125 2.188a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5ZM5.683 8.27a2.5 2.5 0 1 0-2.5-2.5 2.5 2.5 0 0 0 2.5 2.5ZM.125 11.875a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5Z"/>
+    </IconPath>
+    <ChildMenuItems Context="ctx">
+        <SidebarGroupChildItem Href="/community/users" Label="Users" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/community/profile" Label="Profile" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/community/feed" Label="Feed" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/community/forum" Label="Forum" OnClick="@(() => ctx.HandleOptionClick())" />
+    </ChildMenuItems>
+</SidebarMenuGroup>
+}
 
+@if (ShouldShowMenuItem("job-board"))
+{
 <!-- Job Board -->
-<SidebarLinkGroup ActiveCondition="@IsJobBoardActive">
-    <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsJobBoardActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-           href="#"
-           @onclick="@(() => context.HandleClick())"
-           @onclick:preventDefault="true">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="shrink-0 fill-current @(IsJobBoardActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
-                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path d="M10.063 2h3.495a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2.442a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3.495a2.994 2.994 0 0 1 4.126 0ZM8 1.5a1.5 1.5 0 0 0-1.414 1h2.828A1.5 1.5 0 0 0 8 1.5Z"/>
-                    </svg>
-                    <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Job Board</span>
-                </div>
-                <div class="flex shrink-0 ml-2">
-                    <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                    </svg>
-                </div>
-            </div>
-        </a>
-        <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-            <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/job/job-listing"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Listing</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/job/job-post"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Job Post</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/job/company-profile"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Company Profile</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </ChildContent>
-</SidebarLinkGroup>
+<SidebarMenuGroup
+    Label="Job Board"
+    IsActive="@IsJobBoardActive">
+    <IconPath>
+        <path d="M10.063 2h3.495a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2.442a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3.495a2.994 2.994 0 0 1 4.126 0ZM8 1.5a1.5 1.5 0 0 0-1.414 1h2.828A1.5 1.5 0 0 0 8 1.5Z"/>
+    </IconPath>
+    <ChildMenuItems Context="ctx">
+        <SidebarGroupChildItem Href="/job/job-listing" Label="Listing" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/job/job-post" Label="Job Post" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/job/company-profile" Label="Company Profile" OnClick="@(() => ctx.HandleOptionClick())" />
+    </ChildMenuItems>
+</SidebarMenuGroup>
+}
 
+@if (ShouldShowMenuItem("tasks"))
+{
 <!-- Tasks -->
-<SidebarLinkGroup ActiveCondition="@IsTasksActive">
-    <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsTasksActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-           href="#"
-           @onclick="@(() => context.HandleClick())"
-           @onclick:preventDefault="true">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="shrink-0 fill-current @(IsTasksActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
-                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path d="M7.586 9.586a2 2 0 1 1 2.828 2.828l-2.828-2.828Zm-4.95 4.95a2 2 0 1 1 2.828-2.828L2.636 14.536Zm1.414-7.071L9.707 1.808a1 1 0 0 1 1.414 0l3.071 3.071a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-.707.293H4.757a1 1 0 0 1-1-1V8.172a1 1 0 0 1 .293-.707Z"/>
-                    </svg>
-                    <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Tasks</span>
-                </div>
-                <div class="flex shrink-0 ml-2">
-                    <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                    </svg>
-                </div>
-            </div>
-        </a>
-        <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-            <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/tasks/kanban"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Kanban</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/tasks/list"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">List</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </ChildContent>
-</SidebarLinkGroup>
+<SidebarMenuGroup
+    Label="Tasks"
+    IsActive="@IsTasksActive">
+    <IconPath>
+        <path d="M7.586 9.586a2 2 0 1 1 2.828 2.828l-2.828-2.828Zm-4.95 4.95a2 2 0 1 1 2.828-2.828L2.636 14.536Zm1.414-7.071L9.707 1.808a1 1 0 0 1 1.414 0l3.071 3.071a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-.707.293H4.757a1 1 0 0 1-1-1V8.172a1 1 0 0 1 .293-.707Z"/>
+    </IconPath>
+    <ChildMenuItems Context="ctx">
+        <SidebarGroupChildItem Href="/tasks/kanban" Label="Kanban" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/tasks/list" Label="List" OnClick="@(() => ctx.HandleOptionClick())" />
+    </ChildMenuItems>
+</SidebarMenuGroup>
+}
 
+@if (ShouldShowMenuItem("finance"))
+{
 <!-- Finance -->
-<SidebarLinkGroup ActiveCondition="@IsFinanceActive">
-    <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsFinanceActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-           href="#"
-           @onclick="@(() => context.HandleClick())"
-           @onclick:preventDefault="true">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="shrink-0 fill-current @(IsFinanceActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
-                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path d="M14.936 6.007H8.358l1.594-4.685c.3-.997-.897-1.794-1.694-.997L.284 8.3c-.598.598-.199 1.694.698 1.694H7.56l-1.594 4.685c-.3.997.897 1.794 1.694.997L15.633 7.7c.598-.598.2-1.694-.697-1.694Z"/>
-                    </svg>
-                    <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Finance</span>
-                </div>
-                <div class="flex shrink-0 ml-2">
-                    <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                    </svg>
-                </div>
-            </div>
-        </a>
-        <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-            <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/finance/credit-cards"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cards</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/finance/transactions"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Transactions</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </ChildContent>
-</SidebarLinkGroup>
+<SidebarMenuGroup
+    Label="Finance"
+    IsActive="@IsFinanceActive">
+    <IconPath>
+        <path d="M14.936 6.007H8.358l1.594-4.685c.3-.997-.897-1.794-1.694-.997L.284 8.3c-.598.598-.199 1.694.698 1.694H7.56l-1.594 4.685c-.3.997.897 1.794 1.694.997L15.633 7.7c.598-.598.2-1.694-.697-1.694Z"/>
+    </IconPath>
+    <ChildMenuItems Context="ctx">
+        <SidebarGroupChildItem Href="/finance/credit-cards" Label="Cards" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/finance/transactions" Label="Transactions" OnClick="@(() => ctx.HandleOptionClick())" />
+    </ChildMenuItems>
+</SidebarMenuGroup>
+}
 
+@if (_isDemo)
+{
 <!-- Messages -->
-<li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0">
-    <a class="block text-gray-800 dark:text-gray-100 truncate transition hover:text-gray-900 dark:hover:text-white" href="/messages">
-        <div class="flex items-center">
-            <svg class="shrink-0 fill-current text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                <path d="M14.707 1.707a1 1 0 0 0-1.414-1.414L9.586 3.586A1 1 0 0 0 9 4.414v1.758l-2.444-.917A9.013 9.013 0 0 0 0 13.828V14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-.172a9.013 9.013 0 0 0-6.556-8.573L7 4.414V4a1 1 0 0 0-.293-.707L14.707 1.707Z"/>
-            </svg>
-            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Messages</span>
-        </div>
-    </a>
-</li>
+<SidebarMenuItem
+    Href="/messages"
+    Label="Messages">
+    <IconPath>
+        <path d="M14.707 1.707a1 1 0 0 0-1.414-1.414L9.586 3.586A1 1 0 0 0 9 4.414v1.758l-2.444-.917A9.013 9.013 0 0 0 0 13.828V14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-.172a9.013 9.013 0 0 0-6.556-8.573L7 4.414V4a1 1 0 0 0-.293-.707L14.707 1.707Z"/>
+    </IconPath>
+</SidebarMenuItem>
 
 <!-- Inbox -->
-<li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0">
-    <a class="block text-gray-800 dark:text-gray-100 truncate transition hover:text-gray-900 dark:hover:text-white" href="/inbox">
-        <div class="flex items-center">
-            <svg class="shrink-0 fill-current text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                <path d="M14 0H2c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h8l5-5V1c0-.6-.4-1-1-1ZM3 2h10v8H9v4H3V2Z"/>
-            </svg>
-            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Inbox</span>
-        </div>
-    </a>
-</li>
+<SidebarMenuItem
+    Href="/inbox"
+    Label="Inbox">
+    <IconPath>
+        <path d="M14 0H2c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h8l5-5V1c0-.6-.4-1-1-1ZM3 2h10v8H9v4H3V2Z"/>
+    </IconPath>
+</SidebarMenuItem>
 
 <!-- Calendar -->
-<li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0">
-    <a class="block text-gray-800 dark:text-gray-100 truncate transition hover:text-gray-900 dark:hover:text-white" href="/calendar">
-        <div class="flex items-center">
-            <svg class="shrink-0 fill-current text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                <path d="M14 0H2c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h12c.6 0 1-.4 1-1V1c0-.6-.4-1-1-1ZM3 2h10v3H3V2Zm10 12H3V7h10v7Z"/>
-            </svg>
-            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Calendar</span>
-        </div>
-    </a>
-</li>
+<SidebarMenuItem
+    Href="/calendar"
+    Label="Calendar">
+    <IconPath>
+        <path d="M14 0H2c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h12c.6 0 1-.4 1-1V1c0-.6-.4-1-1-1ZM3 2h10v3H3V2Zm10 12H3V7h10v7Z"/>
+    </IconPath>
+</SidebarMenuItem>
 
+}
+
+@if (_isDemo)
+{
 <!-- Campaigns -->
-<li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0">
-    <a class="block text-gray-800 dark:text-gray-100 truncate transition hover:text-gray-900 dark:hover:text-white" href="/campaigns">
-        <div class="flex items-center">
-            <svg class="shrink-0 fill-current text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                <path d="M0 8.002v-.002a8 8 0 1 1 16 0v.002a8 8 0 1 1-16 0Zm3.869 5.076 1.088-1.088A5.973 5.973 0 0 0 8 13.002a5.974 5.974 0 0 0 3.043-1.012l1.088 1.088A7.962 7.962 0 0 1 8 15.001a7.962 7.962 0 0 1-4.131-1.923ZM2.913 11.04l1.05-1.05a5.978 5.978 0 0 1-1.009-3.998 5.978 5.978 0 0 1 1.01-3.998L2.913 1.04A7.974 7.974 0 0 0 .002 8.002a7.974 7.974 0 0 0 2.911 6.038Zm10.174-9.96-1.05 1.05a5.978 5.978 0 0 1 1.009 3.998 5.978 5.978 0 0 1-1.01 3.998l1.05 1.05a7.974 7.974 0 0 0 2.912-6.038 7.974 7.974 0 0 0-2.911-6.038Zm-.964 12.046-1.088-1.088A5.973 5.973 0 0 1 8 11.025a5.974 5.974 0 0 1-3.043 1.012L3.869.989A7.962 7.962 0 0 0 8 0c1.497 0 2.902.413 4.131.989Z"/>
-            </svg>
-            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Campaigns</span>
-        </div>
-    </a>
-</li>
+<SidebarMenuItem
+    Href="/campaigns"
+    Label="Campaigns">
+    <IconPath>
+        <path d="M0 8.002v-.002a8 8 0 1 1 16 0v.002a8 8 0 1 1-16 0Zm3.869 5.076 1.088-1.088A5.973 5.973 0 0 0 8 13.002a5.974 5.974 0 0 0 3.043-1.012l1.088 1.088A7.962 7.962 0 0 1 8 15.001a7.962 7.962 0 0 1-4.131-1.923ZM2.913 11.04l1.05-1.05a5.978 5.978 0 0 1-1.009-3.998 5.978 5.978 0 0 1 1.01-3.998L2.913 1.04A7.974 7.974 0 0 0 .002 8.002a7.974 7.974 0 0 0 2.911 6.038Zm10.174-9.96-1.05 1.05a5.978 5.978 0 0 1 1.009 3.998 5.978 5.978 0 0 1-1.01 3.998l1.05 1.05a7.974 7.974 0 0 0 2.912-6.038 7.974 7.974 0 0 0-2.911-6.038Zm-.964 12.046-1.088-1.088A5.973 5.973 0 0 1 8 11.025a5.974 5.974 0 0 1-3.043 1.012L3.869.989A7.962 7.962 0 0 0 8 0c1.497 0 2.902.413 4.131.989Z"/>
+    </IconPath>
+</SidebarMenuItem>
+}
 
+@if (ShouldShowMenuItem("Account") || ShouldShowMenuItem("Notifications") || ShouldShowMenuItem("Billing"))
+{
 <!-- Settings -->
-<SidebarLinkGroup ActiveCondition="@IsSettingsActive">
-    <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsSettingsActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-           href="#"
-           @onclick="@(() => context.HandleClick())"
-           @onclick:preventDefault="true">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="shrink-0 fill-current @(IsSettingsActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
-                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path d="M10.5 1a3.502 3.502 0 0 1 3.355 2.5H15a1 1 0 1 1 0 2h-1.145a3.502 3.502 0 0 1-6.71 0H1a1 1 0 0 1 0-2h6.145A3.502 3.502 0 0 1 10.5 1ZM9 4.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM5.5 9a3.502 3.502 0 0 1 3.355 2.5H15a1 1 0 1 1 0 2H8.855a3.502 3.502 0 0 1-6.71 0H1a1 1 0 1 1 0-2h1.145A3.502 3.502 0 0 1 5.5 9ZM4 12.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Z"/>
-                    </svg>
-                    <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Settings</span>
-                </div>
-                <div class="flex shrink-0 ml-2">
-                    <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                    </svg>
-                </div>
-            </div>
-        </a>
-        <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-            <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/settings/account"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Account</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/settings/notifications"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Notifications</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/settings/apps"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Apps</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/settings/billing"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Billing</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </ChildContent>
-</SidebarLinkGroup>
+<SidebarMenuGroup
+    Label="Settings"
+    IsActive="@IsSettingsActive">
+    <IconPath>
+        <path d="M10.5 1a3.502 3.502 0 0 1 3.355 2.5H15a1 1 0 1 1 0 2h-1.145a3.502 3.502 0 0 1-6.71 0H1a1 1 0 0 1 0-2h6.145A3.502 3.502 0 0 1 10.5 1ZM9 4.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM5.5 9a3.502 3.502 0 0 1 3.355 2.5H15a1 1 0 1 1 0 2H8.855a3.502 3.502 0 0 1-6.71 0H1a1 1 0 1 1 0-2h1.145A3.502 3.502 0 0 1 5.5 9ZM4 12.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Z"/>
+    </IconPath>
+    <ChildMenuItems Context="ctx">
+        @if (ShouldShowMenuItem("Account"))
+        {
+            <SidebarGroupChildItem Href="/settings/account" Label="Account" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("Notifications"))
+        {
+            <SidebarGroupChildItem Href="/settings/notifications" Label="Notifications" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (_isDemo)
+        {
+            <SidebarGroupChildItem Href="/settings/apps" Label="Apps" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+        @if (ShouldShowMenuItem("Billing"))
+        {
+            <SidebarGroupChildItem Href="/settings/billing" Label="Billing" OnClick="@(() => ctx.HandleOptionClick())" />
+        }
+    </ChildMenuItems>
+</SidebarMenuGroup>
+}
 
+@if (_isDemo)
+{
 <!-- Utility -->
-<SidebarLinkGroup ActiveCondition="@IsUtilityActive">
-    <ChildContent>
-        <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsUtilityActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-           href="#"
-           @onclick="@(() => context.HandleClick())"
-           @onclick:preventDefault="true">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="shrink-0 fill-current @(IsUtilityActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
-                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path d="M14.75 2.5a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM14.75 16a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM2.5 14.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM1.25 2.5a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z"/>
-                        <path d="M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2ZM4 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"/>
-                    </svg>
-                    <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Utility</span>
-                </div>
-                <div class="flex shrink-0 ml-2">
-                    <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                    </svg>
-                </div>
-            </div>
-        </a>
-        <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-            <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/utility/changelog"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Changelog</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/utility/roadmap"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Roadmap</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/utility/faqs"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">FAQs</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/utility/empty-state"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Empty State</span>
-                    </a>
-                </li>
-                <li class="mb-1 last:mb-0">
-                    <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                       href="/utility/404"
-                       @onclick="@(() => context.HandleOptionClick())">
-                        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">404</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </ChildContent>
-</SidebarLinkGroup>
+<SidebarMenuGroup
+    Label="Utility"
+    IsActive="@IsUtilityActive">
+    <IconPath>
+        <path d="M14.75 2.5a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM14.75 16a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM2.5 14.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM1.25 2.5a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z"/>
+        <path d="M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2ZM4 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"/>
+    </IconPath>
+    <ChildMenuItems Context="ctx">
+        <SidebarGroupChildItem Href="/utility/changelog" Label="Changelog" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/utility/roadmap" Label="Roadmap" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/utility/faqs" Label="FAQs" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/utility/empty-state" Label="Empty State" OnClick="@(() => ctx.HandleOptionClick())" />
+        <SidebarGroupChildItem Href="/utility/404" Label="404" OnClick="@(() => ctx.HandleOptionClick())" />
+    </ChildMenuItems>
+</SidebarMenuGroup>
+}
 </ul>
 </div>
 
+@if (_isDemo)
+{
 <!-- More group -->
 <div>
     <h3 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold pl-3">
@@ -607,109 +316,33 @@
     </h3>
     <ul class="mt-3">
         <!-- Authentication -->
-        <SidebarLinkGroup ActiveCondition="false">
-            <ChildContent>
-                <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 hover:text-gray-900 dark:hover:text-white cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-                   href="#"
-                   @onclick="@(() => context.HandleClick())"
-                   @onclick:preventDefault="true">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <svg class="shrink-0 fill-current text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                                <path d="M11.442 4.576a1 1 0 1 0-1.634-1.152L4.22 11.35 1.773 8.366A1 1 0 1 0 .227 9.634l3.281 4a1 1 0 0 0 1.59-.058l6.344-9ZM15.817 4.576a1 1 0 1 0-1.634-1.152l-5.609 7.957a1 1 0 0 0-1.347 1.453l.656.8a1 1 0 0 0 1.59-.058l6.344-9Z"/>
-                            </svg>
-                            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Authentication</span>
-                        </div>
-                        <div class="flex shrink-0 ml-2">
-                            <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                                <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                            </svg>
-                        </div>
-                    </div>
-                </a>
-                <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                    <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                        <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
-                               href="/signin"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Sign in</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
-                               href="/signup"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Sign up</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
-                               href="/reset-password"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Reset Password</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </ChildContent>
-        </SidebarLinkGroup>
+        <SidebarMenuGroup
+            Label="Authentication"
+            IsActive="false">
+            <IconPath>
+                <path d="M11.442 4.576a1 1 0 1 0-1.634-1.152L4.22 11.35 1.773 8.366A1 1 0 1 0 .227 9.634l3.281 4a1 1 0 0 0 1.59-.058l6.344-9ZM15.817 4.576a1 1 0 1 0-1.634-1.152l-5.609 7.957a1 1 0 0 0-1.347 1.453l.656.8a1 1 0 0 0 1.59-.058l6.344-9Z"/>
+            </IconPath>
+            <ChildMenuItems Context="ctx">
+                <SidebarGroupChildItem Href="/signin" Label="Sign in" OnClick="@(() => ctx.HandleOptionClick())" />
+                <SidebarGroupChildItem Href="/signup" Label="Sign up" OnClick="@(() => ctx.HandleOptionClick())" />
+                <SidebarGroupChildItem Href="/reset-password" Label="Reset Password" OnClick="@(() => ctx.HandleOptionClick())" />
+            </ChildMenuItems>
+        </SidebarMenuGroup>
 
         <!-- Onboarding -->
-        <SidebarLinkGroup ActiveCondition="false">
-            <ChildContent>
-                <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 hover:text-gray-900 dark:hover:text-white cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
-                   href="#"
-                   @onclick="@(() => context.HandleClick())"
-                   @onclick:preventDefault="true">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <svg class="shrink-0 fill-current text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                                <path d="M6.668.714a1 1 0 0 1-.673 1.244 6.014 6.014 0 0 0-4.037 4.037 1 1 0 1 1-1.916-.571A8.014 8.014 0 0 1 5.425.041a1 1 0 0 1 1.243.673ZM7.71 4.709a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM9.995.04a1 1 0 1 0-.57 1.918 6.014 6.014 0 0 1 4.036 4.037 1 1 0 0 0 1.917-.571A8.014 8.014 0 0 0 9.995.041ZM14.705 8.75a1 1 0 0 1 .673 1.244 8.014 8.014 0 0 1-5.383 5.384 1 1 0 0 1-.57-1.917 6.014 6.014 0 0 0 4.036-4.037 1 1 0 0 1 1.244-.673ZM1.958 9.424a1 1 0 0 0-1.916.57 8.014 8.014 0 0 0 5.383 5.384 1 1 0 0 0 .57-1.917 6.014 6.014 0 0 1-4.037-4.037Z"/>
-                            </svg>
-                            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Onboarding</span>
-                        </div>
-                        <div class="flex shrink-0 ml-2">
-                            <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
-                                <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z"/>
-                            </svg>
-                        </div>
-                    </div>
-                </a>
-                <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                    <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
-                        <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
-                               href="/onboarding-01"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Step 1</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
-                               href="/onboarding-02"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Step 2</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
-                               href="/onboarding-03"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Step 3</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition truncate" 
-                               href="/onboarding-04"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Step 4</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </ChildContent>
-        </SidebarLinkGroup>
+        <SidebarMenuGroup
+            Label="Onboarding"
+            IsActive="false">
+            <IconPath>
+                <path d="M6.668.714a1 1 0 0 1-.673 1.244 6.014 6.014 0 0 0-4.037 4.037 1 1 0 1 1-1.916-.571A8.014 8.014 0 0 1 5.425.041a1 1 0 0 1 1.243.673ZM7.71 4.709a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM9.995.04a1 1 0 1 0-.57 1.918 6.014 6.014 0 0 1 4.036 4.037 1 1 0 0 0 1.917-.571A8.014 8.014 0 0 0 9.995.041ZM14.705 8.75a1 1 0 0 1 .673 1.244 8.014 8.014 0 0 1-5.383 5.384 1 1 0 0 1-.57-1.917 6.014 6.014 0 0 0 4.036-4.037 1 1 0 0 1 1.244-.673ZM1.958 9.424a1 1 0 0 0-1.916.57 8.014 8.014 0 0 0 5.383 5.384 1 1 0 0 0 .57-1.917 6.014 6.014 0 0 1-4.037-4.037Z"/>
+            </IconPath>
+            <ChildMenuItems Context="ctx">
+                <SidebarGroupChildItem Href="/onboarding-01" Label="Step 1" OnClick="@(() => ctx.HandleOptionClick())" />
+                <SidebarGroupChildItem Href="/onboarding-02" Label="Step 2" OnClick="@(() => ctx.HandleOptionClick())" />
+                <SidebarGroupChildItem Href="/onboarding-03" Label="Step 3" OnClick="@(() => ctx.HandleOptionClick())" />
+                <SidebarGroupChildItem Href="/onboarding-04" Label="Step 4" OnClick="@(() => ctx.HandleOptionClick())" />
+            </ChildMenuItems>
+        </SidebarMenuGroup>
 
         <!-- Components -->
         <SidebarLinkGroup ActiveCondition="@IsComponentsActive">
@@ -832,6 +465,7 @@
         </SidebarLinkGroup>
     </ul>
 </div>
+}
 </div>
 
 </div>
@@ -842,20 +476,62 @@
 
     [Parameter] public EventCallback OnCloseSidebar { get; set; }
 
-    private async Task ToggleSidebarExpandedAsync()
+    private readonly Dictionary<string, bool> _menuItemVisibility = new();
+    private bool _isDemo => _menuItemVisibility.GetValueOrDefault("shop", false); // If shop is visible, we're in demo mode
+
+    protected override async Task OnInitializedAsync()
     {
-        await JS.InvokeVoidAsync("sidebarManager.toggleExpanded");
+        await LoadMenuItemsAsync();
     }
 
-    private bool IsTodosActive => Navigation.Uri.Contains("/settings/todos");
-    private bool IsDashboardActive => Navigation.Uri == Navigation.BaseUri || Navigation.Uri.Contains("/dashboard");
+    private async Task LoadMenuItemsAsync()
+    {
+        // Pre-load visibility for all menu items
+        string[] menuItems =
+        [
+            "dashboard", "orders", "invoices", "shop2", "single-product", "cart", "cart2", "cart3", "pay",
+            "shop", "customers", "community-users", "account", "notifications", "billing",
+            "tasks", "job-board", "finance"
+        ];
+
+        foreach (string menuItem in menuItems)
+        {
+            _menuItemVisibility[menuItem] = await MenuConfigurationService.ShouldShowMenuItemAsync(menuItem);
+        }
+    }
+
+    private async Task ToggleSidebarExpandedAsync()
+    {
+        try
+        {
+            Console.WriteLine("ToggleSidebarExpandedAsync called");
+            await JS.InvokeVoidAsync("sidebarManager.toggleExpanded");
+            Console.WriteLine("ToggleSidebarExpandedAsync completed");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error toggling sidebar: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        }
+    }
+
+    // Helper method for conditional rendering - delegates to service
+    private bool ShouldShowMenuItem(string menuItem)
+    {
+        // Convert to lowercase for consistent key lookup
+        string key = menuItem.ToLowerInvariant();
+        return _menuItemVisibility.GetValueOrDefault(key, true); // Default to visible if not found
+    }
+
+    private bool IsTodosActive => Navigation.Uri.Contains("/settings/todos", StringComparison.Ordinal);
+    private bool IsDashboardActive => Navigation.Uri == Navigation.BaseUri || Navigation.Uri.Contains("/dashboard", StringComparison.Ordinal);
     private bool IsMainActive => Navigation.Uri == Navigation.BaseUri;
-    private bool IsECommerceActive => Navigation.Uri.Contains("/ecommerce");
-    private bool IsCommunityActive => Navigation.Uri.Contains("/community");
-    private bool IsFinanceActive => Navigation.Uri.Contains("/finance");
-    private bool IsJobBoardActive => Navigation.Uri.Contains("/job");
-    private bool IsTasksActive => Navigation.Uri.Contains("/tasks");
-    private bool IsSettingsActive => Navigation.Uri.Contains("/settings");
-    private bool IsUtilityActive => Navigation.Uri.Contains("/utility");
-    private bool IsComponentsActive => Navigation.Uri.Contains("/component");
+    private bool IsECommerceActive => Navigation.Uri.Contains("/ecommerce", StringComparison.Ordinal);
+    private bool IsCommunityActive => Navigation.Uri.Contains("/community", StringComparison.Ordinal);
+    private bool IsFinanceActive => Navigation.Uri.Contains("/finance", StringComparison.Ordinal);
+    private bool IsJobBoardActive => Navigation.Uri.Contains("/job", StringComparison.Ordinal);
+    private bool IsTasksActive => Navigation.Uri.Contains("/tasks", StringComparison.Ordinal);
+    private bool IsSettingsActive => Navigation.Uri.Contains("/settings", StringComparison.Ordinal);
+    private bool IsUtilityActive => Navigation.Uri.Contains("/utility", StringComparison.Ordinal);
+    private bool IsComponentsActive => Navigation.Uri.Contains("/component", StringComparison.Ordinal);
 }

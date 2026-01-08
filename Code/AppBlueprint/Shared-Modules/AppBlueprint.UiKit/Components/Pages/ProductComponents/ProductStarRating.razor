@@ -1,0 +1,24 @@
+<div class="flex space-x-1">
+    @for (int i = 0; i < FilledStars; i++)
+    {
+        <button>
+            <span class="sr-only">@(i + 1) star</span>
+            <svg class="fill-current text-yellow-500" width="16" height="16" viewBox="0 0 16 16">
+                <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
+            </svg>
+        </button>
+    }
+    @for (int i = FilledStars; i < 5; i++)
+    {
+        <button>
+            <span class="sr-only">@(i + 1) stars</span>
+            <svg class="fill-current text-gray-300 dark:text-gray-600" width="16" height="16" viewBox="0 0 16 16">
+                <path d="M10 5.934L8 0 6 5.934H0l4.89 3.954L2.968 16 8 12.223 13.032 16 11.11 9.888 16 5.934z" />
+            </svg>
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public int FilledStars { get; set; }
+}

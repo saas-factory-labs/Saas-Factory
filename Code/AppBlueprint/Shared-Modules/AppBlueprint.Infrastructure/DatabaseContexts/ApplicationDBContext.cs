@@ -3,7 +3,6 @@ using AppBlueprint.Application.Attributes;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using AppBlueprint.Infrastructure.Services;
 using AppBlueprint.SharedKernel;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
@@ -16,12 +15,12 @@ public class ApplicationDbContext : B2CdbContext
     private readonly ITenantContextAccessor? _tenantContextAccessor;
 
     // Public constructor for direct DI registration
+    // Note: tenantContextAccessor is optional to support DbContextFactory (which uses root provider)
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor,
         ILogger<ApplicationDbContext> logger,
-        ITenantContextAccessor tenantContextAccessor
+        ITenantContextAccessor? tenantContextAccessor = null
     ) : base((DbContextOptions)options, configuration, logger)
     {
         _tenantContextAccessor = tenantContextAccessor;
@@ -31,7 +30,6 @@ public class ApplicationDbContext : B2CdbContext
     protected ApplicationDbContext(
         DbContextOptions options,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor,
         ILogger<ApplicationDbContext> logger,
         ITenantContextAccessor? tenantContextAccessor = null
     ) : base(options, configuration, logger)

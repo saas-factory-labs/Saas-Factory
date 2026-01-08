@@ -1,0 +1,51 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Progress list item with background bar - reusable for rankings, top items, statistics *@
+
+<li class="relative px-2 py-1">
+    <div class="absolute inset-0 @GetBackgroundClass()" aria-hidden="true" style="width: @ProgressPercentage%;"></div>
+    <div class="relative flex justify-between space-x-2">
+        <div>@Label</div>
+        <div class="font-medium">@Value</div>
+    </div>
+</li>
+
+@code {
+    /// <summary>
+    /// Label text (e.g., "Google", "Product A")
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Value text (e.g., "4.7K", "$12,499")
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Value { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Progress percentage (0-100)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public decimal ProgressPercentage { get; set; }
+
+    /// <summary>
+    /// Color variant: violet, green, sky, rose, amber, blue
+    /// </summary>
+    [Parameter]
+    public string Color { get; set; } = "violet";
+
+    private string GetBackgroundClass()
+    {
+        return Color.ToLower() switch
+        {
+            "violet" or "purple" => "bg-violet-100 dark:bg-violet-500/30",
+            "green" or "emerald" => "bg-green-100 dark:bg-green-400/30",
+            "sky" or "blue" => "bg-sky-100 dark:bg-sky-400/30",
+            "rose" or "red" => "bg-rose-100 dark:bg-rose-400/30",
+            "amber" or "yellow" => "bg-amber-100 dark:bg-amber-400/30",
+            "indigo" => "bg-indigo-100 dark:bg-indigo-500/30",
+            _ => "bg-violet-100 dark:bg-violet-500/30"
+        };
+    }
+}

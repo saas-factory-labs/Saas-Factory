@@ -1,0 +1,9 @@
+<div class="text-sm text-gray-500 dark:text-gray-400">
+    Showing <span class="font-medium text-gray-600 dark:text-gray-300">@StartIndex</span> to <span class="font-medium text-gray-600 dark:text-gray-300">@EndIndex</span> of <span class="font-medium text-gray-600 dark:text-gray-300">@TotalCount</span> results
+</div>
+
+@code {
+    [Parameter, EditorRequired] public int StartIndex { get; set; }
+    [Parameter, EditorRequired] public int EndIndex { get; set; }
+    [Parameter, EditorRequired] public int TotalCount { get; set; }
+}

@@ -1,5 +1,5 @@
 ﻿using AppBlueprint.Infrastructure.DatabaseContexts;
-using Microsoft.AspNetCore.Http;
+using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -11,9 +11,9 @@ public partial class ChatModuleDbContext : ApplicationDbContext
     public ChatModuleDbContext(
         DbContextOptions<ChatModuleDbContext> options,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor,
-        ILogger<ChatModuleDbContext> logger) :
-        base((DbContextOptions)(DbContextOptions<ChatModuleDbContext>)options, configuration, httpContextAccessor, logger)
+        ILogger<ChatModuleDbContext> logger,
+        ITenantContextAccessor? tenantContextAccessor = null) :
+        base((DbContextOptions)(DbContextOptions<ChatModuleDbContext>)options, configuration, logger, tenantContextAccessor)
     {
     }
 

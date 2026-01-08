@@ -1,4 +1,5 @@
 @* Shop Cards 07 - Product grid with Like button, Special Offer badges, and CTA banner *@
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
 
 @{
     var products = new[]
@@ -80,7 +81,7 @@
                     </div>
                     <!-- Price -->
                     <div>
-                        <div class="inline-flex text-sm font-medium @(product.IsSale ? "bg-red-500/20 text-red-700" : "bg-green-500/20 text-green-700") rounded-full text-center px-2 py-0.5">@product.Price</div>
+                        <div class="inline-flex text-sm font-medium @GetPriceClasses(product.IsSale) rounded-full text-center px-2 py-0.5">@product.Price</div>
                     </div>
                 </div>
             </div>
@@ -162,10 +163,22 @@
                     </div>
                     <!-- Price -->
                     <div>
-                        <div class="inline-flex text-sm font-medium @(product.IsSale ? "bg-red-500/20 text-red-700" : "bg-green-500/20 text-green-700") rounded-full text-center px-2 py-0.5">@product.Price</div>
+                        <div class="inline-flex text-sm font-medium @GetPriceClasses(product.IsSale) rounded-full text-center px-2 py-0.5">@product.Price</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+}
+
+@code {
+    private string GetPriceClasses(bool isSale)
+    {
+        if (isSale)
+        {
+            return "bg-red-500/20 text-red-700";
+        }
+        
+        return $"{ThemeService.GetAccentClass("bg", "500")}/20 {ThemeService.GetAccentClass("text", "700")}";
+    }
 }

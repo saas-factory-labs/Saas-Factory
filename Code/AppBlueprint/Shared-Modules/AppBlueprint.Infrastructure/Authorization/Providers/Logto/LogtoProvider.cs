@@ -6,6 +6,11 @@ namespace AppBlueprint.Infrastructure.Authorization.Providers.Logto;
 
 public class LogtoProvider : BaseAuthenticationProvider
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+    };
+
     private readonly HttpClient _httpClient;
     private readonly LogtoConfiguration _configuration;
     private readonly ILogger<LogtoProvider> _logger;
@@ -36,7 +41,7 @@ public class LogtoProvider : BaseAuthenticationProvider
             _logger.LogInformation("Attempting Logto login for user: {Email}", request.Email);
             
             // Logto uses OAuth2 Resource Owner Password Credentials Grant
-            var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
+            using var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 ["client_id"] = _configuration.ClientId,
                 ["client_secret"] = _configuration.ClientSecret,
@@ -56,10 +61,7 @@ public class LogtoProvider : BaseAuthenticationProvider
             {
                 _logger.LogInformation("Logto login successful for user: {Email}", request.Email);
                 
-                var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(responseContent, new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
-                });
+                var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(responseContent, JsonOptions);
 
                 if (tokenResponse?.AccessToken != null)
                 {
@@ -101,10 +103,12 @@ public class LogtoProvider : BaseAuthenticationProvider
                     };
                 }
             }
+#pragma warning disable CA1031 // Generic catch for error parsing - use default message if JSON parsing fails
             catch
             {
                 // If we can't parse the error, use the default message
             }
+#pragma warning restore CA1031
             
             return new AuthenticationResult
             {
@@ -112,13 +116,22 @@ public class LogtoProvider : BaseAuthenticationProvider
                 Error = errorMessage
             };
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Error during Logto login for user: {Email}", request.Email);
+            _logger.LogError(ex, "Network error during Logto login for user: {Email}", request.Email);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "An error occurred during login. Please try again."
+                Error = "Network error occurred during login. Please check your connection and try again."
+            };
+        }
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogWarning(ex, "Logto login request timed out for user: {Email}", request.Email);
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Login request timed out. Please try again."
             };
         }
     }
@@ -136,7 +149,7 @@ public class LogtoProvider : BaseAuthenticationProvider
 
         try
         {
-            var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
+            using var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 ["client_id"] = _configuration.ClientId,
                 ["client_secret"] = _configuration.ClientSecret,
@@ -149,10 +162,7 @@ public class LogtoProvider : BaseAuthenticationProvider
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(responseContent, new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
-                });
+                var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(responseContent, JsonOptions);
 
                 if (tokenResponse?.AccessToken != null)
                 {
@@ -175,13 +185,22 @@ public class LogtoProvider : BaseAuthenticationProvider
                 Error = "Token refresh failed"
             };
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Error during Logto token refresh");
+            _logger.LogError(ex, "Network error during Logto token refresh");
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = "Network error during token refresh. Please check your connection."
+            };
+        }
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogWarning(ex, "Logto token refresh request timed out");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh timed out. Please try again."
             };
         }
     }
@@ -197,11 +216,14 @@ public class LogtoProvider : BaseAuthenticationProvider
             
             NotifyAuthenticationStateChanged();
         }
+#pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional, use re-login on any error
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error restoring Logto token from storage");
+            // Keep generic catch here for graceful degradation - token restoration is optional
+            _logger.LogWarning(ex, "Failed to restore Logto token from storage, will require re-login");
             await TokenStorage.RemoveTokenAsync();
         }
+#pragma warning restore CA1031
     }
 
     private void ValidateConfiguration()

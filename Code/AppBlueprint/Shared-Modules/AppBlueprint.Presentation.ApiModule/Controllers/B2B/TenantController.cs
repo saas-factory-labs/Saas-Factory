@@ -4,6 +4,7 @@ using AppBlueprint.Contracts.B2B.Tenant.Requests;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
+using AppBlueprint.Infrastructure.DatabaseContexts;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +20,18 @@ public class TenantController : BaseController
 {
     private readonly IConfiguration _configuration;
     private readonly ITenantRepository _tenantRepository;
+    private readonly ApplicationDbContext _context;
     // Removed IUnitOfWork dependency for repository DI pattern
 
     public TenantController(
         IConfiguration configuration,
-        ITenantRepository tenantRepository)
+        ITenantRepository tenantRepository,
+        ApplicationDbContext context)
         : base(configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _tenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
+        _context = context ?? throw new ArgumentNullException(nameof(context));
         // Removed IUnitOfWork assignment
     }
 
@@ -138,7 +142,8 @@ public class TenantController : BaseController
         };
 
         await _tenantRepository.AddAsync(newTenant);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _context.SaveChangesAsync(cancellationToken);
+        
         var response = new TenantResponse
         {
             Id = newTenant.Id,

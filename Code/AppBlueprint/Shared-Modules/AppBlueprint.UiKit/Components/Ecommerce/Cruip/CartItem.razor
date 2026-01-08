@@ -1,0 +1,168 @@
+@namespace AppBlueprint.UiKit.Components.Ecommerce.Cruip
+@using AppBlueprint.UiKit.Components.Shared
+
+@* Single cart item component - reusable for shopping carts, wishlists, order history *@
+
+<li class="sm:flex items-center py-6 border-b border-gray-200 dark:border-gray-700/60">
+    <!-- Product Image -->
+    <a class="block mb-4 sm:mb-0 mr-5 md:w-32 xl:w-auto shrink-0" href="@ProductUrl">
+        <img class="rounded-xs" src="@ImageUrl" width="@ImageWidth" height="@ImageHeight" alt="@ImageAlt" />
+    </a>
+    
+    <!-- Product Details -->
+    <div class="grow">
+        <a href="@ProductUrl">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">@Title</h3>
+        </a>
+        
+        @if (!string.IsNullOrEmpty(Description))
+        {
+            <div class="text-sm mb-2">@Description</div>
+        }
+        
+        <!-- Product Meta: Rating, Price, Actions -->
+        <div class="flex flex-wrap justify-between items-center">
+            <!-- Rating and Price -->
+            <div class="flex flex-wrap items-center space-x-2 mr-2">
+                @if (ShowRating && Rating > 0)
+                {
+                    <ProductRating Rating="@Rating" ShowScore="true" />
+                    
+                    @if (ShowPrice)
+                    {
+                        <div class="text-gray-400 dark:text-gray-600">·</div>
+                    }
+                }
+                
+                @if (ShowPrice)
+                {
+                    <PriceTag Price="@Price" Currency="@Currency" Variant="@PriceVariant" />
+                }
+            </div>
+            
+            <!-- Actions -->
+            <div class="flex items-center space-x-2">
+                @if (ShowRemoveButton)
+                {
+                    <button class="text-sm underline hover:no-underline" @onclick="OnRemoveClick">
+                        @RemoveButtonText
+                    </button>
+                }
+                
+                @if (AdditionalActions != null)
+                {
+                    @AdditionalActions
+                }
+            </div>
+        </div>
+    </div>
+</li>
+
+@code {
+    /// <summary>
+    /// Product title
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Product description
+    /// </summary>
+    [Parameter]
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// Product image URL
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string ImageUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Alt text for the product image
+    /// </summary>
+    [Parameter]
+    public string ImageAlt { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Product image width
+    /// </summary>
+    [Parameter]
+    public int ImageWidth { get; set; } = 200;
+
+    /// <summary>
+    /// Product image height
+    /// </summary>
+    [Parameter]
+    public int ImageHeight { get; set; } = 142;
+
+    /// <summary>
+    /// Product detail page URL
+    /// </summary>
+    [Parameter]
+    public string ProductUrl { get; set; } = "#0";
+
+    /// <summary>
+    /// Product rating (0-5)
+    /// </summary>
+    [Parameter]
+    public decimal Rating { get; set; } = 0;
+
+    /// <summary>
+    /// Whether to show the rating
+    /// </summary>
+    [Parameter]
+    public bool ShowRating { get; set; } = true;
+
+    /// <summary>
+    /// Product price
+    /// </summary>
+    [Parameter]
+    public decimal Price { get; set; }
+
+    /// <summary>
+    /// Currency symbol
+    /// </summary>
+    [Parameter]
+    public string Currency { get; set; } = "$";
+
+    /// <summary>
+    /// Price tag color variant
+    /// </summary>
+    [Parameter]
+    public string PriceVariant { get; set; } = "green";
+
+    /// <summary>
+    /// Whether to show the price
+    /// </summary>
+    [Parameter]
+    public bool ShowPrice { get; set; } = true;
+
+    /// <summary>
+    /// Whether to show the remove button
+    /// </summary>
+    [Parameter]
+    public bool ShowRemoveButton { get; set; } = true;
+
+    /// <summary>
+    /// Text for the remove button
+    /// </summary>
+    [Parameter]
+    public string RemoveButtonText { get; set; } = "Remove";
+
+    /// <summary>
+    /// Event callback when remove button is clicked
+    /// </summary>
+    [Parameter]
+    public EventCallback OnRemove { get; set; }
+
+    /// <summary>
+    /// Additional action buttons to display
+    /// </summary>
+    [Parameter]
+    public RenderFragment? AdditionalActions { get; set; }
+
+    private async Task OnRemoveClick()
+    {
+        await OnRemove.InvokeAsync();
+    }
+}

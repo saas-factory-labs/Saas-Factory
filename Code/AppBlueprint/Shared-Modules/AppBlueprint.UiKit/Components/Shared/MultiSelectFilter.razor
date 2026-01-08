@@ -1,0 +1,95 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@* Multi-select filter with checkboxes - reusable for tags, categories, features, etc. *@
+
+<FilterGroup Title="@Title" Class="@Class">
+    <ul class="space-y-2">
+        @foreach (var option in Options)
+        {
+            <li>
+                <label class="flex items-center">
+                    <input type="checkbox" 
+                           class="form-checkbox" 
+                           checked="@IsSelected(option.Value)"
+                           @onchange="() => ToggleSelection(option)" />
+                    <span class="text-sm text-gray-600 dark:text-gray-300 font-medium ml-2">
+                        @option.Label
+                        @if (option.Count.HasValue)
+                        {
+                            <span class="text-gray-400 dark:text-gray-500">(@option.Count)</span>
+                        }
+                    </span>
+                </label>
+            </li>
+        }
+    </ul>
+</FilterGroup>
+
+@code {
+    /// <summary>
+    /// Title of the filter section
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = "Filter";
+
+    /// <summary>
+    /// List of options to display
+    /// </summary>
+    [Parameter, EditorRequired]
+    public List<MultiSelectOption> Options { get; set; } = new();
+
+    /// <summary>
+    /// Currently selected values
+    /// </summary>
+    [Parameter]
+    public List<string> SelectedValues { get; set; } = new();
+
+    /// <summary>
+    /// Event callback when selection changes
+    /// </summary>
+    [Parameter]
+    public EventCallback<List<string>> SelectedValuesChanged { get; set; }
+
+    /// <summary>
+    /// Event callback when an option is toggled (with full item details)
+    /// </summary>
+    [Parameter]
+    public EventCallback<(MultiSelectOption Option, bool IsSelected)> OnOptionToggled { get; set; }
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    private bool IsSelected(string value)
+    {
+        return SelectedValues.Contains(value);
+    }
+
+    private async Task ToggleSelection(MultiSelectOption option)
+    {
+        if (SelectedValues.Contains(option.Value))
+        {
+            SelectedValues.Remove(option.Value);
+            await OnOptionToggled.InvokeAsync((option, false));
+        }
+        else
+        {
+            SelectedValues.Add(option.Value);
+            await OnOptionToggled.InvokeAsync((option, true));
+        }
+
+        await SelectedValuesChanged.InvokeAsync(SelectedValues);
+    }
+
+    /// <summary>
+    /// Model representing a multi-select option
+    /// </summary>
+    public sealed class MultiSelectOption
+    {
+        public string Label { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+        public int? Count { get; set; }
+    }
+}

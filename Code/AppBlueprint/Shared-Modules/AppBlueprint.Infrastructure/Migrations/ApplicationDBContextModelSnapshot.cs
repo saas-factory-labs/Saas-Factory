@@ -2335,6 +2335,11 @@ namespace AppBlueprint.Infrastructure.Migrations
                         .HasColumnType("character varying(100)")
                         .HasAnnotation("SensitiveData", true);
 
+                    b.Property<string>("ExternalAuthId")
+                        .HasMaxLength(1024)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(1024)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)

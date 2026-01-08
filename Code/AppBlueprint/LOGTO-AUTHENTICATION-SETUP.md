@@ -2,7 +2,7 @@
 
 This guide covers setting up Logto authentication for the AppBlueprint web application on both macOS and Windows.
 
----
+--
 
 ## Prerequisites
 

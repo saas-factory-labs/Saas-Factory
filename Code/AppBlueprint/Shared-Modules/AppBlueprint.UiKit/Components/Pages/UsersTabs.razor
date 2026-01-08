@@ -1,6 +1,8 @@
 @page "/community/users-tabs"
 @page "/community/users"
+@using AppBlueprint.SharedKernel.Enums
 
+<TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Organization })" AllowUnauthenticated="true">
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
     <!-- Page header -->
@@ -40,6 +42,7 @@
     </div>
 
 </div>
+</TenantTypeAuthorize>
 
 @code {
     private List<UsersTabsCard.UserItem> items = new();

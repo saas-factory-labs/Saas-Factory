@@ -14,11 +14,20 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly B2BDbContext _b2bDbContext;
+    private readonly IDbContextFactory<ApplicationDbContext> _applicationDbContextFactory;
 
-    public UnitOfWorkImplementation(ApplicationDbContext context, B2BDbContext b2bDbContext)
+    public UnitOfWorkImplementation(
+        ApplicationDbContext context, 
+        B2BDbContext b2bDbContext,
+        IDbContextFactory<ApplicationDbContext> applicationDbContextFactory)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(b2bDbContext);
+        ArgumentNullException.ThrowIfNull(applicationDbContextFactory);
+        
         _applicationDbContext = context;
         _b2bDbContext = b2bDbContext;
+        _applicationDbContextFactory = applicationDbContextFactory;
     }
 
     private IAdminRepository? __adminRepository;
@@ -86,7 +95,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_tenantRepository is null) _tenantRepository = new TenantRepository(_applicationDbContext);
+            if (_tenantRepository is null) 
+                _tenantRepository = new TenantRepository(_applicationDbContextFactory);
 
             return _tenantRepository;
         }

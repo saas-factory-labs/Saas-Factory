@@ -1,0 +1,9 @@
+<button class="btn-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400">
+    <div class="w-1 h-3.5 @ColorClass shrink-0"></div>
+    <span class="ml-1.5">@Label</span>
+</button>
+
+@code {
+    [Parameter, EditorRequired] public string ColorClass { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+}

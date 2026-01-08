@@ -1,0 +1,11 @@
+<li class="flex items-center">
+    <svg class="fill-current text-gray-400 dark:text-gray-500 shrink-0 mr-3" width="16" height="16" viewBox="0 0 16 16">
+        <path d="@IconPath" />
+    </svg>
+    <div>@Text</div>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public string IconPath { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Text { get; set; } = string.Empty;
+}

@@ -1,3 +1,7 @@
+@namespace AppBlueprint.UiKit.Components.Fintech.Cruip
+
+@using AppBlueprint.UiKit.Components.Shared
+
 <div class="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
     <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
         <h2 class="font-semibold text-gray-800 dark:text-gray-100">Recent Expenses</h2>
@@ -22,96 +26,14 @@
                 </thead>
                 <!-- Table body -->
                 <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
-                <tr>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center mr-2">
-                                <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 16 16">
-                                    <path d="M7.3 11.7l.7-.7-2.8-2.8H12v-1H5.2l2.8-2.8-.7-.7L3.5 7.5z"/>
-                                </svg>
-                            </div>
-                            <div class="font-medium text-gray-800 dark:text-gray-100">Amazon Purchase</div>
-                        </div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-left">Shopping</div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-right font-medium text-rose-500">-$1,299.22</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center mr-2">
-                                <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 16 16">
-                                    <path d="M7.3 11.7l.7-.7-2.8-2.8H12v-1H5.2l2.8-2.8-.7-.7L3.5 7.5z"/>
-                                </svg>
-                            </div>
-                            <div class="font-medium text-gray-800 dark:text-gray-100">PublicOne Inc.</div>
-                        </div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-left">Services</div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-right font-medium text-rose-500">-$272.88</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center mr-2">
-                                <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 16 16">
-                                    <path d="M7.3 11.7l.7-.7-2.8-2.8H12v-1H5.2l2.8-2.8-.7-.7L3.5 7.5z"/>
-                                </svg>
-                            </div>
-                            <div class="font-medium text-gray-800 dark:text-gray-100">Imperial Hotel ****</div>
-                        </div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-left">Travels</div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-right font-medium text-rose-500">-$999.44</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center mr-2">
-                                <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 16 16">
-                                    <path d="M7.3 11.7l.7-.7-2.8-2.8H12v-1H5.2l2.8-2.8-.7-.7L3.5 7.5z"/>
-                                </svg>
-                            </div>
-                            <div class="font-medium text-gray-800 dark:text-gray-100">Uber</div>
-                        </div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-left">Transport</div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-right font-medium text-rose-500">-$1,029.77</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center mr-2">
-                                <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 16 16">
-                                    <path d="M7.3 11.7l.7-.7-2.8-2.8H12v-1H5.2l2.8-2.8-.7-.7L3.5 7.5z"/>
-                                </svg>
-                            </div>
-                            <div class="font-medium text-gray-800 dark:text-gray-100">Google Limited UK</div>
-                        </div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-left">Software</div>
-                    </td>
-                    <td class="p-2 whitespace-nowrap">
-                        <div class="text-right font-medium text-rose-500">-$1,921.26</div>
-                    </td>
-                </tr>
+                @foreach (var transaction in _expenses)
+                {
+                    <TransactionListItem Description="@transaction.Description"
+                                         Amount="@transaction.Amount"
+                                         Type="expense"
+                                         Category="@transaction.Category"
+                                         IconSvg="@ExpenseIcon" />
+                }
                 </tbody>
             </table>
         </div>
@@ -119,5 +41,20 @@
 </div>
 
 @code {
+    private readonly List<ExpenseModel> _expenses =
+    [
+        new("Amazon Purchase", -1299.22m, "Shopping"),
+        new("PublicOne Inc.", -272.88m, "Services"),
+        new("Imperial Hotel ****", -999.44m, "Travels"),
+        new("Uber", -1029.77m, "Transport"),
+        new("Google Limited UK", -1921.26m, "Software")
+    ];
 
+    private const string ExpenseIcon = """
+        <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 16 16">
+            <path d="M7.3 11.7l.7-.7-2.8-2.8H12v-1H5.2l2.8-2.8-.7-.7L3.5 7.5z"/>
+        </svg>
+        """;
+
+    private sealed record ExpenseModel(string Description, decimal Amount, string Category);
 }

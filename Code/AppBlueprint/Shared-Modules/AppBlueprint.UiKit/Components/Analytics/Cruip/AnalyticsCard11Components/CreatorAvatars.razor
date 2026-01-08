@@ -1,0 +1,15 @@
+@namespace AppBlueprint.UiKit.Components.Analytics.Cruip.AnalyticsCard11Components
+
+<div class="flex shrink-0 -space-x-3 -ml-px">
+    @foreach (var avatar in AvatarUrls)
+    {
+        <a class="block" href="#0">
+            <img class="rounded-full border-2 border-white dark:border-gray-800 box-content" src="@avatar" width="28" height="28" alt="User" />
+        </a>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public required List<string> AvatarUrls { get; set; }
+}

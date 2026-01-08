@@ -13,6 +13,16 @@
             <Found Context="routeData">
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(AppBlueprint.UiKit.Components.Layout.MainLayout)">
                     <NotAuthorized>
+                        @{
+                            Console.WriteLine($"[Routes] NotAuthorized triggered for path: {NavigationManager.Uri}");
+                            Console.WriteLine($"[Routes] User.Identity.IsAuthenticated: {context.User.Identity?.IsAuthenticated}");
+                            Console.WriteLine($"[Routes] User.Identity.Name: {context.User.Identity?.Name}");
+                            Console.WriteLine($"[Routes] User.Claims count: {context.User.Claims.Count()}");
+                            foreach (var claim in context.User.Claims)
+                            {
+                                Console.WriteLine($"[Routes] Claim: {claim.Type} = {claim.Value}");
+                            }
+                        }
                         @if (context.User.Identity?.IsAuthenticated != true)
                         {
                             @RedirectToLogin()
@@ -21,6 +31,10 @@
                         {
                             <div class="flex justify-center items-center h-screen">
                                 <p class="text-xl font-semibold text-gray-800 dark:text-gray-100">You are not authorized to access this page.</p>
+                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                                    <p>User: @context.User.Identity?.Name</p>
+                                    <p>Authenticated: @context.User.Identity?.IsAuthenticated</p>
+                                </div>
                             </div>
                         }
                     </NotAuthorized>
@@ -53,7 +67,7 @@
 
     private RenderFragment RedirectToLogin() => _ =>
     {
-        NavigationManager.NavigateTo("/login", forceLoad: true);
+        NavigationManager.NavigateTo("/signup", forceLoad: true);
     };
 }
 

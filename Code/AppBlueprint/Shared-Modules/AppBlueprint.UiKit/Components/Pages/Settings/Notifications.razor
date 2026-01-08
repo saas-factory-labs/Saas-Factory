@@ -1,5 +1,8 @@
 @page "/settings/notifications"
+@using AppBlueprint.SharedKernel.Enums
+@inject ThemeService ThemeService
 
+<TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Organization })">
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
     <!-- Page header -->
@@ -31,7 +34,7 @@
                                     <div class="text-sm text-gray-400 dark:text-gray-500 italic mr-2">@(model.Comments ? "On" : "Off")</div>
                                     <label class="relative inline-flex cursor-pointer">
                                         <input type="checkbox" @bind="model.Comments" class="sr-only peer" />
-                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-violet-500"></div>
+                                        <div class="@ToggleSwitchClasses"></div>
                                     </label>
                                 </div>
                             </li>
@@ -44,7 +47,7 @@
                                     <div class="text-sm text-gray-400 dark:text-gray-500 italic mr-2">@(model.Messages ? "On" : "Off")</div>
                                     <label class="relative inline-flex cursor-pointer">
                                         <input type="checkbox" @bind="model.Messages" class="sr-only peer" />
-                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-violet-500"></div>
+                                        <div class="@ToggleSwitchClasses"></div>
                                     </label>
                                 </div>
                             </li>
@@ -57,7 +60,7 @@
                                     <div class="text-sm text-gray-400 dark:text-gray-500 italic mr-2">@(model.Mentions ? "On" : "Off")</div>
                                     <label class="relative inline-flex cursor-pointer">
                                         <input type="checkbox" @bind="model.Mentions" class="sr-only peer" />
-                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-violet-500"></div>
+                                        <div class="@ToggleSwitchClasses"></div>
                                     </label>
                                 </div>
                             </li>
@@ -105,7 +108,7 @@
                     <div class="flex flex-col px-6 py-5 border-t border-gray-200 dark:border-gray-700">
                         <div class="flex self-end">
                             <button class="btn dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-600 dark:text-gray-300">Cancel</button>
-                            <button class="btn bg-violet-500 hover:bg-violet-600 text-white ml-3">Save Changes</button>
+                            <button class="@ThemeService.GetPrimaryButtonClasses() ml-3">Save Changes</button>
                         </div>
                     </div>
                 </footer>
@@ -118,6 +121,9 @@
 @code {
     private NotificationModel model = new() { Comments = true, Messages = true, Mentions = false };
 
+    private string ToggleSwitchClasses => 
+        $"w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:{ThemeService.GetPrimaryClass("bg", "500")}";
+
     private class NotificationModel
     {
         public bool Comments { get; set; }
@@ -125,3 +131,4 @@
         public bool Mentions { get; set; }
     }
 }
+</TenantTypeAuthorize>

@@ -12,6 +12,11 @@ namespace AppBlueprint.Infrastructure.Authorization.Providers.Logto;
 /// </summary>
 public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+    };
+
     private readonly HttpClient _httpClient;
     private readonly LogtoConfiguration _configuration;
     private readonly ILogger<LogtoAuthorizationCodeProvider> _logger;
@@ -142,7 +147,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
 
             _logger.LogDebug("Preparing token exchange request to {Endpoint}", $"{_configuration.Endpoint}/oidc/token");
 
-            var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
+            using var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 ["client_id"] = _configuration.ClientId,
                 ["client_secret"] = _configuration.ClientSecret,
@@ -165,10 +170,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             {
                 var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(
                     responseContent, 
-                    new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
-                    });
+                    JsonOptions);
 
                 if (tokenResponse?.AccessToken != null)
                 {
@@ -239,7 +241,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
 
         try
         {
-            var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
+            using var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 ["client_id"] = _configuration.ClientId,
                 ["client_secret"] = _configuration.ClientSecret,
@@ -257,10 +259,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(
                     responseContent, 
-                    new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
-                    });
+                    JsonOptions);
 
                 if (tokenResponse?.AccessToken != null)
                 {

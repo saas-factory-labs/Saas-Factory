@@ -45,7 +45,7 @@ public class Auth0Provider : BaseAuthenticationProvider
             };
 
             var jsonContent = JsonSerializer.Serialize(auth0Request);
-            var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+            using var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync(new Uri($"{_configuration.Domain}/oauth/token", UriKind.Absolute), content, cancellationToken);
 
@@ -76,6 +76,7 @@ public class Auth0Provider : BaseAuthenticationProvider
                 Error = "Login failed. Please check your credentials."
             };
         }
+#pragma warning disable CA1031 // Generic catch returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error during Auth0 login");
@@ -85,6 +86,7 @@ public class Auth0Provider : BaseAuthenticationProvider
                 Error = "An error occurred during login. Please try again."
             };
         }
+#pragma warning restore CA1031
     }
 
     public override async Task<AuthenticationResult> RefreshTokenAsync(CancellationToken cancellationToken = default)
@@ -109,7 +111,7 @@ public class Auth0Provider : BaseAuthenticationProvider
             };
 
             var jsonContent = JsonSerializer.Serialize(refreshRequest);
-            var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+            using var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync(new Uri($"{_configuration.Domain}/oauth/token", UriKind.Absolute), content, cancellationToken);
 
@@ -139,6 +141,7 @@ public class Auth0Provider : BaseAuthenticationProvider
                 Error = "Token refresh failed"
             };
         }
+#pragma warning disable CA1031 // Generic catch returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error during token refresh");
@@ -148,6 +151,7 @@ public class Auth0Provider : BaseAuthenticationProvider
                 Error = "Token refresh failed"
             };
         }
+#pragma warning restore CA1031
     }
 
     protected override async Task TryRestoreFromStoredToken(string storedToken)
@@ -161,11 +165,13 @@ public class Auth0Provider : BaseAuthenticationProvider
             
             NotifyAuthenticationStateChanged();
         }
+#pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional, use re-login on any error
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error restoring Auth0 token from storage");
             await TokenStorage.RemoveTokenAsync();
         }
+#pragma warning restore CA1031
     }
 
     private void ValidateConfiguration()

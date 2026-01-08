@@ -1,53 +1,63 @@
-// Theme management
-window.themeManager = {
-    toggleDarkMode: function () {
+"use strict";
+/**
+ * AppBlueprint UiKit - Site-wide JavaScript interop module
+ * Provides comprehensive Blazor interoperability for UI components
+ */
+// ========================================================================
+// THEME MANAGEMENT
+// ========================================================================
+const themeManager = {
+    toggleDarkMode() {
         const html = document.documentElement;
         if (html.classList.contains('dark')) {
             html.classList.remove('dark');
             html.style.colorScheme = 'light';
             localStorage.setItem('theme', 'light');
-        } else {
+        }
+        else {
             html.classList.add('dark');
             html.style.colorScheme = 'dark';
             localStorage.setItem('theme', 'dark');
         }
     },
-
-    isDarkMode: function () {
+    isDarkMode() {
         return document.documentElement.classList.contains('dark');
     },
-
-    getTheme: function () {
+    getTheme() {
         return localStorage.getItem('theme') || 'system';
     },
-
-    setTheme: function (theme) {
+    setTheme(theme) {
         const html = document.documentElement;
         localStorage.setItem('theme', theme);
-
         if (theme === 'dark') {
             html.classList.add('dark');
             html.style.colorScheme = 'dark';
-        } else if (theme === 'light') {
+        }
+        else if (theme === 'light') {
             html.classList.remove('dark');
             html.style.colorScheme = 'light';
-        } else {
+        }
+        else {
             // System preference
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 html.classList.add('dark');
                 html.style.colorScheme = 'dark';
-            } else {
+            }
+            else {
                 html.classList.remove('dark');
                 html.style.colorScheme = 'light';
             }
         }
     }
 };
-
-// Get element position for onboarding tour
-window.getElementRect = function (selector) {
+// ========================================================================
+// ELEMENT POSITION UTILITIES
+// ========================================================================
+function getElementRect(selector) {
     const element = document.querySelector(selector);
-    if (!element) return null;
+    if (element === null) {
+        return null;
+    }
     const rect = element.getBoundingClientRect();
     return {
         top: rect.top + window.scrollY,
@@ -57,133 +67,144 @@ window.getElementRect = function (selector) {
         width: rect.width,
         height: rect.height
     };
-};
-
-// Sidebar management
-window.sidebarManager = {
-    toggleExpanded: function () {
+}
+// ========================================================================
+// SIDEBAR MANAGEMENT
+// ========================================================================
+const sidebarManager = {
+    toggleExpanded() {
         console.log('sidebarManager.toggleExpanded called');
         const body = document.querySelector('body');
+        if (body === null) {
+            console.error('Body element not found');
+            return;
+        }
         const isExpanded = body.classList.contains('sidebar-expanded');
-        
         if (isExpanded) {
             body.classList.remove('sidebar-expanded');
             localStorage.setItem('sidebar-expanded', 'false');
             console.log('Sidebar collapsed');
-        } else {
+        }
+        else {
             body.classList.add('sidebar-expanded');
             localStorage.setItem('sidebar-expanded', 'true');
             console.log('Sidebar expanded');
         }
     },
-    
-    expand: function () {
+    expand() {
         console.log('sidebarManager.expand called');
         const body = document.querySelector('body');
+        if (body === null) {
+            console.error('Body element not found');
+            return;
+        }
         if (!body.classList.contains('sidebar-expanded')) {
             body.classList.add('sidebar-expanded');
             localStorage.setItem('sidebar-expanded', 'true');
             console.log('Sidebar expanded (was collapsed)');
-        } else {
+        }
+        else {
             console.log('Sidebar already expanded');
         }
     },
-    
-    collapse: function () {
+    collapse() {
         console.log('sidebarManager.collapse called');
         const body = document.querySelector('body');
+        if (body === null) {
+            console.error('Body element not found');
+            return;
+        }
         if (body.classList.contains('sidebar-expanded')) {
             body.classList.remove('sidebar-expanded');
             localStorage.setItem('sidebar-expanded', 'false');
             console.log('Sidebar collapsed (was expanded)');
-        } else {
+        }
+        else {
             console.log('Sidebar already collapsed');
         }
     },
-
-    isExpanded: function () {
-        const expanded = document.querySelector('body').classList.contains('sidebar-expanded');
+    isExpanded() {
+        const body = document.querySelector('body');
+        if (body === null) {
+            console.error('Body element not found');
+            return false;
+        }
+        const expanded = body.classList.contains('sidebar-expanded');
         console.log('sidebarManager.isExpanded:', expanded);
         return expanded;
     }
 };
-
-console.log('sidebarManager initialized:', typeof window.sidebarManager);
-
-// CSS custom property helpers
-window.cssHelper = {
-    getCssVariable: function (variable) {
+console.log('sidebarManager initialized:', typeof sidebarManager);
+// ========================================================================
+// CSS CUSTOM PROPERTY HELPERS
+// ========================================================================
+const cssHelper = {
+    getCssVariable(variable) {
         return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
     },
-
-    adjustColorOpacity: function (color, opacity) {
+    adjustColorOpacity(color, opacity) {
         if (color.startsWith('#')) {
             return this.adjustHexOpacity(color, opacity);
-        } else if (color.startsWith('hsl')) {
+        }
+        else if (color.startsWith('hsl')) {
             return this.adjustHSLOpacity(color, opacity);
-        } else if (color.startsWith('oklch')) {
+        }
+        else if (color.startsWith('oklch')) {
             return this.adjustOKLCHOpacity(color, opacity);
         }
         return color;
     },
-
-    adjustHexOpacity: function (hex, opacity) {
+    adjustHexOpacity(hex, opacity) {
         const r = parseInt(hex.slice(1, 3), 16);
         const g = parseInt(hex.slice(3, 5), 16);
         const b = parseInt(hex.slice(5, 7), 16);
         return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     },
-
-    adjustHSLOpacity: function (hsl, opacity) {
+    adjustHSLOpacity(hsl, opacity) {
         return hsl.replace(')', `, ${opacity})`).replace('hsl', 'hsla');
     },
-
-    adjustOKLCHOpacity: function (oklch, opacity) {
+    adjustOKLCHOpacity(oklch, opacity) {
         return oklch.replace(')', ` / ${opacity})`);
     }
 };
-
-// Click outside handler
-window.clickOutsideHelper = {
-    register: function (element, dotNetHelper, methodName) {
+// ========================================================================
+// CLICK OUTSIDE HANDLER
+// ========================================================================
+const clickOutsideHelper = {
+    register(element, dotNetHelper, methodName) {
         const handler = (event) => {
-            if (element && !element.contains(event.target)) {
-                dotNetHelper.invokeMethodAsync(methodName);
+            if (element !== null && !element.contains(event.target)) {
+                void dotNetHelper.invokeMethodAsync(methodName);
             }
         };
         document.addEventListener('click', handler);
         return handler;
     },
-
-    unregister: function (handler) {
+    unregister(handler) {
         document.removeEventListener('click', handler);
     }
 };
-
-// Dropdown management
-window.dropdownManager = {
+// ========================================================================
+// DROPDOWN MANAGEMENT
+// ========================================================================
+const dropdownManager = {
     handlers: new Map(),
-
-    initialize: function (dropdown, trigger, dotNetHelper) {
+    initialize(dropdown, trigger, dotNetHelper) {
         const clickHandler = (event) => {
             if (!dropdown.contains(event.target) && !trigger.contains(event.target)) {
-                dotNetHelper.invokeMethodAsync('CloseFromJS');
+                void dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
-
         const keyHandler = (event) => {
             if (event.keyCode === 27) { // ESC key
-                dotNetHelper.invokeMethodAsync('CloseFromJS');
+                void dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
-
         document.addEventListener('click', clickHandler);
         document.addEventListener('keydown', keyHandler);
-
         this.handlers.set(dropdown, { clickHandler, keyHandler });
     },
-
-    cleanup: function (dropdown) {
+    cleanup(dropdown) {
         const handlers = this.handlers.get(dropdown);
         if (handlers) {
             document.removeEventListener('click', handlers.clickHandler);
@@ -192,41 +213,35 @@ window.dropdownManager = {
         }
     }
 };
-
-// Modal management
-window.modalManager = {
+// ========================================================================
+// MODAL MANAGEMENT
+// ========================================================================
+const modalManager = {
     handlers: new Map(),
-
-    initialize: function (modalContent, dotNetHelper) {
+    initialize(modalContent, dotNetHelper) {
         const clickHandler = (event) => {
             if (!modalContent.contains(event.target)) {
-                dotNetHelper.invokeMethodAsync('CloseFromJS');
+                void dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
-
         const keyHandler = (event) => {
             if (event.keyCode === 27) { // ESC key
-                dotNetHelper.invokeMethodAsync('CloseFromJS');
+                void dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
-
         document.addEventListener('click', clickHandler);
         document.addEventListener('keydown', keyHandler);
-
         this.handlers.set(modalContent, { clickHandler, keyHandler });
     },
-
-    initializeSearch: function (modalContent, searchInput, dotNetHelper) {
+    initializeSearch(modalContent, searchInput, dotNetHelper) {
         // Initialize modal handlers
         this.initialize(modalContent, dotNetHelper);
-
         // Focus search input
-        if (searchInput) {
+        if (searchInput !== null) {
             setTimeout(() => searchInput.focus(), 100);
         }
     },
-
-    cleanup: function (modalContent) {
+    cleanup(modalContent) {
         const handlers = this.handlers.get(modalContent);
         if (handlers) {
             document.removeEventListener('click', handlers.clickHandler);
@@ -235,25 +250,23 @@ window.modalManager = {
         }
     }
 };
-
-// Datepicker management using flatpickr
-window.datepickerManager = {
+// ========================================================================
+// DATEPICKER MANAGEMENT
+// ========================================================================
+const datepickerManager = {
     instances: {},
-    initialize: function (input, align) {
-        if (!window.flatpickr) {
+    initialize(input, align) {
+        if (typeof window.flatpickr === 'undefined') {
             console.error('Flatpickr library not loaded');
             return;
         }
-
         // Destroy existing instance if any
-        if (this.instances[input.id]) {
+        if (this.instances[input.id] !== null) {
             this.instances[input.id].destroy();
         }
-
         const customClass = align || '';
-
         // Initialize flatpickr with same config as Vue template
-        this.instances[input.id] = flatpickr(input, {
+        this.instances[input.id] = window.flatpickr(input, {
             mode: 'range',
             static: true,
             monthSelectorType: 'static',
@@ -261,64 +274,61 @@ window.datepickerManager = {
             defaultDate: [new Date(new Date().setDate(new Date().getDate() - 6)), new Date()],
             prevArrow: '<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
             nextArrow: '<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M1.4 10.8L0 9.4l4-4-4-4L1.4 0l5.4 5.4z" /></svg>',
-            onReady: function (selectedDates, dateStr, instance) {
+            onReady(selectedDates, dateStr, instance) {
                 instance.element.value = dateStr.replace('to', '-');
                 if (customClass) {
                     instance.calendarContainer.classList.add(`flatpickr-${customClass}`);
                 }
             },
-            onChange: function (selectedDates, dateStr, instance) {
+            onChange(selectedDates, dateStr, instance) {
                 instance.element.value = dateStr.replace('to', '-');
             }
         });
     }
 };
-
-// Command palette management
-window.commandPaletteManager = {
+// ========================================================================
+// COMMAND PALETTE MANAGEMENT
+// ========================================================================
+const commandPaletteManager = {
     dotNetHelper: null,
-
-    initialize: function (dotNetHelper) {
+    initialize(dotNetHelper) {
         this.dotNetHelper = dotNetHelper;
-
         // Listen for Ctrl+K keyboard shortcut
         document.addEventListener('keydown', (event) => {
             if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
                 event.preventDefault();
-                if (this.dotNetHelper) {
-                    this.dotNetHelper.invokeMethodAsync('OpenFromJS');
+                if (this.dotNetHelper !== null) {
+                    void this.dotNetHelper.invokeMethodAsync('OpenFromJS');
                 }
             }
         });
     }
 };
-
-// Infinite scroll management with Intersection Observer
-window.infiniteScrollManager = {
+// ========================================================================
+// INFINITE SCROLL MANAGEMENT
+// ========================================================================
+const infiniteScrollManager = {
     observers: new Map(),
-
-    initialize: function (sentinelElement, dotNetHelper, threshold) {
-        if (!sentinelElement) return;
-
+    initialize(sentinelElement, dotNetHelper, threshold) {
+        if (sentinelElement === null) {
+            return;
+        }
         const options = {
             root: null,
             rootMargin: `${threshold}px`,
             threshold: 0
         };
-
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    dotNetHelper.invokeMethodAsync('OnIntersect');
+                    void dotNetHelper.invokeMethodAsync('OnIntersect');
                 }
             });
         }, options);
-
         observer.observe(sentinelElement);
         this.observers.set(sentinelElement, observer);
     },
-
-    disconnect: function (sentinelElement) {
+    disconnect(sentinelElement) {
         const observer = this.observers.get(sentinelElement);
         if (observer) {
             observer.disconnect();
@@ -326,9 +336,10 @@ window.infiniteScrollManager = {
         }
     }
 };
-
-// File download helper
-window.downloadFileFromBase64 = function (base64, fileName, mimeType) {
+// ========================================================================
+// FILE DOWNLOAD HELPER
+// ========================================================================
+function downloadFileFromBase64(base64, fileName, mimeType) {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
@@ -336,20 +347,15 @@ window.downloadFileFromBase64 = function (base64, fileName, mimeType) {
     }
     const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], { type: mimeType });
-
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = fileName;
     link.click();
     URL.revokeObjectURL(link.href);
-};
-
-// Chart.js v4 Interop for Blazor
-window.chartJsInterop = {
+}
+const chartJsInterop = {
     charts: new Map(),
-
-    // Get chart colors based on dark mode
-    getChartColors: function () {
+    getChartColors() {
         const isDark = document.documentElement.classList.contains('dark');
         return {
             textColor: isDark ? 'rgb(148, 163, 184)' : 'rgb(148, 163, 184)',
@@ -360,9 +366,7 @@ window.chartJsInterop = {
             tooltipBorderColor: isDark ? 'rgb(71, 85, 105)' : 'rgb(226, 232, 240)'
         };
     },
-
-    // Format value for tooltips
-    formatValue: function (value) {
+    formatValue(value) {
         return Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
@@ -370,18 +374,14 @@ window.chartJsInterop = {
             notation: 'compact',
         }).format(value);
     },
-
-    // Create Line Chart
-    createLineChart: function (canvasId, config) {
+    createLineChart(canvasId, config) {
         const ctx = document.getElementById(canvasId);
-        if (!ctx) return;
-
-        // Destroy existing chart if any
+        if (ctx === null) {
+            return false;
+        }
         this.destroyChart(canvasId);
-
         const colors = this.getChartColors();
         const formatValue = this.formatValue;
-
         const chart = new Chart(ctx, {
             type: 'line',
             data: config.data,
@@ -398,7 +398,7 @@ window.chartJsInterop = {
                         border: { display: false },
                         ticks: {
                             maxTicksLimit: 5,
-                            callback: (value) => formatValue(value),
+                            callback: (value) => formatValue(typeof value === 'number' ? value : parseFloat(value)),
                             color: colors.textColor
                         },
                         grid: {
@@ -453,21 +453,17 @@ window.chartJsInterop = {
                 resizeDelay: 200,
             },
         });
-
         this.charts.set(canvasId, chart);
         return true;
     },
-
-    // Create Bar Chart
-    createBarChart: function (canvasId, config) {
+    createBarChart(canvasId, config) {
         const ctx = document.getElementById(canvasId);
-        if (!ctx) return;
-
+        if (ctx === null) {
+            return false;
+        }
         this.destroyChart(canvasId);
-
         const colors = this.getChartColors();
         const formatValue = this.formatValue;
-
         const chart = new Chart(ctx, {
             type: 'bar',
             data: config.data,
@@ -485,7 +481,7 @@ window.chartJsInterop = {
                         border: { display: false },
                         ticks: {
                             maxTicksLimit: 5,
-                            callback: (value) => formatValue(value),
+                            callback: (value) => formatValue(typeof value === 'number' ? value : parseFloat(value)),
                             color: colors.textColor,
                         },
                         grid: {
@@ -529,20 +525,16 @@ window.chartJsInterop = {
                 resizeDelay: 200,
             },
         });
-
         this.charts.set(canvasId, chart);
         return true;
     },
-
-    // Create Doughnut Chart
-    createDoughnutChart: function (canvasId, config) {
+    createDoughnutChart(canvasId, config) {
         const ctx = document.getElementById(canvasId);
-        if (!ctx) return;
-
+        if (ctx === null) {
+            return false;
+        }
         this.destroyChart(canvasId);
-
         const colors = this.getChartColors();
-
         const chart = new Chart(ctx, {
             type: 'doughnut',
             data: config.data,
@@ -573,20 +565,16 @@ window.chartJsInterop = {
                 resizeDelay: 200,
             },
         });
-
         this.charts.set(canvasId, chart);
         return true;
     },
-
-    // Create Pie Chart
-    createPieChart: function (canvasId, config) {
+    createPieChart(canvasId, config) {
         const ctx = document.getElementById(canvasId);
-        if (!ctx) return;
-
+        if (ctx === null) {
+            return false;
+        }
         this.destroyChart(canvasId);
-
         const colors = this.getChartColors();
-
         const chart = new Chart(ctx, {
             type: 'pie',
             data: config.data,
@@ -616,57 +604,68 @@ window.chartJsInterop = {
                 resizeDelay: 200,
             },
         });
-
         this.charts.set(canvasId, chart);
         return true;
     },
-
-    // Update chart data
-    updateChart: function (canvasId, newData) {
+    updateChart(canvasId, newData) {
         const chart = this.charts.get(canvasId);
         if (chart) {
             chart.data = newData;
             chart.update();
         }
     },
-
-    // Destroy chart
-    destroyChart: function (canvasId) {
+    destroyChart(canvasId) {
         const chart = this.charts.get(canvasId);
         if (chart) {
             chart.destroy();
             this.charts.delete(canvasId);
         }
     },
-
-    // Update chart colors when theme changes
-    updateChartTheme: function (canvasId) {
+    updateChartTheme(canvasId) {
         const chart = this.charts.get(canvasId);
         if (chart) {
             const colors = this.getChartColors();
-
-            if (chart.options.scales?.y) {
-                chart.options.scales.y.ticks.color = colors.textColor;
-                chart.options.scales.y.grid.color = colors.gridColor;
+            const typedChart = chart;
+            if (typedChart.options.scales?.y) {
+                if (typedChart.options.scales.y.ticks) {
+                    typedChart.options.scales.y.ticks.color = colors.textColor;
+                }
+                if (typedChart.options.scales.y.grid) {
+                    typedChart.options.scales.y.grid.color = colors.gridColor;
+                }
             }
-            if (chart.options.scales?.x) {
-                chart.options.scales.x.ticks.color = colors.textColor;
+            if (typedChart.options.scales?.x?.ticks) {
+                typedChart.options.scales.x.ticks.color = colors.textColor;
             }
-            if (chart.options.plugins?.tooltip) {
-                chart.options.plugins.tooltip.titleColor = colors.tooltipTitleColor;
-                chart.options.plugins.tooltip.bodyColor = colors.tooltipBodyColor;
-                chart.options.plugins.tooltip.backgroundColor = colors.tooltipBgColor;
-                chart.options.plugins.tooltip.borderColor = colors.tooltipBorderColor;
+            if (typedChart.options.plugins?.tooltip) {
+                typedChart.options.plugins.tooltip.titleColor = colors.tooltipTitleColor;
+                typedChart.options.plugins.tooltip.bodyColor = colors.tooltipBodyColor;
+                typedChart.options.plugins.tooltip.backgroundColor = colors.tooltipBgColor;
+                typedChart.options.plugins.tooltip.borderColor = colors.tooltipBorderColor;
             }
-
-            chart.update('none');
+            typedChart.update('none');
         }
     },
-
-    // Update all charts theme
-    updateAllChartsTheme: function () {
-        this.charts.forEach((chart, canvasId) => {
+    updateAllChartsTheme() {
+        this.charts.forEach((_chart, canvasId) => {
             this.updateChartTheme(canvasId);
         });
     }
 };
+// ========================================================================
+// WINDOW GLOBAL EXPORTS
+// ========================================================================
+// Export to window for Blazor interop
+window.themeManager = themeManager;
+window.getElementRect = getElementRect;
+window.sidebarManager = sidebarManager;
+window.cssHelper = cssHelper;
+window.clickOutsideHelper = clickOutsideHelper;
+window.dropdownManager = dropdownManager;
+window.modalManager = modalManager;
+window.datepickerManager = datepickerManager;
+window.commandPaletteManager = commandPaletteManager;
+window.infiniteScrollManager = infiniteScrollManager;
+window.downloadFileFromBase64 = downloadFileFromBase64;
+window.chartJsInterop = chartJsInterop;
+//# sourceMappingURL=site.js.map

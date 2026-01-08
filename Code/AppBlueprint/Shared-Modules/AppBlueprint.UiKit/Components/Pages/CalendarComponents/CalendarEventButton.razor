@@ -1,0 +1,22 @@
+<button class="relative w-full text-left mb-1">
+    <div class="px-2 py-0.5 rounded overflow-hidden @ColorClass">
+        <div class="text-xs font-semibold truncate">@EventName</div>
+        <div class="text-xs uppercase truncate hidden sm:block">
+            @if (StartTime.HasValue)
+            {
+                <span>@DateTime.Today.Add(StartTime.Value).ToString("h:mm tt")</span>
+            }
+            @if (EndTime.HasValue)
+            {
+                <span> - @DateTime.Today.Add(EndTime.Value).ToString("h:mm tt")</span>
+            }
+        </div>
+    </div>
+</button>
+
+@code {
+    [Parameter, EditorRequired] public string EventName { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string ColorClass { get; set; } = string.Empty;
+    [Parameter] public TimeSpan? StartTime { get; set; }
+    [Parameter] public TimeSpan? EndTime { get; set; }
+}
