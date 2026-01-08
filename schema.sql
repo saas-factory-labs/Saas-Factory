@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 1UYIYZM3FDqYg3Uvr6Y7Tl1IGTxcmpdgvkHOZWg661sbAV8gKCga88mbpWeCFLR
+\restrict 8hy8TZIofa8WsYEjYt2wva2vD55vNQ0QGXQcJEpgxTC6JE5FoU1xXFQV7sA4Xd5
 
 -- Dumped from database version 17.7 (Debian 17.7-3.pgdg13+1)
 -- Dumped by pg_dump version 17.7 (Ubuntu 17.7-3.pgdg24.04+1)
@@ -18,6 +18,305 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: create_tenant_and_user(text, text, integer, text, text, text, text, text, text, text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_tenant_and_user(p_tenant_id text, p_tenant_name text, p_tenant_type integer, p_user_id text, p_user_first_name text, p_user_last_name text, p_user_email text, p_external_auth_id text, p_ip_address text DEFAULT NULL::text, p_user_agent text DEFAULT NULL::text) RETURNS json
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+DECLARE
+    v_audit_id TEXT;
+    v_result JSON;
+    v_profile_id TEXT;
+    v_tenant_type INTEGER;
+BEGIN
+    -- ========================================
+    -- STEP 1: Generate Audit ID (using UUID since ULID extension not available)
+    -- ========================================
+    v_audit_id := 'audit_' || REPLACE(gen_random_uuid()::text, '-', '');
+    
+    -- ========================================
+    -- STEP 2: Input Validation
+    -- ========================================
+    
+    -- Validate tenant ID format
+    IF NOT validate_id_format(p_tenant_id, 'tenant') THEN
+        INSERT INTO "SignupAuditLog" 
+        VALUES (v_audit_id, p_tenant_id, p_user_id, p_user_email, p_ip_address, p_user_agent, NOW(), false, 'Invalid tenant_id format');
+        
+        RAISE EXCEPTION 'Invalid tenant_id format. Expected: tenant_XXXXXXXXXXXXXXXXXXXX';
+    END IF;
+    
+    -- Validate user ID format
+    IF NOT validate_id_format(p_user_id, 'user') THEN
+        INSERT INTO "SignupAuditLog" 
+        VALUES (v_audit_id, p_tenant_id, p_user_id, p_user_email, p_ip_address, p_user_agent, NOW(), false, 'Invalid user_id format');
+        
+        RAISE EXCEPTION 'Invalid user_id format. Expected: user_XXXXXXXXXXXXXXXXXXXX';
+    END IF;
+    
+    -- Validate email format
+    IF NOT validate_email_format(p_user_email) THEN
+        INSERT INTO "SignupAuditLog" 
+        VALUES (v_audit_id, p_tenant_id, p_user_id, p_user_email, p_ip_address, p_user_agent, NOW(), false, 'Invalid email format');
+        
+        RAISE EXCEPTION 'Invalid email format';
+    END IF;
+    
+    -- Check for duplicate email
+    IF email_exists(p_user_email) THEN
+        INSERT INTO "SignupAuditLog" 
+        VALUES (v_audit_id, p_tenant_id, p_user_id, p_user_email, p_ip_address, p_user_agent, NOW(), false, 'Email already exists');
+        
+        RAISE EXCEPTION 'Email already registered';
+    END IF;
+    
+    -- Validate required text fields are not empty
+    IF TRIM(p_tenant_name) = '' THEN
+        RAISE EXCEPTION 'Tenant name cannot be empty';
+    END IF;
+    
+    IF TRIM(p_user_first_name) = '' OR TRIM(p_user_last_name) = '' THEN
+        RAISE EXCEPTION 'User first name and last name are required';
+    END IF;
+    
+    -- ========================================
+    -- STEP 3: Rate Limiting Check (Optional)
+    -- ========================================
+    -- Prevent abuse: max 5 signups per email per hour
+    IF (SELECT COUNT(*) FROM "SignupAuditLog" 
+        WHERE "Email" = p_user_email 
+        AND "CreatedAt" > NOW() - INTERVAL '1 hour') >= 5 THEN
+        
+        INSERT INTO "SignupAuditLog" 
+        VALUES (v_audit_id, p_tenant_id, p_user_id, p_user_email, p_ip_address, p_user_agent, NOW(), false, 'Rate limit exceeded');
+        
+        RAISE EXCEPTION 'Too many signup attempts. Please try again later.';
+    END IF;
+    
+    -- ========================================
+    -- STEP 4: Create Tenant
+    -- ========================================
+    -- TenantType enum: Personal = 0, Organization = 1
+    -- Use parameter value passed from application
+    v_tenant_type := p_tenant_type;
+    
+    INSERT INTO "Tenants" (
+        "Id",
+        "Name",
+        "TenantType",
+        "IsActive",
+        "IsPrimary",
+        "Email",
+        "CreatedAt",
+        "LastUpdatedAt"
+    ) VALUES (
+        p_tenant_id,
+        p_tenant_name,
+        v_tenant_type,  -- 0 = Personal (B2C), 1 = Organization (B2B)
+        true,  -- Active by default
+        true,  -- Primary tenant
+        p_user_email,
+        NOW(),
+        NOW()
+    );
+    
+    -- ========================================
+    -- STEP 5: Create User (ProfileEntity will be created after with UserId reference)
+    -- ========================================
+    INSERT INTO "Users" (
+        "Id",
+        "FirstName",
+        "LastName",
+        "UserName",
+        "Email",
+        "ExternalAuthId",
+        "TenantId",
+        "IsActive",
+        "IsSoftDeleted",
+        "LastLogin",
+        "CreatedAt",
+        "LastUpdatedAt"
+    ) VALUES (
+        p_user_id,
+        p_user_first_name,
+        p_user_last_name,
+        p_user_email,  -- Use email as username initially
+        p_user_email,
+        p_external_auth_id,
+        p_tenant_id,  -- Link to tenant
+        true,
+        false,
+        NOW(),
+        NOW(),
+        NOW()
+    );
+    
+    -- ========================================
+    -- STEP 6: Create User Profile (references User via UserId)
+    -- ========================================
+    v_profile_id := 'profile_' || REPLACE(gen_random_uuid()::text, '-', '');
+    
+    INSERT INTO "ProfileEntity" (
+        "Id",
+        "UserId",
+        "PhoneNumber",
+        "Bio",
+        "AvatarUrl",
+        "WebsiteUrl",
+        "TimeZone",
+        "Language",
+        "Country",
+        "IsSoftDeleted",
+        "CreatedAt",
+        "LastUpdatedAt"
+    ) VALUES (
+        v_profile_id,
+        p_user_id,  -- Link profile to user
+        NULL,  -- Empty profile initially
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        false,
+        NOW(),
+        NOW()
+    );
+    
+    -- ========================================
+    -- STEP 7: Audit Success
+    -- ========================================
+    INSERT INTO "SignupAuditLog" (
+        "Id",
+        "TenantId",
+        "UserId",
+        "Email",
+        "IpAddress",
+        "UserAgent",
+        "CreatedAt",
+        "Success",
+        "ErrorMessage"
+    ) VALUES (
+        v_audit_id,
+        p_tenant_id,
+        p_user_id,
+        p_user_email,
+        p_ip_address,
+        p_user_agent,
+        NOW(),
+        true,
+        NULL
+    );
+    
+    -- ========================================
+    -- STEP 8: Return Success Result
+    -- ========================================
+    SELECT json_build_object(
+        'success', true,
+        'tenant_id', p_tenant_id,
+        'user_id', p_user_id,
+        'profile_id', v_profile_id,
+        'email', p_user_email,
+        'created_at', NOW()
+    ) INTO v_result;
+    
+    RETURN v_result;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log any errors
+        INSERT INTO "SignupAuditLog" (
+            "Id",
+            "TenantId",
+            "UserId",
+            "Email",
+            "IpAddress",
+            "UserAgent",
+            "CreatedAt",
+            "Success",
+            "ErrorMessage"
+        ) VALUES (
+            v_audit_id,
+            p_tenant_id,
+            p_user_id,
+            p_user_email,
+            p_ip_address,
+            p_user_agent,
+            NOW(),
+            false,
+            SQLERRM
+        );
+        
+        -- Re-raise the exception
+        RAISE;
+END;
+$$;
+
+
+--
+-- Name: FUNCTION create_tenant_and_user(p_tenant_id text, p_tenant_name text, p_tenant_type integer, p_user_id text, p_user_first_name text, p_user_last_name text, p_user_email text, p_external_auth_id text, p_ip_address text, p_user_agent text); Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON FUNCTION public.create_tenant_and_user(p_tenant_id text, p_tenant_name text, p_tenant_type integer, p_user_id text, p_user_first_name text, p_user_last_name text, p_user_email text, p_external_auth_id text, p_ip_address text, p_user_agent text) IS 'Securely creates tenant and user during signup. 
+Uses SECURITY DEFINER to bypass RLS for initial account creation only.
+Includes input validation, rate limiting, and audit logging.
+Critical: This function should only be called from trusted signup endpoints.';
+
+
+--
+-- Name: email_exists(text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.email_exists(email text) RETURNS boolean
+    LANGUAGE plpgsql STABLE SECURITY DEFINER
+    AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM "Users" 
+        WHERE LOWER("Email") = LOWER(email)
+    );
+END;
+$$;
+
+
+--
+-- Name: validate_email_format(text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.validate_email_format(email text) RETURNS boolean
+    LANGUAGE plpgsql IMMUTABLE SECURITY DEFINER
+    AS $_$
+BEGIN
+    -- Basic email validation (RFC 5322 subset)
+    RETURN email ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+           AND LENGTH(email) <= 320; -- RFC max length
+END;
+$_$;
+
+
+--
+-- Name: validate_id_format(text, text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.validate_id_format(id text, expected_prefix text) RETURNS boolean
+    LANGUAGE plpgsql IMMUTABLE SECURITY DEFINER
+    AS $_$
+BEGIN
+    -- Check format: prefix_timestamp_random or prefix_ULID
+    -- Examples: 
+    --   tenant_01HX1234567890ABCDEFGHIJ (ULID format - 26 chars)
+    --   tenant_18D5F3A8A5C_1234567890 (Custom format - timestamp_random)
+    -- Must start with prefix_ and have at least some content after
+    RETURN id ~ ('^' || expected_prefix || '_[0-9A-Za-z_]+$')
+           AND LENGTH(id) > LENGTH(expected_prefix) + 5; -- Minimum reasonable length
+END;
+$_$;
+
 
 SET default_tablespace = '';
 
@@ -700,12 +999,13 @@ CREATE TABLE public."Notifications" (
 --
 
 CREATE TABLE public."PaymentProviders" (
-    "Id" integer NOT NULL,
+    "Id" character varying(40) NOT NULL,
     "Name" character varying(100) NOT NULL,
     "Description" character varying(500),
     "IsActive" boolean DEFAULT true NOT NULL,
-    "CreatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "LastUpdatedAt" timestamp with time zone
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "LastUpdatedAt" timestamp with time zone,
+    "IsSoftDeleted" boolean DEFAULT false NOT NULL
 );
 
 
@@ -735,34 +1035,6 @@ COMMENT ON COLUMN public."PaymentProviders"."Description" IS 'Optional descripti
 --
 
 COMMENT ON COLUMN public."PaymentProviders"."IsActive" IS 'Indicates if this payment provider is currently active and available for use';
-
-
---
--- Name: COLUMN "PaymentProviders"."CreatedAt"; Type: COMMENT; Schema: public; Owner: -
---
-
-COMMENT ON COLUMN public."PaymentProviders"."CreatedAt" IS 'Timestamp when the payment provider was created';
-
-
---
--- Name: COLUMN "PaymentProviders"."LastUpdatedAt"; Type: COMMENT; Schema: public; Owner: -
---
-
-COMMENT ON COLUMN public."PaymentProviders"."LastUpdatedAt" IS 'Timestamp when the payment provider was last updated';
-
-
---
--- Name: PaymentProviders_Id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-ALTER TABLE public."PaymentProviders" ALTER COLUMN "Id" ADD GENERATED BY DEFAULT AS IDENTITY (
-    SEQUENCE NAME public."PaymentProviders_Id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
 
 
 --
@@ -883,7 +1155,8 @@ CREATE TABLE public."RolePermissions" (
     "RoleId" character varying(40) NOT NULL,
     "CreatedAt" timestamp with time zone NOT NULL,
     "LastUpdatedAt" timestamp with time zone NOT NULL,
-    "IsSoftDeleted" boolean DEFAULT false NOT NULL
+    "IsSoftDeleted" boolean DEFAULT false NOT NULL,
+    "PermissionId" character varying(40) DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -964,6 +1237,31 @@ CREATE TABLE public."Sessions" (
     "LastUpdatedAt" timestamp with time zone,
     "IsSoftDeleted" boolean NOT NULL
 );
+
+
+--
+-- Name: SignupAuditLog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."SignupAuditLog" (
+    "Id" text NOT NULL,
+    "TenantId" text NOT NULL,
+    "UserId" text NOT NULL,
+    "Email" text NOT NULL,
+    "IpAddress" text,
+    "UserAgent" text,
+    "CreatedAt" timestamp with time zone DEFAULT now() NOT NULL,
+    "Success" boolean NOT NULL,
+    "ErrorMessage" text
+);
+
+
+--
+-- Name: TABLE "SignupAuditLog"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE public."SignupAuditLog" IS 'Audit trail for all signup attempts (successful and failed).
+Used for security monitoring, rate limiting, and fraud detection.';
 
 
 --
@@ -1071,58 +1369,6 @@ COMMENT ON COLUMN public."Subscriptions"."CreatedAt" IS 'Timestamp when the subs
 
 
 --
--- Name: TeamEntity; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public."TeamEntity" (
-    "Id" character varying(1024) NOT NULL,
-    "Name" character varying(1024),
-    "IsActive" boolean NOT NULL,
-    "Description" character varying(1024),
-    "TenantId" character varying(1024) NOT NULL,
-    "OwnerId" character varying(1024),
-    "OrganizationId" character varying(1024),
-    "CreatedAt" timestamp with time zone NOT NULL,
-    "LastUpdatedAt" timestamp with time zone,
-    "IsSoftDeleted" boolean NOT NULL
-);
-
-
---
--- Name: TeamInviteEntity; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public."TeamInviteEntity" (
-    "Id" character varying(1024) NOT NULL,
-    "TeamId" character varying(1024) NOT NULL,
-    "OwnerId" character varying(1024) NOT NULL,
-    "ExpireAt" timestamp with time zone NOT NULL,
-    "IsActive" boolean NOT NULL,
-    "TenantId" character varying(1024) NOT NULL,
-    "CreatedAt" timestamp with time zone NOT NULL,
-    "LastUpdatedAt" timestamp with time zone,
-    "IsSoftDeleted" boolean NOT NULL
-);
-
-
---
--- Name: TeamMemberEntity; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public."TeamMemberEntity" (
-    "Id" character varying(1024) NOT NULL,
-    "Alias" character varying(1024) NOT NULL,
-    "IsActive" boolean NOT NULL,
-    "TenantId" character varying(1024) NOT NULL,
-    "UserId" character varying(1024) NOT NULL,
-    "TeamId" character varying(1024) NOT NULL,
-    "CreatedAt" timestamp with time zone NOT NULL,
-    "LastUpdatedAt" timestamp with time zone,
-    "IsSoftDeleted" boolean NOT NULL
-);
-
-
---
 -- Name: Tenants; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1132,38 +1378,108 @@ CREATE TABLE public."Tenants" (
     "Description" character varying(500),
     "IsActive" boolean NOT NULL,
     "IsPrimary" boolean NOT NULL,
-    "Email" character varying(100) NOT NULL,
-    "Phone" character varying(1024) NOT NULL,
-    "Type" character varying(50) NOT NULL,
-    "VatNumber" character varying(50) NOT NULL,
-    "Country" character varying(100) NOT NULL,
-    "CustomerId" character varying(1024) NOT NULL,
+    "Email" character varying(100),
+    "Phone" character varying(20),
+    "VatNumber" character varying(50),
+    "Country" character varying(100),
+    "CustomerId" character varying(1024),
     "CustomerEntityId" character varying(1024),
     "CreatedAt" timestamp with time zone NOT NULL,
     "LastUpdatedAt" timestamp with time zone,
-    "IsSoftDeleted" boolean DEFAULT false NOT NULL
+    "IsSoftDeleted" boolean DEFAULT false NOT NULL,
+    "TenantType" integer DEFAULT 0 NOT NULL
 );
 
 
 --
--- Name: Todos; Type: TABLE; Schema: public; Owner: -
+-- Name: COLUMN "Tenants"."Id"; Type: COMMENT; Schema: public; Owner: -
 --
 
-CREATE TABLE public."Todos" (
-    "Id" character varying(1024) NOT NULL,
-    "Title" character varying(1024) NOT NULL,
-    "Description" character varying(1024),
-    "IsCompleted" boolean NOT NULL,
-    "Priority" integer NOT NULL,
-    "DueDate" timestamp with time zone,
-    "CompletedAt" timestamp with time zone,
-    "TenantId" character varying(1024) NOT NULL,
-    "CreatedById" character varying(1024) NOT NULL,
-    "AssignedToId" character varying(1024),
-    "CreatedAt" timestamp with time zone NOT NULL,
-    "LastUpdatedAt" timestamp with time zone,
-    "IsSoftDeleted" boolean NOT NULL
-);
+COMMENT ON COLUMN public."Tenants"."Id" IS 'Unique tenant identifier with prefix (e.g., tenant_01ABCD...)';
+
+
+--
+-- Name: COLUMN "Tenants"."Name"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."Name" IS 'Tenant name: Full name for Personal, Company name for Organization';
+
+
+--
+-- Name: COLUMN "Tenants"."Description"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."Description" IS 'Optional description, typically used for Organization tenants';
+
+
+--
+-- Name: COLUMN "Tenants"."IsActive"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."IsActive" IS 'Whether tenant can access the system';
+
+
+--
+-- Name: COLUMN "Tenants"."IsPrimary"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."IsPrimary" IS 'Indicates primary tenant for multi-tenant B2C users';
+
+
+--
+-- Name: COLUMN "Tenants"."Email"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."Email" IS 'Contact email for the tenant';
+
+
+--
+-- Name: COLUMN "Tenants"."Phone"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."Phone" IS 'Contact phone for the tenant';
+
+
+--
+-- Name: COLUMN "Tenants"."VatNumber"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."VatNumber" IS 'VAT/Tax number (B2B only)';
+
+
+--
+-- Name: COLUMN "Tenants"."Country"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."Country" IS 'Country code (B2B only)';
+
+
+--
+-- Name: COLUMN "Tenants"."CreatedAt"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."CreatedAt" IS 'Timestamp when tenant was created';
+
+
+--
+-- Name: COLUMN "Tenants"."LastUpdatedAt"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."LastUpdatedAt" IS 'Timestamp when tenant was last modified';
+
+
+--
+-- Name: COLUMN "Tenants"."IsSoftDeleted"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."IsSoftDeleted" IS 'Soft delete flag';
+
+
+--
+-- Name: COLUMN "Tenants"."TenantType"; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public."Tenants"."TenantType" IS '0 = Personal (B2C), 1 = Organization (B2B)';
 
 
 --
@@ -1195,7 +1511,8 @@ CREATE TABLE public."Users" (
     "TenantId" character varying(40) NOT NULL,
     "CreatedAt" timestamp with time zone NOT NULL,
     "LastUpdatedAt" timestamp with time zone,
-    "IsSoftDeleted" boolean DEFAULT false NOT NULL
+    "IsSoftDeleted" boolean DEFAULT false NOT NULL,
+    "ExternalAuthId" character varying(1024)
 );
 
 
@@ -1529,43 +1846,11 @@ ALTER TABLE ONLY public."Subscriptions"
 
 
 --
--- Name: TeamEntity PK_TeamEntity; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."TeamEntity"
-    ADD CONSTRAINT "PK_TeamEntity" PRIMARY KEY ("Id");
-
-
---
--- Name: TeamInviteEntity PK_TeamInviteEntity; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."TeamInviteEntity"
-    ADD CONSTRAINT "PK_TeamInviteEntity" PRIMARY KEY ("Id");
-
-
---
--- Name: TeamMemberEntity PK_TeamMemberEntity; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."TeamMemberEntity"
-    ADD CONSTRAINT "PK_TeamMemberEntity" PRIMARY KEY ("Id");
-
-
---
 -- Name: Tenants PK_Tenants; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Tenants"
     ADD CONSTRAINT "PK_Tenants" PRIMARY KEY ("Id");
-
-
---
--- Name: Todos PK_Todos; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."Todos"
-    ADD CONSTRAINT "PK_Todos" PRIMARY KEY ("Id");
 
 
 --
@@ -1598,6 +1883,14 @@ ALTER TABLE ONLY public."Webhooks"
 
 ALTER TABLE ONLY public."__EFMigrationsHistory"
     ADD CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId");
+
+
+--
+-- Name: SignupAuditLog SignupAuditLog_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."SignupAuditLog"
+    ADD CONSTRAINT "SignupAuditLog_pkey" PRIMARY KEY ("Id");
 
 
 --
@@ -2371,10 +2664,24 @@ CREATE UNIQUE INDEX "IX_ResourcePermissions_UserId_ResourceId_Unique" ON public.
 
 
 --
+-- Name: IX_RolePermissions_PermissionId; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "IX_RolePermissions_PermissionId" ON public."RolePermissions" USING btree ("PermissionId");
+
+
+--
 -- Name: IX_RolePermissions_RoleId; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX "IX_RolePermissions_RoleId" ON public."RolePermissions" USING btree ("RoleId");
+
+
+--
+-- Name: IX_RolePermissions_RoleId_PermissionId_Unique; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "IX_RolePermissions_RoleId_PermissionId_Unique" ON public."RolePermissions" USING btree ("RoleId", "PermissionId");
 
 
 --
@@ -2476,48 +2783,6 @@ CREATE INDEX "IX_Subscriptions_TenantId" ON public."Subscriptions" USING btree (
 
 
 --
--- Name: IX_TeamEntity_OwnerId; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX "IX_TeamEntity_OwnerId" ON public."TeamEntity" USING btree ("OwnerId");
-
-
---
--- Name: IX_TeamEntity_TenantId; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX "IX_TeamEntity_TenantId" ON public."TeamEntity" USING btree ("TenantId");
-
-
---
--- Name: IX_TeamInviteEntity_OwnerId; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX "IX_TeamInviteEntity_OwnerId" ON public."TeamInviteEntity" USING btree ("OwnerId");
-
-
---
--- Name: IX_TeamInviteEntity_TeamId; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX "IX_TeamInviteEntity_TeamId" ON public."TeamInviteEntity" USING btree ("TeamId");
-
-
---
--- Name: IX_TeamMemberEntity_TeamId; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX "IX_TeamMemberEntity_TeamId" ON public."TeamMemberEntity" USING btree ("TeamId");
-
-
---
--- Name: IX_TeamMemberEntity_UserId; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX "IX_TeamMemberEntity_UserId" ON public."TeamMemberEntity" USING btree ("UserId");
-
-
---
 -- Name: IX_Tenants_Country; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2539,10 +2804,10 @@ CREATE INDEX "IX_Tenants_CustomerId" ON public."Tenants" USING btree ("CustomerI
 
 
 --
--- Name: IX_Tenants_Email; Type: INDEX; Schema: public; Owner: -
+-- Name: IX_Tenants_Email_TenantType; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX "IX_Tenants_Email" ON public."Tenants" USING btree ("Email");
+CREATE INDEX "IX_Tenants_Email_TenantType" ON public."Tenants" USING btree ("Email", "TenantType");
 
 
 --
@@ -2571,6 +2836,20 @@ CREATE INDEX "IX_Tenants_IsSoftDeleted" ON public."Tenants" USING btree ("IsSoft
 --
 
 CREATE INDEX "IX_Tenants_Name" ON public."Tenants" USING btree ("Name");
+
+
+--
+-- Name: IX_Tenants_TenantType; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "IX_Tenants_TenantType" ON public."Tenants" USING btree ("TenantType");
+
+
+--
+-- Name: IX_Tenants_Type_Active_NotDeleted; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "IX_Tenants_Type_Active_NotDeleted" ON public."Tenants" USING btree ("TenantType", "IsActive", "IsSoftDeleted");
 
 
 --
@@ -2641,6 +2920,20 @@ CREATE INDEX "IX_Users_TenantId" ON public."Users" USING btree ("TenantId");
 --
 
 CREATE UNIQUE INDEX "IX_Users_UserName" ON public."Users" USING btree ("UserName");
+
+
+--
+-- Name: idx_signup_audit_email_created; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_signup_audit_email_created ON public."SignupAuditLog" USING btree ("Email", "CreatedAt" DESC);
+
+
+--
+-- Name: idx_signup_audit_ip_created; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_signup_audit_ip_created ON public."SignupAuditLog" USING btree ("IpAddress", "CreatedAt" DESC);
 
 
 --
@@ -2996,6 +3289,14 @@ ALTER TABLE ONLY public."ResourcePermissions"
 
 
 --
+-- Name: RolePermissions FK_RolePermissions_Permissions_PermissionId; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."RolePermissions"
+    ADD CONSTRAINT "FK_RolePermissions_Permissions_PermissionId" FOREIGN KEY ("PermissionId") REFERENCES public."Permissions"("Id") ON DELETE CASCADE;
+
+
+--
 -- Name: RolePermissions FK_RolePermissions_Roles_RoleId; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3033,54 +3334,6 @@ ALTER TABLE ONLY public."Streets"
 
 ALTER TABLE ONLY public."Subscriptions"
     ADD CONSTRAINT "FK_Subscriptions_Tenants_TenantId" FOREIGN KEY ("TenantId") REFERENCES public."Tenants"("Id") ON DELETE CASCADE;
-
-
---
--- Name: TeamEntity FK_TeamEntity_Users_OwnerId; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."TeamEntity"
-    ADD CONSTRAINT "FK_TeamEntity_Users_OwnerId" FOREIGN KEY ("OwnerId") REFERENCES public."Users"("Id");
-
-
---
--- Name: TeamInviteEntity FK_TeamInviteEntity_TeamEntity_TeamId; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."TeamInviteEntity"
-    ADD CONSTRAINT "FK_TeamInviteEntity_TeamEntity_TeamId" FOREIGN KEY ("TeamId") REFERENCES public."TeamEntity"("Id") ON DELETE CASCADE;
-
-
---
--- Name: TeamInviteEntity FK_TeamInviteEntity_Users_OwnerId; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."TeamInviteEntity"
-    ADD CONSTRAINT "FK_TeamInviteEntity_Users_OwnerId" FOREIGN KEY ("OwnerId") REFERENCES public."Users"("Id") ON DELETE CASCADE;
-
-
---
--- Name: TeamMemberEntity FK_TeamMemberEntity_TeamEntity_TeamId; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."TeamMemberEntity"
-    ADD CONSTRAINT "FK_TeamMemberEntity_TeamEntity_TeamId" FOREIGN KEY ("TeamId") REFERENCES public."TeamEntity"("Id") ON DELETE CASCADE;
-
-
---
--- Name: TeamMemberEntity FK_TeamMemberEntity_Users_UserId; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."TeamMemberEntity"
-    ADD CONSTRAINT "FK_TeamMemberEntity_Users_UserId" FOREIGN KEY ("UserId") REFERENCES public."Users"("Id") ON DELETE CASCADE;
-
-
---
--- Name: TeamEntity FK_Teams_Tenants_TenantId; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."TeamEntity"
-    ADD CONSTRAINT "FK_Teams_Tenants_TenantId" FOREIGN KEY ("TenantId") REFERENCES public."Tenants"("Id") ON DELETE CASCADE;
 
 
 --
@@ -3127,5 +3380,5 @@ ALTER TABLE ONLY public."Users"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 1UYIYZM3FDqYg3Uvr6Y7Tl1IGTxcmpdgvkHOZWg661sbAV8gKCga88mbpWeCFLR
+\unrestrict 8hy8TZIofa8WsYEjYt2wva2vD55vNQ0QGXQcJEpgxTC6JE5FoU1xXFQV7sA4Xd5
 
