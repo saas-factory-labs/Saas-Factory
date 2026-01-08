@@ -1,5 +1,6 @@
 @using System.Linq
 @using AppBlueprint.UiKit.Components.Shared
+@inject ThemeService ThemeService
 
 @* Campaign card - Now using modular, reusable components *@
 
@@ -26,7 +27,7 @@
                     <StatusBadge Text="@Type" Variant="@GetStatusVariant(Type)" />
                 </div>
                 <div>
-                    <a class="text-sm font-medium text-violet-500 hover:text-violet-600 dark:hover:text-violet-400" href="@Link">View -&gt;</a>
+                    <a class="@ThemeService.GetLinkClasses()" href="@Link">View -&gt;</a>
                 </div>
             </div>
         </footer>

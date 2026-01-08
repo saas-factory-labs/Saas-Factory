@@ -4,12 +4,13 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ICurrentTenantService CurrentTenantService
 @inject NavigationManager Navigation
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
 
 @if (_isLoading)
 {
     <!-- Loading state -->
     <div class="flex items-center justify-center min-h-screen">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 @ThemeService.GetPrimaryClass("border", "500")"></div>
     </div>
 }
 else if (_isAuthorized)

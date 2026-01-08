@@ -1,4 +1,5 @@
 @page "/finance/transactions"
+@inject ThemeService ThemeService
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
@@ -20,7 +21,7 @@
                     </button>
                 </div>
             </div>
-            <button class="btn bg-violet-500 hover:bg-violet-600 text-white">Export Transactions</button>
+            <button class="@ThemeService.GetPrimaryButtonClasses()">Export Transactions</button>
         </div>
     </div>
 
@@ -38,16 +39,16 @@
     <div class="mb-5">
         <ul class="flex flex-wrap -m-1">
             <li class="m-1">
-                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-transparent shadow-sm @(selectedFilter == "all" ? "bg-violet-500 text-white" : "bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700") duration-150 ease-in-out" @onclick="@(() => selectedFilter = "all")">View All</button>
+                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-transparent shadow-sm @(selectedFilter == "all" ? $"{ThemeService.GetPrimaryClass("bg", "500")} text-white" : "bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700") duration-150 ease-in-out" @onclick="@(() => selectedFilter = "all")">View All</button>
             </li>
             <li class="m-1">
-                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border @(selectedFilter == "completed" ? "bg-violet-500 text-white border-transparent" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400") shadow-sm duration-150 ease-in-out" @onclick="@(() => selectedFilter = "completed")">Completed</button>
+                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border @(selectedFilter == "completed" ? $"{ThemeService.GetPrimaryClass("bg", "500")} text-white border-transparent" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400") shadow-sm duration-150 ease-in-out" @onclick="@(() => selectedFilter = "completed")">Completed</button>
             </li>
             <li class="m-1">
-                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border @(selectedFilter == "pending" ? "bg-violet-500 text-white border-transparent" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400") shadow-sm duration-150 ease-in-out" @onclick="@(() => selectedFilter = "pending")">Pending</button>
+                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border @(selectedFilter == "pending" ? $"{ThemeService.GetPrimaryClass("bg", "500")} text-white border-transparent" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400") shadow-sm duration-150 ease-in-out" @onclick="@(() => selectedFilter = "pending")">Pending</button>
             </li>
             <li class="m-1">
-                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border @(selectedFilter == "canceled" ? "bg-violet-500 text-white border-transparent" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400") shadow-sm duration-150 ease-in-out" @onclick="@(() => selectedFilter = "canceled")">Canceled</button>
+                <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border @(selectedFilter == "canceled" ? $"{ThemeService.GetPrimaryClass("bg", "500")} text-white border-transparent" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400") shadow-sm duration-150 ease-in-out" @onclick="@(() => selectedFilter = "canceled")">Canceled</button>
             </li>
         </ul>
     </div>
@@ -129,7 +130,7 @@
                     <span class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600">&lt;- Previous</span>
                 </li>
                 <li class="ml-3 first:ml-0">
-                    <a class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-violet-500" href="#">Next -&gt;</a>
+                    <a class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 @ThemeService.GetPrimaryClass("text", "500")" href="#">Next -&gt;</a>
                 </li>
             </ul>
         </nav>

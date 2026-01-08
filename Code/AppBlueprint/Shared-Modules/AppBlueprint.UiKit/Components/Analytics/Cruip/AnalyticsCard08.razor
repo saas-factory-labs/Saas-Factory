@@ -1,3 +1,5 @@
+@inject ThemeService ThemeService
+
 <ChartCard 
     Title="Sessions By Device"
     GridColumnClass="sm:col-span-6 xl:col-span-4"
@@ -16,16 +18,23 @@
 @code {
     private List<string> labels = new() { "Desktop", "Mobile", "Tablet" };
     private List<double> data = new() { 12, 50, 38 };
-    private List<string> backgroundColors = new()
+    private List<string> backgroundColors = new();
+    private List<string> hoverBackgroundColors = new();
+
+    protected override void OnInitialized()
     {
-        "rgb(139, 92, 246)",   // violet-500
-        "rgb(14, 165, 233)",   // sky-500
-        "rgb(109, 40, 217)"    // violet-800
-    };
-    private List<string> hoverBackgroundColors = new()
-    {
-        "rgb(124, 58, 237)",   // violet-600
-        "rgb(2, 132, 199)",    // sky-600
-        "rgb(91, 33, 182)"     // violet-900
-    };
+        backgroundColors = new()
+        {
+            ThemeService.GetRgbColor("primary", "500"),
+            ThemeService.GetRgbColor("accent", "500"),
+            ThemeService.GetRgbColor("primary", "800")
+        };
+        
+        hoverBackgroundColors = new()
+        {
+            ThemeService.GetRgbColor("primary", "600"),
+            ThemeService.GetRgbColor("accent", "600"),
+            ThemeService.GetRgbColor("primary", "900")
+        };
+    }
 }

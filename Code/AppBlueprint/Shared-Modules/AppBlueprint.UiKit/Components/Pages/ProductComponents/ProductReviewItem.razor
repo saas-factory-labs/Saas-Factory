@@ -1,0 +1,24 @@
+<li>
+    <div class="flex items-center mb-2">
+        <img class="w-8 h-8 rounded-full mr-3" src="@AvatarUrl" width="32" height="32" alt="@ReviewerName" />
+        <div>
+            <div class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-1">@ReviewerName</div>
+            <!-- Rating -->
+            <div class="flex items-center space-x-2">
+                <!-- Stars -->
+                <ProductStarRating FilledStars="@Rating" />
+                <!-- Rate -->
+                <div class="inline-flex text-sm font-medium text-yellow-600">@Score</div>
+            </div>
+        </div>
+    </div>
+    <div class="text-sm italic">"@Comment"</div>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public string ReviewerName { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string AvatarUrl { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public int Rating { get; set; }
+    [Parameter, EditorRequired] public string Score { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Comment { get; set; } = string.Empty;
+}

@@ -1,4 +1,5 @@
 @* Cart Items - Now using modular, reusable components *@
+@inject ThemeService ThemeService
 
 <ul>
     @foreach (var item in CartItemsList)
@@ -16,7 +17,7 @@
 </ul>
 
 <div class="mt-6 text-center lg:text-left">
-    <a class="text-sm font-medium text-violet-500 hover:text-violet-600 dark:hover:text-violet-400" href="#0">&lt;- Back To Shopping</a>
+    <a class="@ThemeService.GetLinkClasses()" href="#0">&lt;- Back To Shopping</a>
 </div>
 
 @code {

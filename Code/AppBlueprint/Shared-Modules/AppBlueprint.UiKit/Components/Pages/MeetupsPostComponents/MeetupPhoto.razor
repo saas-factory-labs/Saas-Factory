@@ -1,0 +1,8 @@
+<a class="block" href="#0">
+    <img class="w-full rounded-xs" src="@ImageUrl" width="203" height="152" alt="@AltText" />
+</a>
+
+@code {
+    [Parameter, EditorRequired] public string ImageUrl { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string AltText { get; set; } = string.Empty;
+}

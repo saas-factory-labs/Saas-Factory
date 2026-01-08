@@ -1,3 +1,5 @@
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+
 @* Progress bar component with different sizes and colors *@
 
 <div class="w-full">
@@ -38,12 +40,12 @@
     {
         var colorClass = Variant switch
         {
-            "sky" => "bg-sky-500",
+            "accent" => ThemeService.GetAccentClass("bg", "500"),
             "green" => "bg-green-500",
             "yellow" => "bg-yellow-500",
             "red" => "bg-red-500",
             "blue" => "bg-blue-500",
-            _ => "bg-violet-500"
+            _ => ThemeService.GetPrimaryClass("bg", "500")
         };
         return $"h-full rounded-full transition-all duration-300 {colorClass}";
     }

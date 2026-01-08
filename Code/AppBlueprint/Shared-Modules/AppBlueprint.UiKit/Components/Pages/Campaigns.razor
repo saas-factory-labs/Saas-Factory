@@ -1,4 +1,5 @@
 @page "/campaigns"
+@inject ThemeService ThemeService
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
@@ -31,7 +32,7 @@
                 </svg>
             </button>
             <!-- Create campaign button -->
-            <button class="btn bg-violet-500 hover:bg-violet-600 text-white">
+            <button class="@ThemeService.GetPrimaryButtonClasses()">
                 <svg class="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
                     <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
                 </svg>
@@ -69,14 +70,14 @@
                     </span>
                 </div>
                 <ul class="inline-flex text-sm font-medium -space-x-px shadow-sm">
-                    <li><span class="inline-flex items-center justify-center rounded-l leading-5 px-3.5 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-violet-500">1</span></li>
-                    <li><a class="inline-flex items-center justify-center leading-5 px-3.5 py-2 bg-white dark:bg-gray-800 hover:bg-violet-500 dark:hover:bg-violet-500 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-white" href="#0">2</a></li>
-                    <li><a class="inline-flex items-center justify-center leading-5 px-3.5 py-2 bg-white dark:bg-gray-800 hover:bg-violet-500 dark:hover:bg-violet-500 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-white" href="#0">3</a></li>
+                    <li><span class="inline-flex items-center justify-center rounded-l leading-5 px-3.5 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 @ThemeService.GetPrimaryClass("text", "500")">1</span></li>
+                    <li><a class="inline-flex items-center justify-center leading-5 px-3.5 py-2 bg-white dark:bg-gray-800 @ThemeService.GetPrimaryHoverClass("bg", "500") dark:@ThemeService.GetPrimaryHoverClass("bg", "500") border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-white" href="#0">2</a></li>
+                    <li><a class="inline-flex items-center justify-center leading-5 px-3.5 py-2 bg-white dark:bg-gray-800 @ThemeService.GetPrimaryHoverClass("bg", "500") dark:@ThemeService.GetPrimaryHoverClass("bg", "500") border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-white" href="#0">3</a></li>
                     <li><span class="inline-flex items-center justify-center leading-5 px-3.5 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500">...</span></li>
-                    <li><a class="inline-flex items-center justify-center rounded-r leading-5 px-3.5 py-2 bg-white dark:bg-gray-800 hover:bg-violet-500 dark:hover:bg-violet-500 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-white" href="#0">9</a></li>
+                    <li><a class="inline-flex items-center justify-center rounded-r leading-5 px-3.5 py-2 bg-white dark:bg-gray-800 @ThemeService.GetPrimaryHoverClass("bg", "500") dark:@ThemeService.GetPrimaryHoverClass("bg", "500") border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-white" href="#0">9</a></li>
                 </ul>
                 <div class="ml-2">
-                    <a href="#0" class="inline-flex items-center justify-center rounded leading-5 px-2.5 py-2 bg-white dark:bg-gray-800 hover:bg-violet-500 dark:hover:bg-violet-500 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-white shadow-sm">
+                    <a href="#0" class="inline-flex items-center justify-center rounded leading-5 px-2.5 py-2 bg-white dark:bg-gray-800 @ThemeService.GetPrimaryHoverClass("bg", "500") dark:@ThemeService.GetPrimaryHoverClass("bg", "500") border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-white shadow-sm">
                         <span class="sr-only">Next</span>
                         <svg class="h-4 w-4 fill-current" viewBox="0 0 16 16">
                             <path d="M6.6 13.4L5.2 12l4-4-4-4 1.4-1.4L12 8z" />

@@ -1,4 +1,5 @@
 @page "/inbox"
+@inject ThemeService ThemeService
 
 <div class="relative flex h-full">
 
@@ -51,7 +52,7 @@
                     <div class="absolute bottom-0 w-full h-px bg-gray-200 dark:bg-gray-700" aria-hidden="true"></div>
                     <ul class="relative text-sm font-medium flex flex-nowrap -mx-4 sm:-mx-6 lg:-mx-8 overflow-x-scroll no-scrollbar">
                         <li class="mr-6 last:mr-0 first:pl-4 sm:first:pl-6 lg:first:pl-8 last:pr-4 sm:last:pr-6 lg:last:pr-8">
-                            <a class="block pb-3 text-violet-500 whitespace-nowrap border-b-2 border-violet-500" href="#0">Primary</a>
+                            <a class="block pb-3 @ThemeService.GetPrimaryClass("text", "500") whitespace-nowrap border-b-2 @ThemeService.GetPrimaryClass("border", "500")" href="#0">Primary</a>
                         </li>
                         <li class="mr-6 last:mr-0 first:pl-4 sm:first:pl-6 lg:first:pl-8 last:pr-4 sm:last:pr-6 lg:last:pr-8">
                             <a class="block pb-3 text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 whitespace-nowrap" href="#0">Social</a>
@@ -69,7 +70,7 @@
                         @foreach (var email in emails)
                         {
                             <li class="-mx-2">
-                                <button class="flex w-full p-2 rounded @(email.Selected ? "bg-violet-100 dark:bg-violet-500/30" : "") text-left" @onclick="() => SelectEmail(email)">
+                                <button class="flex w-full p-2 rounded @(email.Selected ? $"{ThemeService.GetPrimaryClass("bg", "100")} dark:{ThemeService.GetPrimaryClass("bg", "500")}/30" : "") text-left" @onclick="() => SelectEmail(email)">
                                     <img class="w-8 h-8 rounded-full mr-2" src="@email.Avatar" width="32" height="32" alt="@email.Sender"/>
                                     <div class="grow truncate">
                                         <div class="flex items-center justify-between mb-1.5">
@@ -122,7 +123,7 @@
                         </svg>
                     </button>
                     <button class="p-1.5 shrink-0 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm ml-2">
-                        <svg class="w-4 h-4 fill-current text-violet-500" viewBox="0 0 16 16">
+                        <svg class="w-4 h-4 fill-current @ThemeService.GetPrimaryClass("text", "500")" viewBox="0 0 16 16">
                             <path d="M14.3 2.3L5 11.6 1.7 8.3c-.4-.4-1-.4-1.4 0-.4.4-.4 1 0 1.4l4 4c.2.2.4.3.7.3.3 0 .5-.1.7-.3l10-10c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0z"/>
                         </svg>
                     </button>
@@ -152,7 +153,7 @@
             <!-- Mail subject -->
             <header class="sm:flex sm:items-start sm:justify-between mb-4">
                 <h1 class="text-xl leading-snug text-gray-800 dark:text-gray-100 font-bold mb-1 sm:mb-0 ml-2">@selectedEmail?.Subject</h1>
-                <button class="text-xs inline-flex font-medium bg-sky-100 dark:bg-sky-500/30 text-sky-600 dark:text-sky-400 rounded-full text-center px-2.5 py-1 whitespace-nowrap">Exciting news</button>
+                <button class="text-xs inline-flex font-medium @ThemeService.GetAccentClass("bg", "100") dark:@ThemeService.GetAccentClass("bg", "500")/30 @ThemeService.GetAccentClass("text", "600") dark:@ThemeService.GetAccentClass("text", "400") rounded-full text-center px-2.5 py-1 whitespace-nowrap">Exciting news</button>
             </header>
 
             <!-- Messages box -->
@@ -198,7 +199,7 @@
                         <label for="message-input" class="sr-only">Type a message</label>
                         <input id="message-input" class="form-input w-full bg-gray-100 dark:bg-gray-800 border-transparent dark:border-transparent focus:bg-white dark:focus:bg-gray-800 placeholder-gray-500" type="text" placeholder="Aa"/>
                     </div>
-                    <button type="submit" class="btn bg-violet-500 hover:bg-violet-600 text-white whitespace-nowrap">Send -&gt;</button>
+                    <button type="submit" class="@ThemeService.GetPrimaryButtonClasses() whitespace-nowrap">Send -&gt;</button>
                 </form>
             </div>
         </div>

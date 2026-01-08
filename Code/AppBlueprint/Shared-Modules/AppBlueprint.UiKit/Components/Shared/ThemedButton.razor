@@ -1,0 +1,36 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+
+<button type="@ButtonType" 
+        disabled="@Disabled"
+        class="@GetButtonClasses()"
+        @onclick="OnClick">
+    @ChildContent
+</button>
+
+@code {
+    [Parameter] public string ButtonType { get; set; } = "button";
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? AdditionalClasses { get; set; }
+    
+    /// <summary>
+    /// Button variant: "primary", "outline", "ghost"
+    /// </summary>
+    [Parameter] public string Variant { get; set; } = "primary";
+
+    private string GetButtonClasses()
+    {
+        string baseClasses = Variant switch
+        {
+            "outline" => ThemeService.GetOutlineButtonClasses(),
+            "ghost" => $"font-semibold {ThemeService.GetPrimaryClass("text", "600")} {ThemeService.GetPrimaryHoverClass("text", "700")} {ThemeService.GetPrimaryDarkClass("text", "400")} transition-colors duration-200",
+            _ => ThemeService.GetPrimaryButtonClasses() // primary
+        };
+
+        return string.IsNullOrWhiteSpace(AdditionalClasses) 
+            ? baseClasses 
+            : $"{baseClasses} {AdditionalClasses}";
+    }
+}

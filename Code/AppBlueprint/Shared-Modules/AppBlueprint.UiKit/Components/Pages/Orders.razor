@@ -1,4 +1,5 @@
 @page "/ecommerce/orders"
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
@@ -83,7 +84,7 @@
                                     <div class="w-10 h-10 shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-full mr-2 sm:mr-3">
                                         <img class="ml-1" src="@order.Image" width="20" height="20" alt="@order.OrderNumber"/>
                                     </div>
-                                    <div class="font-medium text-sky-600">@order.OrderNumber</div>
+                                    <div class="@("font-medium " + ThemeService.GetPrimaryClass("text", "600"))">@order.OrderNumber</div>
                                 </div>
                             </td>
                             <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
@@ -161,7 +162,7 @@
                     <span class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600">&lt;- Previous</span>
                 </li>
                 <li class="ml-3 first:ml-0">
-                    <a class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-violet-500" href="#">Next -&gt;</a>
+                    <a class="@("btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 " + ThemeService.GetPrimaryClass("text", "500"))" href="#">Next -&gt;</a>
                 </li>
             </ul>
         </nav>
@@ -197,7 +198,7 @@
     {
         return status switch
         {
-            "Approved" => "bg-green-500/20 text-green-700",
+            "Approved" => $"{ThemeService.GetAccentClass("bg", "500")}/20 {ThemeService.GetAccentClass("text", "700")}",
             "Refunded" => "bg-yellow-500/20 text-yellow-700",
             _ => "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
         };

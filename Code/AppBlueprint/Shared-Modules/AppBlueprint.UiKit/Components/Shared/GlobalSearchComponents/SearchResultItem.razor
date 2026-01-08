@@ -1,4 +1,5 @@
 @* Individual search result item with icon, title, description, and optional badge *@
+@inject ThemeService ThemeService
 
 <button type="button"
         class="@GetResultClasses()"
@@ -37,17 +38,25 @@
     private string GetResultClasses()
     {
         string baseClasses = "flex items-center w-full px-4 py-3 transition-colors";
+        string primaryColor = ThemeService.GetPrimaryClass("bg", "50");
+        string primaryDarkColor = ThemeService.GetPrimaryClass("bg", "500");
+        
         return IsSelected
-            ? $"{baseClasses} bg-violet-50 dark:bg-violet-500/10"
+            ? $"{baseClasses} {primaryColor} dark:{primaryDarkColor}/10"
             : $"{baseClasses} hover:bg-gray-50 dark:hover:bg-gray-700/30";
     }
 
     private string GetIconClasses()
     {
         string baseClasses = "shrink-0 mr-3 flex items-center justify-center w-10 h-10 rounded-lg";
+        string primaryBg = ThemeService.GetPrimaryClass("bg", "100");
+        string primaryText = ThemeService.GetPrimaryClass("text", "600");
+        string primaryDarkBg = ThemeService.GetPrimaryClass("bg", "500");
+        string primaryDarkText = ThemeService.GetPrimaryClass("text", "400");
+        
         return Category switch
         {
-            "Pages" => $"{baseClasses} bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400",
+            "Pages" => $"{baseClasses} {primaryBg} dark:{primaryDarkBg}/20 {primaryText} dark:{primaryDarkText}",
             "Settings" => $"{baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
             "Actions" => $"{baseClasses} bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400",
             _ => $"{baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"

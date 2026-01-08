@@ -1,3 +1,5 @@
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+
 <div class="col-span-full sm:col-span-6 xl:col-span-3 bg-white dark:bg-gray-800 shadow-xs rounded-xl overflow-hidden">
     <div class="flex flex-col h-full">
         <!-- Image -->
@@ -16,7 +18,7 @@
                     <StarRating FilledStars="@FilledStars" Rating="@Rating" />
                     <!-- Price -->
                     <div>
-                        <div class="inline-flex text-sm font-medium bg-green-500/20 text-green-700 rounded-full text-center px-2 py-0.5">@Price</div>
+                        <div class="inline-flex text-sm font-medium @ThemeService.GetAccentClass("bg", "500")/20 @ThemeService.GetAccentClass("text", "700") rounded-full text-center px-2 py-0.5">@Price</div>
                     </div>
                 </div>
                 <!-- Features list -->

@@ -1,4 +1,5 @@
 @inject NavigationManager Navigation
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
 
 @*
     SidebarGroupChildItem - A child menu item within a SidebarMenuGroup
@@ -18,7 +19,7 @@
 *@
 
 <li class="mb-1 last:mb-0">
-    <a class="block transition truncate @(IsActive ? "text-violet-500" : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")" 
+    <a class="block transition truncate @(IsActive ? ThemeService.GetPrimaryClass("text", "500") : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")" 
        href="@Href"
        @onclick="@OnClick">
         <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">@Label</span>

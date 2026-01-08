@@ -1,0 +1,30 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+
+<span class="@GetBadgeClasses()">
+    @ChildContent
+</span>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? AdditionalClasses { get; set; }
+    
+    /// <summary>
+    /// Badge variant: "default", "light" (lighter background), "solid" (darker)
+    /// </summary>
+    [Parameter] public string Variant { get; set; } = "default";
+
+    private string GetBadgeClasses()
+    {
+        string baseClasses = Variant switch
+        {
+            "light" => ThemeService.GetBadgeClasses("50", "700"),
+            "solid" => ThemeService.GetBadgeClasses("500", "50"),
+            _ => ThemeService.GetBadgeClasses() // default: 100/800
+        };
+
+        return string.IsNullOrWhiteSpace(AdditionalClasses) 
+            ? baseClasses 
+            : $"{baseClasses} {AdditionalClasses}";
+    }
+}

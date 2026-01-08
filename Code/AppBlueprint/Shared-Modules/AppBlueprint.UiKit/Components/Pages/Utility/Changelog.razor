@@ -1,4 +1,5 @@
 @page "/utility/changelog"
+@inject ThemeService ThemeService
 
 <!-- Page header -->
 <div class="sm:flex sm:justify-between sm:items-center px-4 sm:px-6 py-8 border-b border-gray-200 dark:border-gray-700/60">
@@ -163,7 +164,7 @@
                                 </div>
                                 <div class="text-gray-400 dark:text-gray-600">·</div>
                                 <div>
-                                    <div class="text-xs inline-flex font-medium bg-sky-500/20 text-sky-700 rounded-full text-center px-2.5 py-1">Exciting News</div>
+                                    <div class="@ThemeService.GetBadgeClasses() bg-opacity-20">Exciting News</div>
                                 </div>
                             </div>
                         </header>

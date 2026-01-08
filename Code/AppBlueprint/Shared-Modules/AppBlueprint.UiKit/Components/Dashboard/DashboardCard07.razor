@@ -1,3 +1,5 @@
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+
 <div class="col-span-full xl:col-span-8 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
     <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
         <h2 class="font-semibold text-gray-800 dark:text-gray-100">Top Channels</h2>
@@ -44,13 +46,13 @@
                             <div class="text-center">2.4K</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-green-500">$3,877</div>
+                            <div class="text-center @ThemeService.GetAccentClass("text", "500")">$3,877</div>
                         </td>
                         <td class="p-2">
                             <div class="text-center">267</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-sky-500">4.7%</div>
+                            <div class="text-center @ThemeService.GetPrimaryClass("text", "500")">4.7%</div>
                         </td>
                     </tr>
                     <!-- Row: Facebook -->
@@ -68,13 +70,13 @@
                             <div class="text-center">2.2K</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-green-500">$3,426</div>
+                            <div class="text-center @ThemeService.GetAccentClass("text", "500")">$3,426</div>
                         </td>
                         <td class="p-2">
                             <div class="text-center">249</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-sky-500">4.4%</div>
+                            <div class="text-center @ThemeService.GetPrimaryClass("text", "500")">4.4%</div>
                         </td>
                     </tr>
                     <!-- Row: Google -->
@@ -92,13 +94,13 @@
                             <div class="text-center">2.0K</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-green-500">$2,444</div>
+                            <div class="text-center @ThemeService.GetAccentClass("text", "500")">$2,444</div>
                         </td>
                         <td class="p-2">
                             <div class="text-center">224</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-sky-500">4.2%</div>
+                            <div class="text-center @ThemeService.GetPrimaryClass("text", "500")">4.2%</div>
                         </td>
                     </tr>
                     <!-- Row: Vimeo -->
@@ -116,13 +118,13 @@
                             <div class="text-center">1.9K</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-green-500">$2,236</div>
+                            <div class="text-center @ThemeService.GetAccentClass("text", "500")">$2,236</div>
                         </td>
                         <td class="p-2">
                             <div class="text-center">220</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-sky-500">4.2%</div>
+                            <div class="text-center @ThemeService.GetPrimaryClass("text", "500")">4.2%</div>
                         </td>
                     </tr>
                     <!-- Row: Indiehackers -->
@@ -140,13 +142,13 @@
                             <div class="text-center">1.7K</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-green-500">$2,034</div>
+                            <div class="text-center @ThemeService.GetAccentClass("text", "500")">$2,034</div>
                         </td>
                         <td class="p-2">
                             <div class="text-center">204</div>
                         </td>
                         <td class="p-2">
-                            <div class="text-center text-sky-500">3.9%</div>
+                            <div class="text-center @ThemeService.GetPrimaryClass("text", "500")">3.9%</div>
                         </td>
                     </tr>
                 </tbody>

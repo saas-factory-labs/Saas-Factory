@@ -1,0 +1,65 @@
+@namespace AppBlueprint.UiKit.Components.Analytics.Cruip.AnalyticsCard11Components
+
+<tr>
+    <td class="p-2 whitespace-nowrap">
+        <div class="flex items-center">
+            <ProductIcon ColorClass="@IconColorClass" IconTextColor="@IconTextColor" SvgPath="@IconSvgPath" />
+            <div class="font-medium text-gray-800 dark:text-gray-100">@ProductName</div>
+        </div>
+    </td>
+    <td class="p-2 whitespace-nowrap">
+        <CreatorAvatars AvatarUrls="@CreatorAvatarUrls" />
+    </td>
+    <td class="p-2 whitespace-nowrap">
+        <div class="flex items-center">
+            <svg class="w-4 h-4 fill-current text-gray-400 dark:text-gray-500 shrink-0 mr-2" viewBox="0 0 16 16">
+                <path d="M4.3 4.5c1.9-1.9 5.1-1.9 7 0 .7.7 1.2 1.7 1.4 2.7l2-.3c-.2-1.5-.9-2.8-1.9-3.8C10.1.4 5.7.4 2.9 3.1L.7.9 0 7.3l6.4-.7-2.1-2.1zM15.6 8.7l-6.4.7 2.1 2.1c-1.9 1.9-5.1 1.9-7 0-.7-.7-1.2-1.7-1.4-2.7l-2 .3c.2 1.5.9 2.8 1.9 3.8 1.4 1.4 3.1 2 4.9 2 1.8 0 3.6-.7 4.9-2l2.2 2.2.8-6.4z" />
+            </svg>
+            <div>@Category</div>
+        </div>
+    </td>
+    <td class="p-2 whitespace-nowrap">
+        <div class="text-center">@Impressions</div>
+    </td>
+    <td class="p-2 whitespace-nowrap">
+        <div class="text-lg text-center">@TopCountry</div>
+    </td>
+    <td class="p-2 whitespace-nowrap">
+        <div class="text-center">@ConversionRate</div>
+    </td>
+    <td class="p-2 whitespace-nowrap">
+        <div class="text-left font-medium text-green-500">@Value</div>
+    </td>
+</tr>
+
+@code {
+    [Parameter, EditorRequired]
+    public required string ProductName { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string IconColorClass { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string IconTextColor { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string IconSvgPath { get; set; }
+
+    [Parameter, EditorRequired]
+    public required List<string> CreatorAvatarUrls { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string Category { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string Impressions { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string TopCountry { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string ConversionRate { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string Value { get; set; }
+}

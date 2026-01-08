@@ -14,12 +14,13 @@
     - Smooth transitions for hover states
     - Dark mode support
 *@
+@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
 
-<li class="@(IsActive ? "bg-gradient-to-r from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] rounded-lg" : "") px-3 py-2 rounded-lg mb-0.5 last:mb-0">
+<li class="@(IsActive ? ThemeService.GetPrimaryGradientWithDark() + " rounded-lg" : "") px-3 py-2 rounded-lg mb-0.5 last:mb-0">
     <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsActive ? "" : "hover:text-gray-900 dark:hover:text-white")"
        href="@Href">
         <div class="flex items-center">
-            <svg class="shrink-0 fill-current @(IsActive ? "text-violet-500" : "text-gray-400 dark:text-gray-500")"
+            <svg class="shrink-0 fill-current @(IsActive ? ThemeService.GetPrimaryClass("text", "500") : "text-gray-400 dark:text-gray-500")"
                  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                 @IconPath
             </svg>
