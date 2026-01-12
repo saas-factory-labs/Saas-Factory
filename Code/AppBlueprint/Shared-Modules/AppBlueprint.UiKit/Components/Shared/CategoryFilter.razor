@@ -4,11 +4,18 @@
 
 <FilterGroup Title="@Title" Class="@Class">
     <ul class="text-sm font-medium space-y-2">
-        @foreach (var category in Categories)
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+        @foreach (var category in GetDisplayCategories())
         {
             <li>
                 <a class="@GetLinkClass(category)" href="@category.Url" @onclick="() => OnCategoryClick(category)" @onclick:preventDefault="@(!AllowNavigation)">
                     @category.Label
+                    @if (!string.IsNullOrEmpty(category.Count))
+                    {
+                        <span class="ml-auto text-gray-400 dark:text-gray-500 font-normal">@category.Count</span>
+                    }
                 </a>
             </li>
         }
@@ -27,6 +34,12 @@
     /// </summary>
     [Parameter, EditorRequired]
     public List<CategoryItem> Categories { get; set; } = new();
+
+    /// <summary>
+    /// Declarative categories
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     /// <summary>
     /// Currently selected category value
@@ -52,12 +65,30 @@
     [Parameter]
     public string? Class { get; set; }
 
+    private List<CategoryItem> registeredCategories = new();
+
+    protected override void OnInitialized()
+    {
+        registeredCategories.AddRange(Categories);
+    }
+
+    public void AddCategory(CategoryItem category)
+    {
+        if (!registeredCategories.Any(c => c.Value == category.Value && c.Label == category.Label))
+        {
+            registeredCategories.Add(category);
+            StateHasChanged();
+        }
+    }
+
+    private List<CategoryItem> GetDisplayCategories() => registeredCategories;
+
     private string GetLinkClass(CategoryItem category)
     {
-        bool isSelected = category.Value == SelectedValue;
+        bool isSelected = category.Value == SelectedValue || (SelectedValue == null && category.IsActive);
         return isSelected
-            ? "text-violet-500"
-            : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200";
+            ? "flex items-center text-violet-500"
+            : "flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200";
     }
 
     private async Task OnCategoryClick(CategoryItem category)
@@ -74,5 +105,7 @@
         public string Label { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
         public string Url { get; set; } = "#0";
+        public string? Count { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -1,11 +1,10 @@
-@* Bottom Navigation component for mobile *@
-@using Microsoft.AspNetCore.Components.Routing
-@inject NavigationManager Navigation
-@implements IDisposable
-
 <nav class="@GetContainerClasses()">
     <div class="flex items-center justify-around h-full max-w-lg mx-auto">
-        @foreach (var item in Items)
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+
+        @foreach (var item in GetDisplayItems())
         {
             var isActive = IsItemActive(item);
             <a href="@item.Href"
@@ -17,6 +16,14 @@
                     {
                         @item.Icon
                     }
+                    else if (item.IconContent != null)
+                    {
+                        @item.IconContent
+                    }
+                    else if (!string.IsNullOrEmpty(item.IconName))
+                    {
+                        <i class="fas fa-@item.IconName w-6 h-6 flex items-center justify-center"></i>
+                    }
                     else
                     {
                         @GetDefaultIcon(item.Id)
@@ -26,10 +33,10 @@
                 {
                     <span class="@GetLabelClasses(isActive)">@item.Label</span>
                 }
-                @if (item.Badge > 0)
+                @if (item.Badge > 0 || !string.IsNullOrEmpty(item.BadgeText))
                 {
                     <span class="@GetBadgeClasses()">
-                        @(item.Badge > 99 ? "99+" : item.Badge.ToString())
+                        @(!string.IsNullOrEmpty(item.BadgeText) ? item.BadgeText : (item.Badge > 99 ? "99+" : item.Badge.ToString()))
                     </span>
                 }
             </a>
@@ -37,31 +44,48 @@
     </div>
 </nav>
 
+@using Microsoft.AspNetCore.Components.Routing
+@inject NavigationManager Navigation
+@implements IDisposable
+
 @code {
     [Parameter] public List<BottomNavItem> Items { get; set; } = new();
+    [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool ShowLabels { get; set; } = true;
     [Parameter] public string Variant { get; set; } = "default"; // default, floating, minimal
     [Parameter] public bool HideOnDesktop { get; set; } = true;
 
     private string currentUrl = "";
+    private List<BottomNavItem> registeredItems = new();
 
     protected override void OnInitialized()
     {
         currentUrl = Navigation.Uri;
         Navigation.LocationChanged += OnLocationChanged;
+    }
 
-        // Set default items if none provided
-        if (!Items.Any())
+    public void AddItem(BottomNavItem item)
+    {
+        if (!registeredItems.Any(i => i.Id == item.Id && i.Label == item.Label && i.Href == item.Href))
         {
-            Items = new List<BottomNavItem>
-            {
-                new() { Id = "home", Label = "Home", Href = "/" },
-                new() { Id = "search", Label = "Search", Href = "/search" },
-                new() { Id = "notifications", Label = "Alerts", Href = "/notifications", Badge = 3 },
-                new() { Id = "messages", Label = "Messages", Href = "/messages" },
-                new() { Id = "profile", Label = "Profile", Href = "/profile" }
-            };
+            registeredItems.Add(item);
+            StateHasChanged();
         }
+    }
+
+    private List<BottomNavItem> GetDisplayItems()
+    {
+        if (registeredItems.Any()) return registeredItems;
+        if (Items.Any()) return Items;
+
+        return new List<BottomNavItem>
+        {
+            new() { Id = "home", Label = "Home", Href = "/" },
+            new() { Id = "search", Label = "Search", Href = "/search" },
+            new() { Id = "notifications", Label = "Alerts", Href = "/notifications", Badge = 3 },
+            new() { Id = "messages", Label = "Messages", Href = "/messages" },
+            new() { Id = "profile", Label = "Profile", Href = "/profile" }
+        };
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
@@ -72,6 +96,7 @@
 
     private bool IsItemActive(BottomNavItem item)
     {
+        if (item.IsActive) return true;
         if (string.IsNullOrEmpty(item.Href)) return false;
 
         var uri = new Uri(currentUrl);
@@ -140,7 +165,7 @@
 
     private string GetBadgeClasses()
     {
-        return "absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-500 rounded-full";
+        return "absolute top-2 right-1/2 translate-x-4 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-gray-800";
     }
 
     private RenderFragment GetDefaultIcon(string id) => id switch
@@ -160,11 +185,15 @@
 
     public class BottomNavItem
     {
-        public string Id { get; set; } = "";
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Label { get; set; } = "";
         public string Href { get; set; } = "#";
+        public string? IconName { get; set; }
         public RenderFragment? Icon { get; set; }
+        public RenderFragment? IconContent { get; set; }
+        public bool IsActive { get; set; }
         public int Badge { get; set; } = 0;
+        public string? BadgeText { get; set; }
         public EventCallback OnClick { get; set; }
     }
 }

@@ -1,6 +1,10 @@
 @if (Open)
 {
-    <div class="px-4 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 border @GetBorderColor() shadow-lg">
+    <div class="px-4 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 border @GetBorderColor() shadow-lg relative">
+        @if (!IsRead)
+        {
+            <div class="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full"></div>
+        }
         <div class="flex items-start">
             <div class="flex items-start">
                 @if (Type == "warning")
@@ -28,7 +32,19 @@
                     </svg>
                 }
                 <div class="grow">
+                    @if (!string.IsNullOrEmpty(Title))
+                    {
+                        <div class="font-medium text-gray-800 dark:text-gray-100 mb-0.5">@Title</div>
+                    }
+                    @if (!string.IsNullOrEmpty(Message))
+                    {
+                        <div class="text-gray-600 dark:text-gray-400">@Message</div>
+                    }
                     @ChildContent
+                    @if (!string.IsNullOrEmpty(Time))
+                    {
+                        <div class="text-xs text-gray-400 dark:text-gray-500 mt-1">@Time</div>
+                    }
                 </div>
             </div>
             <button class="text-gray-400 hover:text-gray-500 ml-3" @onclick="Close">
@@ -42,6 +58,10 @@
 }
 
 @code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Message { get; set; }
+    [Parameter] public string? Time { get; set; }
+    [Parameter] public bool IsRead { get; set; } = true;
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public string Type { get; set; } = "info";
     [Parameter] public bool Open { get; set; } = true;

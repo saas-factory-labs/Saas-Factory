@@ -2,7 +2,11 @@
 
 <div>
     <div class="@GetTabListClasses()" role="tablist" aria-orientation="horizontal">
-        @foreach (var tab in TabItems)
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+
+        @foreach (var tab in GetDisplayTabs())
         {
             <button
                 type="button"
@@ -26,12 +30,32 @@
     [Parameter] public EventCallback<string> ActiveTabChanged { get; set; }
     [Parameter] public string Variant { get; set; } = "underline"; // underline, pills
 
-    protected override void OnParametersSet()
+    private List<TabItem> registeredTabs = new();
+
+    protected override void OnInitialized()
     {
-        if (string.IsNullOrEmpty(ActiveTab) && TabItems.Any())
+        if (string.IsNullOrEmpty(ActiveTab) && !registeredTabs.Any() && TabItems.Any())
         {
             ActiveTab = TabItems.First().Id;
         }
+    }
+
+    public void AddTab(TabItem tab)
+    {
+        if (!registeredTabs.Any(t => t.Id == tab.Id && t.Label == tab.Label))
+        {
+            registeredTabs.Add(tab);
+            if (string.IsNullOrEmpty(ActiveTab) || tab.IsActive)
+            {
+                ActiveTab = tab.Id;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private List<TabItem> GetDisplayTabs()
+    {
+        return registeredTabs.Any() ? registeredTabs : TabItems;
     }
 
     private async Task SetActiveTab(string tabId)
@@ -66,5 +90,7 @@
     {
         public string Id { get; set; } = "";
         public string Label { get; set; } = "";
+        public string? Icon { get; set; }
+        public bool IsActive { get; set; }
     }
 }

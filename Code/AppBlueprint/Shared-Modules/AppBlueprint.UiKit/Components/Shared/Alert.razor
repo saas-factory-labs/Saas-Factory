@@ -31,6 +31,14 @@
                         </svg>
                     }
                     <div class="font-medium">
+                        @if (!string.IsNullOrEmpty(Title))
+                        {
+                            <div class="font-bold mb-1">@Title</div>
+                        }
+                        @if (!string.IsNullOrEmpty(Message))
+                        {
+                            <div>@Message</div>
+                        }
                         @ChildContent
                     </div>
                 </div>
@@ -50,10 +58,13 @@
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Message { get; set; }
     [Parameter] public string Type { get; set; } = "info"; // info, warning, success, error
     [Parameter] public bool IsOpen { get; set; } = true;
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
     [Parameter] public bool Dismissible { get; set; } = true;
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private string GetClasses()
     {

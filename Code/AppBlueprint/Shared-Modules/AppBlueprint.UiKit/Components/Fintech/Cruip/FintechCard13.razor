@@ -4,13 +4,17 @@
 
 <StockPriceCard Name="Facebook"
                 Subtitle="Meta Inc."
-                Price="333.79m"
-                ChangeAmount="19.70m"
-                ChangePercentage="4"
+                Price="@_price"
+                ChangeAmount="@_changeAmount"
+                ChangePercentage="@_changePercentage"
                 ChartData="@_chartData"
                 ChartLabels="@_labels" />
 
 @code {
+    private double _price = 333.79;
+    private double _changeAmount = 19.70;
+    private double _changePercentage = 4;
+    
     private readonly List<string> _labels =
     [
         "12-01-2022", "01-01-2023", "02-01-2023",

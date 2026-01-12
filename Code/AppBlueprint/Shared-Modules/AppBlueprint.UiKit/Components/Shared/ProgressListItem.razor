@@ -2,38 +2,74 @@
 
 @* Progress list item with background bar - reusable for rankings, top items, statistics *@
 
-<li class="relative px-2 py-1">
-    <div class="absolute inset-0 @GetBackgroundClass()" aria-hidden="true" style="width: @ProgressPercentage%;"></div>
-    <div class="relative flex justify-between space-x-2">
-        <div>@Label</div>
-        <div class="font-medium">@Value</div>
-    </div>
-</li>
+@if (Parent == null)
+{
+    <li class="relative px-2 py-1">
+        <div class="absolute inset-0 @GetBackgroundClass()" aria-hidden="true" style="width: @ProgressPercentage%;"></div>
+        <div class="relative flex justify-between space-x-2">
+            <div>@Label</div>
+            <div class="font-medium">@Value</div>
+        </div>
+    </li>
+}
 
 @code {
+    [CascadingParameter] public ProgressListCard? Parent { get; set; }
+
     /// <summary>
     /// Label text (e.g., "Google", "Product A")
     /// </summary>
-    [Parameter, EditorRequired]
+    [Parameter]
     public string Label { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Alias for Label
+    /// </summary>
+    [Parameter]
+    public string? Title { get; set; }
 
     /// <summary>
     /// Value text (e.g., "4.7K", "$12,499")
     /// </summary>
-    [Parameter, EditorRequired]
+    [Parameter]
     public string Value { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Alias for Value
+    /// </summary>
+    [Parameter]
+    public string? Status { get; set; }
 
     /// <summary>
     /// Progress percentage (0-100)
     /// </summary>
-    [Parameter, EditorRequired]
+    [Parameter]
     public decimal ProgressPercentage { get; set; }
+
+    /// <summary>
+    /// Alias for ProgressPercentage
+    /// </summary>
+    [Parameter]
+    public decimal? Progress { get; set; }
 
     /// <summary>
     /// Color variant: violet, green, sky, rose, amber, blue
     /// </summary>
     [Parameter]
     public string Color { get; set; } = "violet";
+
+    protected override void OnInitialized()
+    {
+        // Handle aliases
+        if (!string.IsNullOrEmpty(Title)) Label = Title;
+        if (!string.IsNullOrEmpty(Status)) Value = Status;
+        if (Progress.HasValue) ProgressPercentage = Progress.Value;
+
+        if (Parent != null)
+        {
+            Parent.AddItem(new ProgressListCard.ProgressItem(Label, Value, ProgressPercentage));
+        }
+    }
 
     private string GetBackgroundClass()
     {

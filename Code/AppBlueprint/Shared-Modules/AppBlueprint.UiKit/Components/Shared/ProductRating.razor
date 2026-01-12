@@ -20,6 +20,10 @@
     {
         <!-- Numeric rating score -->
         <div class="inline-flex text-sm font-medium @ScoreColorClass">@Rating.ToString("F1")</div>
+        @if (RatingCount.HasValue)
+        {
+            <div class="text-xs text-gray-400 dark:text-gray-500 ml-1">(@RatingCount)</div>
+        }
     }
 </div>
 
@@ -28,7 +32,13 @@
     /// The rating value (0-5)
     /// </summary>
     [Parameter]
-    public decimal Rating { get; set; } = 0;
+    public double Rating { get; set; } = 0;
+
+    /// <summary>
+    /// Optional number of ratings to display
+    /// </summary>
+    [Parameter]
+    public int? RatingCount { get; set; }
 
     /// <summary>
     /// Maximum number of stars to display
@@ -76,7 +86,7 @@
     /// Event callback when a star is clicked (only if Interactive is true)
     /// </summary>
     [Parameter]
-    public EventCallback<decimal> RatingChanged { get; set; }
+    public EventCallback<double> RatingChanged { get; set; }
 
     private string GetStarColorClass(int starIndex)
     {

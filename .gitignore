@@ -421,3 +421,6 @@ FodyWeavers.xsd
 *.sln.iml
 Code/AppBlueprint/AppBlueprint.ApiService/appsettings.Development.json
 
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github/instructions/snyk_rules.instructions.md

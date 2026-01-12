@@ -132,6 +132,11 @@ const sidebarManager = {
         const expanded = body.classList.contains('sidebar-expanded');
         console.log('sidebarManager.isExpanded:', expanded);
         return expanded;
+    },
+    isAvailable() {
+        return typeof window.sidebarManager !== 'undefined' &&
+            typeof window.sidebarManager.expand === 'function' &&
+            typeof window.sidebarManager.collapse === 'function';
     }
 };
 console.log('sidebarManager initialized:', typeof sidebarManager);
@@ -261,8 +266,12 @@ const datepickerManager = {
             return;
         }
         // Destroy existing instance if any
-        if (this.instances[input.id] !== null) {
-            this.instances[input.id].destroy();
+        if (this.instances[input.id] !== undefined && this.instances[input.id] !== null) {
+            try {
+                this.instances[input.id].destroy();
+            } catch (e) {
+                console.warn('Failed to destroy datepicker instance:', e);
+            }
         }
         const customClass = align || '';
         // Initialize flatpickr with same config as Vue template

@@ -25,10 +25,14 @@
         <div class="fixed inset-0 z-40" @onclick="Close"></div>
 
         <div class="@GetPanelClasses()">
-            @if (Sections != null && Sections.Any())
+            <CascadingValue Value="this" IsFixed="true">
+                @ChildContent
+            </CascadingValue>
+
+            @if (GetDisplaySections().Any())
             {
                 <div class="@GetGridClasses()">
-                    @foreach (var menuSection in Sections)
+                    @foreach (var menuSection in GetDisplaySections())
                     {
                         <div class="@GetSectionClasses()">
                             @if (!string.IsNullOrEmpty(menuSection.Title))
@@ -48,6 +52,12 @@
                                             {
                                                 <span class="shrink-0 mr-3 text-gray-400 dark:text-gray-500">
                                                     @item.Icon
+                                                </span>
+                                            }
+                                            else if (!string.IsNullOrEmpty(item.IconName))
+                                            {
+                                                <span class="shrink-0 mr-3 text-gray-400 dark:text-gray-500">
+                                                    <i class="fas fa-@item.IconName"></i>
                                                 </span>
                                             }
                                             <div class="flex-1 min-w-0">
@@ -89,10 +99,6 @@
                     </div>
                 }
             }
-            else if (ChildContent != null)
-            {
-                @ChildContent
-            }
         </div>
     }
 </div>
@@ -111,6 +117,7 @@
     [Parameter] public string Width { get; set; } = "auto"; // auto, full, or specific width
     [Parameter] public EventCallback<MegaMenuItem> OnItemClicked { get; set; }
 
+    private List<MegaMenuSection> registeredSections = new();
     private System.Timers.Timer? _closeTimer;
 
     protected override void OnInitialized()
@@ -125,6 +132,20 @@
                 StateHasChanged();
             });
         };
+    }
+
+    public void AddSection(MegaMenuSection section)
+    {
+        if (!registeredSections.Any(s => s.Title == section.Title && s.Items.Count == section.Items.Count))
+        {
+            registeredSections.Add(section);
+            StateHasChanged();
+        }
+    }
+
+    private List<MegaMenuSection> GetDisplaySections()
+    {
+        return registeredSections.Any() ? registeredSections : (Sections ?? new List<MegaMenuSection>());
     }
 
     private async Task OnMouseEnter()
@@ -231,6 +252,7 @@
         public string Label { get; set; } = "";
         public string? Description { get; set; }
         public string Href { get; set; } = "#";
+        public string? IconName { get; set; }
         public RenderFragment? Icon { get; set; }
         public bool IsNew { get; set; } = false;
         public bool IsBeta { get; set; } = false;

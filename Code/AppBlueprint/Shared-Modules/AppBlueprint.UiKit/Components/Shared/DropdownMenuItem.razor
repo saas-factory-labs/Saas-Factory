@@ -15,14 +15,36 @@ else
     <button type="button"
             class="@GetItemClasses()"
             disabled="@Disabled"
-            @onclick="OnClick">
-        @if (IconContent != null)
+            @onclick="OnClick"
+            @attributes="AdditionalAttributes">
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <span class="mr-2 text-gray-400 dark:text-gray-500">
+                <i class="fas fa-@Icon"></i>
+            </span>
+        }
+        else if (IconContent != null)
         {
             <span class="mr-2 text-gray-400 dark:text-gray-500">
                 @IconContent
             </span>
         }
-        <span class="flex-1 text-left">@ChildContent</span>
+        <span class="flex-1 text-left">
+            @if (!string.IsNullOrEmpty(Text))
+            {
+                @Text
+            }
+            else
+            {
+                @ChildContent
+            }
+        </span>
+        @if (!string.IsNullOrEmpty(Badge))
+        {
+            <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400">
+                @Badge
+            </span>
+        }
         @if (HasSubmenu)
         {
             <svg class="shrink-0 ml-2 fill-current text-gray-400" width="8" height="8" viewBox="0 0 8 8">
@@ -35,12 +57,16 @@ else
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? IconContent { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Badge { get; set; }
     [Parameter] public bool IsDivider { get; set; } = false;
     [Parameter] public bool IsHeader { get; set; } = false;
     [Parameter] public bool Disabled { get; set; } = false;
     [Parameter] public bool HasSubmenu { get; set; } = false;
     [Parameter] public string Variant { get; set; } = "default"; // default, danger
     [Parameter] public EventCallback OnItemClick { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private async Task OnClick()
     {

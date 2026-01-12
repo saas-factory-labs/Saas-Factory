@@ -1,6 +1,4 @@
-@* Tab panel content component *@
-
-@if (IsActive)
+@if (IsVisible)
 {
     <div role="tabpanel" class="@CssClass">
         @ChildContent
@@ -8,10 +6,27 @@
 }
 
 @code {
+    [CascadingParameter] public Tabs? Parent { get; set; }
+
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string Id { get; set; } = "";
-    [Parameter] public string ActiveTab { get; set; } = "";
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Id { get; set; }
     [Parameter] public string? CssClass { get; set; }
 
-    private bool IsActive => Id == ActiveTab;
+    private string EffectiveId => Id ?? Title ?? Guid.NewGuid().ToString();
+    private bool IsVisible => Parent != null && EffectiveId == Parent.ActiveTab;
+
+    protected override void OnInitialized()
+    {
+        if (Parent != null)
+        {
+            Parent.AddTab(new Tabs.TabItem
+            {
+                Id = EffectiveId,
+                Label = Title ?? "",
+                Icon = Icon
+            });
+        }
+    }
 }

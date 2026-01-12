@@ -16,7 +16,11 @@
                 </ul>
 
                 <ul class="space-y-1 text-sm text-gray-800 dark:text-gray-100 mt-3 mb-4">
-                    @foreach (var item in Items)
+                    <CascadingValue Value="this" IsFixed="true">
+                        @ChildContent
+                    </CascadingValue>
+
+                    @foreach (var item in GetDisplayItems())
                     {
                         <ProgressListItem Label="@item.Label"
                                           Value="@item.Value"
@@ -46,20 +50,26 @@
     /// <summary>
     /// Label column header (e.g., "Source", "Product")
     /// </summary>
-    [Parameter, EditorRequired]
-    public string LabelHeader { get; set; } = string.Empty;
+    [Parameter]
+    public string LabelHeader { get; set; } = "Source";
 
     /// <summary>
     /// Value column header (e.g., "Visitors", "Sales")
     /// </summary>
-    [Parameter, EditorRequired]
-    public string ValueHeader { get; set; } = string.Empty;
+    [Parameter]
+    public string ValueHeader { get; set; } = "Value";
 
     /// <summary>
     /// List of progress items
     /// </summary>
-    [Parameter, EditorRequired]
+    [Parameter]
     public List<ProgressItem> Items { get; set; } = [];
+
+    /// <summary>
+    /// Declarative items via child content
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     /// <summary>
     /// Color variant for progress bars
@@ -79,8 +89,38 @@
     [Parameter]
     public string? FooterLinkUrl { get; set; }
 
+    private List<ProgressItem> registeredItems = new();
+
+    public void AddItem(ProgressItem item)
+    {
+        if (!registeredItems.Any(i => i.Label == item.Label && i.Value == item.Value))
+        {
+            registeredItems.Add(item);
+            StateHasChanged();
+        }
+    }
+
+    private List<ProgressItem> GetDisplayItems()
+    {
+        return registeredItems.Any() ? registeredItems : Items;
+    }
+
     /// <summary>
     /// Progress item model
     /// </summary>
-    public sealed record ProgressItem(string Label, string Value, decimal ProgressPercentage);
+    public sealed class ProgressItem
+    {
+        public string Label { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+        public decimal ProgressPercentage { get; set; }
+
+        public ProgressItem(string label, string value, decimal progressPercentage)
+        {
+            Label = label;
+            Value = value;
+            ProgressPercentage = progressPercentage;
+        }
+
+        public ProgressItem() { }
+    }
 }

@@ -1,0 +1,29 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@code {
+    [CascadingParameter] public ProgressTracker? Parent { get; set; }
+
+    [Parameter] public int Number { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public bool IsComplete { get; set; }
+    [Parameter] public bool IsActive { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Parent != null)
+        {
+            var status = "pending";
+            if (IsComplete) status = "completed";
+            else if (IsActive) status = "current";
+
+            Parent.AddStep(new ProgressTracker.ProgressStep
+            {
+                Number = Number,
+                Title = Title ?? "",
+                Description = Description,
+                Status = status
+            });
+        }
+    }
+}

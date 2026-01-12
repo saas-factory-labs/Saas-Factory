@@ -1,24 +1,47 @@
-@* Chart component placeholder - Blazorise removed. Implement with Chart.js or ApexCharts if needed *@
+@using AppBlueprint.UiKit.Components.Charts
 
-<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
-    <div class="text-center py-8">
-        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">@Title</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Chart component removed - charting library needed</p>
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 @Class">
+    <header class="flex justify-between items-start mb-2">
+        <div>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@Title</h3>
+            @if (!string.IsNullOrEmpty(Subtitle))
+            {
+                <div class="text-xs text-gray-400 dark:text-gray-500">@Subtitle</div>
+            }
+        </div>
+        @if (HeaderActions != null)
+        {
+            @HeaderActions
+        }
+    </header>
+    
+    <div class="grow" style="height: @Height">
+        <BarChart Labels="@GetLabels()" Datasets="@GetDatasets()" UseTimeScale="false" />
     </div>
 </div>
 
 @code {
     [Parameter] public string? Title { get; set; } = "Bar Chart";
     [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public string Height { get; set; } = "300px";
+    [Parameter] public string Height { get; set; } = "200px";
     [Parameter] public bool Horizontal { get; set; }
     [Parameter] public bool Stacked { get; set; }
     [Parameter] public bool ShowLegend { get; set; }
-    [Parameter] public object? Labels { get; set; }
-    [Parameter] public object? Datasets { get; set; }
+    [Parameter] public List<string>? Labels { get; set; }
+    [Parameter] public List<BarChart.BarChartDataset>? Datasets { get; set; }
     [Parameter] public RenderFragment? HeaderActions { get; set; }
     [Parameter] public string? Class { get; set; }
+
+    private List<string> GetLabels() => Labels ?? new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun" };
+    
+    private List<BarChart.BarChartDataset> GetDatasets() => Datasets ?? new List<BarChart.BarChartDataset>
+    {
+        new BarChart.BarChartDataset
+        {
+            Label = Title ?? "Data",
+            Data = new List<double> { 65, 59, 80, 81, 56, 55 },
+            BackgroundColor = "rgb(139, 92, 246)",
+            HoverBackgroundColor = "rgb(124, 58, 237)"
+        }
+    };
 }

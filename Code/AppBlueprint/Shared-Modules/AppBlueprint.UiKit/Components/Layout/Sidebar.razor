@@ -344,7 +344,7 @@
             </ChildMenuItems>
         </SidebarMenuGroup>
 
-        <!-- Components -->
+        <!-- UI Kit Components -->
         <SidebarLinkGroup ActiveCondition="@IsComponentsActive">
             <ChildContent>
                 <a class="block text-gray-800 dark:text-gray-100 truncate transition duration-150 @(IsComponentsActive ? "" : "hover:text-gray-900 dark:hover:text-white") cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded py-2"
@@ -357,7 +357,7 @@
                                  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                                 <path d="M.06 10.003a1 1 0 0 1 1.948.455c-.019.08.01.152.078.19l5.83 3.333c.053.03.116.03.168 0l5.83-3.333a.163.163 0 0 0 .078-.188 1 1 0 0 1 1.947-.459 2.161 2.161 0 0 1-1.032 2.384l-5.83 3.331a2.168 2.168 0 0 1-2.154 0l-5.83-3.331a2.162 2.162 0 0 1-1.032-2.382Zm7.856-7.981-5.83 3.332a.17.17 0 0 0 0 .295l5.828 3.33c.054.031.118.031.17.002l5.83-3.333a.17.17 0 0 0 0-.294L8.085 2.023a.172.172 0 0 0-.17-.001ZM9.076.285l5.83 3.332c1.458.833 1.458 2.935 0 3.768l-5.83 3.333c-.667.38-1.485.38-2.153-.001l-5.83-3.332c-1.457-.833-1.457-2.935 0-3.767L6.925.285a2.173 2.173 0 0 1 2.15 0Z"/>
                             </svg>
-                            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Components</span>
+                            <span class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">UI Kit Components</span>
                         </div>
                         <div class="flex shrink-0 ml-2">
                             <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @(context.Expanded ? "rotate-180" : "")" viewBox="0 0 12 12">
@@ -368,88 +368,26 @@
                 </a>
                 <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
                     <ul class="pl-8 mt-1 @(context.Expanded ? "" : "hidden")">
+                        <!-- Basic Components -->
                         <li class="mb-1 last:mb-0">
                             <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
                                href="/component/button"
                                @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Button</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                               href="/component/form"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Input Form</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                               href="/component/dropdown"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Dropdown</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                               href="/component/alert"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Alert & Banner</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                               href="/component/modal"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Modal</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                               href="/component/pagination"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pagination</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                               href="/component/tabs"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Tabs</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                               href="/component/breadcrumb"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Breadcrumb</span>
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Buttons</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
                             <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
                                href="/component/badge"
                                @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Badge</span>
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Badges</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
                             <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
                                href="/component/avatar"
                                @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Avatar</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                               href="/component/tooltip"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Tooltip</span>
-                            </a>
-                        </li>
-                        <li class="mb-1 last:mb-0">
-                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
-                               href="/component/accordion"
-                               @onclick="@(() => context.HandleOptionClick())">
-                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Accordion</span>
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Avatars</span>
                             </a>
                         </li>
                         <li class="mb-1 last:mb-0">
@@ -457,6 +395,143 @@
                                href="/component/icons"
                                @onclick="@(() => context.HandleOptionClick())">
                                 <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Icons</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Forms -->
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/uikit/forms"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Forms</span>
+                            </a>
+                        </li>
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/form"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">└─ Input Fields</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Navigation -->
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/uikit/navigation"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Navigation</span>
+                            </a>
+                        </li>
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/breadcrumb"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">└─ Breadcrumb</span>
+                            </a>
+                        </li>
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/tabs"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">└─ Tabs</span>
+                            </a>
+                        </li>
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/pagination"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">└─ Pagination</span>
+                            </a>
+                        </li>
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/dropdown"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">└─ Dropdowns</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Cards & Data Display -->
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/uikit/cards"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Cards</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Tables -->
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/uikit/tables"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Tables</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Charts -->
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/uikit/charts"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Charts</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Filters -->
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/uikit/filters"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Filters</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Feedback -->
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/uikit/feedback"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Feedback</span>
+                            </a>
+                        </li>
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/alert"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">└─ Alerts</span>
+                            </a>
+                        </li>
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/tooltip"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">└─ Tooltips</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Overlays -->
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/uikit/overlays"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Overlays</span>
+                            </a>
+                        </li>
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/modal"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">└─ Modals</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Accordion -->
+                        <li class="mb-1 last:mb-0">
+                            <a class="block transition truncate text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" 
+                               href="/component/accordion"
+                               @onclick="@(() => context.HandleOptionClick())">
+                                <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Accordion</span>
                             </a>
                         </li>
                     </ul>

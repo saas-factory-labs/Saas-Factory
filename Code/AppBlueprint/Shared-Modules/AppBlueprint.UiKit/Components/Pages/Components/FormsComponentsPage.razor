@@ -1,0 +1,226 @@
+@page "/uikit/forms"
+@using AppBlueprint.UiKit.Components.Shared
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Form Components</h1>
+    </div>
+
+    <div class="space-y-8">
+
+        <!-- Form Inputs -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Form Inputs</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-4">
+                    <!-- Start -->
+                    <FormInput Label="Full Name" Placeholder="Enter your full name" />
+                    <FormInput Label="Email Address" Type="email" Placeholder="your@email.com" />
+                    <FormInput Label="Phone Number" Type="tel" Placeholder="+1 (555) 000-0000" />
+                    <FormInput Label="Website" Type="url" Placeholder="https://example.com" />
+                    <FormInput Label="Password" Type="password" Placeholder="Enter password" />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Form TextArea -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Form TextArea</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-4">
+                    <!-- Start -->
+                    <FormTextArea Label="Description" Placeholder="Enter a detailed description..." Rows="4" />
+                    <FormTextArea Label="Comments" Placeholder="Add your comments here..." Rows="6" />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Form Select -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Form Select</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="grid gap-4 md:grid-cols-2">
+                    <!-- Start -->
+                    <FormSelect Label="Country">
+                        <option value="">Select a country</option>
+                        <option value="us">United States</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="ca">Canada</option>
+                        <option value="au">Australia</option>
+                    </FormSelect>
+                    <FormSelect Label="Category">
+                        <option value="">Select a category</option>
+                        <option value="tech">Technology</option>
+                        <option value="business">Business</option>
+                        <option value="design">Design</option>
+                        <option value="marketing">Marketing</option>
+                    </FormSelect>
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Form Checkbox -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Form Checkbox</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-3">
+                    <!-- Start -->
+                    <FormCheckbox Label="I agree to the terms and conditions" />
+                    <FormCheckbox Label="Subscribe to newsletter" Checked="true" />
+                    <FormCheckbox Label="Enable notifications" />
+                    <FormCheckbox Label="Save my preferences" />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Form Radio Group -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Form Radio Group</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-6">
+                    <!-- Start -->
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-800 dark:text-gray-100 mb-3">Billing Frequency</h3>
+                        <FormRadioGroup Name="billing" Options="@billingOptions" @bind-Value="billingFrequency" />
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-800 dark:text-gray-100 mb-3">Notification Preference</h3>
+                        <FormRadioGroup Name="notifications" Options="@notificationOptions" @bind-Value="notificationPreference" />
+                    </div>
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Form Toggle -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Form Toggle</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-4">
+                    <!-- Start -->
+                    <FormToggle Label="Enable dark mode" />
+                    <FormToggle Label="Auto-save changes" Checked="true" />
+                    <FormToggle Label="Public profile" />
+                    <FormToggle Label="Two-factor authentication" Checked="true" />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Form Date Picker -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Form Date Picker</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="grid gap-4 md:grid-cols-2">
+                    <!-- Start -->
+                    <FormDatePicker Label="Start Date" />
+                    <FormDatePicker Label="End Date" />
+                    <FormDatePicker Label="Birth Date" />
+                    <FormDatePicker Label="Expiry Date" />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Search Form -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Search Form</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-4">
+                    <!-- Start -->
+                    <SearchForm Placeholder="Search users..." />
+                    <SearchForm Placeholder="Search products..." />
+                    <SearchForm Placeholder="Search documents..." />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Date Range Picker -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Date Range Picker</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <DateRangePicker />
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Datepicker -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Datepicker</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <Datepicker />
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Date Select -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Date Select</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <DateSelect />
+                <!-- End -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private string billingFrequency = "annually";
+    private string notificationPreference = "email";
+
+    private List<FormRadioGroup.RadioOption> billingOptions = new()
+    {
+        new FormRadioGroup.RadioOption { Label = "Monthly", Value = "monthly" },
+        new FormRadioGroup.RadioOption { Label = "Quarterly", Value = "quarterly" },
+        new FormRadioGroup.RadioOption { Label = "Annually", Value = "annually" }
+    };
+
+    private List<FormRadioGroup.RadioOption> notificationOptions = new()
+    {
+        new FormRadioGroup.RadioOption { Label = "Email only", Value = "email" },
+        new FormRadioGroup.RadioOption { Label = "SMS only", Value = "sms" },
+        new FormRadioGroup.RadioOption { Label = "Both Email and SMS", Value = "both" },
+        new FormRadioGroup.RadioOption { Label = "None", Value = "none" }
+    };
+}

@@ -1,0 +1,28 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@code {
+    [CascadingParameter] public CategoryFilter? Parent { get; set; }
+
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public string? Count { get; set; }
+    [Parameter] public bool IsActive { get; set; }
+    [Parameter] public string Url { get; set; } = "#0";
+
+    protected override void OnInitialized()
+    {
+        if (Parent != null)
+        {
+            var item = new CategoryFilter.CategoryItem
+            {
+                Label = Label ?? Name ?? "",
+                Value = Value ?? Name ?? "",
+                Url = Url,
+                Count = Count,
+                IsActive = IsActive
+            };
+            Parent.AddCategory(item);
+        }
+    }
+}

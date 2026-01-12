@@ -11,52 +11,65 @@
             @onclick:preventDefault
             aria-expanded="@dropdownOpen">
         <span class="sr-only">Filter</span>
-        <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16">
-            <path d="M0 3a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1ZM3 8a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1ZM7 12a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H7Z"/>
-        </svg>
+        <div class="flex items-center">
+            <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16">
+                <path d="M0 3a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1ZM3 8a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1ZM7 12a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H7Z"/>
+            </svg>
+            @if (!string.IsNullOrEmpty(Label))
+            {
+                <span class="ml-2 text-sm font-medium text-gray-600 dark:text-gray-400">@Label</span>
+            }
+        </div>
     </button>
     @if (dropdownOpen)
     {
         <div class="origin-top-right z-10 absolute top-full left-0 right-auto min-w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/60 pt-1.5 rounded-lg shadow-lg overflow-hidden mt-1 @(Align == "right" ? "md:left-auto md:right-0" : "md:left-0 md:right-auto")">
             <div>
-                <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase pt-1.5 pb-2 px-3">Filters</div>
+                <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase pt-1.5 pb-2 px-3">@(Label ?? "Filters")</div>
                 <ul class="mb-4">
-                    <li class="py-1 px-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="form-checkbox"/>
-                            <span class="text-sm font-medium ml-2">Direct VS Indirect</span>
-                        </label>
-                    </li>
-                    <li class="py-1 px-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="form-checkbox"/>
-                            <span class="text-sm font-medium ml-2">Real Time Value</span>
-                        </label>
-                    </li>
-                    <li class="py-1 px-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="form-checkbox"/>
-                            <span class="text-sm font-medium ml-2">Top Channels</span>
-                        </label>
-                    </li>
-                    <li class="py-1 px-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="form-checkbox"/>
-                            <span class="text-sm font-medium ml-2">Sales VS Refunds</span>
-                        </label>
-                    </li>
-                    <li class="py-1 px-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="form-checkbox"/>
-                            <span class="text-sm font-medium ml-2">Last Order</span>
-                        </label>
-                    </li>
-                    <li class="py-1 px-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="form-checkbox"/>
-                            <span class="text-sm font-medium ml-2">Total Spent</span>
-                        </label>
-                    </li>
+                    @if (ChildContent != null)
+                    {
+                        @ChildContent
+                    }
+                    else
+                    {
+                        <li class="py-1 px-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="form-checkbox"/>
+                                <span class="text-sm font-medium ml-2">Direct VS Indirect</span>
+                            </label>
+                        </li>
+                        <li class="py-1 px-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="form-checkbox"/>
+                                <span class="text-sm font-medium ml-2">Real Time Value</span>
+                            </label>
+                        </li>
+                        <li class="py-1 px-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="form-checkbox"/>
+                                <span class="text-sm font-medium ml-2">Top Channels</span>
+                            </label>
+                        </li>
+                        <li class="py-1 px-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="form-checkbox"/>
+                                <span class="text-sm font-medium ml-2">Sales VS Refunds</span>
+                            </label>
+                        </li>
+                        <li class="py-1 px-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="form-checkbox"/>
+                                <span class="text-sm font-medium ml-2">Last Order</span>
+                            </label>
+                        </li>
+                        <li class="py-1 px-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="form-checkbox"/>
+                                <span class="text-sm font-medium ml-2">Total Spent</span>
+                            </label>
+                        </li>
+                    }
                 </ul>
                 <div class="py-2 px-3 border-t border-gray-200 dark:border-gray-700/60 bg-gray-50 dark:bg-gray-700/20">
                     <ul class="flex items-center justify-between">
@@ -75,6 +88,8 @@
 
 @code {
     [Parameter] public string? Align { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     private bool dropdownOpen;
     private ElementReference dropdownRef;

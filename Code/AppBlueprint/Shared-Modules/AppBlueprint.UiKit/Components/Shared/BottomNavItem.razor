@@ -1,0 +1,35 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@code {
+    [CascadingParameter] public BottomNavigation? Parent { get; set; }
+
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string Href { get; set; } = "#";
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public RenderFragment? IconContent { get; set; }
+    [Parameter] public bool IsActive { get; set; }
+    [Parameter] public int Badge { get; set; }
+    [Parameter] public string? BadgeText { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Parent != null)
+        {
+            var item = new BottomNavigation.BottomNavItem
+            {
+                Id = Id ?? Label ?? Guid.NewGuid().ToString(),
+                Label = Label ?? "",
+                Href = Href,
+                IconName = Icon,
+                IconContent = IconContent,
+                IsActive = IsActive,
+                Badge = Badge,
+                BadgeText = BadgeText,
+                OnClick = OnClick
+            };
+            Parent.AddItem(item);
+        }
+    }
+}

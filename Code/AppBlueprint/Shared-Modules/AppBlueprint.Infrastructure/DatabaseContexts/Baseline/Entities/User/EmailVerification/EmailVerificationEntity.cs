@@ -15,4 +15,14 @@ public sealed class EmailVerificationEntity
 
     public bool HasBeenOpened { get; set; }
     public bool HasBeenVerified { get; set; }
+
+    /// <summary>
+    /// Foreign key to the User entity. Optional to support scenarios where verification is created before user account.
+    /// </summary>
+    public string? UserId { get; set; }
+
+    /// <summary>
+    /// Navigation property to the associated User entity.
+    /// </summary>
+    public UserEntity? User { get; set; }
 }

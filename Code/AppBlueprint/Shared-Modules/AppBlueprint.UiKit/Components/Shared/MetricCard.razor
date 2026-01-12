@@ -2,24 +2,44 @@
 
 @* Metric card component - reusable for KPIs, statistics, analytics *@
 
-<div class="flex items-center @(Vertical ? "flex-col text-center" : "") @Class">
-    @if (ShowIcon && !string.IsNullOrEmpty(IconSvg))
+<div class="@GetContainerClasses()">
+    @if (ShowIcon && (!string.IsNullOrEmpty(IconSvg) || !string.IsNullOrEmpty(Icon)))
     {
-        <div class="@(Vertical ? "mb-2" : "mr-5")">
-            @((MarkupString)IconSvg)
-        </div>
-    }
-    <div class="@(Vertical ? "" : "grow")">
-        <div class="flex items-center @(Vertical ? "justify-center" : "")">
-            <div class="@GetValueClass() mr-2">@(string.IsNullOrEmpty(CustomValue) ? FormatValue(Value) : CustomValue)</div>
-            @if (ShowTrend && Trend != 0)
+        <div class="@(Vertical ? "mb-2" : "mr-4")">
+            @if (!string.IsNullOrEmpty(IconSvg))
             {
-                <div class="text-sm font-medium @GetTrendColorClass()">
-                    @(Trend > 0 ? "+" : "")@Trend.ToString("F0")%
+                @((MarkupString)IconSvg)
+            }
+            else
+            {
+                <div class="@GetIconBgClass() w-12 h-12 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-400">
+                    @GetDefaultIcon(Icon)
                 </div>
             }
         </div>
-        <div class="@GetLabelClass()">@Label</div>
+    }
+    <div class="@(Vertical ? "" : "grow")">
+        <div class="flex items-center @(Vertical ? "justify-center" : "") mb-1">
+            <div class="@GetValueClass() mr-3">@(string.IsNullOrEmpty(CustomValue) ? FormatValue(Value) : CustomValue)</div>
+            @if (ShowTrend && (Trend != 0 || !string.IsNullOrEmpty(Change)))
+            {
+                <div class="text-[0.7rem] font-medium px-1.5 py-0.5 rounded-full @GetTrendBadgeClass()">
+                    @if (!string.IsNullOrEmpty(Change))
+                    {
+                        @Change
+                    }
+                    else
+                    {
+                        @(Trend > 0 ? "+" : "")@Trend.ToString("F0")@("%")
+                    }
+                </div>
+            }
+        </div>
+        <div class="@GetLabelClass()">@(string.IsNullOrEmpty(Title) ? Label : Title)</div>
+        @if (!string.IsNullOrEmpty(Subtitle))
+        {
+            <div class="text-xs text-gray-400 dark:text-gray-500 mt-1">@Subtitle</div>
+        }
     </div>
 </div>
 
@@ -99,8 +119,13 @@
     /// <summary>
     /// Additional CSS classes
     /// </summary>
-    [Parameter]
-    public string? Class { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string? Change { get; set; }
+    [Parameter] public bool IsPositive { get; set; } = true;
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private string GetValueClass() => Size.ToLower() switch
     {
@@ -118,12 +143,42 @@
         _ => "text-sm text-gray-500 dark:text-gray-400"
     };
 
+    private string GetContainerClasses()
+    {
+        return $"flex items-center {(Vertical ? "flex-col text-center" : "")} {Class}".Trim();
+    }
+
+    private string GetIconBgClass()
+    {
+        return "bg-gray-100 dark:bg-gray-700/50";
+    }
+
+    private string GetTrendBadgeClass()
+    {
+        bool positive = !string.IsNullOrEmpty(Change) ? IsPositive : Trend >= 0;
+        return positive 
+            ? "bg-green-500/20 text-green-700 dark:text-green-400" 
+            : "bg-red-500/20 text-red-700 dark:text-red-400";
+    }
+
     private string GetTrendColorClass()
     {
+        if (!string.IsNullOrEmpty(Change))
+        {
+            return IsPositive ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400";
+        }
         return Trend >= 0 
-            ? "text-green-600" 
-            : "text-red-500";
+            ? "text-green-600 dark:text-green-400" 
+            : "text-red-500 dark:text-red-400";
     }
+
+    private RenderFragment GetDefaultIcon(string? name) => name switch
+    {
+        "users" => @<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
+        "revenue" => @<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+        "orders" => @<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>,
+        _ => @<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+    };
 
     private string FormatValue(decimal value)
     {

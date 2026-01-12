@@ -88,10 +88,17 @@
         }
 
         @* Footer with actions *@
-        @if (Footer != null)
+        @if (Footer != null || !string.IsNullOrEmpty(LinkText))
         {
             <div class="@GetFooterClasses()">
-                @Footer
+                @if (Footer != null)
+                {
+                    @Footer
+                }
+                else if (!string.IsNullOrEmpty(LinkText))
+                {
+                    <a href="@Href" class="text-sm font-medium text-violet-500 hover:text-violet-600 transition-colors">@LinkText -></a>
+                }
             </div>
         }
     </div>
@@ -118,7 +125,9 @@
     [Parameter] public RenderFragment? Meta { get; set; }
     [Parameter] public RenderFragment? Footer { get; set; }
     [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public string? LinkText { get; set; }
     [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private async Task HandleClick()
     {

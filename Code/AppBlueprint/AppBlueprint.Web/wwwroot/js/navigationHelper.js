@@ -2,12 +2,11 @@
 /**
  * Navigation helper functions for Blazor interop
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 const navigationHelper = {
     navigateTo(url) {
         window.location.href = url;
     }
 };
+// Attach to window for Blazor interop
 window.navigationHelper = navigationHelper;
-exports.default = navigationHelper;
 //# sourceMappingURL=navigationHelper.js.map

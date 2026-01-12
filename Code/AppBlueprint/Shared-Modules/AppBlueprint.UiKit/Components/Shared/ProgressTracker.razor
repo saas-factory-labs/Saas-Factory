@@ -35,11 +35,15 @@
 
     @* Steps *@
     <div class="@GetStepsContainerClasses()">
-        @foreach (var (step, index) in Steps.Select((s, i) => (s, i)))
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+
+        @foreach (var (step, index) in GetDisplaySteps().Select((s, i) => (s, i)))
         {
             var isCompleted = step.Status == "completed";
             var isCurrent = step.Status == "current";
-            var isLast = index == Steps.Count - 1;
+            var isLast = index == GetDisplaySteps().Count - 1;
 
             @if (Variant == "horizontal")
             {
@@ -152,16 +156,49 @@
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Description { get; set; }
     [Parameter] public List<ProgressStep> Steps { get; set; } = new();
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public int CurrentStep { get; set; } = 0;
     [Parameter] public string Variant { get; set; } = "vertical"; // vertical, horizontal
     [Parameter] public bool ShowProgressBar { get; set; } = true;
     [Parameter] public bool ShowPercentage { get; set; } = true;
     [Parameter] public string? Class { get; set; }
 
+    private List<ProgressStep> registeredSteps = new();
+
+    public void AddStep(ProgressStep step)
+    {
+        if (!registeredSteps.Any(s => s.Title == step.Title && s.Number == step.Number))
+        {
+            registeredSteps.Add(step);
+            StateHasChanged();
+        }
+    }
+
+    private List<ProgressStep> GetDisplaySteps()
+    {
+        var displaySteps = registeredSteps.Any() ? registeredSteps.OrderBy(s => s.Number).ToList() : Steps;
+
+        // Apply CurrentStep logic if set
+        if (CurrentStep > 0)
+        {
+            for (int i = 0; i < displaySteps.Count; i++)
+            {
+                var stepNum = displaySteps[i].Number > 0 ? displaySteps[i].Number : i + 1;
+                if (stepNum < CurrentStep) displaySteps[i].Status = "completed";
+                else if (stepNum == CurrentStep) displaySteps[i].Status = "current";
+                else displaySteps[i].Status = "pending";
+            }
+        }
+
+        return displaySteps;
+    }
+
     private int GetCompletionPercentage()
     {
-        if (!Steps.Any()) return 0;
-        var completed = Steps.Count(s => s.Status == "completed");
-        return (int)Math.Round((double)completed / Steps.Count * 100);
+        var displaySteps = GetDisplaySteps();
+        if (!displaySteps.Any()) return 0;
+        var completed = displaySteps.Count(s => s.Status == "completed");
+        return (int)Math.Round((double)completed / displaySteps.Count * 100);
     }
 
     private string GetContainerClasses()
@@ -190,6 +227,7 @@
 
     public class ProgressStep
     {
+        public int Number { get; set; }
         public string Title { get; set; } = "";
         public string? Description { get; set; }
         public string Status { get; set; } = "pending"; // pending, current, completed

@@ -1,0 +1,49 @@
+@page "/demo"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@inject NavigationManager Navigation
+@inject IHttpContextAccessor HttpContextAccessor
+
+<PageTitle>Demo Mode</PageTitle>
+
+@code {
+    private const string LogtoCookieScheme = "Logto.Cookie";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        HttpContext? httpContext = HttpContextAccessor.HttpContext;
+        
+        if (httpContext is not null)
+        {
+            // Create demo user claims
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, "Demo User"),
+                new Claim(ClaimTypes.NameIdentifier, "demo-user-id"),
+                new Claim(ClaimTypes.Email, "demo@example.com"),
+                new Claim("sub", "demo-user-id"),
+                new Claim("role", "demo")
+            };
+
+            // Use the registered authentication scheme (Logto.Cookie or fallback)
+            string authScheme = LogtoCookieScheme;
+            var claimsIdentity = new ClaimsIdentity(claims, authScheme);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            // Sign in the demo user using the registered scheme
+            await httpContext.SignInAsync(
+                authScheme,
+                claimsPrincipal,
+                new AuthenticationProperties
+                {
+                    IsPersistent = false, // Session cookie only
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2)
+                });
+
+            Console.WriteLine($"[Demo] Demo user signed in with scheme '{authScheme}' - redirecting to dashboard");
+        }
+
+        // Redirect to dashboard
+        Navigation.NavigateTo("/dashboard", forceLoad: true);
+    }
+}

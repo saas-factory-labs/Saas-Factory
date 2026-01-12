@@ -1,0 +1,304 @@
+@page "/uikit/overlays"
+@using AppBlueprint.UiKit.Components.Shared
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Overlay Components</h1>
+    </div>
+
+    <div class="space-y-8">
+
+        <!-- Modals -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Modals</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="flex flex-wrap gap-3">
+                    <!-- Start -->
+                    <button class="btn bg-violet-500 hover:bg-violet-600 text-white" @onclick="() => basicModalOpen = true">
+                        Basic Modal
+                    </button>
+                    <button class="btn bg-violet-500 hover:bg-violet-600 text-white" @onclick="() => blankModalOpen = true">
+                        Blank Modal
+                    </button>
+                    <button class="btn bg-violet-500 hover:bg-violet-600 text-white" @onclick="() => actionModalOpen = true">
+                        Action Modal
+                    </button>
+                    <button class="btn bg-violet-500 hover:bg-violet-600 text-white" @onclick="() => cookiesModalOpen = true">
+                        Cookies Modal
+                    </button>
+                    <!-- End -->
+                </div>
+
+                <!-- Modal Components -->
+                <ModalBasic ModalOpen="@basicModalOpen" OnCloseModal="@(() => basicModalOpen = false)" Title="Basic Modal">
+                    <div class="px-5 pt-4 pb-1">
+                        <p>This is a basic modal with a title and close button.</p>
+                    </div>
+                </ModalBasic>
+
+                <ModalBlank ModalOpen="@blankModalOpen" OnCloseModal="@(() => blankModalOpen = false)">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">Blank Modal</h3>
+                        <p>This is a blank modal without predefined structure.</p>
+                    </div>
+                </ModalBlank>
+
+                <ModalAction ModalOpen="@actionModalOpen" OnCloseModal="@(() => actionModalOpen = false)" Title="Confirm Action">
+                    <div class="px-5 pt-4 pb-1">
+                        <p>Are you sure you want to proceed with this action?</p>
+                    </div>
+                    <div class="px-5 py-4">
+                        <div class="flex justify-end gap-2">
+                            <button class="btn border-gray-200 hover:border-gray-300 text-gray-600" @onclick="() => actionModalOpen = false">
+                                Cancel
+                            </button>
+                            <button class="btn bg-violet-500 hover:bg-violet-600 text-white">
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </ModalAction>
+
+                <ModalCookies ModalOpen="@cookiesModalOpen" OnCloseModal="@(() => cookiesModalOpen = false)" />
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Popovers -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Popovers</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="flex flex-wrap gap-4">
+                    <!-- Start -->
+                    <Popover Position="top">
+                        <Trigger>
+                            <button class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60">
+                                Popover Top
+                            </button>
+                        </Trigger>
+                        <ChildContent>
+                            <div class="p-3">
+                                <p class="text-sm">This is a popover positioned at the top.</p>
+                            </div>
+                        </ChildContent>
+                    </Popover>
+
+                    <Popover Position="bottom">
+                        <Trigger>
+                            <button class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60">
+                                Popover Bottom
+                            </button>
+                        </Trigger>
+                        <ChildContent>
+                            <div class="p-3">
+                                <p class="text-sm">This is a popover positioned at the bottom.</p>
+                            </div>
+                        </ChildContent>
+                    </Popover>
+
+                    <Popover Position="left">
+                        <Trigger>
+                            <button class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60">
+                                Popover Left
+                            </button>
+                        </Trigger>
+                        <ChildContent>
+                            <div class="p-3">
+                                <p class="text-sm">This is a popover positioned at the left.</p>
+                            </div>
+                        </ChildContent>
+                    </Popover>
+
+                    <Popover Position="right">
+                        <Trigger>
+                            <button class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60">
+                                Popover Right
+                            </button>
+                        </Trigger>
+                        <ChildContent>
+                            <div class="p-3">
+                                <p class="text-sm">This is a popover positioned at the right.</p>
+                            </div>
+                        </ChildContent>
+                    </Popover>
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Tooltips -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Tooltips</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="flex flex-wrap gap-4">
+                    <!-- Start -->
+                    <Tooltip Text="Top tooltip" Position="top">
+                        <button class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60">
+                            Hover Top
+                        </button>
+                    </Tooltip>
+
+                    <Tooltip Text="Bottom tooltip" Position="bottom">
+                        <button class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60">
+                            Hover Bottom
+                        </button>
+                    </Tooltip>
+
+                    <Tooltip Text="Left tooltip" Position="left">
+                        <button class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60">
+                            Hover Left
+                        </button>
+                    </Tooltip>
+
+                    <Tooltip Text="Right tooltip" Position="right">
+                        <button class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60">
+                            Hover Right
+                        </button>
+                    </Tooltip>
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Dropdown Menus -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Dropdown Menus</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="flex flex-wrap gap-3">
+                    <!-- Start -->
+                    <DropdownClassic />
+                    <DropdownFull />
+                    <DropdownEditMenu />
+                    <DropdownProfile />
+                    <DropdownNotifications />
+                    <DropdownHelp />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Context Menu -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Context Menu</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <div class="p-8 bg-gray-50 dark:bg-gray-900/20 rounded-lg text-center">
+                    <p class="text-gray-600 dark:text-gray-400">Right-click in this area to see context menu</p>
+                    <ContextMenu>
+                        <ContextMenuItem Icon="edit" Text="Edit" />
+                        <ContextMenuItem Icon="copy" Text="Copy" />
+                        <ContextMenuItem Icon="share" Text="Share" />
+                        <ContextMenuDivider />
+                        <ContextMenuItem Icon="delete" Text="Delete" IsDestructive="@true" />
+                    </ContextMenu>
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Command Palette -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Command Palette</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <button class="btn bg-violet-500 hover:bg-violet-600 text-white" @onclick="() => commandPaletteOpen = true">
+                    Open Command Palette (Ctrl+K)
+                </button>
+                <CommandPalette IsOpen="@commandPaletteOpen" OnClose="@(() => commandPaletteOpen = false)">
+                    <CommandGroup Title="Actions">
+                        <CommandItem Icon="plus" Text="Create new project" Shortcut="Ctrl+N" />
+                        <CommandItem Icon="folder" Text="Open project" Shortcut="Ctrl+O" />
+                        <CommandItem Icon="save" Text="Save all" Shortcut="Ctrl+S" />
+                    </CommandGroup>
+                    <CommandGroup Title="Navigation">
+                        <CommandItem Icon="home" Text="Go to dashboard" Shortcut="Ctrl+1" />
+                        <CommandItem Icon="users" Text="Go to users" Shortcut="Ctrl+2" />
+                        <CommandItem Icon="settings" Text="Go to settings" Shortcut="Ctrl+3" />
+                    </CommandGroup>
+                </CommandPalette>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Modal Search -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Modal Search</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <button class="btn bg-violet-500 hover:bg-violet-600 text-white" @onclick="() => searchModalOpen = true">
+                    Open Search Modal
+                </button>
+                <ModalSearch IsOpen="@searchModalOpen" OnClose="@(() => searchModalOpen = false)" />
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Global Search -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Global Search</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <GlobalSearch Placeholder="Search everything..." />
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Menu Dropdown -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Menu Dropdown</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <MenuDropdown>
+                    <Trigger>
+                        <button class="btn bg-violet-500 hover:bg-violet-600 text-white">
+                            Open Menu
+                        </button>
+                    </Trigger>
+                    <ChildContent>
+                        <DropdownMenuItem Icon="user" Text="Profile" />
+                        <DropdownMenuItem Icon="settings" Text="Settings" />
+                        <DropdownMenuItem Icon="bell" Text="Notifications" Badge="5" />
+                        <DropdownMenuDivider />
+                        <DropdownMenuItem Icon="logout" Text="Sign out" />
+                    </ChildContent>
+                </MenuDropdown>
+                <!-- End -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private bool basicModalOpen = false;
+    private bool blankModalOpen = false;
+    private bool actionModalOpen = false;
+    private bool cookiesModalOpen = false;
+    private bool commandPaletteOpen = false;
+    private bool searchModalOpen = false;
+}

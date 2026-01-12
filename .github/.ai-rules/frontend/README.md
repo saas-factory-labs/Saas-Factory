@@ -13,6 +13,7 @@ IMPORTANT: Always follow these steps very carefully when implementing changes:
 
 ## Frontend rules files
 
+- **[Blazor JavaScript Interop](./blazor-javascript-interop.md) - CRITICAL: Prevents navigation hanging, JavaScript crashes, and render mode issues.**
 - [Design review](./design-review.md) - Inspection of the live website using Playwright MCP
 - [Design specification](./design-specification.md) - Specifications to adhere to for frontend design
 

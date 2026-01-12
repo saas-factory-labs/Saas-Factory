@@ -4,7 +4,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @implements IDisposable
 
-<div class="relative inline-flex" @ref="dropdownRef">
+<div class="relative inline-flex" @ref="dropdownRef" @attributes="AdditionalAttributes">
     <button @ref="triggerRef"
             class="inline-flex justify-center items-center group"
             aria-haspopup="true"
@@ -40,6 +40,7 @@
 
 @code {
     [Parameter] public string? Align { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private bool dropdownOpen;
     private ElementReference dropdownRef;

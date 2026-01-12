@@ -23,8 +23,9 @@ public sealed class GlobalRegionEntityConfiguration : IEntityTypeConfiguration<G
             .IsRequired()
             .HasMaxLength(200);
 
-        // Note: Code property not configured as GlobalRegionEntity doesn't currently have Code property
-        // TODO: Add Code property to GlobalRegionEntity if region codes are needed (e.g., "NA", "EU", "AS")
+        builder.Property(e => e.Code)
+            .HasMaxLength(10)
+            .IsRequired(false);
 
         // Geographic hierarchy relationships - GlobalRegion to Country (one-to-many)
         builder.HasMany(gr => gr.Countries)
@@ -35,5 +36,10 @@ public sealed class GlobalRegionEntityConfiguration : IEntityTypeConfiguration<G
         builder.HasIndex(e => e.Name)
             .IsUnique()
             .HasDatabaseName("IX_GlobalRegions_Name");
+
+        builder.HasIndex(e => e.Code)
+            .IsUnique()
+            .HasDatabaseName("IX_GlobalRegions_Code")
+            .HasFilter("[Code] IS NOT NULL");
     }
 }

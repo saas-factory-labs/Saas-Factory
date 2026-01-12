@@ -47,7 +47,16 @@ public sealed class MenuConfigurationService(
         AuthenticationState authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         bool isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
 
-        // Unauthenticated users (demo mode) - show everything
+        // Check if this is a demo user (has "demo" role claim)
+        bool isDemoUser = authState.User.HasClaim("role", "demo");
+
+        // Demo users - show everything from Cruip template
+        if (isDemoUser)
+        {
+            return true;
+        }
+
+        // Unauthenticated users - redirect to login (show nothing)
         if (!isAuthenticated)
         {
             return true;

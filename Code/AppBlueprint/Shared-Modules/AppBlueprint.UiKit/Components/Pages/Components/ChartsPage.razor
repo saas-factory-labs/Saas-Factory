@@ -1,0 +1,158 @@
+@page "/uikit/charts"
+@using AppBlueprint.UiKit.Components.Charts
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Charts</h1>
+    </div>
+
+    <div class="space-y-8">
+
+        <!-- Line Charts -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Line Charts</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Start -->
+                <div class="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Sales Over Time</h3>
+                    <LineChart />
+                </div>
+                <div class="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Revenue Trends</h3>
+                    <LineChart />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Bar Charts -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Bar Charts</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Start -->
+                <div class="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Monthly Performance</h3>
+                    <BarChart />
+                </div>
+                <div class="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Category Comparison</h3>
+                    <BarChart />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Stacked Bar Charts -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Stacked Bar Charts</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Start -->
+                <div class="col-span-full bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Revenue Breakdown</h3>
+                    <StackedBarChart />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Pie Charts -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Pie Charts</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Start -->
+                <div class="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Market Share</h3>
+                    <PieChart />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">User Demographics</h3>
+                    <PieChart />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Traffic Sources</h3>
+                    <PieChart />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Donut Charts -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Donut Charts</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Start -->
+                <div class="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Sales by Category</h3>
+                    <DonutChart />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Device Usage</h3>
+                    <DonutChart />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Browser Stats</h3>
+                    <DonutChart />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Doughnut Charts -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Doughnut Charts</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Start -->
+                <div class="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Budget Allocation</h3>
+                    <DoughnutChart />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Time Distribution</h3>
+                    <DoughnutChart />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Resource Usage</h3>
+                    <DoughnutChart />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Time Series Charts -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Time Series Charts</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Start -->
+                <div class="col-span-full bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Historical Data Analysis</h3>
+                    <TimeSeriesChart />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+}

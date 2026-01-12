@@ -4,7 +4,7 @@
 @if (IsOpen)
 {
     <!-- Modal backdrop -->
-    <div class="fixed inset-0 bg-gray-900/30 z-50 transition-opacity" aria-hidden="true" @onclick="Close"></div>
+    <div class="fixed inset-0 bg-gray-900/30 z-50 transition-opacity" aria-hidden="true" @onclick="Close" @attributes="AdditionalAttributes"></div>
 
     <!-- Modal dialog -->
     <div id="@Id" class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center px-4 sm:px-6" role="dialog" aria-modal="true">
@@ -49,6 +49,8 @@
         get => _onCloseModalBackingField;
         set => _onCloseModalBackingField = value;
     }
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private ElementReference modalContentRef;
 

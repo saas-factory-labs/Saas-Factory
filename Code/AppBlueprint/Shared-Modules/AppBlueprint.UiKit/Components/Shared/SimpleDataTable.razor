@@ -3,32 +3,39 @@
 @* Simple two-column data table - reusable for statistics, rankings, summaries *@
 
 <div class="overflow-x-auto">
-    <table class="table-auto w-full dark:text-gray-300">
-        <!-- Table header -->
-        <thead class="text-xs uppercase text-gray-400 dark:text-gray-500 @(HasHeaderBackground ? "bg-gray-50 dark:bg-gray-700/50 rounded-xs" : "")">
-            <tr>
-                <th class="@GetHeaderPaddingClass()">
-                    <div class="font-semibold @GetLabelAlignClass()">@LabelHeader</div>
-                </th>
-                <th class="@GetHeaderPaddingClass()">
-                    <div class="font-semibold @GetValueAlignClass()">@ValueHeader</div>
-                </th>
-            </tr>
-        </thead>
-        <!-- Table body -->
-        <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
-            @foreach (var item in Items)
-            {
+    <table class="table-auto w-full dark:text-gray-300" @attributes="AdditionalAttributes">
+        @if (ChildContent != null)
+        {
+            @ChildContent
+        }
+        else
+        {
+            <!-- Table header -->
+            <thead class="text-xs uppercase text-gray-400 dark:text-gray-500 @(HasHeaderBackground ? "bg-gray-50 dark:bg-gray-700/50 rounded-xs" : "")">
                 <tr>
-                    <td class="@GetBodyPaddingClass()">
-                        <div class="@GetLabelAlignClass() @GetLabelTextClass()">@item.Label</div>
-                    </td>
-                    <td class="@GetBodyPaddingClass()">
-                        <div class="@GetValueAlignClass() @GetValueTextClass()">@item.Value</div>
-                    </td>
+                    <th class="@GetHeaderPaddingClass()">
+                        <div class="font-semibold @GetLabelAlignClass()">@LabelHeader</div>
+                    </th>
+                    <th class="@GetHeaderPaddingClass()">
+                        <div class="font-semibold @GetValueAlignClass()">@ValueHeader</div>
+                    </th>
                 </tr>
-            }
-        </tbody>
+            </thead>
+            <!-- Table body -->
+            <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
+                @foreach (var item in Items)
+                {
+                    <tr>
+                        <td class="@GetBodyPaddingClass()">
+                            <div class="@GetLabelAlignClass() @GetLabelTextClass()">@item.Label</div>
+                        </td>
+                        <td class="@GetBodyPaddingClass()">
+                            <div class="@GetValueAlignClass() @GetValueTextClass()">@item.Value</div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        }
     </table>
 </div>
 
@@ -36,20 +43,24 @@
     /// <summary>
     /// Header text for the label column
     /// </summary>
-    [Parameter, EditorRequired]
+    [Parameter]
     public string LabelHeader { get; set; } = string.Empty;
 
     /// <summary>
     /// Header text for the value column
     /// </summary>
-    [Parameter, EditorRequired]
+    [Parameter]
     public string ValueHeader { get; set; } = string.Empty;
 
     /// <summary>
     /// List of data items to display
     /// </summary>
-    [Parameter, EditorRequired]
-    public List<DataItem> Items { get; set; } = [];
+    [Parameter] public List<DataItem> Items { get; set; } = [];
+
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     /// <summary>
     /// Label column alignment: left, center, right

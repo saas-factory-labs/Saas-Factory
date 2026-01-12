@@ -195,7 +195,7 @@
     /// Rating value (0-5)
     /// </summary>
     [Parameter]
-    public decimal Rating { get; set; }
+    public double Rating { get; set; }
 
     /// <summary>
     /// Number of ratings (optional)
@@ -219,7 +219,7 @@
     /// Price amount (e.g., 89.00)
     /// </summary>
     [Parameter]
-    public decimal PriceAmount { get; set; }
+    public double PriceAmount { get; set; }
 
     /// <summary>
     /// Whether this is a sale price (red badge instead of green)
@@ -280,6 +280,8 @@
     /// </summary>
     [Parameter]
     public string GridSpan { get; set; } = "col-span-full sm:col-span-6 xl:col-span-3";
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private string GetContainerClass()
     {

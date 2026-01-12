@@ -1,0 +1,33 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@code {
+    [CascadingParameter] public MegaMenuSection? Section { get; set; }
+
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string Href { get; set; } = "#";
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public RenderFragment? IconContent { get; set; }
+    [Parameter] public bool IsNew { get; set; }
+    [Parameter] public bool IsBeta { get; set; }
+    [Parameter] public bool HasSubmenu { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Section != null)
+        {
+            Section.AddItem(new MegaMenu.MegaMenuItem
+            {
+                Label = Title != "" ? Title : (Label ?? ""),
+                Description = Description,
+                Href = Href,
+                IconName = Icon,
+                Icon = IconContent,
+                IsNew = IsNew,
+                IsBeta = IsBeta,
+                HasSubmenu = HasSubmenu
+            });
+        }
+    }
+}

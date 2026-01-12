@@ -1,0 +1,24 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@code {
+    [CascadingParameter] public CommandPalette? Parent { get; set; }
+
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    public void AddItem(CommandPalette.CommandItem item)
+    {
+        if (Parent != null)
+        {
+            if (!string.IsNullOrEmpty(Title))
+            {
+                item.Category = Title;
+            }
+            Parent.AddCommand(item);
+        }
+    }
+}
+
+<CascadingValue Value="this" IsFixed="true">
+    @ChildContent
+</CascadingValue>

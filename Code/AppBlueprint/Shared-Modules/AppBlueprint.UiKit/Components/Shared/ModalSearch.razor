@@ -4,7 +4,7 @@
 @if (isVisible)
 {
     <!-- Modal backdrop -->
-    <div class="fixed inset-0 bg-gray-900/30 z-50 transition-opacity duration-200 @(showContent ? "opacity-100" : "opacity-0")" aria-hidden="true" @onclick="Close"></div>
+    <div class="fixed inset-0 bg-gray-900/30 z-50 transition-opacity duration-200 @(showContent ? "opacity-100" : "opacity-0")" aria-hidden="true" @onclick="Close" @attributes="AdditionalAttributes"></div>
 
     <!-- Modal dialog -->
     <div id="@Id" class="fixed inset-0 z-50 overflow-hidden flex items-start top-20 mb-4 justify-center px-4 sm:px-6 transition-all duration-200 ease-in-out @(showContent ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")" role="dialog" aria-modal="true" style="top: 5rem; transition: all 0.2s ease-in-out;">
@@ -130,6 +130,9 @@
     [Parameter] 
     public EventCallback OnOpenModal { get; set; }
 
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
     private ElementReference modalContentRef;
     private ElementReference searchInputRef;
     private bool isVisible;
@@ -184,6 +187,7 @@
         {
             await _onCloseModalBackingField.InvokeAsync();
         }
+        await OnClose.InvokeAsync();
     }
 
 }

@@ -5,6 +5,7 @@
 
 <div class="relative">
     <input @ref="inputRef"
+           id="@datePickerId"
            type="text"
            class="form-input pl-9 dark:bg-gray-800 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 font-medium w-[15.5rem]"
            placeholder="Select date range"
@@ -22,6 +23,7 @@
     public string? Align { get; set; }
 
     private ElementReference inputRef;
+    private string datePickerId = $"datepicker-{Guid.NewGuid():N}";
 
     protected override void OnInitialized()
     {

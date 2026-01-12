@@ -1,0 +1,39 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@code {
+    [CascadingParameter] public CommandGroup? Group { get; set; }
+    [CascadingParameter] public CommandPalette? Palette { get; set; }
+
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public string? Shortcut { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public RenderFragment? IconContent { get; set; }
+    [Parameter] public Func<Task>? OnClick { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var item = new CommandPalette.CommandItem
+        {
+            Id = Guid.NewGuid().ToString(),
+            Label = Text ?? Label ?? "",
+            Description = Description,
+            Href = Href,
+            Shortcut = Shortcut,
+            IconName = Icon,
+            Icon = IconContent,
+            Action = OnClick
+        };
+
+        if (Group != null)
+        {
+            Group.AddItem(item);
+        }
+        else if (Palette != null)
+        {
+            Palette.AddCommand(item);
+        }
+    }
+}

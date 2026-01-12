@@ -1,7 +1,7 @@
 @using Microsoft.JSInterop
 @inject IJSRuntime Js
 
-<div class="relative inline-flex" @ref="dropdownRef">
+<div class="relative inline-flex" @ref="dropdownRef" @attributes="AdditionalAttributes">
     <button @ref="triggerRef"
             class="w-8 h-8 flex items-center justify-center hover:bg-gray-100 lg:hover:bg-gray-200 dark:hover:bg-gray-700/50 dark:lg:hover:bg-gray-800 rounded-full @(dropdownOpen ? "bg-gray-200 dark:bg-gray-800" : "") relative"
             aria-haspopup="true"
@@ -45,6 +45,7 @@
 
 @code {
     [Parameter] public string? Align { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private bool dropdownOpen;
     private ElementReference dropdownRef;

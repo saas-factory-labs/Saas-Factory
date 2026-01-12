@@ -8,7 +8,7 @@
 {
     @* Backdrop *@
     <div class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80 z-50 transition-opacity"
-         @onclick="Close">
+         @onclick="Close" @attributes="AdditionalAttributes">
     </div>
 
     @* Command palette *@
@@ -35,10 +35,14 @@
             </div>
 
             @* Results *@
-            @if (FilteredCommands.Any())
+            <CascadingValue Value="this" IsFixed="true">
+                @ChildContent
+            </CascadingValue>
+
+            @if (GetDisplayCommands().Any())
             {
                 <div class="max-h-80 scroll-py-2 overflow-y-auto py-2">
-                    @foreach (var group in FilteredCommands.GroupBy(c => c.Category))
+                    @foreach (var group in GetDisplayCommands().GroupBy(c => c.Category))
                     {
                         <div class="px-4 py-2">
                             <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">@group.Key</h3>
@@ -53,7 +57,14 @@
                                             @onclick="() => ExecuteCommand(command)"
                                             @onmouseenter="() => selectedIndex = GetCommandIndex(command)">
                                         <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md @GetIconBgClasses(command.Category)">
-                                            @command.Icon
+                                            @if (command.Icon != null)
+                                            {
+                                                @command.Icon
+                                            }
+                                            else if (!string.IsNullOrEmpty(command.IconName))
+                                            {
+                                                <i class="fas fa-@command.IconName"></i>
+                                            }
                                         </span>
                                         <div class="flex-1 text-left">
                                             <span class="block text-sm font-medium text-gray-900 dark:text-gray-100">@command.Label</span>
@@ -107,12 +118,16 @@
 @code {
     [Parameter] public bool IsOpen { get; set; } = false;
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public List<CommandItem>? CustomCommands { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private ElementReference searchInput;
     private string searchQuery = "";
     private int selectedIndex;
     private DotNetObjectReference<CommandPalette>? objRef;
+    private List<CommandItem> registeredCommands = new();
 
     private List<CommandItem> DefaultCommands => new()
     {
@@ -133,23 +148,29 @@
         new() { Id = "help-support", Label = "Contact Support", Description = "Get help", Category = "Help", Icon = GetHelpIcon() }
     };
 
-    private List<CommandItem> AllCommands => CustomCommands != null && CustomCommands.Any()
-        ? CustomCommands.Concat(DefaultCommands).ToList()
-        : DefaultCommands;
+    private List<CommandItem> AllCommands => registeredCommands.Any() 
+        ? registeredCommands 
+        : (CustomCommands != null && CustomCommands.Any() ? CustomCommands.Concat(DefaultCommands).ToList() : DefaultCommands);
 
-    private List<CommandItem> FilteredCommands
+    private List<CommandItem> GetDisplayCommands()
     {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(searchQuery))
-                return AllCommands;
+        if (string.IsNullOrWhiteSpace(searchQuery))
+            return AllCommands;
 
-            var query = searchQuery.ToLower();
-            return AllCommands
-                .Where(c => c.Label.ToLower().Contains(query) ||
-                            (c.Description?.ToLower().Contains(query) ?? false) ||
-                            c.Category.ToLower().Contains(query))
-                .ToList();
+        var query = searchQuery.ToLower();
+        return AllCommands
+            .Where(c => c.Label.ToLower().Contains(query) ||
+                        (c.Description?.ToLower().Contains(query) ?? false) ||
+                        c.Category.ToLower().Contains(query))
+            .ToList();
+    }
+
+    public void AddCommand(CommandItem command)
+    {
+        if (!registeredCommands.Any(c => c.Id == command.Id && c.Label == command.Label))
+        {
+            registeredCommands.Add(command);
+            StateHasChanged();
         }
     }
 
@@ -193,25 +214,27 @@
     {
         IsOpen = false;
         await IsOpenChanged.InvokeAsync(false);
+        await OnClose.InvokeAsync();
     }
 
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {
+        var displayCommands = GetDisplayCommands();
         switch (e.Key)
         {
             case "Escape":
                 await Close();
                 break;
             case "ArrowDown":
-                selectedIndex = Math.Min(selectedIndex + 1, FilteredCommands.Count - 1);
+                selectedIndex = Math.Min(selectedIndex + 1, displayCommands.Count - 1);
                 break;
             case "ArrowUp":
                 selectedIndex = Math.Max(selectedIndex - 1, 0);
                 break;
             case "Enter":
-                if (FilteredCommands.Any() && selectedIndex < FilteredCommands.Count)
+                if (displayCommands.Any() && selectedIndex < displayCommands.Count)
                 {
-                    await ExecuteCommand(FilteredCommands[selectedIndex]);
+                    await ExecuteCommand(displayCommands[selectedIndex]);
                 }
 
                 break;
@@ -234,7 +257,7 @@
 
     private int GetCommandIndex(CommandItem command)
     {
-        return FilteredCommands.IndexOf(command);
+        return GetDisplayCommands().IndexOf(command);
     }
 
     private async Task ToggleTheme()
@@ -284,6 +307,7 @@
         public string Category { get; set; } = "General";
         public string? Href { get; set; }
         public string? Shortcut { get; set; }
+        public string? IconName { get; set; }
         public RenderFragment? Icon { get; set; }
         public Func<Task>? Action { get; set; }
     }

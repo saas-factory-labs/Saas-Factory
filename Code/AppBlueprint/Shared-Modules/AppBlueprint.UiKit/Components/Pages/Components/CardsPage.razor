@@ -1,0 +1,324 @@
+@page "/uikit/cards"
+@using AppBlueprint.UiKit.Components.Charts
+@using AppBlueprint.UiKit.Components.Dashboard
+@using AppBlueprint.UiKit.Components.Shared
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Cards</h1>
+    </div>
+
+    <div class="space-y-8">
+
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Dashboard Cards</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DashboardCard01 />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DashboardCard02 />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DashboardCard03 />
+                </div>
+                </div>
+            <div class="grid grid-cols-12 gap-6 mt-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DashboardCard04 />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DashboardCard05 />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DashboardCard06 />
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-6 mt-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DashboardCard07 />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DashboardCard08 />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DashboardCard09 />
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-6 mt-6">
+                <div class="col-span-full xl:col-span-8">
+                    <DashboardCard10 />
+                </div>
+                <div class="col-span-full xl:col-span-4">
+                    <DashboardCard11 />
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Chart Cards</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <AreaChartCard Title="Total Sales" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <BarChartCard Title="Revenue" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <LineChartCard Title="Conversions" />
+                </div>
+                </div>
+            <div class="grid grid-cols-12 gap-6 mt-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <DoughnutChartCard Title="Traffic Sources" />
+                </div>
+                <div class="col-span-full xl:col-span-8">
+                    <ChartCard Title="Analytics Overview">
+                        <div class="h-[300px]">
+                            <LineChart 
+                                Labels="@(new List<string> { "12-01-2022", "01-01-2023", "02-01-2023", "03-01-2023", "04-01-2023", "05-01-2023" })" 
+                                Datasets="@(new List<LineChart.ChartDataset> { 
+                                    new LineChart.ChartDataset { 
+                                        Label = "Direct", 
+                                        Data = new List<double> { 800, 600, 900, 820, 490, 730 },
+                                        BorderColor = "rgb(139, 92, 246)",
+                                        BackgroundColor = "rgba(139, 92, 246, 0.1)",
+                                        Fill = true
+                                    } 
+                                })" />
+                        </div>
+                    </ChartCard>
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Metric Cards</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <MetricCard 
+                        Title="Total Users" 
+                        Value="@(12450)" 
+                        Change="+15.3%" 
+                        IsPositive="@true"
+                        Icon="users"
+                        ShowIcon="@true"
+                        Class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <MetricCard 
+                        Title="Revenue" 
+                        Value="@(45780)" 
+                        Prefix="$"
+                        Change="+8.2%" 
+                        IsPositive="@true"
+                        Icon="revenue"
+                        ShowIcon="@true"
+                        Class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <MetricCard 
+                        Title="Orders" 
+                        Value="@(3456)" 
+                        Change="-2.4%" 
+                        IsPositive="@false"
+                        Icon="orders"
+                        ShowIcon="@true"
+                        Class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5" />
+                </div>
+                </div>
+        </div>
+
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Stats Cards</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <StatsCard 
+                        Title="Page Views" 
+                        Value="234,567" 
+                        Subtitle="Last 30 days" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <StatsCard 
+                        Title="Bounce Rate" 
+                        Value="24.5%" 
+                        Subtitle="Compared to last month" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <StatsCard 
+                        Title="Avg Session" 
+                        Value="3:42" 
+                        Subtitle="Duration" />
+                </div>
+                </div>
+        </div>
+
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Content Cards</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <ContentCard 
+                        Title="Getting Started Guide" 
+                        Description="Learn the basics of our platform with this comprehensive guide"
+                        ImageUrl="_content/AppBlueprint.UiKit/images/applications-image-01.jpg"
+                        LinkText="Read More" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <ContentCard 
+                        Title="Advanced Features" 
+                        Description="Explore advanced features and unlock the full potential"
+                        ImageUrl="_content/AppBlueprint.UiKit/images/applications-image-02.jpg"
+                        LinkText="Explore" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <ContentCard 
+                        Title="Best Practices" 
+                        Description="Follow industry best practices for optimal results"
+                        ImageUrl="_content/AppBlueprint.UiKit/images/applications-image-03.jpg"
+                        LinkText="Learn More" />
+                </div>
+                </div>
+        </div>
+
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Product Cards</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <ProductCard 
+                        Title="Premium Headphones" 
+                        PriceAmount="@(299.99)"
+                        Rating="@(4.5)"
+                        RatingCount="@(124)"
+                        ImageUrl="_content/AppBlueprint.UiKit/images/product-image.jpg" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <ProductCard 
+                        Title="Wireless Mouse" 
+                        PriceAmount="@(79.99)"
+                        Rating="@(4.8)"
+                        RatingCount="@(89)"
+                        ImageUrl="_content/AppBlueprint.UiKit/images/product-image.jpg" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-4">
+                    <ProductCard 
+                        Title="Mechanical Keyboard" 
+                        PriceAmount="@(149.99)"
+                        Rating="@(4.7)"
+                        RatingCount="@(203)"
+                        ImageUrl="_content/AppBlueprint.UiKit/images/product-image.jpg" />
+                </div>
+                </div>
+        </div>
+
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Goal Progress Cards</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-full xl:col-span-4">
+                    <GoalProgressCard 
+                        Title="Monthly Sales Goal" 
+                        CurrentValue="$87500"
+                        GoalValue="$100000"
+                        Percentage="@(87.5)" />
+                </div>
+                <div class="col-span-full xl:col-span-4">
+                    <GoalProgressCard 
+                        Title="New Customers" 
+                        CurrentValue="842"
+                        GoalValue="1000"
+                        Percentage="@(84.2)" />
+                </div>
+                <div class="col-span-full xl:col-span-4">
+                    <GoalProgressCard 
+                        Title="Project Completion" 
+                        CurrentValue="67"
+                        GoalValue="100"
+                        Percentage="@(67.0)" />
+                </div>
+                </div>
+        </div>
+
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Progress List Cards</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-full xl:col-span-6">
+                    <ProgressListCard Title="Active Projects">
+                        <ProgressListItem Title="Website Redesign" Progress="@(75)" Status="On Track" />
+                        <ProgressListItem Title="Mobile App" Progress="@(45)" Status="In Progress" />
+                        <ProgressListItem Title="API Integration" Progress="@(90)" Status="Almost Done" />
+                    </ProgressListCard>
+                </div>
+                <div class="col-span-full xl:col-span-6">
+                    <ProgressListCard Title="Team Tasks">
+                        <ProgressListItem Title="Design System" Progress="@(100)" Status="Complete" />
+                        <ProgressListItem Title="User Testing" Progress="@(60)" Status="In Progress" />
+                        <ProgressListItem Title="Documentation" Progress="@(30)" Status="Started" />
+                    </ProgressListCard>
+                </div>
+                </div>
+        </div>
+
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Stock Price Cards</h2>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-full sm:col-span-6 xl:col-span-3">
+                    <StockPriceCard 
+                        Name="Google" 
+                        Subtitle="Alphabet Inc." 
+                        Price="@(142.50)" 
+                        ChangeAmount="@(1.25)" 
+                        ChangePercentage="@(0.88)" 
+                        ChartData="@(new List<double> { 140, 141, 140.5, 142, 141.5, 142.5 })" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-3">
+                    <StockPriceCard 
+                        Name="Apple" 
+                        Subtitle="Apple Inc." 
+                        Price="@(175.20)" 
+                        ChangeAmount="@(-2.45)" 
+                        ChangePercentage="@(-1.38)" 
+                        ChartData="@(new List<double> { 178, 177, 176, 175.5, 176.5, 175.2 })" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-3">
+                    <StockPriceCard 
+                        Name="Microsoft" 
+                        Subtitle="MSFT" 
+                        Price="@(332.10)" 
+                        ChangeAmount="@(4.80)" 
+                        ChangePercentage="@(1.47)" 
+                        ChartData="@(new List<double> { 325, 327, 328, 330, 331, 332.1 })" />
+                </div>
+                <div class="col-span-full sm:col-span-6 xl:col-span-3">
+                    <StockPriceCard 
+                        Name="Amazon" 
+                        Subtitle="AMZN" 
+                        Price="@(128.40)" 
+                        ChangeAmount="@(0.65)" 
+                        ChangePercentage="@(0.51)" 
+                        ChartData="@(new List<double> { 125, 126, 127, 126.5, 127.5, 128.4 })" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+
+}

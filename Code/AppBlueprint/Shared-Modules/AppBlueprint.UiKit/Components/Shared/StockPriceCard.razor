@@ -38,7 +38,7 @@
             <AppBlueprint.UiKit.Components.Charts.LineChart
                 CanvasId="@($"stock-chart-{Name.Replace(" ", "-").ToLower()}")"
                 Height="@ChartHeight"
-                Labels="@ChartLabels"
+                Labels="@GetChartLabels()"
                 Datasets="@GetChartDatasets()"
                 ShowXAxis="false"
                 ShowYAxis="false"
@@ -65,7 +65,7 @@
     /// Current price/value
     /// </summary>
     [Parameter, EditorRequired]
-    public decimal Price { get; set; }
+    public double Price { get; set; }
 
     /// <summary>
     /// Currency symbol
@@ -77,13 +77,13 @@
     /// Change amount (positive or negative)
     /// </summary>
     [Parameter]
-    public decimal ChangeAmount { get; set; }
+    public double ChangeAmount { get; set; }
 
     /// <summary>
     /// Change percentage
     /// </summary>
     [Parameter]
-    public decimal ChangePercentage { get; set; }
+    public double ChangePercentage { get; set; }
 
     /// <summary>
     /// Custom change display (e.g., "+$49 (4.7%) ↑") - overrides ChangeAmount/ChangePercentage
@@ -177,6 +177,20 @@
         }
 
         return ChangeAmount >= 0 ? "text-green-600 dark:text-green-500" : "text-red-500";
+    }
+
+    private List<string> GetChartLabels()
+    {
+        // If labels are provided, use them
+        if (ChartLabels is not null && ChartLabels.Any())
+            return ChartLabels;
+
+        // Otherwise, generate default labels based on chart data length
+        if (ChartData is null || !ChartData.Any())
+            return [];
+
+        // Generate empty labels for each data point
+        return Enumerable.Range(0, ChartData.Count).Select(_ => "").ToList();
     }
 
     private List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset> GetChartDatasets()

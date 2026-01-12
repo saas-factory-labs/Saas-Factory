@@ -1,13 +1,32 @@
-@* Chart component placeholder - Blazorise removed. Implement with Chart.js or ApexCharts if needed *@
+@using AppBlueprint.UiKit.Components.Charts
 
-<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
-    <div class="text-center py-8">
-        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <circle cx="12" cy="12" r="10" stroke-width="2" />
-            <circle cx="12" cy="12" r="6" stroke-width="2" />
-        </svg>
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">@Title</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Chart component removed - charting library needed</p>
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 @Class">
+    <header class="flex justify-between items-start mb-2">
+        <div>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@Title</h3>
+            @if (!string.IsNullOrEmpty(Subtitle))
+            {
+                <div class="text-xs text-gray-400 dark:text-gray-500">@Subtitle</div>
+            }
+        </div>
+        @if (HeaderActions != null)
+        {
+            @HeaderActions
+        }
+    </header>
+    
+    <div class="grow relative" style="height: @Height">
+        <DoughnutChart 
+            Labels="@GetLabels()" 
+            Data="@GetData()" 
+            BackgroundColors="@GetBackgroundColors()" 
+            HoverBackgroundColors="@GetHoverBackgroundColors()" />
+        @if (CenterContent != null)
+        {
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                @CenterContent
+            </div>
+        }
     </div>
 </div>
 
@@ -17,10 +36,20 @@
     [Parameter] public string Variant { get; set; } = "doughnut";
     [Parameter] public string Height { get; set; } = "200px";
     [Parameter] public string LegendPosition { get; set; } = "bottom";
-    [Parameter] public bool ShowLegend { get; set; }
-    [Parameter] public bool ShowValues { get; set; }
-    [Parameter] public object? Data { get; set; }
+    [Parameter] public bool ShowLegend { get; set; } = false;
+    [Parameter] public bool ShowValues { get; set; } = false;
+    [Parameter] public List<string>? Labels { get; set; }
+    [Parameter] public List<double>? Data { get; set; }
+    [Parameter] public List<string>? BackgroundColors { get; set; }
     [Parameter] public RenderFragment? HeaderActions { get; set; }
     [Parameter] public RenderFragment? CenterContent { get; set; }
     [Parameter] public string? Class { get; set; }
+
+    private List<string> GetLabels() => Labels ?? new List<string> { "Direct", "Referral", "Social" };
+    
+    private List<double> GetData() => Data ?? new List<double> { 55, 25, 20 };
+
+    private List<string> GetBackgroundColors() => BackgroundColors ?? new List<string> { "rgb(139, 92, 246)", "rgb(124, 58, 237)", "rgb(109, 40, 217)" };
+
+    private List<string> GetHoverBackgroundColors() => new List<string> { "rgb(109, 40, 217)", "rgb(91, 33, 182)", "rgb(76, 29, 149)" };
 }

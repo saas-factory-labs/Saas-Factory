@@ -15,11 +15,19 @@
 
     @* Feed items *@
     <div class="@GetFeedClasses()">
-        @if (Activities.Any())
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+
+        @{
+            var displayActivities = GetDisplayActivities();
+        }
+
+        @if (displayActivities.Any())
         {
-            @foreach (var (activity, index) in Activities.Select((a, i) => (a, i)))
+            @foreach (var (activity, index) in displayActivities.Select((a, i) => (a, i)))
             {
-                var isLast = index == Activities.Count - 1;
+                var isLast = index == displayActivities.Count - 1;
 
                 <div class="relative flex gap-4 @(isLast ? "" : "pb-6")">
                     @* Timeline line *@
@@ -141,12 +149,31 @@
 @code {
     [Parameter] public string? Title { get; set; }
     [Parameter] public List<ActivityItem> Activities { get; set; } = new();
+    [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool ShowTimeline { get; set; } = true;
     [Parameter] public bool ShowLoadMore { get; set; } = false;
     [Parameter] public RenderFragment? HeaderActions { get; set; }
     [Parameter] public EventCallback OnLoadMore { get; set; }
     [Parameter] public EventCallback<ActivityAction> OnActionClick { get; set; }
     [Parameter] public string? Class { get; set; }
+
+    private List<ActivityItem> registeredActivities = new();
+
+    protected override void OnInitialized()
+    {
+        registeredActivities.AddRange(Activities);
+    }
+
+    public void AddActivity(ActivityItem activity)
+    {
+        if (!registeredActivities.Contains(activity))
+        {
+            registeredActivities.Add(activity);
+            StateHasChanged();
+        }
+    }
+
+    private List<ActivityItem> GetDisplayActivities() => registeredActivities;
 
     private string GetContainerClasses()
     {

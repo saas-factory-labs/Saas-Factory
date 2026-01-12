@@ -88,4 +88,6 @@ Reusable for savings goals, profile completion, sales quotas, loyalty rewards, f
     /// </summary>
     [Parameter]
     public string GridColumnClass { get; set; } = "sm:col-span-12 xl:col-span-4";
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 }

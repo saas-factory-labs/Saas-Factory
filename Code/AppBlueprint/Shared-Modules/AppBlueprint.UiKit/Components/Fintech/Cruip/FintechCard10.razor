@@ -4,13 +4,17 @@
 
 <StockPriceCard Name="Google"
                 Subtitle="Alphabet"
-                Price="2860.96m"
-                ChangeAmount="-49"
-                ChangePercentage="4.7m"
+                Price="@_price"
+                ChangeAmount="@_changeAmount"
+                ChangePercentage="@_changePercentage"
                 ChartData="@_chartData"
                 ChartLabels="@_labels" />
 
 @code {
+    private double _price = 2860.96;
+    private double _changeAmount = -49;
+    private double _changePercentage = 4.7;
+    
     private readonly List<string> _labels =
     [
         "12-01-2022", "01-01-2023", "02-01-2023",

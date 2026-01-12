@@ -1,25 +1,50 @@
-@* Chart component placeholder - Blazorise removed. Implement with Chart.js or ApexCharts if needed *@
+@using AppBlueprint.UiKit.Components.Charts
 
-<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
-    <div class="text-center py-8">
-        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-        </svg>
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">@Title</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Chart component removed - charting library needed</p>
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 @Class">
+    <header class="flex justify-between items-start mb-2">
+        <div>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@Title</h3>
+            @if (!string.IsNullOrEmpty(Subtitle))
+            {
+                <div class="text-xs text-gray-400 dark:text-gray-500">@Subtitle</div>
+            }
+        </div>
+        @if (HeaderActions != null)
+        {
+            @HeaderActions
+        }
+    </header>
+    
+    <div class="grow" style="height: @Height">
+        <LineChart Labels="@GetLabels()" Datasets="@GetDatasets()" ShowXAxis="@true" ShowYAxis="@true" UseTimeScale="false" />
     </div>
 </div>
 
 @code {
     [Parameter] public string? Title { get; set; } = "Area Chart";
     [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public string Height { get; set; } = "300px";
+    [Parameter] public string Height { get; set; } = "200px";
     [Parameter] public bool ShowLegend { get; set; }
     [Parameter] public bool ShowSummary { get; set; }
     [Parameter] public bool Stacked { get; set; }
-    [Parameter] public object? Labels { get; set; }
-    [Parameter] public object? Datasets { get; set; }
+    [Parameter] public List<string>? Labels { get; set; }
+    [Parameter] public List<LineChart.ChartDataset>? Datasets { get; set; }
     [Parameter] public object? SummaryItems { get; set; }
     [Parameter] public RenderFragment? HeaderActions { get; set; }
     [Parameter] public string? Class { get; set; }
+
+    private List<string> GetLabels() => Labels ?? new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun" };
+    
+    private List<LineChart.ChartDataset> GetDatasets() => Datasets ?? new List<LineChart.ChartDataset>
+    {
+        new LineChart.ChartDataset
+        {
+            Label = Title ?? "Data",
+            Data = new List<double> { 35, 45, 30, 50, 40, 60 },
+            BorderColor = "rgb(139, 92, 246)",
+            BackgroundColor = "rgba(139, 92, 246, 0.1)",
+            Fill = true,
+            Tension = 0.4
+        }
+    };
 }

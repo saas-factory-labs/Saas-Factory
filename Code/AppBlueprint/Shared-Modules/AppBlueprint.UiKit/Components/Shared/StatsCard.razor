@@ -52,7 +52,11 @@
                 <span class="text-lg ml-1">@Suffix</span>
             }
         </div>
-        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">@Label</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">@(string.IsNullOrEmpty(Title) ? Label : Title)</div>
+        @if (!string.IsNullOrEmpty(Subtitle))
+        {
+            <div class="text-xs text-gray-400 mt-0.5">@Subtitle</div>
+        }
     </div>
 
     @* Sparkline or progress *@
@@ -105,7 +109,10 @@
     [Parameter] public int ProgressValue { get; set; } = 0;
     [Parameter] public string ProgressLabel { get; set; } = "Progress";
     [Parameter] public RenderFragment? Footer { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
     [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private string GetContainerClasses()
     {

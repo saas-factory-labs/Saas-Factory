@@ -1,0 +1,246 @@
+@page "/uikit/feedback"
+@using AppBlueprint.UiKit.Components.Shared
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Feedback Components</h1>
+    </div>
+
+    <div class="space-y-8">
+
+        <!-- Alerts -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Alerts</h2>
+            <div class="space-y-4">
+                <!-- Start -->
+                <Alert Type="success" Title="Success!" Message="Your changes have been saved successfully." />
+                <Alert Type="info" Title="Information" Message="Please review the updated terms and conditions." />
+                <Alert Type="warning" Title="Warning" Message="Your subscription is expiring soon." />
+                <Alert Type="error" Title="Error" Message="Failed to process your request. Please try again." />
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Banners -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Banners</h2>
+            <div class="space-y-4">
+                <!-- Start -->
+                <Banner 
+                    Title="New Feature Available!" 
+                    Message="Check out our latest feature that helps you work faster."
+                    ActionText="Learn More" />
+                <Banner2 
+                    Title="Limited Time Offer" 
+                    Message="Upgrade to Premium and get 50% off your first year."
+                    ActionText="Upgrade Now"
+                    Type="info" />
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Toast Notifications -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Toast Notifications</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="flex flex-wrap gap-3">
+                    <!-- Start -->
+                    <button class="btn bg-green-500 hover:bg-green-600 text-white" @onclick="() => showSuccessToast = true">
+                        Show Success Toast
+                    </button>
+                    <button class="btn bg-blue-500 hover:bg-blue-600 text-white" @onclick="() => showInfoToast = true">
+                        Show Info Toast
+                    </button>
+                    <button class="btn bg-yellow-500 hover:bg-yellow-600 text-white" @onclick="() => showWarningToast = true">
+                        Show Warning Toast
+                    </button>
+                    <button class="btn bg-red-500 hover:bg-red-600 text-white" @onclick="() => showErrorToast = true">
+                        Show Error Toast
+                    </button>
+                    <!-- End -->
+                </div>
+                <div class="mt-6 space-y-3">
+                    <h3 class="font-semibold">Toast Variants:</h3>
+                    <Toast @bind-IsOpen="showSuccessToast" Type="success">Operation completed successfully!</Toast>
+                    <Toast @bind-IsOpen="showInfoToast" Type="info">Here's some helpful information.</Toast>
+                    <Toast @bind-IsOpen="showWarningToast" Type="warning">Please review this warning.</Toast>
+                    <Toast @bind-IsOpen="showErrorToast" Type="error">An error occurred!</Toast>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Notifications -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Notifications</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-4">
+                    <!-- Start -->
+                    <Notification 
+                        Title="John Doe mentioned you" 
+                        Message="Check out the new design mockups"
+                        Time="2 minutes ago"
+                        IsRead="@false" />
+                    <Notification 
+                        Title="New comment on your post" 
+                        Message="Sarah left a comment on your latest article"
+                        Time="1 hour ago"
+                        IsRead="@false" />
+                    <Notification 
+                        Title="Weekly report ready" 
+                        Message="Your weekly performance report is now available"
+                        Time="2 days ago"
+                        IsRead="@true" />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Progress Bar -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Progress Bar</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-6">
+                    <!-- Start -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Upload Progress</span>
+                            <span>75%</span>
+                        </div>
+                        <ProgressBar Value="75" Color="blue" />
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Download Progress</span>
+                            <span>50%</span>
+                        </div>
+                        <ProgressBar Value="50" Color="green" />
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Processing</span>
+                            <span>30%</span>
+                        </div>
+                        <ProgressBar Value="30" Color="violet" />
+                    </div>
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Empty State -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Empty State</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <EmptyState 
+                    Title="No items found" 
+                    Description="Get started by creating your first item."
+                    PrimaryActionText="Create Item"
+                    Preset="no-data" />
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Loading Skeletons -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Loading Skeletons</h2>
+            <div class="space-y-6">
+                <!-- Start -->
+                <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="font-semibold mb-4">Card Skeleton</h3>
+                    <LoadingSkeletonCard />
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="font-semibold mb-4">Table Skeleton</h3>
+                    <LoadingSkeletonTable />
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                    <h3 class="font-semibold mb-4">Generic Skeleton</h3>
+                    <LoadingSkeleton />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Indicators -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Status Indicators</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-4">
+                    <!-- Start -->
+                    <div class="flex items-center gap-3">
+                        <LiveIndicator Status="online" />
+                        <span>User is online</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <RealTimeIndicator IsActive="@true" />
+                        <span>Real-time updates active</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <StatusBadge Status="active" />
+                        <StatusBadge Status="pending" />
+                        <StatusBadge Status="inactive" />
+                    </div>
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Activity Feed -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Activity Feed</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <ActivityFeed>
+                    <ActivityItem 
+                        Title="John Doe created a new project" 
+                        Time="2 minutes ago"
+                        Icon="plus" />
+                    <ActivityItem 
+                        Title="Sarah updated the design files" 
+                        Time="1 hour ago"
+                        Icon="edit" />
+                    <ActivityItem 
+                        Title="Mike commented on your task" 
+                        Time="3 hours ago"
+                        Icon="message" />
+                </ActivityFeed>
+                <!-- End -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private bool showSuccessToast = false;
+    private bool showInfoToast = false;
+    private bool showWarningToast = false;
+    private bool showErrorToast = false;
+}

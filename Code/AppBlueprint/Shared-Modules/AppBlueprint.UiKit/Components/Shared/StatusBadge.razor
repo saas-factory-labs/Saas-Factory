@@ -7,21 +7,27 @@
     {
         @((MarkupString)IconSvg)
     }
-    @Text
+    @GetDisplayText()
 </div>
 
 @code {
     /// <summary>
     /// Text to display in the badge
     /// </summary>
-    [Parameter, EditorRequired]
-    public string Text { get; set; } = string.Empty;
+    [Parameter]
+    public string? Text { get; set; }
 
     /// <summary>
     /// Color variant for the badge
     /// </summary>
     [Parameter]
     public string Variant { get; set; } = "default";
+
+    /// <summary>
+    /// Status alias for Variant
+    /// </summary>
+    [Parameter]
+    public string? Status { get; set; }
 
     /// <summary>
     /// Additional CSS classes
@@ -41,7 +47,11 @@
     [Parameter]
     public string? IconSvg { get; set; }
 
-    private string GetColorClass() => Variant.ToLower() switch
+    private string GetDisplayText() => Text ?? Status ?? Variant;
+
+    private string GetEffectiveVariant() => Status ?? Variant;
+
+    private string GetColorClass() => GetEffectiveVariant().ToLower() switch
     {
         // Success variants
         "success" or "completed" or "active" or "online" or "one-time" => 

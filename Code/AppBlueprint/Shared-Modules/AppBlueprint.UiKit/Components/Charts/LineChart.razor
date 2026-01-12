@@ -21,7 +21,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && Labels.Any() && Datasets.Any())
+        if (firstRender && Labels != null && Labels.Any() && Datasets != null && Datasets.Any())
         {
             await InitializeChart();
         }
@@ -60,10 +60,10 @@
 
     public async Task UpdateData(List<string> labels, List<ChartDataset> datasets)
     {
-        Labels = labels;
-        Datasets = datasets;
+        Labels = labels ?? new();
+        Datasets = datasets ?? new();
 
-        if (_initialized)
+        if (_initialized && Datasets.Any())
         {
             var newData = new
             {

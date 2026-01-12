@@ -1,0 +1,157 @@
+@page "/uikit/navigation"
+@using AppBlueprint.UiKit.Components.Shared
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Navigation Components</h1>
+    </div>
+
+    <div class="space-y-8">
+
+        <!-- Breadcrumb -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Breadcrumb</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <Breadcrumb />
+                <div class="mt-4">
+                    <DynamicBreadcrumb />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Tabs -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Tabs</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <Tabs>
+                    <TabPanel Title="Overview" Icon="home">
+                        <div class="p-4">
+                            <h3 class="font-semibold mb-2">Overview Content</h3>
+                            <p class="text-gray-600 dark:text-gray-400">This is the overview tab content.</p>
+                        </div>
+                    </TabPanel>
+                    <TabPanel Title="Analytics" Icon="chart">
+                        <div class="p-4">
+                            <h3 class="font-semibold mb-2">Analytics Content</h3>
+                            <p class="text-gray-600 dark:text-gray-400">This is the analytics tab content.</p>
+                        </div>
+                    </TabPanel>
+                    <TabPanel Title="Settings" Icon="settings">
+                        <div class="p-4">
+                            <h3 class="font-semibold mb-2">Settings Content</h3>
+                            <p class="text-gray-600 dark:text-gray-400">This is the settings tab content.</p>
+                        </div>
+                    </TabPanel>
+                </Tabs>
+                <!-- End -->
+            </div>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6 mt-6">
+                <h3 class="text-lg font-semibold mb-4">Tab Navigation</h3>
+                <!-- Start -->
+                <TabNavigation>
+                    <TabItem Title="Dashboard" Href="/dashboard" IsActive="@true" />
+                    <TabItem Title="Users" Href="/users" />
+                    <TabItem Title="Settings" Href="/settings" />
+                    <TabItem Title="Reports" Href="/reports" />
+                </TabNavigation>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Bottom Navigation -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Bottom Navigation (Mobile)</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <div class="max-w-md mx-auto">
+                    <BottomNavigation>
+                        <BottomNavItem Icon="home" Label="Home" Href="/" IsActive="@true" />
+                        <BottomNavItem Icon="search" Label="Search" Href="/search" />
+                        <BottomNavItem Icon="bell" Label="Notifications" Href="/notifications" Badge="3" />
+                        <BottomNavItem Icon="user" Label="Profile" Href="/profile" />
+                    </BottomNavigation>
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Mega Menu -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Mega Menu</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <MegaMenu>
+                    <MegaMenuSection Title="Products">
+                        <MegaMenuItem Title="Product 1" Description="Description for product 1" />
+                        <MegaMenuItem Title="Product 2" Description="Description for product 2" />
+                    </MegaMenuSection>
+                    <MegaMenuSection Title="Services">
+                        <MegaMenuItem Title="Service 1" Description="Description for service 1" />
+                        <MegaMenuItem Title="Service 2" Description="Description for service 2" />
+                    </MegaMenuSection>
+                </MegaMenu>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Progress Tracker -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Progress Tracker</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <ProgressTracker CurrentStep="2">
+                    <ProgressStep Number="1" Title="Account" IsComplete="@true" />
+                    <ProgressStep Number="2" Title="Profile" IsActive="@true" />
+                    <ProgressStep Number="3" Title="Preferences" />
+                    <ProgressStep Number="4" Title="Complete" />
+                </ProgressTracker>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Onboarding Tour -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Onboarding Tour</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <button class="btn bg-violet-500 hover:bg-violet-600 text-white" @onclick="() => tourActive = true">
+                    Start Product Tour
+                </button>
+                <OnboardingTour @bind-IsActive="tourActive" Steps="@tourSteps" />
+                <!-- End -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private bool tourActive = false;
+    private List<OnboardingTour.TourStep> tourSteps = new()
+    {
+        new OnboardingTour.TourStep { Title = "Welcome!", Description = "Let's take a quick tour of the main features.", TargetSelector = ".page-header" },
+        new OnboardingTour.TourStep { Title = "Dashboard", Description = "This is your main dashboard where you'll see key metrics.", TargetSelector = ".dashboard-section" },
+        new OnboardingTour.TourStep { Title = "Navigation", Description = "Use the sidebar to navigate between different sections.", TargetSelector = ".sidebar" },
+        new OnboardingTour.TourStep { Title = "All Set!", Description = "You're ready to get started!", TargetSelector = ".content-area" }
+    };
+}

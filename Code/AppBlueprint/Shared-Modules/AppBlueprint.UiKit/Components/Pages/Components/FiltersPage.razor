@@ -1,0 +1,201 @@
+@page "/uikit/filters"
+@using AppBlueprint.UiKit.Components.Shared
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Filter Components</h1>
+    </div>
+
+    <div class="space-y-8">
+
+        <!-- Dropdown Filters -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Dropdown Filters</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="flex flex-wrap gap-3">
+                    <!-- Start -->
+                    <DropdownFilter Label="Status" />
+                    <DropdownFilter Label="Category" />
+                    <DropdownFilter Label="Date Range" />
+                    <DropdownSort />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Category Filter -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Category Filter</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <CategoryFilter>
+                    <CategoryItem Name="All" Count="245" IsActive="@true" />
+                    <CategoryItem Name="Technology" Count="87" />
+                    <CategoryItem Name="Business" Count="54" />
+                    <CategoryItem Name="Design" Count="43" />
+                    <CategoryItem Name="Marketing" Count="61" />
+                </CategoryFilter>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Multi-Select Filter -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Multi-Select Filter</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <MultiSelectFilter 
+                    Title="Select Tags"
+                    Options="@tags"
+                    @bind-SelectedValues="selectedTags" />
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Price Range Filter -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Price Range Filter</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <PriceRangeFilter 
+                    MinValue="0"
+                    MaxValue="1000"
+                    CurrentMin="100"
+                    CurrentMax="500"
+                    OnRangeChange="@(range => HandlePriceChange(range))" />
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Rating Filter -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Rating Filter</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <RatingFilter OnRatingSelect="@HandleRatingSelect">
+                    <RatingOption Stars="5" Count="124" />
+                    <RatingOption Stars="4" Count="89" />
+                    <RatingOption Stars="3" Count="45" />
+                    <RatingOption Stars="2" Count="12" />
+                    <RatingOption Stars="1" Count="5" />
+                </RatingFilter>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Filter Group -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Filter Group</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <FilterGroup Title="Refine Results">
+                    <FilterSection Title="Price Range">
+                        <PriceRangeFilter MinValue="0" MaxValue="1000" />
+                    </FilterSection>
+                    <FilterSection Title="Categories">
+                        <FormCheckbox Label="Electronics" />
+                        <FormCheckbox Label="Clothing" />
+                        <FormCheckbox Label="Home & Garden" />
+                        <FormCheckbox Label="Sports" />
+                    </FilterSection>
+                    <FilterSection Title="Brands">
+                        <FormCheckbox Label="Brand A" />
+                        <FormCheckbox Label="Brand B" />
+                        <FormCheckbox Label="Brand C" />
+                    </FilterSection>
+                    <FilterSection Title="Ratings">
+                        <RatingFilter />
+                    </FilterSection>
+                </FilterGroup>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Applied Filters -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Applied Filters</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <div class="flex flex-wrap gap-2">
+                    <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-violet-500/20 text-violet-700">
+                        <span>Price: $100-$500</span>
+                        <button class="ml-2 hover:text-violet-900" @onclick="() => {}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-violet-500/20 text-violet-700">
+                        <span>Category: Electronics</span>
+                        <button class="ml-2 hover:text-violet-900" @onclick="() => {}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-violet-500/20 text-violet-700">
+                        <span>Rating: 4+ stars</span>
+                        <button class="ml-2 hover:text-violet-900" @onclick="() => {}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                        Clear all
+                    </button>
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private List<MultiSelectFilter.MultiSelectOption> tags = new()
+    {
+        new() { Label = "React", Value = "react" },
+        new() { Label = "Vue", Value = "vue" },
+        new() { Label = "Angular", Value = "angular" },
+        new() { Label = "Blazor", Value = "blazor" },
+        new() { Label = "Next.js", Value = "nextjs" },
+        new() { Label = "Tailwind CSS", Value = "tailwind" }
+    };
+    private List<string> selectedTags = new();
+
+    private void HandleTagSelection(List<string> selected)
+    {
+        selectedTags = selected;
+    }
+
+    private void HandlePriceChange((int min, int max) range)
+    {
+        // Handle price range change
+    }
+
+    private void HandleRatingSelect(int rating)
+    {
+        // Handle rating selection
+    }
+}

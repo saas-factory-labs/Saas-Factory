@@ -22,7 +22,7 @@
     [Parameter] public int Value { get; set; } = 0;
     [Parameter] public string Label { get; set; } = "";
     [Parameter] public bool ShowPercentage { get; set; } = false;
-    [Parameter] public string Variant { get; set; } = "violet"; // violet, sky, green, yellow, red, blue
+    [Parameter] public string Color { get; set; } = "violet"; // violet, sky, green, yellow, red, blue
     [Parameter] public string Size { get; set; } = "md"; // sm, md, lg
 
     private string GetContainerClasses()
@@ -38,13 +38,15 @@
 
     private string GetBarClasses()
     {
-        var colorClass = Variant switch
+        var colorClass = Color switch
         {
             "accent" => ThemeService.GetAccentClass("bg", "500"),
             "green" => "bg-green-500",
             "yellow" => "bg-yellow-500",
             "red" => "bg-red-500",
             "blue" => "bg-blue-500",
+            "violet" => "bg-violet-500",
+            "sky" => "bg-sky-500",
             _ => ThemeService.GetPrimaryClass("bg", "500")
         };
         return $"h-full rounded-full transition-all duration-300 {colorClass}";

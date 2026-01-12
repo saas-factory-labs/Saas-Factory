@@ -1,0 +1,251 @@
+@page "/uikit/tables"
+@using AppBlueprint.UiKit.Components.Shared
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Table Components</h1>
+    </div>
+
+    <div class="space-y-8">
+
+        <!-- Data Table -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Data Table</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60">
+                <!-- Start -->
+                <SimpleDataTable>
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-3 text-left">Name</th>
+                            <th class="px-4 py-3 text-left">Email</th>
+                            <th class="px-4 py-3 text-left">Role</th>
+                            <th class="px-4 py-3 text-left">Status</th>
+                            <th class="px-4 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in users)
+                        {
+                            <tr>
+                                <td class="px-4 py-3">@user.Name</td>
+                                <td class="px-4 py-3">@user.Email</td>
+                                <td class="px-4 py-3">@user.Role</td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium @(user.Status == "Active" ? "bg-green-500/20 text-green-700" : "bg-gray-500/20 text-gray-700")">@user.Status</span>
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <button class="text-violet-500 hover:text-violet-600">Edit</button>
+                                    <button class="text-red-500 hover:text-red-600 ml-3">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </SimpleDataTable>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Simple Data Table -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Simple Data Table</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60">
+                <!-- Start -->
+                <SimpleDataTable>
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-3 text-left">Product</th>
+                            <th class="px-4 py-3 text-left">Category</th>
+                            <th class="px-4 py-3 text-right">Price</th>
+                            <th class="px-4 py-3 text-right">Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-4 py-3">Premium Headphones</td>
+                            <td class="px-4 py-3">Electronics</td>
+                            <td class="px-4 py-3 text-right">$299.99</td>
+                            <td class="px-4 py-3 text-right">45</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3">Wireless Mouse</td>
+                            <td class="px-4 py-3">Electronics</td>
+                            <td class="px-4 py-3 text-right">$79.99</td>
+                            <td class="px-4 py-3 text-right">128</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3">Ergonomic Chair</td>
+                            <td class="px-4 py-3">Furniture</td>
+                            <td class="px-4 py-3 text-right">$449.99</td>
+                            <td class="px-4 py-3 text-right">23</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3">Standing Desk</td>
+                            <td class="px-4 py-3">Furniture</td>
+                            <td class="px-4 py-3 text-right">$599.99</td>
+                            <td class="px-4 py-3 text-right">12</td>
+                        </tr>
+                    </tbody>
+                </SimpleDataTable>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Transaction List -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Transaction List</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <div class="space-y-3">
+                    <!-- Start -->
+                    <TransactionListItem 
+                        Title="Payment from John Doe"
+                        Description="Invoice payment received"
+                        Amount="1250.00m"
+                        Date="Jan 5, 2026"
+                        Type="incoming"
+                        Status="completed" />
+                    <TransactionListItem 
+                        Title="Subscription - Premium Plan"
+                        Description="Monthly subscription fee"
+                        Amount="-29.99m"
+                        Date="Jan 3, 2026"
+                        Type="outgoing"
+                        Status="completed" />
+                    <TransactionListItem 
+                        Title="Refund - Order #12345"
+                        Description="Refund for returned item"
+                        Amount="89.50m"
+                        Date="Jan 2, 2026"
+                        Type="incoming"
+                        Status="pending" />
+                    <TransactionListItem 
+                        Title="Wire Transfer"
+                        Description="Transfer to bank account"
+                        Amount="-5000.00m"
+                        Date="Dec 30, 2025"
+                        Type="outgoing"
+                        Status="completed" />
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Data Table with Pagination -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Data Table with Pagination</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60">
+                <!-- Start -->
+                <div class="overflow-x-auto">
+                    <table class="table-auto w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="text-xs uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-gray-200 dark:border-gray-700/60">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Order ID</th>
+                                <th class="px-4 py-3 text-left font-semibold">Customer</th>
+                                <th class="px-4 py-3 text-left font-semibold">Date</th>
+                                <th class="px-4 py-3 text-right font-semibold">Amount</th>
+                                <th class="px-4 py-3 text-center font-semibold">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-gray-200 dark:divide-gray-700/60">
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                <tr>
+                                    <td class="px-4 py-3">#ORD-@(1000 + i)</td>
+                                    <td class="px-4 py-3">Customer @i</td>
+                                    <td class="px-4 py-3">Jan @i, 2026</td>
+                                    <td class="px-4 py-3 text-right">$@((i * 100).ToString("N2"))</td>
+                                    <td class="px-4 py-3 text-center">
+                                        <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-700">Completed</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700/60">
+                    <Pagination 
+                        CurrentPage="1"
+                        TotalPages="5"
+                        OnPageChange="@((int page) => {})" />
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-t border-gray-200 dark:border-gray-700" />
+
+        <!-- Infinite Scroll List -->
+        <div>
+            <h2 class="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-6">Infinite Scroll</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
+                <!-- Start -->
+                <InfiniteScroll OnLoadMore="@LoadMoreItems">
+                    <div class="space-y-3">
+                        @foreach (var item in scrollItems)
+                        {
+                            <div class="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg">
+                                <h4 class="font-semibold">@item.Title</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">@item.Description</p>
+                            </div>
+                        }
+                    </div>
+                </InfiniteScroll>
+                <!-- End -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private List<UserItem> users = new()
+    {
+        new UserItem { Name = "John Doe", Email = "john@example.com", Role = "Admin", Status = "Active" },
+        new UserItem { Name = "Jane Smith", Email = "jane@example.com", Role = "User", Status = "Active" },
+        new UserItem { Name = "Bob Johnson", Email = "bob@example.com", Role = "Manager", Status = "Inactive" },
+    };
+
+    private List<ScrollItem> scrollItems = new();
+
+    protected override void OnInitialized()
+    {
+        LoadMoreItems();
+    }
+
+    private void LoadMoreItems()
+    {
+        for (int i = scrollItems.Count; i < scrollItems.Count + 10; i++)
+        {
+            scrollItems.Add(new ScrollItem 
+            { 
+                Title = $"Item {i + 1}", 
+                Description = $"Description for item {i + 1}" 
+            });
+        }
+    }
+
+    private class UserItem
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+    }
+
+    private class ScrollItem
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+    }
+}

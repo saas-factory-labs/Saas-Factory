@@ -18,7 +18,7 @@
         {
             <div class="@GetCountTextSizeClass() font-bold text-gray-800 dark:text-gray-100 mr-2">@Count.ToString("N0")</div>
         }
-        <div class="@GetLabelTextSizeClass() text-gray-500 dark:text-gray-400">@Label</div>
+        <div class="@GetLabelTextSizeClass() text-gray-500 dark:text-gray-400">@GetEffectiveLabel()</div>
     </div>
 </div>
 
@@ -38,8 +38,14 @@
     /// <summary>
     /// Label text (e.g., "Live visitors", "Online now", "Active users")
     /// </summary>
-    [Parameter, EditorRequired]
-    public string Label { get; set; } = string.Empty;
+    [Parameter]
+    public string? Label { get; set; }
+
+    /// <summary>
+    /// Status alias for Color
+    /// </summary>
+    [Parameter]
+    public string? Status { get; set; }
 
     /// <summary>
     /// Size variant: small, medium, large
@@ -52,6 +58,21 @@
     /// </summary>
     [Parameter]
     public string Color { get; set; } = "red";
+
+    private string GetEffectiveLabel() => Label ?? Status ?? "Live";
+
+    private string GetEffectiveColor()
+    {
+        var status = (Status ?? Color).ToLower();
+        return status switch
+        {
+            "online" or "active" or "success" => "green",
+            "offline" or "inactive" or "error" => "red",
+            "away" or "pending" or "warning" => "amber",
+            "busy" or "info" => "blue",
+            _ => status
+        };
+    }
 
     private string GetDotSizeClass()
     {
@@ -99,7 +120,7 @@
 
     private string GetPingColorClass()
     {
-        return Color.ToLower() switch
+        return GetEffectiveColor().ToLower() switch
         {
             "red" => "bg-red-400",
             "green" or "emerald" => "bg-emerald-400",
@@ -112,7 +133,7 @@
 
     private string GetDotColorClass()
     {
-        return Color.ToLower() switch
+        return GetEffectiveColor().ToLower() switch
         {
             "red" => "bg-red-500",
             "green" or "emerald" => "bg-emerald-500",

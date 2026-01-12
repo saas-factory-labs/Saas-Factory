@@ -1,0 +1,57 @@
+@* Context menu item component *@
+
+<button type="button"
+        class="@GetItemClasses()"
+        disabled="@Disabled"
+        @onclick="OnClick"
+        @attributes="AdditionalAttributes">
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <span class="mr-2 text-gray-400 dark:text-gray-500">
+            <i class="fas fa-@Icon"></i>
+        </span>
+    }
+    <span class="flex-1 text-left">
+        @if (!string.IsNullOrEmpty(Text))
+        {
+            @Text
+        }
+        else
+        {
+            @ChildContent
+        }
+    </span>
+</button>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public bool IsDestructive { get; set; } = false;
+    [Parameter] public EventCallback OnClickCallback { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private async Task OnClick()
+    {
+        if (!Disabled)
+        {
+            await OnClickCallback.InvokeAsync();
+        }
+    }
+
+    private string GetItemClasses()
+    {
+        var baseClasses = "flex items-center w-full px-3 py-1.5 text-sm transition-colors";
+
+        var colorClasses = IsDestructive
+            ? Disabled
+                ? "text-red-300 dark:text-red-800 cursor-not-allowed"
+                : "text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
+            : Disabled
+                ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50";
+
+        return $"{baseClasses} {colorClasses}";
+    }
+}

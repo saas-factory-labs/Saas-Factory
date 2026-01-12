@@ -4,13 +4,17 @@
 
 <StockPriceCard Name="Amzn"
                 Subtitle="Amazon Inc."
-                Price="3400.35m"
-                ChangeAmount="142"
-                ChangePercentage="3.7m"
+                Price="@_price"
+                ChangeAmount="@_changeAmount"
+                ChangePercentage="@_changePercentage"
                 ChartData="@_chartData"
                 ChartLabels="@_labels" />
 
 @code {
+    private double _price = 3400.35;
+    private double _changeAmount = 142;
+    private double _changePercentage = 3.7;
+    
     private readonly List<string> _labels =
     [
         "12-01-2022", "01-01-2023", "02-01-2023",

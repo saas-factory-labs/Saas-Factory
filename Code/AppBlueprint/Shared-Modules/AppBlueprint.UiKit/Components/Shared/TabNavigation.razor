@@ -4,7 +4,11 @@
 <div class="@ContainerClass">
     @* Tab list *@
     <div class="@GetTabListClasses()" role="tablist">
-        @foreach (var tab in Tabs)
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+
+        @foreach (var tab in GetDisplayTabs())
         {
             var isActive = ActiveTab == tab.Id;
             <button type="button"
@@ -51,12 +55,32 @@
     [Parameter] public string? ContainerClass { get; set; }
     [Parameter] public string? PanelContainerClass { get; set; }
 
+    private List<TabItem> registeredTabs = new();
+
     protected override void OnInitialized()
     {
-        if (string.IsNullOrEmpty(ActiveTab) && Tabs.Any())
+        if (string.IsNullOrEmpty(ActiveTab) && !registeredTabs.Any() && Tabs.Any())
         {
             ActiveTab = Tabs.First().Id;
         }
+    }
+
+    public void AddTab(TabItem tab)
+    {
+        if (!registeredTabs.Any(t => t.Id == tab.Id && t.Label == tab.Label))
+        {
+            registeredTabs.Add(tab);
+            if (string.IsNullOrEmpty(ActiveTab) || tab.IsActive)
+            {
+                ActiveTab = tab.Id;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private List<TabItem> GetDisplayTabs()
+    {
+        return registeredTabs.Any() ? registeredTabs : Tabs;
     }
 
     private async Task SelectTab(TabItem tab)
@@ -143,6 +167,7 @@
         public RenderFragment? Icon { get; set; }
         public string? Badge { get; set; }
         public string? Href { get; set; }
+        public bool IsActive { get; set; }
         public bool Disabled { get; set; } = false;
     }
 }

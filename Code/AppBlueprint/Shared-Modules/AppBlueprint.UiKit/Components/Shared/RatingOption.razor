@@ -1,0 +1,20 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@code {
+    [CascadingParameter] public RatingFilter? Parent { get; set; }
+
+    [Parameter] public int Stars { get; set; }
+    [Parameter] public string? Count { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Parent != null)
+        {
+            Parent.AddOption(new RatingFilter.RatingOptionData
+            {
+                Stars = Stars,
+                Count = Count
+            });
+        }
+    }
+}

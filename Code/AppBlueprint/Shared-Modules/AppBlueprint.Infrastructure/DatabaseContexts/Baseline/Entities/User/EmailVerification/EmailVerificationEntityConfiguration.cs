@@ -37,8 +37,18 @@ public sealed class EmailVerificationEntityConfiguration : IEntityTypeConfigurat
 
         builder.Property(e => e.HasBeenVerified)
             .IsRequired()
-            .HasDefaultValue(false);        // Note: User relationship not configured as EmailVerificationEntity doesn't currently have User navigation property
-        // TODO: Add UserId foreign key and User navigation property to EmailVerificationEntity if user relationship is needed
+            .HasDefaultValue(false);
+
+        builder.Property(e => e.UserId)
+            .HasMaxLength(450)
+            .IsRequired(false);
+
+        // User relationship configuration
+        builder.HasOne(e => e.User)
+            .WithMany(u => u.EmailVerifications)
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_EmailVerifications_Users_UserId");
 
         // Performance indexes
         builder.HasIndex(e => e.Token)
@@ -50,6 +60,9 @@ public sealed class EmailVerificationEntityConfiguration : IEntityTypeConfigurat
 
         builder.HasIndex(e => e.HasBeenVerified)
             .HasDatabaseName("IX_EmailVerifications_HasBeenVerified");
+
+        builder.HasIndex(e => e.UserId)
+            .HasDatabaseName("IX_EmailVerifications_UserId");
     }
 }
 

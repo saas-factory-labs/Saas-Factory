@@ -4,18 +4,44 @@
 
 <FilterGroup Title="@Title" Class="@Class">
     <ul class="space-y-2">
-        @foreach (int rating in RatingLevels.OrderByDescending(r => r))
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+
+        @foreach (var option in GetDisplayOptions())
         {
             <li>
                 <button type="button" 
-                        class="flex items-center space-x-2 mr-2 @GetButtonClass(rating)"
-                        @onclick="() => OnRatingClick(rating)">
-                    <ProductRating Rating="@rating" ShowScore="false" Size="@StarSize" />
-                    <div class="inline-flex text-sm text-gray-500 dark:text-gray-400 @(IsSelected(rating) ? "font-semibold" : "italic")">
-                        <span class="sr-only">@rating Stars</span> @AndUpLabel
+                        class="flex items-center space-x-2 mr-2 w-full @GetButtonClass(option.Stars)"
+                        @onclick="() => OnRatingClick(option.Stars)">
+                    <ProductRating Rating="@option.Stars" ShowScore="false" Size="@StarSize" />
+                    <div class="inline-flex text-sm text-gray-500 dark:text-gray-400 @(IsSelected(option.Stars) ? "font-semibold" : "font-normal")">
+                        <span class="sr-only">@option.Stars Stars</span> 
+                        <span class="ml-1">@AndUpLabel</span>
+                        @if (!string.IsNullOrEmpty(option.Count))
+                        {
+                            <span class="ml-2 text-gray-400 dark:text-gray-500 font-normal">(@option.Count)</span>
+                        }
                     </div>
                 </button>
             </li>
+        }
+
+        @if (!registeredOptions.Any() && RatingLevels.Any())
+        {
+            @foreach (int rating in RatingLevels.OrderByDescending(r => r))
+            {
+                <li>
+                    <button type="button" 
+                            class="flex items-center space-x-2 mr-2 @GetButtonClass(rating)"
+                            @onclick="() => OnRatingClick(rating)">
+                        <ProductRating Rating="@rating" ShowScore="false" Size="@StarSize" />
+                        <div class="inline-flex text-sm text-gray-500 dark:text-gray-400 @(IsSelected(rating) ? "font-semibold" : "italic")">
+                            <span class="sr-only">@rating Stars</span> @AndUpLabel
+                        </div>
+                    </button>
+                </li>
+            }
         }
     </ul>
 </FilterGroup>
@@ -52,6 +78,18 @@
     public EventCallback<int> OnRatingSelected { get; set; }
 
     /// <summary>
+    /// Alias for OnRatingSelected
+    /// </summary>
+    [Parameter]
+    public EventCallback<int> OnRatingSelect { get; set; }
+
+    /// <summary>
+    /// Declarative rating options
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
     /// Label to show after stars (e.g., "And up", "& above")
     /// </summary>
     [Parameter]
@@ -68,6 +106,19 @@
     /// </summary>
     [Parameter]
     public string? Class { get; set; }
+
+    private List<RatingOptionData> registeredOptions = new();
+
+    public void AddOption(RatingOptionData option)
+    {
+        if (!registeredOptions.Any(o => o.Stars == option.Stars))
+        {
+            registeredOptions.Add(option);
+            StateHasChanged();
+        }
+    }
+
+    private List<RatingOptionData> GetDisplayOptions() => registeredOptions.OrderByDescending(o => o.Stars).ToList();
 
     private bool IsSelected(int rating)
     {
@@ -91,7 +142,15 @@
             SelectedMinRating = rating;
         }
 
-        await SelectedMinRatingChanged.InvokeAsync(SelectedMinRating ?? 0);
-        await OnRatingSelected.InvokeAsync(rating);
+        var effectiveRating = SelectedMinRating ?? 0;
+        await SelectedMinRatingChanged.InvokeAsync(effectiveRating);
+        await OnRatingSelected.InvokeAsync(effectiveRating);
+        await OnRatingSelect.InvokeAsync(effectiveRating);
+    }
+
+    public class RatingOptionData
+    {
+        public int Stars { get; set; }
+        public string? Count { get; set; }
     }
 }

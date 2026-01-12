@@ -29,7 +29,19 @@
                         </svg>
                     }
                     <div>
+                        @if (!string.IsNullOrEmpty(Title))
+                        {
+                            <div class="font-bold mb-1">@Title</div>
+                        }
+                        @if (!string.IsNullOrEmpty(Message))
+                        {
+                            <div>@Message</div>
+                        }
                         @ChildContent
+                        @if (!string.IsNullOrEmpty(ActionText))
+                        {
+                            <div class="mt-2 text-xs font-semibold uppercase tracking-wider underline cursor-pointer hover:opacity-80">@ActionText</div>
+                        }
                     </div>
                 </div>
                 <button class="opacity-60 hover:opacity-70 ml-3 mt-[3px]" @onclick="Close">
@@ -45,8 +57,12 @@
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Message { get; set; }
+    [Parameter] public string? ActionText { get; set; }
     [Parameter] public string Type { get; set; } = "info";
     [Parameter] public bool Open { get; set; } = true;
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private string GetTypeColor()
     {

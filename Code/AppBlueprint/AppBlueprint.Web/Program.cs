@@ -172,6 +172,11 @@ builder.Services.AddHttpContextAccessor();
 // Configure authentication (Logto, cookies, data protection, authorization)
 builder.Services.AddWebAuthentication(builder.Configuration, builder.Environment);
 
+// Always register DemoAuthenticationStateProvider as a service (not as the default provider)
+// Users can access demo mode via /demo route regardless of Logto configuration
+builder.Services.AddScoped<AppBlueprint.Web.Services.DemoAuthenticationStateProvider>();
+Console.WriteLine("[Web] Demo mode available at /demo (works with or without Logto)");
+
 // Register Kiota IAuthenticationProvider for API client
 // This provider works with ASP.NET Core's cookie-based authentication (Logto SDK)
 // and optionally uses JWT tokens from storage for API calls

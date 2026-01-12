@@ -3,13 +3,54 @@
 @* Price range filter with dropdown - reusable for budget filters, deal value ranges, etc. *@
 
 <FilterGroup Title="@Title" Class="@Class">
-    <label class="sr-only">@Title</label>
-    <select class="form-select w-full" @bind="SelectedRange" @bind:after="OnRangeChanged">
-        @foreach (var range in PriceRanges)
-        {
-            <option value="@range.Value">@range.Label</option>
-        }
-    </select>
+    @if (PriceRanges.Any() && string.IsNullOrEmpty(SelectedRange) == false)
+    {
+        <label class="sr-only">@Title</label>
+        <select class="form-select w-full" @bind="SelectedRange" @bind:after="OnRangeChanged">
+            @foreach (var range in PriceRanges)
+            {
+                <option value="@range.Value">@range.Label</option>
+            }
+        </select>
+    }
+    else
+    {
+        <div class="mt-4 px-2">
+            <div class="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                <span>$@CurrentMin</span>
+                <span>$@CurrentMax</span>
+            </div>
+            <div class="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                @* This is a simplified visual representation of a range slider *@
+                <div class="absolute h-full bg-violet-500 rounded-full" 
+                     style="left: @(GetPercentage(CurrentMin))%; right: @(100 - GetPercentage(CurrentMax))%"></div>
+                
+                <input type="range" 
+                       min="@MinValue" 
+                       max="@MaxValue" 
+                       @bind="CurrentMin" 
+                       @bind:after="OnSliderChanged"
+                       class="absolute w-full h-full opacity-0 cursor-pointer z-10" />
+                <input type="range" 
+                       min="@MinValue" 
+                       max="@MaxValue" 
+                       @bind="CurrentMax" 
+                       @bind:after="OnSliderChanged"
+                       class="absolute w-full h-full opacity-0 cursor-pointer z-10" />
+            </div>
+            <div class="mt-4 flex gap-2">
+                <input type="number" 
+                       class="form-input w-full text-xs" 
+                       @bind="CurrentMin" 
+                       @bind:after="OnSliderChanged" />
+                <span class="text-gray-400">-</span>
+                <input type="number" 
+                       class="form-input w-full text-xs" 
+                       @bind="CurrentMax" 
+                       @bind:after="OnSliderChanged" />
+            </div>
+        </div>
+    }
 </FilterGroup>
 
 @code {
@@ -22,8 +63,38 @@
     /// <summary>
     /// List of price ranges to display
     /// </summary>
-    [Parameter, EditorRequired]
+    [Parameter]
     public List<PriceRangeItem> PriceRanges { get; set; } = new();
+
+    /// <summary>
+    /// Minimum possible value
+    /// </summary>
+    [Parameter]
+    public int MinValue { get; set; } = 0;
+
+    /// <summary>
+    /// Maximum possible value
+    /// </summary>
+    [Parameter]
+    public int MaxValue { get; set; } = 1000;
+
+    /// <summary>
+    /// Currently selected minimum value
+    /// </summary>
+    [Parameter]
+    public int CurrentMin { get; set; } = 0;
+
+    /// <summary>
+    /// Currently selected maximum value
+    /// </summary>
+    [Parameter]
+    public int CurrentMax { get; set; } = 1000;
+
+    /// <summary>
+    /// Event callback when range changes
+    /// </summary>
+    [Parameter]
+    public EventCallback<(int, int)> OnRangeChange { get; set; }
 
     /// <summary>
     /// Currently selected range value
@@ -51,17 +122,36 @@
 
     protected override void OnInitialized()
     {
-        // If no ranges provided, use default price ranges
-        if (PriceRanges.Count == 0)
+        // If no ranges provided AND no custom min/max bounds are used, use default price ranges
+        if (PriceRanges.Count == 0 && MinValue == 0 && MaxValue == 1000 && CurrentMin == 0 && CurrentMax == 1000)
         {
             PriceRanges = GetDefaultPriceRanges();
         }
 
-        // Set initial selection if not set
-        if (string.IsNullOrEmpty(SelectedRange) && PriceRanges.Count > 0)
+        // Set initial selection if not set and we have ranges
+        if (PriceRanges.Any() && string.IsNullOrEmpty(SelectedRange))
         {
             SelectedRange = PriceRanges[0].Value;
         }
+    }
+
+    private double GetPercentage(int value)
+    {
+        var range = MaxValue - MinValue;
+        if (range <= 0) return 0;
+        return (double)(value - MinValue) / range * 100;
+    }
+
+    private async Task OnSliderChanged()
+    {
+        if (CurrentMin > CurrentMax)
+        {
+            var temp = CurrentMin;
+            CurrentMin = CurrentMax;
+            CurrentMax = temp;
+        }
+
+        await OnRangeChange.InvokeAsync((CurrentMin, CurrentMax));
     }
 
     private async Task OnRangeChanged()

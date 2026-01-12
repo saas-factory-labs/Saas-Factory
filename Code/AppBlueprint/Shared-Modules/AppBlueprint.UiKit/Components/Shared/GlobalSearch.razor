@@ -8,7 +8,7 @@
 {
     @* Backdrop *@
     <div class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80 z-50 transition-opacity"
-         @onclick="Close">
+         @onclick="Close" @attributes="AdditionalAttributes">
     </div>
 
     @* Search modal *@
@@ -145,6 +145,8 @@
     [Parameter] public string Placeholder { get; set; } = "Search pages, actions, settings...";
     [Parameter] public List<SearchResult>? SearchableItems { get; set; }
     [Parameter] public EventCallback<SearchResult> OnResultSelected { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     private ElementReference searchInput;
     private string searchQuery = "";
@@ -256,6 +258,7 @@
     {
         IsOpen = false;
         await IsOpenChanged.InvokeAsync(false);
+        await OnClose.InvokeAsync();
     }
 
     private void ClearSearch()

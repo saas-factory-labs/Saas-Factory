@@ -1,0 +1,38 @@
+@namespace AppBlueprint.UiKit.Components.Shared
+
+@code {
+    [CascadingParameter] public MegaMenu? Parent { get; set; }
+
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private List<MegaMenu.MegaMenuItem> registeredItems = new();
+    private MegaMenu.MegaMenuSection? section;
+
+    protected override void OnInitialized()
+    {
+        section = new MegaMenu.MegaMenuSection
+        {
+            Title = Title,
+            Items = registeredItems
+        };
+
+        if (Parent != null)
+        {
+            Parent.AddSection(section);
+        }
+    }
+
+    public void AddItem(MegaMenu.MegaMenuItem item)
+    {
+        if (!registeredItems.Any(i => i.Label == item.Label && i.Href == item.Href))
+        {
+            registeredItems.Add(item);
+            StateHasChanged();
+        }
+    }
+}
+
+<CascadingValue Value="this" IsFixed="true">
+    @ChildContent
+</CascadingValue>
