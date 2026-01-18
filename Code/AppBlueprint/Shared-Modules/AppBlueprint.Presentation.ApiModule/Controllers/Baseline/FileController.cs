@@ -1,16 +1,18 @@
+using AppBlueprint.Application.Interfaces.Storage;
 using AppBlueprint.Contracts.Baseline.File.Requests;
 using AppBlueprint.Contracts.Baseline.File.Responses;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
+/// <summary>
+/// File management controller integrating database metadata with Cloudflare R2 storage.
+/// </summary>
 [Authorize]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
@@ -19,13 +21,16 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 public class FileController : BaseController
 {
     private readonly IFileRepository _fileRepository;
-    // Removed IUnitOfWork dependency for repository DI pattern
+    private readonly IFileStorageService _storageService;
 
-    public FileController(IFileRepository fileRepository, IConfiguration configuration)
+    public FileController(
+        IFileRepository fileRepository,
+        IFileStorageService storageService,
+        IConfiguration configuration)
         : base(configuration)
     {
         _fileRepository = fileRepository ?? throw new ArgumentNullException(nameof(fileRepository));
-        // Removed IUnitOfWork assignment
+        _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
     }
 
     /// <summary>
@@ -210,9 +215,198 @@ public class FileController : BaseController
         FileEntity? existingFile = await _fileRepository.GetByIdAsync(id, cancellationToken);
         if (existingFile is null) return NotFound(new { Message = $"File with ID {id} not found." });
 
+        // Delete from R2 storage
+        bool storageDeleted = await _storageService.DeleteAsync(existingFile.FilePath, cancellationToken);
+        
+        // Delete metadata from database
         await _fileRepository.DeleteAsync(existingFile, cancellationToken);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Uploads a file to Cloudflare R2 storage with metadata tracking.
+    /// </summary>
+    /// <param name="file">The file to upload.</param>
+    /// <param name="folder">Optional folder path (e.g., "avatars", "documents").</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>File metadata with URL.</returns>
+    [HttpPost("upload")]
+    [ProducesResponseType(typeof(FileUploadResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [RequestSizeLimit(104_857_600)] // 100MB
+    public async Task<ActionResult<FileUploadResponse>> Upload(
+        IFormFile file,
+        [FromQuery] string? folder,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(file);
+
+        if (file.Length == 0)
+        {
+            return BadRequest(new { Message = "File is empty." });
+        }
+
+        try
+        {
+            // Generate unique key for R2
+            string fileId = PrefixedUlid.Generate("file");
+            string extension = Path.GetExtension(file.FileName);
+            string key = string.IsNullOrEmpty(folder)
+                ? $"{fileId}{extension}"
+                : $"{folder.Trim('/')}/{fileId}{extension}";
+
+            // Upload to R2
+            FileUploadResult result;
+            await using (Stream stream = file.OpenReadStream())
+            {
+                result = await _storageService.UploadAsync(
+                    stream,
+                    key,
+                    file.ContentType,
+                    cancellationToken);
+            }
+
+            // Save metadata to database
+            var fileEntity = new FileEntity
+            {
+                Id = fileId,
+                OwnerId = GetCurrentUserId(), // Implement this method in BaseController
+                FileName = file.FileName,
+                FileExtension = extension,
+                FilePath = result.Key,
+                FileSize = result.Size
+            };
+
+            await _fileRepository.AddAsync(fileEntity, cancellationToken);
+
+            var response = new FileUploadResponse
+            {
+                Id = fileEntity.Id,
+                FileName = fileEntity.FileName,
+                Url = result.Url,
+                Size = result.Size,
+                ContentType = result.ContentType,
+                UploadedAt = DateTime.UtcNow
+            };
+
+            return CreatedAtAction(nameof(Get), new { id = fileEntity.Id }, response);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "File upload failed.", Error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Downloads a file from Cloudflare R2 storage.
+    /// </summary>
+    /// <param name="id">File ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>File stream.</returns>
+    [HttpGet("download/{id}")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> Download(string id, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+
+        FileEntity? fileEntity = await _fileRepository.GetByIdAsync(id, cancellationToken);
+        if (fileEntity is null)
+        {
+            return NotFound(new { Message = $"File with ID {id} not found." });
+        }
+
+        try
+        {
+            FileDownloadResult result = await _storageService.DownloadAsync(fileEntity.FilePath, cancellationToken);
+            
+            return File(result.Stream, result.ContentType, fileEntity.FileName);
+        }
+        catch (FileNotFoundException)
+        {
+            return NotFound(new { Message = "File not found in storage." });
+        }
+    }
+
+    /// <summary>
+    /// Generates a presigned URL for direct download from Cloudflare R2.
+    /// </summary>
+    /// <param name="id">File ID.</param>
+    /// <param name="expiresInHours">URL expiration time in hours (default 1).</param>
+    /// <returns>Presigned URL.</returns>
+    [HttpGet("{id}/presigned-url")]
+    [ProducesResponseType(typeof(PresignedUrlResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PresignedUrlResponse>> GetPresignedUrl(
+        string id,
+        [FromQuery] int expiresInHours = 1)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+
+        FileEntity? fileEntity = await _fileRepository.GetByIdAsync(id, default);
+        if (fileEntity is null)
+        {
+            return NotFound(new { Message = $"File with ID {id} not found." });
+        }
+
+        string url = _storageService.GeneratePresignedUrl(
+            fileEntity.FilePath,
+            TimeSpan.FromHours(expiresInHours));
+
+        var response = new PresignedUrlResponse
+        {
+            Url = url,
+            ExpiresAt = DateTime.UtcNow.AddHours(expiresInHours)
+        };
+
+        return Ok(response);
+    }
+
+    /// <summary>
+    /// Generates a presigned URL for direct upload from client to Cloudflare R2.
+    /// </summary>
+    /// <param name="fileName">File name.</param>
+    /// <param name="contentType">Content type.</param>
+    /// <param name="folder">Optional folder path.</param>
+    /// <param name="expiresInMinutes">URL expiration time in minutes (default 15).</param>
+    /// <returns>Presigned upload URL and key.</returns>
+    [HttpPost("presigned-upload-url")]
+    [ProducesResponseType(typeof(PresignedUploadUrlResponse), StatusCodes.Status200OK)]
+    public ActionResult<PresignedUploadUrlResponse> GetPresignedUploadUrl(
+        [FromQuery] string fileName,
+        [FromQuery] string contentType,
+        [FromQuery] string? folder,
+        [FromQuery] int expiresInMinutes = 15)
+    {
+        ArgumentNullException.ThrowIfNull(fileName);
+        ArgumentNullException.ThrowIfNull(contentType);
+
+        string fileId = PrefixedUlid.Generate("file");
+        string extension = Path.GetExtension(fileName);
+        string key = string.IsNullOrEmpty(folder)
+            ? $"{fileId}{extension}"
+            : $"{folder.Trim('/')}/{fileId}{extension}";
+
+        string url = _storageService.GeneratePresignedUploadUrl(
+            key,
+            contentType,
+            TimeSpan.FromMinutes(expiresInMinutes));
+
+        var response = new PresignedUploadUrlResponse
+        {
+            UploadUrl = url,
+            Key = key,
+            FileId = fileId,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(expiresInMinutes)
+        };
+
+        return Ok(response);
+    }
+
+    private string GetCurrentUserId()
+    {
+        // TODO: Extract from JWT claims
+        return User.FindFirst("sub")?.Value ?? "unknown-user";
     }
 }

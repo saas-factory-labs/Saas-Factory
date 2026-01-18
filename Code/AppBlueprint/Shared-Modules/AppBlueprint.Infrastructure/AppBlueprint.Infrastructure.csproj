@@ -72,6 +72,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <!-- Email templates as embedded resources -->
+        <EmbeddedResource Include="EmailTemplates\**\*.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
         <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>

@@ -1,0 +1,28 @@
+@model AppBlueprint.Contracts.Email.EmailVerificationModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Verify Your Email";
+    ViewData["HeaderTitle"] = "Email Verification";
+    ViewData["SiteName"] = Model.SiteName;
+}
+
+<p>Hi <strong>@Model.UserName</strong>,</p>
+
+<p>Thanks for signing up for <strong>@Model.SiteName</strong>! We need to verify your email address to complete your registration.</p>
+
+<p>Please click the button below to verify your email:</p>
+
+<div style="text-align: center;">
+    <a href="@Model.VerificationUrl" class="email-button">Verify Email Address</a>
+</div>
+
+<div class="info-box">
+    <p><strong>Note:</strong> This verification link will expire in <strong>@Model.ExpirationHours hours</strong>.</p>
+</div>
+
+<p>If the button doesn't work, copy and paste this link into your browser:</p>
+<p style="word-break: break-all; color: #667eea; font-size: 14px;">@Model.VerificationUrl</p>
+
+<p style="margin-top: 30px;">If you didn't create an account with us, you can safely ignore this email.</p>
+
+<p>Best regards,<br/>The @Model.SiteName Team</p>

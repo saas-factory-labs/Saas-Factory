@@ -1,0 +1,60 @@
+@model AppBlueprint.Contracts.Email.EmailVerificationModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Verify Your Email Address";
+}
+
+<div class="email-header">
+    <h1>Verify Your Email</h1>
+</div>
+
+<div class="email-body">
+    <p>Hi @Model.UserName,</p>
+    
+    <p>
+        Thanks for signing up for <strong>@Model.SiteName</strong>! 
+        To complete your registration, please verify your email address.
+    </p>
+    
+    <p>
+        Click the button below to confirm your email:
+    </p>
+    
+    <div style="text-align: center;">
+        <a href="@Model.VerificationUrl" class="button">
+            Verify Email Address
+        </a>
+    </div>
+    
+    <hr class="divider" />
+    
+    <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px; margin: 24px 0; border-radius: 4px;">
+        <p style="margin: 0; color: #1e40af; font-size: 14px;">
+            <strong>ℹ️ Note:</strong> This verification link will expire in <strong>@Model.ExpirationHours hours</strong>.
+        </p>
+    </div>
+    
+    <p style="font-size: 14px; color: #6b7280;">
+        If you didn't create an account with @Model.SiteName, you can safely ignore this email.
+    </p>
+    
+    <p style="font-size: 14px; color: #6b7280;">
+        If you're having trouble clicking the button, copy and paste this link into your browser:
+    </p>
+    
+    <p style="font-size: 12px; color: #9ca3af; word-break: break-all; background-color: #f9fafb; padding: 12px; border-radius: 4px;">
+        @Model.VerificationUrl
+    </p>
+    
+    <p style="margin-top: 32px;">
+        Best regards,<br>
+        <strong>The @Model.SiteName Team</strong>
+    </p>
+</div>
+
+<div class="email-footer">
+    <p>&copy; @DateTime.UtcNow.Year @Model.SiteName. All rights reserved.</p>
+    <p style="font-size: 12px; color: #9ca3af;">
+        You're receiving this email to verify your account registration.
+    </p>
+</div>

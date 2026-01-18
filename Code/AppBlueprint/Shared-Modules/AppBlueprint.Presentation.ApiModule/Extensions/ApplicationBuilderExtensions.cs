@@ -32,7 +32,8 @@ public static class ApplicationBuilderExtensions
         ArgumentNullException.ThrowIfNull(environment);
         ArgumentNullException.ThrowIfNull(configuration);
 
-        services.AddControllers();
+        // Use AddControllersWithViews to support both API controllers and Razor views (for email templates)
+        services.AddControllersWithViews();
         services.AddEndpointsApiExplorer();
         services.AddProblemDetails();
         services.AddAntiforgery();

@@ -62,9 +62,20 @@
     {
         if (firstRender)
         {
-            objRef = DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("infiniteScrollManager.initialize", sentinelRef, objRef, Threshold);
-            isInitialized = true;
+            try
+            {
+                objRef = DotNetObjectReference.Create(this);
+                await JS.InvokeVoidAsync("infiniteScrollManager.initialize", sentinelRef, objRef, Threshold);
+                isInitialized = true;
+            }
+            catch (JSException ex)
+            {
+                Console.WriteLine($"InfiniteScroll JavaScript interop error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"InfiniteScroll initialization error: {ex.Message}");
+            }
         }
     }
 

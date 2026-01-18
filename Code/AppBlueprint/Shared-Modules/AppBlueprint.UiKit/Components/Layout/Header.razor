@@ -14,7 +14,7 @@
             <div class="flex">
                 <!-- Hamburger button -->
                 <button class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 lg:hidden"
-                        @onclick="() => OnToggleSidebar.InvokeAsync()"
+                        @onclick="HandleToggleSidebarAsync"
                         aria-controls="sidebar"
                         aria-expanded="@SidebarOpen">
                     <span class="sr-only">Open sidebar</span>
@@ -172,6 +172,18 @@
     private async Task ToggleTheme()
     {
         await JS.InvokeVoidAsync("themeManager.toggleDarkMode");
+    }
+
+    private async Task HandleToggleSidebarAsync()
+    {
+        try
+        {
+            await OnToggleSidebar.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Header] Error toggling sidebar: {ex.Message}");
+        }
     }
 
 }

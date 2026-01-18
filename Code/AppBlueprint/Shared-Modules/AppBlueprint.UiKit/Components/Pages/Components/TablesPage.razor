@@ -174,9 +174,10 @@
                 </div>
                 <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700/60">
                     <Pagination 
-                        CurrentPage="1"
-                        TotalPages="5"
-                        OnPageChange="@((int page) => {})" />
+                        CurrentPage="@currentPage"
+                        TotalItems="50"
+                        PageSize="10"
+                        CurrentPageChanged="@((int page) => currentPage = page)" />
                 </div>
                 <!-- End -->
             </div>
@@ -209,6 +210,8 @@
 </div>
 
 @code {
+    private int currentPage = 1;
+    
     private List<UserItem> users = new()
     {
         new UserItem { Name = "John Doe", Email = "john@example.com", Role = "Admin", Status = "Active" },

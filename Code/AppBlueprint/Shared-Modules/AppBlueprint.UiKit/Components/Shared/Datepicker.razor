@@ -2,6 +2,7 @@
 @using Microsoft.Extensions.Logging
 @inject IJSRuntime JS
 @inject ILogger<Datepicker> Logger
+@implements IAsyncDisposable
 
 <div class="relative">
     <input @ref="inputRef"
@@ -24,26 +25,59 @@
 
     private ElementReference inputRef;
     private string datePickerId = $"datepicker-{Guid.NewGuid():N}";
-
-    protected override void OnInitialized()
-    {
-    }
+    private bool isInitialized = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        
         try
         {
             if (firstRender)
             {
-                
-                await JS.InvokeVoidAsync("datepickerManager.initialize", inputRef, Align);
-                
+                // Check if datepickerManager is available before initializing
+                bool isAvailable = await JS.InvokeAsync<bool>("eval", "typeof datepickerManager !== 'undefined' && typeof datepickerManager.initialize === 'function'");
+                if (isAvailable)
+                {
+                    await JS.InvokeVoidAsync("datepickerManager.initialize", inputRef, Align);
+                    isInitialized = true;
+                }
+                else
+                {
+                    Logger.LogWarning("⚠️ Datepicker JavaScript module not available");
+                }
             }
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "❌ Error in Datepicker");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (!isInitialized)
+        {
+            return;
+        }
+
+        try
+        {
+            bool isAvailable = await JS.InvokeAsync<bool>("eval", "typeof datepickerManager !== 'undefined' && typeof datepickerManager.cleanup === 'function'");
+            if (isAvailable)
+            {
+                await JS.InvokeVoidAsync("datepickerManager.cleanup", inputRef);
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // Circuit disconnected, ignore - cleanup will happen on client side
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("statically rendered"))
+        {
+            // Component being statically rendered, ignore
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "⚠️ Error disposing Datepicker");
         }
     }
 }

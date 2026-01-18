@@ -1,0 +1,209 @@
+@page "/dev/email-templates"
+@using AppBlueprint.Application.Interfaces.Email
+@using AppBlueprint.Contracts.Email
+@inject IEmailTemplateService TemplateService
+@inject NavigationManager Navigation
+
+<PageTitle>Email Template Preview</PageTitle>
+
+<div class="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 p-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-white mb-4">📧 Email Template Preview</h1>
+            <p class="text-xl text-white/90">Preview all email templates in their rendered form</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            @foreach (var template in _templates)
+            {
+                <button @onclick="() => SelectTemplate(template)" 
+                        class="bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-left">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="text-4xl">@GetTemplateIcon(template)</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800">@GetTemplateName(template)</h3>
+                            <p class="text-sm text-gray-500">@GetTemplateDescription(template)</p>
+                        </div>
+                    </div>
+                    @if (_selectedTemplate == template)
+                    {
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                                ✓ Currently Viewing
+                            </span>
+                        </div>
+                    }
+                </button>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(_renderedHtml))
+        {
+            <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+                <div class="bg-gray-800 px-6 py-4 flex items-center justify-between">
+                    <h2 class="text-white font-semibold">Preview: @GetTemplateName(_selectedTemplate)</h2>
+                    <button @onclick="ClosePreview" 
+                            class="text-white hover:text-gray-300 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-8 max-h-[800px] overflow-y-auto bg-gray-50">
+                    <div class="max-w-4xl mx-auto bg-white shadow-sm">
+                        @((MarkupString)_renderedHtml)
+                    </div>
+                </div>
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(_selectedTemplate))
+        {
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+                <p class="text-gray-600">Loading template...</p>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private readonly List<string> _templates = new()
+    {
+        "WelcomeEmail",
+        "PasswordResetEmail",
+        "EmailVerificationEmail",
+        "OrderConfirmationEmail",
+        "TeamInvitationEmail"
+    };
+
+    private string _selectedTemplate = string.Empty;
+    private string _renderedHtml = string.Empty;
+
+    private async Task SelectTemplate(string templateName)
+    {
+        _selectedTemplate = templateName;
+        _renderedHtml = string.Empty;
+        StateHasChanged();
+
+        try
+        {
+            _renderedHtml = templateName switch
+            {
+                "WelcomeEmail" => await RenderWelcomeEmail(),
+                "PasswordResetEmail" => await RenderPasswordResetEmail(),
+                "EmailVerificationEmail" => await RenderEmailVerificationEmail(),
+                "OrderConfirmationEmail" => await RenderOrderConfirmationEmail(),
+                "TeamInvitationEmail" => await RenderTeamInvitationEmail(),
+                _ => "<p>Template not found</p>"
+            };
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            _renderedHtml = $"<div class='p-4 bg-red-50 text-red-800 rounded'>Error rendering template: {ex.Message}</div>";
+            StateHasChanged();
+        }
+    }
+
+    private void ClosePreview()
+    {
+        _selectedTemplate = string.Empty;
+        _renderedHtml = string.Empty;
+    }
+
+    private async Task<string> RenderWelcomeEmail()
+    {
+        var model = new WelcomeEmailModel(
+            UserName: "John Doe",
+            SiteName: "AppBlueprint",
+            LoginUrl: "https://app.example.com/login",
+            SupportEmail: "support@example.com"
+        );
+        return await TemplateService.RenderTemplateAsync(model);
+    }
+
+    private async Task<string> RenderPasswordResetEmail()
+    {
+        var model = new PasswordResetEmailModel(
+            UserName: "John Doe",
+            ResetUrl: "https://app.example.com/reset-password?token=abc123",
+            ExpirationHours: "24",
+            SupportEmail: "support@example.com"
+        );
+        return await TemplateService.RenderTemplateAsync(model);
+    }
+
+    private async Task<string> RenderEmailVerificationEmail()
+    {
+        var model = new EmailVerificationModel(
+            UserName: "John Doe",
+            VerificationUrl: "https://app.example.com/verify-email?token=abc123",
+            SiteName: "AppBlueprint",
+            ExpirationHours: "24"
+        );
+        return await TemplateService.RenderTemplateAsync(model);
+    }
+
+    private async Task<string> RenderOrderConfirmationEmail()
+    {
+        var items = new List<OrderLineItemModel>
+        {
+            new("Premium Plan - Annual", 1, 249.99m, 249.99m),
+            new("Additional User License", 2, 25.00m, 50.00m)
+        };
+
+        var model = new OrderConfirmationEmailModel(
+            CustomerName: "Jane Smith",
+            OrderId: "ORD-12345",
+            TotalAmount: 299.99m,
+            Items: items,
+            OrderDetailsUrl: "https://app.example.com/orders/12345",
+            SiteName: "AppBlueprint",
+            SupportEmail: "support@example.com"
+        );
+        return await TemplateService.RenderTemplateAsync(model);
+    }
+
+    private async Task<string> RenderTeamInvitationEmail()
+    {
+        var model = new TeamInvitationEmailModel(
+            InviteeName: "Sarah Johnson",
+            InviterName: "John Doe",
+            TeamName: "Acme Corp",
+            AcceptInvitationUrl: "https://app.example.com/invitations/accept?token=abc123",
+            SiteName: "AppBlueprint",
+            ExpirationDays: "7"
+        );
+        return await TemplateService.RenderTemplateAsync(model);
+    }
+
+    private string GetTemplateIcon(string templateName) => templateName switch
+    {
+        "WelcomeEmail" => "👋",
+        "PasswordResetEmail" => "🔐",
+        "EmailVerificationEmail" => "✅",
+        "OrderConfirmationEmail" => "🛒",
+        "TeamInvitationEmail" => "👥",
+        _ => "📧"
+    };
+
+    private string GetTemplateName(string templateName) => templateName switch
+    {
+        "WelcomeEmail" => "Welcome Email",
+        "PasswordResetEmail" => "Password Reset",
+        "EmailVerificationEmail" => "Email Verification",
+        "OrderConfirmationEmail" => "Order Confirmation",
+        "TeamInvitationEmail" => "Team Invitation",
+        _ => templateName
+    };
+
+    private string GetTemplateDescription(string templateName) => templateName switch
+    {
+        "WelcomeEmail" => "Sent to new users on signup",
+        "PasswordResetEmail" => "Password reset request",
+        "EmailVerificationEmail" => "Verify email address",
+        "OrderConfirmationEmail" => "Purchase confirmation",
+        "TeamInvitationEmail" => "Team member invitation",
+        _ => string.Empty
+    };
+}

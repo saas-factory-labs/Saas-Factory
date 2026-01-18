@@ -1,0 +1,28 @@
+@model AppBlueprint.Contracts.Email.TeamInvitationEmailModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Team Invitation";
+    ViewData["HeaderTitle"] = "You've Been Invited!";
+    ViewData["SiteName"] = Model.SiteName;
+}
+
+<p>Hi <strong>@Model.InviteeName</strong>,</p>
+
+<p><strong>@Model.InviterName</strong> has invited you to join <strong>@Model.TeamName</strong> on <strong>@Model.SiteName</strong>.</p>
+
+<p>By accepting this invitation, you'll be able to collaborate with your team members and access shared resources.</p>
+
+<div style="text-align: center;">
+    <a href="@Model.AcceptInvitationUrl" class="email-button">Accept Invitation</a>
+</div>
+
+<div class="info-box">
+    <p><strong>Note:</strong> This invitation will expire in <strong>@Model.ExpirationDays days</strong>.</p>
+</div>
+
+<p>If the button doesn't work, copy and paste this link into your browser:</p>
+<p style="word-break: break-all; color: #667eea; font-size: 14px;">@Model.AcceptInvitationUrl</p>
+
+<p style="margin-top: 30px;">If you don't want to join this team, you can safely ignore this email.</p>
+
+<p>Best regards,<br/>The @Model.SiteName Team</p>

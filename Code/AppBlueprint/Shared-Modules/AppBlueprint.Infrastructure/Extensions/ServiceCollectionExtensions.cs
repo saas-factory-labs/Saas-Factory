@@ -287,6 +287,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers Cloudflare R2 object storage service if credentials are configured.
     /// Uses CloudflareR2Options from IOptions pattern.
+    /// Based on official Cloudflare R2 documentation: https://developers.cloudflare.com/r2/examples/aws/aws-sdk-net/
     /// </summary>
     private static IServiceCollection AddCloudflareR2Service(
         this IServiceCollection services,
@@ -302,19 +303,12 @@ public static class ServiceCollectionExtensions
             !string.IsNullOrWhiteSpace(r2Options.EndpointUrl) &&
             !string.IsNullOrWhiteSpace(r2Options.BucketName))
         {
-            services.AddSingleton<IAmazonS3>(sp =>
-            {
-                CloudflareR2Options options = sp.GetRequiredService<IOptions<CloudflareR2Options>>().Value;
-                var credentials = new BasicAWSCredentials(options.AccessKeyId, options.SecretAccessKey);
-                return new AmazonS3Client(credentials, new AmazonS3Config
-                {
-                    ServiceURL = options.EndpointUrl,
-                    ForcePathStyle = true // Required for R2 compatibility
-                });
-            });
+            // Register IFileStorageService with CloudflareR2Service implementation
+            services.AddSingleton<AppBlueprint.Application.Interfaces.Storage.IFileStorageService, CloudflareR2Service>();
             
-            services.AddSingleton<ObjectStorageService>();
             Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 storage service registered");
+            Console.WriteLine($"[AppBlueprint.Infrastructure] R2 Endpoint: {r2Options.EndpointUrl}");
+            Console.WriteLine($"[AppBlueprint.Infrastructure] R2 Bucket: {r2Options.BucketName}");
         }
         else
         {
@@ -336,6 +330,18 @@ public static class ServiceCollectionExtensions
         IServiceProvider tempProvider = services.BuildServiceProvider();
         ResendEmailOptions? resendOptions = tempProvider.GetService<IOptions<ResendEmailOptions>>()?.Value;
         
+        // Register email template service for Razor templates (always available for preview)
+        // Configure Razor view engine to find templates in Infrastructure assembly
+        services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(options =>
+        {
+            // Add custom view location for email templates
+            options.ViewLocationFormats.Add("/EmailTemplates/{0}.cshtml");
+            options.ViewLocationFormats.Add("/Views/EmailTemplates/{0}.cshtml");
+        });
+        
+        services.AddScoped<AppBlueprint.Application.Interfaces.Email.IEmailTemplateService, 
+            AppBlueprint.Infrastructure.Services.Email.RazorEmailTemplateService>();
+        
         if (resendOptions is not null && !string.IsNullOrWhiteSpace(resendOptions.ApiKey))
         {
             services.AddHttpClient<IResend, ResendClient>()
@@ -345,12 +351,13 @@ public static class ServiceCollectionExtensions
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendOptions.ApiKey}");
                     client.Timeout = TimeSpan.FromSeconds(resendOptions.TimeoutSeconds);
                 });
+            
             services.AddScoped<TransactionEmailService>();
-            Console.WriteLine("[AppBlueprint.Infrastructure] Resend email service registered");
+            Console.WriteLine("[AppBlueprint.Infrastructure] Resend email service with Razor templates registered");
         }
         else
         {
-            Console.WriteLine("[AppBlueprint.Infrastructure] Resend not configured (optional)");
+            Console.WriteLine("[AppBlueprint.Infrastructure] Resend not configured (optional) - Email template service still available for preview");
         }
 
         return services;

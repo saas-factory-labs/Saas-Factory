@@ -152,6 +152,9 @@ if (builder.Environment.IsDevelopment())
 builder.Services.AddOutputCache();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
+// Add MVC controllers with views support for Razor email templates
+builder.Services.AddControllersWithViews();
+
 // Configure Blazor Server Circuit Options for detailed error messages in development
 builder.Services.AddServerSideBlazor(options =>
 {

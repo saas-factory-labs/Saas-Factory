@@ -19,7 +19,7 @@ var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservic
     .WithEnvironment("DATABASE_CONNECTION_STRING", railwayConnectionString);
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
-    .WithHttpEndpoint(port: 9200, name: "web-http", isProxied: false)
+    .WithHttpEndpoint(port: 9200, name: "web", isProxied: false)
     .WithReference(apiService)
     .WithEnvironment("ASPNETCORE_URLS", "http://localhost:9200")
     .WithEnvironment("DATABASE_CONNECTION_STRING", railwayConnectionString)

@@ -1,0 +1,55 @@
+@model AppBlueprint.Contracts.Email.WelcomeEmailModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = $"Welcome to {Model.SiteName}";
+}
+
+<div class="email-header">
+    <h1>Welcome to @Model.SiteName! 🎉</h1>
+</div>
+
+<div class="email-body">
+    <p>Hi @Model.UserName,</p>
+    
+    <p>
+        Thank you for joining <strong>@Model.SiteName</strong>! We're thrilled to have you on board 
+        and can't wait to help you build something amazing.
+    </p>
+    
+    <p>
+        Your account is now active and ready to use. Get started by logging into your dashboard:
+    </p>
+    
+    <div style="text-align: center;">
+        <a href="@Model.LoginUrl" class="button">
+            Login to Your Account
+        </a>
+    </div>
+    
+    <hr class="divider" />
+    
+    <h2>What's Next?</h2>
+    <ul style="color: #4b5563; line-height: 1.8;">
+        <li>Complete your profile setup</li>
+        <li>Explore the dashboard features</li>
+        <li>Invite your team members</li>
+        <li>Check out our documentation</li>
+    </ul>
+    
+    <p>
+        If you have any questions or need assistance, our support team is here to help. 
+        Just reply to this email and we'll get back to you as soon as possible.
+    </p>
+    
+    <p style="margin-top: 32px;">
+        Best regards,<br>
+        <strong>The @Model.SiteName Team</strong>
+    </p>
+</div>
+
+<div class="email-footer">
+    <p>&copy; @DateTime.UtcNow.Year @Model.SiteName. All rights reserved.</p>
+    <p style="font-size: 12px; color: #9ca3af;">
+        You're receiving this email because you signed up for @Model.SiteName.
+    </p>
+</div>

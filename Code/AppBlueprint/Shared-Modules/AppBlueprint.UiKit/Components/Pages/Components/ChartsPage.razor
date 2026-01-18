@@ -17,11 +17,11 @@
                 <!-- Start -->
                 <div class="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Sales Over Time</h3>
-                    <LineChart />
+                    <LineChart Labels="@lineChartLabels" Datasets="@lineChartDatasets" />
                 </div>
                 <div class="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Revenue Trends</h3>
-                    <LineChart />
+                    <LineChart Labels="@lineChartLabels" Datasets="@lineChartDatasets2" />
                 </div>
                 <!-- End -->
             </div>
@@ -37,11 +37,11 @@
                 <!-- Start -->
                 <div class="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Monthly Performance</h3>
-                    <BarChart />
+                    <BarChart Labels="@barChartLabels" Datasets="@barChartDatasets" />
                 </div>
                 <div class="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl border border-gray-200 dark:border-gray-700/60 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Category Comparison</h3>
-                    <BarChart />
+                    <BarChart Labels="@barChartLabels2" Datasets="@barChartDatasets2" />
                 </div>
                 <!-- End -->
             </div>
@@ -155,4 +155,52 @@
 </div>
 
 @code {
+    // Line Chart Data
+    private List<string> lineChartLabels = new() { "Jan", "Feb", "Mar", "Apr", "May", "Jun" };
+    private List<LineChart.ChartDataset> lineChartDatasets = new()
+    {
+        new LineChart.ChartDataset 
+        { 
+            Label = "Sales",
+            Data = new List<double> { 4000, 4500, 5200, 4800, 5600, 6200 },
+            BorderColor = "rgb(99, 102, 241)",
+            BackgroundColor = "rgba(99, 102, 241, 0.1)"
+        }
+    };
+    
+    private List<LineChart.ChartDataset> lineChartDatasets2 = new()
+    {
+        new LineChart.ChartDataset 
+        { 
+            Label = "Revenue",
+            Data = new List<double> { 3500, 4200, 4800, 5100, 5400, 6000 },
+            BorderColor = "rgb(236, 72, 153)",
+            BackgroundColor = "rgba(236, 72, 153, 0.1)"
+        }
+    };
+    
+    // Bar Chart Data
+    private List<string> barChartLabels = new() { "Q1", "Q2", "Q3", "Q4" };
+    private List<BarChart.BarChartDataset> barChartDatasets = new()
+    {
+        new BarChart.BarChartDataset 
+        { 
+            Label = "Performance",
+            Data = new List<double> { 12500, 15600, 18200, 21000 },
+            BackgroundColor = "rgb(99, 102, 241)",
+            HoverBackgroundColor = "rgb(79, 70, 229)"
+        }
+    };
+    
+    private List<string> barChartLabels2 = new() { "Product A", "Product B", "Product C", "Product D" };
+    private List<BarChart.BarChartDataset> barChartDatasets2 = new()
+    {
+        new BarChart.BarChartDataset 
+        { 
+            Label = "Sales",
+            Data = new List<double> { 8500, 12300, 9800, 11200 },
+            BackgroundColor = "rgb(34, 197, 94)",
+            HoverBackgroundColor = "rgb(22, 163, 74)"
+        }
+    };
 }

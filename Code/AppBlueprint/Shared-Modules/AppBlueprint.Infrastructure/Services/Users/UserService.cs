@@ -150,14 +150,16 @@ public class UserServiceInfrastructure
         await _dbContext.Set<EmailVerificationEntity>().AddAsync(emailVerification, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // In a real-world implementation, we would send an email with the verification link
-        // For now, we'll just return the token to the caller
+        // Send welcome email with verification link
         try
         {
             await _emailService.SendSignUpWelcomeEmail(
                 EmailFromAddress,
                 user.Email!,
-                EmailSiteName
+                user.FirstName ?? "User",
+                EmailSiteName,
+                "https://app.example.com/login",
+                EmailFromAddress
             );
         }
         catch (InvalidOperationException ex)
@@ -231,14 +233,16 @@ public class UserServiceInfrastructure
         await _dbContext.Set<PasswordResetEntity>().AddAsync(passwordReset, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // In a real-world implementation, we would send an email with the reset link
-        // Since we're not implementing the actual email sending, we'll just return the token
+        // Send password reset email
         try
         {
             await _emailService.SendSignUpWelcomeEmail(
                 EmailFromAddress,
                 user.Email!,
-                EmailSiteName
+                user.FirstName ?? "User",
+                EmailSiteName,
+                "https://app.example.com/login",
+                EmailFromAddress
             );
         }
         catch (InvalidOperationException ex)

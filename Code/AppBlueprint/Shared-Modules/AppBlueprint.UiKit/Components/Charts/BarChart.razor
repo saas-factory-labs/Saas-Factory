@@ -29,27 +29,38 @@
     {
         if (_initialized) return;
 
-        var config = new
+        try
         {
-            data = new
+            var config = new
             {
-                labels = Labels,
-                datasets = Datasets.Select(d => new
+                data = new
                 {
-                    label = d.Label,
-                    data = d.Data,
-                    backgroundColor = d.BackgroundColor,
-                    hoverBackgroundColor = d.HoverBackgroundColor,
-                    barPercentage = d.BarPercentage,
-                    categoryPercentage = d.CategoryPercentage,
-                    borderRadius = d.BorderRadius
-                }).ToArray()
-            },
-            useTimeScale = UseTimeScale
-        };
+                    labels = Labels,
+                    datasets = Datasets.Select(d => new
+                    {
+                        label = d.Label,
+                        data = d.Data,
+                        backgroundColor = d.BackgroundColor,
+                        hoverBackgroundColor = d.HoverBackgroundColor,
+                        barPercentage = d.BarPercentage,
+                        categoryPercentage = d.CategoryPercentage,
+                        borderRadius = d.BorderRadius
+                    }).ToArray()
+                },
+                useTimeScale = UseTimeScale
+            };
 
-        await JSRuntime.InvokeVoidAsync("chartJsInterop.createBarChart", CanvasId, config);
-        _initialized = true;
+            await JSRuntime.InvokeVoidAsync("chartJsInterop.createBarChart", CanvasId, config);
+            _initialized = true;
+        }
+        catch (JSException ex)
+        {
+            Console.WriteLine($"Failed to initialize bar chart: {ex.Message}");
+        }
+        catch (JSDisconnectedException)
+        {
+            // Ignore - circuit is already disconnected
+        }
     }
 
     public async Task UpdateData(List<string> labels, List<BarChartDataset> datasets)
@@ -59,22 +70,33 @@
 
         if (_initialized)
         {
-            var newData = new
+            try
             {
-                labels = Labels,
-                datasets = Datasets.Select(d => new
+                var newData = new
                 {
-                    label = d.Label,
-                    data = d.Data,
-                    backgroundColor = d.BackgroundColor,
-                    hoverBackgroundColor = d.HoverBackgroundColor,
-                    barPercentage = d.BarPercentage,
-                    categoryPercentage = d.CategoryPercentage,
-                    borderRadius = d.BorderRadius
-                }).ToArray()
-            };
+                    labels = Labels,
+                    datasets = Datasets.Select(d => new
+                    {
+                        label = d.Label,
+                        data = d.Data,
+                        backgroundColor = d.BackgroundColor,
+                        hoverBackgroundColor = d.HoverBackgroundColor,
+                        barPercentage = d.BarPercentage,
+                        categoryPercentage = d.CategoryPercentage,
+                        borderRadius = d.BorderRadius
+                    }).ToArray()
+                };
 
-            await JSRuntime.InvokeVoidAsync("chartJsInterop.updateChart", CanvasId, newData);
+                await JSRuntime.InvokeVoidAsync("chartJsInterop.updateChart", CanvasId, newData);
+            }
+            catch (JSException ex)
+            {
+                Console.WriteLine($"Failed to update bar chart: {ex.Message}");
+            }
+            catch (JSDisconnectedException)
+            {
+                // Ignore - circuit is already disconnected
+            }
         }
     }
 

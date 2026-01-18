@@ -31,31 +31,42 @@
     {
         if (_initialized) return;
 
-        var config = new
+        try
         {
-            data = new
+            var config = new
             {
-                labels = Labels,
-                datasets = Datasets.Select(d => new
+                data = new
                 {
-                    label = d.Label,
-                    data = d.Data,
-                    backgroundColor = d.BackgroundColor,
-                    borderColor = d.BorderColor,
-                    borderWidth = d.BorderWidth,
-                    fill = d.Fill,
-                    tension = d.Tension,
-                    pointRadius = d.PointRadius,
-                    pointHoverRadius = d.PointHoverRadius
-                }).ToArray()
-            },
-            showXAxis = ShowXAxis,
-            showYAxis = ShowYAxis,
-            useTimeScale = UseTimeScale
-        };
+                    labels = Labels,
+                    datasets = Datasets.Select(d => new
+                    {
+                        label = d.Label,
+                        data = d.Data,
+                        backgroundColor = d.BackgroundColor,
+                        borderColor = d.BorderColor,
+                        borderWidth = d.BorderWidth,
+                        fill = d.Fill,
+                        tension = d.Tension,
+                        pointRadius = d.PointRadius,
+                        pointHoverRadius = d.PointHoverRadius
+                    }).ToArray()
+                },
+                showXAxis = ShowXAxis,
+                showYAxis = ShowYAxis,
+                useTimeScale = UseTimeScale
+            };
 
-        await JSRuntime.InvokeVoidAsync("chartJsInterop.createLineChart", CanvasId, config);
-        _initialized = true;
+            await JSRuntime.InvokeVoidAsync("chartJsInterop.createLineChart", CanvasId, config);
+            _initialized = true;
+        }
+        catch (JSException ex)
+        {
+            Console.WriteLine($"Failed to initialize line chart: {ex.Message}");
+        }
+        catch (JSDisconnectedException)
+        {
+            // Ignore - circuit is already disconnected
+        }
     }
 
     public async Task UpdateData(List<string> labels, List<ChartDataset> datasets)
@@ -65,24 +76,35 @@
 
         if (_initialized && Datasets.Any())
         {
-            var newData = new
+            try
             {
-                labels = Labels,
-                datasets = Datasets.Select(d => new
+                var newData = new
                 {
-                    label = d.Label,
-                    data = d.Data,
-                    backgroundColor = d.BackgroundColor,
-                    borderColor = d.BorderColor,
-                    borderWidth = d.BorderWidth,
-                    fill = d.Fill,
-                    tension = d.Tension,
-                    pointRadius = d.PointRadius,
-                    pointHoverRadius = d.PointHoverRadius
-                }).ToArray()
-            };
+                    labels = Labels,
+                    datasets = Datasets.Select(d => new
+                    {
+                        label = d.Label,
+                        data = d.Data,
+                        backgroundColor = d.BackgroundColor,
+                        borderColor = d.BorderColor,
+                        borderWidth = d.BorderWidth,
+                        fill = d.Fill,
+                        tension = d.Tension,
+                        pointRadius = d.PointRadius,
+                        pointHoverRadius = d.PointHoverRadius
+                    }).ToArray()
+                };
 
-            await JSRuntime.InvokeVoidAsync("chartJsInterop.updateChart", CanvasId, newData);
+                await JSRuntime.InvokeVoidAsync("chartJsInterop.updateChart", CanvasId, newData);
+            }
+            catch (JSException ex)
+            {
+                Console.WriteLine($"Failed to update line chart: {ex.Message}");
+            }
+            catch (JSDisconnectedException)
+            {
+                // Ignore - circuit is already disconnected
+            }
         }
     }
 

@@ -1,0 +1,96 @@
+@model AppBlueprint.Contracts.Email.OrderConfirmationEmailModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="email-header">
+    <h1>Order Confirmed! ✓</h1>
+</div>
+
+<div class="email-body">
+    <p>Hi @Model.CustomerName,</p>
+    
+    <p>
+        Thank you for your order! We've received your payment and your order is being processed.
+    </p>
+    
+    <div style="background-color: #f0fdf4; border: 1px solid #86efac; padding: 20px; margin: 24px 0; border-radius: 8px;">
+        <p style="margin: 0 0 8px 0; color: #15803d; font-size: 14px; font-weight: 600;">
+            Order Number
+        </p>
+        <p style="margin: 0; color: #166534; font-size: 20px; font-weight: 700;">
+            @Model.OrderId
+        </p>
+    </div>
+    
+    <h2>Order Summary</h2>
+    
+    <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+        <thead>
+            <tr style="border-bottom: 2px solid #e5e7eb;">
+                <th style="text-align: left; padding: 12px 8px; color: #6b7280; font-weight: 600; font-size: 14px;">
+                    Item
+                </th>
+                <th style="text-align: center; padding: 12px 8px; color: #6b7280; font-weight: 600; font-size: 14px;">
+                    Qty
+                </th>
+                <th style="text-align: right; padding: 12px 8px; color: #6b7280; font-weight: 600; font-size: 14px;">
+                    Price
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr style="border-bottom: 1px solid #f3f4f6;">
+                    <td style="padding: 16px 8px; color: #111827;">
+                        @item.ProductName
+                    </td>
+                    <td style="text-align: center; padding: 16px 8px; color: #4b5563;">
+                        @item.Quantity
+                    </td>
+                    <td style="text-align: right; padding: 16px 8px; color: #111827; font-weight: 500;">
+                        $@item.Total.ToString("F2")
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" style="padding: 16px 8px; text-align: right; font-weight: 700; font-size: 18px; color: #111827;">
+                    Total:
+                </td>
+                <td style="padding: 16px 8px; text-align: right; font-weight: 700; font-size: 18px; color: #4F46E5;">
+                    $@Model.TotalAmount.ToString("F2")
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <div style="text-align: center; margin: 32px 0;">
+        <a href="@Model.OrderDetailsUrl" class="button">
+            View Order Details
+        </a>
+    </div>
+    
+    <hr class="divider" />
+    
+    <h2>What's Next?</h2>
+    <p style="color: #4b5563;">
+        You'll receive another email once your order has been processed and is ready. 
+        In the meantime, you can track your order status in your account dashboard.
+    </p>
+    
+    <p style="margin-top: 32px;">
+        Thank you for your business!<br>
+        <strong>The @Model.SiteName Team</strong>
+    </p>
+</div>
+
+<div class="email-footer">
+    <p>&copy; @DateTime.UtcNow.Year @Model.SiteName. All rights reserved.</p>
+    <p style="font-size: 12px; color: #9ca3af;">
+        Questions about your order? Contact us at support@example.com
+    </p>
+</div>
