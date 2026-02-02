@@ -1,10 +1,12 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+﻿using AppBlueprint.Domain.Entities.Webhooks;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration.EntityConfigurations;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -63,6 +65,7 @@ public partial class BaselineDbContext : DbContext
         modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
         modelBuilder.ApplyConfiguration(new IntegrationEntityConfiguration());
         modelBuilder.ApplyConfiguration(new LanguageEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new WebhookEventEntityConfiguration());
 
         HandleSensitiveData(modelBuilder);
     }
@@ -90,6 +93,7 @@ public partial class BaselineDbContext : DbContext
     public DbSet<DataExportEntity> DataExports { get; set; }
     public DbSet<FileEntity> Files { get; set; }
     public DbSet<WebhookEntity> Webhooks { get; set; }
+    public DbSet<WebhookEventEntity> WebhookEvents { get; set; }
     public DbSet<SearchEntity> Searches { get; set; }
 
     #endregion

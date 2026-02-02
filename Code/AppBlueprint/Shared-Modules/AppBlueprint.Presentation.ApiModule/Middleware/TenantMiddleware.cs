@@ -32,7 +32,9 @@ public class TenantMiddleware(RequestDelegate next)
         "/favicon.ico",
         "/api/test",
         "/api/system", // System endpoints should not require tenant
-        "/api/AuthDebug" // Debug endpoints for troubleshooting
+        "/api/AuthDebug", // Debug endpoints for troubleshooting
+        "/api/v1/webhooks", // Webhook endpoints (external services)
+        "/api/v2/webhooks" // Webhook endpoints (future versions)
     ];
 
     public async Task Invoke(HttpContext? context)

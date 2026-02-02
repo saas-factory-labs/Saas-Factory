@@ -44,6 +44,9 @@ internal static class Program // Make class static
 
         builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
         
+        // Add Stripe webhook service
+        builder.Services.AddStripeWebhookService(builder.Configuration);
+        
         // Add TodoAppKernel module (includes TodoDbContext and TodoRepository)
         builder.Services.AddTodoAppKernel(builder.Configuration);
         

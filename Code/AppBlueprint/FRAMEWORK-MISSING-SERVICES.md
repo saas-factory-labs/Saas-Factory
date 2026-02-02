@@ -9,9 +9,9 @@ This document tracks the remaining infrastructure services needed to make AppBlu
 | ✅ Real-Time Communication (SignalR) | P0 - Critical | ✅ **COMPLETE** | Medium | 4-6 hours |
 | Background Jobs | P0 - Critical | 📋 Planned | Medium | 6-8 hours |
 | Full-Text Search | P1 - High | 📋 Planned | Medium | 4-6 hours |
-| File Storage Service | P1 - High | 📋 Planned | Medium | 6-8 hours |
+| ✅ File Storage Service | P1 - High | ✅ **COMPLETE** | Medium | 6-8 hours |
 | ✅ Email Template System | P1 - High | ✅ **COMPLETE** | Medium | 4-6 hours |
-| Payment Webhook Infrastructure | P2 - Medium | 📋 Planned | High | 8-10 hours |
+| ✅ Payment Webhook Infrastructure | P2 - Medium | ✅ **COMPLETE** | High | 8-10 hours |
 | Multi-Channel Notifications | P2 - Medium | 📋 Planned | High | 8-10 hours |
 | Rate Limiting | P2 - Medium | 📋 Planned | Low | 2-4 hours |
 | Caching Abstraction | P2 - Medium | 📋 Planned | Medium | 4-6 hours |
@@ -241,131 +241,83 @@ CREATE INDEX idx_properties_search ON properties USING GIN(search_vector);
 
 ---
 
-### 📋 4. File Storage Service (Production-Ready)
+### ✅ 4. File Storage Service (Production-Ready) - **COMPLETE**
 
-**Current State:** Basic interface exists, no real implementation  
-**Priority:** P1 - High (needed for user uploads)  
-**Complexity:** Medium  
-**Estimated Effort:** 6-8 hours  
+**Implementation:**
+- ✅ `IFileStorageService` interface with comprehensive file operations
+- ✅ Multiple storage provider implementations (S3, Azure Blob, Local)
+- ✅ Tenant-scoped file storage with automatic isolation
+- ✅ Signed URL generation for secure direct access
+- ✅ File metadata tracking and management
+- ✅ Security features (file type validation, size limits)
+- ✅ Comprehensive documentation  
 
-**Why It's Needed:**
-- Property images, documents
-- User avatars
-- PDF reports, invoices
-- Bulk import files (CSV)
-- User-generated content
-
-**Current Limitation:**
-```csharp
-// Exists but not implemented
-public interface IFileStorageService
-{
-    Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType);
-    Task<Stream> DownloadFileAsync(string fileKey);
-    Task DeleteFileAsync(string fileKey);
-}
-```
-
-**Proposed Enhancement:**
-
-```csharp
-// Enhanced file storage with tenant isolation and metadata
-public interface IFileStorageService
-{
-    // Upload with automatic tenant scoping
-    Task<StoredFile> UploadAsync(UploadFileRequest request);
-    
-    // Download with tenant validation
-    Task<FileDownloadResult> DownloadAsync(string fileKey);
-    
-    // Generate signed URLs for direct access (24-hour expiry)
-    Task<string> GetSignedUrlAsync(string fileKey, TimeSpan expiry);
-    
-    // List files for tenant
-    Task<IEnumerable<StoredFile>> ListFilesAsync(FileListQuery query);
-    
-    // Delete with tenant validation
-    Task DeleteAsync(string fileKey);
-    
-    // Bulk operations
-    Task DeleteManyAsync(IEnumerable<string> fileKeys);
-}
-
-public record StoredFile(
-    string FileKey,           // Unique identifier (Ulid)
-    string OriginalFileName,
-    string ContentType,
-    long SizeInBytes,
-    TenantId TenantId,
-    UserId UploadedBy,
-    DateTime UploadedAt,
-    string? Tags,
-    Dictionary<string, string> Metadata
-);
-
-public record UploadFileRequest(
-    Stream FileStream,
-    string FileName,
-    string ContentType,
-    string? Folder = null,
-    Dictionary<string, string>? Metadata = null
-);
-```
-
-**Implementation Options:**
-
-**Option A: AWS S3** (Recommended for production)
-```csharp
-public class S3FileStorageService : IFileStorageService
-{
-    // Bucket structure: {bucket}/{tenantId}/{folder}/{fileKey}
-    // Automatic tenant isolation
-    // Signed URLs for secure direct access
-}
-```
-
-**Option B: Azure Blob Storage**
-```csharp
-public class AzureBlobStorageService : IFileStorageService
-{
-    // Container per tenant or single container with tenant prefix
-}
-```
-
-**Option C: Local File System** (Development only)
-```csharp
-public class LocalFileStorageService : IFileStorageService
-{
-    // Store in: {basePath}/{tenantId}/{folder}/{fileKey}
-    // Development/testing only - not for production
-}
-```
-
-**Files to Create:**
-- `AppBlueprint.Infrastructure/FileStorage/IFileStorageService.cs` (enhanced)
+**Files Created:**
+- `AppBlueprint.Application/Interfaces/IFileStorageService.cs`
 - `AppBlueprint.Infrastructure/FileStorage/S3FileStorageService.cs`
+- `AppBlueprint.Infrastructure/FileStorage/AzureBlobStorageService.cs`
 - `AppBlueprint.Infrastructure/FileStorage/LocalFileStorageService.cs`
 - `AppBlueprint.Infrastructure/FileStorage/StoredFile.cs`
-- `AppBlueprint.Infrastructure/FileStorage/FileUploadValidator.cs` (security)
+- `AppBlueprint.Infrastructure/FileStorage/FileUploadValidator.cs`
 - Demo page: `AppBlueprint.UiKit/Components/Pages/FileUploadDemo.razor`
 
-**Security Considerations:**
-- File type validation (whitelist allowed extensions)
-- Virus scanning integration point
-- File size limits (configurable per tenant)
-- Automatic tenant isolation (file keys include tenant ID)
-- Signed URLs expire after 24 hours
+**Usage Examples:**
+
+```csharp
+// Upload file with automatic tenant scoping
+var request = new UploadFileRequest(
+    FileStream: stream,
+    FileName: "profile-picture.jpg",
+    ContentType: "image/jpeg",
+    Folder: "avatars"
+);
+
+StoredFile file = await _fileStorageService.UploadAsync(request);
+
+// Generate signed URL for direct access (24-hour expiry)
+string signedUrl = await _fileStorageService.GetSignedUrlAsync(
+    file.FileKey,
+    TimeSpan.FromHours(24)
+);
+
+// Download file with tenant validation
+FileDownloadResult result = await _fileStorageService.DownloadAsync(file.FileKey);
+
+// List files for current tenant
+var query = new FileListQuery { Folder = "avatars", PageSize = 20 };
+IEnumerable<StoredFile> files = await _fileStorageService.ListFilesAsync(query);
+```
 
 **Configuration:**
 ```csharp
-builder.Services.AddAppBlueprintFileStorage(options =>
+// AWS S3 (production)
+builder.Services.AddS3FileStorage(options =>
 {
-    options.Provider = FileStorageProvider.S3;
-    options.S3BucketName = "appblueprint-files";
+    options.BucketName = "appblueprint-files";
     options.MaxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
     options.AllowedExtensions = new[] { ".jpg", ".png", ".pdf", ".docx" };
 });
+
+// Azure Blob Storage
+builder.Services.AddAzureBlobFileStorage(options =>
+{
+    options.ConnectionString = configuration["Azure:Storage:ConnectionString"];
+    options.ContainerName = "appblueprint-files";
+});
+
+// Local file system (development only)
+builder.Services.AddLocalFileStorage(options =>
+{
+    options.BasePath = Path.Combine(builder.Environment.ContentRootPath, "FileStorage");
+});
 ```
+
+**Architecture:**
+- Multiple storage provider implementations (S3, Azure Blob, Local)
+- Tenant isolation via file key prefixing: `{tenantId}/{folder}/{fileKey}`
+- Signed URLs for secure, time-limited direct access
+- File metadata tracking (size, type, uploader, timestamps)
+- Security features: file type validation, size limits, tenant validation on all operations
 
 ---
 
@@ -510,18 +462,122 @@ await _emailTemplateService.SendTemplatedEmailAsync(
 
 ## 🚀 Phase 3: Medium-Priority Services (P2)
 
-### 📋 6. Payment Webhook Infrastructure
-
-**Priority:** P2 - Medium (needed for production billing)  
-**Complexity:** High  
-**Estimated Effort:** 8-10 hours  
+### ✅ 6. Payment Webhook Infrastructure - **COMPLETE & TESTED**
 
 **Implementation:**
-- Signature verification (Stripe, PayPal)
-- Idempotency handling (prevent duplicate processing)
-- Retry logic for failed webhooks
-- Webhook event store (audit log)
-- Dead letter queue for failed events
+- ✅ `IStripeWebhookService` interface for webhook processing
+- ✅ `StripeWebhookService` with signature verification using Stripe.net
+- ✅ Idempotency checking via `WebhookEventEntity` and `IWebhookEventRepository`
+- ✅ Event storage for auditing and replay
+- ✅ Automatic retry logic for failed events
+- ✅ Tenant isolation via metadata extraction
+- ✅ Comprehensive event handling (payment, customer, subscription, invoice, checkout)
+- ✅ Database migration applied (WebhookEvents table with indexes)
+- ✅ Service registered in DI container
+- ✅ TenantMiddleware exclusions for public webhook endpoints
+- ✅ Request buffering enabled for signature verification
+- ✅ Tested with Stripe CLI - **200 OK responses verified**
+
+**Files Created:**
+- `AppBlueprint.Domain/Entities/Webhooks/WebhookEventEntity.cs`
+- `AppBlueprint.Domain/Interfaces/Repositories/IWebhookEventRepository.cs`
+- `AppBlueprint.Application/Interfaces/IStripeWebhookService.cs`
+- `AppBlueprint.Infrastructure/Services/Webhooks/StripeWebhookService.cs`
+- `AppBlueprint.Infrastructure/Repositories/WebhookEventRepository.cs`
+- `AppBlueprint.Infrastructure/DatabaseContexts/Baseline/EntityConfigurations/WebhookEventEntityConfiguration.cs`
+- `AppBlueprint.Infrastructure/Extensions/StripeWebhookServiceExtensions.cs`
+- `AppBlueprint.Presentation.ApiModule/Controllers/Webhooks/StripeWebhookController.cs`
+- `AppBlueprint.Infrastructure/Services/Webhooks/README.md`
+- Migration: `20260202182500_AddWebhookEventsTable.cs`
+
+**Files Modified:**
+- `AppBlueprint.ApiService/Program.cs` - Added service registration
+- `AppBlueprint.Infrastructure/DatabaseContexts/Baseline/BaselineDbContext.cs` - Added DbSet
+- `AppBlueprint.Presentation.ApiModule/Middleware/TenantMiddleware.cs` - Added webhook path exclusions
+
+**Setup & Configuration:**
+
+```csharp
+// 1. Register service in Program.cs (REQUIRED)
+builder.Services.AddStripeWebhookService(builder.Configuration);
+
+// 2. Configure environment variable in Doppler/appsettings.json
+// STRIPE_WEBHOOK_SECRET=whsec_YourWebhookSecretFromStripeDashboard
+
+// 3. API endpoint automatically handles POST /api/v1/webhooks/stripe
+// Stripe POSTs events with signature verification
+```
+
+**Webhook Endpoint:**
+```csharp
+POST /api/v1/webhooks/stripe
+Headers:
+  Stripe-Signature: {signature}
+Body: {Stripe event JSON}
+
+Response:
+{
+  "message": "Webhook processed successfully",
+  "eventId": "evt_1234567890",
+  "eventType": "payment_intent.succeeded",
+  "wasDuplicate": false
+}
+```
+
+**Supported Events:**
+- `payment_intent.succeeded` / `payment_intent.payment_failed`
+- `customer.created` / `customer.updated` / `customer.deleted`
+- `customer.subscription.created` / `updated` / `deleted`
+- `invoice.paid` / `invoice.payment_failed`
+- `checkout.session.completed`
+
+**Security Features:**
+- Signature verification using Stripe webhook secrets
+- Idempotency via unique event ID + source combination
+- Automatic retry for failed events (max 3 attempts)
+- Tenant isolation via metadata extraction
+
+**Testing (Verified Working):**
+```bash
+# 1. Install Stripe CLI
+stripe login
+
+# 2. Forward webhooks to local development endpoint
+stripe listen --forward-to http://localhost:9100/api/v1/webhooks/stripe
+
+# 3. Trigger test events
+stripe trigger payment_intent.succeeded
+stripe trigger customer.subscription.created
+stripe trigger invoice.paid
+
+# Expected Response: 200 OK
+# {
+#   "message": "Webhook processed successfully",
+#   "eventId": "evt_...",
+#   "eventType": "payment_intent.succeeded",
+#   "wasDuplicate": false
+# }
+
+# 4. Verify events stored in database
+# SELECT * FROM "WebhookEvents" ORDER BY "ReceivedAt" DESC LIMIT 10;
+```
+
+**Production Setup:**
+1. Configure webhook endpoint in Stripe Dashboard: `https://yourdomain.com/api/v1/webhooks/stripe`
+2. Copy webhook signing secret to Doppler: `STRIPE_WEBHOOK_SECRET=whsec_...`
+3. Monitor webhook events in Stripe Dashboard and database `WebhookEvents` table
+4. Failed events automatically retry up to 3 times
+5. Use `IWebhookEventRepository` to query webhook history and replay events if needed
+
+**Architecture:**
+- Clean architecture with Domain → Application → Infrastructure → Presentation
+- Repository pattern for event storage
+- Signature verification using official Stripe.net library (EventUtility.ConstructEvent)
+- Event sourcing pattern for audit trail
+- Extensible handler system for custom events
+- Idempotency via unique constraint on (EventId, Source)
+- Tenant isolation via metadata extraction from Stripe event object
+- Defense-in-depth: [AllowAnonymous], TenantMiddleware exclusions, Request.EnableBuffering(), leaveOpen: true
 
 ---
 
@@ -594,13 +650,13 @@ await _emailTemplateService.SendTemplatedEmailAsync(
 
 ### 📋 11. Advanced Tenant Analytics
 
-**Priority:** P3 - Low  
-**Complexity:** Medium  
-**Estimated Effort:** 6-8 hours  
-
-**Features:**
-- Usage metrics per tenant
-- API call tracking
+**P✅ **File Storage Service** (COMPLETE)
+3. ✅ **Email Template System** (COMPLETE)
+4. ✅ **Payment Webhook Infrastructure** (COMPLETE)
+5. **Background Jobs** (critical for async operations)
+6. **Full-Text Search** (critical for UX)
+7. **Rate Limiting** (security essential)
+8. **Caching Abstraction** (performance critical
 - Feature adoption tracking
 - Custom dashboards
 
@@ -670,7 +726,7 @@ await _emailTemplateService.SendTemplatedEmailAsync(
 5. **Email Template System** (needed for transactional emails)
 6. **Rate Limiting** (security essential)
 7. **Caching Abstraction** (performance critical)
-8. **Payment Webhook Infrastructure** (for billing)
+8. **Payment Webhook Payment Webhook Infrastructuror billing)
 9. **Multi-Channel Notifications** (enhanced UX)
 10. **Feature Flag System** (deployment flexibility)
 11. **Audit Logging** (compliance)
@@ -730,13 +786,15 @@ A service is considered "complete" when:
 
 ## Next Steps
 
-1. ✅ Complete SignalR implementation testing
-2. 📋 Begin Background Jobs implementation (Hangfire integration)
-3. 📋 Create project tracking board for remaining services
-4. 📋 Prioritize based on property rental app requirements
+1. ✅ Complete SignalR implementation
+2. ✅ Complete Email Template System
+3. ✅ Complete File Storage Service
+4. 📋 Begin Background Jobs implementation (Hangfire integration)
+5. 📋 Create project tracking board for remaining services
+6. 📋 Prioritize based on property rental app requirements
 
 ---
 
-**Last Updated:** February 1, 2026  
-**Current Focus:** 🎯 SignalR Real-Time Communication  
+**Last Updated:** February 2, 2026  
+**Current Focus:** ✅ File Storage Service (COMPLETE)  
 **Next Up:** 🔄 Background Jobs Infrastructure
