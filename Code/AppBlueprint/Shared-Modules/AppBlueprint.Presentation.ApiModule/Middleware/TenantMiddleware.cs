@@ -1,7 +1,17 @@
+using System.Security.Claims;
+using AppBlueprint.Infrastructure.DatabaseContexts;
+using Microsoft.EntityFrameworkCore;
+
 namespace AppBlueprint.Presentation.ApiModule.Middleware;
 
+/// <summary>
+/// Simple DTO for tenant lookup query result.
+/// </summary>
+internal sealed record UserTenantLookup(string Id, string? TenantId);
+
 public class TenantMiddleware(RequestDelegate next)
-{    // Paths that should be excluded from tenant ID requirement
+{
+    // Paths that should be excluded from tenant ID requirement
     private static readonly string[] ExcludedPaths = [
         "/swagger",
         "/openapi",
@@ -47,6 +57,50 @@ public class TenantMiddleware(RequestDelegate next)
                 // Fallback to alternative claim name
                 tenantId ??= context.User.FindFirst("tid")?.Value;
                 
+                // If tenant claim is not in JWT, look it up from database based on user's external auth ID (sub claim)
+                // This handles external IdPs like Logto that don't include custom tenant claims in access tokens
+                if (string.IsNullOrEmpty(tenantId))
+                {
+                    // Get the 'sub' claim (external auth provider user ID)
+                    string? externalAuthId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                        ?? context.User.FindFirst("sub")?.Value;
+                    
+                    Console.WriteLine($"[TenantMiddleware] No tenant claim in JWT. Looking up by ExternalAuthId (sub): {externalAuthId ?? "(null)"}");
+                    Console.WriteLine($"[TenantMiddleware] JWT Claims ({context.User.Claims.Count()}):");
+                    foreach (var claim in context.User.Claims)
+                    {
+                        Console.WriteLine($"[TenantMiddleware]   - {claim.Type}: {claim.Value}");
+                    }
+                    
+                    if (!string.IsNullOrEmpty(externalAuthId))
+                    {
+                        // Resolve DbContextFactory from request services (not constructor - middleware is singleton)
+                        var dbContextFactory = context.RequestServices.GetService<IDbContextFactory<ApplicationDbContext>>();
+                        
+                        if (dbContextFactory is not null)
+                        {
+                            await using ApplicationDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
+                            
+                            // Query database by ExternalAuthId (Logto 'sub' claim)
+                            // Use quoted column names to match exact casing in PostgreSQL
+                            FormattableString query = $"SELECT \"Id\", \"TenantId\" FROM \"Users\" WHERE \"ExternalAuthId\" = {externalAuthId} LIMIT 1";
+                            
+                            var result = await dbContext.Database.SqlQuery<UserTenantLookup>(query).FirstOrDefaultAsync();
+                            tenantId = result?.TenantId;
+                            
+                            Console.WriteLine($"[TenantMiddleware] Database lookup result: TenantId={tenantId ?? "(null)"}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("[TenantMiddleware] ⚠️ IDbContextFactory not available in DI container");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("[TenantMiddleware] ⚠️ No sub/NameIdentifier claim found in JWT - cannot look up tenant");
+                    }
+                }
+                
                 if (string.IsNullOrEmpty(tenantId))
                 {
                     context.Response.StatusCode = 401; // Unauthorized
@@ -78,14 +132,18 @@ public class TenantMiddleware(RequestDelegate next)
 
         if (isExcludedPath) return true;
 
+        // Check if it's an API endpoint first
+        bool isApiEndpoint = requestPath.StartsWith("/api", StringComparison.OrdinalIgnoreCase);
+
         // Check if it's a documentation or static file request
+        // IMPORTANT: Do not bypass tenant validation for API endpoints even if they have file extensions
         bool isDocumentationOrStatic = requestPath.Contains("swagger", StringComparison.OrdinalIgnoreCase) ||
                                       requestPath.Contains("openapi", StringComparison.OrdinalIgnoreCase) ||
                                       requestPath.Contains("nswag", StringComparison.OrdinalIgnoreCase) ||
                                       requestPath.Contains("docs", StringComparison.OrdinalIgnoreCase) ||
                                       requestPath.EndsWith("/v1", StringComparison.OrdinalIgnoreCase) ||
                                       requestPath.StartsWith("/v1/", StringComparison.OrdinalIgnoreCase) ||
-                                      HasStaticFileExtension(requestPath);
+                                      (!isApiEndpoint && HasStaticFileExtension(requestPath)); // Only check file extensions for non-API paths
 
         if (isDocumentationOrStatic) return true;
 
@@ -98,7 +156,7 @@ public class TenantMiddleware(RequestDelegate next)
         if (isSystemEndpoint) return true;
 
         // If it's not an API endpoint, bypass validation
-        bool isApiEndpoint = requestPath.StartsWith("/api", StringComparison.OrdinalIgnoreCase);
+        // Note: isApiEndpoint already computed above
         return !isApiEndpoint;
     }
 

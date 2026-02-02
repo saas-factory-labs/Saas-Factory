@@ -1,0 +1,49 @@
+@using AppBlueprint.Contracts.Baseline.Email
+@model WelcomeEmailModel
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Welcome!";
+    ViewBag.CompanyName = Model.TenantName;
+    ViewBag.RecipientEmail = Model.EmailAddress;
+}
+
+<h2>Welcome, @Model.UserName!</h2>
+
+<p>
+    Thank you for joining <strong>@Model.TenantName</strong>. We're excited to have you on board!
+</p>
+
+<p>
+    Your account has been successfully created and you can now start exploring all the features we have to offer.
+</p>
+
+@if (!string.IsNullOrEmpty(Model.ActivationLink))
+{
+    <p>
+        To get started, please activate your account by clicking the button below:
+    </p>
+    
+    <div style="text-align: center;">
+        <a href="@Model.ActivationLink" class="button">Activate Your Account</a>
+    </div>
+    
+    <p class="text-muted" style="font-size: 12px;">
+        If the button doesn't work, copy and paste this link into your browser:<br>
+        <a href="@Model.ActivationLink">@Model.ActivationLink</a>
+    </p>
+}
+else
+{
+    <p>
+        You're all set! You can now log in and start using our platform.
+    </p>
+}
+
+<p>
+    If you have any questions or need assistance, don't hesitate to reach out to our support team.
+</p>
+
+<p style="margin-top: 30px;">
+    Best regards,<br>
+    <strong>The @Model.TenantName Team</strong>
+</p>

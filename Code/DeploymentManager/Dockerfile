@@ -1,12 +1,14 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
+# See https://aka.ms/customizecontainer to learn how to customize your debug container
+# Base runtime image - Microsoft Chiseled (Distroless)
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled AS base
+USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Expose non-privileged ports only
+EXPOSE 8080
+
+# Build stage - Microsoft SDK
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["DeploymentManager.Web/DeploymentManager.Web.csproj", "DeploymentManager.Web/"]
@@ -21,10 +23,22 @@ RUN dotnet build "./DeploymentManager.Web.csproj" -c "$BUILD_CONFIGURATION" -o /
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./DeploymentManager.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
-FROM base AS final
-USER app
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "DeploymentManager.Web.dll"]
 
-# test
+# Final runtime image - Hardened distroless
+FROM base AS final
+USER $APP_UID
+WORKDIR /app
+
+# Copy published app with proper ownership
+COPY --from=publish --chown=$APP_UID:$APP_UID /app/publish .
+
+# Security hardening environment variables
+ENV ASPNETCORE_URLS=http://+:8080 \
+    DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
+    DOTNET_EnableDiagnostics=0 \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+# Note: Health checks should be configured in orchestration layer (Kubernetes/Docker Compose)
+# Chiseled images don't include curl/wget for minimal attack surface
+
+ENTRYPOINT ["dotnet", "DeploymentManager.Web.dll"]

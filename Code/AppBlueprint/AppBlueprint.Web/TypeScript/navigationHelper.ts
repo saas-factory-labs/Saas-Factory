@@ -13,12 +13,5 @@ const navigationHelper: NavigationHelper = {
 };
 
 // Attach to window for Blazor interop
-declare global {
-    interface Window {
-        navigationHelper: NavigationHelper;
-    }
-}
+(window as any).navigationHelper = navigationHelper;
 
-window.navigationHelper = navigationHelper;
-
-export default navigationHelper;

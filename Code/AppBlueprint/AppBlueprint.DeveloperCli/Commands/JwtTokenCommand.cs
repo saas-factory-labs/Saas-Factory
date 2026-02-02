@@ -478,7 +478,7 @@ internal static class JwtTokenCommand
         AnsiConsole.WriteLine();
         
         var psCode = @"# PowerShell - Make an authenticated API call
-Invoke-RestMethod -Uri 'https://localhost:8091/api/v1/authtest/echo' `
+Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
     -Method Get `
     -UseDefaultCredentials `
     -SkipCertificateCheck";
@@ -497,7 +497,7 @@ Invoke-RestMethod -Uri 'https://localhost:8091/api/v1/authtest/echo' `
         
         AnsiConsole.MarkupLine("[green]Option 2: Use Postman or REST Client[/]");
         AnsiConsole.MarkupLine("[yellow]1.[/] Get a JWT token from Logto directly (use their OAuth flow)");
-        AnsiConsole.MarkupLine("[yellow]2.[/] Test it with: [green]GET https://localhost:8091/api/v1/authtest/protected[/]");
+        AnsiConsole.MarkupLine("[yellow]2.[/] Test it with: [green]GET https://localhost:9100/api/v1/authtest/protected[/]");
         AnsiConsole.MarkupLine("[yellow]3.[/] Add header: [green]Authorization: Bearer <your-token>[/]");
         AnsiConsole.WriteLine();
         
@@ -619,17 +619,17 @@ Invoke-RestMethod -Uri 'https://localhost:8091/api/v1/authtest/echo' `
             var examplesPanel = new Panel(
                 new Markup(
                     "[yellow]Swagger UI:[/]\n" +
-                    "[dim]1. Go to https://localhost:8091/swagger\n" +
+                    "[dim]1. Go to https://localhost:9100/swagger\n" +
                     "2. Click 'Authorize' button (🔒 lock icon)\n" +
                     $"3. Enter: Bearer {token[..Math.Min(30, token.Length)]}...\n" +
                     "4. Click 'Authorize'\n" +
                     "5. Try protected endpoints[/]\n\n" +
                     "[yellow]PowerShell:[/]\n" +
                     $"[dim]$token = \"{token[..Math.Min(50, token.Length)]}...\"\n" +
-                    "Invoke-RestMethod -Uri 'https://localhost:8091/api/v1/authtest/protected' `\n" +
+                    "Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/protected' `\n" +
                     "    -Headers @{Authorization=\"Bearer $token\"} -SkipCertificateCheck[/]\n\n" +
                     "[yellow]cURL:[/]\n" +
-                    "[dim]curl -H \"Authorization: Bearer {token}\" https://localhost:8091/api/v1/authtest/protected[/]"
+                    "[dim]curl -H \"Authorization: Bearer {token}\" https://localhost:9100/api/v1/authtest/protected[/]"
                 ))
             {
                 Header = new PanelHeader("[cyan]How to Use This Token[/]"),

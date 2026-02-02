@@ -11,14 +11,20 @@ public sealed class ResendEmailOptions
     
     /// <summary>
     /// Resend API Key.
-    /// Environment variable: APPBLUEPRINT_Resend__ApiKey or RESEND_API_KEY (legacy).
+    /// Environment variables (checked in order):
+    /// 1. APPBLUEPRINT_RESEND_APIKEY (new standard)
+    /// 2. RESEND_API_KEY (generic, for deployed apps)
+    /// 3. APPBLUEPRINT_Resend__ApiKey (legacy dotnet format)
     /// </summary>
     [Required]
     public string ApiKey { get; set; } = string.Empty;
     
     /// <summary>
     /// Default "from" email address.
-    /// Environment variable: APPBLUEPRINT_Resend__FromEmail.
+    /// Environment variables (checked in order):
+    /// 1. APPBLUEPRINT_RESEND_FROMEMAIL (new standard)
+    /// 2. RESEND_FROM_EMAIL (generic, for deployed apps)
+    /// 3. APPBLUEPRINT_Resend__FromEmail (legacy dotnet format)
     /// </summary>
     [Required]
     [EmailAddress]
@@ -26,6 +32,10 @@ public sealed class ResendEmailOptions
     
     /// <summary>
     /// Default "from" name.
+    /// Environment variables (checked in order):
+    /// 1. APPBLUEPRINT_RESEND_FROMNAME (new standard)
+    /// 2. RESEND_FROM_NAME (generic, for deployed apps)
+    /// 3. APPBLUEPRINT_Resend__FromName (legacy dotnet format)
     /// </summary>
     public string? FromName { get; set; }
     

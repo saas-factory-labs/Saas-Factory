@@ -58,6 +58,7 @@ public partial class BaselineDbContext : DbContext
         OnModelCreating_Permissions(modelBuilder);
         OnModelCreating_Users(modelBuilder);
         OnModelCreating_Tenants(modelBuilder);
+        OnModelCreating_FileManagement(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
         modelBuilder.ApplyConfiguration(new IntegrationEntityConfiguration());
@@ -103,6 +104,7 @@ public partial class BaselineDbContext : DbContext
     partial void OnModelCreating_Users(ModelBuilder modelBuilder);
     partial void OnModelCreating_Authorization(ModelBuilder modelBuilder);
     partial void OnModelCreating_Tenants(ModelBuilder modelBuilder);
+    partial void OnModelCreating_FileManagement(ModelBuilder modelBuilder);
 
     #endregion
 }

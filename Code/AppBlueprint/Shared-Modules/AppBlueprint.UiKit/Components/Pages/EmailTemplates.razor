@@ -1,0 +1,342 @@
+@page "/email-templates"
+@using AppBlueprint.Application.Interfaces
+@using AppBlueprint.Application.Options
+@using AppBlueprint.Contracts.Baseline.Email
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Extensions.Options
+@inject IEmailTemplateService EmailTemplateService
+@inject NavigationManager Navigation
+@inject IOptions<ResendEmailOptions> ResendOptions
+
+<PageTitle>Email Templates - Demo & Preview</PageTitle>
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+    
+    <!-- Page header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">📧 Email Template System</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">
+            Preview and test email templates with live data. Send test emails to verify rendering across email clients.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-screen">
+        
+        <!-- Left Column: Template Selection & Form -->
+        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-6 h-fit">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Template Configuration</h2>
+            
+            <!-- Template Selection -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Select Template
+                </label>
+                <select @bind="selectedTemplate" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100">
+                    <option value="WelcomeEmail">Welcome Email</option>
+                    <option value="PasswordReset">Password Reset</option>
+                    <option value="OrderConfirmation">Order Confirmation</option>
+                </select>
+            </div>
+
+            <!-- Dynamic Form Based on Template -->
+            @if (selectedTemplate == "WelcomeEmail")
+            {
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">User Name</label>
+                        <input @bind="userName" type="text" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100" placeholder="John Doe" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tenant Name</label>
+                        <input @bind="tenantName" type="text" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100" placeholder="Acme Corp" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Activation Link (Optional)</label>
+                        <input @bind="activationLink" type="text" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100" placeholder="https://example.com/activate?token=abc123" />
+                    </div>
+                </div>
+            }
+            else if (selectedTemplate == "PasswordReset")
+            {
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">User Name</label>
+                        <input @bind="userName" type="text" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100" placeholder="Jane Smith" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Reset Link</label>
+                        <input @bind="resetLink" type="text" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100" placeholder="https://example.com/reset?token=xyz789" />
+                    </div>
+                </div>
+            }
+            else if (selectedTemplate == "OrderConfirmation")
+            {
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Customer Name</label>
+                        <input @bind="customerName" type="text" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100" placeholder="Alice Johnson" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Order ID</label>
+                        <input @bind="orderId" type="text" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100" placeholder="ORD-2026-001" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Total Amount</label>
+                        <input @bind="totalAmount" type="number" step="0.01" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100" placeholder="99.99" />
+                    </div>
+                </div>
+            }
+
+            <!-- Actions -->
+            <div class="mt-6 space-y-3">
+                <button 
+                    @onclick="PreviewTemplate" 
+                    disabled="@isLoading"
+                    class="w-full inline-flex justify-center items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    @if (isLoading)
+                    {
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Loading Preview...</span>
+                    }
+                    else
+                    {
+                        <span>🔍 Preview Template</span>
+                    }
+                </button>
+
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        📤 Send Test Email
+                    </label>
+                    <div class="flex gap-2">
+                        <input 
+                            @bind="testEmail" 
+                            type="email" 
+                            class="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100" 
+                            placeholder="your@email.com" />
+                        <button 
+                            @onclick="SendTestEmail" 
+                            disabled="@(isLoading || string.IsNullOrWhiteSpace(testEmail))"
+                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                            Send
+                        </button>
+                    </div>
+                    @if (!string.IsNullOrEmpty(sendResult))
+                    {
+                        <div class="mt-2 p-3 rounded-lg @(sendSuccess ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300" : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300")">
+                            <p class="text-sm">@sendResult</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                    <p class="text-sm text-red-800 dark:text-red-300">@errorMessage</p>
+                </div>
+            }
+        </div>
+
+        <!-- Right Column: Preview -->
+        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Live Preview</h2>
+                @if (!string.IsNullOrEmpty(previewHtml))
+                {
+                    <button 
+                        @onclick="() => showRawHtml = !showRawHtml"
+                        class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                        @(showRawHtml ? "Show Rendered" : "Show HTML Source")
+                    </button>
+                }
+            </div>
+            
+            <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900 flex-1 flex flex-col min-h-[800px]">
+                @if (string.IsNullOrEmpty(previewHtml))
+                {
+                    <div class="p-8 text-center text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center flex-1">
+                        <svg class="mx-auto h-12 w-12 mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <p>Click "Preview Template" to see the rendered email</p>
+                    </div>
+                }
+                else if (showRawHtml)
+                {
+                    <div class="p-4 overflow-auto flex-1">
+                        <pre class="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-mono">@previewHtml</pre>
+                    </div>
+                }
+                else
+                {
+                    <iframe 
+                        srcdoc="@previewHtml" 
+                        class="w-full flex-1 bg-white"
+                        sandbox="allow-same-origin"
+                        title="Email Preview">
+                    </iframe>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Info -->
+    <div class="mt-6 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2">💡 About Email Templates</h3>
+        <div class="text-sm text-indigo-800 dark:text-indigo-200 space-y-2">
+            <p><strong>Framework Templates:</strong> Generic templates provided by AppBlueprint for common scenarios.</p>
+            <p><strong>Custom Templates:</strong> Deployed apps can override templates by creating files in <code class="px-1 py-0.5 bg-indigo-100 dark:bg-indigo-900 rounded">/Templates/</code> folder.</p>
+            <p><strong>Template Engine:</strong> RazorLight with strongly-typed models and compile-time safety.</p>
+            <p><strong>Documentation:</strong> See <code class="px-1 py-0.5 bg-indigo-100 dark:bg-indigo-900 rounded">AppBlueprint.Infrastructure/Services/Email/README.md</code> for full guide.</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    // Template selection
+    private string selectedTemplate = "WelcomeEmail";
+    private bool showRawHtml = false;
+
+    // Form fields
+    private string userName = "John Doe";
+    private string tenantName = "Acme Corp";
+    private string activationLink = "https://example.com/activate?token=abc123";
+    private string resetLink = "https://example.com/reset?token=xyz789";
+    private string customerName = "Alice Johnson";
+    private string orderId = "ORD-2026-001";
+    private decimal totalAmount = 99.99m;
+    private string testEmail = "";
+
+    // State
+    private string previewHtml = "";
+    private string errorMessage = "";
+    private string sendResult = "";
+    private bool sendSuccess = false;
+    private bool isLoading = false;
+
+    private async Task PreviewTemplate()
+    {
+        isLoading = true;
+        errorMessage = "";
+        previewHtml = "";
+        showRawHtml = false;
+
+        try
+        {
+            object model = selectedTemplate switch
+            {
+                "WelcomeEmail" => new WelcomeEmailModel(
+                    UserName: userName,
+                    EmailAddress: "preview@example.com",
+                    TenantName: tenantName,
+                    ActivationLink: string.IsNullOrWhiteSpace(activationLink) ? null : activationLink
+                ),
+                "PasswordReset" => new PasswordResetEmailModel(
+                    UserName: userName,
+                    EmailAddress: "preview@example.com",
+                    ResetLink: resetLink,
+                    ExpiresAt: DateTime.UtcNow.AddHours(24)
+                ),
+                "OrderConfirmation" => new OrderConfirmationEmailModel(
+                    CustomerName: customerName,
+                    OrderId: orderId,
+                    OrderDate: DateTime.UtcNow,
+                    TotalAmount: totalAmount,
+                    OrderDetailsLink: $"https://example.com/orders/{orderId}"
+                ),
+                _ => throw new InvalidOperationException($"Unknown template: {selectedTemplate}")
+            };
+
+            previewHtml = await EmailTemplateService.RenderTemplateAsync(selectedTemplate, model);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to render template: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task SendTestEmail()
+    {
+        if (string.IsNullOrWhiteSpace(testEmail))
+            return;
+
+        isLoading = true;
+        sendResult = "";
+        sendSuccess = false;
+
+        try
+        {
+            object model = selectedTemplate switch
+            {
+                "WelcomeEmail" => new WelcomeEmailModel(
+                    UserName: userName,
+                    EmailAddress: testEmail,
+                    TenantName: tenantName,
+                    ActivationLink: string.IsNullOrWhiteSpace(activationLink) ? null : activationLink
+                ),
+                "PasswordReset" => new PasswordResetEmailModel(
+                    UserName: userName,
+                    EmailAddress: testEmail,
+                    ResetLink: resetLink,
+                    ExpiresAt: DateTime.UtcNow.AddHours(24)
+                ),
+                "OrderConfirmation" => new OrderConfirmationEmailModel(
+                    CustomerName: customerName,
+                    OrderId: orderId,
+                    OrderDate: DateTime.UtcNow,
+                    TotalAmount: totalAmount,
+                    OrderDetailsLink: $"https://example.com/orders/{orderId}"
+                ),
+                _ => throw new InvalidOperationException($"Unknown template: {selectedTemplate}")
+            };
+
+            string subject = selectedTemplate switch
+            {
+                "WelcomeEmail" => $"Welcome to {tenantName}!",
+                "PasswordReset" => "Reset Your Password",
+                "OrderConfirmation" => $"Order Confirmation - {orderId}",
+                _ => "Test Email"
+            };
+
+            string fromEmail = ResendOptions.Value.FromEmail ?? "noreply@example.com";
+            string fromName = ResendOptions.Value.FromName ?? "AppBlueprint";
+            string fromAddress = string.IsNullOrWhiteSpace(fromName) 
+                ? fromEmail 
+                : $"{fromName} <{fromEmail}>";
+            
+            Guid emailId = await EmailTemplateService.SendTemplatedEmailAsync(
+                from: fromAddress,
+                to: testEmail,
+                subject: subject,
+                templateName: selectedTemplate,
+                model: model
+            );
+
+            sendResult = $"✓ Test email sent successfully! Email ID: {emailId}";
+            sendSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            sendResult = $"✗ Failed to send email: {ex.Message}";
+            sendSuccess = false;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Auto-preview on load
+        await PreviewTemplate();
+    }
+}

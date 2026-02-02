@@ -1,7 +1,9 @@
 using Amazon.Runtime;
 using Amazon.S3;
+using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Options;
+using AppBlueprint.Application.Services;
 using AppBlueprint.Application.Services.DataExport;
 using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Configuration;
@@ -31,8 +33,6 @@ namespace AppBlueprint.Infrastructure.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    private const string DefaultResendApiBaseUrl = "https://api.resend.com";
-    
     // Static readonly arrays for health check tags (CA1861)
     private static readonly string[] PostgreSqlHealthCheckTags = new[] { "db", "postgresql" };
     private static readonly string[] RlsHealthCheckTags = new[] { "db", "security", "rls", "critical" };
@@ -138,11 +138,16 @@ public static class ServiceCollectionExtensions
             "postgres-server", 
             "DefaultConnection");
 
+        // Create NpgsqlDataSource with EnableDynamicJson for JSONB support (required since Npgsql 8.0)
+        var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(connectionString);
+        dataSourceBuilder.EnableDynamicJson(); // Required for Dictionary<string, string> JSONB columns
+        var dataSource = dataSourceBuilder.Build();
+
         // Register ApplicationDbContext factory only (required by SignupService)
         // Note: Cannot use both AddDbContext and AddDbContextFactory - factory is Singleton, DbContext is Scoped
         services.AddDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>
         {
-            options.UseNpgsql(connectionString, npgsqlOptions =>
+            options.UseNpgsql(dataSource, npgsqlOptions =>
             {
                 npgsqlOptions.CommandTimeout(60);
                 npgsqlOptions.EnableRetryOnFailure(
@@ -162,7 +167,7 @@ public static class ServiceCollectionExtensions
         // Register BaselineDbContext
         services.AddDbContext<BaselineDbContext>((serviceProvider, options) =>
         {
-            options.UseNpgsql(connectionString, npgsqlOptions =>
+            options.UseNpgsql(dataSource, npgsqlOptions =>
             {
                 npgsqlOptions.CommandTimeout(60);
                 npgsqlOptions.EnableRetryOnFailure(
@@ -182,7 +187,7 @@ public static class ServiceCollectionExtensions
         // Register B2BDbContext
         services.AddDbContext<B2BDbContext>((serviceProvider, options) =>
         {
-            options.UseNpgsql(connectionString, npgsqlOptions =>
+            options.UseNpgsql(dataSource, npgsqlOptions =>
             {
                 npgsqlOptions.CommandTimeout(60);
                 npgsqlOptions.EnableRetryOnFailure(
@@ -300,7 +305,7 @@ public static class ServiceCollectionExtensions
             !string.IsNullOrWhiteSpace(r2Options.AccessKeyId) &&
             !string.IsNullOrWhiteSpace(r2Options.SecretAccessKey) &&
             !string.IsNullOrWhiteSpace(r2Options.EndpointUrl) &&
-            !string.IsNullOrWhiteSpace(r2Options.BucketName))
+            (!string.IsNullOrWhiteSpace(r2Options.PrivateBucketName) || !string.IsNullOrWhiteSpace(r2Options.PublicBucketName)))
         {
             services.AddSingleton<IAmazonS3>(sp =>
             {
@@ -314,6 +319,12 @@ public static class ServiceCollectionExtensions
             });
             
             services.AddSingleton<ObjectStorageService>();
+            
+            // Register new file storage services
+            services.AddScoped<IFileStorageService, R2FileStorageService>();
+            services.AddScoped<IFileValidationService, FileValidationService>();
+            services.AddScoped<IFileMetadataRepository, FileMetadataRepository>();
+            
             Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 storage service registered");
         }
         else
@@ -326,25 +337,58 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Registers Resend email service if API key is configured.
-    /// Uses ResendEmailOptions from IOptions pattern.
+    /// Supports multiple environment variable naming conventions:
+    /// 1. APPBLUEPRINT_RESEND_APIKEY (new standard)
+    /// 2. RESEND_API_KEY (generic, for deployed apps)
+    /// 3. APPBLUEPRINT_Resend__ApiKey (legacy dotnet format)
     /// </summary>
     private static IServiceCollection AddResendEmailService(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // Get Resend options to check if configured
-        IServiceProvider tempProvider = services.BuildServiceProvider();
-        ResendEmailOptions? resendOptions = tempProvider.GetService<IOptions<ResendEmailOptions>>()?.Value;
+        // Try multiple environment variable naming conventions (in priority order)
+        string? apiKey = Environment.GetEnvironmentVariable("APPBLUEPRINT_RESEND_APIKEY")
+                      ?? Environment.GetEnvironmentVariable("RESEND_API_KEY")
+                      ?? Environment.GetEnvironmentVariable("APPBLUEPRINT_Resend__ApiKey")
+                      ?? configuration["Resend:ApiKey"];
         
-        if (resendOptions is not null && !string.IsNullOrWhiteSpace(resendOptions.ApiKey))
+        string? fromEmail = Environment.GetEnvironmentVariable("APPBLUEPRINT_RESEND_FROMEMAIL")
+                         ?? Environment.GetEnvironmentVariable("RESEND_FROM_EMAIL")
+                         ?? Environment.GetEnvironmentVariable("APPBLUEPRINT_Resend__FromEmail")
+                         ?? configuration["Resend:FromEmail"];
+        
+        string? fromName = Environment.GetEnvironmentVariable("APPBLUEPRINT_RESEND_FROMNAME")
+                        ?? Environment.GetEnvironmentVariable("RESEND_FROM_NAME")
+                        ?? Environment.GetEnvironmentVariable("APPBLUEPRINT_Resend__FromName")
+                        ?? configuration["Resend:FromName"];
+        
+        if (!string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(fromEmail))
         {
-            services.AddHttpClient<IResend, ResendClient>()
+            var resendOptions = new ResendEmailOptions
+            {
+                ApiKey = apiKey,
+                FromEmail = fromEmail,
+                FromName = fromName,
+                BaseUrl = configuration["Resend:BaseUrl"] ?? "https://api.resend.com",
+                TimeoutSeconds = int.TryParse(configuration["Resend:TimeoutSeconds"], out int timeout) ? timeout : 30
+            };
+            
+            services.AddSingleton<IOptions<ResendEmailOptions>>(new OptionsWrapper<ResendEmailOptions>(resendOptions));
+            
+            // Configure Resend according to official documentation
+            services.AddOptions();
+            services.AddHttpClient<ResendClient>()
                 .ConfigureHttpClient(client =>
                 {
                     client.BaseAddress = new Uri(resendOptions.BaseUrl, UriKind.Absolute);
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendOptions.ApiKey}");
                     client.Timeout = TimeSpan.FromSeconds(resendOptions.TimeoutSeconds);
                 });
+            services.Configure<ResendClientOptions>(o =>
+            {
+                o.ApiToken = resendOptions.ApiKey;
+            });
+            services.AddTransient<IResend, ResendClient>();
+            
             services.AddScoped<TransactionEmailService>();
             Console.WriteLine("[AppBlueprint.Infrastructure] Resend email service registered");
         }
@@ -402,6 +446,34 @@ public static class ServiceCollectionExtensions
                 tags: RedisHealthCheckTags);
         }
 
+        return services;
+    }
+    
+    /// <summary>
+    /// Adds SignalR with tenant-aware authentication and authorization.
+    /// Configures MessagePack protocol for efficient binary serialization.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddAppBlueprintSignalR(this IServiceCollection services)
+    {
+        services.AddSignalR(options =>
+        {
+            // Enable detailed errors in development only
+            options.EnableDetailedErrors = false; // Set to true via environment variable in dev
+            
+            // Configure client timeouts
+            options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
+            options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+            options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+            
+            // Maximum message size (1 MB default)
+            options.MaximumReceiveMessageSize = 1024 * 1024;
+        })
+        .AddMessagePackProtocol(); // Binary protocol for better performance
+        
+        Console.WriteLine("[AppBlueprint.Infrastructure] SignalR registered with tenant-aware authentication");
+        
         return services;
     }
 }

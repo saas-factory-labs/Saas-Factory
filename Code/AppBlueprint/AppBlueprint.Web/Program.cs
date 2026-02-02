@@ -166,6 +166,12 @@ builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddUiKit();
 
+// Add Email Template Service (RazorLight templating)
+// Option: Enable custom templates by specifying path
+// string customTemplatesPath = Path.Combine(builder.Environment.ContentRootPath, "Templates");
+// builder.Services.AddEmailTemplateService(customTemplatesPath);
+builder.Services.AddEmailTemplateService(); // Uses framework's embedded templates only
+
 // Add HttpContextAccessor for accessing authentication tokens in delegating handlers
 builder.Services.AddHttpContextAccessor();
 
@@ -182,7 +188,7 @@ builder.Services.AddScoped<IAuthenticationProvider,
 // Priority: Environment variable > Configuration > Default localhost
 string apiBaseUrl = Environment.GetEnvironmentVariable(ApiBaseUrl) 
     ?? builder.Configuration["ApiBaseUrl"] 
-    ?? "http://localhost:8091";
+    ?? "http://localhost:9100";
 
 Console.WriteLine($"[Web] API Base URL configured: {apiBaseUrl}");
 
@@ -196,6 +202,9 @@ builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<
 // Register authentication handler for TodoService as Scoped (not Transient)
 // Must be Scoped to work with ITokenStorageService which requires HttpContext
 builder.Services.AddScoped<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
+
+// Add SignalR with tenant-aware authentication
+builder.Services.AddAppBlueprintSignalR();
 
 // Register menu configuration service for customizing sidebar visibility
 builder.Services.AddScoped<AppBlueprint.UiKit.Services.IMenuConfigurationService, AppBlueprint.Web.Services.MenuConfigurationService>();
@@ -261,6 +270,41 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.RoleService>(client =>
     return handler;
 })
 .AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
+
+// Add FileStorageService with HttpClient configured for direct API access
+builder.Services.AddHttpClient<AppBlueprint.Web.Services.FileStorageService>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.Timeout = TimeSpan.FromMinutes(10); // 10 minutes for large file uploads
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler();
+    // Only bypass certificate validation in development AND with explicit flag
+    if (builder.Environment.IsDevelopment() && 
+        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
+    {
+        handler.ServerCertificateCustomValidationCallback =
+            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+    }
+    return handler;
+})
+.AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>()
+.AddStandardResilienceHandler(options =>
+{
+    // Configure retry policy
+    options.Retry.MaxRetryAttempts = 2;
+    options.Retry.Delay = TimeSpan.FromSeconds(2);
+    
+    // Configure timeouts for file uploads - much longer than default
+    options.AttemptTimeout.Timeout = TimeSpan.FromMinutes(5); // 5 minutes per attempt
+    options.TotalRequestTimeout.Timeout = TimeSpan.FromMinutes(10); // 10 minutes total
+    
+    // Configure circuit breaker with longer thresholds
+    // Sampling duration must be at least double the attempt timeout (5 min * 2 = 10 min)
+    options.CircuitBreaker.SamplingDuration = TimeSpan.FromMinutes(10);
+    options.CircuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
+});
 
 var app = builder.Build();
 
@@ -350,6 +394,12 @@ app.UseOutputCache();
 // https://docs.logto.io/quick-starts/dotnet-core/blazor-server
 app.MapAuthenticationEndpoints(builder.Configuration);
 
+// Map SignalR hubs - authentication validated in hub's OnConnectedAsync
+// Note: Do NOT use .RequireAuthorization() here as it causes OIDC redirect (302)
+// instead of allowing cookie auth to flow through. Hub validates auth manually.
+app.MapHub<AppBlueprint.Infrastructure.SignalR.DemoChatHub>("/hubs/demochat");
+Console.WriteLine("[Web] SignalR hub mapped: /hubs/demochat (auth validated in hub)");
+
 app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(_Imports).Assembly)
     .AddInteractiveServerRenderMode();
@@ -398,5 +448,6 @@ Console.WriteLine("[Web] Navigate to the app and watch for logs");
 Console.WriteLine(ConsoleSeparator);
 
  await app.RunAsync();
+
 
 

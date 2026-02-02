@@ -51,9 +51,13 @@
         <PackageReference Include="Newtonsoft.Json"/>
         
         <!-- External Services -->
+        <PackageReference Include="RazorLight"/>
         <PackageReference Include="Resend"/>
         <PackageReference Include="Stripe.net"/>
         <PackageReference Include="AWSSDK.S3"/>
+
+        <!-- SignalR -->
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack"/>
 
         <!-- Reverse Proxy -->
         <PackageReference Include="Yarp.ReverseProxy"/>
@@ -69,6 +73,11 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
+    </ItemGroup>
+
+    <!-- Email Templates as Embedded Resources -->
+    <ItemGroup>
+        <EmbeddedResource Include="Services\Email\Templates\**\*.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

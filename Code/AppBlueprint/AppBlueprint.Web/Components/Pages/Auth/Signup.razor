@@ -3,6 +3,19 @@
 @attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @inject NavigationManager Navigation
 
+<style>
+    .orange-cta-button {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+    }
+    
+    .orange-cta-button:hover {
+        background: linear-gradient(135deg, #ff8c42 0%, #ffa45c 100%);
+        box-shadow: 0 0 40px rgba(255, 107, 53, 0.5);
+    }
+</style>
+
 <main class="min-h-screen bg-slate-900">
     <div class="relative min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md mx-auto">
@@ -81,8 +94,11 @@
                 <button 
                     type="button" 
                     @onclick="HandleSignup" 
-                    class="w-full py-3 px-6 bg-indigo-500 hover:bg-indigo-600 text-white text-base font-semibold rounded-lg transition-colors duration-150 flex items-center justify-center">
+                    class="orange-cta-button w-full py-4 px-8 text-white text-lg font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center">
                     <span>Create Account</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
                 </button>
 
                 <!-- Divider -->

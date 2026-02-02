@@ -1,5 +1,6 @@
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,10 +29,13 @@ public static class MigrationExtensions
         await using B2BDbContext b2bDbContext =
             scope.ServiceProvider.GetRequiredService<B2BDbContext>();
 
+        await using BaselineDbContext baselineDbContext =
+            scope.ServiceProvider.GetRequiredService<BaselineDbContext>();
+
         try
         {
             // Get connection string for logging
-            var connectionString = dbContext.Database.GetConnectionString();
+            string? connectionString = dbContext.Database.GetConnectionString();
             Logger.LogInformation("Attempting to apply migrations with connection: {ConnectionString}",
                 connectionString?.Replace(";Password=", ";Password=*****", StringComparison.Ordinal));
 
@@ -49,6 +53,10 @@ public static class MigrationExtensions
                 Logger.LogInformation("Applying B2BDbContext migrations...");
                 await b2bDbContext.Database.MigrateAsync();
                 Logger.LogInformation("B2BDbContext migrations applied successfully.");
+
+                Logger.LogInformation("Applying BaselineDbContext migrations...");
+                await baselineDbContext.Database.MigrateAsync();
+                Logger.LogInformation("BaselineDbContext migrations applied successfully.");
             }
             else
             {

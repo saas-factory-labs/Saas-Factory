@@ -1,0 +1,732 @@
+@page "/realtime-chat"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using Microsoft.JSInterop
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<PageTitle>Real-Time Chat Demo</PageTitle>
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+    
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold mb-2">
+            Real-Time Chat Demo
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400">
+            Test tenant-scoped SignalR communication. Messages are automatically isolated by tenant.
+        </p>
+    </div>
+
+    <!-- Conversation Mode Selector -->
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl mb-6 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Chat Mode</h3>
+            <div class="flex space-x-2">
+                <button 
+                    type="button"
+                    @onclick="() => SwitchMode(false)"
+                    class="px-4 py-2 rounded-lg font-medium transition-colors @(!_isConversationMode ? "bg-indigo-500 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300")"
+                    disabled="@(_connectionState != HubConnectionState.Connected)">
+                    Tenant Only
+                </button>
+                <button 
+                    type="button"
+                    @onclick="() => SwitchMode(true)"
+                    class="px-4 py-2 rounded-lg font-medium transition-colors @(_isConversationMode ? "bg-indigo-500 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300")"
+                    disabled="@(_connectionState != HubConnectionState.Connected)">
+                    Cross-Tenant Conversation
+                </button>
+            </div>
+        </div>
+        
+        @if (_isConversationMode)
+        {
+            <div class="flex space-x-2">
+                <input 
+                    type="text" 
+                    @bind="_conversationId" 
+                    placeholder="Enter conversation ID (e.g., property-123)" 
+                    class="flex-1 form-input bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 rounded-lg px-4 py-2"
+                    disabled="@(_connectionState != HubConnectionState.Connected || !string.IsNullOrEmpty(_activeConversationId))"
+                />
+                @if (string.IsNullOrEmpty(_activeConversationId))
+                {
+                    <button 
+                        type="button"
+                        @onclick="JoinConversation"
+                        disabled="@(_connectionState != HubConnectionState.Connected || string.IsNullOrWhiteSpace(_conversationId))"
+                        class="btn bg-green-500 hover:bg-green-600 text-white disabled:opacity-50 disabled:cursor-not-allowed px-6 py-2 rounded-lg font-medium transition-colors">
+                        Join
+                    </button>
+                }
+                else
+                {
+                    <button 
+                        type="button"
+                        @onclick="LeaveConversation"
+                        class="btn bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                        Leave
+                    </button>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(_activeConversationId))
+            {
+                <div class="mt-2 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded text-sm text-green-700 dark:text-green-300">
+                    ✓ Connected to conversation: <span class="font-mono font-semibold">@_activeConversationId</span>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Connection Status Card -->
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl mb-6 p-6 border-l-4 @GetStatusBorderClass()">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="@GetStatusIndicatorClass() w-3 h-3 rounded-full"></div>
+                <span class="font-semibold text-gray-800 dark:text-gray-100">
+                    Connection Status: @_connectionStatus
+                </span>
+            </div>
+            @if (_connectionState == HubConnectionState.Connected)
+            {
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                    <span class="font-medium">Tenant:</span> @_currentTenantId
+                </div>
+            }
+        </div>
+        
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <p class="text-sm text-red-800 dark:text-red-200">@_errorMessage</p>
+            </div>
+        }
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Chat Messages (2/3 width on large screens) -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl overflow-hidden">
+                
+                <!-- Messages Container -->
+                <div class="h-[600px] overflow-y-auto p-6 space-y-4" id="messageContainer">
+                    @if (_messages.Count == 0)
+                    {
+                        <div class="h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                                <p class="text-lg font-medium">No messages yet</p>
+                                <p class="text-sm mt-2">Start a conversation with your team!</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var msg in _messages)
+                        {
+                            @if (msg.UserId == "system")
+                            {
+                                <!-- System Message -->
+                                <div class="text-center my-2">
+                                    <div class="inline-block bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300 rounded-lg px-4 py-2 text-sm">
+                                        <span class="font-semibold">🔔 @msg.UserName:</span> @msg.Message
+                                        <span class="text-xs opacity-75 ml-2">@msg.Timestamp.ToLocalTime().ToString("HH:mm")</span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- Regular Message -->
+                                <div class="@(msg.IsCurrentUser ? "text-right" : "")">
+                                    <div class="@(msg.IsCurrentUser ? "inline-block bg-indigo-500 text-white" : "inline-block bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100") rounded-lg px-4 py-2 max-w-xl">
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <span class="text-xs font-semibold">@msg.UserName</span>
+                                            @if (msg.IsCrossTenant && msg.TenantId != _currentTenantId)
+                                            {
+                                                <span class="text-xs px-2 py-0.5 bg-yellow-500 text-yellow-900 rounded-full font-medium">Other Tenant</span>
+                                            }
+                                            <span class="text-xs opacity-75">@msg.Timestamp.ToLocalTime().ToString("HH:mm")</span>
+                                        </div>
+                                        <p class="text-sm">@msg.Message</p>
+                                        @if (msg.IsCrossTenant)
+                                        {
+                                            <p class="text-xs opacity-75 mt-1">@msg.TenantId</p>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+
+                <!-- Message Input -->
+                <div class="border-t border-gray-200 dark:border-gray-700 p-4">
+                    @if (_isConversationMode && string.IsNullOrEmpty(_activeConversationId))
+                    {
+                        <div class="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
+                            Join a conversation to start messaging
+                        </div>
+                    }
+                    else
+                    {
+                        <form @onsubmit="SendMessage" @onsubmit:preventDefault="true" class="flex space-x-2">
+                            <input 
+                                type="text" 
+                                @bind="_messageInput" 
+                                @bind:event="oninput"
+                                @onkeydown="HandleKeyDown"
+                                placeholder="@(_isConversationMode ? "Message to conversation..." : "Type your message...")" 
+                                disabled="@(_connectionState != HubConnectionState.Connected)"
+                                class="flex-1 form-input bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+                            />
+                            <button 
+                                type="submit" 
+                                disabled="@(_connectionState != HubConnectionState.Connected || string.IsNullOrWhiteSpace(_messageInput))"
+                                class="btn bg-indigo-500 hover:bg-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed px-6 py-2 rounded-lg font-medium transition-colors">
+                                Send
+                            </button>
+                        </form>
+                        
+                        @if (_typingUsers.Any())
+                        {
+                            <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 italic">
+                                @string.Join(", ", _typingUsers) @(_typingUsers.Count == 1 ? "is" : "are") typing...
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar - Connected Users & Info -->
+        <div class="space-y-6">
+            
+            <!-- Connected Users Card -->
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
+                    Online Users (@_connectedUsers.Count)
+                </h3>
+                <div class="space-y-2">
+                    @if (_connectedUsers.Count == 0)
+                    {
+                        <p class="text-sm text-gray-500 dark:text-gray-400">No other users online</p>
+                    }
+                    else
+                    {
+                        @foreach (var user in _connectedUsers)
+                        {
+                            <div class="flex items-center space-x-2 text-sm">
+                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span class="text-gray-700 dark:text-gray-300">@user</span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Connection Info Card -->
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
+                    Connection Info
+                </h3>
+                <div class="space-y-3 text-sm">
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">User:</span>
+                        <p class="text-gray-800 dark:text-gray-100 font-medium">@_currentUserName</p>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">Tenant ID:</span>
+                        <p class="text-gray-800 dark:text-gray-100 font-mono text-xs">@_currentTenantId</p>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">Hub URL:</span>
+                        <p class="text-gray-800 dark:text-gray-100 font-mono text-xs break-all">/hubs/demochat</p>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">Messages Sent:</span>
+                        <p class="text-gray-800 dark:text-gray-100 font-medium">@_messagesSent</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works Card -->
+            <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-indigo-800 dark:text-indigo-200 mb-3">
+                    🔒 Tenant Isolation
+                </h3>
+                <ul class="space-y-2 text-sm text-indigo-700 dark:text-indigo-300">
+                    <li class="flex items-start">
+                        <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Messages only visible within your tenant
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        JWT authentication required
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Automatic group management
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Real-time presence tracking
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private HubConnection? _hubConnection;
+    private HubConnectionState _connectionState = HubConnectionState.Disconnected;
+    private string _connectionStatus = "Disconnected";
+    private string? _errorMessage;
+    
+    private List<ChatMessageDisplay> _messages = new();
+    private List<string> _connectedUsers = new();
+    private HashSet<string> _typingUsers = new();
+    
+    private string _messageInput = string.Empty;
+    private string _currentUserName = "Anonymous";
+    private string _currentUserId = string.Empty;
+    private string _currentTenantId = string.Empty;
+    private int _messagesSent = 0;
+    
+    // Conversation mode for cross-tenant messaging
+    private bool _isConversationMode = false;
+    private string _conversationId = string.Empty;
+    private string _activeConversationId = string.Empty;
+    
+    private System.Threading.Timer? _typingTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity?.IsAuthenticated ?? true)
+        {
+            _errorMessage = "You must be logged in to use real-time chat.";
+            return;
+        }
+
+        // Extract user info from claims - use ClaimTypes for proper XML namespace resolution
+        _currentUserId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                        ?? user.FindFirst("sub")?.Value 
+                        ?? user.FindFirst("user_id")?.Value 
+                        ?? "unknown";
+        
+        _currentUserName = user.FindFirst(ClaimTypes.Name)?.Value 
+                          ?? user.FindFirst("name")?.Value 
+                          ?? user.FindFirst(ClaimTypes.GivenName)?.Value 
+                          ?? user.FindFirst("given_name")?.Value 
+                          ?? user.FindFirst(ClaimTypes.Email)?.Value
+                          ?? "Anonymous";
+        
+        _currentTenantId = user.FindFirst("tenant_id")?.Value 
+                          ?? user.FindFirst("tid")?.Value 
+                          ?? user.FindFirst("TenantId")?.Value 
+                          ?? "unknown";
+
+        await ConnectToHub();
+    }
+
+    private async Task ConnectToHub()
+    {
+        try
+        {
+            // Pass authentication claims as query parameters since WebSocket doesn't support cookies reliably
+            var hubUrl = NavigationManager.ToAbsoluteUri($"/hubs/demochat?userId={Uri.EscapeDataString(_currentUserId)}&tenantId={Uri.EscapeDataString(_currentTenantId)}");
+            
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl(hubUrl)
+                .WithAutomaticReconnect()
+                .Build();
+
+            // Register event handlers
+            _hubConnection.On<ChatMessage>("ReceiveMessage", OnMessageReceived);
+            _hubConnection.On<ChatMessage>("ReceiveConversationMessage", OnConversationMessageReceived);
+            _hubConnection.On<List<OnlineUser>>("OnlineUsers", OnOnlineUsers);
+            _hubConnection.On<string, string>("UserConnected", OnUserConnected);
+            _hubConnection.On<string, string>("UserDisconnected", OnUserDisconnected);
+            _hubConnection.On<string, string>("UserTyping", OnUserTyping);
+            _hubConnection.On<string>("UserStoppedTyping", OnUserStoppedTyping);
+            _hubConnection.On<string, string, string, string>("UserJoinedConversation", OnUserJoinedConversation);
+            _hubConnection.On<string, string, string, string>("UserLeftConversation", OnUserLeftConversation);
+            
+            _hubConnection.Reconnecting += error =>
+            {
+                _connectionState = HubConnectionState.Reconnecting;
+                _connectionStatus = "Reconnecting...";
+                InvokeAsync(StateHasChanged);
+                return Task.CompletedTask;
+            };
+            
+            _hubConnection.Reconnected += connectionId =>
+            {
+                _connectionState = HubConnectionState.Connected;
+                _connectionStatus = "Connected";
+                InvokeAsync(StateHasChanged);
+                return Task.CompletedTask;
+            };
+            
+            _hubConnection.Closed += error =>
+            {
+                _connectionState = HubConnectionState.Disconnected;
+                _connectionStatus = "Disconnected";
+                if (error != null)
+                {
+                    _errorMessage = $"Connection closed: {error.Message}";
+                }
+                InvokeAsync(StateHasChanged);
+                return Task.CompletedTask;
+            };
+
+            await _hubConnection.StartAsync();
+            _connectionState = _hubConnection.State;
+            _connectionStatus = "Connected";
+            
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to connect: {ex.Message}";
+            _connectionState = HubConnectionState.Disconnected;
+            _connectionStatus = "Connection Failed";
+        }
+    }
+
+    private async Task SendMessage()
+    {
+        if (_hubConnection?.State != HubConnectionState.Connected || string.IsNullOrWhiteSpace(_messageInput))
+            return;
+
+        try
+        {
+            if (_isConversationMode && !string.IsNullOrEmpty(_activeConversationId))
+            {
+                // Send to conversation (cross-tenant)
+                await _hubConnection.SendAsync("SendMessageToConversation", _activeConversationId, _messageInput);
+            }
+            else
+            {
+                // Send to tenant only
+                await _hubConnection.SendAsync("SendMessageToTenant", _messageInput);
+            }
+            
+            _messageInput = string.Empty;
+            _messagesSent++;
+            
+            // Stop typing indicator
+            await _hubConnection.SendAsync("NotifyStoppedTyping");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to send message: {ex.Message}";
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await SendMessage();
+        }
+        else
+        {
+            await OnTyping();
+        }
+    }
+
+    private async Task OnTyping()
+    {
+        if (_hubConnection?.State != HubConnectionState.Connected)
+            return;
+
+        // Reset typing timer
+        _typingTimer?.Dispose();
+        _typingTimer = new System.Threading.Timer(async _ =>
+        {
+            if (_hubConnection?.State == HubConnectionState.Connected)
+            {
+                await _hubConnection.SendAsync("NotifyStoppedTyping");
+            }
+        }, null, 2000, Timeout.Infinite);
+
+        try
+        {
+            await _hubConnection.SendAsync("NotifyTyping");
+        }
+        catch { /* Ignore errors */ }
+    }
+
+    private void SwitchMode(bool toConversationMode)
+    {
+        _isConversationMode = toConversationMode;
+        _messages.Clear();
+        _errorMessage = null;
+        StateHasChanged();
+    }
+
+    private async Task JoinConversation()
+    {
+        if (_hubConnection?.State != HubConnectionState.Connected || string.IsNullOrWhiteSpace(_conversationId))
+            return;
+
+        try
+        {
+            await _hubConnection.SendAsync("JoinConversation", _conversationId);
+            _activeConversationId = _conversationId;
+            _messages.Clear();
+            _errorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to join conversation: {ex.Message}";
+        }
+    }
+
+    private async Task LeaveConversation()
+    {
+        if (_hubConnection?.State != HubConnectionState.Connected || string.IsNullOrEmpty(_activeConversationId))
+            return;
+
+        try
+        {
+            await _hubConnection.SendAsync("LeaveConversation", _activeConversationId);
+            _activeConversationId = string.Empty;
+            _conversationId = string.Empty;
+            _messages.Clear();
+            _errorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to leave conversation: {ex.Message}";
+        }
+    }
+
+    private void OnMessageReceived(ChatMessage message)
+    {
+        var display = new ChatMessageDisplay
+        {
+            Id = message.Id,
+            UserId = message.UserId,
+            UserName = message.UserName,
+            TenantId = message.TenantId,
+            Message = message.Message,
+            Timestamp = message.Timestamp,
+            IsCurrentUser = message.UserId == _currentUserId,
+            IsCrossTenant = false
+        };
+        
+        _messages.Add(display);
+        InvokeAsync(async () =>
+        {
+            StateHasChanged();
+            await Task.Delay(100);
+            await ScrollToBottom();
+        });
+    }
+
+    private void OnOnlineUsers(List<OnlineUser> users)
+    {
+        _connectedUsers.Clear();
+        foreach (var user in users)
+        {
+            // Don't add current user to the "online users" list
+            if (user.UserId != _currentUserId)
+            {
+                _connectedUsers.Add(user.UserName);
+            }
+        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnConversationMessageReceived(ChatMessage message)
+    {
+        var display = new ChatMessageDisplay
+        {
+            Id = message.Id,
+            UserId = message.UserId,
+            UserName = message.UserName,
+            TenantId = message.TenantId,
+            Message = message.Message,
+            Timestamp = message.Timestamp,
+            IsCurrentUser = message.UserId == _currentUserId,
+            IsCrossTenant = message.IsCrossTenant
+        };
+        
+        _messages.Add(display);
+        InvokeAsync(async () =>
+        {
+            StateHasChanged();
+            await Task.Delay(100); // Small delay to ensure DOM is updated
+            await ScrollToBottom();
+        });
+    }
+
+    private void OnUserJoinedConversation(string conversationId, string userId, string userName, string tenantId)
+    {
+        if (userId != _currentUserId)
+        {
+            var systemMessage = new ChatMessageDisplay
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = "system",
+                UserName = "System",
+                TenantId = tenantId,
+                Message = $"{userName} from {tenantId} joined the conversation",
+                Timestamp = DateTime.UtcNow,
+                IsCurrentUser = false,
+                IsCrossTenant = true
+            };
+            _messages.Add(systemMessage);
+            InvokeAsync(async () =>
+            {
+                StateHasChanged();
+                await Task.Delay(100);
+                await ScrollToBottom();
+            });
+        }
+    }
+
+    private void OnUserLeftConversation(string conversationId, string userId, string userName, string tenantId)
+    {
+        var systemMessage = new ChatMessageDisplay
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = "system",
+            UserName = "System",
+            TenantId = tenantId,
+            Message = $"{userName} from {tenantId} left the conversation",
+            Timestamp = DateTime.UtcNow,
+            IsCurrentUser = false,
+            IsCrossTenant = true
+        };
+        _messages.Add(systemMessage);
+        InvokeAsync(async () =>
+        {
+            StateHasChanged();
+            await Task.Delay(100);
+            await ScrollToBottom();
+        });
+    }
+
+    private void OnUserConnected(string userId, string userName)
+    {
+        if (userId != _currentUserId && !_connectedUsers.Contains(userName))
+        {
+            _connectedUsers.Add(userName);
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void OnUserDisconnected(string userId, string userName)
+    {
+        _connectedUsers.Remove(userName);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnUserTyping(string userId, string userName)
+    {
+        if (userId != _currentUserId)
+        {
+            _typingUsers.Add(userName);
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void OnUserStoppedTyping(string userId)
+    {
+        var userName = _connectedUsers.FirstOrDefault(u => u.Contains(userId));
+        if (userName != null)
+        {
+            _typingUsers.Remove(userName);
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task ScrollToBottom()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("eval", "document.getElementById('messageContainer')?.scrollTo(0, document.getElementById('messageContainer').scrollHeight)");
+        }
+        catch
+        {
+            // Ignore JS interop errors
+        }
+    }
+
+    private string GetStatusBorderClass() => _connectionState switch
+    {
+        HubConnectionState.Connected => "border-green-500",
+        HubConnectionState.Connecting or HubConnectionState.Reconnecting => "border-yellow-500",
+        _ => "border-red-500"
+    };
+
+    private string GetStatusIndicatorClass() => _connectionState switch
+    {
+        HubConnectionState.Connected => "bg-green-500 animate-pulse",
+        HubConnectionState.Connecting or HubConnectionState.Reconnecting => "bg-yellow-500 animate-pulse",
+        _ => "bg-red-500"
+    };
+
+    public async ValueTask DisposeAsync()
+    {
+        _typingTimer?.Dispose();
+        
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+    private class ChatMessage
+    {
+        public required string Id { get; init; }
+        public required string UserId { get; init; }
+        public required string UserName { get; init; }
+        public required string TenantId { get; init; }
+        public required string Message { get; init; }
+        public DateTime Timestamp { get; init; }
+        public string? ConversationId { get; init; }
+        public bool IsCrossTenant { get; init; }
+    }
+
+    private class ChatMessageDisplay
+    {
+        public required string Id { get; init; }
+        public required string UserId { get; init; }
+        public required string UserName { get; init; }
+        public required string TenantId { get; init; }
+        public required string Message { get; init; }
+        public DateTime Timestamp { get; init; }
+        public bool IsCurrentUser { get; init; }
+        public bool IsCrossTenant { get; init; }
+    }
+
+    private class OnlineUser
+    {
+        public required string UserId { get; init; }
+        public required string UserName { get; init; }
+    }
+}

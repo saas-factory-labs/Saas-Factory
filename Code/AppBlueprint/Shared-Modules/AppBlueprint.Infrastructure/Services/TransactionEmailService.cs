@@ -4,7 +4,7 @@ using Resend;
 
 namespace AppBlueprint.Infrastructure.Services;
 
-public class TransactionEmailService(ILogger logger, IResend resend)
+public class TransactionEmailService(ILogger<TransactionEmailService> logger, IResend resend)
 {
     public async Task SendSignUpWelcomeEmail(string from, string to, string siteName)
     {

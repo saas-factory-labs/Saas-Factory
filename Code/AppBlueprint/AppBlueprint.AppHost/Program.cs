@@ -16,16 +16,22 @@ var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservic
     .WithHttpEndpoint(port: 9100, name: "api", isProxied: false)
     .WithEnvironment("ASPNETCORE_URLS", "http://localhost:9100")
     .WithEnvironment("SwaggerPath", "/swagger")
-    .WithEnvironment("DATABASE_CONNECTION_STRING", railwayConnectionString);
+    .WithEnvironment("DATABASE_CONNECTION_STRING", railwayConnectionString)
+    .WithEnvironment("Authentication__Provider", "Logto")
+    .WithEnvironment("Authentication__Logto__Endpoint", "https://32nkyp.logto.app")
+    .WithEnvironment("Authentication__Logto__ClientId", "uovd1gg5ef7i1c4w46mt6")
+    .WithEnvironment("Authentication__Logto__ApiResource", "https://api.appblueprint.local"); // Validate JWT audience
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithHttpEndpoint(port: 9200, name: "web-http", isProxied: false)
     .WithReference(apiService)
     .WithEnvironment("ASPNETCORE_URLS", "http://localhost:9200")
+    .WithEnvironment("API_BASE_URL", "http://localhost:9100") // Explicit API URL to avoid service discovery issues
     .WithEnvironment("DATABASE_CONNECTION_STRING", railwayConnectionString)
     .WithEnvironment("Logto__Endpoint", "https://32nkyp.logto.app/oidc")
     .WithEnvironment("Logto__AppId", "uovd1gg5ef7i1c4w46mt6")
-    .WithEnvironment("Logto__AppSecret", Environment.GetEnvironmentVariable("LOGTO_APP_SECRET") ?? "");
+    .WithEnvironment("Logto__AppSecret", Environment.GetEnvironmentVariable("LOGTO__APPSECRET") ?? "")
+    .WithEnvironment("Logto__Resource", "https://api.appblueprint.local"); // Request JWT access token for API
 
 string[] keys = new[]
 {

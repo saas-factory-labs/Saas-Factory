@@ -31,6 +31,15 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
   - [ASP.NET Core Documentation](https://learn.microsoft.com/en-us/aspnet/core/)
   - [Code Analysis Rules](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/)
   - When in doubt about a coding pattern or best practice, verify against Microsoft's official guidance before implementing
+- **Environment variables MUST be UPPERCASE**: All environment variables (Doppler secrets, .env files, AppHost configuration) MUST use UPPERCASE naming with single underscores (`_`) for word separation. Examples:
+  - ✅ `LOGTO_RESOURCE`, `LOGTO_ENDPOINT`, `LOGTO_APPID`
+  - ✅ `AUTHENTICATION_PROVIDER`, `AUTHENTICATION_LOGTO_ENDPOINT`, `AUTHENTICATION_LOGTO_CLIENTID`
+  - ✅ `DATABASE_CONNECTION_STRING`, `API_BASE_URL`
+  - ❌ `Logto__Resource` (mixed case with double underscores - wrong)
+  - ❌ `Authentication__Provider` (Pascal case with double underscores - wrong)
+  - ❌ `logto_resource` (lowercase - wrong)
+  - ❌ `LOGTO__RESOURCE` (double underscores - wrong, use single underscores)
+  - **Rationale**: UPPERCASE with single underscores is the industry standard for environment variables (12-factor app methodology, Docker, Kubernetes, cloud platforms). This ensures consistency across development, staging, and production environments.
 - **Null checks and error handling**: Implement runtime null validation at trust boundaries, complementing compile-time nullable reference types. Use `ArgumentNullException.ThrowIfNull()` for guard clauses and `is null`/`is not null` for logic checks. Do not use `??` or `??=` operators. Use `ThrowIfEmpty()` for string/collection validation where appropriate.
   - **When to add runtime guard clauses** (per [Microsoft CA1062](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1062) and [nullable reference types guidance](https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references)):
     - **Externally visible methods** (`public`/`protected`) - Can be called from unknown assemblies

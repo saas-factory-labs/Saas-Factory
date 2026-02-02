@@ -42,18 +42,15 @@ public static class JwtAuthenticationExtensions
         IConfiguration configuration,
         string authProvider)
     {
-        switch (authProvider.ToUpperInvariant())
+        // Only Logto authentication is supported
+        if (!authProvider.Equals("LOGTO", StringComparison.OrdinalIgnoreCase))
         {
-            case "AUTH0":
-                ConfigureAuth0(options, configuration);
-                break;
-            case "LOGTO":
-                ConfigureLogto(options, configuration);
-                break;
-            default:
-                ConfigureCustomJwt(options, configuration);
-                break;
+            throw new InvalidOperationException(
+                $"Unsupported authentication provider '{authProvider}'. Only 'Logto' is supported. " +
+                "Set AUTHENTICATION_PROVIDER=Logto in configuration.");
         }
+        
+        ConfigureLogto(options, configuration);
 
         // Common configuration for all providers
         options.SaveToken = true;
@@ -161,18 +158,16 @@ public static class JwtAuthenticationExtensions
     {
         var endpoint = configuration["Authentication:Logto:Endpoint"];
         var clientId = configuration["Authentication:Logto:ClientId"];
+        var apiResource = configuration["Authentication:Logto:ApiResource"];
 
         if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(clientId))
         {
-            // In Railway/production without Logto config, fall back to custom JWT
-            // This allows API to start without Logto, using symmetric key validation
-            Console.WriteLine("[API] Logto Endpoint or ClientId not configured - falling back to custom JWT authentication");
-            Console.WriteLine("[API] To enable Logto authentication, set environment variables:");
-            Console.WriteLine("[API]   - Authentication__Logto__Endpoint");
-            Console.WriteLine("[API]   - Authentication__Logto__ClientId");
-            
-            ConfigureCustomJwt(options, configuration);
-            return;
+            throw new InvalidOperationException(
+                "Logto authentication configuration is missing. Required environment variables:\n" +
+                "  - AUTHENTICATION_LOGTO_ENDPOINT (e.g., https://32nkyp.logto.app)\n" +
+                "  - AUTHENTICATION_LOGTO_CLIENTID (e.g., uovd1gg5ef7i1c4w46mt6)\n" +
+                "  - AUTHENTICATION_LOGTO_APIRESOURCE (e.g., https://api.appblueprint.local)\n" +
+                "Set these in AppHost Program.cs or environment variables.");
         }
 
         // Remove trailing slash from endpoint if present
@@ -180,7 +175,7 @@ public static class JwtAuthenticationExtensions
 
         options.Authority = $"{endpoint}/oidc";
         
-        // For development: Very permissive validation to accept Logto tokens
+        // For development: Validate JWT access tokens for API resource
         options.TokenValidationParameters = new TokenValidationParameters
         {
             // Validate issuer
@@ -188,8 +183,9 @@ public static class JwtAuthenticationExtensions
             ValidIssuer = $"{endpoint}/oidc",
             ValidIssuers = new[] { $"{endpoint}/oidc", endpoint },
             
-            // Don't require audience - Logto ID tokens may not have it
-            ValidateAudience = false,
+            // Validate audience if API resource is configured
+            ValidateAudience = !string.IsNullOrEmpty(apiResource),
+            ValidAudience = apiResource,
             
             // Accept any valid token from Logto
             ValidateLifetime = true,
@@ -200,8 +196,8 @@ public static class JwtAuthenticationExtensions
             RequireSignedTokens = true,
             RequireExpirationTime = true,
             
-            // Don't require specific claims
-            RequireAudience = false,
+            // Require audience if API resource is configured
+            RequireAudience = !string.IsNullOrEmpty(apiResource),
             
             // Map standard OIDC claims
             NameClaimType = "name",

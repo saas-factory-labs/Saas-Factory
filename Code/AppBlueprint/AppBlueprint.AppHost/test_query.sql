@@ -1,0 +1,1 @@
+SELECT "Id", "TenantId", "FileKey" FROM "FileMetadata" LIMIT 5;

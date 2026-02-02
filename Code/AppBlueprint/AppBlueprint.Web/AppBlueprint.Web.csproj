@@ -23,6 +23,9 @@
         <UserSecretsId>c5bbe413-4aa6-4190-944c-bf90912749a1</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <DockerfileContext>..\..</DockerfileContext>
+        
+        <!-- RazorLight Requirements - Enable runtime template compilation -->
+        <PreserveCompilationContext>true</PreserveCompilationContext>
     </PropertyGroup>
 
     <ItemGroup>

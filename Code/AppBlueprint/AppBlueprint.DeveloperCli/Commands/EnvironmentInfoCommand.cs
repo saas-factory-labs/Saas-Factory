@@ -127,10 +127,10 @@ internal static class EnvironmentInfoCommand
         );
 
         // Check API Service
-        bool apiRunning = CheckPortInUse(8091);
+        bool apiRunning = CheckPortInUse(9100);
         table.AddRow(
             "API Service",
-            apiRunning ? "[green]✓ Running (port 8091)[/]" : "[dim]Not running[/]"
+            apiRunning ? "[green]✓ Running (port 9100)[/]" : "[dim]Not running[/]"
         );
 
         // Check Web App

@@ -242,7 +242,13 @@ public static class DbContextConfigurator
         DatabaseContextOptions options,
         bool isFactory = false)
     {
-        dbOptions.UseNpgsql(connectionString, npgsqlOptions =>
+        // Create NpgsqlDataSource with EnableDynamicJson for JSONB support (required since Npgsql 8.0)
+        // This is required for Dictionary<string, string> and other dynamic JSON types
+        var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(connectionString);
+        dataSourceBuilder.EnableDynamicJson();
+        var dataSource = dataSourceBuilder.Build();
+
+        dbOptions.UseNpgsql(dataSource, npgsqlOptions =>
         {
             npgsqlOptions.CommandTimeout(options.CommandTimeout);
             npgsqlOptions.EnableRetryOnFailure(

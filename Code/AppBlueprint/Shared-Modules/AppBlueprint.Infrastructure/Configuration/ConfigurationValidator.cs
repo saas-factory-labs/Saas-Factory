@@ -113,9 +113,9 @@ public static class ConfigurationValidator
                 "To enable Logto authentication, set all required values:\n" +
                 "\n" +
                 "1. Environment Variables:\n" +
-                "   Logto__AppId=your_app_id\n" +
-                "   Logto__Endpoint=https://your-tenant.logto.app\n" +
-                "   Logto__AppSecret=your_app_secret\n" +
+                "   LOGTO_APPID=your_app_id\n" +
+                "   LOGTO_ENDPOINT=https://your-tenant.logto.app\n" +
+                "   LOGTO_APPSECRET=your_app_secret\n" +
                 "\n" +
                 "2. Configuration file (appsettings.json):\n" +
                 "   {\n" +

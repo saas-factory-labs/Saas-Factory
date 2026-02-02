@@ -113,17 +113,68 @@ public static class ConfigurationServiceCollectionExtensions
             });
         
         // Cloudflare R2 - optional, only validate if configured
+        // Support both appsettings.json format (Cloudflare:R2:*) and environment variable format (CLOUDFLARE_R2_*)
         services.AddOptions<CloudflareR2Options>()
             .BindConfiguration(CloudflareR2Options.SectionName)
-            .ValidateOnStart()
+            .Configure<IConfiguration>((options, config) =>
+            {
+                // Try both prefixes - use APPBLUEPRINT_ first (development), then fall back to no prefix (production)
+                string[] prefixes = ["APPBLUEPRINT_CLOUDFLARE_R2_", "CLOUDFLARE_R2_"];
+                
+                foreach (string prefix in prefixes)
+                {
+                    string? accessKeyId = Environment.GetEnvironmentVariable($"{prefix}ACCESSKEYID");
+                    if (!string.IsNullOrWhiteSpace(accessKeyId))
+                        options.AccessKeyId = accessKeyId;
+                    
+                    string? secretAccessKey = Environment.GetEnvironmentVariable($"{prefix}SECRETACCESSKEY");
+                    if (!string.IsNullOrWhiteSpace(secretAccessKey))
+                        options.SecretAccessKey = secretAccessKey;
+                    
+                    string? endpointUrl = Environment.GetEnvironmentVariable($"{prefix}ENDPOINTURL");
+                    if (!string.IsNullOrWhiteSpace(endpointUrl))
+                        options.EndpointUrl = endpointUrl;
+                    
+                    string? privateBucketName = Environment.GetEnvironmentVariable($"{prefix}PRIVATEBUCKETNAME");
+                    if (!string.IsNullOrWhiteSpace(privateBucketName))
+                        options.PrivateBucketName = privateBucketName;
+                    
+                    string? publicBucketName = Environment.GetEnvironmentVariable($"{prefix}PUBLICBUCKETNAME");
+                    if (!string.IsNullOrWhiteSpace(publicBucketName))
+                        options.PublicBucketName = publicBucketName;
+                    
+                    string? publicDomain = Environment.GetEnvironmentVariable($"{prefix}PUBLICDOMAIN");
+                    if (!string.IsNullOrWhiteSpace(publicDomain))
+                        options.PublicDomain = publicDomain;
+                    
+                    string? maxImageSizeMB = Environment.GetEnvironmentVariable($"{prefix}MAXIMAGESIZEMB");
+                    if (!string.IsNullOrWhiteSpace(maxImageSizeMB) && int.TryParse(maxImageSizeMB, out int imageSizeMB))
+                        options.MaxImageSizeMB = imageSizeMB;
+                    
+                    string? maxDocumentSizeMB = Environment.GetEnvironmentVariable($"{prefix}MAXDOCUMENTSIZEMB");
+                    if (!string.IsNullOrWhiteSpace(maxDocumentSizeMB) && int.TryParse(maxDocumentSizeMB, out int documentSizeMB))
+                        options.MaxDocumentSizeMB = documentSizeMB;
+                    
+                    string? maxVideoSizeMB = Environment.GetEnvironmentVariable($"{prefix}MAXVIDEOSIZEMB");
+                    if (!string.IsNullOrWhiteSpace(maxVideoSizeMB) && int.TryParse(maxVideoSizeMB, out int videoSizeMB))
+                        options.MaxVideoSizeMB = videoSizeMB;
+                }
+                
+                // Debug logging
+                Console.WriteLine($"[CloudflareR2Options] Loaded - AccessKeyId: {!string.IsNullOrWhiteSpace(options.AccessKeyId)}, SecretAccessKey: {!string.IsNullOrWhiteSpace(options.SecretAccessKey)}, EndpointUrl: {options.EndpointUrl}, PrivateBucket: {options.PrivateBucketName}, PublicBucket: {options.PublicBucketName}, PublicDomain: {options.PublicDomain}");
+            })
             .Validate(options =>
             {
-                // Only validate if any key is provided
-                if (!string.IsNullOrWhiteSpace(options.AccessKeyId) ||
-                    !string.IsNullOrWhiteSpace(options.EndpointUrl))
+                // Only validate if any credential is configured
+                bool hasCredentials = !string.IsNullOrWhiteSpace(options.AccessKeyId) || 
+                                      !string.IsNullOrWhiteSpace(options.SecretAccessKey) ||
+                                      !string.IsNullOrWhiteSpace(options.EndpointUrl);
+                
+                if (hasCredentials)
                 {
                     options.Validate();
                 }
+                
                 return true;
             });
         

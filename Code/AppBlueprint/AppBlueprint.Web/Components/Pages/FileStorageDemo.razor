@@ -1,0 +1,478 @@
+@page "/filestorage-demo"
+@using AppBlueprint.Contracts.Baseline.File.Requests
+@using AppBlueprint.Contracts.Baseline.File.Responses
+@using AppBlueprint.Web.Services
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@inject FileStorageService FileStorage
+@inject ILogger<FileStorageDemo> Logger
+@inject IJSRuntime JSRuntime
+@attribute [Authorize]
+
+<PageTitle>File Storage Demo</PageTitle>
+
+<div class="container mx-auto p-6 max-w-6xl">
+    <h1 class="text-3xl font-bold mb-6">File Storage Demo</h1>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Upload Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4">Upload File</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Select File</label>
+                    <InputFile OnChange="HandleFileSelection" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" accept="image/*,application/pdf,.doc,.docx" />
+                    @if (!string.IsNullOrEmpty(_selectedFileName))
+                    {
+                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Selected: @_selectedFileName (@_selectedFileSize KB)</p>
+                    }
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Folder (optional)</label>
+                    <input @bind="_folder" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" placeholder="e.g., profile-images" />
+                </div>
+
+                <div class="flex items-center">
+                    <input @bind="_isPublic" type="checkbox" id="isPublic" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label for="isPublic" class="ml-2 text-sm font-medium">Public file (generate public URL)</label>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Custom Metadata (JSON, optional)</label>
+                    <textarea @bind="_customMetadata" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 font-mono text-sm" placeholder='{"user_role": "admin", "category": "profile"}' />
+                </div>
+
+                <button @onclick="UploadFile" disabled="@_isUploading" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    @if (_isUploading)
+                    {
+                        <span>Uploading...</span>
+                    }
+                    else
+                    {
+                        <span>Upload File</span>
+                    }
+                </button>
+
+                @if (!string.IsNullOrEmpty(_uploadMessage))
+                {
+                    <div class="p-4 rounded-lg @(_uploadSuccess ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300")">
+                        @_uploadMessage
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- File List Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Your Files</h2>
+                <button @onclick="LoadFiles" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg text-sm font-medium">
+                    Refresh
+                </button>
+            </div>
+
+            @if (_isLoadingFiles)
+            {
+                <div class="text-center py-8">
+                    <p class="text-gray-500">Loading files...</p>
+                </div>
+            }
+            else if (_files is null || !_files.Any())
+            {
+                <div class="text-center py-8">
+                    <p class="text-gray-500">No files uploaded yet</p>
+                </div>
+            }
+            else
+            {
+                <div class="space-y-3 max-h-[600px] overflow-y-auto">
+                    @foreach (var file in _files)
+                    {
+                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold truncate">@file.OriginalFileName</p>
+                                    <p class="text-sm text-gray-500">@file.ContentType | @FormatFileSize(file.SizeInBytes)</p>
+                                    @if (!string.IsNullOrEmpty(file.Folder))
+                                    {
+                                        <p class="text-xs text-gray-400">Folder: @file.Folder</p>
+                                    }
+                                    <p class="text-xs text-gray-400">Uploaded: @file.UploadedAt.ToString("yyyy-MM-dd HH:mm")</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full @(file.IsPublic ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300")">
+                                    @(file.IsPublic ? "Public" : "Private")
+                                </span>
+                            </div>
+
+                            @if (file.CustomMetadata is not null && file.CustomMetadata.Any())
+                            {
+                                <div class="mb-2">
+                                    <p class="text-xs font-medium text-gray-600 dark:text-gray-400">Custom Metadata:</p>
+                                    <div class="text-xs text-gray-500 font-mono bg-gray-100 dark:bg-gray-900 p-2 rounded mt-1">
+                                        @foreach (var (key, value) in file.CustomMetadata)
+                                        {
+                                            <div>@key: @value</div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="flex gap-2 mt-3">
+                                @if (file.IsPublic && !string.IsNullOrEmpty(file.PublicUrl))
+                                {
+                                    <button @onclick="() => CopyToClipboard(file.PublicUrl)" class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                                        Copy Public URL
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button @onclick="() => GeneratePreSignedUrl(file.FileKey)" class="text-xs bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded">
+                                        Generate Pre-signed URL
+                                    </button>
+                                }
+                                <button @onclick="() => DownloadFile(file.FileKey, file.OriginalFileName, file.IsPublic, file.PublicUrl)" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
+                                    Download
+                                </button>
+                                <button @onclick="() => DeleteFile(file.FileKey)" class="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                                    Delete
+                                </button>
+                            </div>
+
+                            <p class="text-xs text-gray-400 mt-2 font-mono break-all">Key: @file.FileKey</p>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Pre-signed URL Display -->
+    @if (!string.IsNullOrEmpty(_preSignedUrl))
+    {
+        <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h3 class="text-xl font-semibold mb-3">Pre-signed URL (Valid for 1 hour)</h3>
+            <div class="flex gap-2">
+                <input readonly value="@_preSignedUrl" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 text-sm font-mono" />
+                <button @onclick="() => CopyToClipboard(_preSignedUrl)" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                    Copy
+                </button>
+            </div>
+        </div>
+    }
+
+    <!-- Action Feedback Toast -->
+    @if (!string.IsNullOrEmpty(_actionMessage))
+    {
+        <div class="fixed bottom-4 right-4 z-50 p-4 rounded-lg shadow-lg @(_actionSuccess ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300")">
+            @_actionMessage
+        </div>
+    }
+</div>
+
+@code {
+    private IBrowserFile? _selectedFile;
+    private string? _selectedFileName;
+    private long _selectedFileSize;
+    private string? _folder;
+    private bool _isPublic;
+    private string? _customMetadata;
+    private bool _isUploading;
+    private string? _uploadMessage;
+    private bool _uploadSuccess;
+
+    private bool _isLoadingFiles = true;
+    private List<FileStorageResponse>? _files;
+    private string? _preSignedUrl;
+    
+    // Action feedback state
+    private string? _actionMessage;
+    private bool _actionSuccess;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadFiles();
+        }
+    }
+
+    private void HandleFileSelection(InputFileChangeEventArgs e)
+    {
+        _selectedFile = e.File;
+        _selectedFileName = e.File.Name;
+        _selectedFileSize = e.File.Size / 1024; // Convert to KB
+        _uploadMessage = null;
+    }
+
+    private async Task UploadFile()
+    {
+        if (_selectedFile is null)
+        {
+            _uploadMessage = "Please select a file";
+            _uploadSuccess = false;
+            return;
+        }
+
+        _isUploading = true;
+        _uploadMessage = null;
+        StateHasChanged();
+
+        try
+        {
+            Dictionary<string, object>? metadata = null;
+            if (!string.IsNullOrWhiteSpace(_customMetadata))
+            {
+                try
+                {
+                    metadata = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(_customMetadata);
+                }
+                catch
+                {
+                    _uploadMessage = "✗ Invalid JSON in custom metadata";
+                    _uploadSuccess = false;
+                    return;
+                }
+            }
+
+            using Stream stream = _selectedFile.OpenReadStream(maxAllowedSize: 524_288_000); // 500 MB
+            FileStorageResponse? result = await FileStorage.UploadFileAsync(
+                stream,
+                _selectedFile.Name,
+                _selectedFile.ContentType,
+                _folder,
+                _isPublic,
+                metadata);
+
+            if (result is not null)
+            {
+                _uploadMessage = $"✓ File uploaded successfully! Key: {result.FileKey}";
+                _uploadSuccess = true;
+
+                // Reset form
+                _selectedFile = null;
+                _selectedFileName = null;
+                _folder = null;
+                _isPublic = false;
+                _customMetadata = null;
+
+                // Reload file list
+                await LoadFiles();
+            }
+            else
+            {
+                _uploadMessage = "✗ Upload failed - API returned error (check browser console and server logs for details)";
+                _uploadSuccess = false;
+                Logger.LogError("Upload failed - FileStorage.UploadFileAsync returned null");
+            }
+        }
+        catch (TaskCanceledException ex)
+        {
+            Logger.LogError(ex, "Upload timeout - task was cancelled");
+            _uploadMessage = $"✗ Upload timeout: The operation was cancelled. Check if the file is too large or the server is slow.";
+            _uploadSuccess = false;
+        }
+        catch (HttpRequestException ex)
+        {
+            Logger.LogError(ex, "Upload failed - HTTP request error");
+            _uploadMessage = $"✗ Upload failed - network error: {ex.Message}";
+            _uploadSuccess = false;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Upload failed");
+            _uploadMessage = $"✗ Upload failed: {ex.Message}";
+            _uploadSuccess = false;
+        }
+        finally
+        {
+            _isUploading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadFiles()
+    {
+        _isLoadingFiles = true;
+        StateHasChanged();
+
+        try
+        {
+            _files = await FileStorage.GetFilesAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load files");
+        }
+        finally
+        {
+            _isLoadingFiles = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task GeneratePreSignedUrl(string fileKey)
+    {
+        try
+        {
+            _preSignedUrl = await FileStorage.GetPresignedUrlAsync(fileKey, expiresInMinutes: 60);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to generate pre-signed URL");
+        }
+    }
+
+    private async Task DownloadFile(string fileKey, string fileName, bool isPublic, string? publicUrl)
+    {
+        try
+        {
+            _actionMessage = "Downloading...";
+            _actionSuccess = true;
+            StateHasChanged();
+
+            // For public files, use the public URL directly (CORS may apply until custom domain is set up)
+            // For private files, use authenticated API endpoint
+            string downloadUrl = (isPublic && !string.IsNullOrWhiteSpace(publicUrl))
+                ? publicUrl
+                : $"/api/v1/filestorage/download/{fileKey}";
+
+            Logger.LogInformation("Attempting download - FileKey: {FileKey}, IsPublic: {IsPublic}, URL: {Url}", 
+                fileKey, isPublic, downloadUrl);
+
+            // Trigger download via JavaScript
+            await JSRuntime.InvokeVoidAsync("eval", $@"
+                (function() {{
+                    const link = document.createElement('a');
+                    link.href = '{downloadUrl}';
+                    link.download = '{fileName.Replace("'", "\\'")}';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }})();
+            ");
+            
+            Logger.LogInformation("Downloading {FileType} file {FileName} from {Url}", 
+                isPublic ? "public" : "private", fileName, downloadUrl);
+            _actionMessage = $"✓ Downloaded {fileName}";
+            _actionSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to download file");
+            _actionMessage = $"✗ Download failed: {ex.Message}";
+            _actionSuccess = false;
+        }
+        finally
+        {
+            StateHasChanged();
+            
+            // Clear message after 3 seconds
+            await Task.Delay(3000);
+            _actionMessage = string.Empty;
+            StateHasChanged();
+        }
+    }
+
+    private async Task DeleteFile(string fileKey)
+    {
+        try
+        {
+            _actionMessage = "Deleting...";
+            _actionSuccess = true;
+            StateHasChanged();
+
+            bool success = await FileStorage.DeleteFileAsync(fileKey);
+            if (success)
+            {
+                _actionMessage = "✓ File deleted successfully";
+                _actionSuccess = true;
+                await LoadFiles();
+            }
+            else
+            {
+                _actionMessage = "✗ Failed to delete file";
+                _actionSuccess = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to delete file");
+            _actionMessage = $"✗ Delete failed: {ex.Message}";
+            _actionSuccess = false;
+        }
+        finally
+        {
+            StateHasChanged();
+            
+            // Clear message after 3 seconds
+            await Task.Delay(3000);
+            _actionMessage = null;
+            StateHasChanged();
+        }
+    }
+
+    private async Task CopyToClipboard(string text)
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+            _actionMessage = "✓ URL copied to clipboard!";
+            _actionSuccess = true;
+            StateHasChanged();
+            
+            // Clear message after 3 seconds
+            await Task.Delay(3000);
+            _actionMessage = null;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to copy to clipboard");
+            _actionMessage = "✗ Failed to copy to clipboard";
+            _actionSuccess = false;
+            StateHasChanged();
+        }
+    }
+
+    private static string FormatFileSize(long bytes)
+    {
+        string[] sizes = ["B", "KB", "MB", "GB"];
+        double len = bytes;
+        int order = 0;
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len = len / 1024;
+        }
+        return $"{len:0.##} {sizes[order]}";
+    }
+
+    private static string GetMimeType(string fileName)
+    {
+        string extension = Path.GetExtension(fileName).ToLowerInvariant();
+        return extension switch
+        {
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            ".webp" => "image/webp",
+            ".svg" => "image/svg+xml",
+            ".pdf" => "application/pdf",
+            ".doc" => "application/msword",
+            ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ".xls" => "application/vnd.ms-excel",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".txt" => "text/plain",
+            ".json" => "application/json",
+            ".xml" => "application/xml",
+            ".zip" => "application/zip",
+            ".mp4" => "video/mp4",
+            ".mp3" => "audio/mpeg",
+            _ => "application/octet-stream"
+        };
+    }
+}

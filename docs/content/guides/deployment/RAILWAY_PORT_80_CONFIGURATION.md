@@ -43,9 +43,9 @@ The Web service already had the correct port 80 configuration in place.
 ### Local Development (with AppHost)
 ```
 AppHost orchestrates services:
-  - Web:    http://localhost:8080  (AppHost overrides to 8080)
-  - API:    http://localhost:8091  (AppHost overrides to 8091)
-  - Gateway: http://localhost:8087
+  - Web:    http://localhost:9200  (AppHost overrides to 9200)
+  - API:    http://localhost:9100  (AppHost overrides to 9100)
+  - Gateway: http://localhost:9000
 ```
 
 **How it works**:
@@ -99,11 +99,15 @@ Railway Edge (Load Balancer + TLS)
 ### AppHost (Local Development Only)
 ```csharp
 // AppBlueprint.AppHost/Program.cs
+builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
+    .WithHttpEndpoint(port: 9000, name: "gateway");  // Local dev port
+
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
-    .WithHttpEndpoint(port: 8091, name: "api");  // Local dev port
+    .WithHttpEndpoint(port: 9100, name: "api");  // Local dev port
 
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
-    .WithHttpEndpoint(port: 8080, name: "web");  // Local dev port
+    .WithHttpEndpoint(port: 9200, name: "web")  // Local dev port
+    .WithEnvironment("API_BASE_URL", "http://localhost:9100");  // Explicit API URL
 ```
 
 ### API Program.cs (All Environments)
@@ -154,8 +158,9 @@ builder.WebHost.ConfigureKestrel(options =>
 
 ### Local Development (AppHost)
 ```
-[API] Development mode - HTTP (80) and HTTPS (443) enabled
-[Web] Development mode - HTTPS configured with custom certificate
+[AGateway actually runs on 9000
+# API actually runs on 9100
+# Web actually runs on 920TTPS configured with custom certificate
 
 # But AppHost overrides to:
 # API actually runs on 8091
@@ -214,7 +219,7 @@ cd Code/AppBlueprint/AppBlueprint.Web
 dotnet run  # Will try to use port 80, may conflict
 ```
 
-### Issue: Railway shows "Port 8091 not exposed"
+### Issue: Railway shows "Port not exposed"
 **Solution**: ✅ FIXED - Both services now use port 80
 
 ### Issue: Can't connect to API in Railway
@@ -237,8 +242,9 @@ dotnet run  # Will try to use port 80, may conflict
 - [x] API_BASE_URL supports Railway internal DNS
 - [x] Compiles without errors
 
-### ✅ AppHost
-- [x] Assigns different ports in development (8080, 8091)
+### ✅ AppHost9000, 9100, 9200)
+- [x] Prevents port conflicts locally
+- [x] Explicitly sets API_BASE_URL for Web servicelopment (8080, 8091)
 - [x] Prevents port conflicts locally
 
 ### ✅ Railway
@@ -268,9 +274,10 @@ Changes:
   - Added ConfigureKestrel with port 80
   - HTTPS only in Development mode
   - Console logging for port configuration
-
-Technical Details:
-- Local development: AppHost overrides ports (Web:8080, API:8091)
+Gateway:9000, API:9100, Web:9200)
+- Production (Railway): Both use port 80, TLS at edge
+- appsettings.json: Port values ignored (Program.cs overrides)
+- AppHost explicitly sets API_BASE_URL to prevent service discovery issues91)
 - Production (Railway): Both use port 80, TLS at edge
 - appsettings.json: Port values ignored (Program.cs overrides)
 

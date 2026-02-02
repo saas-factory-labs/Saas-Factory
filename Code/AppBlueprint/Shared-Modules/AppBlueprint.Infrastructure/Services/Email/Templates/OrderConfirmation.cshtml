@@ -1,0 +1,56 @@
+@using AppBlueprint.Contracts.Baseline.Email
+@model OrderConfirmationEmailModel
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Order Confirmation";
+    ViewBag.CompanyName = "AppBlueprint";
+    ViewBag.RecipientEmail = Model.OrderDetailsLink;
+}
+
+<h2>Order Confirmation</h2>
+
+<p>
+    Hi @Model.CustomerName,
+</p>
+
+<p>
+    Thank you for your order! We've received your order and are processing it now.
+</p>
+
+<div style="background-color: #f9fafb; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px 0; color: #6b7280;">Order Number:</td>
+            <td style="padding: 8px 0; font-weight: 600; text-align: right;">@Model.OrderId</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; color: #6b7280;">Order Date:</td>
+            <td style="padding: 8px 0; font-weight: 600; text-align: right;">@Model.OrderDate.ToString("MMMM dd, yyyy")</td>
+        </tr>
+        <tr style="border-top: 1px solid #e5e7eb;">
+            <td style="padding: 12px 0 8px 0; font-size: 18px; font-weight: 600;">Total Amount:</td>
+            <td style="padding: 12px 0 8px 0; font-size: 18px; font-weight: 600; text-align: right; color: #4F46E5;">@Model.TotalAmount.ToString("C")</td>
+        </tr>
+    </table>
+</div>
+
+<p>
+    You can view your order details and track shipment status by clicking the button below:
+</p>
+
+<div style="text-align: center;">
+    <a href="@Model.OrderDetailsLink" class="button">View Order Details</a>
+</div>
+
+<p class="text-muted" style="font-size: 12px;">
+    Order link: <a href="@Model.OrderDetailsLink">@Model.OrderDetailsLink</a>
+</p>
+
+<p style="margin-top: 30px;">
+    If you have any questions about your order, please don't hesitate to contact us.
+</p>
+
+<p style="margin-top: 30px;">
+    Best regards,<br>
+    <strong>The Sales Team</strong>
+</p>

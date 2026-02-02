@@ -58,57 +58,25 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
                     }
                     else
                     {
-                        _logger.LogWarning("[AuthHandler] ⚠️ access_token in HttpContext is NOT a valid JWT (length: {Length}, format invalid). Ignoring it. Token: {Token}", 
-                            accessToken.Length, accessToken);
+                        // CRITICAL: Opaque tokens indicate missing API Resource configuration
+                        _logger.LogError("[AuthHandler] ❌ CRITICAL: Received OPAQUE access_token (length: {Length}). This means LOGTO_RESOURCE is not configured!", accessToken.Length);
+                        _logger.LogError("[AuthHandler] ❌ Opaque tokens cannot be validated by the API. Add LOGTO_RESOURCE environment variable.");
+                        _logger.LogError("[AuthHandler] ❌ Expected: JWT with 3 parts (header.payload.signature), Got: {TokenPreview}...", 
+                            accessToken.Length > 20 ? accessToken.Substring(0, 20) : accessToken);
+                        
+                        // DO NOT fall back to id_token - this is a configuration error that must be fixed
+                        throw new InvalidOperationException(
+                            "Authentication failed: Received opaque access token instead of JWT. " +
+                            "Configure LOGTO_RESOURCE environment variable to receive JWT tokens with proper scopes. " +
+                            "See LOGTO-ENVIRONMENT-VARIABLES.md for setup instructions.");
                     }
                 }
-                
-                // If no valid access_token, try id_token
-                if (string.IsNullOrEmpty(token))
+                else
                 {
-                    _logger.LogWarning("[AuthHandler] ❌ No valid access_token in HttpContext, trying id_token");
-
-                    // Also explicitly specify "Logto" scheme for id_token
-                    var idToken = await httpContext.GetTokenAsync("Logto", "id_token");
-                    
-                    if (!string.IsNullOrEmpty(idToken))
-                    {
-                        // Validate that it's a proper JWT
-                        if (idToken.Split('.').Length == 3)
-                        {
-                            _logger.LogInformation("[AuthHandler] ✅ Retrieved VALID JWT id_token from HttpContext (length: {Length})", idToken.Length);
-                            token = idToken;
-                        }
-                        else
-                        {
-                            _logger.LogWarning("[AuthHandler] ⚠️ id_token in HttpContext is NOT a valid JWT (length: {Length}). Ignoring it.", idToken.Length);
-                        }
-                    }
-                    else
-                    {
-                        _logger.LogError("[AuthHandler] ❌ CRITICAL: No valid JWT tokens (access_token OR id_token) available in HttpContext!");
-                        _logger.LogError("[AuthHandler] OpenID Connect authentication completed but tokens were not saved properly");
-                        
-                        // Try to get all available token names for debugging
-                        try
-                        {
-                            var authResult = await httpContext.AuthenticateAsync();
-                            if (authResult?.Properties?.Items != null)
-                            {
-                                var tokenNames = authResult.Properties.Items
-                                    .Where(x => x.Key.StartsWith(".Token.", StringComparison.Ordinal))
-                                    .Select(x => x.Key.Replace(".Token.", "", StringComparison.Ordinal));
-                                _logger.LogInformation("[AuthHandler] Available tokens in HttpContext: {Tokens}", 
-                                    string.Join(", ", tokenNames));
-                            }
-                        }
-#pragma warning disable CA1031 // Generic catch for graceful degradation - diagnostic token checking should not fail the request
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(ex, "[AuthHandler] Error checking available tokens");
-                        }
-#pragma warning restore CA1031
-                    }
+                    _logger.LogError("[AuthHandler] ❌ No access_token in HttpContext - authentication may have failed");
+                    throw new InvalidOperationException(
+                        "Authentication failed: No access token available. " +
+                        "Ensure Logto authentication completed successfully and tokens were saved.");
                 }
             }
             else

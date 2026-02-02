@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.Services;
 
@@ -22,19 +23,22 @@ public interface ITenantContextAccessor
 public sealed class TenantContextAccessor : ITenantContextAccessor
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<TenantContextAccessor> _logger;
 
-    public TenantContextAccessor(IHttpContextAccessor httpContextAccessor)
+    public TenantContextAccessor(IHttpContextAccessor httpContextAccessor, ILogger<TenantContextAccessor> logger)
     {
         ArgumentNullException.ThrowIfNull(httpContextAccessor);
+        ArgumentNullException.ThrowIfNull(logger);
         _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
     }
 
     /// <summary>
-    /// Extracts tenant ID from JWT "tenant_id" claim.
+    /// Extracts tenant ID from JWT "tenant_id" claim or HttpContext.Items (set by TenantMiddleware).
     /// Returns null if:
     /// - No HttpContext exists (background jobs, migrations)
     /// - User is not authenticated
-    /// - Tenant claim is missing
+    /// - Tenant is not available from claims or middleware lookup
     /// </summary>
     public string? TenantId
     {
@@ -42,11 +46,41 @@ public sealed class TenantContextAccessor : ITenantContextAccessor
         {
             HttpContext? context = _httpContextAccessor.HttpContext;
             
-            if (context?.User?.Identity?.IsAuthenticated != true)
+            if (context is null)
+            {
+                _logger.LogDebug("TenantId access - No HttpContext available");
                 return null;
+            }
 
-            string? tenantId = context.User.FindFirst("tenant_id")?.Value;
-            return tenantId;
+            // First check HttpContext.Items (set by TenantMiddleware after database lookup)
+            if (context.Items.TryGetValue("TenantId", out object? tenantIdObj) && tenantIdObj is string tenantIdFromItems)
+            {
+                _logger.LogDebug("TenantId from HttpContext.Items: {TenantId}", tenantIdFromItems);
+                return tenantIdFromItems;
+            }
+
+            // Fallback to JWT claims (for cases where middleware hasn't run yet)
+            if (context.User?.Identity?.IsAuthenticated == true)
+            {
+                string? tenantId = context.User.FindFirst("tenant_id")?.Value;
+                
+                if (tenantId is not null)
+                {
+                    _logger.LogDebug("TenantId from JWT claim 'tenant_id': {TenantId}", tenantId);
+                }
+                else
+                {
+                    // Log all available claims for debugging
+                    string claims = string.Join(", ", context.User.Claims.Select(c => $"{c.Type}={c.Value}"));
+                    _logger.LogWarning("TenantId not found. User authenticated: {IsAuth}. Available claims: {Claims}", 
+                        context.User.Identity.IsAuthenticated, claims);
+                }
+                
+                return tenantId;
+            }
+
+            _logger.LogDebug("TenantId access - User not authenticated");
+            return null;
         }
     }
 }

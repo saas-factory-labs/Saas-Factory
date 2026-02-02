@@ -48,6 +48,8 @@ public static class WebAuthenticationExtensions
     
     // Constants for scopes and claims
     private const string ReadTodosScope = "read:todos";
+    private const string ReadFilesScope = "read:files";
+    private const string WriteFilesScope = "write:files";
     
     // Constants for paths and URIs
     private const string DataProtectionKeysPath = "/app";
@@ -168,6 +170,15 @@ public static class WebAuthenticationExtensions
         string? logtoAppSecret = configuration[LogtoAppSecretKey];
         string? logtoResource = configuration[LogtoResourceKey];
         
+        // DEBUG: Check all configuration values
+        Console.WriteLine($"[Web] DEBUG - Reading configuration:");
+        Console.WriteLine($"[Web] DEBUG - {LogtoEndpointKey} = {logtoEndpoint ?? "(null)"}");
+        Console.WriteLine($"[Web] DEBUG - {LogtoAppIdKey} = {logtoAppId ?? "(null)"}");
+        Console.WriteLine($"[Web] DEBUG - {LogtoAppSecretKey} = {(string.IsNullOrEmpty(logtoAppSecret) ? "(null or empty)" : $"<SET, length={logtoAppSecret.Length}>")}");
+        Console.WriteLine($"[Web] DEBUG - {LogtoResourceKey} = {logtoResource ?? "(null)"}");
+        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO__APPSECRET = {(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LOGTO__APPSECRET")) ? "(null or empty)" : $"<SET, length={Environment.GetEnvironmentVariable("LOGTO__APPSECRET")?.Length}>")}");
+        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO__RESOURCE = {Environment.GetEnvironmentVariable("LOGTO__RESOURCE") ?? "(null)"}");
+        
         LogLogtoConfiguration(logtoEndpoint, logtoAppId, logtoAppSecret, logtoResource);
         
         // AddLogtoAuthentication ONLY registers the cookie scheme, not OIDC
@@ -207,16 +218,44 @@ public static class WebAuthenticationExtensions
             options.ResponseMode = "query";
             
             options.SaveTokens = true;
-            options.GetClaimsFromUserInfoEndpoint = true;
             
+            // IMPORTANT: When using API Resources, the access token is audience-restricted
+            // to the API and cannot be used to call the /userinfo endpoint (returns 401).
+            // We get user claims from the ID token instead.
+            // Only enable userinfo endpoint when NOT using API Resources.
+            options.GetClaimsFromUserInfoEndpoint = string.IsNullOrEmpty(logtoResource);
+            
+            // Configure scopes - include OIDC scopes and API resource scopes
             options.Scope.Clear();
             options.Scope.Add("openid");
             options.Scope.Add("profile");
             options.Scope.Add("email");
+            options.Scope.Add("offline_access"); // Required for refresh tokens
             
+            // Configure API Resource to request JWT access tokens
+            // Per Logto docs: https://docs.logto.io/authorization/global-api-resources
+            // 1. Set the resource indicator
+            // 2. Add the API resource scopes to the Scope collection
+            // 3. Create a Role in Logto Console and assign permissions to it
+            // 4. Assign the Role to users
             if (!string.IsNullOrEmpty(logtoResource))
             {
-                options.Scope.Add(logtoResource);
+                options.Resource = logtoResource; // Request access token for this API resource
+                
+                // Add API resource scopes - these must be defined in Logto Console
+                // under API Resources -> Your API -> Permissions
+                // AND assigned to a Role -> assigned to the user
+                options.Scope.Add("read:files");
+                options.Scope.Add("write:files");
+                options.Scope.Add("read:todos");
+                
+                Console.WriteLine($"[Web] ✅ API Resource configured: {logtoResource} (will receive JWT access tokens)");
+                Console.WriteLine("[Web] ✅ Requesting scopes: openid profile email offline_access read:files write:files read:todos");
+                Console.WriteLine("[Web] ⚠️ IMPORTANT: Create a Role in Logto Console, assign these permissions to it, then assign the Role to users!");
+            }
+            else
+            {
+                Console.WriteLine("[Web] ⚠️ WARNING: No API Resource configured - will receive OPAQUE access tokens");
             }
             
             options.CallbackPath = "/callback";
@@ -305,9 +344,9 @@ public static class WebAuthenticationExtensions
         Console.WriteLine("[Web] Logto authentication NOT configured");
         Console.WriteLine("[Web] Running without authentication");
         Console.WriteLine("[Web] To enable authentication, set:");
-        Console.WriteLine("[Web]   - Logto__AppId");
-        Console.WriteLine("[Web]   - Logto__Endpoint");
-        Console.WriteLine("[Web]   - Logto__AppSecret");
+        Console.WriteLine("[Web]   - LOGTO_APPID");
+        Console.WriteLine("[Web]   - LOGTO_ENDPOINT");
+        Console.WriteLine("[Web]   - LOGTO_APPSECRET");
         Console.WriteLine($"[Web] {LogSeparator}");
         
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -348,16 +387,18 @@ public static class WebAuthenticationExtensions
         {
             options.Resource = logtoResource;
             options.Scopes.Add(ReadTodosScope);
+            options.Scopes.Add(ReadFilesScope);
+            options.Scopes.Add(WriteFilesScope);
             
             Console.WriteLine($"[Web] ✅ API Resource configured: {logtoResource} (will receive JWT access tokens)");
-            Console.WriteLine($"[Web] ✅ Requesting scope: {ReadTodosScope}");
+            Console.WriteLine($"[Web] ✅ Requesting scopes: {ReadTodosScope}, {ReadFilesScope}, {WriteFilesScope}");
         }
         else
         {
             Console.WriteLine("[Web] ⚠️ WARNING: No API Resource configured - will receive OPAQUE access tokens");
             Console.WriteLine("[Web] ⚠️ This will cause API calls to fail!");
             Console.WriteLine("[Web] ⚠️ Configure Logto:Resource in appsettings.json or environment variable");
-            Console.WriteLine("[Web] ⚠️ Example: Logto__Resource=https://api.yourdomain.com");
+            Console.WriteLine("[Web] ⚠️ Example: LOGTO_RESOURCE=https://api.yourdomain.com");
         }
     }
 
@@ -452,11 +493,29 @@ public static class WebAuthenticationExtensions
         var existingOnTokenValidated = options.Events.OnTokenValidated;
         options.Events.OnTokenValidated = context => HandleTokenValidated(context, existingOnTokenValidated);
         
-        // Debug: Log when redirect is happening
+        // Add resource parameter to authorization request to get JWT tokens
+        // Per Logto docs: https://docs.logto.io/authorization/global-api-resources
+        // The 'resource' parameter tells Logto which API Resource the token is for
         options.Events.OnRedirectToIdentityProvider = context =>
         {
             Console.WriteLine("[Web] OnRedirectToIdentityProvider - About to redirect to Logto");
             Console.WriteLine($"[Web] Redirect URL: {context.ProtocolMessage.RedirectUri}");
+            
+            // CRITICAL: Add the 'resource' parameter to the authorization request
+            // This tells Logto to issue a JWT access token instead of an opaque token
+            string? resource = context.Options.Resource;
+            if (!string.IsNullOrEmpty(resource))
+            {
+                context.ProtocolMessage.SetParameter("resource", resource);
+                Console.WriteLine($"[Web] ✅ Added 'resource' parameter: {resource}");
+                Console.WriteLine("[Web] ✅ Logto should now issue a JWT access token with scopes");
+            }
+            else
+            {
+                Console.WriteLine("[Web] ⚠️ WARNING: No 'resource' parameter set - will receive opaque token");
+                Console.WriteLine("[Web] ⚠️ Set LOGTO_RESOURCE environment variable to your API Resource identifier");
+            }
+            
             Console.WriteLine($"[Web] Response cookies being set: {context.Response.Headers.ContainsKey("Set-Cookie")}");
             
             if (context.Response.Headers.TryGetValue("Set-Cookie", out var cookies))
@@ -465,9 +524,34 @@ public static class WebAuthenticationExtensions
                 foreach (var cookie in cookies)
                 {
                     // Only log cookie names, not values
-                    var cookieName = cookie.ToString().Split('=')[0];
+                    string cookieName = cookie.ToString().Split('=')[0];
                     Console.WriteLine($"[Web]   - Setting cookie: {cookieName}");
                 }
+            }
+            
+            return Task.CompletedTask;
+        };
+        
+        // CRITICAL: Add resource parameter to the token exchange request
+        // Per Logto docs: The resource parameter must be sent in the token request to get a JWT
+        // https://docs.logto.io/authorization/global-api-resources#authorization-code-or-refresh-token-flow
+        options.Events.OnAuthorizationCodeReceived = context =>
+        {
+            Console.WriteLine("[Web] OnAuthorizationCodeReceived - About to exchange code for tokens");
+            
+            // Add the 'resource' parameter to the token request
+            // This tells Logto to issue a JWT access token instead of an opaque token
+            string? resource = context.Options.Resource;
+            if (!string.IsNullOrEmpty(resource))
+            {
+                // Add resource to the token request parameters
+                context.TokenEndpointRequest?.SetParameter("resource", resource);
+                Console.WriteLine($"[Web] ✅ Added 'resource' parameter to token request: {resource}");
+                Console.WriteLine("[Web] ✅ Logto should now return a JWT access token (length ~800+)");
+            }
+            else
+            {
+                Console.WriteLine("[Web] ⚠️ WARNING: No 'resource' parameter - will receive opaque token (length ~43)");
             }
             
             return Task.CompletedTask;
@@ -553,7 +637,77 @@ public static class WebAuthenticationExtensions
         {
             context.Response.StatusCode = 200;
             context.Response.ContentType = "text/html";
-            await context.Response.WriteAsync(AuthenticationErrorHtml);
+            
+            // Build dynamic error page with actual error details
+            string errorMessage = context.Failure?.Message ?? "Unknown error";
+            string errorType = context.Failure?.GetType().Name ?? "Unknown";
+            string innerError = context.Failure?.InnerException?.Message ?? "None";
+            string stackTrace = context.Failure?.StackTrace ?? "Not available";
+            
+            // Check for OAuth-specific error in query string
+            string oauthError = context.Request.Query.TryGetValue("error", out var err) ? err.ToString() : "None";
+            string oauthErrorDesc = context.Request.Query.TryGetValue("error_description", out var desc) ? desc.ToString() : "None";
+            
+            string dynamicErrorHtml = $@"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication Error</title>
+    <style>
+        body {{ font-family: system-ui; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #1a1a2e; color: white; padding: 20px; box-sizing: border-box; }}
+        .error-box {{ background: #16213e; padding: 40px; border-radius: 10px; text-align: left; max-width: 800px; width: 100%; }}
+        h1 {{ color: #e94560; text-align: center; }}
+        .error-section {{ background: #0f0f23; padding: 15px; border-radius: 5px; margin: 15px 0; overflow-x: auto; }}
+        .error-label {{ color: #e94560; font-weight: bold; margin-bottom: 5px; }}
+        .error-value {{ color: #bbe1fa; word-break: break-all; font-family: monospace; font-size: 14px; }}
+        pre {{ white-space: pre-wrap; word-wrap: break-word; margin: 0; color: #888; font-size: 12px; max-height: 200px; overflow-y: auto; }}
+        a {{ color: #0f4c75; background: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px; }}
+        .button-container {{ text-align: center; }}
+    </style>
+</head>
+<body>
+    <div class='error-box'>
+        <h1>Authentication Failed</h1>
+        
+        <div class='error-section'>
+            <div class='error-label'>Error Type:</div>
+            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(errorType)}</div>
+        </div>
+        
+        <div class='error-section'>
+            <div class='error-label'>Error Message:</div>
+            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(errorMessage)}</div>
+        </div>
+        
+        <div class='error-section'>
+            <div class='error-label'>Inner Exception:</div>
+            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(innerError)}</div>
+        </div>
+        
+        <div class='error-section'>
+            <div class='error-label'>OAuth Error:</div>
+            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(oauthError)}</div>
+        </div>
+        
+        <div class='error-section'>
+            <div class='error-label'>OAuth Error Description:</div>
+            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(oauthErrorDesc)}</div>
+        </div>
+        
+        <div class='error-section'>
+            <div class='error-label'>Stack Trace (first 500 chars):</div>
+            <pre>{System.Net.WebUtility.HtmlEncode(stackTrace.Length > 500 ? stackTrace.Substring(0, 500) + "..." : stackTrace)}</pre>
+        </div>
+        
+        <div class='button-container'>
+            <a href='/auth/signin'>Try Again</a>
+            <a href='/'>Go Home</a>
+        </div>
+    </div>
+</body>
+</html>";
+            
+            await context.Response.WriteAsync(dynamicErrorHtml);
             context.HandleResponse();
         }
     }
@@ -566,6 +720,17 @@ public static class WebAuthenticationExtensions
         Func<TokenValidatedContext, Task>? existingHandler)
     {
         Console.WriteLine("[Web] OnTokenValidated event fired - saving tokens to authentication properties");
+        
+        // DEBUG: Log all claims from OIDC token
+        if (context.Principal?.Identity is ClaimsIdentity claimsIdentity)
+        {
+            Console.WriteLine($"[Web] Claims from OIDC token ({claimsIdentity.Claims.Count()} claims):");
+            foreach (var claim in claimsIdentity.Claims)
+            {
+                string preview = claim.Value.Length > 50 ? string.Concat(claim.Value.AsSpan(0, Math.Min(50, claim.Value.Length)), "...") : claim.Value;
+                Console.WriteLine($"[Web]   - {claim.Type}: {preview}");
+            }
+        }
 
         if (existingHandler is not null)
         {
@@ -613,10 +778,18 @@ public static class WebAuthenticationExtensions
                     Console.WriteLine($"[Web] ✅ Found user's tenant: {result.TenantId}");
                     
                     // Add tenant_id claim to ClaimsIdentity
+                    // IMPORTANT: We need to add it to the existing identity that will be saved to the cookie
                     var identity = context.Principal?.Identity as ClaimsIdentity;
-                    identity?.AddClaim(new Claim("tenant_id", result.TenantId));
-                    
-                    Console.WriteLine("[Web] ✅ Added tenant_id claim to ClaimsIdentity");
+                    if (identity is not null)
+                    {
+                        identity.AddClaim(new Claim("tenant_id", result.TenantId));
+                        Console.WriteLine("[Web] ✅ Added tenant_id claim to ClaimsIdentity");
+                        
+                        // CRITICAL: Create a new ClaimsPrincipal with the updated identity
+                        // This ensures the claim is persisted to the authentication cookie
+                        context.Principal = new ClaimsPrincipal(identity);
+                        Console.WriteLine("[Web] ✅ Updated Principal with tenant_id claim");
+                    }
                     
                     // User has a tenant - redirect directly to dashboard (skip onboarding)
                     context.Properties.RedirectUri = "/dashboard";
@@ -647,35 +820,6 @@ public static class WebAuthenticationExtensions
 
         Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");
     }
-
-    /// <summary>
-    /// HTML content for authentication error page.
-    /// </summary>
-    private const string AuthenticationErrorHtml = @"
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Authentication Error</title>
-    <style>
-        body { font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #1a1a2e; color: white; }
-        .error-box { background: #16213e; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; }
-        h1 { color: #e94560; }
-        a { color: #0f4c75; background: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px; }
-    </style>
-</head>
-<body>
-    <div class='error-box'>
-        <h1>Authentication Failed</h1>
-        <p>The browser didn't send the required cookies. This typically happens when:</p>
-        <ul style='text-align: left;'>
-            <li>Using a self-signed certificate on mobile</li>
-            <li>Browser security settings block cookies</li>
-        </ul>
-        <p><strong>Solution:</strong> Use ngrok for a trusted HTTPS connection, or access from localhost on your PC.</p>
-        <a href='/dashboard'>Go to Dashboard (without auth)</a>
-    </div>
-</body>
-</html>";
 
     /// <summary>
     /// Maps authentication endpoints (sign in, sign out) for the web application.
@@ -904,9 +1048,9 @@ public static class WebAuthenticationExtensions
             var logtoConfig = new
             {
                 test = "Logto Configuration",
-                endpoint = configuration["Logto:Endpoint"],
-                appId = configuration["Logto:AppId"],
-                hasAppSecret = !string.IsNullOrEmpty(configuration["Logto:AppSecret"]),
+                endpoint = configuration[LogtoEndpointKey],
+                appId = configuration[LogtoAppIdKey],
+                hasAppSecret = !string.IsNullOrEmpty(configuration[LogtoAppSecretKey]),
                 environment = environment.EnvironmentName,
                 requiredRedirectUris = RequiredRedirectUris,
                 requiredPostLogoutRedirectUris = RequiredPostLogoutRedirectUris,
