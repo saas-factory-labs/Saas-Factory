@@ -418,8 +418,8 @@ app.MapAuthenticationEndpoints(builder.Configuration);
 // Map SignalR hubs - authentication validated in hub's OnConnectedAsync
 // Note: Do NOT use .RequireAuthorization() here as it causes OIDC redirect (302)
 // instead of allowing cookie auth to flow through. Hub validates auth manually.
-app.MapHub<AppBlueprint.Infrastructure.SignalR.DemoChatHub>("/hubs/demochat").RequireAuthorization("SignalRAnonymous");
-app.MapHub<AppBlueprint.Infrastructure.SignalR.NotificationHub>("/hubs/notifications").RequireAuthorization("SignalRAnonymous");
+app.MapHub<AppBlueprint.Infrastructure.SignalR.DemoChatHub>("/hubs/demochat").AllowAnonymous();
+app.MapHub<AppBlueprint.Infrastructure.SignalR.NotificationHub>("/hubs/notifications").AllowAnonymous();
 Console.WriteLine("[Web] SignalR hub mapped: /hubs/demochat (auth validated in hub)");
 Console.WriteLine("[Web] SignalR hub mapped: /hubs/notifications (auth validated in hub)");
 

@@ -132,12 +132,6 @@ public static class WebAuthenticationExtensions
             options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build();
-            
-            // Allow anonymous access to SignalR hub negotiation/connection paths
-            // The Hub's OnConnectedAsync will manually handle authorization using claims/query params
-            // This prevents the automatic OIDC redirect (302) during SignalR negotiation.
-            options.AddPolicy("SignalRAnonymous", policy => 
-                policy.RequireAssertion(context => true)); // Always true, effectively anonymous
         });
 
         services.AddScoped<Authorization.ITokenStorageService, Authorization.TokenStorageService>();
