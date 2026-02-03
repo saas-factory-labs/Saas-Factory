@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace AppBlueprint.Infrastructure.SignalR;
 
 /// <summary>
