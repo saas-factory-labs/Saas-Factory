@@ -152,6 +152,18 @@ if (builder.Environment.IsDevelopment())
 builder.Services.AddOutputCache();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
+// Add API controllers for Web-specific endpoints (e.g., FirebaseConfigController)
+builder.Services.AddControllers();
+
+// Add minimal API versioning to register the 'apiVersion' route constraint
+// This allows controllers from referenced assemblies to use versioned routes without errors
+builder.Services.AddApiVersioning(options =>
+{
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+}).AddMvc();
+
 // Configure Blazor Server Circuit Options for detailed error messages in development
 builder.Services.AddServerSideBlazor(options =>
 {
@@ -208,6 +220,12 @@ builder.Services.AddAppBlueprintSignalR();
 
 // Register menu configuration service for customizing sidebar visibility
 builder.Services.AddScoped<AppBlueprint.UiKit.Services.IMenuConfigurationService, AppBlueprint.Web.Services.MenuConfigurationService>();
+
+// Register full-text search services
+builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity>, 
+    AppBlueprint.Infrastructure.Services.Search.PostgreSqlSearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity, AppBlueprint.Infrastructure.DatabaseContexts.ApplicationDbContext>>();
+builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity>, 
+    AppBlueprint.Infrastructure.Services.Search.PostgreSqlSearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity, AppBlueprint.Infrastructure.DatabaseContexts.ApplicationDbContext>>();
 
 // Add TodoService with HttpClient configured for direct API access
 builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
@@ -388,6 +406,9 @@ else
 
 app.UseOutputCache();
 
+// Map API controllers (e.g., FirebaseConfigController)
+app.MapControllers();
+
 // ⚠️ CRITICAL: Map authentication endpoints BEFORE Blazor routing
 // Blazor's catch-all routing must not intercept auth callbacks
 // Logto authentication endpoints - EXACTLY as per documentation
@@ -397,8 +418,10 @@ app.MapAuthenticationEndpoints(builder.Configuration);
 // Map SignalR hubs - authentication validated in hub's OnConnectedAsync
 // Note: Do NOT use .RequireAuthorization() here as it causes OIDC redirect (302)
 // instead of allowing cookie auth to flow through. Hub validates auth manually.
-app.MapHub<AppBlueprint.Infrastructure.SignalR.DemoChatHub>("/hubs/demochat");
+app.MapHub<AppBlueprint.Infrastructure.SignalR.DemoChatHub>("/hubs/demochat").RequireAuthorization("SignalRAnonymous");
+app.MapHub<AppBlueprint.Infrastructure.SignalR.NotificationHub>("/hubs/notifications").RequireAuthorization("SignalRAnonymous");
 Console.WriteLine("[Web] SignalR hub mapped: /hubs/demochat (auth validated in hub)");
+Console.WriteLine("[Web] SignalR hub mapped: /hubs/notifications (auth validated in hub)");
 
 app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(_Imports).Assembly)
