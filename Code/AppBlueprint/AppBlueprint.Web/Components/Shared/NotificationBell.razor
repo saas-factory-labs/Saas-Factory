@@ -140,10 +140,7 @@
         try
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl(Navigation.ToAbsoluteUri("/hubs/notifications"), options =>
-                {
-                    options.WithCredentials = true; // Explicitly send cookies
-                })
+                .WithUrl(Navigation.ToAbsoluteUri("/hubs/notifications"))
                 .WithAutomaticReconnect()
                 .Build();
 
