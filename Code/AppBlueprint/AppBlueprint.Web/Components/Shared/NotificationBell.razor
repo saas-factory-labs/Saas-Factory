@@ -2,11 +2,9 @@
 @using AppBlueprint.Domain.Entities.Notifications
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.SignalR.Client
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication // For IAccessTokenProvider
 @inject INotificationService NotificationService
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IAccessTokenProvider AccessTokenProvider // Inject IAccessTokenProvider
 @implements IAsyncDisposable
 
 <div class="relative">
@@ -133,7 +131,7 @@
         }
         catch (Exception ex)
         {
-                            Console.WriteLine($"Failed to load notifications: {ex.Message}");
+            Console.WriteLine($"Failed to load notifications: {ex.Message}");
         }
     }
 
@@ -141,34 +139,22 @@
     {
         try
         {
-            var accessTokenResult = await AccessTokenProvider.RequestAccessToken();
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl(Navigation.ToAbsoluteUri("/hubs/notifications"))
+                .WithAutomaticReconnect()
+                .Build();
 
-            if (accessTokenResult.TryGetToken(out var accessToken))
-            {
-                _hubConnection = new HubConnectionBuilder()
-                    .WithUrl(Navigation.ToAbsoluteUri("/hubs/notifications"), options =>
+            _hubConnection.On<string, string, string, NotificationType, string?, DateTime>("ReceiveNotification",
+                async (id, title, message, type, actionUrl, createdAt) =>
+                {
+                    await InvokeAsync(async () =>
                     {
-                        options.AccessTokenProvider = () => Task.FromResult(accessToken.Value);
-                    })
-                    .WithAutomaticReconnect()
-                    .Build();
-
-                _hubConnection.On<string, string, string, NotificationType, string?, DateTime>("ReceiveNotification",
-                    async (id, title, message, type, actionUrl, createdAt) =>
-                    {
-                        await InvokeAsync(async () =>
-                        {
-                            // Reload notifications to get the new one
-                            await LoadNotifications();
-                        });
+                        // Reload notifications to get the new one
+                        await LoadNotifications();
                     });
+                });
 
-                await _hubConnection.StartAsync();
-            }
-            else
-            {
-                Console.WriteLine("Failed to acquire access token for SignalR.");
-            }
+            await _hubConnection.StartAsync();
         }
         catch (Exception ex)
         {
