@@ -245,6 +245,16 @@ public static class DbContextConfigurator
         // Create NpgsqlDataSource with EnableDynamicJson for JSONB support (required since Npgsql 8.0)
         // This is required for Dictionary<string, string> and other dynamic JSON types
         var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(connectionString);
+        
+        var jsonOptions = new System.Text.Json.JsonSerializerOptions
+        {
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.SnakeCaseLower,
+            WriteIndented = false,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        };
+        jsonOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        
+        dataSourceBuilder.ConfigureJsonOptions(jsonOptions);
         dataSourceBuilder.EnableDynamicJson();
         var dataSource = dataSourceBuilder.Build();
 

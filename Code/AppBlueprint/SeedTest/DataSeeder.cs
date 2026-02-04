@@ -23,6 +23,7 @@ using AppBlueprint.Infrastructure.Resources;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Enums;
 using Bogus;
+using FluentRegex;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -211,7 +212,12 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         // Must start with letter or underscore
         return !string.IsNullOrWhiteSpace(identifier) &&
                identifier.Length <= 63 &&
-               System.Text.RegularExpressions.Regex.IsMatch(identifier, @"^[a-zA-Z_][a-zA-Z0-9_]*$");
+               System.Text.RegularExpressions.Regex.IsMatch(identifier, Pattern.With
+                   .StartOfLine
+                   .Set(Pattern.With.Letter.Literal("_"))
+                   .Set(Pattern.With.Letter.Digit.Literal("_")).Repeat.ZeroOrMore
+                   .EndOfLine
+                   .ToString());
     }
 
     private async Task SeedLanguagesAsync(CancellationToken cancellationToken)

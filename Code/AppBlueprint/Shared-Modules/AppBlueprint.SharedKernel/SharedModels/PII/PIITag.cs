@@ -28,4 +28,9 @@ public record PIITag
     /// The GDPR classification level from the GDPRType enum.
     /// </summary>
     public GDPRType Classification { get; init; }
+
+    /// <summary>
+    /// Indicates if the PII type is from the canonical registry.
+    /// </summary>
+    public bool IsCanonical { get; init; }
 }

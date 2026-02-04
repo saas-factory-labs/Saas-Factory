@@ -173,6 +173,19 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
     if (errorMessage.Contains("JavaScript interop"))
     if (key.StartsWith(".Token."))
     ```
+- **When generating or showing FluentRegex code, always include the standard regular expression string just above it**: This allows for easier testing with online regex tools and provides a standard reference for comparison.
+  - **Example**:
+    ```csharp
+    // Regex: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+    var emailRegex = new FluentRegex()
+        .StartOfLine()
+        .OneOrMore().Alphanumeric().Or().AnyOf("_.+-")
+        .Literal("@")
+        .OneOrMore().Alphanumeric().Or().Literal("-")
+        .Literal(".")
+        .OneOrMore().Alphanumeric().Or().AnyOf("-.")
+        .EndOfLine();
+    ```
 - **Remove unnecessary package references (NU1510)**: Don't explicitly reference packages that are already included in the .NET SDK or available transitively through other dependencies. This reduces maintenance burden and avoids version conflicts. Common packages to avoid:
   - `System.Text.Json` (included in .NET 6+)
   - `Microsoft.Extensions.*` packages when already available through `Microsoft.AspNetCore.App` or other framework references

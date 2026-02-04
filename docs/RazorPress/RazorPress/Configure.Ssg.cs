@@ -4,6 +4,7 @@ using Markdig.Renderers.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ServiceStack.IO;
 using ServiceStack.Text;
+using FluentRegex;
 
 [assembly: HostingStartup(typeof(RazorPress.ConfigureSsg))]
 
@@ -94,30 +95,30 @@ public class ConfigureSsg : IHostingStartup
                             
                             // Ensure the <base href> tag is set correctly
                             content = System.Text.RegularExpressions.Regex.Replace(content,
-                                @"<base\s+href=""[^""]*""\s*/?>",
+                                Pattern.With.Literal("<base").Whitespace.Repeat.OneOrMore.Literal("href=\"").NegatedSet(Pattern.With.Literal("\"")).Repeat.ZeroOrMore.Literal("\"").Whitespace.Repeat.ZeroOrMore.Literal("/").Repeat.Optional.Literal(">").ToString(),
                                 $"<base href=\"{baseHref}/\"/>",
                                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                             
                             // Replace absolute paths with baseHref-prefixed paths for assets
                             // Handle href and src attributes for common asset paths
                             content = System.Text.RegularExpressions.Regex.Replace(content, 
-                                @"(href|src)=""/(css|mjs|lib|img|js|pages)/", 
+                                Pattern.With.Group(Pattern.With.Choice(Pattern.With.Literal("href"), Pattern.With.Literal("src"))).Literal("=\"/").Group(Pattern.With.Choice(Pattern.With.Literal("css"), Pattern.With.Literal("mjs"), Pattern.With.Literal("lib"), Pattern.With.Literal("img"), Pattern.With.Literal("js"), Pattern.With.Literal("pages"))).Literal("/").ToString(), 
                                 $"$1=\"{baseHref}/$2/");
                             
                             // Handle import map paths (JSON strings)
                             content = System.Text.RegularExpressions.Regex.Replace(content,
-                                @"""/(mjs|lib)/",
+                                Pattern.With.Literal("\"/").Group(Pattern.With.Choice(Pattern.With.Literal("mjs"), Pattern.With.Literal("lib"))).Literal("/").ToString(),
                                 $"\"{baseHref}/$1/");
                             
                             // Handle module imports in script tags
                             content = System.Text.RegularExpressions.Regex.Replace(content,
-                                @"from\s+[""']/(mjs|lib)/",
+                                Pattern.With.Literal("from").Whitespace.Repeat.OneOrMore.Set(Pattern.With.Literal("\"'")).Literal("/").Group(Pattern.With.Choice(Pattern.With.Literal("mjs"), Pattern.With.Literal("lib"))).Literal("/").ToString(),
                                 $"from \"{baseHref}/$1/");
                             
                             // Handle all other href absolute paths (navigation links)
                             // Match href="/" followed by any path that's not already prefixed
                             content = System.Text.RegularExpressions.Regex.Replace(content,
-                                @"href=""(/[^""]*)""",
+                                Pattern.With.Literal("href=\"").Group(Pattern.With.Literal("/").NegatedSet(Pattern.With.Literal("\"")).Repeat.ZeroOrMore).Literal("\"").ToString(),
                                 match => {
                                     var path = match.Groups[1].Value;
                                     // Skip if already has the baseHref prefix, is external, or is just root "/"

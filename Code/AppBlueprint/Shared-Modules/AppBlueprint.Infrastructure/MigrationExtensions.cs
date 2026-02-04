@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Npgsql;
 using System;
 using System.Threading.Tasks;
+using FluentRegex;
 
 namespace AppBlueprint.Infrastructure;
 
@@ -103,7 +104,12 @@ public static class MigrationExtensions
             }
             
             // PostgreSQL identifier validation: alphanumeric, underscore, max 63 chars
-            if (!System.Text.RegularExpressions.Regex.IsMatch(databaseName, @"^[a-zA-Z_][a-zA-Z0-9_]{0,62}$"))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(databaseName, Pattern.With
+                .StartOfLine
+                .Set(Pattern.With.Letter.Literal("_"))
+                .Set(Pattern.With.Letter.Digit.Literal("_")).Repeat.Times(0, 62)
+                .EndOfLine
+                .ToString()))
             {
                 throw new InvalidOperationException($"Invalid database name: '{databaseName}'. Database names must start with a letter or underscore and contain only alphanumeric characters and underscores (max 63 chars).");
             }

@@ -30,8 +30,23 @@ public class PIITaggingService : IPIITaggingService
         using var doc = JsonDocument.Parse(existingMetadataJson);
         var root = doc.RootElement.Clone();
         
-        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower, WriteIndented = false };
-        var piiJson = JsonSerializer.SerializeToElement(piiMetadata, options);
+        var options = new JsonSerializerOptions 
+        { 
+            PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower, 
+            WriteIndented = false 
+        };
+        options.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+
+        // Check for non-canonical tags to potentially notify the Worker
+        foreach (var tag in piiMetadata.PiiTags)
+        {
+            if (!tag.IsCanonical)
+            {
+                // TODO: In a real scenario, we would push to a Queue/Worker here
+                // For now, we'll just log or mark it
+                Console.WriteLine($"[PII Discovery] Found non-canonical label: {tag.Type}");
+            }
+        }
         
         // Use a dictionary to merge properties
         var merged = new Dictionary<string, object>();

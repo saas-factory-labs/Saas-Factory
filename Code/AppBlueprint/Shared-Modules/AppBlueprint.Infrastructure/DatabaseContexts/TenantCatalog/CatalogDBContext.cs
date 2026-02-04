@@ -43,5 +43,25 @@ public class CatalogDbContext : DbContext
         ArgumentNullException.ThrowIfNull(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new AppProjectEntityConfiguration());
+
+        HandleEnumToStringConversion(modelBuilder);
+    }
+
+    private static void HandleEnumToStringConversion(ModelBuilder modelBuilder)
+    {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType.IsEnum || (Nullable.GetUnderlyingType(property.ClrType)?.IsEnum ?? false))
+                {
+                    var type = typeof(Microsoft.EntityFrameworkCore.Storage.ValueConversion.EnumToStringConverter<>)
+                        .MakeGenericType(Nullable.GetUnderlyingType(property.ClrType) ?? property.ClrType);
+                    
+                    var converter = Activator.CreateInstance(type) as Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter;
+                    property.SetValueConverter(converter);
+                }
+            }
+        }
     }
 }

@@ -48,6 +48,7 @@
 
     <!-- Required for Razor compilation on change: https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-5.0 -->
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.*" />
+    <PackageReference Include="Fluent-Regex" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using FluentRegex;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -213,8 +214,10 @@ internal static class EnvironmentInfoCommand
             return connectionString;
 
         // Mask password in PostgreSQL connection string
-        var regex = new System.Text.RegularExpressions.Regex(
-            @"Password=([^;]+)",
+        var regex = new System.Text.RegularExpressions.Regex(Pattern.With
+            .Literal("Password=")
+            .Group(Pattern.With.NegatedSet(Pattern.With.Literal(";")).Repeat.OneOrMore)
+            .ToString(),
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         
         return regex.Replace(connectionString, "Password=***");

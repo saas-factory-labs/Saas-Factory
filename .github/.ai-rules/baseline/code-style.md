@@ -25,4 +25,5 @@
 - Avoid try-catch, unless we cannot fix the reason. We have Global Exception handling to handle unknown exceptions.
 # - Use SharedInfrastructureConfiguration.IsRunningInAzure to determine if we are running in Azure.
 - Don't add comments unless the code is truly not expressing the intent.
+- When using `FluentRegex`, always include the standard regular expression string as a comment just above the definition for easier comparison and testing.
 - Add Summary comments to describe methods and classes and their intent to make intellisense more useful.

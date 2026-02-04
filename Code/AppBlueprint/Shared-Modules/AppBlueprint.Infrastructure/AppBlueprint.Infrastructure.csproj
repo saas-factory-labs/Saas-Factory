@@ -27,45 +27,46 @@
 
     <ItemGroup>
         <!-- Authentication and Security -->
-        <PackageReference Include="Logto.AspNetCore.Authentication"/>
+        <PackageReference Include="Fluent-Regex" />
+        <PackageReference Include="Logto.AspNetCore.Authentication" />
         
         <!-- Entity Framework and Database -->
-        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         
         <!-- Configuration and Hosting -->
-        <PackageReference Include="Microsoft.Extensions.Compliance.Redaction"/>
-        <PackageReference Include="Microsoft.Extensions.Compliance.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Compliance.Redaction" />
+        <PackageReference Include="Microsoft.Extensions.Compliance.Abstractions" />
         
         <!-- Health Checks -->
-        <PackageReference Include="AspNetCore.HealthChecks.NpgSql"/>
-        <PackageReference Include="AspNetCore.HealthChecks.Redis"/>
-        <PackageReference Include="AspNetCore.HealthChecks.Uris"/>
+        <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
+        <PackageReference Include="AspNetCore.HealthChecks.Redis" />
+        <PackageReference Include="AspNetCore.HealthChecks.Uris" />
         
         <!-- GraphQL and API Clients -->
-        <PackageReference Include="Microsoft.Kiota.Abstractions"/>
+        <PackageReference Include="Microsoft.Kiota.Abstractions" />
         
         <!-- Serialization and Data Handling -->
-        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Newtonsoft.Json" />
         
         <!-- External Services -->
-        <PackageReference Include="RazorLight"/>
-        <PackageReference Include="Resend"/>
-        <PackageReference Include="Stripe.net"/>
-        <PackageReference Include="AWSSDK.S3"/>
-        <PackageReference Include="FirebaseAdmin"/>
+        <PackageReference Include="RazorLight" />
+        <PackageReference Include="Resend" />
+        <PackageReference Include="Stripe.net" />
+        <PackageReference Include="AWSSDK.S3" />
+        <PackageReference Include="FirebaseAdmin" />
 
         <!-- SignalR -->
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack"/>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" />
 
         <!-- Reverse Proxy -->
-        <PackageReference Include="Yarp.ReverseProxy"/>
+        <PackageReference Include="Yarp.ReverseProxy" />
         
         <!-- MSBuild (explicit override for vulnerable transitive dependencies) -->
-        <PackageReference Include="Microsoft.Build.Tasks.Core"/>
-        <PackageReference Include="Microsoft.Build.Utilities.Core"/>
+        <PackageReference Include="Microsoft.Build.Tasks.Core" />
+        <PackageReference Include="Microsoft.Build.Utilities.Core" />
     </ItemGroup>
 
     <ItemGroup>

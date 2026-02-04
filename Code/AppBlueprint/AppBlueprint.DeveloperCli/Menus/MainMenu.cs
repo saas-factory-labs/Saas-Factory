@@ -1,5 +1,6 @@
 using AppBlueprint.DeveloperCli.Commands;
 using AppBlueprint.DeveloperCli.Utilities;
+using FluentRegex;
 using RazorConsole;
 
 namespace AppBlueprint.DeveloperCli.Menus;
@@ -328,8 +329,10 @@ internal static class MainMenu
 
     private static string MaskPassword(string connectionString)
     {
-        var regex = new System.Text.RegularExpressions.Regex(
-            @"Password=([^;]+)",
+        var regex = new System.Text.RegularExpressions.Regex(Pattern.With
+            .Literal("Password=")
+            .Group(Pattern.With.NegatedSet(Pattern.With.Literal(";")).Repeat.OneOrMore)
+            .ToString(),
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
         return regex.Replace(connectionString, "Password=***");

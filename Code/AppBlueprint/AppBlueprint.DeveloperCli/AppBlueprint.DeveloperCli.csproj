@@ -26,6 +26,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting"/>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
         <PackageReference Include="Microsoft.Playwright"/>
+        <PackageReference Include="Fluent-Regex" />
     </ItemGroup>
 
 </Project>
