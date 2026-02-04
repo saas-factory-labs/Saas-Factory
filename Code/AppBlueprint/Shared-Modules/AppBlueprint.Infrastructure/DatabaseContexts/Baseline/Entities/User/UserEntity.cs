@@ -6,6 +6,8 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.Email
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel.Attributes;
+using AppBlueprint.SharedKernel.SharedModels;
 using EmailVerificationEntity =
     AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.EmailVerification.EmailVerificationEntity;
 
@@ -33,13 +35,25 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
         TenantId = string.Empty;
     }
 
+    [PIIRisk]
     public required string FirstName { get; set; }
+    
+    [PIIRisk]
     public required string LastName { get; set; }
+    
+    [PIIRisk]
     public required string UserName { get; set; }
+    
     public bool IsActive { get; set; }
 
+    [PIIRisk]
     [DataClassification(GDPRType.DirectlyIdentifiable)]
     public required string? Email { get; set; }
+    
+    /// <summary>
+    /// Generic metadata for the entity, including PII detection results.
+    /// </summary>
+    public EntityMetadata? Metadata { get; set; }
 
     /// <summary>
     /// External authentication provider user ID (e.g., Logto 'sub' claim).

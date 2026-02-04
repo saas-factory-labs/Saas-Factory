@@ -1,6 +1,7 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using AppBlueprint.Application.Interfaces;
+using AppBlueprint.Application.Interfaces.PII;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Options;
 using AppBlueprint.Application.Services;
@@ -17,6 +18,7 @@ using AppBlueprint.Infrastructure.HealthChecks;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Services.PII;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -73,6 +75,7 @@ public static class ServiceCollectionExtensions
         services.AddExternalServices(configuration);
         services.AddHealthChecksServices(configuration);
         services.AddNotificationServices();
+        services.AddPIIServices();
 
         return services;
     }
@@ -504,6 +507,25 @@ public static class ServiceCollectionExtensions
         
         Console.WriteLine($"[AppBlueprint.Infrastructure] PostgreSQL full-text search registered for {typeof(TEntity).Name}");
         
+        return services;
+    }
+
+    /// <summary>
+    /// Registers PII detection engine and scanners.
+    /// </summary>
+    private static IServiceCollection AddPIIServices(this IServiceCollection services)
+    {
+        services.AddScoped<IPIIScanner, RegexPIIScanner>();
+        services.AddScoped<IPIIScanner, NerPIIScannerPlaceholder>();
+        services.AddScoped<IPIIScanner, LlmPIIScannerPlaceholder>();
+        services.AddScoped<IPIIEngine, PIIEngine>();
+        services.AddScoped<PIITaggingService>();
+        
+        // Register the EF Core interceptor
+        services.AddScoped<PIISaveChangesInterceptor>();
+
+        Console.WriteLine("[AppBlueprint.Infrastructure] PII services registered (Regex, NER/LLM Placeholders, Interceptor)");
+
         return services;
     }
 }

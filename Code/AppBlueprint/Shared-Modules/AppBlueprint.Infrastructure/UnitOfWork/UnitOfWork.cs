@@ -188,7 +188,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     /// Core dispose method.
     /// </summary>
     /// <param name="disposing">True if called from Dispose, false if called from finalizer.</param>
-    protected void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (disposing)
         {

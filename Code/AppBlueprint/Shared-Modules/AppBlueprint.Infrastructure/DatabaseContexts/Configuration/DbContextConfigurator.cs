@@ -281,6 +281,12 @@ public static class DbContextConfigurator
             {
                 dbOptions.AddInterceptors(tenantRlsInterceptor);
             }
+
+            var piiInterceptor = serviceProvider.GetService<PIISaveChangesInterceptor>();
+            if (piiInterceptor is not null)
+            {
+                dbOptions.AddInterceptors(piiInterceptor);
+            }
         }
 
         dbOptions.ConfigureWarnings(warnings =>

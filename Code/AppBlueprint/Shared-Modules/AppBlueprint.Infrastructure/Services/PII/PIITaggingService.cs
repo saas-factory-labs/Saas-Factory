@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AppBlueprint.Application.Interfaces.PII;
@@ -40,9 +41,9 @@ public class PIITaggingService : IPIITaggingService
         }
         
         // Add or overwrite PII fields
-        merged["pii_detected"] = piiMetadata.PiiDetected;
-        merged["pii_tags"] = piiMetadata.PiiTags;
-        merged["scanner_info"] = piiMetadata.ScannerInfo;
+        merged["PiiDetected"] = piiMetadata.PiiDetected;
+        merged["PiiTags"] = piiMetadata.PiiTags;
+        merged["ScannerInfo"] = piiMetadata.ScannerInfo;
         
         return JsonSerializer.Serialize(merged, options);
     }

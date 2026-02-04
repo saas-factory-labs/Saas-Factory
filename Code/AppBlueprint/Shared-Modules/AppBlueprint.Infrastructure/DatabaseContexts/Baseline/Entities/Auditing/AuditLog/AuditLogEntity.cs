@@ -4,6 +4,8 @@ using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel.Attributes;
+using AppBlueprint.SharedKernel.SharedModels;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
@@ -41,8 +43,18 @@ public class AuditLogEntity : BaseEntity, ITenantScoped
 
     public string? Category { get; set; }
 
-    [Required] public required string NewValue { get; set; }
-    [Required] public required string OldValue { get; set; }
+    [Required] 
+    [PIIRisk]
+    public required string NewValue { get; set; }
+    
+    [Required] 
+    [PIIRisk]
+    public required string OldValue { get; set; }
+
+    /// <summary>
+    /// Generic metadata for the entity, including PII detection results.
+    /// </summary>
+    public EntityMetadata? Metadata { get; set; }
 
     [Required] public required UserEntity ModifiedBy { get; set; }
     public DateTime ModifiedAt { get; set; }

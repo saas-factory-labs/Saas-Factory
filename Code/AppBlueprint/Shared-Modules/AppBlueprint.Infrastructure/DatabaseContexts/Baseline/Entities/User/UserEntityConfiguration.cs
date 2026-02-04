@@ -62,6 +62,12 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<UserEntit
         builder.Property(u => u.IsActive)
             .IsRequired();
 
+        // Configure Metadata generic JSONB column
+        builder.Property(u => u.Metadata)
+            .HasColumnType("jsonb")
+            .HasComment("Generic metadata including PII detection results")
+            .IsRequired(false);
+
         // BaseEntity properties
         builder.Property(u => u.CreatedAt)
             .IsRequired();
