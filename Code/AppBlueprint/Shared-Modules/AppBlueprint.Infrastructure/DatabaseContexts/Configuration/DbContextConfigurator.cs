@@ -269,6 +269,18 @@ public static class DbContextConfigurator
             {
                 dbOptions.AddInterceptors(tenantInterceptor);
             }
+            
+            var tenantSecurityInterceptor = serviceProvider.GetService<TenantSecurityInterceptor>();
+            if (tenantSecurityInterceptor is not null)
+            {
+                dbOptions.AddInterceptors(tenantSecurityInterceptor);
+            }
+
+            var tenantRlsInterceptor = serviceProvider.GetService<TenantRlsInterceptor>();
+            if (tenantRlsInterceptor is not null)
+            {
+                dbOptions.AddInterceptors(tenantRlsInterceptor);
+            }
         }
 
         dbOptions.ConfigureWarnings(warnings =>

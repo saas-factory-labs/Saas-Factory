@@ -1,7 +1,7 @@
 using AppBlueprint.Infrastructure.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
+
 using TUnit.Core;
 
 namespace AppBlueprint.Tests.Infrastructure.HealthChecks;

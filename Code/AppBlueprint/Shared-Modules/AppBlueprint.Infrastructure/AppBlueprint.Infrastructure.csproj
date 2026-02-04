@@ -55,6 +55,7 @@
         <PackageReference Include="Resend"/>
         <PackageReference Include="Stripe.net"/>
         <PackageReference Include="AWSSDK.S3"/>
+        <PackageReference Include="FirebaseAdmin"/>
 
         <!-- SignalR -->
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack"/>

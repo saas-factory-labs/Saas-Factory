@@ -12,7 +12,7 @@ namespace AppBlueprint.Infrastructure.Services.Notifications;
 /// <summary>
 /// Service for sending push notifications via Firebase Cloud Messaging (FCM).
 /// </summary>
-public sealed class FirebasePushNotificationService : IFirebaseNotificationService
+public sealed class FirebasePushNotificationService : IPushNotificationService
 {
     private readonly IPushNotificationTokenRepository _tokenRepository;
     private readonly ILogger<FirebasePushNotificationService> _logger;
@@ -77,182 +77,206 @@ public sealed class FirebasePushNotificationService : IFirebaseNotificationServi
         }
     }
 
-    public async Task<bool> IsConfiguredAsync()
+    public async Task SendAsync(PushNotificationRequest request)
     {
-        return await Task.FromResult(_isInitialized);
-    }
+        ArgumentNullException.ThrowIfNull(request);
 
-    public async Task<int> SendToUserAsync(
-        string userId,
-        string title,
-        string body,
-        Dictionary<string, string>? data = null,
-        CancellationToken cancellationToken = default)
-    {
         if (!_isInitialized)
         {
-            _logger.LogWarning("Firebase not initialized. Cannot send notification to user {UserId}", userId);
-            return 0;
+            _logger.LogWarning("Firebase not initialized. Cannot send notification for user {UserId}", request.UserId);
+            return;
         }
 
-        var tokens = await _tokenRepository.GetActiveByUserIdAsync(userId, cancellationToken);
+        List<PushNotificationTokenEntity> tokens = await _tokenRepository.GetActiveByUserIdAsync(request.UserId);
+
+        _logger.LogInformation("Found {Count} active tokens for user {UserId}", tokens.Count, request.UserId);
 
         if (tokens.Count == 0)
         {
-            _logger.LogInformation("No active tokens found for user {UserId}", userId);
-            return 0;
+            return;
         }
 
-        var tokenStrings = tokens.Select(t => t.Token).ToList();
-        return await SendToTokensAsync(tokenStrings, title, body, data, cancellationToken);
+        foreach (var token in tokens)
+        {
+            _logger.LogDebug("Sending to token: {Token}", token.Token.Substring(0, Math.Min(token.Token.Length, 10)) + "...");
+        }
+        
+        MulticastMessage message = BuildFcmMessage(
+            request.Title,
+            request.Body,
+            request.ImageUrl,
+            request.ActionUrl,
+            request.Data,
+            tokens.Select(t => t.Token).ToList());
+
+        BatchResponse response = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(message);
+
+        _logger.LogInformation("FCM batch send completed. Success: {SuccessCount}, Failure: {FailureCount}",
+            response.SuccessCount, response.FailureCount);
+
+        await HandleFailedTokensAsync(response, tokens);
     }
     
-    public async Task<bool> SendToTokenAsync(
-        string token,
-        string title,
-        string body,
-        Dictionary<string, string>? data = null,
-        CancellationToken cancellationToken = default)
+    public async Task<int> SendToTenantAsync(string tenantId, string title, string body, Dictionary<string, string>? data = null, CancellationToken cancellationToken = default)
     {
-        if (!_isInitialized)
-        {
-            _logger.LogWarning("Firebase not initialized. Cannot send notification");
-            return false;
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(title);
+        ArgumentException.ThrowIfNullOrWhiteSpace(body);
 
-        try
-        {
-            var message = new Message
-            {
-                Token = token,
-                Notification = new Notification
-                {
-                    Title = title,
-                    Body = body
-                },
-                Data = data ?? new Dictionary<string, string>()
-            };
-
-            var response = await FirebaseMessaging.DefaultInstance.SendAsync(message, cancellationToken);
-            _logger.LogInformation("Successfully sent notification to token. Response: {Response}", response);
-            return true;
-        }
-        catch (FirebaseMessagingException ex) when (ex.MessagingErrorCode == MessagingErrorCode.Unregistered)
-        {
-            _logger.LogWarning("Token is invalid or unregistered: {Token}. Deactivating token.", token);
-            await DeactivateTokenAsync(token);
-            return false;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to send notification to token {Token}", token);
-            return false;
-        }
-    }
-    
-    public async Task<int> SendToTokensAsync(
-        IEnumerable<string> tokens,
-        string title,
-        string body,
-        Dictionary<string, string>? data = null,
-        CancellationToken cancellationToken = default)
-    {
-        if (!_isInitialized)
-        {
-            _logger.LogWarning("Firebase not initialized. Cannot send notifications");
-            return 0;
-        }
-
-        var tokenList = tokens.ToList();
-        if (tokenList.Count == 0)
-        {
-            return 0;
-        }
-
-        try
-        {
-            var message = new MulticastMessage
-            {
-                Tokens = tokenList,
-                Notification = new Notification
-                {
-                    Title = title,
-                    Body = body
-                },
-                Data = data ?? new Dictionary<string, string>()
-            };
-
-            var response = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(message, cancellationToken);
-
-            _logger.LogInformation(
-                "Sent multicast notification. Success: {SuccessCount}, Failure: {FailureCount}",
-                response.SuccessCount,
-                response.FailureCount);
-
-            if (response.FailureCount > 0)
-            {
-                for (var i = 0; i < response.Responses.Count; i++)
-                {
-                    var sendResponse = response.Responses[i];
-                    if (!sendResponse.IsSuccess && 
-                        sendResponse.Exception is FirebaseMessagingException fmEx &&
-                        fmEx.MessagingErrorCode == MessagingErrorCode.Unregistered)
-                    {
-                        var invalidToken = tokenList[i];
-                        _logger.LogWarning("Deactivating invalid token: {Token}", invalidToken);
-                        await DeactivateTokenAsync(invalidToken);
-                    }
-                }
-            }
-
-            return response.SuccessCount;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to send multicast notification");
-            return 0;
-        }
-    }
-    
-    public async Task<int> SendToTenantAsync(
-        string tenantId,
-        string title,
-        string body,
-        Dictionary<string, string>? data = null,
-        CancellationToken cancellationToken = default)
-    {
         if (!_isInitialized)
         {
             _logger.LogWarning("Firebase not initialized. Cannot send notification to tenant {TenantId}", tenantId);
             return 0;
         }
-
-        var tokens = await _tokenRepository.GetActiveByTenantIdAsync(tenantId, cancellationToken);
-
+        
+        List<PushNotificationTokenEntity> tokens = await _tokenRepository.GetActiveByTenantIdAsync(tenantId, cancellationToken);
+        
         if (tokens.Count == 0)
         {
-            _logger.LogInformation("No active tokens found for tenant {TenantId}", tenantId);
+            _logger.LogInformation("No active push tokens found for tenant {TenantId}", tenantId);
             return 0;
         }
 
-        var tokenStrings = tokens.Select(t => t.Token).ToList();
-        return await SendToTokensAsync(tokenStrings, title, body, data, cancellationToken);
+        MulticastMessage message = BuildFcmMessage(
+            title,
+            body,
+            null, // No image for now
+            null, // No action URL for now
+            data,
+            tokens.Select(t => t.Token).ToList());
+
+        BatchResponse response = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(message, cancellationToken);
+
+        _logger.LogInformation("FCM tenant batch send completed. Success: {SuccessCount}, Failure: {FailureCount}",
+            response.SuccessCount, response.FailureCount);
+
+        await HandleFailedTokensAsync(response, tokens);
+        
+        return response.SuccessCount;
     }
 
-    private async Task DeactivateTokenAsync(string token)
+    public async Task RegisterTokenAsync(RegisterPushTokenRequest request)
     {
-        try
+        ArgumentNullException.ThrowIfNull(request);
+
+        PushNotificationTokenEntity? existingToken = await _tokenRepository.GetByTokenAsync(request.Token);
+
+        if (existingToken is not null)
         {
-            var tokenEntity = await _tokenRepository.GetByTokenAsync(token);
-            if (tokenEntity != null)
+            if (!existingToken.IsActive)
             {
-                tokenEntity.Deactivate();
-                await _tokenRepository.UpdateAsync(tokenEntity);
+                existingToken.Reactivate();
+                await _tokenRepository.UpdateAsync(existingToken);
+            }
+            else
+            {
+                existingToken.UpdateLastUsed();
+                await _tokenRepository.UpdateAsync(existingToken);
             }
         }
-        catch (Exception ex)
+        else
         {
-            _logger.LogError(ex, "Failed to deactivate token {Token}", token);
+            PushNotificationTokenEntity token = PushNotificationTokenEntity.Create(
+                request.TenantId,
+                request.UserId,
+                request.Token,
+                request.Platform);
+
+            await _tokenRepository.AddAsync(token);
+        }
+
+        _logger.LogInformation("Registered push token for user {UserId} on platform {Platform}",
+            request.UserId, request.Platform);
+    }
+
+    public async Task UnregisterTokenAsync(string token)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(token);
+
+        await _tokenRepository.DeactivateByTokenAsync(token);
+
+        _logger.LogInformation("Unregistered push token");
+    }
+
+    private static MulticastMessage BuildFcmMessage(PushNotificationRequest request, List<string> tokens)
+    {
+        return BuildFcmMessage(request.Title, request.Body, request.ImageUrl, request.ActionUrl, request.Data, tokens);
+    }
+
+    private static MulticastMessage BuildFcmMessage(
+        string title, 
+        string body, 
+        string? imageUrl, 
+        string? actionUrl, 
+        Dictionary<string, string>? data, 
+        List<string> tokens)
+    {
+        Notification notification = new()
+        {
+            Title = title,
+            Body = body,
+            ImageUrl = imageUrl
+        };
+
+        data ??= new Dictionary<string, string>();
+        if (!string.IsNullOrEmpty(actionUrl))
+        {
+            data["clickAction"] = actionUrl;
+        }
+
+        return new MulticastMessage
+        {
+            Tokens = tokens,
+            Notification = notification,
+            Data = data,
+            Webpush = new WebpushConfig
+            {
+                Notification = new WebpushNotification
+                {
+                    Title = title,
+                    Body = body,
+                    Icon = imageUrl
+                },
+                FcmOptions = new WebpushFcmOptions
+                {
+                    Link = actionUrl
+                }
+            },
+            Apns = new ApnsConfig
+            {
+                Aps = new Aps
+                {
+                    MutableContent = true,
+                    Sound = "default"
+                }
+            }
+        };
+    }
+
+    private async Task HandleFailedTokensAsync(BatchResponse response, List<PushNotificationTokenEntity> tokens)
+    {
+        if (response.FailureCount == 0)
+            return;
+
+        for (int i = 0; i < response.Responses.Count; i++)
+        {
+            SendResponse sendResponse = response.Responses[i];
+            if (sendResponse.IsSuccess)
+                continue;
+
+            string? errorCode = sendResponse.Exception?.MessagingErrorCode?.ToString();
+            string? errorMessage = sendResponse.Exception?.Message;
+
+            _logger.LogWarning("FCM token failure: {ErrorCode} - {ErrorMessage}", errorCode, errorMessage);
+
+            if (errorCode is "InvalidArgument" or "Unregistered" or "SenderIdMismatch")
+            {
+                PushNotificationTokenEntity token = tokens[i];
+                token.Deactivate();
+                await _tokenRepository.UpdateAsync(token);
+
+                _logger.LogWarning("Deactivated invalid push token due to error: {ErrorCode}", errorCode);
+            }
         }
     }
 }

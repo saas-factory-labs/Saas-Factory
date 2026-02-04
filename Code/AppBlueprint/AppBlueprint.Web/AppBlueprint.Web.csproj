@@ -43,6 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Asp.Versioning.Mvc" />
         <PackageReference Include="Blazored.LocalStorage" />
         <PackageReference Include="Logto.AspNetCore.Authentication" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />

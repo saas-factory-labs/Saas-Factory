@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Query;
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using AppBlueprint.Infrastructure.Services;
@@ -13,6 +14,8 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts;
 public class ApplicationDbContext : B2CdbContext
 {
     private readonly ITenantContextAccessor? _tenantContextAccessor;
+
+    public string? CurrentTenantId => _tenantContextAccessor?.TenantId;
 
     // Public constructor for direct DI registration
     // Note: tenantContextAccessor is optional to support DbContextFactory (which uses root provider)
@@ -102,26 +105,50 @@ public class ApplicationDbContext : B2CdbContext
             return;
         }
 
-        // Configure tenant isolation for all tenant-scoped entities
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            if (!typeof(ITenantScoped).IsAssignableFrom(entityType.ClrType))
-                continue;
+            if (typeof(ITenantScoped).IsAssignableFrom(entityType.ClrType))
+            {
+                var method = typeof(ApplicationDbContext)
+                    .GetMethod(nameof(SetTenantFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    ?.MakeGenericMethod(entityType.ClrType);
+                method?.Invoke(this, new object[] { modelBuilder });
+            }
+        }
+    }
 
-            // Build expression: entity => entity.TenantId == _tenantContextAccessor.TenantId
-            var parameter = Expression.Parameter(entityType.ClrType, "entity");
-            var tenantIdProperty = Expression.Property(parameter, nameof(ITenantScoped.TenantId));
-            
-            // Get current tenant ID from accessor
-            var tenantContextAccessor = Expression.Constant(_tenantContextAccessor);
-            var currentTenantId = Expression.Property(tenantContextAccessor, nameof(ITenantContextAccessor.TenantId));
-            
-            // Create comparison: entity.TenantId == currentTenantId
-            var comparison = Expression.Equal(tenantIdProperty, currentTenantId);
-            var lambda = Expression.Lambda(comparison, parameter);
+    private void SetTenantFilter<TEntity>(ModelBuilder modelBuilder) where TEntity : class, ITenantScoped
+    {
+        // 1. Build Tenant ID Filter Expression (e => e.TenantId == CurrentTenantId)
+        Expression<Func<TEntity, bool>> tenantFilter = e => e.TenantId == CurrentTenantId;
 
-            // Apply named query filter (combines with existing filters using AND)
-            modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+        // 2. Get existing Query Filter (e.g. Soft Delete)
+        var existingFilter = modelBuilder.Entity<TEntity>().Metadata.GetQueryFilter();
+
+        if (existingFilter != null)
+        {
+            // 3. Combine Filters: ExistingFilter AND TenantFilter
+            var parameter = Expression.Parameter(typeof(TEntity), "entity");
+            
+            var replacedExistingBody = ReplacingExpressionVisitor.Replace(
+                existingFilter.Parameters[0], 
+                parameter, 
+                existingFilter.Body);
+                
+            var replacedTenantBody = ReplacingExpressionVisitor.Replace(
+                tenantFilter.Parameters[0], 
+                parameter, 
+                tenantFilter.Body);
+
+            var combinedBody = Expression.AndAlso(replacedExistingBody, replacedTenantBody);
+            var combinedLambda = Expression.Lambda<Func<TEntity, bool>>(combinedBody, parameter);
+
+            modelBuilder.Entity<TEntity>().HasQueryFilter(combinedLambda);
+        }
+        else
+        {
+            // No existing filter, just apply tenant filter
+            modelBuilder.Entity<TEntity>().HasQueryFilter(tenantFilter);
         }
     }
 

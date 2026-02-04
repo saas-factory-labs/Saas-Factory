@@ -421,3 +421,6 @@ FodyWeavers.xsd
 *.sln.iml
 Code/AppBlueprint/AppBlueprint.ApiService/appsettings.Development.json
 
+
+# Firebase
+firebase-service-account.json

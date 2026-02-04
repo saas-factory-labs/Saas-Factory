@@ -36,6 +36,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
     }
 
     public async Task SendNotificationAsync(
+        string tenantId,
         string userId,
         string title,
         string message,
@@ -46,24 +47,18 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation(
-            "Sending notification to user {UserId} via channels {Channels}: {Title}",
-            userId, channels, title);
+            "Sending notification to user {UserId} in tenant {TenantId} via channels {Channels}: {Title}",
+            userId, tenantId, channels, title);
 
         List<Task> tasks = new();
 
-        // 1. In-App Database Storage (always store for history)
+        // 1. In-App Database Storage (always store for history and sends SignalR real-time)
         if (channels.HasFlag(NotificationChannels.InApp))
         {
-            tasks.Add(SendInAppNotificationAsync(userId, title, message, type, actionUrl, cancellationToken));
+            tasks.Add(SendInAppNotificationAsync(tenantId, userId, title, message, type, actionUrl, cancellationToken));
         }
 
-        // 2. SignalR Real-Time (if user is currently online)
-        if (channels.HasFlag(NotificationChannels.InApp))
-        {
-            tasks.Add(SendSignalRNotificationAsync(userId, title, message, type.ToString(), actionUrl, cancellationToken));
-        }
-
-        // 3. Push Notification (Firebase Cloud Messaging)
+        // 2. Push Notification (Firebase Cloud Messaging)
         if (channels.HasFlag(NotificationChannels.Push))
         {
             tasks.Add(SendPushNotificationAsync(userId, title, message, data, cancellationToken));
@@ -134,6 +129,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
     }
 
     private async Task SendInAppNotificationAsync(
+        string tenantId,
         string userId,
         string title,
         string message,
@@ -144,6 +140,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         try
         {
             await _inAppNotificationService.SendAsync(new SendNotificationRequest(
+                TenantId: tenantId,
                 UserId: userId,
                 Title: title,
                 Message: message,
@@ -178,7 +175,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
                 timestamp = DateTime.UtcNow
             };
 
-            await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", notification, cancellationToken);
+            await _hubContext.Clients.Group($"user:{userId}").SendAsync("ReceiveNotification", notification, cancellationToken);
             _logger.LogDebug("Sent SignalR notification to user {UserId}", userId);
         }
         catch (Exception ex)
@@ -197,8 +194,9 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
     {
         try
         {
-            object notification = new
+            var notification = new
             {
+                id = Guid.NewGuid().ToString(),
                 title,
                 message,
                 type,
@@ -207,7 +205,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
             };
 
             // Note: This sends to all users in SignalR groups, would need tenant group management
-            await _hubContext.Clients.Group(tenantId).SendAsync("ReceiveNotification", notification, cancellationToken);
+            await _hubContext.Clients.Group($"tenant:{tenantId}").SendAsync("ReceiveNotification", notification, cancellationToken);
             _logger.LogDebug("Sent SignalR broadcast to tenant {TenantId}", tenantId);
         }
         catch (Exception ex)

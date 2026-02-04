@@ -12,6 +12,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
+using AppBlueprint.Infrastructure.DependencyInjection;
 using AppBlueprint.Infrastructure.HealthChecks;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
@@ -71,6 +72,7 @@ public static class ServiceCollectionExtensions
         services.AddUnitOfWork();
         services.AddExternalServices(configuration);
         services.AddHealthChecksServices(configuration);
+        services.AddNotificationServices();
 
         return services;
     }
@@ -228,6 +230,8 @@ public static class ServiceCollectionExtensions
         // Multi-tenant isolation
         services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
         services.AddScoped<TenantConnectionInterceptor>();
+        services.AddScoped<TenantSecurityInterceptor>();
+        services.AddScoped<TenantRlsInterceptor>();
         
         // User context and admin access
         services.AddScoped<Application.Services.ICurrentUserService, CurrentUserService>();
@@ -476,4 +480,31 @@ public static class ServiceCollectionExtensions
         
         return services;
     }
+
+    /// <summary>
+    /// Adds PostgreSQL full-text search service for a specific entity type.
+    /// Automatically respects tenant isolation for ITenantScoped entities.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type to enable search for (must have SearchVector column)</typeparam>
+    /// <typeparam name="TDbContext">The DbContext containing the entity</typeparam>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The service collection for chaining.</returns>
+    /// <example>
+    /// // Register search for Users (using B2BDbContext)
+    /// services.AddPostgreSqlFullTextSearch&lt;UserEntity, B2BDbContext&gt;();
+    /// 
+    /// // Register search for Tenants (using BaselineDbContext)
+    /// services.AddPostgreSqlFullTextSearch&lt;TenantEntity, BaselineDbContext&gt;();
+    /// </example>
+    public static IServiceCollection AddPostgreSqlFullTextSearch<TEntity, TDbContext>(this IServiceCollection services)
+        where TEntity : class
+        where TDbContext : DbContext
+    {
+        services.AddScoped<ISearchService<TEntity>, AppBlueprint.Infrastructure.Services.Search.PostgreSqlSearchService<TEntity, TDbContext>>();
+        
+        Console.WriteLine($"[AppBlueprint.Infrastructure] PostgreSQL full-text search registered for {typeof(TEntity).Name}");
+        
+        return services;
+    }
 }
+

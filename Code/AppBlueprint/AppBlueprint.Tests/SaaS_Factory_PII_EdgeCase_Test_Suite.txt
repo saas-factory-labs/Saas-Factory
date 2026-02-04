@@ -1,0 +1,40 @@
+======================================================================
+SECTION 1: ADVANCED FINANCIAL & ID (Luhn, Formats & Obfuscation)
+======================================================================
+[EdgeCase/Luhn]: My card is 4571-1234-5678-9010 (with dashes) or 4571.1234.5678.9010 (with dots).
+[EdgeCase/ID]: Is 101010-1010 a date, a product ID, or a Danish CPR? (It should be CPR).
+[EdgeCase/Obfuscation]: My phone is +4(5) 20-30-40-50 or simply 20 30 40 50 (local).
+[EdgeCase/International]: IBAN with spaces: GB29 NWBK 6016 1331 9268 19.
+[EdgeCase/ShortCodes]: My account code is 1234 but my bank SWIFT is NWBKGB2L.
+
+======================================================================
+SECTION 2: LOCATION & ENTITY AMBIGUITY (NER Edge Cases)
+======================================================================
+[EdgeCase/Ambiguity]: "I live in Billund, but I work at LEGO." (Is LEGO an entity or a location?)
+[EdgeCase/Address]: "Meet me at 10 Downing St, London SW1A 2AA, UK." (International UK postcode).
+[EdgeCase/Danish]: "Bor på H.C. Andersens Blvd. 12, st. th., 1553 KBH V." (Abbreviations: Blvd, st, th, KBH).
+[EdgeCase/Geo]: "Location: 55°40'34.0"N 12°34'06.0"E" (Degrees/Minutes/Seconds format).
+[EdgeCase/FakeName]: "My username is 'KillerCobra99', but my real name is 'Christian de la Cour'."
+
+======================================================================
+SECTION 3: CONTEXTUAL SENSITIVITY (LLM Context & Slang)
+======================================================================
+[Health/Slang]: "I'm popping benzos for my anxiety." (Slang for medication).
+[Health/Danish]: "Jeg er på førtidspension pga. min kroniske KOL." (Acronyms for diseases).
+[SexualOrientation/Implicit]: "I'm heading to the Pride Parade with my partner, we've been married since the 2012 law change."
+[Criminal/Implicit]: "I spent 3 years in Vestre Fængsel for fraud." (Location implies criminal history).
+[Political/Hidden]: "I'm a frequent donor to 'Make America Great Again' funds." (Slogan implies affiliation).
+
+======================================================================
+SECTION 4: TECHNICAL SECRETS & LOGGING (Entropy & Leakage)
+======================================================================
+[EdgeCase/JWT]: "Auth token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoyNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+[EdgeCase/Secrets]: "AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+[EdgeCase/LogLeak]: "Unexpected error at UserProfile.cs:line 45. Context: { email: 'hidden_user@protonmail.ch', ip: '2001:0db8:85a3:0000:0000:8a2e:0370:7334' }" (IPv6 support).
+
+======================================================================
+SECTION 5: MIXED BILINGUAL & L33TSPEAK (The Ultimate Test)
+======================================================================
+[L33t]: "M4ybe you c4n r3ach m3 at 4nd3r5 (at) gm4il (dot) c0m?" (Obfuscated email).
+[Danish/English Mix]: "The user Mette Nielsen (born 010180-1111) is requesting a 'fuld sletning' due to her 'religious beliefs' (Jehovah's Witnesses)."
+[EdgeCase/NameInString]: "Contact: support@company.com (Attn: Peter Parker)."

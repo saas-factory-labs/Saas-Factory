@@ -1,5 +1,4 @@
 using AppBlueprint.TodoAppKernel.Domain;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Tenant.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

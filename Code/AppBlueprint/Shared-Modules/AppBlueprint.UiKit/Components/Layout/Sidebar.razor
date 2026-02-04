@@ -83,6 +83,16 @@
     </IconPath>
 </SidebarMenuItem>
 
+<!-- Notifications Demo -->
+<SidebarMenuItem
+    Href="/demo/notifications"
+    Label="Notifications Demo"
+    IsActive="@IsNotificationsActive">
+    <IconPath>
+        <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.997-12.901c.468.03.842.415.842.885v.11a2.5 2.5 0 0 1 2.5 2.5v3.317l.826.826A1 1 0 0 1 12.45 12h-8.9a1 1 0 0 1-.715-1.707l.826-.826V6.594a2.5 2.5 0 0 1 2.5-2.5v-.11c0-.47.374-.855.842-.885a1.001 1.001 0 0 1 1.001 1z"/>
+    </IconPath>
+</SidebarMenuItem>
+
 <!-- Dashboard -->
 <SidebarMenuGroup
     Label="Dashboard"
@@ -524,6 +534,7 @@
     }
 
     private bool IsTodosActive => Navigation.Uri.Contains("/settings/todos", StringComparison.Ordinal);
+    private bool IsNotificationsActive => Navigation.Uri.Contains("/demo/notifications", StringComparison.Ordinal);
     private bool IsDashboardActive => Navigation.Uri == Navigation.BaseUri || Navigation.Uri.Contains("/dashboard", StringComparison.Ordinal);
     private bool IsMainActive => Navigation.Uri == Navigation.BaseUri;
     private bool IsECommerceActive => Navigation.Uri.Contains("/ecommerce", StringComparison.Ordinal);

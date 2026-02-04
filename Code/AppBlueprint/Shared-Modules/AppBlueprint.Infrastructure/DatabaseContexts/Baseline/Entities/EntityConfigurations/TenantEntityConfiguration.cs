@@ -141,5 +141,14 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<TenantE
         // Composite index for common queries
         builder.HasIndex(e => new { e.TenantType, e.IsActive, e.IsSoftDeleted })
             .HasDatabaseName("IX_Tenants_Type_Active_NotDeleted");
+
+        // ========================================
+        // Full-Text Search Configuration
+        // ========================================
+
+        // Note: SearchVector column exists in database as GENERATED ALWAYS AS computed column
+        // with GIN index IX_Tenants_SearchVector, but is NOT mapped in EF Core to avoid
+        // tsvector type mapping issues. Full-text search queries use raw SQL via
+        // PostgreSqlSearchService to access this column directly.
     }
 }

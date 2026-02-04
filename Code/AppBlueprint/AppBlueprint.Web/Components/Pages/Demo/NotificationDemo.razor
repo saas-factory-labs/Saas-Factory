@@ -1,0 +1,465 @@
+@page "/demo/notifications"
+@using AppBlueprint.Application.Interfaces
+@using AppBlueprint.Domain.Entities.Notifications
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.SignalR.Client
+@inject INotificationService NotificationService
+@inject IPushNotificationService PushNotificationService
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<PageTitle>Notification System Demo</PageTitle>
+
+<div class="container mx-auto p-6 max-w-4xl">
+    <h1 class="text-3xl font-bold mb-6">🔔 Notification System Demo</h1>
+
+    <div class="grid gap-6">
+        <!-- Connection Status -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Connection Status</h2>
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-3 h-3 rounded-full @(IsConnected ? "bg-green-500" : "bg-red-500")"></span>
+                <span>SignalR: @(IsConnected ? "Connected" : "Disconnected")</span>
+            </div>
+            @if (!string.IsNullOrEmpty(_userId))
+            {
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">User ID: @_userId</p>
+            }
+        </div>
+
+        <!-- Send Test Notification -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Send Test Notification</h2>
+            <EditForm Model="@_notificationModel" OnValidSubmit="@SendNotification">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Title</label>
+                        <InputText @bind-Value="_notificationModel.Title" class="w-full px-3 py-2 border rounded-lg" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Message</label>
+                        <InputTextArea @bind-Value="_notificationModel.Message" class="w-full px-3 py-2 border rounded-lg" rows="3" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Type</label>
+                        <InputSelect @bind-Value="_notificationModel.Type" class="w-full px-3 py-2 border rounded-lg">
+                            <option value="@NotificationType.Info">Info</option>
+                            <option value="@NotificationType.Success">Success</option>
+                            <option value="@NotificationType.Warning">Warning</option>
+                            <option value="@NotificationType.Error">Error</option>
+                        </InputSelect>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Channels</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" @bind="_sendInApp" class="rounded" />
+                                <span>In-App (SignalR)</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" @bind="_sendPush" class="rounded" />
+                                <span>Push (FCM)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" disabled="@_isSending">
+                        @if (_isSending)
+                        {
+                            <span>Sending...</span>
+                        }
+                        else
+                        {
+                            <span>Send Notification</span>
+                        }
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+
+        <!-- Register Push Token -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">📱 Register Push Token</h2>
+            <div class="space-y-4">
+                @if (string.IsNullOrEmpty(_fcmToken))
+                {
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                            ℹ️ To receive push notifications, you need to request browser permission and generate an FCM token.
+                        </p>
+                    </div>
+                    <button @onclick="RequestNotificationPermissionAndToken" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" disabled="@_isRequestingToken">
+                        @if (_isRequestingToken)
+                        {
+                            <span>⏳ Requesting Permission...</span>
+                        }
+                        else
+                        {
+                            <span>🔔 Request Permission & Get Token</span>
+                        }
+                    </button>
+                }
+                else
+                {
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-green-800 dark:text-green-200">
+                            ✅ Push notifications enabled! Token generated successfully.
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">FCM Token</label>
+                        <input type="text" value="@_fcmToken" class="w-full px-3 py-2 border rounded-lg bg-gray-50 dark:bg-gray-900 font-mono text-xs" readonly />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Device Type</label>
+                        <select @bind="_deviceType" class="w-full px-3 py-2 border rounded-lg">
+                            <option value="@DeviceType.Web">Web</option>
+                            <option value="@DeviceType.Android">Android</option>
+                            <option value="@DeviceType.iOS">iOS</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-2">
+                        <button @onclick="RegisterPushToken" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" disabled="@_isRegistering">
+                            @if (_isRegistering)
+                            {
+                                <span>Registering...</span>
+                            }
+                            else
+                            {
+                                <span>Register Token</span>
+                            }
+                        </button>
+                        <button @onclick="ClearToken" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
+                            Clear Token
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Received Notifications -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Received Notifications (@_receivedNotifications.Count)</h2>
+            <div class="space-y-2 max-h-96 overflow-y-auto">
+                @if (_receivedNotifications.Any())
+                {
+                    @foreach (var notification in _receivedNotifications.OrderByDescending(n => n.Timestamp))
+                    {
+                        <div class="p-4 border rounded-lg @GetNotificationColorClass(notification.Type)">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h3 class="font-semibold">@notification.Title</h3>
+                                    <p class="text-sm mt-1">@notification.Message</p>
+                                    <p class="text-xs text-gray-500 mt-2">@notification.Timestamp.ToString("HH:mm:ss")</p>
+                                </div>
+                                <span class="px-2 py-1 text-xs rounded-full bg-gray-200 dark:bg-gray-700">@notification.Type</span>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-gray-500 text-center py-8">No notifications received yet. Send a test notification above!</p>
+                }
+            </div>
+        </div>
+
+        <!-- Status Messages -->
+        @if (!string.IsNullOrEmpty(_statusMessage))
+        {
+            <div class="bg-blue-100 dark:bg-blue-900 border-l-4 border-blue-500 p-4 rounded">
+                <p class="text-sm">@_statusMessage</p>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 p-4 rounded">
+                <p class="text-sm text-red-700 dark:text-red-200">@_errorMessage</p>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private HubConnection? _hubConnection;
+    private string? _userId;
+    private string? _tenantId;
+    private bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
+
+    private NotificationFormModel _notificationModel = new();
+    private bool _sendInApp = true;
+    private bool _sendPush = false;
+    private bool _isSending = false;
+
+    private string _fcmToken = "";
+    private DeviceType _deviceType = DeviceType.Web;
+    private bool _isRegistering = false;
+    private bool _isRequestingToken = false;
+
+    private List<ReceivedNotification> _receivedNotifications = new();
+    private string? _statusMessage;
+    private string? _errorMessage;
+    private bool _scriptLoaded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        
+        // Get user ID from claims
+        string? externalUserId = user.FindFirst("sub")?.Value 
+            ?? user.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        
+        if (string.IsNullOrWhiteSpace(externalUserId))
+        {
+            _errorMessage = "User ID not found in claims. Are you logged in?";
+            return;
+        }
+        
+        // Get tenant ID from claims - try multiple claim names
+        _tenantId = user.FindFirst("tenant_id")?.Value 
+            ?? user.FindFirst("tid")?.Value
+            ?? user.FindFirst("TenantId")?.Value;
+        
+        if (string.IsNullOrWhiteSpace(_tenantId))
+        {
+            _errorMessage = "Tenant ID not found in your session. Please ensure you have joined a tenant.";
+            return;
+        }
+        
+        _userId = externalUserId;
+
+        await InitializeSignalR(externalUserId, _tenantId);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_scriptLoaded)
+        {
+            try
+            {
+                // Load Firebase helper script dynamically
+                await JSRuntime.InvokeVoidAsync("eval", @"
+                    if (!document.querySelector('script[src=""/js/firebase-messaging-helper.js""]')) {
+                        const script = document.createElement('script');
+                        script.src = '/js/firebase-messaging-helper.js';
+                        script.onload = function() { window.firebaseScriptLoaded = true; };
+                        document.head.appendChild(script);
+                    } else {
+                        window.firebaseScriptLoaded = true;
+                    }
+                ");
+                
+                // Wait for script to load (max 500ms)
+                for (int i = 0; i < 5; i++)
+                {
+                    await Task.Delay(100);
+                    bool loaded = await JSRuntime.InvokeAsync<bool>("eval", "window.firebaseScriptLoaded === true && typeof window.firebaseMessaging !== 'undefined'");
+                    if (loaded)
+                    {
+                        _scriptLoaded = true;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load Firebase script: {ex.Message}");
+            }
+        }
+    }
+
+    private async Task InitializeSignalR(string userId, string tenantId)
+    {
+        try
+        {
+            // Pass userId and tenantId as query parameters for Blazor Server authentication
+            string hubUrl = $"/hubs/notifications?userId={Uri.EscapeDataString(userId)}&tenantId={Uri.EscapeDataString(tenantId)}";
+            
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl(Navigation.ToAbsoluteUri(hubUrl))
+                .WithAutomaticReconnect()
+                .Build();
+
+            _hubConnection.On<ReceivedNotification>("ReceiveNotification",
+                (notification) =>
+                {
+                    InvokeAsync(() =>
+                    {
+                        _receivedNotifications.Add(notification);
+                        StateHasChanged();
+                    });
+                });
+
+            await _hubConnection.StartAsync();
+            _statusMessage = "Connected to notification hub";
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to connect to SignalR: {ex.Message}";
+        }
+    }
+
+    private async Task SendNotification()
+    {
+        _isSending = true;
+        _errorMessage = null;
+        _statusMessage = null;
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(_tenantId) || string.IsNullOrWhiteSpace(_userId))
+            {
+                _errorMessage = "Missing user or tenant context. Try refreshing the page.";
+                return;
+            }
+
+            NotificationChannels channels = NotificationChannels.None;
+            if (_sendInApp) channels |= NotificationChannels.InApp;
+            if (_sendPush) channels |= NotificationChannels.Push;
+
+            if (channels == NotificationChannels.None)
+            {
+                _errorMessage = "Please select at least one notification channel";
+                return;
+            }
+
+            var request = new SendNotificationRequest(
+                _tenantId!,
+                _userId!,
+                _notificationModel.Title,
+                _notificationModel.Message,
+                _notificationModel.Type,
+                null,
+                channels
+            );
+
+            await NotificationService.SendAsync(request);
+            _statusMessage = $"Notification sent via {channels}";
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to send notification: {ex.Message}";
+        }
+        finally
+        {
+            _isSending = false;
+        }
+    }
+
+    private async Task RequestNotificationPermissionAndToken()
+    {
+        _isRequestingToken = true;
+        _errorMessage = null;
+        _statusMessage = null;
+
+        try
+        {
+            // Check if Firebase helper is loaded
+            if (!_scriptLoaded)
+            {
+                _errorMessage = "Firebase helper script is still loading. Please try again in a moment.";
+                return;
+            }
+            
+            // Initialize Firebase if not already done
+            var initialized = await JSRuntime.InvokeAsync<bool>("initializeFirebaseMessagingFromServer");
+            if (!initialized)
+            {
+                // Get the detailed error from JavaScript
+                string detailedError = await JSRuntime.InvokeAsync<string>("eval", "window.lastFirebaseError || 'Unknown error'");
+                _errorMessage = $"Failed to initialize Firebase: {detailedError}";
+                return;
+            }
+
+            // Request permission and get FCM token
+            _fcmToken = await JSRuntime.InvokeAsync<string>("requestFirebaseTokenAndPermission");
+            
+            if (string.IsNullOrEmpty(_fcmToken))
+            {
+                _errorMessage = "Failed to get FCM token. Make sure you granted notification permissions.";
+                return;
+            }
+
+            _statusMessage = "Push token generated successfully! Now click 'Register Token' to save it.";
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to request notification permission: {ex.Message}";
+        }
+        finally
+        {
+            _isRequestingToken = false;
+        }
+    }
+
+    private async Task RegisterPushToken()
+    {
+        _isRegistering = true;
+        _errorMessage = null;
+        _statusMessage = null;
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(_fcmToken))
+            {
+                _errorMessage = "Please generate an FCM token first";
+                return;
+            }
+
+            var request = new RegisterPushTokenRequest(_tenantId!, _userId!, _fcmToken, _deviceType);
+            await PushNotificationService.RegisterTokenAsync(request);
+            _statusMessage = $"Push token registered for {_deviceType}. You can now receive push notifications!";
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to register token: {ex.Message}";
+        }
+        finally
+        {
+            _isRegistering = false;
+        }
+    }
+
+    private void ClearToken()
+    {
+        _fcmToken = "";
+        _statusMessage = "Token cleared. Request permission again to generate a new token.";
+        _errorMessage = null;
+    }
+
+    private static string GetNotificationColorClass(NotificationType type) => type switch
+    {
+        NotificationType.Success => "bg-green-50 dark:bg-green-900 border-green-200 dark:border-green-700",
+        NotificationType.Warning => "bg-yellow-50 dark:bg-yellow-900 border-yellow-200 dark:border-yellow-700",
+        NotificationType.Error => "bg-red-50 dark:bg-red-900 border-red-200 dark:border-red-700",
+        _ => "bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-700"
+    };
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+    private class NotificationFormModel
+    {
+        public string Title { get; set; } = "Test Notification";
+        public string Message { get; set; } = "This is a test notification from the demo page";
+        public NotificationType Type { get; set; } = NotificationType.Info;
+    }
+
+    private class ReceivedNotification
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Message { get; set; } = "";
+        public NotificationType Type { get; set; }
+        public string? ActionUrl { get; set; }
+        public DateTime Timestamp { get; set; }
+    }
+}

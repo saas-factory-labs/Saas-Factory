@@ -8,7 +8,7 @@ This document tracks the remaining infrastructure services needed to make AppBlu
 |---------|----------|--------|------------|------------------|
 | ✅ Real-Time Communication (SignalR) | P0 - Critical | ✅ **COMPLETE** | Medium | 4-6 hours |
 | Background Jobs | P0 - Critical | 📋 Planned | Medium | 6-8 hours |
-| Full-Text Search | P1 - High | 📋 Planned | Medium | 4-6 hours |
+| ✅ Full-Text Search | P1 - High | ✅ **COMPLETE** | Medium | 4-6 hours |
 | ✅ File Storage Service | P1 - High | ✅ **COMPLETE** | Medium | 6-8 hours |
 | ✅ Email Template System | P1 - High | ✅ **COMPLETE** | Medium | 4-6 hours |
 | ✅ Payment Webhook Infrastructure | P2 - Medium | ✅ **COMPLETE** | High | 8-10 hours |
@@ -36,6 +36,7 @@ This document tracks the remaining infrastructure services needed to make AppBlu
 - ✅ Demo chat hub with full functionality
 - ✅ Blazor UI component with real-time features
 - ✅ MessagePack protocol for efficient serialization
+- ✅ Production safety (demo pages protected via environment checks where applicable)
 - ✅ Comprehensive documentation
 
 **Files Created:**
@@ -153,21 +154,383 @@ builder.Services.AddAppBlueprintBackgroundJobs(options =>
 
 ## 🔥 Phase 2: High-Priority Services (P1)
 
-### 📋 3. Full-Text Search Infrastructure
+### ✅ 3. Full-Text Search Infrastructure - **COMPLETE**
 
-**Current State:** Basic EF Core queries only  
-**Priority:** P1 - High (critical for user experience)  
-**Complexity:** Medium  
-**Estimated Effort:** 4-6 hours  
+**Implementation:**
+- ✅ `ISearchService<TEntity>` generic search interface
+- ✅ `PostgreSqlSearchService<TEntity, TDbContext>` with tsvector/tsquery support
+- ✅ Tenant-scoped search with automatic isolation via RLS
+- ✅ Pagination, filtering, and relevance scoring
+- ✅ SearchVector computed columns with GIN indexes for Tenants and Users tables
+- ✅ Demo page with dual search modes (Users/Tenants)
+- ✅ Production safety (demo page disabled in production via environment check)
+- ✅ Comprehensive documentation (integration README)
+
+**Architecture:**
+- PostgreSQL full-text search with `tsvector` GENERATED ALWAYS AS computed columns
+- GIN indexes (IX_Tenants_SearchVector, IX_Users_SearchVector) for fast lookups
+- EF Core integration via `EF.Functions.ToTsVector()` and `EF.Functions.ToTsQuery()`
+- SearchVector columns exist in database but not mapped in EF Core entity model (avoids type conflicts)
+- Service registered in DI container as Scoped for TenantEntity and UserEntity
+
+**Files Created:**
+- `AppBlueprint.Application/Interfaces/ISearchService.cs`
+- `AppBlueprint.Application/Interfaces/SearchQuery.cs`
+- `AppBlueprint.Application/Interfaces/SearchResult.cs`
+- `AppBlueprint.Infrastructure/Services/Search/PostgreSqlSearchService.cs`
+- `AppBlueprint.UiKit/Components/Pages/SearchDemo.razor`
+- `README.md` (integration guide)
+- SQL scripts for manual SearchVector column setup
+
+**Usage Examples:**
+```csharp
+// Search users with pagination and filtering
+var query = new SearchQuery
+{
+    SearchText = "john",
+    PageNumber = 1,
+    PageSize = 20,
+    Filters = new Dictionary<string, object> { ["MinRelevance"] = 0.1 }
+};
+
+SearchResult<UserEntity> result = await _userSearchService.SearchAsync(query);
+
+foreach (UserEntity user in result.Items)
+{
+    Console.WriteLine($"{user.Email} (Relevance: {user.SearchRelevance:F4})");
+}
+```
+
+**Performance:**
+- Query time: typically 10-50ms for well-indexed tables
+- Handles 100k-1M documents per tenant with subsecond latency
+- GIN indexes provide fast exact word matches
+- Zero additional infrastructure cost (uses existing PostgreSQL)
 
 **Why It's Needed:**
-- Property search by name, description, location
 - User search in admin panels
+- Tenant search by name/description
 - Document/content search
-- Autocomplete suggestions
-- Faceted search (filters)
+- Faceted search with filters
 
-**Proposed Solution:**
+---
+
+## 🔍 Full-Text Search Options Comparison
+
+### Overview of Solutions
+
+| Solution | Type | Hosting | Best For | Cost |
+|----------|------|---------|----------|------|
+| **PostgreSQL Full-Text Search** | Embedded | Self-hosted | Simple search, tight data integration | Free (included) |
+| **Algolia** | SaaS | Cloud | Complex search UX, instant results | $1-2k+/month |
+| **Elasticsearch** | Self-hosted | VPS/Cloud | Large datasets, analytics | Infrastructure cost |
+| **Typesense** | Self-hosted/Cloud | VPS/Cloud | Algolia alternative, open source | Free/~$50+/month |
+| **Meilisearch** | Self-hosted | VPS/Cloud | Modern, developer-friendly | Free (OSS) |
+
+---
+
+### 🐘 Option 1: PostgreSQL Full-Text Search (Recommended for MVP)
+
+**Architecture:**
+- Uses `tsvector` (document representation) and `tsquery` (query representation)
+- GIN or GiST indexes for fast lookups
+- Integrated with existing database (no additional infrastructure)
+
+**Pros:**
+- ✅ **Zero additional cost** - already using PostgreSQL
+- ✅ **Zero infrastructure complexity** - no separate service to manage
+- ✅ **ACID guarantees** - search results always in sync with data
+- ✅ **Tenant isolation via RLS** - automatic multi-tenancy security
+- ✅ **Transaction support** - update data and search index atomically
+- ✅ **Works offline/local dev** - no external dependencies
+- ✅ **Multi-language support** - 20+ language configurations (English, Spanish, French, etc.)
+- ✅ **Ranking/relevance** - `ts_rank()` and `ts_rank_cd()` functions
+- ✅ **Highlighting** - `ts_headline()` for result snippets
+- ✅ **Compound searches** - combine full-text with SQL filters (price, date, category)
+- ✅ **Privacy compliant** - data never leaves your infrastructure
+- ✅ **Good enough for 80% of use cases** - most SaaS apps don't need Algolia-level search
+
+**Cons:**
+- ❌ **Less sophisticated** - no typo tolerance, no AI-powered relevance
+- ❌ **Performance at scale** - slower than dedicated search engines for 10M+ documents
+- ❌ **No built-in analytics** - must build search metrics yourself
+- ❌ **Limited autocomplete** - basic prefix matching (can use trigram indexes for fuzzy)
+- ❌ **Manual tuning required** - ranking weights need adjustment per use case
+- ❌ **No real-time distributed search** - single database bottleneck
+
+**When to Use:**
+- ✅ MVP/early-stage product (minimize complexity)
+- ✅ Search is important but not core product feature
+- ✅ Dataset < 1 million documents per tenant
+- ✅ Budget-conscious (bootstrapped/small team)
+- ✅ Strong multi-tenancy requirements (RLS FTW)
+
+**Performance:**
+- Handles **100k-1M documents** with subsecond latency
+- GIN indexes are very fast for exact word matches
+- Query time: typically **10-50ms** for well-indexed tables
+
+**Implementation Complexity:** ⭐⭐ (2/5)
+- Add `tsvector` computed column
+- Create GIN index
+- Write search queries with `@@` operator
+
+---
+
+### ⚡ Option 2: Algolia (Premium SaaS Solution)
+
+**Architecture:**
+- Managed cloud service with global CDN
+- Instant indexing and search
+- Advanced AI-powered relevance
+
+**Pros:**
+- ✅ **Blazing fast** - <10ms response times globally
+- ✅ **Typo tolerance** - "acommodation" finds "accommodation"
+- ✅ **AI-powered relevance** - NeuralSearch for semantic understanding
+- ✅ **Rich UI components** - InstantSearch.js/React ready-made widgets
+- ✅ **Analytics dashboard** - search analytics, A/B testing, click tracking
+- ✅ **Synonyms** - "apartment" finds "flat"
+- ✅ **Faceted search** - built-in filters (price, ratings, categories)
+- ✅ **Geo-search** - location-based ranking (find nearby properties)
+- ✅ **Query suggestions** - autocomplete with popular searches
+- ✅ **Personalization** - user-specific ranking
+- ✅ **Zero DevOps** - fully managed, no servers to maintain
+
+**Cons:**
+- ❌ **Expensive** - starts at $1/month, scales to $1,000-$10,000+/month for serious usage
+  - Free tier: 10k requests/month, 10k records
+  - Essential: $0.50 per 1,000 search requests
+  - Growth: ~$2,000/month for 10M records + 1M searches
+- ❌ **Vendor lock-in** - hard to migrate away (custom API)
+- ❌ **Data duplication** - must sync data to Algolia (eventual consistency risk)
+- ❌ **Privacy concerns** - data stored on third-party servers (GDPR implications)
+- ❌ **Complexity** - must build syncing pipeline (webhooks, queue jobs)
+- ❌ **No transactions** - can't atomically update DB + Algolia
+- ❌ **Multi-tenancy complexity** - must build tenant filtering yourself (security risk)
+- ❌ **Cost scales linearly** - more tenants = more money
+
+**When to Use:**
+- ✅ Search is core product feature (e.g., marketplace, e-commerce)
+- ✅ Well-funded startup or enterprise
+- ✅ Need best-in-class search UX
+- ✅ High traffic (100k+ searches/day)
+- ✅ Global user base (need CDN-level performance)
+
+**Performance:**
+- Query time: **<10ms** globally
+- Handles **billions of records** across all customers
+- Auto-scaling (no performance tuning needed)
+
+**Implementation Complexity:** ⭐⭐⭐⭐ (4/5)
+- Integrate Algolia SDK
+- Build background job for syncing
+- Handle delete/update propagation
+- Implement tenant security filters
+- Monitor sync failures
+
+**Cost Example (10 tenants, 100k records each, 100k searches/month):**
+- Records: 1M × $0.50/1k = **$500/month**
+- Searches: 100k × $0.50/1k = **$50/month**
+- **Total: ~$550/month minimum**
+
+---
+
+### 🔥 Option 3: Elasticsearch (Self-Hosted Power)
+
+**Architecture:**
+- Distributed search and analytics engine
+- Inverted index with Lucene
+- Cluster of nodes for horizontal scaling
+
+**Pros:**
+- ✅ **Highly scalable** - handles billions of documents
+- ✅ **Advanced analytics** - aggregations, histograms, time-series
+- ✅ **Flexible schema** - dynamic mapping
+- ✅ **Rich query DSL** - complex boolean queries
+- ✅ **Kibana integration** - visualization and monitoring
+- ✅ **Open source** - no licensing costs (OSS version)
+- ✅ **Battle-tested** - used by Netflix, Uber, GitHub
+
+**Cons:**
+- ❌ **Operational complexity** - requires dedicated DevOps expertise
+  - Cluster management
+  - Shard allocation
+  - JVM tuning
+  - Backup/restore
+- ❌ **Resource hungry** - minimum 4GB RAM per node (8GB recommended)
+- ❌ **High infrastructure cost** - $200-1000+/month for production cluster
+- ❌ **Overkill for small datasets** - overhead not justified for <1M docs
+- ❌ **Syncing complexity** - must build change data capture pipeline
+- ❌ **No native multi-tenancy** - must implement tenant filtering
+- ❌ **License concerns** - Elastic moved to SSPL (not truly open source anymore)
+
+**When to Use:**
+- ✅ Enterprise-scale (10M+ documents)
+- ✅ Need advanced analytics/aggregations
+- ✅ Have dedicated DevOps team
+- ✅ Search + logging + metrics (ELK stack)
+
+**Performance:**
+- Query time: **10-100ms** depending on query complexity
+- Scales horizontally (add more nodes)
+
+**Implementation Complexity:** ⭐⭐⭐⭐⭐ (5/5)
+- Set up ES cluster (3+ nodes for HA)
+- Configure Logstash/Beats for data pipeline
+- Build tenant isolation
+- Monitor cluster health
+- Handle reindexing
+
+**Monthly Cost Estimate:**
+- 3-node cluster (2 vCPU, 8GB each): **$300-600/month**
+- Elastic Cloud (managed): **$500-2000+/month**
+
+---
+
+### 🚀 Option 4: Typesense (Open Source Algolia Alternative)
+
+**Architecture:**
+- Modern search engine written in C++
+- Optimized for speed and developer experience
+- Self-hosted or cloud (Typesense Cloud)
+
+**Pros:**
+- ✅ **Fast** - <50ms queries (similar to Algolia)
+- ✅ **Typo tolerance** - built-in fuzzy search
+- ✅ **Simple API** - RESTful, easy to learn
+- ✅ **Lightweight** - runs on 1 vCPU, 1GB RAM for small datasets
+- ✅ **Open source** - GPL v3 (truly free)
+- ✅ **Low cost** - Typesense Cloud starts at $0.03/hour (~$20/month)
+- ✅ **Good documentation** - clear guides and examples
+- ✅ **Geo-search** - location-based ranking
+- ✅ **Faceting** - built-in filter support
+
+**Cons:**
+- ❌ **Smaller ecosystem** - fewer integrations than Algolia/ES
+- ❌ **Single node** - not distributed (vertical scaling only)
+- ❌ **Data duplication** - must sync like Algolia
+- ❌ **No analytics dashboard** - build your own
+- ❌ **Community support** - smaller than Elasticsearch
+- ❌ **Multi-tenancy** - must implement tenant filtering
+
+**When to Use:**
+- ✅ Want Algolia-like experience without the cost
+- ✅ Self-hosting-friendly team
+- ✅ Dataset < 10M documents
+- ✅ Need typo tolerance and fast autocomplete
+
+**Performance:**
+- Query time: **10-50ms**
+- Single-node can handle **1-10M documents**
+
+**Implementation Complexity:** ⭐⭐⭐ (3/5)
+- Deploy Typesense container
+- Build syncing pipeline
+- Integrate API client
+
+**Monthly Cost:**
+- Self-hosted (1 vCPU, 2GB RAM): **$10-20/month**
+- Typesense Cloud: **$20-100/month**
+
+---
+
+### 🦀 Option 5: Meilisearch (Developer-Friendly)
+
+**Architecture:**
+- Rust-based search engine
+- Focus on instant search experience
+- RESTful API with simple configuration
+
+**Pros:**
+- ✅ **Easy to use** - zero-config, works out of the box
+- ✅ **Fast indexing** - Rust performance
+- ✅ **Typo tolerance** - automatic
+- ✅ **Prefix search** - great for autocomplete
+- ✅ **Faceted search** - filters built-in
+- ✅ **Open source** - MIT license
+- ✅ **Cloud option** - Meilisearch Cloud (managed)
+- ✅ **Multi-language** - good Unicode support
+
+**Cons:**
+- ❌ **Limited scalability** - designed for <10M documents
+- ❌ **Single-node** - no clustering
+- ❌ **Data duplication** - must sync
+- ❌ **No analytics** - build your own
+- ❌ **Smaller community** - than ES/Algolia
+
+**When to Use:**
+- ✅ Prioritize developer experience
+- ✅ Need instant search with minimal config
+- ✅ Dataset < 5M documents
+
+**Performance:**
+- Query time: **10-50ms**
+- Indexing: very fast (Rust)
+
+**Implementation Complexity:** ⭐⭐ (2/5)
+- Deploy Meilisearch container
+- Build syncing pipeline
+- Simple API integration
+
+**Monthly Cost:**
+- Self-hosted: **$10-50/month**
+- Meilisearch Cloud: **$30-200/month**
+
+---
+
+## 🎯 Recommendation for AppBlueprint
+
+### Phase 1 (MVP - Now): PostgreSQL Full-Text Search
+
+**Rationale:**
+1. **Minimize infrastructure complexity** - AppBlueprint already uses PostgreSQL
+2. **Zero additional cost** - critical for early-stage SaaS
+3. **Tenant isolation is automatic** - RLS handles security (huge win)
+4. **Good enough for 80% of use cases** - most tenants search small datasets (<100k records)
+5. **Faster to implement** - 4-6 hours vs weeks for external service
+6. **No data syncing** - search and source of truth are the same
+
+**When to Migrate:**
+- Search becomes core product differentiator
+- Individual tenants exceed 1M searchable records
+- Need typo tolerance and autocomplete
+- Analytics/personalization become requirements
+- Revenue justifies $500-2000/month search infrastructure
+
+### Phase 2 (Growth - 6-12 months): Consider Typesense
+
+If search becomes critical and PostgreSQL struggles:
+- **Typesense** offers 80% of Algolia features at 10% of cost
+- Self-hosted option keeps infrastructure control
+- ~$50-100/month vs $1,000+ for Algolia
+
+### Phase 3 (Scale - 12-24 months): Evaluate Algolia/Elasticsearch
+
+Only if:
+- Search is core product feature (marketplace/directory SaaS)
+- Well-funded (Series A+)
+- Revenue per tenant justifies cost
+- Global user base needs CDN-level performance
+
+---
+
+## 📊 Decision Matrix
+
+| Factor | PostgreSQL | Algolia | Elasticsearch | Typesense | Meilisearch |
+|--------|------------|---------|---------------|-----------|-------------|
+| **Cost (monthly)** | $0 | $500-10k | $300-2k | $20-100 | $30-200 |
+| **Implementation Time** | 6 hours | 2-3 days | 5-7 days | 1-2 days | 1 day |
+| **Maintenance Burden** | ⭐ Low | ⭐ None | ⭐⭐⭐⭐⭐ High | ⭐⭐ Medium | ⭐⭐ Medium |
+| **Performance** | ⭐⭐⭐ Good | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐⭐ Great | ⭐⭐⭐⭐ Great | ⭐⭐⭐⭐ Great |
+| **Typo Tolerance** | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Multi-Tenancy** | ✅ Native (RLS) | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual |
+| **Scalability** | ⭐⭐⭐ 1M docs | ⭐⭐⭐⭐⭐ Unlimited | ⭐⭐⭐⭐⭐ Unlimited | ⭐⭐⭐⭐ 10M docs | ⭐⭐⭐ 5M docs |
+| **Best For** | MVP/Bootstrap | Enterprise | Large Scale | Mid-Market | Startups |
+
+---
+
+**Proposed Solution (Recommended):**
 
 **Use PostgreSQL Full-Text Search** (already have PostgreSQL)
 - No external dependencies
@@ -250,6 +613,7 @@ CREATE INDEX idx_properties_search ON properties USING GIN(search_vector);
 - ✅ Signed URL generation for secure direct access
 - ✅ File metadata tracking and management
 - ✅ Security features (file type validation, size limits)
+- ✅ Production safety (demo page disabled in production via environment check)
 - ✅ Comprehensive documentation  
 
 **Files Created:**

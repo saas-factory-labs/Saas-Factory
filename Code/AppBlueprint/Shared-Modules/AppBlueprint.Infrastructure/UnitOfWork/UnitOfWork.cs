@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using DomainNotificationRepository = AppBlueprint.Domain.Interfaces.Repositories.INotificationRepository;
 
 namespace AppBlueprint.Infrastructure.UnitOfWork.Implementation;
 
@@ -33,7 +34,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     private IAdminRepository? __adminRepository;
     private IAccountRepository? _accountRepository;
     private IApiKeyRepository? _apiKeyRepository;
-    private INotificationRepository? _notificationRepository;
+    private DomainNotificationRepository? _notificationRepository;
     private IOrganizationRepository? _organizationRepository;
     private IPermissionRepository? _permissionRepository;
     private IRoleRepository? _roleRepository;
@@ -113,12 +114,12 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
         }
     }
 
-    public INotificationRepository NotificationRepository
+    public DomainNotificationRepository NotificationRepository
     {
         get
         {
             if (_notificationRepository is null)
-                _notificationRepository = new NotificationRepository(_applicationDbContext);
+                _notificationRepository = new UserNotificationRepository(_applicationDbContext);
 
             return _notificationRepository;
         }

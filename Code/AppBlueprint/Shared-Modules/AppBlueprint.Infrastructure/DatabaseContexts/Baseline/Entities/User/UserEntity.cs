@@ -47,7 +47,7 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
     /// </summary>
     public string? ExternalAuthId { get; set; }
 
-    public DateTimeOffset LastLogin { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset LastLogin { get; set; } = DateTimeOffset.UtcNow;
 
     // ITenantScoped implementation
     public string TenantId { get; set; }

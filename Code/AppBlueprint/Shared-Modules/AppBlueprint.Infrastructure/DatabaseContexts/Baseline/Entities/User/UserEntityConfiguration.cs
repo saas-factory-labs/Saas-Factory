@@ -92,5 +92,15 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<UserEntit
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("FK_EmailAddresses_Users_UserId");
+
+        // ========================================
+        // Full-Text Search Configuration
+        // ========================================
+
+        // Add computed tsvector column for full-text search
+        // Note: SearchVector column exists in database as GENERATED ALWAYS AS computed column
+        // with GIN index IX_Users_SearchVector, but is NOT mapped in EF Core to avoid
+        // tsvector type mapping issues. Full-text search queries use raw SQL via
+        // PostgreSqlSearchService to access this column directly.
     }
 }

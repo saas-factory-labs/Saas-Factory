@@ -8,6 +8,8 @@
 @inject FileStorageService FileStorage
 @inject ILogger<FileStorageDemo> Logger
 @inject IJSRuntime JSRuntime
+@inject IWebHostEnvironment Environment
+@inject NavigationManager NavigationManager
 @attribute [Authorize]
 
 <PageTitle>File Storage Demo</PageTitle>
@@ -178,6 +180,14 @@
     private long _selectedFileSize;
     private string? _folder;
     private bool _isPublic;
+
+    protected override void OnInitialized()
+    {
+        if (Environment.IsProduction())
+        {
+            NavigationManager.NavigateTo("/", replace: true);
+        }
+    }
     private string? _customMetadata;
     private bool _isUploading;
     private string? _uploadMessage;

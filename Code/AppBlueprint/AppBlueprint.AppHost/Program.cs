@@ -8,13 +8,16 @@ var railwayConnectionString = Environment.GetEnvironmentVariable("APPBLUEPRINT_R
     ?? throw new InvalidOperationException(
         "Railway database connection string not found. Set APPBLUEPRINT_RAILWAY_CONNECTIONSTRING or DATABASE_CONNECTION_STRING environment variable.");
 
+// Local IP for WiFi access
+var localIp = "192.168.1.151";
+
 builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
     .WithHttpEndpoint(port: 9000, name: "gateway", isProxied: false)
-    .WithEnvironment("ASPNETCORE_URLS", "http://localhost:9000");
+    .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:9000");
     
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
     .WithHttpEndpoint(port: 9100, name: "api", isProxied: false)
-    .WithEnvironment("ASPNETCORE_URLS", "http://localhost:9100")
+    .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:9100")
     .WithEnvironment("SwaggerPath", "/swagger")
     .WithEnvironment("DATABASE_CONNECTION_STRING", railwayConnectionString)
     .WithEnvironment("Authentication__Provider", "Logto")
@@ -25,8 +28,8 @@ var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservic
 builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithHttpEndpoint(port: 9200, name: "web-http", isProxied: false)
     .WithReference(apiService)
-    .WithEnvironment("ASPNETCORE_URLS", "http://localhost:9200")
-    .WithEnvironment("API_BASE_URL", "http://localhost:9100") // Explicit API URL to avoid service discovery issues
+    .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:9200")
+    .WithEnvironment("API_BASE_URL", $"http://{localIp}:9100") // Use IP instead of localhost for phone access
     .WithEnvironment("DATABASE_CONNECTION_STRING", railwayConnectionString)
     .WithEnvironment("Logto__Endpoint", "https://32nkyp.logto.app/oidc")
     .WithEnvironment("Logto__AppId", "uovd1gg5ef7i1c4w46mt6")

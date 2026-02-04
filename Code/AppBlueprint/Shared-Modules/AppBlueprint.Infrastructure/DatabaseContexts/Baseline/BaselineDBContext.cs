@@ -1,4 +1,5 @@
 ﻿using AppBlueprint.Domain.Entities.Webhooks;
+using AppBlueprint.Domain.Entities.Notifications;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
@@ -62,10 +63,15 @@ public partial class BaselineDbContext : DbContext
         OnModelCreating_Tenants(modelBuilder);
         OnModelCreating_FileManagement(modelBuilder);
 
-        modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new Entities.EntityConfigurations.NotificationEntityConfiguration());
         modelBuilder.ApplyConfiguration(new IntegrationEntityConfiguration());
         modelBuilder.ApplyConfiguration(new LanguageEntityConfiguration());
         modelBuilder.ApplyConfiguration(new WebhookEventEntityConfiguration());
+        
+        // User Notifications configurations
+        modelBuilder.ApplyConfiguration(new Entities.EntityConfigurations.UserNotificationEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new Entities.EntityConfigurations.NotificationPreferencesEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new Entities.EntityConfigurations.PushNotificationTokenEntityConfiguration());
 
         HandleSensitiveData(modelBuilder);
     }
@@ -95,6 +101,11 @@ public partial class BaselineDbContext : DbContext
     public DbSet<WebhookEntity> Webhooks { get; set; }
     public DbSet<WebhookEventEntity> WebhookEvents { get; set; }
     public DbSet<SearchEntity> Searches { get; set; }
+    
+    // User Notifications
+    public DbSet<Domain.Entities.Notifications.UserNotificationEntity> UserNotifications { get; set; }
+    public DbSet<Domain.Entities.Notifications.NotificationPreferencesEntity> NotificationPreferences { get; set; }
+    public DbSet<Domain.Entities.Notifications.PushNotificationTokenEntity> PushNotificationTokens { get; set; }
 
     #endregion
 

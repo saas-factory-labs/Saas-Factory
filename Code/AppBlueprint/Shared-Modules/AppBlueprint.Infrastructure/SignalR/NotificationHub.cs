@@ -19,7 +19,8 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
     /// </summary>
     public async Task SendNotificationToUser(string userId, string title, string message, string type, string? actionUrl = null)
     {
-        object notification = new {
+        var notification = new {
+            id = Guid.NewGuid().ToString(),
             title,
             message,
             type,
@@ -36,8 +37,9 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
     /// </summary>
     public async Task SendNotificationToTenant(string title, string message, string type, string? actionUrl = null)
     {
-        object notification = new
+        var notification = new
         {
+            id = Guid.NewGuid().ToString(),
             title,
             message,
             type,
