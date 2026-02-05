@@ -43,31 +43,8 @@ public static class DbContextConfigurator
             .GetSection(DatabaseContextOptions.SectionName)
             .Get<DatabaseContextOptions>() ?? new DatabaseContextOptions();
 
-        // Override with flat UPPERCASE environment variables (following UPPERCASE_UNDERSCORE standard)
-        string prefix = "DATABASECONTEXT_";
-        
-        // Check TYPE first (new standard), then CONTEXTTYPE (legacy)
-        string? contextType = Environment.GetEnvironmentVariable($"{prefix}TYPE")
-                           ?? Environment.GetEnvironmentVariable($"{prefix}CONTEXTTYPE");
-        if (!string.IsNullOrWhiteSpace(contextType) && Enum.TryParse<DatabaseContextType>(contextType, ignoreCase: true, out DatabaseContextType parsedType))
-            dbContextOptions.ContextType = parsedType;
-        
-        string? enableHybridMode = Environment.GetEnvironmentVariable($"{prefix}ENABLEHYBRIDMODE");
-        if (!string.IsNullOrWhiteSpace(enableHybridMode) && bool.TryParse(enableHybridMode, out bool hybridMode))
-            dbContextOptions.EnableHybridMode = hybridMode;
-        
-        string? baselineOnly = Environment.GetEnvironmentVariable($"{prefix}BASELINEONLY");
-        if (!string.IsNullOrWhiteSpace(baselineOnly) && bool.TryParse(baselineOnly, out bool baseline))
-            dbContextOptions.BaselineOnly = baseline;
-        
-        string? commandTimeout = Environment.GetEnvironmentVariable($"{prefix}COMMANDTIMEOUT");
-        if (!string.IsNullOrWhiteSpace(commandTimeout) && int.TryParse(commandTimeout, out int timeout))
-            dbContextOptions.CommandTimeout = timeout;
-        
-        string? maxRetryCount = Environment.GetEnvironmentVariable($"{prefix}MAXRETRYCOUNT");
-        if (!string.IsNullOrWhiteSpace(maxRetryCount) && int.TryParse(maxRetryCount, out int retryCount))
-            dbContextOptions.MaxRetryCount = retryCount;
-
+        // Override with environment variables
+        ApplyEnvironmentVariableOverrides(dbContextOptions);
         dbContextOptions.Validate();
 
         // Get connection string with priority: Environment Variable > Configuration
@@ -79,6 +56,12 @@ public static class DbContextConfigurator
             "appblueprintdb",
             "postgres-server",
             dbContextOptions.ConnectionStringName);
+
+        // After validation, ensure connectionString is not null (validation throws if null, but compiler needs explicit check)
+        if (connectionString is null)
+        {
+            throw new InvalidOperationException("Connection string validation failed unexpectedly.");
+        }
 
         var connectionSource = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") != null
             ? "Environment Variable"
@@ -124,6 +107,37 @@ public static class DbContextConfigurator
         }
 
         return services;
+    }
+
+    /// <summary>
+    /// Applies environment variable overrides to the DatabaseContextOptions.
+    /// </summary>
+    private static void ApplyEnvironmentVariableOverrides(DatabaseContextOptions options)
+    {
+        // Override with flat UPPERCASE environment variables (following UPPERCASE_UNDERSCORE standard)
+        const string Prefix = "DATABASECONTEXT_";
+        
+        // Check TYPE first (new standard), then CONTEXTTYPE (legacy)
+        string? contextType = Environment.GetEnvironmentVariable($"{Prefix}TYPE")
+                           ?? Environment.GetEnvironmentVariable($"{Prefix}CONTEXTTYPE");
+        if (!string.IsNullOrWhiteSpace(contextType) && Enum.TryParse<DatabaseContextType>(contextType, ignoreCase: true, out DatabaseContextType parsedType))
+            options.ContextType = parsedType;
+        
+        string? enableHybridMode = Environment.GetEnvironmentVariable($"{Prefix}ENABLEHYBRIDMODE");
+        if (!string.IsNullOrWhiteSpace(enableHybridMode) && bool.TryParse(enableHybridMode, out bool hybridMode))
+            options.EnableHybridMode = hybridMode;
+        
+        string? baselineOnly = Environment.GetEnvironmentVariable($"{Prefix}BASELINEONLY");
+        if (!string.IsNullOrWhiteSpace(baselineOnly) && bool.TryParse(baselineOnly, out bool baseline))
+            options.BaselineOnly = baseline;
+        
+        string? commandTimeout = Environment.GetEnvironmentVariable($"{Prefix}COMMANDTIMEOUT");
+        if (!string.IsNullOrWhiteSpace(commandTimeout) && int.TryParse(commandTimeout, out int timeout))
+            options.CommandTimeout = timeout;
+        
+        string? maxRetryCount = Environment.GetEnvironmentVariable($"{Prefix}MAXRETRYCOUNT");
+        if (!string.IsNullOrWhiteSpace(maxRetryCount) && int.TryParse(maxRetryCount, out int retryCount))
+            options.MaxRetryCount = retryCount;
     }
 
     private static string? GetConnectionString(IConfiguration configuration, DatabaseContextOptions options)

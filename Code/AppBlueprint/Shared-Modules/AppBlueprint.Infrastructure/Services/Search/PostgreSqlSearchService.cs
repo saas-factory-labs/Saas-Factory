@@ -22,6 +22,7 @@ public sealed class PostgreSqlSearchService<TEntity, TDbContext> : ISearchServic
     private readonly TDbContext _dbContext;
     private readonly ILogger<PostgreSqlSearchService<TEntity, TDbContext>> _logger;
     private const string SearchVectorColumnName = "SearchVector";
+    private static readonly char[] SpaceSeparator = [' '];
 
     public PostgreSqlSearchService(
         TDbContext dbContext,
@@ -170,7 +171,7 @@ public sealed class PostgreSqlSearchService<TEntity, TDbContext> : ISearchServic
 
         // Otherwise, treat as phrase sear[' '] must match)
         // Split by whitespace and join with '&' operator
-        string[] terms = searchText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        string[] terms = searchText.Split(SpaceSeparator, StringSplitOptions.RemoveEmptyEntries);
         return string.Join(" & ", terms.Select(t => t.Trim()));
     }
 

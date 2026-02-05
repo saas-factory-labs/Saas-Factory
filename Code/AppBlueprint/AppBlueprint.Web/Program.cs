@@ -165,9 +165,6 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddUiKit();
 
 // Add Email Template Service (RazorLight templating)
-// Option: Enable custom templates by specifying path
-// string customTemplatesPath = Path.Combine(builder.Environment.ContentRootPath, "Templates");
-// builder.Services.AddEmailTemplateService(customTemplatesPath);
 builder.Services.AddEmailTemplateService(); // Uses framework's embedded templates only
 
 // Add HttpContextAccessor for accessing authentication tokens in delegating handlers

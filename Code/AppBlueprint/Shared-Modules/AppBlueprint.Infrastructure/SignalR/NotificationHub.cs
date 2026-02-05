@@ -17,14 +17,14 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
     /// <summary>
     /// Sends a notification to a specific user in the current tenant.
     /// </summary>
-    public async Task SendNotificationToUser(string userId, string title, string message, string type, string? actionUrl = null)
+    public async Task SendNotificationToUser(string userId, string title, string message, string type, Uri? actionUrl = null)
     {
         var notification = new {
             id = Guid.NewGuid().ToString(),
             title,
             message,
             type,
-            actionUrl,
+            actionUrl = actionUrl?.ToString(),
             timestamp = DateTime.UtcNow
         };
 
@@ -35,7 +35,7 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
     /// <summary>
     /// Sends a notification to all users in the current tenant.
     /// </summary>
-    public async Task SendNotificationToTenant(string title, string message, string type, string? actionUrl = null)
+    public async Task SendNotificationToTenant(string title, string message, string type, Uri? actionUrl = null)
     {
         var notification = new
         {
@@ -43,7 +43,7 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
             title,
             message,
             type,
-            actionUrl,
+            actionUrl = actionUrl?.ToString(),
             timestamp = DateTime.UtcNow
         };
 

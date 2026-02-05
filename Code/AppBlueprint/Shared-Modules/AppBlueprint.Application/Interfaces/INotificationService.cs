@@ -42,7 +42,7 @@ public sealed record SendNotificationRequest(
     string Title,
     string Message,
     NotificationType Type = NotificationType.Info,
-    string? ActionUrl = null,
+    Uri? ActionUrl = null,
     NotificationChannels Channels = NotificationChannels.All
 );
 

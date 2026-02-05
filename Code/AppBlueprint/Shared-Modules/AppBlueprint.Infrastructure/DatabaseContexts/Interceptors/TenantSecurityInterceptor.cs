@@ -26,6 +26,7 @@ public sealed class TenantSecurityInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(eventData);
         ValidateTenantScope(eventData.Context);
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
@@ -34,6 +35,7 @@ public sealed class TenantSecurityInterceptor : SaveChangesInterceptor
         DbContextEventData eventData,
         InterceptionResult<int> result)
     {
+        ArgumentNullException.ThrowIfNull(eventData);
         ValidateTenantScope(eventData.Context);
         return base.SavingChanges(eventData, result);
     }

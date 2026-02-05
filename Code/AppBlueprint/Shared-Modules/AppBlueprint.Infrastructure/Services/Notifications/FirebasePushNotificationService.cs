@@ -16,8 +16,8 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
 {
     private readonly IPushNotificationTokenRepository _tokenRepository;
     private readonly ILogger<FirebasePushNotificationService> _logger;
-    private static FirebaseApp? _firebaseApp;
-    private static readonly object _lock = new();
+    private FirebaseApp? _firebaseApp;
+    private readonly object _lock = new();
     private readonly IConfiguration _configuration;
     private bool _isInitialized;
 
@@ -77,8 +77,6 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
         }
     }
 
-    private static FirebaseApp? GetFirebaseApp() => _firebaseApp;
-
     public async Task SendAsync(PushNotificationRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -98,9 +96,12 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
             return;
         }
 
-        foreach (var token in tokens)
+        if (_logger.IsEnabled(LogLevel.Debug))
         {
-            _logger.LogDebug("Sending to token: {Token}", token.Token.Substring(0, Math.Min(token.Token.Length, 10)) + "...");
+            foreach (var token in tokens)
+            {
+                _logger.LogDebug("Sending to token: {Token}", string.Concat(token.Token.AsSpan(0, Math.Min(token.Token.Length, 10)), "..."));
+            }
         }
         
         MulticastMessage message = BuildFcmMessage(
@@ -200,16 +201,11 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
         _logger.LogInformation("Unregistered push token");
     }
 
-    private static MulticastMessage BuildFcmMessage(PushNotificationRequest request, List<string> tokens)
-    {
-        return BuildFcmMessage(request.Title, request.Body, request.ImageUrl, request.ActionUrl, request.Data, tokens);
-    }
-
-    private static MulticastMessage BuildFcmMessage(
+    private MulticastMessage BuildFcmMessage(
         string title, 
         string body, 
-        string? imageUrl, 
-        string? actionUrl, 
+        Uri? imageUrl, 
+        Uri? actionUrl, 
         Dictionary<string, string>? data, 
         List<string> tokens)
     {
@@ -217,13 +213,13 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
         {
             Title = title,
             Body = body,
-            ImageUrl = imageUrl
+            ImageUrl = imageUrl?.ToString()
         };
 
         data ??= new Dictionary<string, string>();
-        if (!string.IsNullOrEmpty(actionUrl))
+        if (actionUrl is not null)
         {
-            data["clickAction"] = actionUrl;
+            data["clickAction"] = actionUrl.ToString();
         }
 
         return new MulticastMessage
@@ -237,11 +233,11 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
                 {
                     Title = title,
                     Body = body,
-                    Icon = imageUrl
+                    Icon = imageUrl?.ToString()
                 },
                 FcmOptions = new WebpushFcmOptions
                 {
-                    Link = actionUrl
+                    Link = actionUrl?.ToString()
                 }
             },
             Apns = new ApnsConfig

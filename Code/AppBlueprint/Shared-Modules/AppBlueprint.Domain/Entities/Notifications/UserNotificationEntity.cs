@@ -25,7 +25,7 @@ public sealed class UserNotificationEntity : BaseEntity, ITenantScoped
         string title,
         string message,
         NotificationType type,
-        string? actionUrl) : this()
+        Uri? actionUrl) : this()
     {
         TenantId = tenantId;
         UserId = userId;
@@ -40,7 +40,7 @@ public sealed class UserNotificationEntity : BaseEntity, ITenantScoped
     public string Title { get; set; }
     public string Message { get; set; }
     public NotificationType Type { get; set; }
-    public string? ActionUrl { get; set; }
+    public Uri? ActionUrl { get; set; }
     public bool IsRead { get; set; }
     public DateTime? ReadAt { get; set; }
 
@@ -53,7 +53,7 @@ public sealed class UserNotificationEntity : BaseEntity, ITenantScoped
         string title,
         string message,
         NotificationType type = NotificationType.Info,
-        string? actionUrl = null)
+        Uri? actionUrl = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);

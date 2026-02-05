@@ -71,7 +71,9 @@ internal sealed class ObjectStorageService : IDisposable
             var request = new PutObjectRequest
             {
                 FilePath = filePath,
+#pragma warning disable CS0618 // Type or member is obsolete
                 BucketName = _options.BucketName,
+#pragma warning restore CS0618 // Type or member is obsolete
                 Key = key
             };
 

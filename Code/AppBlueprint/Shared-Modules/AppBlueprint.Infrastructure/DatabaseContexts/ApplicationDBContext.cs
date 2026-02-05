@@ -123,7 +123,9 @@ public class ApplicationDbContext : B2CdbContext
         Expression<Func<TEntity, bool>> tenantFilter = e => e.TenantId == CurrentTenantId;
 
         // 2. Get existing Query Filter (e.g. Soft Delete)
+#pragma warning disable CS0618 // Type or member is obsolete
         var existingFilter = modelBuilder.Entity<TEntity>().Metadata.GetQueryFilter();
+#pragma warning restore CS0618 // Type or member is obsolete
 
         if (existingFilter != null)
         {

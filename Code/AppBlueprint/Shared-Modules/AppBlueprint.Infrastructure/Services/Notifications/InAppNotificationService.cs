@@ -39,7 +39,7 @@ public sealed class InAppNotificationService(
                 title = notification.Title,
                 message = notification.Message,
                 type = notification.Type,
-                actionUrl = notification.ActionUrl,
+                actionUrl = notification.ActionUrl?.ToString(),
                 timestamp = notification.CreatedAt
             });
     }

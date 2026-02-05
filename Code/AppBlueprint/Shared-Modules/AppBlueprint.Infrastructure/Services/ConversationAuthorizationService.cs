@@ -18,6 +18,10 @@ public sealed class DatingAppConversationAuthorizationService : IConversationAut
     
     public async Task<bool> CanJoinConversationAsync(string conversationId, string userId, string tenantId)
     {
+        ArgumentNullException.ThrowIfNull(conversationId);
+        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(tenantId);
+
         // Example: conversationId format = "match-{userId1}-{userId2}"
         // Extract user IDs and verify this user is one of them
         
@@ -77,6 +81,10 @@ public sealed class PropertyRentalConversationAuthorizationService : IConversati
     
     public async Task<bool> CanJoinConversationAsync(string conversationId, string userId, string tenantId)
     {
+        ArgumentNullException.ThrowIfNull(conversationId);
+        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(tenantId);
+
         // Example: conversationId format = "property-{propertyId}"
         // Check if user is property owner OR has sent an inquiry
         

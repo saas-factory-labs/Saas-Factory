@@ -93,7 +93,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
             long fileSize = request.FileStream.Length;
 
             // Generate public URL if applicable (null baseUrl will use R2 direct URL or custom domain)
-            string? publicUrl = request.IsPublic ? GetPublicUrl(fileKey, baseUrl: null) : null;
+            Uri? publicUrl = request.IsPublic ? GetPublicUrl(fileKey, baseUrl: null) : null;
 
             // Save metadata to PostgreSQL with JSONB custom fields
             var metadata = new FileMetadataEntity
@@ -260,27 +260,30 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         }
     }
 
-    public string GetPublicUrl(string fileKey, string? baseUrl = null)
+    public Uri GetPublicUrl(string fileKey, Uri? baseUrl = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileKey);
 
         // Use API endpoint if provided (for authentication-free downloads through the API)
-        if (!string.IsNullOrWhiteSpace(baseUrl))
+        if (baseUrl is not null)
         {
             _logger.LogInformation("Using API endpoint for public URL: {BaseUrl}", baseUrl);
-            return $"{baseUrl.TrimEnd('/')}/api/v1/filestorage/public/{Uri.EscapeDataString(fileKey)}";
+            string urlString = $"{baseUrl.ToString().TrimEnd('/')}/api/v1/filestorage/public/{Uri.EscapeDataString(fileKey)}";
+            return new Uri(urlString, UriKind.Absolute);
         }
 
         // Use custom domain if configured, otherwise use R2 endpoint
         if (!string.IsNullOrWhiteSpace(_options.PublicDomain))
         {
             _logger.LogInformation("Using PublicDomain for public URL: {PublicDomain}", _options.PublicDomain);
-            return $"{_options.PublicDomain.TrimEnd('/')}/{fileKey}";
+            string urlString = $"{_options.PublicDomain.TrimEnd('/')}/{fileKey}";
+            return new Uri(urlString, UriKind.Absolute);
         }
 
         // R2 public bucket URL format (requires bucket to be publicly accessible)
         _logger.LogWarning("PublicDomain not configured, falling back to R2 endpoint URL (requires auth): {EndpointUrl}", _options.EndpointUrl);
-        return $"{_options.EndpointUrl.TrimEnd('/')}/{_options.PublicBucketName}/{fileKey}";
+        string fallbackUrl = $"{_options.EndpointUrl.TrimEnd('/')}/{_options.PublicBucketName}/{fileKey}";
+        return new Uri(fallbackUrl, UriKind.Absolute);
     }
 
     public async Task<IEnumerable<StoredFile>> ListFilesAsync(FileListQuery query, CancellationToken cancellationToken = default)

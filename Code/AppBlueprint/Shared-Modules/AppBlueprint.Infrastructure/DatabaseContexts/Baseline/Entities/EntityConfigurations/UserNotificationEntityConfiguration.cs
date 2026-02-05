@@ -38,7 +38,10 @@ public sealed class UserNotificationEntityConfiguration : IEntityTypeConfigurati
             .HasConversion<int>();
 
         builder.Property(e => e.ActionUrl)
-            .HasMaxLength(500);
+            .HasMaxLength(500)
+            .HasConversion(
+                v => v != null ? v.ToString() : null,
+                v => !string.IsNullOrWhiteSpace(v) ? new Uri(v) : null);
 
         builder.Property(e => e.IsRead)
             .IsRequired();

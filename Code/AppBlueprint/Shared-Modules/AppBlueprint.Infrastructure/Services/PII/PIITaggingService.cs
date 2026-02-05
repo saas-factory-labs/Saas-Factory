@@ -15,6 +15,12 @@ public interface IPIITaggingService
 public class PIITaggingService : IPIITaggingService
 {
     private readonly IPIIEngine _piiEngine;
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+        WriteIndented = false,
+        Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+    };
 
     public PIITaggingService(IPIIEngine piiEngine)
     {
@@ -29,13 +35,6 @@ public class PIITaggingService : IPIITaggingService
         // Assuming existingMetadataJson is a JSON object
         using var doc = JsonDocument.Parse(existingMetadataJson);
         var root = doc.RootElement.Clone();
-        
-        var options = new JsonSerializerOptions 
-        { 
-            PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower, 
-            WriteIndented = false 
-        };
-        options.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 
         // Check for non-canonical tags to potentially notify the Worker
         foreach (var tag in piiMetadata.PiiTags)
@@ -60,6 +59,6 @@ public class PIITaggingService : IPIITaggingService
         merged["PiiTags"] = piiMetadata.PiiTags;
         merged["ScannerInfo"] = piiMetadata.ScannerInfo;
         
-        return JsonSerializer.Serialize(merged, options);
+        return JsonSerializer.Serialize(merged, _jsonSerializerOptions);
     }
 }

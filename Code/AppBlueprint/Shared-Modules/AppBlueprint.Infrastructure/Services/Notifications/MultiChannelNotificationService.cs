@@ -42,7 +42,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         string message,
         NotificationType type = NotificationType.Info,
         NotificationChannels channels = NotificationChannels.All,
-        string? actionUrl = null,
+        Uri? actionUrl = null,
         Dictionary<string, string>? data = null,
         CancellationToken cancellationToken = default)
     {
@@ -88,7 +88,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         string message,
         NotificationType type = NotificationType.Info,
         NotificationChannels channels = NotificationChannels.All,
-        string? actionUrl = null,
+        Uri? actionUrl = null,
         Dictionary<string, string>? data = null,
         CancellationToken cancellationToken = default)
     {
@@ -134,7 +134,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         string title,
         string message,
         NotificationType type,
-        string? actionUrl,
+        Uri? actionUrl,
         CancellationToken cancellationToken)
     {
         try
@@ -161,7 +161,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         string title,
         string message,
         string type,
-        string? actionUrl,
+        Uri? actionUrl,
         CancellationToken cancellationToken)
     {
         try
@@ -171,7 +171,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
                 title,
                 message,
                 type,
-                actionUrl,
+                actionUrl = actionUrl?.ToString(),
                 timestamp = DateTime.UtcNow
             };
 
@@ -189,7 +189,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         string title,
         string message,
         string type,
-        string? actionUrl,
+        Uri? actionUrl,
         CancellationToken cancellationToken)
     {
         try
@@ -200,7 +200,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
                 title,
                 message,
                 type,
-                actionUrl,
+                actionUrl = actionUrl?.ToString(),
                 timestamp = DateTime.UtcNow
             };
 

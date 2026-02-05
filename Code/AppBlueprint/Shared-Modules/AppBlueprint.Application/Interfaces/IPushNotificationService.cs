@@ -35,8 +35,8 @@ public sealed record PushNotificationRequest(
     string UserId,
     string Title,
     string Body,
-    string? ImageUrl = null,
-    string? ActionUrl = null,
+    Uri? ImageUrl = null,
+    Uri? ActionUrl = null,
     Dictionary<string, string>? Data = null
 );
 

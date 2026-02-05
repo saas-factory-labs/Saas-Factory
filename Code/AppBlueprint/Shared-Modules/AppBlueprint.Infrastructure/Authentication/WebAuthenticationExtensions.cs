@@ -46,15 +46,13 @@ public static class WebAuthenticationExtensions
     private const string LogtoAppSecretKey = "Logto:AppSecret";
     private const string LogtoResourceKey = "Logto:Resource";
     
-    // Constants for scopes and claims
-    private const string ReadTodosScope = "read:todos";
-    private const string ReadFilesScope = "read:files";
-    private const string WriteFilesScope = "write:files";
-    
     // Constants for paths and URIs
     private const string DataProtectionKeysPath = "/app";
     private const string DataProtectionKeysFolderName = "DataProtection-Keys";
     private const string ApplicationName = "AppBlueprint";
+    private const string SignupPath = "/signup";
+    private const string SignoutPath = "/auth/signout";
+    private const string NullPlaceholder = "(null)";
     
     // Constants for logging
     private const string LogSeparator = "========================================";
@@ -193,12 +191,12 @@ public static class WebAuthenticationExtensions
         
         // DEBUG: Check all configuration values
         Console.WriteLine($"[Web] DEBUG - Reading configuration:");
-        Console.WriteLine($"[Web] DEBUG - {LogtoEndpointKey} = {logtoEndpoint ?? "(null)"}");
-        Console.WriteLine($"[Web] DEBUG - {LogtoAppIdKey} = {logtoAppId ?? "(null)"}");
-        Console.WriteLine($"[Web] DEBUG - {LogtoAppSecretKey} = {(string.IsNullOrEmpty(logtoAppSecret) ? "(null or empty)" : $"<SET, length={logtoAppSecret.Length}>")}");
-        Console.WriteLine($"[Web] DEBUG - {LogtoResourceKey} = {logtoResource ?? "(null)"}");
-        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO_APP_SECRET = {(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")) ? "(null or empty)" : $"<SET, length={Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")?.Length}>")}");
-        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO_RESOURCE = {Environment.GetEnvironmentVariable("LOGTO_RESOURCE") ?? "(null)"}");
+        Console.WriteLine($"[Web] DEBUG - {LogtoEndpointKey} = {logtoEndpoint ?? NullPlaceholder}");
+        Console.WriteLine($"[Web] DEBUG - {LogtoAppIdKey} = {logtoAppId ?? NullPlaceholder}");
+        Console.WriteLine($"[Web] DEBUG - {LogtoAppSecretKey} = {(string.IsNullOrEmpty(logtoAppSecret) ? "(null or empty)" : $"<SET, length={logtoAppSecret.Length}>")} ");
+        Console.WriteLine($"[Web] DEBUG - {LogtoResourceKey} = {logtoResource ?? NullPlaceholder}");
+        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO_APP_SECRET = {(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")) ? "(null or empty)" : $"<SET, length={Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")?.Length}>" )}");
+        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO_RESOURCE = {Environment.GetEnvironmentVariable("LOGTO_RESOURCE") ?? NullPlaceholder}");
         
         LogLogtoConfiguration(logtoEndpoint, logtoAppId, logtoAppSecret, logtoResource);
         
@@ -214,9 +212,9 @@ public static class WebAuthenticationExtensions
         })
         .AddCookie(LogtoCookieScheme, options =>
         {
-            options.LoginPath = "/signup";
-            options.LogoutPath = "/auth/signout";
-            options.AccessDeniedPath = "/signup";
+            options.LoginPath = SignupPath;
+            options.LogoutPath = SignoutPath;
+            options.AccessDeniedPath = SignupPath;
             
             if (environment.IsDevelopment())
             {
@@ -313,9 +311,9 @@ public static class WebAuthenticationExtensions
         services.Configure<CookieAuthenticationOptions>("Logto.Cookie", options =>
         {
             // Set the correct login path for Logto authentication
-            options.LoginPath = "/signup";
-            options.LogoutPath = "/auth/signout";
-            options.AccessDeniedPath = "/signup";
+            options.LoginPath = SignupPath;
+            options.LogoutPath = SignoutPath;
+            options.AccessDeniedPath = SignupPath;
             
             // Configure authentication cookie for development
             if (environment.IsDevelopment())
@@ -334,9 +332,9 @@ public static class WebAuthenticationExtensions
         services.ConfigureAll<CookieAuthenticationOptions>(options =>
         {
             // Set the correct login path for Logto authentication
-            options.LoginPath = "/signup";
-            options.LogoutPath = "/auth/signout";
-            options.AccessDeniedPath = "/signup";
+            options.LoginPath = SignupPath;
+            options.LogoutPath = SignoutPath;
+            options.AccessDeniedPath = SignupPath;
             
             // Configure authentication cookie for development
             if (environment.IsDevelopment())
@@ -373,9 +371,9 @@ public static class WebAuthenticationExtensions
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                options.LoginPath = "/signup";
-                options.LogoutPath = "/auth/signout";
-                options.AccessDeniedPath = "/signup";
+                options.LoginPath = SignupPath;
+                options.LogoutPath = SignoutPath;
+                options.AccessDeniedPath = SignupPath;
             });
     }
 
@@ -395,32 +393,6 @@ public static class WebAuthenticationExtensions
         Console.WriteLine($"[Web] Has AppSecret: {!string.IsNullOrEmpty(appSecret)}");
         Console.WriteLine($"[Web] API Resource: {resource ?? "(not set - will receive opaque tokens)"}");
         Console.WriteLine($"[Web] {LogSeparator}");
-    }
-
-    /// <summary>
-    /// Configures Logto API resource and scopes.
-    /// </summary>
-    private static void ConfigureLogtoResource(
-        dynamic options,
-        string? logtoResource)
-    {
-        if (!string.IsNullOrEmpty(logtoResource))
-        {
-            options.Resource = logtoResource;
-            options.Scopes.Add(ReadTodosScope);
-            options.Scopes.Add(ReadFilesScope);
-            options.Scopes.Add(WriteFilesScope);
-            
-            Console.WriteLine($"[Web] ✅ API Resource configured: {logtoResource} (will receive JWT access tokens)");
-            Console.WriteLine($"[Web] ✅ Requesting scopes: {ReadTodosScope}, {ReadFilesScope}, {WriteFilesScope}");
-        }
-        else
-        {
-            Console.WriteLine("[Web] ⚠️ WARNING: No API Resource configured - will receive OPAQUE access tokens");
-            Console.WriteLine("[Web] ⚠️ This will cause API calls to fail!");
-            Console.WriteLine("[Web] ⚠️ Configure Logto:Resource in appsettings.json or environment variable");
-            Console.WriteLine("[Web] ⚠️ Example: LOGTO_RESOURCE=https://api.yourdomain.com");
-        }
     }
 
     /// <summary>

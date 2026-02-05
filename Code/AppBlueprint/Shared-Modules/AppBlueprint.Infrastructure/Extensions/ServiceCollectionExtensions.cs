@@ -264,8 +264,8 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddStripeService(configuration);
-        services.AddCloudflareR2Service(configuration);
+        services.AddStripeService();
+        services.AddCloudflareR2Service();
         services.AddResendEmailService(configuration);
 
         return services;
@@ -276,8 +276,7 @@ public static class ServiceCollectionExtensions
     /// Uses StripeOptions from IOptions pattern.
     /// </summary>
     private static IServiceCollection AddStripeService(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
         // Get Stripe options to check if configured
         IServiceProvider tempProvider = services.BuildServiceProvider();
@@ -301,8 +300,7 @@ public static class ServiceCollectionExtensions
     /// Uses CloudflareR2Options from IOptions pattern.
     /// </summary>
     private static IServiceCollection AddCloudflareR2Service(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
         // Get R2 options to check if configured
         IServiceProvider tempProvider = services.BuildServiceProvider();

@@ -8,6 +8,8 @@ public sealed class FileMetadataConfiguration : IEntityTypeConfiguration<FileMet
 {
     public void Configure(EntityTypeBuilder<FileMetadataEntity> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ToTable("FileMetadata");
 
         builder.HasKey(f => f.Id);
@@ -42,7 +44,10 @@ public sealed class FileMetadataConfiguration : IEntityTypeConfiguration<FileMet
             .HasDefaultValue(false);
 
         builder.Property(f => f.PublicUrl)
-            .HasMaxLength(1000);
+            .HasMaxLength(1000)
+            .HasConversion(
+                v => v != null ? v.ToString() : null,
+                v => !string.IsNullOrWhiteSpace(v) ? new Uri(v) : null);
 
         // Store CustomMetadata as JSONB in PostgreSQL
         builder.Property(f => f.CustomMetadata)

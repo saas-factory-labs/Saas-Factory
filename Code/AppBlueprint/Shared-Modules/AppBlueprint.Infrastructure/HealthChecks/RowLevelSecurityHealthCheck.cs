@@ -138,7 +138,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
         var result = await command.ExecuteScalarAsync(cancellationToken);
         
         // Should return 2 (both functions exist)
-        return Convert.ToInt32(result) == 2;
+        return Convert.ToInt32(result, System.Globalization.CultureInfo.InvariantCulture) == 2;
     }
 
     private static async Task<Dictionary<string, bool>> GetRlsStatusAsync(

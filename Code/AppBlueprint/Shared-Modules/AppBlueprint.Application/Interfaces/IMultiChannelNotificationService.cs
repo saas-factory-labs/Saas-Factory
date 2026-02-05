@@ -17,7 +17,7 @@ public interface IMultiChannelNotificationService
         string message,
         NotificationType type = NotificationType.Info,
         NotificationChannels channels = NotificationChannels.All,
-        string? actionUrl = null,
+        Uri? actionUrl = null,
         Dictionary<string, string>? data = null,
         CancellationToken cancellationToken = default);
 
@@ -30,7 +30,7 @@ public interface IMultiChannelNotificationService
         string message,
         NotificationType type = NotificationType.Info,
         NotificationChannels channels = NotificationChannels.All,
-        string? actionUrl = null,
+        Uri? actionUrl = null,
         Dictionary<string, string>? data = null,
         CancellationToken cancellationToken = default);
 

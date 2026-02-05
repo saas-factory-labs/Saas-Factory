@@ -23,6 +23,7 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
         CommandEventData eventData, 
         InterceptionResult<DbDataReader> result)
     {
+        ArgumentNullException.ThrowIfNull(command);
         SetTenantSessionVariable(command);
         return base.ReaderExecuting(command, eventData, result);
     }
@@ -33,6 +34,7 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
         InterceptionResult<DbDataReader> result, 
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(command);
         SetTenantSessionVariable(command);
         return base.ReaderExecutingAsync(command, eventData, result, cancellationToken);
     }
@@ -42,6 +44,7 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
         CommandEventData eventData, 
         InterceptionResult<int> result)
     {
+        ArgumentNullException.ThrowIfNull(command);
         SetTenantSessionVariable(command);
         return base.NonQueryExecuting(command, eventData, result);
     }
@@ -52,6 +55,7 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
         InterceptionResult<int> result, 
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(command);
         SetTenantSessionVariable(command);
         return base.NonQueryExecutingAsync(command, eventData, result, cancellationToken);
     }
@@ -61,6 +65,7 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
         CommandEventData eventData, 
         InterceptionResult<object> result)
     {
+        ArgumentNullException.ThrowIfNull(command);
         SetTenantSessionVariable(command);
         return base.ScalarExecuting(command, eventData, result);
     }
@@ -71,6 +76,7 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
         InterceptionResult<object> result, 
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(command);
         SetTenantSessionVariable(command);
         return base.ScalarExecutingAsync(command, eventData, result, cancellationToken);
     }
@@ -83,7 +89,7 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
         // Prepend the SET command. 
         // We use string interpolation here for the tenantId value.
         // It's sanitized by replacing single quotes.
-        var sanitizedTenantId = tenantId.Replace("'", "''");
+        var sanitizedTenantId = tenantId.Replace("'", "''", StringComparison.Ordinal);
         
         // We use 'SET LOCAL' to ensure the variable only lasts for the current transaction if any,
         // but 'SET' is usually fine for session-scoped custom variables in EF Core pooled connections.

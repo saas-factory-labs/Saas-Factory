@@ -49,7 +49,7 @@ public interface IFileStorageService
     /// <param name="fileKey">Unique file key in storage.</param>
     /// <param name="baseUrl">Optional base URL for API endpoint. If null, uses R2 direct URL (requires custom domain).</param>
     /// <returns>Public URL to the file.</returns>
-    string GetPublicUrl(string fileKey, string? baseUrl = null);
+    Uri GetPublicUrl(string fileKey, Uri? baseUrl = null);
     
     /// <summary>
     /// Lists files for the current tenant with optional filtering.
@@ -87,7 +87,7 @@ public sealed record StoredFile(
     DateTime UploadedAt,
     string? Folder,
     bool IsPublic,
-    string? PublicUrl,
+    Uri? PublicUrl,
     Dictionary<string, string>? CustomMetadata
 );
 

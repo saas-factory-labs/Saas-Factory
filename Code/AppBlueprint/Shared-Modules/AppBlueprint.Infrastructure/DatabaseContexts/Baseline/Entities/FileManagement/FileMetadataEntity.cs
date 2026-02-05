@@ -57,7 +57,7 @@ public sealed class FileMetadataEntity : BaseEntity, ITenantScoped
     /// Public URL for files stored in public bucket (dating app images).
     /// Null for private files.
     /// </summary>
-    public string? PublicUrl { get; set; }
+    public Uri? PublicUrl { get; set; }
 
     /// <summary>
     /// Custom metadata stored as JSONB in PostgreSQL.
