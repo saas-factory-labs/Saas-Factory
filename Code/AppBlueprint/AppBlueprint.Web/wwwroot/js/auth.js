@@ -1,8 +1,6 @@
-"use strict";
 /**
  * Authentication module for token management
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 const auth = {
     async fetchAndStoreToken() {
         try {
@@ -22,5 +20,5 @@ const auth = {
     }
 };
 window.auth = auth;
-exports.default = auth;
+export default auth;
 //# sourceMappingURL=auth.js.map

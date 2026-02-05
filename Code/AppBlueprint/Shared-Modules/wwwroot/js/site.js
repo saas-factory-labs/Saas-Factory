@@ -626,11 +626,12 @@ const chartJsInterop = {
         }
     },
     updateChartTheme(canvasId) {
+        var _a, _b, _c, _d;
         const chart = this.charts.get(canvasId);
         if (chart) {
             const colors = this.getChartColors();
             const typedChart = chart;
-            if (typedChart.options.scales?.y) {
+            if ((_a = typedChart.options.scales) === null || _a === void 0 ? void 0 : _a.y) {
                 if (typedChart.options.scales.y.ticks) {
                     typedChart.options.scales.y.ticks.color = colors.textColor;
                 }
@@ -638,10 +639,10 @@ const chartJsInterop = {
                     typedChart.options.scales.y.grid.color = colors.gridColor;
                 }
             }
-            if (typedChart.options.scales?.x?.ticks) {
+            if ((_c = (_b = typedChart.options.scales) === null || _b === void 0 ? void 0 : _b.x) === null || _c === void 0 ? void 0 : _c.ticks) {
                 typedChart.options.scales.x.ticks.color = colors.textColor;
             }
-            if (typedChart.options.plugins?.tooltip) {
+            if ((_d = typedChart.options.plugins) === null || _d === void 0 ? void 0 : _d.tooltip) {
                 typedChart.options.plugins.tooltip.titleColor = colors.tooltipTitleColor;
                 typedChart.options.plugins.tooltip.bodyColor = colors.tooltipBodyColor;
                 typedChart.options.plugins.tooltip.backgroundColor = colors.tooltipBgColor;

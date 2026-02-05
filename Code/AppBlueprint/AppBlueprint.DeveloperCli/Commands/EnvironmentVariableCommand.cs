@@ -2,7 +2,7 @@ namespace AppBlueprint.DeveloperCli.Commands;
 
 internal static class EnvironmentVariableCommand
 {
-    private const string AppBlueprintPrefix = "APPBLUEPRINT_";
+    private const string AppBlueprintPrefix = "";
     private const string ScopeOption = "--scope";
     private const string ScopeDescription = "Scope: User, Machine, or Process";
 

@@ -46,10 +46,10 @@ interface Window {
             }
 
             console.log('📌 Attaching blur event to element:', element);
-            element.addEventListener('blur', function (): void {
+            element.addEventListener('blur', async function (): Promise<void> {
                 try {
                     if (dotNetRef && typeof dotNetRef.invokeMethodAsync === 'function') {
-                        void dotNetRef.invokeMethodAsync('OnBlur');
+                        await dotNetRef.invokeMethodAsync('OnBlur');
                     }
                 } catch (error) {
                     console.warn('MudBlazor polyfill: Error invoking OnBlur', error);
@@ -72,10 +72,10 @@ interface Window {
                 return;
             }
 
-            element.addEventListener('focus', function (): void {
+            element.addEventListener('focus', async function (): Promise<void> {
                 try {
                     if (dotNetRef && typeof dotNetRef.invokeMethodAsync === 'function') {
-                        void dotNetRef.invokeMethodAsync('OnFocus');
+                        await dotNetRef.invokeMethodAsync('OnFocus');
                     }
                 } catch (error) {
                     console.warn('MudBlazor polyfill: Error invoking OnFocus', error);

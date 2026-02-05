@@ -4,14 +4,14 @@
 $ErrorActionPreference = "Stop"
 
 # Get connection string from environment
-$ConnectionString = $env:APPBLUEPRINT_RAILWAY_CONNECTIONSTRING
+$ConnectionString = $env:DATABASE_CONNECTIONSTRING
 if (-not $ConnectionString) {
-    $ConnectionString = $env:DATABASE_CONNECTION_STRING
+    $ConnectionString = $env:RAILWAY_CONNECTIONSTRING
 }
 
 if (-not $ConnectionString) {
     Write-Host "❌ Error: No database connection string found!" -ForegroundColor Red
-    Write-Host "Set APPBLUEPRINT_RAILWAY_CONNECTIONSTRING or DATABASE_CONNECTION_STRING environment variable." -ForegroundColor Yellow
+    Write-Host "Set DATABASE_CONNECTIONSTRING or RAILWAY_CONNECTIONSTRING environment variable." -ForegroundColor Yellow
     exit 1
 }
 

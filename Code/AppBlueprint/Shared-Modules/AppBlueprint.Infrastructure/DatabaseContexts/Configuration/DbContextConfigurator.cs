@@ -38,10 +38,35 @@ public static class DbContextConfigurator
             return options;
         });
 
-        // Get configuration
+        // Get configuration from appsettings.json first
         var dbContextOptions = configuration
             .GetSection(DatabaseContextOptions.SectionName)
             .Get<DatabaseContextOptions>() ?? new DatabaseContextOptions();
+
+        // Override with flat UPPERCASE environment variables (following UPPERCASE_UNDERSCORE standard)
+        string prefix = "DATABASECONTEXT_";
+        
+        // Check TYPE first (new standard), then CONTEXTTYPE (legacy)
+        string? contextType = Environment.GetEnvironmentVariable($"{prefix}TYPE")
+                           ?? Environment.GetEnvironmentVariable($"{prefix}CONTEXTTYPE");
+        if (!string.IsNullOrWhiteSpace(contextType) && Enum.TryParse<DatabaseContextType>(contextType, ignoreCase: true, out DatabaseContextType parsedType))
+            dbContextOptions.ContextType = parsedType;
+        
+        string? enableHybridMode = Environment.GetEnvironmentVariable($"{prefix}ENABLEHYBRIDMODE");
+        if (!string.IsNullOrWhiteSpace(enableHybridMode) && bool.TryParse(enableHybridMode, out bool hybridMode))
+            dbContextOptions.EnableHybridMode = hybridMode;
+        
+        string? baselineOnly = Environment.GetEnvironmentVariable($"{prefix}BASELINEONLY");
+        if (!string.IsNullOrWhiteSpace(baselineOnly) && bool.TryParse(baselineOnly, out bool baseline))
+            dbContextOptions.BaselineOnly = baseline;
+        
+        string? commandTimeout = Environment.GetEnvironmentVariable($"{prefix}COMMANDTIMEOUT");
+        if (!string.IsNullOrWhiteSpace(commandTimeout) && int.TryParse(commandTimeout, out int timeout))
+            dbContextOptions.CommandTimeout = timeout;
+        
+        string? maxRetryCount = Environment.GetEnvironmentVariable($"{prefix}MAXRETRYCOUNT");
+        if (!string.IsNullOrWhiteSpace(maxRetryCount) && int.TryParse(maxRetryCount, out int retryCount))
+            dbContextOptions.MaxRetryCount = retryCount;
 
         dbContextOptions.Validate();
 
@@ -55,7 +80,7 @@ public static class DbContextConfigurator
             "postgres-server",
             dbContextOptions.ConnectionStringName);
 
-        var connectionSource = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") != null
+        var connectionSource = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") != null
             ? "Environment Variable"
             : $"Configuration ({dbContextOptions.ConnectionStringName})";
 
@@ -104,7 +129,7 @@ public static class DbContextConfigurator
     private static string? GetConnectionString(IConfiguration configuration, DatabaseContextOptions options)
     {
         // Priority 1: Environment variable
-        string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+        string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
 
         // Priority 2: Configuration using specified connection string name
         if (string.IsNullOrEmpty(connectionString))
@@ -292,7 +317,7 @@ public static class DbContextConfigurator
                 dbOptions.AddInterceptors(tenantRlsInterceptor);
             }
 
-            var piiInterceptor = serviceProvider.GetService<PIISaveChangesInterceptor>();
+            var piiInterceptor = serviceProvider.GetService<PiiSaveChangesInterceptor>();
             if (piiInterceptor is not null)
             {
                 dbOptions.AddInterceptors(piiInterceptor);

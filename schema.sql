@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 8hy8TZIofa8WsYEjYt2wva2vD55vNQ0QGXQcJEpgxTC6JE5FoU1xXFQV7sA4Xd5
+
 
 -- Dumped from database version 17.7 (Debian 17.7-3.pgdg13+1)
 -- Dumped by pg_dump version 17.7 (Ubuntu 17.7-3.pgdg24.04+1)
@@ -3380,5 +3380,5 @@ ALTER TABLE ONLY public."Users"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 8hy8TZIofa8WsYEjYt2wva2vD55vNQ0QGXQcJEpgxTC6JE5FoU1xXFQV7sA4Xd5
+
 

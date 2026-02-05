@@ -55,8 +55,8 @@ public sealed class ConfigurationService : IConfigurationService
     {
         ArgumentNullException.ThrowIfNull(key);
         
-        // Always prefer environment variable for secrets with APPBLUEPRINT_ prefix
-        string envKey = $"APPBLUEPRINT_{key.Replace(":", "__", StringComparison.Ordinal)}";
+        // Always prefer environment variable for secrets (UPPERCASE_UNDERSCORE format)
+        string envKey = key.Replace(":", "_", StringComparison.Ordinal);
         string? envValue = Environment.GetEnvironmentVariable(envKey);
         if (!string.IsNullOrEmpty(envValue))
         {

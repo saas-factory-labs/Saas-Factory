@@ -64,7 +64,7 @@
         "RAILWAY_DOCKERFILE_PATH": "AppBlueprint.Web/Dockerfile",
         "ASPNETCORE_URLS": "http://+:${PORT}",
         "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
-        "ApiService__BaseUrl": "${API_SERVICE_URL}"
+        "APISERVICE_BASEURL": "${API_SERVICE_URL}"
       },
       "dependencies": ["api-service"]
     },

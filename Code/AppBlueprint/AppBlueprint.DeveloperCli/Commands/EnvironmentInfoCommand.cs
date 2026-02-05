@@ -56,8 +56,8 @@ internal static class EnvironmentInfoCommand
             .AddColumn(new TableColumn("[cyan]Value[/]"));
 
         // Database
-        string dbConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Database") 
-            ?? Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING")
+        string dbConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") 
+            ?? Environment.GetEnvironmentVariable("CONNECTIONSTRINGS_DATABASE")
             ?? "Not set";
         
         // Mask password in connection string for display
@@ -69,7 +69,7 @@ internal static class EnvironmentInfoCommand
         );
 
         // Authentication
-        string authProvider = Environment.GetEnvironmentVariable("Authentication__Provider") ?? "Not configured";
+        string authProvider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER") ?? "Not configured";
         table.AddRow("Auth Provider", authProvider == "Not configured" ? "[yellow]Not configured[/]" : $"[green]{authProvider}[/]");
 
         // Environment
@@ -83,13 +83,13 @@ internal static class EnvironmentInfoCommand
         }
 
         // Logto Configuration (if exists)
-        string logtoEndpoint = Environment.GetEnvironmentVariable("Authentication__Logto__Endpoint") ?? "Not set";
+        string logtoEndpoint = Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_ENDPOINT") ?? "Not set";
         if (logtoEndpoint != "Not set")
         {
             table.AddRow("Logto Endpoint", $"[dim]{logtoEndpoint}[/]");
         }
 
-        string logtoClientId = Environment.GetEnvironmentVariable("Authentication__Logto__ClientId") ?? "Not set";
+        string logtoClientId = Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_CLIENTID") ?? "Not set";
         if (logtoClientId != "Not set")
         {
             table.AddRow("Logto Client ID", $"[dim]{logtoClientId[..Math.Min(20, logtoClientId.Length)]}...[/]");

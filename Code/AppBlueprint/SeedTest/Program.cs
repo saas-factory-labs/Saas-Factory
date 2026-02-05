@@ -15,7 +15,7 @@ internal static class Program
     {
         Console.WriteLine("🌱 Starting Database Seeding Test...");
 
-        var connectionString = Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING")
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING")
                               ?? "Host=localhost;Port=63408;Database=appblueprintdb;Username=postgres;Password=password";
 
         Console.WriteLine($"Using connection string: {connectionString.Replace("Password=password", "Password=***", StringComparison.Ordinal)}");

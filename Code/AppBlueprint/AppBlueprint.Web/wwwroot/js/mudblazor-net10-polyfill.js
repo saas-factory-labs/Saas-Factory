@@ -24,10 +24,10 @@
                 return;
             }
             console.log('📌 Attaching blur event to element:', element);
-            element.addEventListener('blur', function () {
+            element.addEventListener('blur', async function () {
                 try {
                     if (dotNetRef && typeof dotNetRef.invokeMethodAsync === 'function') {
-                        void dotNetRef.invokeMethodAsync('OnBlur');
+                        await dotNetRef.invokeMethodAsync('OnBlur');
                     }
                 }
                 catch (error) {
@@ -47,10 +47,10 @@
                 console.warn('MudBlazor polyfill: addOnFocusEvent called with null element');
                 return;
             }
-            element.addEventListener('focus', function () {
+            element.addEventListener('focus', async function () {
                 try {
                     if (dotNetRef && typeof dotNetRef.invokeMethodAsync === 'function') {
-                        void dotNetRef.invokeMethodAsync('OnFocus');
+                        await dotNetRef.invokeMethodAsync('OnFocus');
                     }
                 }
                 catch (error) {

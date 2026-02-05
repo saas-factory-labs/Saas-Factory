@@ -54,8 +54,5 @@ public sealed class CreditEntityConfiguration : IEntityTypeConfiguration<CreditE
 
         builder.HasIndex(c => new { c.TenantId, c.IsSoftDeleted })
             .HasDatabaseName("IX_Credits_TenantId_IsSoftDeleted");
-
-        // Configure query filter for soft delete and tenant scoping
-        builder.HasQueryFilter(c => !c.IsSoftDeleted);
     }
 }

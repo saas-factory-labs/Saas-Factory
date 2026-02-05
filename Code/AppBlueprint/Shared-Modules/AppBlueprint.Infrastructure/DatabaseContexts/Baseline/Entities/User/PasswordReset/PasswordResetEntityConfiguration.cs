@@ -78,8 +78,5 @@ public sealed class PasswordResetEntityConfiguration : IEntityTypeConfiguration<
 
         builder.HasIndex(e => e.IsSoftDeleted)
             .HasDatabaseName("IX_PasswordResets_IsSoftDeleted");
-
-        // Query filter for soft delete and tenant scoping
-        builder.HasQueryFilter(e => !e.IsSoftDeleted);
     }
 }

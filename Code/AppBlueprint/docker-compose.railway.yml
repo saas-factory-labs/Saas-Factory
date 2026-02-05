@@ -7,8 +7,8 @@ services:
       # Railway provides PORT environment variable
       - ASPNETCORE_URLS=http://+:${PORT:-80}
       # Railway provides DATABASE_URL for PostgreSQL
-      - DATABASE_CONNECTION_STRING=${DATABASE_URL:-${APPBLUEPRINT_RAILWAY_CONNECTIONSTRING}}
-      - ConnectionStrings__DefaultConnection=${DATABASE_URL:-${APPBLUEPRINT_RAILWAY_CONNECTIONSTRING}}
+      - DATABASE_CONNECTIONSTRING=${DATABASE_URL}
+      - CONNECTIONSTRINGS_DEFAULTCONNECTION=${DATABASE_URL}
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
       - DOTNET_ENVIRONMENT=${DOTNET_ENVIRONMENT:-Production}
@@ -26,7 +26,7 @@ services:
       # Railway provides PORT environment variable
       - ASPNETCORE_URLS=http://+:${PORT:-80}
       # API Service URL (from Railway internal DNS or public URL)
-      - ApiService__BaseUrl=${API_SERVICE_URL:-http://api-service:80}
+      - APISERVICE_BASEURL=${API_SERVICE_URL:-http://api-service:80}
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
       - DOTNET_ENVIRONMENT=${DOTNET_ENVIRONMENT:-Production}

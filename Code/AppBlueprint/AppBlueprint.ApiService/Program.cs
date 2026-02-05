@@ -54,7 +54,7 @@ internal static class Program // Make class static
         builder.Services.AddAppBlueprintPresentation(builder.Environment, builder.Configuration);
 
         // Add JWT authentication
-        builder.Services.AddJwtAuthentication(builder.Configuration);
+        builder.Services.AddJwtAuthentication(builder.Configuration, builder.Environment);
 
         // Add NSwag OpenAPI document generation
         builder.Services.AddOpenApiDocument(config =>

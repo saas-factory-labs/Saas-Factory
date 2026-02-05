@@ -9,6 +9,8 @@
 .workspace/
 .claude/
 .sonar/
+.sonarlint/
+.scannerwork/
 .idea/
 
 # Build artifacts

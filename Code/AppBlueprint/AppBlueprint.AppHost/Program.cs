@@ -1,54 +1,83 @@
+using System.Net;
+using System.Net.Sockets;
 using Aspire.Hosting.ApplicationModel;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-// Using Railway cloud database - connection string from environment variable
-var railwayConnectionString = Environment.GetEnvironmentVariable("APPBLUEPRINT_RAILWAY_CONNECTIONSTRING") 
-    ?? Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")
-    ?? throw new InvalidOperationException(
-        "Railway database connection string not found. Set APPBLUEPRINT_RAILWAY_CONNECTIONSTRING or DATABASE_CONNECTION_STRING environment variable.");
+string GetLocalIpAddress()
+{
+    using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+    // No actual connection is made; this identifies the primary network interface
+    socket.Connect("8.8.8.8", 65530);
+    if (socket.LocalEndPoint is IPEndPoint endpoint)
+    {
+        return endpoint.Address.ToString();
+    }
 
-// Local IP for WiFi access
-var localIp = "192.168.1.151";
+    return "localhost";
+}
+
+var localIp = GetLocalIpAddress();
+
+// --- DATABASE CONFIGURATION (Doppler & Railway) ---
+// Database connection string must be set as DATABASE_CONNECTIONSTRING environment variable
+var databaseConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING")
+    ?? throw new InvalidOperationException(
+        "Database connection string not found. Set DATABASE_CONNECTIONSTRING environment variable. Ensure Doppler is running (doppler run).");
+
+// Read Logto configuration from environment variables (Doppler)
+string? logtoEndpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT");
+string? logtoAppId = Environment.GetEnvironmentVariable("LOGTO_APPID");
+string? logtoAppSecret = Environment.GetEnvironmentVariable("LOGTO_APPSECRET");
+string? logtoApiResource = Environment.GetEnvironmentVariable("LOGTO_APIRESOURCE");
+string? authenticationProvider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER");
+string? databaseContextType = Environment.GetEnvironmentVariable("DATABASECONTEXT_TYPE");
 
 builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
     .WithHttpEndpoint(port: 9000, name: "gateway", isProxied: false)
     .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:9000");
-    
+
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
     .WithHttpEndpoint(port: 9100, name: "api", isProxied: false)
     .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:9100")
-    .WithEnvironment("SwaggerPath", "/swagger")
-    .WithEnvironment("DATABASE_CONNECTION_STRING", railwayConnectionString)
-    .WithEnvironment("Authentication__Provider", "Logto")
-    .WithEnvironment("Authentication__Logto__Endpoint", "https://32nkyp.logto.app")
-    .WithEnvironment("Authentication__Logto__ClientId", "uovd1gg5ef7i1c4w46mt6")
-    .WithEnvironment("Authentication__Logto__ApiResource", "https://api.appblueprint.local"); // Validate JWT audience
+    .WithEnvironment("SWAGGER_PATH", "/swagger")
+    .WithEnvironment("DATABASE_CONNECTIONSTRING", databaseConnectionString);
 
-builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
+// Add Logto configuration if provided via Doppler
+if (!string.IsNullOrWhiteSpace(logtoEndpoint))
+    apiService = apiService.WithEnvironment("LOGTO_ENDPOINT", logtoEndpoint);
+if (!string.IsNullOrWhiteSpace(logtoAppId))
+    apiService = apiService.WithEnvironment("LOGTO_APPID", logtoAppId);
+if (!string.IsNullOrWhiteSpace(logtoApiResource))
+    apiService = apiService.WithEnvironment("LOGTO_APIRESOURCE", logtoApiResource);
+if (!string.IsNullOrWhiteSpace(authenticationProvider))
+    apiService = apiService.WithEnvironment("AUTHENTICATION_PROVIDER", authenticationProvider);
+if (!string.IsNullOrWhiteSpace(databaseContextType))
+    apiService = apiService.WithEnvironment("DATABASECONTEXT_TYPE", databaseContextType);
+
+var webFrontend = builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithHttpEndpoint(port: 9200, name: "web-http", isProxied: false)
     .WithReference(apiService)
     .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:9200")
-    .WithEnvironment("API_BASE_URL", $"http://{localIp}:9100") // Use IP instead of localhost for phone access
-    .WithEnvironment("DATABASE_CONNECTION_STRING", railwayConnectionString)
-    .WithEnvironment("Logto__Endpoint", "https://32nkyp.logto.app/oidc")
-    .WithEnvironment("Logto__AppId", "uovd1gg5ef7i1c4w46mt6")
-    .WithEnvironment("Logto__AppSecret", Environment.GetEnvironmentVariable("LOGTO__APPSECRET") ?? "")
-    .WithEnvironment("Logto__Resource", "https://api.appblueprint.local"); // Request JWT access token for API
+    // Using dynamic IP so mobile devices can reach the API on this host machine
+    .WithEnvironment("API_BASE_URL", $"http://{localIp}:9100")
+    .WithEnvironment("DATABASE_CONNECTIONSTRING", databaseConnectionString);
 
-string[] keys = new[]
-{
-    "ASPIRE_ALLOW_UNSECURED_TRANSPORT",
-    "ASPIRE_DASHBOARD_PORT",
-    "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL",
-    "OTEL_EXPORTER_OTLP_ENDPOINT",
-    "OTEL_EXPORTER_OTLP_HEADERS",
-    "OTEL_EXPORTER_OTLP_PROTOCOL"
-};
+// Add Logto configuration if provided via Doppler
+if (!string.IsNullOrWhiteSpace(logtoEndpoint))
+    webFrontend = webFrontend.WithEnvironment("LOGTO_ENDPOINT", logtoEndpoint);
+if (!string.IsNullOrWhiteSpace(logtoAppId))
+    webFrontend = webFrontend.WithEnvironment("LOGTO_APPID", logtoAppId);
+if (!string.IsNullOrWhiteSpace(logtoAppSecret))
+    webFrontend = webFrontend.WithEnvironment("LOGTO_APIRESOURCE", logtoApiResource);
+if (!string.IsNullOrWhiteSpace(authenticationProvider))
+    webFrontend = webFrontend.WithEnvironment("AUTHENTICATION_PROVIDER", authenticationProvider);
+if (!string.IsNullOrWhiteSpace(databaseContextType))
+    webFrontend = webFrontend.WithEnvironment("DATABASECONTEXT_TYPE", databaseContextType);
+    webFrontend = webFrontend.WithEnvironment("LOGTO_APPSECRET", logtoAppSecret);
+if (!string.IsNullOrWhiteSpace(logtoApiResource))
+    webFrontend = webFrontend.WithEnvironment("LOGTO_APIRESOURCE", logtoApiResource);
+if (!string.IsNullOrWhiteSpace(databaseContextType))
+    webFrontend = webFrontend.WithEnvironment("DATABASECONTEXT_TYPE", databaseContextType);
 
-foreach (var key in keys)
-{
-    Console.WriteLine($"{key} = {Environment.GetEnvironmentVariable(key)}");
-}
-
-builder.Build().Run();
+await builder.Build().RunAsync();

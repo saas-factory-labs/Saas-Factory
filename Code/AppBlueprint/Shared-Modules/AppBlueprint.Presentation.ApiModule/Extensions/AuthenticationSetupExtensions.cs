@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Hosting;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
@@ -16,21 +17,24 @@ public static class AuthenticationSetupExtensions
     /// </summary>
     /// <param name="services">The service collection</param>
     /// <param name="configuration">Application configuration</param>
+    /// <param name="environment">The hosting environment</param>
     /// <param name="providerType">The authentication provider to use (Logto, Auth0, or JWT)</param>
     /// <returns>The service collection for chaining</returns>
     /// <example>
     /// <code>
     /// // In your Program.cs:
-    /// builder.Services.AddQuickAuthentication(builder.Configuration, AuthProvider.Logto);
+    /// builder.Services.AddQuickAuthentication(builder.Configuration, builder.Environment, AuthProvider.Logto);
     /// </code>
     /// </example>
     public static IServiceCollection AddQuickAuthentication(
         this IServiceCollection services,
         IConfiguration configuration,
+        IHostEnvironment environment,
         AuthProvider providerType = AuthProvider.Logto)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(environment);
 
         // Set the provider in configuration if not already set
         var configProvider = configuration[AuthenticationProviderConfigKey];
@@ -48,11 +52,11 @@ public static class AuthenticationSetupExtensions
                 .Build();
 
             // Use the JWT authentication extension with the provider set
-            return services.AddJwtAuthentication(tempConfig);
+            return services.AddJwtAuthentication(tempConfig, environment);
         }
 
         // Use existing configuration
-        return services.AddJwtAuthentication(configuration);
+        return services.AddJwtAuthentication(configuration, environment);
     }
 
     /// <summary>
@@ -60,6 +64,7 @@ public static class AuthenticationSetupExtensions
     /// Use this when you want to provide configuration in code rather than appsettings.json.
     /// </summary>
     /// <param name="services">The service collection</param>
+    /// <param name="environment">The hosting environment</param>
     /// <param name="endpoint">Logto endpoint URL (e.g., https://your-tenant.logto.app)</param>
     /// <param name="clientId">Your Logto application client ID</param>
     /// <param name="clientSecret">Your Logto application client secret (optional for API validation)</param>
@@ -67,6 +72,7 @@ public static class AuthenticationSetupExtensions
     /// <example>
     /// <code>
     /// builder.Services.AddLogtoAuthentication(
+    ///     builder.Environment,
     ///     endpoint: "https://my-app.logto.app",
     ///     clientId: "my-client-id"
     /// );
@@ -74,11 +80,13 @@ public static class AuthenticationSetupExtensions
     /// </example>
     public static IServiceCollection AddLogtoAuthentication(
         this IServiceCollection services,
+        IHostEnvironment environment,
         string endpoint,
         string clientId,
         string? clientSecret = null)
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(environment);
         
         if (string.IsNullOrWhiteSpace(endpoint))
         {
@@ -107,7 +115,7 @@ public static class AuthenticationSetupExtensions
             .AddInMemoryCollection(configDict)
             .Build();
 
-        return services.AddJwtAuthentication(configuration);
+        return services.AddJwtAuthentication(configuration, environment);
     }
 
     /// <summary>
@@ -115,6 +123,7 @@ public static class AuthenticationSetupExtensions
     /// Use this when you want to provide configuration in code rather than appsettings.json.
     /// </summary>
     /// <param name="services">The service collection</param>
+    /// <param name="environment">The hosting environment</param>
     /// <param name="domain">Auth0 domain (e.g., https://your-tenant.auth0.com)</param>
     /// <param name="audience">Auth0 API audience</param>
     /// <param name="clientId">Auth0 client ID (optional)</param>
@@ -122,6 +131,7 @@ public static class AuthenticationSetupExtensions
     /// <example>
     /// <code>
     /// builder.Services.AddAuth0Authentication(
+    ///     builder.Environment,
     ///     domain: "https://my-app.auth0.com",
     ///     audience: "https://my-api"
     /// );
@@ -129,11 +139,13 @@ public static class AuthenticationSetupExtensions
     /// </example>
     public static IServiceCollection AddAuth0Authentication(
         this IServiceCollection services,
+        IHostEnvironment environment,
         string domain,
         string audience,
         string? clientId = null)
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(environment);
         
         if (string.IsNullOrWhiteSpace(domain))
         {
@@ -162,7 +174,7 @@ public static class AuthenticationSetupExtensions
             .AddInMemoryCollection(configDict)
             .Build();
 
-        return services.AddJwtAuthentication(configuration);
+        return services.AddJwtAuthentication(configuration, environment);
     }
 
     /// <summary>
@@ -170,6 +182,7 @@ public static class AuthenticationSetupExtensions
     /// Best for development and testing. Not recommended for production.
     /// </summary>
     /// <param name="services">The service collection</param>
+    /// <param name="environment">The hosting environment</param>
     /// <param name="secretKey">JWT secret key (minimum 32 characters)</param>
     /// <param name="issuer">Token issuer (optional)</param>
     /// <param name="audience">Token audience (optional)</param>
@@ -178,17 +191,20 @@ public static class AuthenticationSetupExtensions
     /// <code>
     /// // For development/testing only
     /// builder.Services.AddSimpleJwtAuthentication(
+    ///     builder.Environment,
     ///     secretKey: "your-super-secret-key-at-least-32-characters-long!"
     /// );
     /// </code>
     /// </example>
     public static IServiceCollection AddSimpleJwtAuthentication(
         this IServiceCollection services,
+        IHostEnvironment environment,
         string secretKey,
         string issuer = "AppBlueprintAPI",
         string audience = "AppBlueprintClient")
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(environment);
         
         if (string.IsNullOrWhiteSpace(secretKey))
         {
@@ -213,7 +229,7 @@ public static class AuthenticationSetupExtensions
             .AddInMemoryCollection(configDict)
             .Build();
 
-        return services.AddJwtAuthentication(configuration);
+        return services.AddJwtAuthentication(configuration, environment);
     }
 }
 

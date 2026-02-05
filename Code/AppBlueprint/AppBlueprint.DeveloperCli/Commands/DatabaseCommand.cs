@@ -19,7 +19,7 @@ internal static class DatabaseCommand
 
             // Get connection string from env variable or prompt the user
             string connectionString =
-                Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING",
+                Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING",
                     EnvironmentVariableTarget.User)
                 ?? AnsiConsole.Ask<string>("[green]Enter the database connection string:[/]");
             AnsiConsole.MarkupLine($"[gray]Using connection string: {connectionString}[/]");
@@ -90,7 +90,7 @@ internal static class DatabaseCommand
 
         // Get connection string from env variable or prompt the user
         string connectionString =
-            Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING",
+            Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING",
                 EnvironmentVariableTarget.User)
             ?? AnsiConsole.Ask<string>("[green]Enter the database connection string:[/]");
 

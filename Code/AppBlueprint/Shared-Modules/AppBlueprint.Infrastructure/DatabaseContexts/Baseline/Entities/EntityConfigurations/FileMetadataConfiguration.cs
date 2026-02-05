@@ -59,12 +59,5 @@ public sealed class FileMetadataConfiguration : IEntityTypeConfiguration<FileMet
         builder.HasIndex(f => new { f.TenantId, f.Folder });
         builder.HasIndex(f => new { f.TenantId, f.UploadedBy });
         builder.HasIndex(f => f.CreatedAt);
-
-        // Tenant isolation is handled by R2FileStorageService which explicitly filters by TenantId
-        // from TenantContextAccessor. Additional query filter not needed here since:
-        // 1. BaselineDbContext doesn't inject ITenantContextAccessor
-        // 2. All file operations already filter by tenantId manually
-        // 3. Soft delete filter for data retention
-        builder.HasQueryFilter(f => !f.IsSoftDeleted);
     }
 }

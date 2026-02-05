@@ -95,9 +95,16 @@ internal static class JwtTokenCommand
                     
                     if (provider.Equals(LogtoProviderName, StringComparison.OrdinalIgnoreCase))
                     {
-                        var endpoint = configuration["Authentication:Logto:Endpoint"];
-                        var clientId = configuration["Authentication:Logto:ClientId"];
-                        var issuer = $"{endpoint?.TrimEnd('/')}/oidc";
+                        // Read environment variables first (flat UPPERCASE format), then fall back to hierarchical config
+                        string? endpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT")
+                                        ?? Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_ENDPOINT")
+                                        ?? configuration["Authentication:Logto:Endpoint"];
+                        string? clientId = Environment.GetEnvironmentVariable("LOGTO_APPID")
+                                        ?? Environment.GetEnvironmentVariable("LOGTO_CLIENTID")
+                                        ?? Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_CLIENTID")
+                                        ?? Environment.GetEnvironmentVariable("LOGTO_APP_ID")
+                                        ?? configuration["Authentication:Logto:ClientId"];
+                        string? issuer = $"{endpoint?.TrimEnd('/')}/oidc";
                         
                         AnsiConsole.MarkupLine($"[cyan]Issuer:[/] {issuer}");
                         AnsiConsole.MarkupLine($"[cyan]Audience:[/] {clientId}");

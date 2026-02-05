@@ -37,7 +37,7 @@ services:
       - DOTNET_USE_POLLING_FILE_WATCHER=1
       - ASPNETCORE_URLS=http://+:80  # Internal only inside the container
       - GITHUB_TOKEN=${GITHUB_TOKEN}
-      - APPBLUEPRINT_RAILWAY_CONNECTIONSTRING=${APPBLUEPRINT_RAILWAY_CONNECTIONSTRING}  # Passed as a secret
+      - RAILWAY_CONNECTIONSTRING=${RAILWAY_CONNECTIONSTRING}  # Railway-specific deployment
     command: ["dotnet", "watch", "run", "--project", "AppBlueprint.ApiService.csproj", "--urls", "http://+:80"]
     networks:
       - appblueprint-network

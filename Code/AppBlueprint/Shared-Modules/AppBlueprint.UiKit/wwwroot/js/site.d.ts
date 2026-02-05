@@ -39,7 +39,7 @@ interface ClickOutsideHelper {
 interface DropdownManager {
     handlers: Map<HTMLElement, {
         clickHandler: EventListener;
-        keyHandler: EventListener;
+        keyHandler: (event: KeyboardEvent) => void;
     }>;
     initialize(dropdown: HTMLElement, trigger: HTMLElement, dotNetHelper: DotNetObjectReference): void;
     cleanup(dropdown: HTMLElement): void;
@@ -47,8 +47,12 @@ interface DropdownManager {
 interface ModalManager {
     handlers: Map<HTMLElement, {
         clickHandler: EventListener;
-        keyHandler: EventListener;
+        keyHandler: (event: KeyboardEvent) => void;
     }>;
+    _registerEventHandlers(targetElement: HTMLElement, dotNetHelper: DotNetObjectReference, includeTargetInCloseCheck: boolean): {
+        clickHandler: EventListener;
+        keyHandler: (event: KeyboardEvent) => void;
+    };
     initialize(modalContent: HTMLElement, dotNetHelper: DotNetObjectReference): void;
     initializeSearch(modalContent: HTMLElement, searchInput: HTMLInputElement, dotNetHelper: DotNetObjectReference): void;
     cleanup(modalContent: HTMLElement): void;

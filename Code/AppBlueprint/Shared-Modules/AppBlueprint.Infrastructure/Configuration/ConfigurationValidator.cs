@@ -47,7 +47,7 @@ public static class ConfigurationValidator
         {
             var keysChecked = configKeys.Length > 0 
                 ? string.Join(", ", configKeys) 
-                : "DATABASE_CONNECTION_STRING, appblueprintdb, postgres-server, DefaultConnection";
+                : "DATABASE_CONNECTIONSTRING, appblueprintdb, postgres-server, DefaultConnection";
 
             throw new InvalidOperationException(
                 "Database connection string is required but not configured.\n" +
@@ -55,7 +55,7 @@ public static class ConfigurationValidator
                 "To fix this, set the connection string using one of these methods:\n" +
                 "\n" +
                 "1. Environment Variable (recommended for production):\n" +
-                "   DATABASE_CONNECTION_STRING=Host=localhost;Database=appblueprint;Username=postgres;Password=yourpassword\n" +
+                "   DATABASE_CONNECTIONSTRING=Host=localhost;Database=appblueprint;Username=postgres;Password=yourpassword\n" +
                 "\n" +
                 "2. Configuration file (appsettings.json):\n" +
                 "   {\n" +
@@ -79,9 +79,15 @@ public static class ConfigurationValidator
     {
         ArgumentNullException.ThrowIfNull(configuration);
 
-        string? logtoAppId = configuration["Logto:AppId"];
-        string? logtoEndpoint = configuration["Logto:Endpoint"];
-        string? logtoAppSecret = configuration["Logto:AppSecret"];
+        // Read from flat UPPERCASE environment variables first, then fall back to IConfiguration
+        string? logtoAppId = Environment.GetEnvironmentVariable("LOGTO_APP_ID") 
+                          ?? Environment.GetEnvironmentVariable("LOGTO_APPID") 
+                          ?? configuration["Logto:AppId"];
+        string? logtoEndpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT") 
+                             ?? configuration["Logto:Endpoint"];
+        string? logtoAppSecret = Environment.GetEnvironmentVariable("LOGTO_APP_SECRET") 
+                              ?? Environment.GetEnvironmentVariable("LOGTO_APPSECRET") 
+                              ?? configuration["Logto:AppSecret"];
 
         bool hasEndpoint = !string.IsNullOrWhiteSpace(logtoEndpoint);
         bool hasAppId = !string.IsNullOrWhiteSpace(logtoAppId);
@@ -112,7 +118,7 @@ public static class ConfigurationValidator
                 "\n" +
                 "To enable Logto authentication, set all required values:\n" +
                 "\n" +
-                "1. Environment Variables:\n" +
+                "1. Environment Variables (UPPERCASE format):\n" +
                 "   LOGTO_APPID=your_app_id\n" +
                 "   LOGTO_ENDPOINT=https://your-tenant.logto.app\n" +
                 "   LOGTO_APPSECRET=your_app_secret\n" +

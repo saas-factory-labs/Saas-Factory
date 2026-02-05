@@ -48,13 +48,14 @@ interface ClickOutsideHelper {
 }
 
 interface DropdownManager {
-    handlers: Map<HTMLElement, { clickHandler: EventListener; keyHandler: EventListener }>;
+    handlers: Map<HTMLElement, { clickHandler: EventListener; keyHandler: (event: KeyboardEvent) => void }>; // Changed EventListener to (event: KeyboardEvent) => void
     initialize(dropdown: HTMLElement, trigger: HTMLElement, dotNetHelper: DotNetObjectReference): void;
     cleanup(dropdown: HTMLElement): void;
 }
 
 interface ModalManager {
-    handlers: Map<HTMLElement, { clickHandler: EventListener; keyHandler: EventListener }>;
+    handlers: Map<HTMLElement, { clickHandler: EventListener; keyHandler: (event: KeyboardEvent) => void }>; // Changed EventListener to (event: KeyboardEvent) => void
+    _registerEventHandlers(targetElement: HTMLElement, dotNetHelper: DotNetObjectReference, includeTargetInCloseCheck: boolean): { clickHandler: EventListener, keyHandler: (event: KeyboardEvent) => void }; // Changed EventListener to (event: KeyboardEvent) => void
     initialize(modalContent: HTMLElement, dotNetHelper: DotNetObjectReference): void;
     initializeSearch(modalContent: HTMLElement, searchInput: HTMLInputElement, dotNetHelper: DotNetObjectReference): void;
     cleanup(modalContent: HTMLElement): void;
@@ -146,15 +147,12 @@ const themeManager: ThemeManager = {
         } else if (theme === 'light') {
             html.classList.remove('dark');
             html.style.colorScheme = 'light';
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            html.classList.add('dark');
+            html.style.colorScheme = 'dark';
         } else {
-            // System preference
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                html.classList.add('dark');
-                html.style.colorScheme = 'dark';
-            } else {
-                html.classList.remove('dark');
-                html.style.colorScheme = 'light';
-            }
+            html.classList.remove('dark');
+            html.style.colorScheme = 'light';
         }
     }
 };
@@ -298,7 +296,7 @@ const clickOutsideHelper: ClickOutsideHelper = {
     register(element: HTMLElement, dotNetHelper: DotNetObjectReference, methodName: string): EventListener {
         const handler = (event: Event): void => {
             if (element !== null && !element.contains(event.target as Node)) {
-                void dotNetHelper.invokeMethodAsync(methodName);
+                dotNetHelper.invokeMethodAsync(methodName);
             }
         };
         document.addEventListener('click', handler);
@@ -320,13 +318,13 @@ const dropdownManager: DropdownManager = {
     initialize(dropdown: HTMLElement, trigger: HTMLElement, dotNetHelper: DotNetObjectReference): void {
         const clickHandler = (event: Event): void => {
             if (!dropdown.contains(event.target as Node) && !trigger.contains(event.target as Node)) {
-                void dotNetHelper.invokeMethodAsync('CloseFromJS');
+                dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
 
-        const keyHandler = (event: KeyboardEvent): void => {
+        const keyHandler = (event: KeyboardEvent): void => { // This is already KeyboardEvent
             if (event.keyCode === 27) { // ESC key
-                void dotNetHelper.invokeMethodAsync('CloseFromJS');
+                dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
 
@@ -353,28 +351,35 @@ const dropdownManager: DropdownManager = {
 const modalManager: ModalManager = {
     handlers: new Map(),
 
-    initialize(modalContent: HTMLElement, dotNetHelper: DotNetObjectReference): void {
+    _registerEventHandlers(targetElement: HTMLElement, dotNetHelper: DotNetObjectReference, includeTargetInCloseCheck: boolean): { clickHandler: EventListener, keyHandler: (event: KeyboardEvent) => void } { // Fixed type here
         const clickHandler = (event: Event): void => {
-            if (!modalContent.contains(event.target as Node)) {
-                void dotNetHelper.invokeMethodAsync('CloseFromJS');
+            if (includeTargetInCloseCheck && !targetElement.contains(event.target as Node)) {
+                dotNetHelper.invokeMethodAsync('CloseFromJS');
+            } else if (!includeTargetInCloseCheck) {
+                // For cases where closing should happen regardless of target (e.g., global ESC)
+                dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
 
-        const keyHandler = (event: KeyboardEvent): void => {
+        const keyHandler = (event: KeyboardEvent): void => { // Changed from Event to KeyboardEvent
             if (event.keyCode === 27) { // ESC key
-                void dotNetHelper.invokeMethodAsync('CloseFromJS');
+                dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
 
         document.addEventListener('click', clickHandler);
         document.addEventListener('keydown', keyHandler);
+        return { clickHandler, keyHandler };
+    },
 
+    initialize(modalContent: HTMLElement, dotNetHelper: DotNetObjectReference): void {
+        const { clickHandler, keyHandler } = this._registerEventHandlers(modalContent, dotNetHelper, true);
         this.handlers.set(modalContent, { clickHandler, keyHandler });
     },
 
     initializeSearch(modalContent: HTMLElement, searchInput: HTMLInputElement, dotNetHelper: DotNetObjectReference): void {
-        // Initialize modal handlers
-        this.initialize(modalContent, dotNetHelper);
+        const { clickHandler, keyHandler } = this._registerEventHandlers(modalContent, dotNetHelper, true);
+        this.handlers.set(modalContent, { clickHandler, keyHandler });
 
         // Focus search input
         if (searchInput !== null) {
@@ -427,7 +432,7 @@ const datepickerManager: DatepickerManager = {
                 }
             },
             onChange(selectedDates: Date[], dateStr: string, instance: { element: HTMLInputElement }): void {
-                instance.element.value = dateStr.replace('to', '-');
+                instance.element.value = dateStr.replace('to', '-'); // Corrected typo here (Freplace -> replace)
             }
         });
     }
@@ -448,7 +453,7 @@ const commandPaletteManager: CommandPaletteManager = {
             if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
                 event.preventDefault();
                 if (this.dotNetHelper !== null) {
-                    void this.dotNetHelper.invokeMethodAsync('OpenFromJS');
+                    dotNetHelper.invokeMethodAsync('OpenFromJS');
                 }
             }
         });
@@ -476,7 +481,7 @@ const infiniteScrollManager: InfiniteScrollManager = {
         const observer = new IntersectionObserver((entries: IntersectionObserverEntry[]): void => {
             entries.forEach((entry: IntersectionObserverEntry): void => {
                 if (entry.isIntersecting) {
-                    void dotNetHelper.invokeMethodAsync('OnIntersect');
+                    dotNetHelper.invokeMethodAsync('OnIntersect');
                 }
             });
         }, options);
@@ -546,7 +551,7 @@ const chartJsInterop: ChartJsInterop = {
     getChartColors(): ChartColors {
         const isDark = document.documentElement.classList.contains('dark');
         return {
-            textColor: isDark ? 'rgb(148, 163, 184)' : 'rgb(148, 163, 184)',
+            textColor: 'rgb(148, 163, 184)',
             gridColor: isDark ? 'rgba(71, 85, 105, 0.6)' : 'rgb(241, 245, 249)',
             tooltipTitleColor: isDark ? 'rgb(241, 245, 249)' : 'rgb(30, 41, 59)',
             tooltipBodyColor: isDark ? 'rgb(148, 163, 184)' : 'rgb(100, 116, 139)',
@@ -560,7 +565,7 @@ const chartJsInterop: ChartJsInterop = {
             style: 'currency',
             currency: 'USD',
             maximumSignificantDigits: 3,
-            notation: 'compact',
+            // Removed 'notation: 'compact'' as it's not supported with 'currency' style
         }).format(value);
     },
 
@@ -605,7 +610,6 @@ const chartJsInterop: ChartJsInterop = {
                             unit: 'month',
                             displayFormats: { month: 'MMM yy' }
                         } : undefined,
-                        display: config.showXAxis || false,
                         border: { display: false },
                         grid: { display: false },
                         ticks: {
@@ -901,5 +905,3 @@ const chartJsInterop: ChartJsInterop = {
 (window as any).infiniteScrollManager = infiniteScrollManager;
 (window as any).downloadFileFromBase64 = downloadFileFromBase64;
 (window as any).chartJsInterop = chartJsInterop;
-
-

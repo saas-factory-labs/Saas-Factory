@@ -355,14 +355,14 @@ GRANT EXECUTE ON FUNCTION email_exists TO PUBLIC;
 -- ========================================
 
 COMMENT ON FUNCTION create_tenant_and_user IS 
-'Securely creates tenant and user during signup. 
+$$Securely creates tenant and user during signup. 
 Uses SECURITY DEFINER to bypass RLS for initial account creation only.
 Includes input validation, rate limiting, and audit logging.
-Critical: This function should only be called from trusted signup endpoints.';
+Critical: This function should only be called from trusted signup endpoints.$$;
 
 COMMENT ON TABLE "SignupAuditLog" IS 
-'Audit trail for all signup attempts (successful and failed).
-Used for security monitoring, rate limiting, and fraud detection.';
+$$Audit trail for all signup attempts (successful and failed).
+Used for security monitoring, rate limiting, and fraud detection.$$;
 
 -- ========================================
 -- 6. Verification Query

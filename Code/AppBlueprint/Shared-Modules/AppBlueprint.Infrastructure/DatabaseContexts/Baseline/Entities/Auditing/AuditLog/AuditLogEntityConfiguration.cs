@@ -145,8 +145,5 @@ public sealed class AuditLogEntityConfiguration : IEntityTypeConfiguration<Audit
             .HasColumnType("jsonb")
             .HasComment("Generic metadata including PII detection results")
             .IsRequired(false);
-
-        // Configure query filter for soft delete and tenant scoping
-        builder.HasQueryFilter(a => !a.IsSoftDeleted);
     }
 }

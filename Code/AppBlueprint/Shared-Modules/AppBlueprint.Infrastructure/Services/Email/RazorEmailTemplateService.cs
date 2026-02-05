@@ -75,7 +75,7 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
 
         if (_resend is null)
         {
-            const string errorMessage = "Cannot send email: Resend is not configured. Please set one of these environment variables: APPBLUEPRINT_RESEND_APIKEY, RESEND_API_KEY, or APPBLUEPRINT_Resend__ApiKey (and corresponding FROM_EMAIL variables).";
+            const string errorMessage = "Cannot send email: Resend is not configured. Please set one of these environment variables: RESEND_APIKEY or RESEND_API_KEY (and corresponding FROM_EMAIL variables).";
             _logger.LogError("{ErrorMessage}", errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

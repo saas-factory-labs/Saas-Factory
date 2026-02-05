@@ -56,8 +56,5 @@ public class DataExportEntityConfiguration : IEntityTypeConfiguration<DataExport
 
         builder.HasIndex(d => new { d.TenantId, d.IsSoftDeleted })
             .HasDatabaseName("IX_DataExports_TenantId_IsSoftDeleted");
-
-        // Configure query filter for soft delete and tenant scoping
-        builder.HasQueryFilter(d => !d.IsSoftDeleted);
     }
 }

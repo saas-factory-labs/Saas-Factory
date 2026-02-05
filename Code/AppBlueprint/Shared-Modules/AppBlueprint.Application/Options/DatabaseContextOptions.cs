@@ -34,7 +34,7 @@ public sealed class DatabaseContextOptions
     /// <summary>
     /// Connection string name to use for the database.
     /// Default: "DefaultConnection".
-    /// Can be overridden by DATABASE_CONNECTION_STRING environment variable.
+    /// Can be overridden by DATABASE_CONNECTIONSTRING environment variable.
     /// </summary>
     public string ConnectionStringName { get; set; } = "DefaultConnection";
 

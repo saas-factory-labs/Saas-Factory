@@ -32,24 +32,55 @@ public static class ConfigurationServiceCollectionExtensions
         services.AddSingleton<IConfigurationService, ConfigurationService>();
         
         // Register all options with validation
-        services.AddDatabaseContextOptions(configuration);
-        services.AddMultiTenancyOptions(configuration);
-        services.AddAuthenticationOptions(configuration);
-        services.AddExternalServiceOptions(configuration);
-        services.AddFeatureFlagsOptions(configuration);
+        services.AddDatabaseContextOptions();
+        services.AddMultiTenancyOptions();
+        services.AddAuthenticationOptions();
+        services.AddExternalServiceOptions();
+        services.AddFeatureFlagsOptions();
         
         return services;
     }
     
     /// <summary>
     /// Registers DatabaseContext options with validation.
+    /// Supports flat environment variables with UPPERCASE_UNDERSCORE naming:
+    /// - DATABASECONTEXT_TYPE (new standard)
+    /// - DATABASECONTEXT_CONTEXTTYPE (legacy)
+    /// - DATABASECONTEXT_ENABLEHYBRIDMODE
+    /// - DATABASECONTEXT_BASELINEONLY
     /// </summary>
     private static IServiceCollection AddDatabaseContextOptions(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
         services.AddOptions<DatabaseContextOptions>()
             .BindConfiguration(DatabaseContextOptions.SectionName)
+            .Configure<IConfiguration>((options, config) =>
+            {
+                // Override with flat environment variables
+                string prefix = "DATABASECONTEXT_";
+                
+                // Check TYPE first (new standard), then CONTEXTTYPE (legacy)
+                string? contextType = Environment.GetEnvironmentVariable($"{prefix}TYPE")
+                                   ?? Environment.GetEnvironmentVariable($"{prefix}CONTEXTTYPE");
+                if (!string.IsNullOrWhiteSpace(contextType) && Enum.TryParse<DatabaseContextType>(contextType, ignoreCase: true, out DatabaseContextType parsedType))
+                    options.ContextType = parsedType;
+                
+                string? enableHybridMode = Environment.GetEnvironmentVariable($"{prefix}ENABLEHYBRIDMODE");
+                if (!string.IsNullOrWhiteSpace(enableHybridMode) && bool.TryParse(enableHybridMode, out bool hybridMode))
+                    options.EnableHybridMode = hybridMode;
+                
+                string? baselineOnly = Environment.GetEnvironmentVariable($"{prefix}BASELINEONLY");
+                if (!string.IsNullOrWhiteSpace(baselineOnly) && bool.TryParse(baselineOnly, out bool baseline))
+                    options.BaselineOnly = baseline;
+                
+                string? commandTimeout = Environment.GetEnvironmentVariable($"{prefix}COMMANDTIMEOUT");
+                if (!string.IsNullOrWhiteSpace(commandTimeout) && int.TryParse(commandTimeout, out int timeout))
+                    options.CommandTimeout = timeout;
+                
+                string? maxRetryCount = Environment.GetEnvironmentVariable($"{prefix}MAXRETRYCOUNT");
+                if (!string.IsNullOrWhiteSpace(maxRetryCount) && int.TryParse(maxRetryCount, out int retryCount))
+                    options.MaxRetryCount = retryCount;
+            })
             .ValidateDataAnnotations()
             .ValidateOnStart()
             .Validate(options =>
@@ -65,8 +96,7 @@ public static class ConfigurationServiceCollectionExtensions
     /// Registers MultiTenancy options with validation.
     /// </summary>
     private static IServiceCollection AddMultiTenancyOptions(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
         services.AddOptions<MultiTenancyOptions>()
             .BindConfiguration(MultiTenancyOptions.SectionName)
@@ -80,11 +110,17 @@ public static class ConfigurationServiceCollectionExtensions
     /// Registers Authentication options with validation.
     /// </summary>
     private static IServiceCollection AddAuthenticationOptions(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
         services.AddOptions<AuthenticationOptions>()
             .BindConfiguration(AuthenticationOptions.SectionName)
+            .Configure<IConfiguration>((options, config) =>
+            {
+                // Override Provider with flat environment variable if set
+                string? provider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER");
+                if (!string.IsNullOrWhiteSpace(provider))
+                    options.Provider = provider;
+            })
             .ValidateDataAnnotations()
             .ValidateOnStart();
             
@@ -95,10 +131,16 @@ public static class ConfigurationServiceCollectionExtensions
     /// Registers external service options (Stripe, Cloudflare R2, Resend) with validation.
     /// </summary>
     private static IServiceCollection AddExternalServiceOptions(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
-        // Stripe - optional, only validate if configured
+        AddStripeOptions(services);
+        AddCloudflareR2Options(services);
+        AddResendEmailOptions(services);
+        return services;
+    }
+
+    private static void AddStripeOptions(IServiceCollection services)
+    {
         services.AddOptions<StripeOptions>()
             .BindConfiguration(StripeOptions.SectionName)
             .ValidateOnStart()
@@ -111,57 +153,15 @@ public static class ConfigurationServiceCollectionExtensions
                 }
                 return true;
             });
-        
-        // Cloudflare R2 - optional, only validate if configured
-        // Support both appsettings.json format (Cloudflare:R2:*) and environment variable format (CLOUDFLARE_R2_*)
+    }
+
+    private static void AddCloudflareR2Options(IServiceCollection services)
+    {
         services.AddOptions<CloudflareR2Options>()
             .BindConfiguration(CloudflareR2Options.SectionName)
             .Configure<IConfiguration>((options, config) =>
             {
-                // Try both prefixes - use APPBLUEPRINT_ first (development), then fall back to no prefix (production)
-                string[] prefixes = ["APPBLUEPRINT_CLOUDFLARE_R2_", "CLOUDFLARE_R2_"];
-                
-                foreach (string prefix in prefixes)
-                {
-                    string? accessKeyId = Environment.GetEnvironmentVariable($"{prefix}ACCESSKEYID");
-                    if (!string.IsNullOrWhiteSpace(accessKeyId))
-                        options.AccessKeyId = accessKeyId;
-                    
-                    string? secretAccessKey = Environment.GetEnvironmentVariable($"{prefix}SECRETACCESSKEY");
-                    if (!string.IsNullOrWhiteSpace(secretAccessKey))
-                        options.SecretAccessKey = secretAccessKey;
-                    
-                    string? endpointUrl = Environment.GetEnvironmentVariable($"{prefix}ENDPOINTURL");
-                    if (!string.IsNullOrWhiteSpace(endpointUrl))
-                        options.EndpointUrl = endpointUrl;
-                    
-                    string? privateBucketName = Environment.GetEnvironmentVariable($"{prefix}PRIVATEBUCKETNAME");
-                    if (!string.IsNullOrWhiteSpace(privateBucketName))
-                        options.PrivateBucketName = privateBucketName;
-                    
-                    string? publicBucketName = Environment.GetEnvironmentVariable($"{prefix}PUBLICBUCKETNAME");
-                    if (!string.IsNullOrWhiteSpace(publicBucketName))
-                        options.PublicBucketName = publicBucketName;
-                    
-                    string? publicDomain = Environment.GetEnvironmentVariable($"{prefix}PUBLICDOMAIN");
-                    if (!string.IsNullOrWhiteSpace(publicDomain))
-                        options.PublicDomain = publicDomain;
-                    
-                    string? maxImageSizeMB = Environment.GetEnvironmentVariable($"{prefix}MAXIMAGESIZEMB");
-                    if (!string.IsNullOrWhiteSpace(maxImageSizeMB) && int.TryParse(maxImageSizeMB, out int imageSizeMB))
-                        options.MaxImageSizeMB = imageSizeMB;
-                    
-                    string? maxDocumentSizeMB = Environment.GetEnvironmentVariable($"{prefix}MAXDOCUMENTSIZEMB");
-                    if (!string.IsNullOrWhiteSpace(maxDocumentSizeMB) && int.TryParse(maxDocumentSizeMB, out int documentSizeMB))
-                        options.MaxDocumentSizeMB = documentSizeMB;
-                    
-                    string? maxVideoSizeMB = Environment.GetEnvironmentVariable($"{prefix}MAXVIDEOSIZEMB");
-                    if (!string.IsNullOrWhiteSpace(maxVideoSizeMB) && int.TryParse(maxVideoSizeMB, out int videoSizeMB))
-                        options.MaxVideoSizeMB = videoSizeMB;
-                }
-                
-                // Debug logging
-                Console.WriteLine($"[CloudflareR2Options] Loaded - AccessKeyId: {!string.IsNullOrWhiteSpace(options.AccessKeyId)}, SecretAccessKey: {!string.IsNullOrWhiteSpace(options.SecretAccessKey)}, EndpointUrl: {options.EndpointUrl}, PrivateBucket: {options.PrivateBucketName}, PublicBucket: {options.PublicBucketName}, PublicDomain: {options.PublicDomain}");
+                ConfigureCloudflareR2FromEnvironment(options);
             })
             .Validate(options =>
             {
@@ -177,8 +177,42 @@ public static class ConfigurationServiceCollectionExtensions
                 
                 return true;
             });
+    }
+
+    private static void ConfigureCloudflareR2FromEnvironment(CloudflareR2Options options)
+    {
+        const string prefix = "CLOUDFLARE_R2_";
         
-        // Resend Email - optional, only validate if configured
+        SetStringOption(prefix, "ACCESSKEYID", v => options.AccessKeyId = v);
+        SetStringOption(prefix, "SECRETACCESSKEY", v => options.SecretAccessKey = v);
+        SetStringOption(prefix, "ENDPOINTURL", v => options.EndpointUrl = v);
+        SetStringOption(prefix, "PRIVATEBUCKETNAME", v => options.PrivateBucketName = v);
+        SetStringOption(prefix, "PUBLICBUCKETNAME", v => options.PublicBucketName = v);
+        SetStringOption(prefix, "PUBLICDOMAIN", v => options.PublicDomain = v);
+        SetIntOption(prefix, "MAXIMAGESIZEMB", v => options.MaxImageSizeMB = v);
+        SetIntOption(prefix, "MAXDOCUMENTSIZEMB", v => options.MaxDocumentSizeMB = v);
+        SetIntOption(prefix, "MAXVIDEOSIZEMB", v => options.MaxVideoSizeMB = v);
+        
+        // Debug logging
+        Console.WriteLine($"[CloudflareR2Options] Loaded - AccessKeyId: {!string.IsNullOrWhiteSpace(options.AccessKeyId)}, SecretAccessKey: {!string.IsNullOrWhiteSpace(options.SecretAccessKey)}, EndpointUrl: {options.EndpointUrl}, PrivateBucket: {options.PrivateBucketName}, PublicBucket: {options.PublicBucketName}, PublicDomain: {options.PublicDomain}");
+    }
+
+    private static void SetStringOption(string prefix, string key, Action<string> setter)
+    {
+        string? value = Environment.GetEnvironmentVariable($"{prefix}{key}");
+        if (!string.IsNullOrWhiteSpace(value))
+            setter(value);
+    }
+
+    private static void SetIntOption(string prefix, string key, Action<int> setter)
+    {
+        string? value = Environment.GetEnvironmentVariable($"{prefix}{key}");
+        if (!string.IsNullOrWhiteSpace(value) && int.TryParse(value, out int parsedValue))
+            setter(parsedValue);
+    }
+
+    private static void AddResendEmailOptions(IServiceCollection services)
+    {
         services.AddOptions<ResendEmailOptions>()
             .BindConfiguration(ResendEmailOptions.SectionName)
             .ValidateOnStart()
@@ -191,16 +225,13 @@ public static class ConfigurationServiceCollectionExtensions
                 }
                 return true;
             });
-            
-        return services;
     }
     
     /// <summary>
     /// Registers feature flags options.
     /// </summary>
     private static IServiceCollection AddFeatureFlagsOptions(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
         services.AddOptions<FeatureFlagsOptions>()
             .BindConfiguration(FeatureFlagsOptions.SectionName);

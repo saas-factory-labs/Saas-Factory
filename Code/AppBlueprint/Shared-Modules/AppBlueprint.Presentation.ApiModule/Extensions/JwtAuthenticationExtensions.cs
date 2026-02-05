@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -17,12 +18,17 @@ public static class JwtAuthenticationExtensions
     /// </summary>
     public static IServiceCollection AddJwtAuthentication(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(environment);
 
-        string authProvider = configuration[AuthenticationProviderConfigKey] ?? "JWT";
+        // Read from flat UPPERCASE environment variable first, then fall back to hierarchical config
+        string authProvider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER")
+                           ?? configuration[AuthenticationProviderConfigKey] 
+                           ?? "Logto"; // Default to Logto (only supported provider)
 
         services.AddAuthentication(options =>
         {
@@ -31,7 +37,7 @@ public static class JwtAuthenticationExtensions
         })
         .AddJwtBearer(options =>
         {
-            ConfigureJwtBearerOptions(options, configuration, authProvider);
+            ConfigureJwtBearerOptions(options, configuration, authProvider, environment);
         });
 
         return services;
@@ -40,7 +46,8 @@ public static class JwtAuthenticationExtensions
     private static void ConfigureJwtBearerOptions(
         JwtBearerOptions options,
         IConfiguration configuration,
-        string authProvider)
+        string authProvider,
+        IHostEnvironment environment)
     {
         // Only Logto authentication is supported
         if (!authProvider.Equals("LOGTO", StringComparison.OrdinalIgnoreCase))
@@ -50,11 +57,13 @@ public static class JwtAuthenticationExtensions
                 "Set AUTHENTICATION_PROVIDER=Logto in configuration.");
         }
         
-        ConfigureLogto(options, configuration);
+        ConfigureLogto(options, configuration, environment);
 
         // Common configuration for all providers
         options.SaveToken = true;
-        options.RequireHttpsMetadata = false; // Set to true in production
+        
+        // Require HTTPS metadata in production
+        options.RequireHttpsMetadata = !environment.IsDevelopment();
         
         options.Events = new JwtBearerEvents
         {
@@ -154,19 +163,29 @@ public static class JwtAuthenticationExtensions
         };
     }
 
-    private static void ConfigureLogto(JwtBearerOptions options, IConfiguration configuration)
+    private static void ConfigureLogto(JwtBearerOptions options, IConfiguration configuration, IHostEnvironment environment)
     {
-        var endpoint = configuration["Authentication:Logto:Endpoint"];
-        var clientId = configuration["Authentication:Logto:ClientId"];
-        var apiResource = configuration["Authentication:Logto:ApiResource"];
+        // Read environment variables first (flat UPPERCASE format), then fall back to hierarchical config
+        string? endpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT")
+                        ?? Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_ENDPOINT")
+                        ?? configuration["Authentication:Logto:Endpoint"];
+        string? clientId = Environment.GetEnvironmentVariable("LOGTO_APPID")
+                        ?? Environment.GetEnvironmentVariable("LOGTO_CLIENTID")
+                        ?? Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_CLIENTID")
+                        ?? Environment.GetEnvironmentVariable("LOGTO_APP_ID")
+                        ?? configuration["Authentication:Logto:ClientId"];
+        string? apiResource = Environment.GetEnvironmentVariable("LOGTO_APIRESOURCE")
+                           ?? Environment.GetEnvironmentVariable("LOGTO_RESOURCE")
+                           ?? Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_APIRESOURCE")
+                           ?? configuration["Authentication:Logto:ApiResource"];
 
         if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(clientId))
         {
             throw new InvalidOperationException(
                 "Logto authentication configuration is missing. Required environment variables:\n" +
-                "  - AUTHENTICATION_LOGTO_ENDPOINT (e.g., https://32nkyp.logto.app)\n" +
-                "  - AUTHENTICATION_LOGTO_CLIENTID (e.g., uovd1gg5ef7i1c4w46mt6)\n" +
-                "  - AUTHENTICATION_LOGTO_APIRESOURCE (e.g., https://api.appblueprint.local)\n" +
+                "  - LOGTO_ENDPOINT (e.g., https://32nkyp.logto.app)\n" +
+                "  - LOGTO_APPID (e.g., uovd1gg5ef7i1c4w46mt6)\n" +
+                "  - LOGTO_APIRESOURCE (e.g., https://api.appblueprint.local)\n" +
                 "Set these in AppHost Program.cs or environment variables.");
         }
 
@@ -208,7 +227,7 @@ public static class JwtAuthenticationExtensions
         options.MetadataAddress = $"{endpoint}/oidc/.well-known/openid-configuration";
         
         // Don't require HTTPS in development
-        options.RequireHttpsMetadata = false;
+        options.RequireHttpsMetadata = environment.IsDevelopment() ? false : true;
     }
 
     private static void ConfigureCustomJwt(JwtBearerOptions options, IConfiguration configuration)
@@ -219,9 +238,8 @@ public static class JwtAuthenticationExtensions
 
         if (string.IsNullOrEmpty(secretKey))
         {
-            // For development only - use a default key
-            secretKey = "DevelopmentSecretKey_ChangeThisInProduction_AtLeast32Characters!";
-            // Warning will be logged through JWT events
+            throw new InvalidOperationException(
+                "JWT SecretKey is missing. Set Authentication:JWT:SecretKey in configuration.");
         }
 
         var key = Encoding.ASCII.GetBytes(secretKey);
@@ -242,3 +260,4 @@ public static class JwtAuthenticationExtensions
         };
     }
 }
+

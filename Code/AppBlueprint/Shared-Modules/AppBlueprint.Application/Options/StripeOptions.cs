@@ -11,14 +11,14 @@ public sealed class StripeOptions
     
     /// <summary>
     /// Stripe API Secret Key (sk_test_... or sk_live_...).
-    /// Environment variable: APPBLUEPRINT_Stripe__ApiKey or STRIPE_API_KEY (legacy).
+    /// Environment variable: STRIPE_APIKEY or STRIPE_API_KEY (legacy).
     /// </summary>
     [Required]
     public string ApiKey { get; set; } = string.Empty;
     
     /// <summary>
     /// Stripe Webhook Secret for verifying webhook signatures.
-    /// Environment variable: APPBLUEPRINT_Stripe__WebhookSecret.
+    /// Environment variable: STRIPE_WEBHOOKSECRET.
     /// </summary>
     public string? WebhookSecret { get; set; }
     

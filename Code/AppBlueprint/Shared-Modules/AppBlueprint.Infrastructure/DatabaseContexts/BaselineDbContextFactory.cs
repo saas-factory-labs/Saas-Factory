@@ -22,7 +22,7 @@ public sealed class BaselineDbContextFactory : IDesignTimeDbContextFactory<Basel
             .AddJsonFile("appsettings.Development.json", true, true)
             .Build();
 
-        string? connectionString = Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING",
+        string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING",
             EnvironmentVariableTarget.User);
 
         var optionsBuilder = new DbContextOptionsBuilder<BaselineDbContext>();

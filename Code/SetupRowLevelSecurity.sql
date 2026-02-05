@@ -1,38 +1,44 @@
+DO $$
+DECLARE
+    appUser TEXT := 'app_user';
+    sampleSchema TEXT := 'sample';
+    rlsPolicyName TEXT := 'tenant_customer_isolation_policy';
+BEGIN
+    ---------------------------
+    -- USERS                 --
+    ---------------------------
+    IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles
+      WHERE  rolname = appUser) THEN
 
---------------------------
--- USERS                 --
----------------------------
-IF NOT EXISTS (
-  SELECT FROM pg_catalog.pg_roles
-  WHERE  rolname = 'app_user') THEN
+      EXECUTE 'CREATE ROLE ' || appUser || ' LOGIN PASSWORD ''app_user''';
 
-  CREATE ROLE app_user LOGIN PASSWORD 'app_user';
+    END IF;
 
-END IF;
+    ---------------------------
+    -- RLS                   --
+    ---------------------------
+    EXECUTE 'ALTER TABLE ' || sampleSchema || '.customer ENABLE ROW LEVEL SECURITY';
 
----------------------------
--- RLS                   --
----------------------------
-ALTER TABLE sample.customer ENABLE ROW LEVEL SECURITY;
+    ---------------------------
+    -- RLS POLICIES         --
+    ---------------------------
+    EXECUTE 'DROP POLICY IF EXISTS ' || rlsPolicyName || ' ON ' || sampleSchema || '.customer';
 
----------------------------
--- RLS POLICIES         --
----------------------------
+    EXECUTE 'CREATE POLICY ' || rlsPolicyName || ' ON ' || sampleSchema || '.customer
+        USING (tenant_name = current_setting(''app.current_tenant'')::VARCHAR)';
 
-DROP POLICY IF EXISTS tenant_customer_isolation_policy ON sample.customer;
+    --------------------------------
+    -- GRANTS                     --
+    --------------------------------
+    EXECUTE 'GRANT USAGE ON SCHEMA ' || sampleSchema || ' TO ' || appUser;
 
-CREATE POLICY tenant_customer_isolation_policy ON sample.customer
-    USING (tenant_name = current_setting('app.current_tenant')::VARCHAR);
+    -------------------------------------
+    -- GRANT TABLE                     --
+    -------------------------------------
+    EXECUTE 'GRANT SELECT ON TABLE ' || sampleSchema || '.tenant TO ' || appUser;
 
---------------------------------
--- GRANTS                     --
---------------------------------
-GRANT USAGE ON SCHEMA sample TO app_user;
+    EXECUTE 'GRANT ALL ON SEQUENCE ' || sampleSchema || '.customer_customer_id_seq TO ' || appUser;
+    EXECUTE 'GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ' || sampleSchema || '.customer TO ' || appUser;
 
--------------------------------------
--- GRANT TABLE                     --
--------------------------------------
-GRANT SELECT ON TABLE sample.tenant TO app_user;
-
-GRANT ALL ON SEQUENCE sample.customer_customer_id_seq TO app_user;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE 
+END $$;

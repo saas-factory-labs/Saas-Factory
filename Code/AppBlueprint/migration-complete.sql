@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
     "MigrationId" character varying(150) NOT NULL,
     "ProductVersion" character varying(32) NOT NULL,
     CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
@@ -7,8 +7,12 @@
 START TRANSACTION;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Admins" (
         "Id" character varying(1024) NOT NULL,
         "Email" character varying(255) NOT NULL,
@@ -22,8 +26,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Credits" (
         "Id" character varying(40) NOT NULL,
         "CreditRemaining" numeric(18,2) NOT NULL,
@@ -37,8 +45,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Customers" (
         "Id" character varying(40) NOT NULL,
         "CustomerType" integer NOT NULL,
@@ -59,8 +71,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "DataExports" (
         "Id" character varying(1024) NOT NULL,
         "DownloadUrl" text,
@@ -76,8 +92,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "FileMetadata" (
         "Id" character varying(1024) NOT NULL,
         "FileKey" character varying(500) NOT NULL,
@@ -99,8 +119,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Files" (
         "Id" character varying(1024) NOT NULL,
         "OwnerId" character varying(1024) NOT NULL,
@@ -117,8 +141,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "GlobalRegions" (
         "Id" character varying(1024) NOT NULL,
         "Name" character varying(200) NOT NULL,
@@ -131,8 +159,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Languages" (
         "Id" character varying(1024) NOT NULL,
         "Name" character varying(200) NOT NULL,
@@ -146,8 +178,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "PaymentProviders" (
         "Id" character varying(40) NOT NULL,
         "Name" character varying(100) NOT NULL,
@@ -165,8 +201,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Permissions" (
         "Id" character varying(40) NOT NULL,
         "Name" character varying(100) NOT NULL,
@@ -184,8 +224,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Searches" (
         "Id" character varying(1024) NOT NULL,
         "Name" character varying(1024) NOT NULL,
@@ -206,8 +250,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Sessions" (
         "Id" character varying(1024) NOT NULL,
         "SessionKey" character varying(100) NOT NULL,
@@ -223,8 +271,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Webhooks" (
         "Id" character varying(1024) NOT NULL,
         "Url" text NOT NULL,
@@ -239,8 +291,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Tenants" (
         "Id" character varying(40) NOT NULL,
         "TenantType" integer NOT NULL,
@@ -278,8 +334,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Countries" (
         "Id" character varying(40) NOT NULL,
         "Name" character varying(200) NOT NULL,
@@ -296,8 +356,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ApiLogs" (
         "Id" integer GENERATED BY DEFAULT AS IDENTITY,
         "ApiKeyId" character varying(450) NOT NULL,
@@ -324,8 +388,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ContactPersons" (
         "Id" character varying(1024) NOT NULL,
         "FirstName" character varying(50) NOT NULL,
@@ -349,8 +417,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Subscriptions" (
         "Id" character varying(40) NOT NULL,
         "Name" character varying(200) NOT NULL,
@@ -378,8 +450,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Users" (
         "Id" character varying(40) NOT NULL,
         "FirstName" character varying(100) NOT NULL,
@@ -400,8 +476,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "CountryRegions" (
         "Id" character varying(40) NOT NULL,
         "Name" character varying(100) NOT NULL,
@@ -419,8 +499,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "StateEntity" (
         "Id" character varying(1024) NOT NULL,
         "Name" character varying(1024) NOT NULL,
@@ -436,8 +520,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Accounts" (
         "Id" character varying(1024) NOT NULL,
         "CustomerType" integer NOT NULL,
@@ -458,8 +546,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "AuditLogs" (
         "Id" character varying(40) NOT NULL,
         "Action" character varying(200) NOT NULL,
@@ -490,8 +582,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "EmailAddresses" (
         "Id" character varying(1024) NOT NULL,
         "Address" character varying(320) NOT NULL,
@@ -519,8 +615,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "EmailInvites" (
         "Id" character varying(40) NOT NULL,
         "Token" character varying(1024) NOT NULL,
@@ -538,8 +638,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "EmailVerificationEntity" (
         "Id" integer GENERATED BY DEFAULT AS IDENTITY,
         "Token" character varying(1024) NOT NULL,
@@ -556,8 +660,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "EmailVerifications" (
         "Id" character varying(40) NOT NULL,
         "Token" character varying(1024) NOT NULL,
@@ -575,8 +683,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Integrations" (
         "Id" character varying(1024) NOT NULL,
         "OwnerId" character varying(1024) NOT NULL,
@@ -602,8 +714,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Notifications" (
         "Id" character varying(40) NOT NULL,
         "OwnerId" character varying(40) NOT NULL,
@@ -621,8 +737,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "PhoneNumbers" (
         "Id" character varying(1024) NOT NULL,
         "Number" character varying(50) NOT NULL,
@@ -646,8 +766,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ProfileEntity" (
         "Id" character varying(1024) NOT NULL,
         "PhoneNumber" character varying(1024),
@@ -668,8 +792,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ResourcePermissions" (
         "Id" character varying(40) NOT NULL,
         "UserId" character varying(40) NOT NULL,
@@ -684,8 +812,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Roles" (
         "Id" character varying(40) NOT NULL,
         "Name" character varying(100) NOT NULL,
@@ -705,8 +837,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Cities" (
         "Id" character varying(40) NOT NULL,
         "Name" character varying(100) NOT NULL,
@@ -726,8 +862,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ResourcePermissionTypes" (
         "Id" character varying(1024) NOT NULL,
         "ResourcePermissionId" character varying(1024) NOT NULL,
@@ -741,8 +881,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "RolePermissions" (
         "Id" character varying(40) NOT NULL,
         "RoleId" character varying(40) NOT NULL,
@@ -758,8 +902,12 @@ BEGIN
 END $EF$;
 
 DO $EF$
+DECLARE
+    migrationId1 TEXT := '20260202085124_AddFileMetadataEntity';
+    migrationId2 TEXT := '20260203071153_AddFullTextSearchVectors';
+    historyTable TEXT := '__EFMigrationsHistory';
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260202085124_AddFileMetadataEntity') THEN
+    IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "UserRoles" (
         "Id" character varying(40) NOT NULL,
         "UserId" character varying(40) NOT NULL,
@@ -1944,4 +2092,3 @@ BEGIN
     END IF;
 END $EF$;
 COMMIT;
-

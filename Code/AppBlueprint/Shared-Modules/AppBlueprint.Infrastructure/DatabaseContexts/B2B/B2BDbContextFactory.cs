@@ -15,7 +15,7 @@ public class B2BDbContextFactory : IDesignTimeDbContextFactory<B2BDbContext>
             .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
             .Build();
 
-        string? connectionString = Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING",
+        string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING",
             EnvironmentVariableTarget.User);
 
         // Fallback to configuration if environment variable not set

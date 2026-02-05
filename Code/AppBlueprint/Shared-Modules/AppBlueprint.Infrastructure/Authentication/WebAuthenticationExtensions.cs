@@ -58,9 +58,11 @@ public static class WebAuthenticationExtensions
     
     // Constants for logging
     private const string LogSeparator = "========================================";
-    
-    // HTML templates
-    private const string LogoutCompleteHtml = @"
+
+    // Internal static class to hold HTML templates
+    private static class HtmlTemplates
+    {
+        public const string LogoutCompleteHtml = @"
 <!DOCTYPE html>
 <html>
 <head>
@@ -81,7 +83,7 @@ public static class WebAuthenticationExtensions
 </body>
 </html>";
 
-    private const string LocalSignOutHtml = @"
+        public const string LocalSignOutHtml = @"
 <!DOCTYPE html>
 <html>
 <head>
@@ -97,6 +99,7 @@ public static class WebAuthenticationExtensions
     <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
 </body>
 </html>";
+    }
     
     /// <summary>
     /// Configures authentication services for the web application including Logto, cookies, and data protection.
@@ -173,10 +176,20 @@ public static class WebAuthenticationExtensions
         IConfiguration configuration,
         IHostEnvironment environment)
     {
-        string? logtoAppId = configuration[LogtoAppIdKey];
-        string? logtoEndpoint = configuration[LogtoEndpointKey];
-        string? logtoAppSecret = configuration[LogtoAppSecretKey];
-        string? logtoResource = configuration[LogtoResourceKey];
+        // Read from flat UPPERCASE environment variables first, then fall back to IConfiguration
+        // Supports: LOGTO_APPID, LOGTO_ENDPOINT, LOGTO_APPSECRET, LOGTO_RESOURCE (flat standard)
+        // Falls back to: Logto:AppId, Logto:Endpoint, Logto:AppSecret, Logto:Resource (hierarchical)
+        string? logtoAppId = Environment.GetEnvironmentVariable("LOGTO_APPID") 
+                          ?? Environment.GetEnvironmentVariable("LOGTO_APP_ID") 
+                          ?? configuration[LogtoAppIdKey];
+        string? logtoEndpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT") 
+                             ?? configuration[LogtoEndpointKey];
+        string? logtoAppSecret = Environment.GetEnvironmentVariable("LOGTO_APPSECRET") 
+                              ?? Environment.GetEnvironmentVariable("LOGTO_APP_SECRET") 
+                              ?? configuration[LogtoAppSecretKey];
+        string? logtoResource = Environment.GetEnvironmentVariable("LOGTO_APIRESOURCE") 
+                             ?? Environment.GetEnvironmentVariable("LOGTO_RESOURCE") 
+                             ?? configuration[LogtoResourceKey];
         
         // DEBUG: Check all configuration values
         Console.WriteLine($"[Web] DEBUG - Reading configuration:");
@@ -184,8 +197,8 @@ public static class WebAuthenticationExtensions
         Console.WriteLine($"[Web] DEBUG - {LogtoAppIdKey} = {logtoAppId ?? "(null)"}");
         Console.WriteLine($"[Web] DEBUG - {LogtoAppSecretKey} = {(string.IsNullOrEmpty(logtoAppSecret) ? "(null or empty)" : $"<SET, length={logtoAppSecret.Length}>")}");
         Console.WriteLine($"[Web] DEBUG - {LogtoResourceKey} = {logtoResource ?? "(null)"}");
-        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO__APPSECRET = {(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LOGTO__APPSECRET")) ? "(null or empty)" : $"<SET, length={Environment.GetEnvironmentVariable("LOGTO__APPSECRET")?.Length}>")}");
-        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO__RESOURCE = {Environment.GetEnvironmentVariable("LOGTO__RESOURCE") ?? "(null)"}");
+        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO_APP_SECRET = {(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")) ? "(null or empty)" : $"<SET, length={Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")?.Length}>")}");
+        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO_RESOURCE = {Environment.GetEnvironmentVariable("LOGTO_RESOURCE") ?? "(null)"}");
         
         LogLogtoConfiguration(logtoEndpoint, logtoAppId, logtoAppSecret, logtoResource);
         
@@ -532,8 +545,12 @@ public static class WebAuthenticationExtensions
                 foreach (var cookie in cookies)
                 {
                     // Only log cookie names, not values
-                    string cookieName = cookie.ToString().Split('=')[0];
-                    Console.WriteLine($"[Web]   - Setting cookie: {cookieName}");
+                    string? cookieStr = cookie;
+                    if (!string.IsNullOrEmpty(cookieStr))
+                    {
+                        string cookieName = cookieStr.Split('=')[0];
+                        Console.WriteLine($"[Web]   - Setting cookie: {cookieName}");
+                    }
                 }
             }
             
@@ -578,8 +595,8 @@ public static class WebAuthenticationExtensions
             }
             
             // Check for correlation cookie specifically
-            var hasCorrelation = context.Request.Cookies.Any(c => c.Key.Contains("Correlation"));
-            var hasNonce = context.Request.Cookies.Any(c => c.Key.Contains("Nonce"));
+            bool hasCorrelation = context.Request.Cookies.Any(c => c.Key.Contains("Correlation", StringComparison.Ordinal));
+            bool hasNonce = context.Request.Cookies.Any(c => c.Key.Contains("Nonce", StringComparison.Ordinal));
             
             Console.WriteLine($"[Web] Has Correlation cookie: {hasCorrelation}");
             Console.WriteLine($"[Web] Has Nonce cookie: {hasNonce}");
@@ -646,17 +663,24 @@ public static class WebAuthenticationExtensions
             context.Response.StatusCode = 200;
             context.Response.ContentType = "text/html";
             
-            // Build dynamic error page with actual error details
-            string errorMessage = context.Failure?.Message ?? "Unknown error";
-            string errorType = context.Failure?.GetType().Name ?? "Unknown";
-            string innerError = context.Failure?.InnerException?.Message ?? "None";
-            string stackTrace = context.Failure?.StackTrace ?? "Not available";
-            
-            // Check for OAuth-specific error in query string
-            string oauthError = context.Request.Query.TryGetValue("error", out var err) ? err.ToString() : "None";
-            string oauthErrorDesc = context.Request.Query.TryGetValue("error_description", out var desc) ? desc.ToString() : "None";
-            
-            string dynamicErrorHtml = $@"
+            await context.Response.WriteAsync(GenerateDynamicErrorHtml(context));
+            context.HandleResponse();
+        }
+    }
+
+    private static string GenerateDynamicErrorHtml(RemoteFailureContext context)
+    {
+        // Build dynamic error page with actual error details
+        string errorMessage = context.Failure?.Message ?? "Unknown error";
+        string errorType = context.Failure?.GetType().Name ?? "Unknown";
+        string innerError = context.Failure?.InnerException?.Message ?? "None";
+        string stackTrace = context.Failure?.StackTrace ?? "Not available";
+        
+        // Check for OAuth-specific error in query string
+        string oauthError = context.Request.Query.TryGetValue("error", out var err) ? err.ToString() : "None";
+        string oauthErrorDesc = context.Request.Query.TryGetValue("error_description", out var desc) ? desc.ToString() : "None";
+        
+        return $@"
 <!DOCTYPE html>
 <html>
 <head>
@@ -704,7 +728,7 @@ public static class WebAuthenticationExtensions
         
         <div class='error-section'>
             <div class='error-label'>Stack Trace (first 500 chars):</div>
-            <pre>{System.Net.WebUtility.HtmlEncode(stackTrace.Length > 500 ? stackTrace.Substring(0, 500) + "..." : stackTrace)}</pre>
+            <pre>{System.Net.WebUtility.HtmlEncode(stackTrace.Length > 500 ? string.Concat(stackTrace.AsSpan(0, 500), "...") : stackTrace)}</pre>
         </div>
         
         <div class='button-container'>
@@ -714,10 +738,6 @@ public static class WebAuthenticationExtensions
     </div>
 </body>
 </html>";
-            
-            await context.Response.WriteAsync(dynamicErrorHtml);
-            context.HandleResponse();
-        }
     }
 
     /// <summary>
@@ -800,30 +820,42 @@ public static class WebAuthenticationExtensions
                     }
                     
                     // User has a tenant - redirect directly to dashboard (skip onboarding)
-                    context.Properties.RedirectUri = "/dashboard";
-                    Console.WriteLine("[Web] ✅ User has tenant - redirecting to /dashboard");
+                    if (context.Properties is not null)
+                    {
+                        context.Properties.RedirectUri = "/dashboard";
+                        Console.WriteLine("[Web] ✅ User has tenant - redirecting to /dashboard");
+                    }
                 }
                 else
                 {
                     Console.WriteLine("[Web] ⚠️ User not found or has no tenant - will redirect to onboarding");
                     
                     // User has no tenant - redirect to onboarding for profile completion
-                    context.Properties.RedirectUri = "/onboarding";
-                    Console.WriteLine("[Web] ⚠️ Redirecting to /onboarding for profile completion");
+                    if (context.Properties is not null)
+                    {
+                        context.Properties.RedirectUri = "/onboarding";
+                        Console.WriteLine("[Web] ⚠️ Redirecting to /onboarding for profile completion");
+                    }
                 }
             }
             else
             {
                 Console.WriteLine("[Web] ⚠️ DbContextFactory not available in DI container");
                 // Fallback to onboarding if we can't check database
-                context.Properties.RedirectUri = "/onboarding";
+                if (context.Properties is not null)
+                {
+                    context.Properties.RedirectUri = "/onboarding";
+                }
             }
         }
         else
         {
             Console.WriteLine("[Web] ⚠️ No email claim found in JWT");
             // Fallback to onboarding if we can't identify user
-            context.Properties.RedirectUri = "/onboarding";
+            if (context.Properties is not null)
+            {
+                context.Properties.RedirectUri = "/onboarding";
+            }
         }
 
         Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");
@@ -837,7 +869,16 @@ public static class WebAuthenticationExtensions
     /// <returns>The web application for chaining</returns>
     public static WebApplication MapAuthenticationEndpoints(this WebApplication app, IConfiguration configuration)
     {
-        // Sign in endpoint - triggers authentication challenge
+        MapSignInEndpoint(app);
+        MapSignOutEndpoint(app);
+        MapLogoutCompleteEndpoint(app);
+        MapLocalSignOutEndpoint(app);
+
+        return app;
+    }
+
+    private static void MapSignInEndpoint(WebApplication app)
+    {
         app.MapGet("/auth/signin", async context =>
         {
             Console.WriteLine(LogSeparator);
@@ -855,21 +896,19 @@ public static class WebAuthenticationExtensions
 
                 try
                 {
-                    // CRITICAL: Use LogtoScheme explicitly to avoid redirect loop
-                    // If we don't specify the scheme, it uses the default (cookie), which redirects back to /auth/signin
                     await context.ChallengeAsync(LogtoScheme, new AuthenticationProperties { RedirectUri = "/" });
                     Console.WriteLine("[Web] ✅ ChallengeAsync(LogtoScheme) completed - should redirect to Logto now");
                     Console.WriteLine("[Web] ⚠️ IMPORTANT: Make sure your Logto application has this redirect URI configured:");
                     Console.WriteLine($"[Web]    - {context.Request.Scheme}://{context.Request.Host}/Callback");
                     Console.WriteLine(LogSeparator);
-                    return; // CRITICAL: Return immediately after challenge to complete the response
+                    return;
                 }
-                catch (Exception ex)
+                catch (InvalidOperationException ex)
                 {
                     Console.WriteLine($"[Web] ❌ ERROR in ChallengeAsync: {ex.GetType().Name}");
                     Console.WriteLine($"[Web] ❌ Message: {ex.Message}");
                     Console.WriteLine($"[Web] ❌ Stack trace: {ex.StackTrace}");
-                    if (ex.InnerException != null)
+                    if (ex.InnerException is not null)
                     {
                         Console.WriteLine($"[Web] ❌ Inner exception: {ex.InnerException.GetType().Name}");
                         Console.WriteLine($"[Web] ❌ Inner message: {ex.InnerException.Message}");
@@ -881,14 +920,14 @@ public static class WebAuthenticationExtensions
                 }
             }
             
-            // User already authenticated - redirect to home
             Console.WriteLine("[Web] User already authenticated - redirecting to /");
             Console.WriteLine(LogSeparator);
             context.Response.Redirect("/");
         }).AllowAnonymous();
+    }
 
-        // Sign out endpoint - Uses OIDC middleware to handle full sign-out flow
-        // This follows the official Logto Blazor Server documentation pattern
+    private static void MapSignOutEndpoint(WebApplication app)
+    {
         app.MapGet("/auth/signout", async (HttpContext context) =>
         {
             Console.WriteLine(LogSeparator);
@@ -901,13 +940,6 @@ public static class WebAuthenticationExtensions
                 Console.WriteLine("[Web] ➡️  Will redirect to /login after sign-out completes");
                 Console.WriteLine(LogSeparator);
                 
-                // Sign out from both authentication schemes to ensure complete logout
-                // 1. Sign out from Cookie scheme (clears local authentication cookie)
-                // 2. Sign out from OIDC scheme with RedirectUri (triggers Logto end session flow)
-                //    - Redirects to Logto's end session endpoint
-                //    - Logto clears its session
-                //    - Logto redirects to SignedOutCallbackPath
-                //    - Middleware handles callback and redirects to RedirectUri
                 await context.SignOutAsync(LogtoCookieScheme);
                 await context.SignOutAsync(LogtoScheme, new AuthenticationProperties { RedirectUri = "/login" });
             }
@@ -918,37 +950,36 @@ public static class WebAuthenticationExtensions
                 context.Response.Redirect("/login");
             }
         }).AllowAnonymous();
+    }
 
-        // Logout complete callback - where Logto redirects back after sign-out
+    private static void MapLogoutCompleteEndpoint(WebApplication app)
+    {
         app.MapGet("/logout-complete", async (HttpContext context) =>
         {
             Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] Logout complete callback - user returned from Logto");
             Console.WriteLine($"[Web] Current authentication state: {context.User?.Identity?.IsAuthenticated}");
             
-            // Make absolutely sure cookies are cleared
             try
             {
                 await context.SignOutAsync(LogtoCookieScheme);
                 await context.SignOutAsync(LogtoScheme);
                 Console.WriteLine("[Web] ✅ Cleared all authentication cookies");
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
                 Console.WriteLine($"[Web] Cookie clear error (might be already cleared): {ex.Message}");
             }
             
-            // Return HTML that uses JavaScript to navigate to login
-            // This ensures a complete page reload and new Blazor circuit
             Console.WriteLine("[Web] ✅ Sending HTML redirect to /login");
             Console.WriteLine(LogSeparator);
             
-            // Use Results.Content for proper minimal API response
-            return Results.Content(LogoutCompleteHtml, "text/html", null, statusCode: 200);
+            return Results.Content(HtmlTemplates.LogoutCompleteHtml, "text/html", null, statusCode: 200);
         }).AllowAnonymous();
+    }
 
-        // Simple manual sign-out endpoint for debugging (bypasses Logto's end session endpoint)
-        // This just clears local cookies without going to Logto
+    private static void MapLocalSignOutEndpoint(WebApplication app)
+    {
         app.MapGet("/auth/signout/local", async (HttpContext context) =>
         {
             Console.WriteLine(LogSeparator);
@@ -957,26 +988,21 @@ public static class WebAuthenticationExtensions
             
             try
             {
-                // Clear local authentication cookies
                 await context.SignOutAsync(LogtoCookieScheme);
                 Console.WriteLine($"[Web] ✅ Cleared {LogtoCookieScheme}");
                 
-                // Return HTML that forces a complete page reload to /login
-                // This ensures Blazor circuit is completely reset
                 context.Response.ContentType = "text/html";
-                await context.Response.WriteAsync(LocalSignOutHtml);
+                await context.Response.WriteAsync(HtmlTemplates.LocalSignOutHtml);
                 Console.WriteLine("[Web] ✅ Sent HTML redirect to /login (forced reload)");
                 Console.WriteLine(LogSeparator);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
                 Console.WriteLine($"[Web] ⚠️ ERROR during local sign-out: {ex.Message}");
                 Console.WriteLine(LogSeparator);
                 context.Response.Redirect("/login");
             }
         }).AllowAnonymous();
-
-        return app;
     }
 
     /// <summary>
@@ -1008,7 +1034,7 @@ public static class WebAuthenticationExtensions
                     addresses = addresses.Select(a => a.ToString()).ToArray()
                 });
             }
-            catch (Exception ex)
+            catch (System.Net.Sockets.SocketException ex)
             {
                 results.Add(new 
                 { 
@@ -1041,13 +1067,23 @@ public static class WebAuthenticationExtensions
                     warning = sw.ElapsedMilliseconds > 5000 ? "⚠️ Slow connection - took over 5 seconds" : null
                 });
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 results.Add(new 
                 { 
                     test = "HTTPS Connectivity",
                     success = false,
                     error = ex.Message,
+                    type = ex.GetType().Name
+                });
+            }
+            catch (TaskCanceledException ex)
+            {
+                results.Add(new 
+                { 
+                    test = "HTTPS Connectivity",
+                    success = false,
+                    error = "Request timed out: " + ex.Message,
                     type = ex.GetType().Name
                 });
             }

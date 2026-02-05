@@ -1,9 +1,7 @@
-"use strict";
 /**
  * Signup logger module for safe telemetry logging
  * Prevents XSS by accepting parameters instead of eval() or inline script injection
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 const signupLogger = {
     /**
      * Logs when a workspace is successfully created
@@ -58,5 +56,5 @@ const signupLogger = {
     }
 };
 window.signupLogger = signupLogger;
-exports.default = signupLogger;
+export default signupLogger;
 //# sourceMappingURL=signupLogger.js.map

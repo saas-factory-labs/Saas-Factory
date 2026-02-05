@@ -66,8 +66,5 @@ public sealed class FamilyInviteEntityConfiguration : IEntityTypeConfiguration<F
         builder.HasIndex(fi => fi.FamilyId);
         builder.HasIndex(fi => fi.UserId);
         builder.HasIndex(fi => fi.IsSoftDeleted);
-
-        // Query filter for soft delete
-        builder.HasQueryFilter(fi => !fi.IsSoftDeleted);
     }
 }

@@ -23,7 +23,6 @@ const string OtelExporterOtlpEndpoint = "OTEL_EXPORTER_OTLP_ENDPOINT";
 const string ConsoleSeparator = "========================================";
 const string OtelExporterOtlpProtocol = "OTEL_EXPORTER_OTLP_PROTOCOL";
 const string ApiBaseUrl = "API_BASE_URL";
-const string BypassCertValidation = "BYPASS_CERT_VALIDATION";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -124,19 +123,6 @@ builder.Services.AddSingleton(navigationRoutes);
 // - Production: Set via Dockerfile ENV ASPNETCORE_URLS=http://+:80 (Railway handles SSL termination)
 // No ConfigureKestrel needed - avoids conflicts with environment variables
 
-builder.Services.ConfigureHttpClientDefaults(http =>
-{
-    // Only bypass certificate validation in development AND with explicit flag
-    if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
-    {
-        http.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-        });
-    }
-});
-
 // Configure cookie policy for HTTP LAN access (fixes "Correlation failed" error)
 // This allows authentication cookies to work over HTTP in development
 if (builder.Environment.IsDevelopment())
@@ -235,18 +221,6 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
 })
-.ConfigurePrimaryHttpMessageHandler(() =>
-{
-    var handler = new HttpClientHandler();
-    // Only bypass certificate validation in development AND with explicit flag
-    if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
-    {
-        handler.ServerCertificateCustomValidationCallback =
-            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-    }
-    return handler;
-})
 .AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
 // Add TeamService with HttpClient configured for direct API access
@@ -254,18 +228,6 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.TeamService>(client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
-})
-.ConfigurePrimaryHttpMessageHandler(() =>
-{
-    var handler = new HttpClientHandler();
-    // Only bypass certificate validation in development AND with explicit flag
-    if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
-    {
-        handler.ServerCertificateCustomValidationCallback =
-            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-    }
-    return handler;
 })
 .AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
@@ -275,18 +237,6 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.RoleService>(client =>
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
 })
-.ConfigurePrimaryHttpMessageHandler(() =>
-{
-    var handler = new HttpClientHandler();
-    // Only bypass certificate validation in development AND with explicit flag
-    if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
-    {
-        handler.ServerCertificateCustomValidationCallback =
-            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-    }
-    return handler;
-})
 .AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
 // Add FileStorageService with HttpClient configured for direct API access
@@ -294,18 +244,6 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.FileStorageService>(cli
 {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromMinutes(10); // 10 minutes for large file uploads
-})
-.ConfigurePrimaryHttpMessageHandler(() =>
-{
-    var handler = new HttpClientHandler();
-    // Only bypass certificate validation in development AND with explicit flag
-    if (builder.Environment.IsDevelopment() && 
-        Environment.GetEnvironmentVariable(BypassCertValidation) == "true")
-    {
-        handler.ServerCertificateCustomValidationCallback =
-            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-    }
-    return handler;
 })
 .AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>()
 .AddStandardResilienceHandler(options =>

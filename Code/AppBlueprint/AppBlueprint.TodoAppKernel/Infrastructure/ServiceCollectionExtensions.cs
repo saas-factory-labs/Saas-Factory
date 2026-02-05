@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(configuration);
 
         // Get connection string (priority: environment variable -> configuration)
-        string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+        string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
         
         if (string.IsNullOrEmpty(connectionString))
         {

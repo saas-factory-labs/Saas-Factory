@@ -77,6 +77,8 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
         }
     }
 
+    private static FirebaseApp? GetFirebaseApp() => _firebaseApp;
+
     public async Task SendAsync(PushNotificationRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);

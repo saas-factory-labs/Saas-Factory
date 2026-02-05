@@ -34,7 +34,7 @@ services:
       - ./AppBlueprint.ApiService:/src/AppBlueprint.ApiService:delegated
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - APPBLUEPRINT_RAILWAY_CONNECTIONSTRING
+      - RAILWAY_CONNECTIONSTRING
       - DOTNET_USE_POLLING_FILE_WATCHER=1
       - ASPNETCORE_URLS=http://+:80  # Ensures app listens on 80 inside the container
       - DOTNET_GENERATE_ASPNET_CERTIFICATE=false

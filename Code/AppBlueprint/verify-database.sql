@@ -32,7 +32,12 @@ AND table_name IN ('Tenants', 'Users', 'tenants', 'users')
 ORDER BY table_name;
 
 -- 5. Check migration history
-SELECT * FROM "__EFMigrationsHistory" ORDER BY "MigrationId";
+DO $EF$
+DECLARE
+    historyTable TEXT := '__EFMigrationsHistory';
+BEGIN
+    PERFORM * FROM historyTable ORDER BY "MigrationId";
+END $EF$;
 
 -- 6. Check if GIN indexes exist
 SELECT 

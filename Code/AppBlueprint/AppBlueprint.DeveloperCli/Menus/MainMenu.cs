@@ -239,7 +239,7 @@ internal static class MainMenu
         AnsiConsole.WriteLine();
 
         // Check for existing environment variable
-        string? envConnectionString = Environment.GetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING", EnvironmentVariableTarget.User);
+        string? envConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING", EnvironmentVariableTarget.User);
 
         if (!string.IsNullOrWhiteSpace(envConnectionString))
         {
@@ -253,7 +253,7 @@ internal static class MainMenu
         }
         else
         {
-            AnsiConsole.MarkupLine("[yellow]⚠[/] No connection string found in environment variable [grey]APPBLUEPRINT_DATABASE_CONNECTIONSTRING[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠[/] No connection string found in environment variable [grey]DATABASE_CONNECTIONSTRING[/]");
             AnsiConsole.WriteLine();
         }
 
@@ -281,8 +281,8 @@ internal static class MainMenu
         {
             try
             {
-                Environment.SetEnvironmentVariable("APPBLUEPRINT_DATABASE_CONNECTIONSTRING", connectionString, EnvironmentVariableTarget.User);
-                AnsiConsole.MarkupLine("[green]✓[/] Connection string saved to [cyan]APPBLUEPRINT_DATABASE_CONNECTIONSTRING[/]");
+                Environment.SetEnvironmentVariable("DATABASE_CONNECTIONSTRING", connectionString, EnvironmentVariableTarget.User);
+                AnsiConsole.MarkupLine("[green]✓[/] Connection string saved to [cyan]DATABASE_CONNECTIONSTRING[/]");
                 AnsiConsole.MarkupLine("[grey]Note: You may need to restart your terminal for changes to take effect[/]");
             }
             catch (Exception ex)

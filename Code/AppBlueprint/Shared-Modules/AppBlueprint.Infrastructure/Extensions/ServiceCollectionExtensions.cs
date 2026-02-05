@@ -111,7 +111,7 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Registers database contexts (ApplicationDbContext and B2BDbContext) - LEGACY METHOD.
-    /// Uses environment variable DATABASE_CONNECTION_STRING or falls back to configuration.
+    /// Uses environment variable DATABASE_CONNECTIONSTRING or falls back to configuration.
     /// This method is maintained for backward compatibility.
     /// </summary>
     [Obsolete("Use DbContextConfigurator.AddConfiguredDbContext() instead.")]
@@ -120,7 +120,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         // Priority 1: Environment variable
-        string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+        string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
 
         // Priority 2: Configuration fallback
         if (string.IsNullOrEmpty(connectionString))
@@ -130,7 +130,7 @@ public static class ServiceCollectionExtensions
                              configuration.GetConnectionString("DefaultConnection");
         }
 
-        var connectionSource = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") != null
+        var connectionSource = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") != null
             ? "Environment Variable"
             : "Configuration";
 
@@ -345,28 +345,24 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers Resend email service if API key is configured.
     /// Supports multiple environment variable naming conventions:
-    /// 1. APPBLUEPRINT_RESEND_APIKEY (new standard)
-    /// 2. RESEND_API_KEY (generic, for deployed apps)
-    /// 3. APPBLUEPRINT_Resend__ApiKey (legacy dotnet format)
+    /// 1. RESEND_APIKEY (standard UPPERCASE format)
+    /// 2. RESEND_API_KEY (legacy with underscores)
     /// </summary>
     private static IServiceCollection AddResendEmailService(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         // Try multiple environment variable naming conventions (in priority order)
-        string? apiKey = Environment.GetEnvironmentVariable("APPBLUEPRINT_RESEND_APIKEY")
+        string? apiKey = Environment.GetEnvironmentVariable("RESEND_APIKEY")
                       ?? Environment.GetEnvironmentVariable("RESEND_API_KEY")
-                      ?? Environment.GetEnvironmentVariable("APPBLUEPRINT_Resend__ApiKey")
                       ?? configuration["Resend:ApiKey"];
         
-        string? fromEmail = Environment.GetEnvironmentVariable("APPBLUEPRINT_RESEND_FROMEMAIL")
+        string? fromEmail = Environment.GetEnvironmentVariable("RESEND_FROMEMAIL")
                          ?? Environment.GetEnvironmentVariable("RESEND_FROM_EMAIL")
-                         ?? Environment.GetEnvironmentVariable("APPBLUEPRINT_Resend__FromEmail")
                          ?? configuration["Resend:FromEmail"];
         
-        string? fromName = Environment.GetEnvironmentVariable("APPBLUEPRINT_RESEND_FROMNAME")
+        string? fromName = Environment.GetEnvironmentVariable("RESEND_FROMNAME")
                         ?? Environment.GetEnvironmentVariable("RESEND_FROM_NAME")
-                        ?? Environment.GetEnvironmentVariable("APPBLUEPRINT_Resend__FromName")
                         ?? configuration["Resend:FromName"];
         
         if (!string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(fromEmail))
@@ -419,7 +415,7 @@ public static class ServiceCollectionExtensions
         var healthChecksBuilder = services.AddHealthChecks();
 
         // Database health check
-        string? dbConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ??
+        string? dbConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") ??
                                 configuration.GetConnectionString("appblueprintdb");
 
         if (!string.IsNullOrEmpty(dbConnectionString))
@@ -522,7 +518,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<PIITaggingService>();
         
         // Register the EF Core interceptor
-        services.AddScoped<PIISaveChangesInterceptor>();
+        services.AddScoped<PiiSaveChangesInterceptor>();
 
         Console.WriteLine("[AppBlueprint.Infrastructure] PII services registered (Regex, NER/LLM Placeholders, Interceptor)");
 
