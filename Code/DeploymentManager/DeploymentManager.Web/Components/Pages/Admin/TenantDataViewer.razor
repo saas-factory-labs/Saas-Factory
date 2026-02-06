@@ -76,7 +76,8 @@
                                 <tr>
                                     <td><code>@user.Id</code></td>
                                     <td>@user.Email</td>
-                                    <td><span class="badge bg-primary">@user.Role</span></td>
+                                    @* <td><span class="badge bg-primary">@user.Role</span></td> *@
+                                    <td><span class="badge bg-primary">@(user.UserRoles.FirstOrDefault()?.Role?.Name ?? "N/A")</span></td>
                                     <td>@user.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
                                 </tr>
                             }
@@ -135,30 +136,34 @@
                 return;
             }
 
+            // ⚠️ DEMONSTRATION CODE - NOT FULLY IMPLEMENTED
             // Load tenant users using admin service
             // ✅ This bypasses Named Query Filters
             // ✅ RLS still enforces based on app.current_tenant_id session variable
             // ✅ All access is logged with admin user, tenant, reason, timestamp
-            Users = await AdminService.ExecuteReadOnlyAsAdminAsync(
+            
+            // NOTE: ApplicationDbContext must be injected for this to work
+            // See AdminTenantAccessTests.cs for working examples.
+            throw new NotImplementedException(
+                "ApplicationDbContext must be injected. " +
+                "This is a demonstration of the admin access pattern. " +
+                "See AdminTenantAccessTests.cs for working examples.");
+            
+            /* Commented out - requires ApplicationDbContext injection:
+            Users = await AdminService.ExecuteReadOnlyAsAdminAsync<List<UserEntity>>(
                 TenantId,
                 Reason,
                 async () =>
                 {
-                    // Note: In a real implementation, inject ApplicationDbContext
-                    // For this example, we're showing the pattern
-                    throw new NotImplementedException(
-                        "ApplicationDbContext must be injected. " +
-                        "This is a demonstration of the admin access pattern. " +
-                        "See AdminTenantAccessTests.cs for working examples.");
-                    
-                    // Real implementation would be:
-                    // return await _dbContext.Users
-                    //     .AsNoTracking() // ✅ Read-only - prevents EF Core change tracking
-                    //     .IgnoreQueryFilters() // Bypass Named Query Filters
-                    //     .Where(u => u.TenantId == TenantId)
-                    //     .OrderBy(u => u.CreatedAt)
-                    //     .ToListAsync();
+                    // Real implementation:
+                    return await _dbContext.Users
+                        .AsNoTracking() // ✅ Read-only - prevents EF Core change tracking
+                        .IgnoreQueryFilters() // Bypass Named Query Filters
+                        .Where(u => u.TenantId == TenantId)
+                        .OrderBy(u => u.CreatedAt)
+                        .ToListAsync();
                 });
+            */
 
             Logger.LogInformation(
                 "Successfully loaded {UserCount} users for tenant {TenantId}",
@@ -184,22 +189,23 @@
     /// <summary>
     /// Alternative approach: Load specific data types (messages, teams, etc.)
     /// This demonstrates how to use the admin service for different entity types.
+    /// ⚠️ DEMONSTRATION CODE - Requires ApplicationDbContext injection
     /// </summary>
+    /* Commented out - requires ApplicationDbContext injection:
     private async Task<List<TEntity>> LoadTenantEntities<TEntity>(string entityType) where TEntity : class
     {
-        return await AdminService.ExecuteReadOnlyAsAdminAsync(
+        return await AdminService.ExecuteReadOnlyAsAdminAsync<List<TEntity>>(
             TenantId,
             $"{Reason} - Loading {entityType}",
             async () =>
             {
-                throw new NotImplementedException("See AdminTenantAccessTests.cs for examples");
-                
                 // Real implementation:
-                // return await _dbContext.Set<TEntity>()
-                //     .AsNoTracking() // ✅ Read-only
-                //     .IgnoreQueryFilters()
-                //     // Add tenant filter if entity has TenantId property
-                //     .ToListAsync();
+                return await _dbContext.Set<TEntity>()
+                    .AsNoTracking() // ✅ Read-only
+                    .IgnoreQueryFilters()
+                    // Add tenant filter if entity has TenantId property
+                    .ToListAsync();
             });
     }
+    */
 }

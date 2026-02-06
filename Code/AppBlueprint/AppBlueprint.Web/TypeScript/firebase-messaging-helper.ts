@@ -40,7 +40,7 @@ class FirebaseMessagingHelper {
                 const errorData = await configResponse.json().catch(() => null);
                 const errorMsg = errorData?.error || `HTTP ${configResponse.status}`;
                 console.error('Failed to fetch Firebase config:', errorMsg);
-                (window as any).lastFirebaseError = errorMsg;
+                (globalThis as any).lastFirebaseError = errorMsg;
                 return false;
             }
             this.firebaseConfig = await configResponse.json();
@@ -51,19 +51,19 @@ class FirebaseMessagingHelper {
                 const errorData = await vapidResponse.json().catch(() => null);
                 const errorMsg = errorData?.error || `HTTP ${vapidResponse.status}`;
                 console.error('Failed to fetch VAPID key:', errorMsg);
-                (window as any).lastFirebaseError = errorMsg;
+                (globalThis as any).lastFirebaseError = errorMsg;
                 return false;
             }
             const vapidData: VapidKeyResponse = await vapidResponse.json();
             this.vapidKey = vapidData.vapidKey;
 
             console.log('Firebase config loaded from server');
-            (window as any).lastFirebaseError = null;
+            (globalThis as any).lastFirebaseError = null;
             return true;
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             console.error('Failed to load Firebase config from server:', error);
-            (window as any).lastFirebaseError = errorMessage;
+            (globalThis as any).lastFirebaseError = errorMessage;
             return false;
         }
     }
@@ -200,33 +200,33 @@ class FirebaseMessagingHelper {
 }
 
 // Export for use in Blazor
-(window as any).firebaseMessaging = new FirebaseMessagingHelper();
+(globalThis as any).firebaseMessaging = new FirebaseMessagingHelper();
 
 // Helper function for Blazor interop - Initialize with server config
-(window as any).initializeFirebaseMessaging = async (config: FirebaseConfig | null = null, vapidKey: string | null = null): Promise<boolean> => {
+(globalThis as any).initializeFirebaseMessaging = async (config: FirebaseConfig | null = null, vapidKey: string | null = null): Promise<boolean> => {
     // If no config provided, will fetch from server automatically
-    return await (window as any).firebaseMessaging.initialize(config, vapidKey);
+    return await (globalThis as any).firebaseMessaging.initialize(config, vapidKey);
 };
 
 // Initialize automatically on page load (fetches config from server)
-(window as any).initializeFirebaseMessagingFromServer = async (): Promise<boolean> => {
-    return await (window as any).firebaseMessaging.initialize();
+(globalThis as any).initializeFirebaseMessagingFromServer = async (): Promise<boolean> => {
+    return await (globalThis as any).firebaseMessaging.initialize();
 };
 
-(window as any).requestNotificationPermission = async (): Promise<boolean> => {
-    return await (window as any).firebaseMessaging.requestPermission();
+(globalThis as any).requestNotificationPermission = async (): Promise<boolean> => {
+    return await (globalThis as any).firebaseMessaging.requestPermission();
 };
 
-(window as any).getFirebaseToken = async (): Promise<string | null> => {
-    return await (window as any).firebaseMessaging.getToken();
+(globalThis as any).getFirebaseToken = async (): Promise<string | null> => {
+    return await (globalThis as any).firebaseMessaging.getToken();
 };
 
-(window as any).requestFirebaseTokenAndPermission = async (): Promise<string | null> => {
-    return await (window as any).firebaseMessaging.requestTokenAndPermission();
+(globalThis as any).requestFirebaseTokenAndPermission = async (): Promise<string | null> => {
+    return await (globalThis as any).firebaseMessaging.requestTokenAndPermission();
 };
 
-(window as any).setupFirebaseForegroundHandler = async (dotnetHelper: any, methodName: string): Promise<void> => {
-    await (window as any).firebaseMessaging.setupForegroundMessageHandler((payload: NotificationPayload) => {
+(globalThis as any).setupFirebaseForegroundHandler = async (dotnetHelper: any, methodName: string): Promise<void> => {
+    await (globalThis as any).firebaseMessaging.setupForegroundMessageHandler((payload: NotificationPayload) => {
         if (dotnetHelper && methodName) {
             dotnetHelper.invokeMethodAsync(methodName, payload);
         }

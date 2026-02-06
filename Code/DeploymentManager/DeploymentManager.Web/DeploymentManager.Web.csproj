@@ -18,5 +18,10 @@
         <PackageReference Include="Microsoft.OpenApi.Readers"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj"/>
+        <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj"/>
     </ItemGroup>
 </Project>

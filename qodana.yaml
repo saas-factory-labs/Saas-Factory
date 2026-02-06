@@ -1,0 +1,15 @@
+version: "1.0"
+linter: jetbrains/qodana-dotnet:2025.3
+
+dotnet:
+  solution: "Saas-Factory.sln"
+
+exclude:
+  - name: All
+    paths:
+      - "wwwroot/lib"
+      - "bin"
+      - "obj"
+      - "Migrations"
+      - "Generated"
+      - "docs"

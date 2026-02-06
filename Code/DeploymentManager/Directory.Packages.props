@@ -28,7 +28,7 @@
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -104,7 +104,7 @@
     <PackageVersion Include="NUlid" Version="1.7.2" />
     <PackageVersion Include="AutoBogus" Version="2.13.1" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="System.Text.Json" Version="10.0.0" />
     <PackageVersion Include="Serilog" Version="4.2.0" />
     <PackageVersion Include="Stripe.net" Version="48.1.0" />

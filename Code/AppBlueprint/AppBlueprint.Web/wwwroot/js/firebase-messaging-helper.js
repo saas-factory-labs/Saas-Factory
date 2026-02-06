@@ -15,7 +15,7 @@ class FirebaseMessagingHelper {
                 const errorData = await configResponse.json().catch(() => null);
                 const errorMsg = (errorData === null || errorData === void 0 ? void 0 : errorData.error) || `HTTP ${configResponse.status}`;
                 console.error('Failed to fetch Firebase config:', errorMsg);
-                window.lastFirebaseError = errorMsg;
+                globalThis.lastFirebaseError = errorMsg;
                 return false;
             }
             this.firebaseConfig = await configResponse.json();
@@ -25,19 +25,19 @@ class FirebaseMessagingHelper {
                 const errorData = await vapidResponse.json().catch(() => null);
                 const errorMsg = (errorData === null || errorData === void 0 ? void 0 : errorData.error) || `HTTP ${vapidResponse.status}`;
                 console.error('Failed to fetch VAPID key:', errorMsg);
-                window.lastFirebaseError = errorMsg;
+                globalThis.lastFirebaseError = errorMsg;
                 return false;
             }
             const vapidData = await vapidResponse.json();
             this.vapidKey = vapidData.vapidKey;
             console.log('Firebase config loaded from server');
-            window.lastFirebaseError = null;
+            globalThis.lastFirebaseError = null;
             return true;
         }
         catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             console.error('Failed to load Firebase config from server:', error);
-            window.lastFirebaseError = errorMessage;
+            globalThis.lastFirebaseError = errorMessage;
             return false;
         }
     }
@@ -161,27 +161,27 @@ class FirebaseMessagingHelper {
     }
 }
 // Export for use in Blazor
-window.firebaseMessaging = new FirebaseMessagingHelper();
+globalThis.firebaseMessaging = new FirebaseMessagingHelper();
 // Helper function for Blazor interop - Initialize with server config
-window.initializeFirebaseMessaging = async (config = null, vapidKey = null) => {
+globalThis.initializeFirebaseMessaging = async (config = null, vapidKey = null) => {
     // If no config provided, will fetch from server automatically
-    return await window.firebaseMessaging.initialize(config, vapidKey);
+    return await globalThis.firebaseMessaging.initialize(config, vapidKey);
 };
 // Initialize automatically on page load (fetches config from server)
-window.initializeFirebaseMessagingFromServer = async () => {
-    return await window.firebaseMessaging.initialize();
+globalThis.initializeFirebaseMessagingFromServer = async () => {
+    return await globalThis.firebaseMessaging.initialize();
 };
-window.requestNotificationPermission = async () => {
-    return await window.firebaseMessaging.requestPermission();
+globalThis.requestNotificationPermission = async () => {
+    return await globalThis.firebaseMessaging.requestPermission();
 };
-window.getFirebaseToken = async () => {
-    return await window.firebaseMessaging.getToken();
+globalThis.getFirebaseToken = async () => {
+    return await globalThis.firebaseMessaging.getToken();
 };
-window.requestFirebaseTokenAndPermission = async () => {
-    return await window.firebaseMessaging.requestTokenAndPermission();
+globalThis.requestFirebaseTokenAndPermission = async () => {
+    return await globalThis.firebaseMessaging.requestTokenAndPermission();
 };
-window.setupFirebaseForegroundHandler = async (dotnetHelper, methodName) => {
-    await window.firebaseMessaging.setupForegroundMessageHandler((payload) => {
+globalThis.setupFirebaseForegroundHandler = async (dotnetHelper, methodName) => {
+    await globalThis.firebaseMessaging.setupForegroundMessageHandler((payload) => {
         if (dotnetHelper && methodName) {
             dotnetHelper.invokeMethodAsync(methodName, payload);
         }
