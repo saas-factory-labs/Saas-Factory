@@ -20,7 +20,7 @@ internal static class SslCertificateManager
         // Use machine name and key to generate a stable password
         string seed = $"{Environment.MachineName}_{key}";
         byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(seed));
-        
+
         // Convert to base64 and take first 32 characters for a reasonable password length
         return Convert.ToBase64String(hash)[..32];
     }
@@ -549,13 +549,7 @@ internal static class SslCertificateManager
             RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = false
-        });
-
-        if (process is null)
-        {
-            throw new InvalidOperationException("Failed to start dotnet dev-certs process.");
-        }
-
+        }) ?? throw new InvalidOperationException("Failed to start dotnet dev-certs process.");
         process.WaitForExit();
 
         var output = process.StandardOutput.ReadToEnd();

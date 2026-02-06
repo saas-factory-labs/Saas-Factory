@@ -8,7 +8,7 @@ namespace AppBlueprint.Application.Options;
 public sealed class ResendEmailOptions
 {
     public const string SectionName = "Resend";
-    
+
     /// <summary>
     /// Resend API Key.
     /// Environment variables (checked in order):
@@ -17,7 +17,7 @@ public sealed class ResendEmailOptions
     /// </summary>
     [Required]
     public string ApiKey { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Default "from" email address.
     /// Environment variables (checked in order):
@@ -27,7 +27,7 @@ public sealed class ResendEmailOptions
     [Required]
     [EmailAddress]
     public string FromEmail { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Default "from" name.
     /// Environment variables (checked in order):
@@ -35,20 +35,20 @@ public sealed class ResendEmailOptions
     /// 2. RESEND_FROM_NAME (legacy with underscores)
     /// </summary>
     public string? FromName { get; set; }
-    
+
     /// <summary>
     /// Resend API base URL.
     /// </summary>
     [Url]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI properties should not be strings", Justification = "Needs to be string for JSON configuration binding")]
     public string BaseUrl { get; set; } = "https://api.resend.com";
-    
+
     /// <summary>
     /// Request timeout in seconds.
     /// </summary>
     [Range(1, 300)]
     public int TimeoutSeconds { get; set; } = 30;
-    
+
     /// <summary>
     /// Validates the Resend email configuration.
     /// </summary>
@@ -57,16 +57,16 @@ public sealed class ResendEmailOptions
     {
         if (string.IsNullOrWhiteSpace(ApiKey))
             throw new InvalidOperationException($"{SectionName}:ApiKey is required");
-            
+
         if (!ApiKey.StartsWith("re_", StringComparison.Ordinal))
             throw new InvalidOperationException($"{SectionName}:ApiKey must start with 're_'");
-            
+
         if (string.IsNullOrWhiteSpace(FromEmail))
             throw new InvalidOperationException($"{SectionName}:FromEmail is required");
-            
+
         if (!Uri.IsWellFormedUriString(BaseUrl, UriKind.Absolute))
             throw new InvalidOperationException($"{SectionName}:BaseUrl must be a valid absolute URL");
-            
+
         if (TimeoutSeconds <= 0)
             throw new InvalidOperationException($"{SectionName}:TimeoutSeconds must be positive");
     }

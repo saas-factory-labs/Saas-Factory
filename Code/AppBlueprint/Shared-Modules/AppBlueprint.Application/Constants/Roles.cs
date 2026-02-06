@@ -8,13 +8,13 @@ public static class Roles
     /// Use this role for platform-level administrative operations.
     /// </summary>
     public const string DeploymentManagerAdmin = "DeploymentManagerAdmin";
-    
+
     /// <summary>
     /// Admin of a specific tenant/customer.
     /// Has full access within their own tenant only.
     /// </summary>
     public const string TenantAdmin = "TenantAdmin";
-    
+
     /// <summary>
     /// Regular user within a tenant.
     /// Has standard user permissions.

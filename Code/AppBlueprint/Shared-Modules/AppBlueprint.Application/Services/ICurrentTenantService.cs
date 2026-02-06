@@ -13,13 +13,13 @@ public interface ICurrentTenantService
     /// Returns null if no authenticated user or tenant information is not available.
     /// </summary>
     Task<string?> GetTenantNameAsync();
-    
+
     /// <summary>
     /// Gets the current tenant's type (Personal for B2C, Organization for B2B).
     /// Returns null if no authenticated user or tenant information is not available.
     /// </summary>
     Task<TenantType?> GetTenantTypeAsync();
-    
+
     /// <summary>
     /// Gets the current tenant's ID from JWT claims.
     /// Returns null if no authenticated user exists.

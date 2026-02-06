@@ -21,7 +21,13 @@ public interface IFileValidationService
 /// </summary>
 public sealed record FileValidationResult(bool IsValid, List<string> Errors)
 {
-    public static FileValidationResult Success() => new(true, new List<string>());
-    
-    public static FileValidationResult Failure(params string[] errors) => new(false, errors.ToList());
+    public static FileValidationResult Success()
+    {
+        return new(true, []);
+    }
+
+    public static FileValidationResult Failure(params string[] errors)
+    {
+        return new(false, [.. errors]);
+    }
 }

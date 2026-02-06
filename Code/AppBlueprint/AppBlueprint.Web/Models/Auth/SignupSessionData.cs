@@ -4,7 +4,7 @@ namespace AppBlueprint.Web.Models.Auth;
 /// Session data stored in browser localStorage during signup flow.
 /// Used to persist data across OAuth redirect flow.
 /// </summary>
-public sealed class SignupSessionData
+internal sealed class SignupSessionData
 {
     /// <summary>
     /// The type of account being created ('personal' or 'business').

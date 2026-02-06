@@ -13,3 +13,15 @@ exclude:
       - "Migrations"
       - "Generated"
       - "docs"
+  # Suppress false positive for email template layouts - the _Layout.cshtml exists and works at runtime
+  - name: Razor.LayoutNotResolved
+    paths:
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/Email/Templates"
+  # Suppress false positive for Blazor RCL static asset paths - _content/{LibraryName}/ is a runtime virtual path
+  - name: Html.PathError
+    paths:
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit"
+  # Suppress #0 placeholder anchors in UiKit demo components - these are intentional template placeholders
+  - name: Html.IdNotResolved
+    paths:
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit"

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AppBlueprint.Web.Models.Auth;
 
-public class PersonalSignupModel
+internal class PersonalSignupModel
 {
     [Required(ErrorMessage = "First name is required")]
     [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]

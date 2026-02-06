@@ -1,17 +1,9 @@
 namespace AppBlueprint.UiKit.Models;
 
-public class BreadcrumbItem
+public class BreadcrumbItem(string text, string href, bool disabled = false, string icon = null)
 {
-    public string Text { get; set; }
-    public string Href { get; set; }
-    public bool Disabled { get; set; }
-    public string Icon { get; set; }
-
-    public BreadcrumbItem(string text, string href, bool disabled = false, string icon = null)
-    {
-        Text = text;
-        Href = href;
-        Disabled = disabled;
-        Icon = icon;
-    }
+    public string Text { get; set; } = text;
+    public string Href { get; set; } = href;
+    public bool Disabled { get; set; } = disabled;
+    public string Icon { get; set; } = icon;
 }

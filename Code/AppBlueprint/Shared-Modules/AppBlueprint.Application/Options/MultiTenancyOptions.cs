@@ -75,14 +75,14 @@ public sealed class MultiTenancyOptions
     /// <summary>
     /// Endpoints that don't require tenant context (regex patterns)
     /// </summary>
-    public IReadOnlyCollection<string> ExcludedPaths { get; set; } = new[]
-    {
+    public IReadOnlyCollection<string> ExcludedPaths { get; set; } =
+    [
         "/health",
         "/metrics",
         "/swagger.*",
         "/_framework/.*",
         "/_content/.*"
-    };
+    ];
 
     /// <summary>
     /// Enable tenant audit logging

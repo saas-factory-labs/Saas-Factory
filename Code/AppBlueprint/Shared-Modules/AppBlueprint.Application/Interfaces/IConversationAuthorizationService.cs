@@ -14,7 +14,7 @@ public interface IConversationAuthorizationService
     /// <param name="tenantId">The user's tenant ID</param>
     /// <returns>True if authorized, false otherwise</returns>
     Task<bool> CanJoinConversationAsync(string conversationId, string userId, string tenantId);
-    
+
     /// <summary>
     /// Checks if a user has permission to send messages in a conversation.
     /// </summary>
@@ -23,7 +23,7 @@ public interface IConversationAuthorizationService
     /// <param name="tenantId">The user's tenant ID</param>
     /// <returns>True if authorized, false otherwise</returns>
     Task<bool> CanSendMessageAsync(string conversationId, string userId, string tenantId);
-    
+
     /// <summary>
     /// Gets all conversation IDs that a user has access to.
     /// </summary>

@@ -8,7 +8,7 @@ namespace AppBlueprint.UiKit.Services;
 /// </summary>
 public class BreadcrumbService
 {
-    private List<BreadcrumbItem> _breadcrumbs = new();
+    private List<BreadcrumbItem> _breadcrumbs = [];
 
     /// <summary>
     /// Gets the current breadcrumb items.

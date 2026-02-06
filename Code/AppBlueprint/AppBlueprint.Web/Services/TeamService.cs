@@ -8,7 +8,7 @@ namespace AppBlueprint.Web.Services;
 /// <summary>
 /// Service for managing teams via API calls
 /// </summary>
-public class TeamService
+internal class TeamService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<TeamService> _logger;
@@ -47,7 +47,7 @@ public class TeamService
             }
 
             var teams = await response.Content.ReadFromJsonAsync<IEnumerable<TeamResponse>>(_jsonOptions, cancellationToken);
-            return teams ?? Enumerable.Empty<TeamResponse>();
+            return teams ?? [];
         }
         catch (Exception ex)
         {

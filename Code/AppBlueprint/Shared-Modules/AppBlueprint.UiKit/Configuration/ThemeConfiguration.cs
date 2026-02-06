@@ -41,7 +41,7 @@ public sealed class ThemeConfiguration
     /// Custom text/label overrides for UI elements.
     /// Key format: "category.element" (e.g., "analytics.topProducts")
     /// </summary>
-    public Dictionary<string, string> CustomLabels { get; set; } = new();
+    public Dictionary<string, string> CustomLabels { get; set; } = [];
 
     /// <summary>
     /// Brand name displayed throughout the application.
@@ -63,5 +63,5 @@ public sealed class ThemeConfiguration
     /// Key format: "ComponentName.ElementId" (e.g., "AnalyticsCard11.Icon.Accent")
     /// Value: Complete Tailwind classes to replace theme classes.
     /// </summary>
-    public Dictionary<string, string> CustomClassOverrides { get; set; } = new();
+    public Dictionary<string, string> CustomClassOverrides { get; set; } = [];
 }

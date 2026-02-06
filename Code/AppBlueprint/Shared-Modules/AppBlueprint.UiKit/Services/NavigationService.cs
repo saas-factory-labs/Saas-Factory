@@ -5,14 +5,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace AppBlueprint.UiKit.Services;
 
-public class NavigationService
+public class NavigationService(IConfiguration configuration)
 {
-    public NavigationService(IConfiguration configuration)
-    {
-        // Configuration not currently used but kept for future extensibility
-    }
-
-    public List<NavLinkMetadata> GetNavLinks()
+    public static List<NavLinkMetadata> GetNavLinks()
     {
         var links = new List<NavLinkMetadata>();
 
@@ -24,7 +19,7 @@ public class NavigationService
 
         foreach (Type pageType in pageTypes)
         {
-            if (pageType is null) 
+            if (pageType is null)
                 continue;
 
             IEnumerable<RouteAttribute> routeAttributes = pageType

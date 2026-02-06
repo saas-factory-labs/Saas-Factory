@@ -14,7 +14,7 @@ public interface IConfigurationService
     /// <returns>The configuration options.</returns>
     /// <exception cref="InvalidOperationException">Thrown when configuration is not registered or invalid.</exception>
     T GetRequired<T>() where T : class, new();
-    
+
     /// <summary>
     /// Gets configuration options of type T.
     /// Returns null if configuration section doesn't exist.
@@ -22,14 +22,14 @@ public interface IConfigurationService
     /// <typeparam name="T">The options type.</typeparam>
     /// <returns>The configuration options or null.</returns>
     T? GetOptional<T>() where T : class, new();
-    
+
     /// <summary>
     /// Gets a connection string by name.
     /// </summary>
     /// <param name="name">The connection string name.</param>
     /// <returns>The connection string or null if not found.</returns>
     string? GetConnectionString(string name);
-    
+
     /// <summary>
     /// Gets a secret value (prioritizes environment variables over configuration).
     /// </summary>

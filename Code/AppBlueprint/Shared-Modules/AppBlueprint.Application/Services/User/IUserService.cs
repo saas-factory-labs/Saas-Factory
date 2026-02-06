@@ -1,4 +1,4 @@
-﻿using AppBlueprint.Contracts.Baseline.User.Requests;
+using AppBlueprint.Contracts.Baseline.User.Requests;
 using AppBlueprint.Contracts.Baseline.User.Responses;
 
 namespace AppBlueprint.Application.Services.User;

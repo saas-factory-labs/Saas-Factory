@@ -8,7 +8,7 @@ namespace AppBlueprint.Web.Services;
 /// <summary>
 /// Service for managing roles via API calls
 /// </summary>
-public class RoleService
+internal class RoleService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<RoleService> _logger;
@@ -47,7 +47,7 @@ public class RoleService
             }
 
             var roles = await response.Content.ReadFromJsonAsync<IEnumerable<RoleResponse>>(_jsonOptions, cancellationToken);
-            return roles ?? Enumerable.Empty<RoleResponse>();
+            return roles ?? [];
         }
         catch (Exception ex)
         {

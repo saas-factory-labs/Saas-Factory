@@ -1,13 +1,8 @@
 using Microsoft.Extensions.Logging;
 
-internal sealed class LoggingHandler : DelegatingHandler
+internal sealed class LoggingHandler(HttpMessageHandler innerHandler, ILogger<LoggingHandler> logger) : DelegatingHandler(innerHandler)
 {
-    private readonly ILogger<LoggingHandler> _logger;
-
-    public LoggingHandler(HttpMessageHandler innerHandler, ILogger<LoggingHandler> logger) : base(innerHandler)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<LoggingHandler> _logger = logger;
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)

@@ -1,7 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.Security;
 
 public static class SecurityService
-{   
+{
     public static Task<bool> ValidatePermissionAsync(string userId, string resource, string action)
     {
         // Implementation pending

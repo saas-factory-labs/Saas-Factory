@@ -11,14 +11,9 @@ namespace AppBlueprint.ApiService.Controllers;
 [Authorize(Roles = Roles.DeploymentManagerAdmin)]
 [ApiController]
 [Route("api/[controller]")]
-internal sealed class AuthDebugController : ControllerBase
+internal sealed class AuthDebugController(ILogger<AuthDebugController> logger) : ControllerBase
 {
-    private readonly ILogger<AuthDebugController> _logger;
-
-    public AuthDebugController(ILogger<AuthDebugController> logger)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly ILogger<AuthDebugController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <summary>
     /// Test endpoint that doesn't require authentication
@@ -42,7 +37,7 @@ internal sealed class AuthDebugController : ControllerBase
         string userName = User.Identity?.Name ?? "Unknown";
         string issuer = User.FindFirst("iss")?.Value ?? "Unknown";
         bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
-        
+
         _logger.LogInformation(
             "Secure ping endpoint called. User: {User}, UserId: {UserId}, Issuer: {Issuer}, IsAuthenticated: {IsAuthenticated}",
             userName, userId, issuer, isAuthenticated);
@@ -55,8 +50,8 @@ internal sealed class AuthDebugController : ControllerBase
             {
                 id = userId,
                 name = userName,
-                issuer = issuer,
-                isAuthenticated = isAuthenticated,
+                issuer,
+                isAuthenticated,
                 claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList()
             }
         });
@@ -70,15 +65,15 @@ internal sealed class AuthDebugController : ControllerBase
     {
         var authHeader = Request.Headers.Authorization.ToString();
         var tenantIdHeader = Request.Headers["tenant-id"].ToString();
-        
+
         var hasAuth = !string.IsNullOrEmpty(authHeader);
         var hasTenantId = !string.IsNullOrEmpty(tenantIdHeader);
-        
+
         // Log to console for debugging, don't return sensitive data
         Console.WriteLine($"Headers endpoint called. HasAuth: {hasAuth}, HasTenantId: {hasTenantId}");
         Console.WriteLine($"Authorization header: {authHeader}");
         Console.WriteLine($"Tenant ID: {tenantIdHeader}");
-        
+
         foreach (var header in Request.Headers)
         {
             Console.WriteLine($"{header.Key}: {header.Value}");

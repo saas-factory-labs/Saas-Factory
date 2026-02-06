@@ -1,7 +1,7 @@
+using System.Security.Claims;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace AppBlueprint.ApiService.Controllers;
 
@@ -11,14 +11,9 @@ namespace AppBlueprint.ApiService.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
-internal sealed class AuthTestController : ControllerBase
+internal sealed class AuthTestController(ILogger<AuthTestController> logger) : ControllerBase
 {
-    private readonly ILogger<AuthTestController> _logger;
-
-    public AuthTestController(ILogger<AuthTestController> logger)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly ILogger<AuthTestController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <summary>
     /// Public endpoint - no authentication required
@@ -54,12 +49,12 @@ internal sealed class AuthTestController : ControllerBase
             Timestamp = DateTime.UtcNow,
             User = new
             {
-                IsAuthenticated = User.Identity?.IsAuthenticated,
-                Name = User.Identity?.Name,
+                User.Identity?.IsAuthenticated,
+                User.Identity?.Name,
                 UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                 Email = User.FindFirst(ClaimTypes.Email)?.Value,
                 Roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList(),
-                AuthenticationType = User.Identity?.AuthenticationType
+                User.Identity?.AuthenticationType
             },
             AllClaims = claims
         });
@@ -125,7 +120,7 @@ internal sealed class AuthTestController : ControllerBase
             {
                 Message = "No Authorization header found in this request",
                 Note = "Your Blazor Server app uses cookie-based authentication. The JWT token may not be passed in HTTP headers.",
-                IsAuthenticated = User.Identity?.IsAuthenticated,
+                User.Identity?.IsAuthenticated,
                 User = User.Identity?.Name,
                 Claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList(),
                 Suggestion = "Try calling your API directly from a REST client (Postman, curl) with a JWT token, or check the Logto callback handler."
@@ -142,7 +137,7 @@ internal sealed class AuthTestController : ControllerBase
             Message = "JWT Token extracted successfully",
             Token = token,
             User = User.Identity?.Name,
-            IsAuthenticated = User.Identity?.IsAuthenticated,
+            User.Identity?.IsAuthenticated,
             Warning = "FOR DEVELOPMENT ONLY - Never expose tokens in production"
         });
     }
@@ -169,15 +164,15 @@ internal sealed class AuthTestController : ControllerBase
             Timestamp = DateTime.UtcNow,
             Request = new
             {
-                Method = Request.Method,
+                Request.Method,
                 Path = Request.Path.Value,
                 HasAuthHeader = !string.IsNullOrEmpty(authHeader),
                 TokenPreview = tokenPreview
             },
             User = new
             {
-                IsAuthenticated = User.Identity?.IsAuthenticated,
-                Name = User.Identity?.Name,
+                User.Identity?.IsAuthenticated,
+                User.Identity?.Name,
                 Claims = User.Claims.Select(c => new { c.Type, c.Value })
             }
         });

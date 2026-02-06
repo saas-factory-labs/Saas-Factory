@@ -9,15 +9,10 @@ namespace AppBlueprint.UiKit;
 // This class can be registered as scoped DI service and then injected into Blazor
 // components for use.
 
-public class ExampleJsInterop : IAsyncDisposable
+public class ExampleJsInterop(IJSRuntime jsRuntime) : IAsyncDisposable
 {
-    private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
-
-    public ExampleJsInterop(IJSRuntime jsRuntime)
-    {
-        _moduleTask = new Lazy<Task<IJSObjectReference>>(() => jsRuntime.InvokeAsync<IJSObjectReference>(
+    private readonly Lazy<Task<IJSObjectReference>> _moduleTask = new Lazy<Task<IJSObjectReference>>(() => jsRuntime.InvokeAsync<IJSObjectReference>(
             "import", "./_content/AppBlueprint.UiKit/exampleJsInterop.js").AsTask());
-    }
 
     public async ValueTask DisposeAsync()
     {

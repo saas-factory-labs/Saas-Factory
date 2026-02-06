@@ -6,37 +6,37 @@ namespace AppBlueprint.Application.Options;
 public sealed class FeatureFlagsOptions
 {
     public const string SectionName = "Features";
-    
+
     /// <summary>
     /// Whether email notifications are enabled.
     /// </summary>
     public bool EnableEmailNotifications { get; set; } = true;
-    
+
     /// <summary>
     /// Whether webhooks are enabled.
     /// </summary>
     public bool EnableWebhooks { get; set; } = true;
-    
+
     /// <summary>
     /// Whether analytics tracking is enabled.
     /// </summary>
     public bool EnableAnalytics { get; set; } = false;
-    
+
     /// <summary>
     /// Whether file uploads are enabled.
     /// </summary>
     public bool EnableFileUploads { get; set; } = true;
-    
+
     /// <summary>
     /// Whether API rate limiting is enabled.
     /// </summary>
     public bool EnableRateLimiting { get; set; } = true;
-    
+
     /// <summary>
     /// Custom feature flags dictionary.
     /// </summary>
-    public Dictionary<string, bool> CustomFeatures { get; set; } = new();
-    
+    public Dictionary<string, bool> CustomFeatures { get; set; } = [];
+
     /// <summary>
     /// Checks if a feature is enabled.
     /// </summary>

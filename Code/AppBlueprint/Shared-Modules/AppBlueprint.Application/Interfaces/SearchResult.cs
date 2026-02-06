@@ -9,7 +9,7 @@ public sealed class SearchResult<TEntity> where TEntity : class
     /// <summary>
     /// The matched entities.
     /// </summary>
-    public IReadOnlyList<SearchResultItem<TEntity>> Items { get; init; } = Array.Empty<SearchResultItem<TEntity>>();
+    public IReadOnlyList<SearchResultItem<TEntity>> Items { get; init; } = [];
 
     /// <summary>
     /// Total number of matching results (across all pages).
@@ -78,5 +78,5 @@ public sealed class SearchResultItem<TEntity> where TEntity : class
     /// <summary>
     /// Matched search terms (for highlighting in UI).
     /// </summary>
-    public IReadOnlyList<string> MatchedTerms { get; init; } = Array.Empty<string>();
+    public IReadOnlyList<string> MatchedTerms { get; init; } = [];
 }

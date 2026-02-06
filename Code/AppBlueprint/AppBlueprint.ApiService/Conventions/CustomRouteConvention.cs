@@ -12,7 +12,7 @@ internal class CustomRouteConvention : IControllerModelConvention
         foreach (ActionModel action in controller.Actions)
             foreach (SelectorModel selector in action.Selectors)
             {
-                if (selector.AttributeRouteModel is null) selector.AttributeRouteModel = new AttributeRouteModel();
+                selector.AttributeRouteModel ??= new AttributeRouteModel();
 
                 // Get the controller and action names
                 string controllerName = controller.ControllerName.ToLower(culture);

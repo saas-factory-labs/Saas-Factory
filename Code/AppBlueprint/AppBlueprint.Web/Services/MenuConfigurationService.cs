@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace AppBlueprint.Web.Services;
 
-public sealed class MenuConfigurationService(
+internal sealed class MenuConfigurationService(
     AuthenticationStateProvider authenticationStateProvider,
     ICurrentTenantService currentTenantService) : IMenuConfigurationService
 {
     // Menu items visible only to unauthenticated users (demo mode)
-    private static readonly HashSet<string> DemoOnlyMenuItems = new()
-    {
+    private static readonly HashSet<string> DemoOnlyMenuItems =
+    [
         "shop",
         "customers",
         "cart2",
@@ -19,20 +19,20 @@ public sealed class MenuConfigurationService(
         "tasks",
         "job-board",
         "finance"
-    };
+    ];
 
     // Menu items visible only to B2B (Organization) tenants
-    private static readonly HashSet<string> B2BOnlyMenuItems = new()
-    {
+    private static readonly HashSet<string> B2BOnlyMenuItems =
+    [
         "community-users",
         "account",
         "notifications",
         "billing"
-    };
+    ];
 
     // Menu items visible to all authenticated users (B2C and B2B)
-    private static readonly HashSet<string> AuthenticatedMenuItems = new()
-    {
+    private static readonly HashSet<string> AuthenticatedMenuItems =
+    [
         "dashboard",
         "orders",
         "invoices",
@@ -40,7 +40,7 @@ public sealed class MenuConfigurationService(
         "single-product",
         "cart",
         "pay"
-    };
+    ];
 
     public async Task<bool> ShouldShowMenuItemAsync(string menuItemId)
     {

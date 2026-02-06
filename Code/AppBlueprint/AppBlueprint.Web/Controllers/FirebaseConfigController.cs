@@ -9,14 +9,9 @@ namespace AppBlueprint.Web.Controllers;
 [ApiController]
 [Route("api/firebase-config")]
 [Microsoft.AspNetCore.Authorization.AllowAnonymous]
-public sealed class FirebaseConfigController : ControllerBase
+internal sealed class FirebaseConfigController(IConfiguration configuration) : ControllerBase
 {
-    private readonly IConfiguration _configuration;
-
-    public FirebaseConfigController(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
+    private readonly IConfiguration _configuration = configuration;
 
     /// <summary>
     /// Get Firebase client configuration for browser initialization.
@@ -60,7 +55,7 @@ public sealed class FirebaseConfigController : ControllerBase
     public IActionResult GetVapidKey()
     {
         string? vapidKey = _configuration["FIREBASE_VAPID_KEY"];
-        
+
         if (string.IsNullOrEmpty(vapidKey))
         {
             return BadRequest(new
@@ -68,7 +63,7 @@ public sealed class FirebaseConfigController : ControllerBase
                 error = "FIREBASE_VAPID_KEY environment variable is not set"
             });
         }
-        
+
         return Ok(new
         {
             vapidKey

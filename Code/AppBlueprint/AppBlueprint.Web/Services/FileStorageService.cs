@@ -8,7 +8,7 @@ namespace AppBlueprint.Web.Services;
 /// <summary>
 /// Service for interacting with the File Storage API endpoints.
 /// </summary>
-public sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorageService> logger)
+internal sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorageService> logger)
 {
     private readonly HttpClient _httpClient = httpClient;
     private readonly ILogger<FileStorageService> _logger = logger;
@@ -34,7 +34,7 @@ public sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorag
         memoryStream.Position = 0;
 
         using var content = new MultipartFormDataContent();
-        
+
         // Use ByteArrayContent instead of StreamContent so Polly can retry
         byte[] fileBytes = memoryStream.ToArray();
         using var byteArrayContent = new ByteArrayContent(fileBytes);
@@ -54,9 +54,9 @@ public sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorag
             content.Add(new StringContent(metadataJson), "customMetadata");
         }
 
-        Uri requestUri = new Uri("api/v1/filestorage/upload", UriKind.Relative);
+        var requestUri = new Uri("api/v1/filestorage/upload", UriKind.Relative);
         Uri? fullUrl = _httpClient.BaseAddress is not null ? new Uri(_httpClient.BaseAddress, requestUri) : null;
-        
+
         HttpResponseMessage response = await _httpClient.PostAsync(requestUri, content);
 
         if (!response.IsSuccessStatusCode)
@@ -70,7 +70,7 @@ public sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorag
                 response.StatusCode,
                 response.ReasonPhrase,
                 errorContent);
-            
+
             // Log additional diagnostic info
             _logger.LogError(
                 "Upload diagnostics - FileName: {FileName}, ContentType: {ContentType}, FileSize: {FileSize} bytes, Folder: {Folder}, IsPublic: {IsPublic}",
@@ -79,7 +79,7 @@ public sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorag
                 fileBytes.Length,
                 folder ?? "(none)",
                 isPublic);
-            
+
             // Throw exception with details so UI can show the error
             throw new HttpRequestException(
                 $"Upload failed: {response.StatusCode} {response.ReasonPhrase}. {errorContent}",
@@ -103,9 +103,9 @@ public sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorag
             url += $"?folder={Uri.EscapeDataString(folder)}";
         }
 
-        Uri requestUri = new Uri(url, UriKind.Relative);
+        var requestUri = new Uri(url, UriKind.Relative);
         Uri? fullUrl = _httpClient.BaseAddress is not null ? new Uri(_httpClient.BaseAddress, requestUri) : null;
-        
+
         HttpResponseMessage response = await _httpClient.GetAsync(requestUri);
 
         if (!response.IsSuccessStatusCode)
@@ -132,7 +132,7 @@ public sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorag
         ArgumentNullException.ThrowIfNull(fileKey);
 
         string url = $"api/v1/filestorage/presigned-url?fileKey={Uri.EscapeDataString(fileKey)}&expiresInMinutes={expiresInMinutes}";
-        Uri requestUri = new Uri(url, UriKind.Relative);
+        var requestUri = new Uri(url, UriKind.Relative);
         Uri? fullUrl = _httpClient.BaseAddress is not null ? new Uri(_httpClient.BaseAddress, requestUri) : null;
 
         HttpResponseMessage response = await _httpClient.GetAsync(requestUri);
@@ -158,9 +158,9 @@ public sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorag
     {
         ArgumentNullException.ThrowIfNull(fileKey);
 
-        Uri requestUri = new Uri($"api/v1/filestorage/download/{Uri.EscapeDataString(fileKey)}", UriKind.Relative);
+        var requestUri = new Uri($"api/v1/filestorage/download/{Uri.EscapeDataString(fileKey)}", UriKind.Relative);
         Uri? fullUrl = _httpClient.BaseAddress is not null ? new Uri(_httpClient.BaseAddress, requestUri) : null;
-        
+
         HttpResponseMessage response = await _httpClient.GetAsync(requestUri);
 
         if (!response.IsSuccessStatusCode)
@@ -184,9 +184,9 @@ public sealed class FileStorageService(HttpClient httpClient, ILogger<FileStorag
     {
         ArgumentNullException.ThrowIfNull(fileKey);
 
-        Uri requestUri = new Uri($"api/v1/filestorage/{Uri.EscapeDataString(fileKey)}", UriKind.Relative);
+        var requestUri = new Uri($"api/v1/filestorage/{Uri.EscapeDataString(fileKey)}", UriKind.Relative);
         Uri? fullUrl = _httpClient.BaseAddress is not null ? new Uri(_httpClient.BaseAddress, requestUri) : null;
-        
+
         HttpResponseMessage response = await _httpClient.DeleteAsync(requestUri);
 
         if (!response.IsSuccessStatusCode)

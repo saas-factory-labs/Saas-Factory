@@ -8,7 +8,7 @@ namespace AppBlueprint.Web.Services;
 /// <summary>
 /// Delegating handler that adds JWT authentication token and tenant-id to HTTP requests
 /// </summary>
-public class AuthenticationDelegatingHandler : DelegatingHandler
+internal class AuthenticationDelegatingHandler : DelegatingHandler
 {
     private readonly ITokenStorageService _tokenStorageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -37,7 +37,7 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
         try
         {
             string? token = null;
-            
+
             // For OpenID Connect / Blazor Server, try to get token from HttpContext
             var httpContext = _httpContextAccessor.HttpContext;
             if (httpContext?.User?.Identity?.IsAuthenticated == true)
@@ -47,7 +47,7 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
                 // Try to get the access token from authentication properties
                 // Explicitly specify "Logto" scheme to get tokens saved by Logto authentication
                 var accessToken = await httpContext.GetTokenAsync("Logto", "access_token");
-                
+
                 if (!string.IsNullOrEmpty(accessToken))
                 {
                     // Validate that it's a proper JWT (has 3 parts separated by dots)
@@ -61,9 +61,9 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
                         // CRITICAL: Opaque tokens indicate missing API Resource configuration
                         _logger.LogError("[AuthHandler] ❌ CRITICAL: Received OPAQUE access_token (length: {Length}). This means LOGTO_RESOURCE is not configured!", accessToken.Length);
                         _logger.LogError("[AuthHandler] ❌ Opaque tokens cannot be validated by the API. Add LOGTO_RESOURCE environment variable.");
-                        _logger.LogError("[AuthHandler] ❌ Expected: JWT with 3 parts (header.payload.signature), Got: {TokenPreview}...", 
-                            accessToken.Length > 20 ? accessToken.Substring(0, 20) : accessToken);
-                        
+                        _logger.LogError("[AuthHandler] ❌ Expected: JWT with 3 parts (header.payload.signature), Got: {TokenPreview}...",
+                            accessToken.Length > 20 ? accessToken[..20] : accessToken);
+
                         // DO NOT fall back to id_token - this is a configuration error that must be fixed
                         throw new InvalidOperationException(
                             "Authentication failed: Received opaque access token instead of JWT. " +
@@ -83,7 +83,7 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
             {
                 _logger.LogWarning("[AuthHandler] User is NOT authenticated or HttpContext is null");
             }
-            
+
             // Fallback: Try to get token from localStorage (for backward compatibility) - DISABLED for now
             // We're disabling this because localStorage has invalid legacy tokens
             if (string.IsNullOrEmpty(token))
@@ -97,16 +97,16 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
                 // Add the Bearer token to the Authorization header
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 string tokenPreview = token.Length > 50 ? string.Concat(token.AsSpan(0, 50), "...") : token;
-                _logger.LogInformation("[AuthHandler] ✅ Added Bearer token to request: {Method} {Uri}, Token preview: {Preview}", 
+                _logger.LogInformation("[AuthHandler] ✅ Added Bearer token to request: {Method} {Uri}, Token preview: {Preview}",
                     request.Method, request.RequestUri, tokenPreview);
             }
             else
             {
-                _logger.LogError("[AuthHandler] ❌ NO VALID JWT TOKEN FOUND for request: {Method} {Uri}. User authenticated: {IsAuth}", 
+                _logger.LogError("[AuthHandler] ❌ NO VALID JWT TOKEN FOUND for request: {Method} {Uri}. User authenticated: {IsAuth}",
                     request.Method, request.RequestUri, httpContext?.User?.Identity?.IsAuthenticated ?? false);
                 _logger.LogError("[AuthHandler] API calls will fail with 401 Unauthorized");
             }
-            
+
             // Note: Tenant ID is now extracted from JWT claims by TenantMiddleware on the API side
             // We no longer need to send the tenant-id header - it's derived from the Bearer token
             // This eliminates a potential security vulnerability where the header could be forged

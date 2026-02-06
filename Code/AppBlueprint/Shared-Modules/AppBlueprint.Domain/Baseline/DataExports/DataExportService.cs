@@ -1,7 +1,7 @@
 namespace AppBlueprint.Domain.Baseline.DataExports;
 
 public static class DataExportService
-{   
+{
     public static Task<byte[]> ExportToCsvAsync<T>(IEnumerable<T> data, string[] columnNames)
     {
         // Implementation pending

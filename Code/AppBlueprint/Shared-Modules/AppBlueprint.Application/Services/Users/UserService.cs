@@ -1,37 +1,28 @@
+using System.Security.Cryptography;
 using AppBlueprint.Domain.Entities.User;
 using AppBlueprint.Domain.Interfaces.Repositories;
 using AppBlueprint.Domain.Interfaces.Services;
 using AppBlueprint.Domain.Interfaces.UnitOfWork;
-using System.Security.Cryptography;
 
 namespace AppBlueprint.Application.Services.Users;
 
-public class UserService : IUserService
+public class UserService(
+    IUnitOfWork unitOfWork,
+    IUserRepository userRepository,
+    IEmailVerificationRepository emailVerificationRepository,
+    IPasswordResetRepository passwordResetRepository,
+    IEmailService emailService) : IUserService
 {
     private const string EmailFromAddress = "noreply@saas-factory.com";
     private const string SiteName = "SaaS Factory";
     private static readonly TimeSpan EmailTokenValidity = TimeSpan.FromHours(24);
     private static readonly TimeSpan ResetTokenValidity = TimeSpan.FromHours(1);
 
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IUserRepository _userRepository;
-    private readonly IEmailVerificationRepository _emailVerificationRepository;
-    private readonly IPasswordResetRepository _passwordResetRepository;
-    private readonly IEmailService _emailService;
-
-    public UserService(
-        IUnitOfWork unitOfWork,
-        IUserRepository userRepository,
-        IEmailVerificationRepository emailVerificationRepository,
-        IPasswordResetRepository passwordResetRepository,
-        IEmailService emailService)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-        _emailVerificationRepository = emailVerificationRepository ?? throw new ArgumentNullException(nameof(emailVerificationRepository));
-        _passwordResetRepository = passwordResetRepository ?? throw new ArgumentNullException(nameof(passwordResetRepository));
-        _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+    private readonly IUserRepository _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+    private readonly IEmailVerificationRepository _emailVerificationRepository = emailVerificationRepository ?? throw new ArgumentNullException(nameof(emailVerificationRepository));
+    private readonly IPasswordResetRepository _passwordResetRepository = passwordResetRepository ?? throw new ArgumentNullException(nameof(passwordResetRepository));
+    private readonly IEmailService _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
 
     public async Task<UserEntity> RegisterAsync(string firstName, string lastName, string email, string userName, CancellationToken cancellationToken)
     {

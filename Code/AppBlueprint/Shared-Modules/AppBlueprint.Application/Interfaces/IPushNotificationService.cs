@@ -11,7 +11,7 @@ public interface IPushNotificationService
     /// Sends a push notification to all user devices.
     /// </summary>
     Task SendAsync(PushNotificationRequest request);
-    
+
     /// <summary>
     /// Sends a push notification to all users in a tenant.
     /// </summary>

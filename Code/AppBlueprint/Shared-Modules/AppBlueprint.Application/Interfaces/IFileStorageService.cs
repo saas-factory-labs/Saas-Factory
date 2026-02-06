@@ -13,7 +13,7 @@ public interface IFileStorageService
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Metadata about the uploaded file including storage key and URL.</returns>
     Task<StoredFile> UploadAsync(UploadFileRequest request, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Downloads a file from R2 storage with tenant validation.
     /// </summary>
@@ -21,7 +21,7 @@ public interface IFileStorageService
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>File stream and metadata.</returns>
     Task<FileDownloadResult> DownloadAsync(string fileKey, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Downloads a public file from R2 storage without authentication or tenant validation.
     /// Only works for files marked as IsPublic=true.
@@ -31,7 +31,7 @@ public interface IFileStorageService
     /// <returns>File stream and metadata.</returns>
     /// <exception cref="UnauthorizedAccessException">Thrown if file is not public.</exception>
     Task<FileDownloadResult> DownloadPublicAsync(string fileKey, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Generates a pre-signed URL for secure direct file access.
     /// Used for private files (CRM documents, rental agreements) that require time-limited access.
@@ -41,7 +41,7 @@ public interface IFileStorageService
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Time-limited pre-signed URL.</returns>
     Task<string> GetPreSignedUrlAsync(string fileKey, TimeSpan expiry, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Generates a public URL for files that don't require authentication.
     /// Used for dating app profile images with GUID-based obscurity.
@@ -50,7 +50,7 @@ public interface IFileStorageService
     /// <param name="baseUrl">Optional base URL for API endpoint. If null, uses R2 direct URL (requires custom domain).</param>
     /// <returns>Public URL to the file.</returns>
     Uri GetPublicUrl(string fileKey, Uri? baseUrl = null);
-    
+
     /// <summary>
     /// Lists files for the current tenant with optional filtering.
     /// </summary>
@@ -58,14 +58,14 @@ public interface IFileStorageService
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>List of file metadata.</returns>
     Task<IEnumerable<StoredFile>> ListFilesAsync(FileListQuery query, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Deletes a file from R2 storage with tenant validation.
     /// </summary>
     /// <param name="fileKey">Unique file key in storage.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     Task DeleteAsync(string fileKey, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Deletes multiple files in a single operation with tenant validation.
     /// </summary>

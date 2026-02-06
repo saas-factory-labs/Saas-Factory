@@ -61,7 +61,7 @@ public sealed class SignupService : ISignupService
         {
             // Get EF Core DbContext (properly manages connection lifecycle)
             DbContext context = await _contextProvider.GetDbContextAsync(cancellationToken);
-            
+
             // Use EF Core's ExecuteSqlRawAsync to call stored procedure
             // The stored procedure returns JSON, which we'll query using FromSqlRaw
             FormattableString sql = $@"
@@ -77,7 +77,7 @@ public sealed class SignupService : ISignupService
                     {request.IpAddress},
                     {request.UserAgent}
                 ) AS ""JsonResult""";
-            
+
             // Execute the stored procedure and get the JSON result
             var results = await context.Database
                 .SqlQuery<SignupStoredProcedureResult>(sql)
@@ -90,7 +90,7 @@ public sealed class SignupService : ISignupService
             }
 
             // Parse the JSON result from the stored procedure
-            JsonDocument jsonDoc = JsonDocument.Parse(results[0].JsonResult);
+            var jsonDoc = JsonDocument.Parse(results[0].JsonResult);
             JsonElement root = jsonDoc.RootElement;
 
             bool success = root.GetProperty("success").GetBoolean();

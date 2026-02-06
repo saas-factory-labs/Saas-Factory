@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AppBlueprint.Web.Models.Auth;
 
-public class BusinessSignupModel
+internal class BusinessSignupModel
 {
     [Required(ErrorMessage = "Company name is required")]
     [StringLength(200, ErrorMessage = "Company name cannot exceed 200 characters")]

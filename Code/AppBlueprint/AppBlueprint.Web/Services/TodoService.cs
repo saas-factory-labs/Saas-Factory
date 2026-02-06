@@ -1,8 +1,8 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using AppBlueprint.Infrastructure.Authorization;
 using AppBlueprint.TodoAppKernel.Controllers;
 using AppBlueprint.TodoAppKernel.Domain;
-using AppBlueprint.Infrastructure.Authorization;
 using Microsoft.JSInterop;
 
 namespace AppBlueprint.Web.Services;
@@ -10,7 +10,7 @@ namespace AppBlueprint.Web.Services;
 /// <summary>
 /// Service for managing todo items via API calls
 /// </summary>
-public class TodoService
+internal class TodoService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<TodoService> _logger;
@@ -18,7 +18,7 @@ public class TodoService
     private readonly JsonSerializerOptions _jsonOptions;
 
     public TodoService(
-        HttpClient httpClient, 
+        HttpClient httpClient,
         ILogger<TodoService> logger,
         ITokenStorageService tokenStorageService)
     {
@@ -41,22 +41,22 @@ public class TodoService
     private async Task<bool> AddAuthHeadersAsync(HttpRequestMessage request)
     {
         _logger.LogInformation("=== AddAuthHeadersAsync CALLED ===");
-        
+
         try
         {
             _logger.LogInformation("Attempting to get token from storage...");
-            
+
             // Get token from storage
             var token = await _tokenStorageService.GetTokenAsync();
-            
-            _logger.LogInformation("Token retrieval complete. Has token: {HasToken}, Token length: {Length}", 
-                !string.IsNullOrEmpty(token), 
+
+            _logger.LogInformation("Token retrieval complete. Has token: {HasToken}, Token length: {Length}",
+                !string.IsNullOrEmpty(token),
                 token?.Length ?? 0);
-            
+
             if (!string.IsNullOrEmpty(token))
             {
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                _logger.LogInformation("✅ Added authorization header to request. Token preview: {Preview}", 
+                _logger.LogInformation("✅ Added authorization header to request. Token preview: {Preview}",
                     string.Concat(token.AsSpan(0, Math.Min(20, token.Length)), "..."));
             }
             else
@@ -87,8 +87,8 @@ public class TodoService
 #pragma warning disable CA1031 // Generic catch needed to handle various JavaScript interop exceptions during Blazor prerendering
         catch (Exception ex)
         {
-            _logger.LogError(ex, "❌ UNEXPECTED ERROR adding auth headers: {Type} - {Message}", 
-                ex.GetType().Name, 
+            _logger.LogError(ex, "❌ UNEXPECTED ERROR adding auth headers: {Type} - {Message}",
+                ex.GetType().Name,
                 ex.Message);
             return false;
         }
@@ -127,18 +127,18 @@ public class TodoService
         {
             _logger.LogInformation("Testing connection to API at {BaseAddress}", _httpClient.BaseAddress);
             var response = await _httpClient.GetAsync(new Uri("/api/AuthDebug/ping", UriKind.Relative), cancellationToken);
-            
+
             _logger.LogInformation(
                 "Connection test result: Status={StatusCode}, Success={IsSuccess}",
                 response.StatusCode,
                 response.IsSuccessStatusCode);
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
                 _logger.LogWarning("Connection test failed: {Content}", content);
             }
-            
+
             return response.IsSuccessStatusCode;
         }
         catch (HttpRequestException ex)
@@ -168,10 +168,10 @@ public class TodoService
         try
         {
             _logger.LogInformation("Testing authenticated connection to API");
-            
+
             using var request = new HttpRequestMessage(HttpMethod.Get, "/api/AuthDebug/secure-ping");
             var headersAdded = await AddAuthHeadersAsync(request);
-            
+
             if (!headersAdded)
             {
                 return "❌ No authentication token available (not logged in or JavaScript not ready)";
@@ -179,12 +179,12 @@ public class TodoService
 
             var response = await _httpClient.SendAsync(request, cancellationToken);
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            
+
             _logger.LogInformation(
                 "Authenticated test response: Status={Status}, Content={Content}",
                 response.StatusCode,
                 content);
-            
+
             if (response.IsSuccessStatusCode)
             {
                 return $"✅ Status: {response.StatusCode} - Authentication successful!";
@@ -221,16 +221,16 @@ public class TodoService
         try
         {
             _logger.LogInformation("=== GetDiagnosticInfoAsync CALLED ===");
-            
+
             using var request = new HttpRequestMessage(HttpMethod.Get, "/api/AuthDebug/headers");
-            
+
             _logger.LogInformation("Calling AddAuthHeadersAsync...");
             var headersAdded = await AddAuthHeadersAsync(request);
             _logger.LogInformation("AddAuthHeadersAsync returned: {Result}", headersAdded);
-            
+
             var response = await _httpClient.SendAsync(request, cancellationToken);
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            
+
             _logger.LogInformation("Diagnostic info received: {Content}", content);
             return content;
         }
@@ -255,7 +255,7 @@ public class TodoService
         response.EnsureSuccessStatusCode();
 
         var todos = await response.Content.ReadFromJsonAsync<IEnumerable<TodoEntity>>(_jsonOptions, cancellationToken);
-        return todos ?? Enumerable.Empty<TodoEntity>();
+        return todos ?? [];
     }
 
     /// <summary>

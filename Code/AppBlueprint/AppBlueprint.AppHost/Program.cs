@@ -77,10 +77,10 @@ if (!string.IsNullOrWhiteSpace(authenticationProvider))
     webFrontend = webFrontend.WithEnvironment("AUTHENTICATION_PROVIDER", authenticationProvider);
 if (!string.IsNullOrWhiteSpace(databaseContextType))
     webFrontend = webFrontend.WithEnvironment(DatabaseContextTypeKey, databaseContextType);
-    webFrontend = webFrontend.WithEnvironment("LOGTO_APPSECRET", logtoAppSecret);
+webFrontend = webFrontend.WithEnvironment("LOGTO_APPSECRET", logtoAppSecret);
 if (!string.IsNullOrWhiteSpace(logtoApiResource))
     webFrontend = webFrontend.WithEnvironment(LogtoApiResourceKey, logtoApiResource);
 if (!string.IsNullOrWhiteSpace(databaseContextType))
-    webFrontend = webFrontend.WithEnvironment(DatabaseContextTypeKey, databaseContextType);
+    _ = webFrontend.WithEnvironment(DatabaseContextTypeKey, databaseContextType);
 
 await builder.Build().RunAsync();

@@ -8,12 +8,10 @@ namespace AppBlueprint.UiKit.Services;
 /// </summary>
 public sealed class ThemeService
 {
-    private ThemeConfiguration _configuration = new();
-
     /// <summary>
     /// Gets the current theme configuration.
     /// </summary>
-    public ThemeConfiguration CurrentTheme => _configuration;
+    public ThemeConfiguration CurrentTheme { get; private set; } = new();
 
     /// <summary>
     /// Event raised when theme changes. Subscribed components should re-render.
@@ -27,7 +25,7 @@ public sealed class ThemeService
     public void SetTheme(ThemeConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(configuration);
-        _configuration = configuration;
+        CurrentTheme = configuration;
         OnThemeChanged?.Invoke();
     }
 
@@ -40,8 +38,8 @@ public sealed class ThemeService
     public string GetPrimaryClass(string prefix, string? shade = null)
     {
         ArgumentNullException.ThrowIfNull(prefix);
-        string resolvedShade = shade ?? _configuration.DefaultPrimaryShade;
-        return $"{prefix}-{_configuration.PrimaryColor}-{resolvedShade}";
+        string resolvedShade = shade ?? CurrentTheme.DefaultPrimaryShade;
+        return $"{prefix}-{CurrentTheme.PrimaryColor}-{resolvedShade}";
     }
 
     /// <summary>
@@ -53,8 +51,8 @@ public sealed class ThemeService
     public string GetAccentClass(string prefix, string? shade = null)
     {
         ArgumentNullException.ThrowIfNull(prefix);
-        string resolvedShade = shade ?? _configuration.DefaultAccentShade;
-        return $"{prefix}-{_configuration.AccentColor}-{resolvedShade}";
+        string resolvedShade = shade ?? CurrentTheme.DefaultAccentShade;
+        return $"{prefix}-{CurrentTheme.AccentColor}-{resolvedShade}";
     }
 
     /// <summary>
@@ -76,7 +74,7 @@ public sealed class ThemeService
     {
         ArgumentNullException.ThrowIfNull(prefix);
         ArgumentNullException.ThrowIfNull(shade);
-        return $"hover:{prefix}-{_configuration.PrimaryColor}-{shade}";
+        return $"hover:{prefix}-{CurrentTheme.PrimaryColor}-{shade}";
     }
 
     /// <summary>
@@ -88,7 +86,7 @@ public sealed class ThemeService
     {
         ArgumentNullException.ThrowIfNull(prefix);
         ArgumentNullException.ThrowIfNull(shade);
-        return $"focus:{prefix}-{_configuration.PrimaryColor}-{shade}";
+        return $"focus:{prefix}-{CurrentTheme.PrimaryColor}-{shade}";
     }
 
     /// <summary>
@@ -100,7 +98,7 @@ public sealed class ThemeService
     {
         ArgumentNullException.ThrowIfNull(prefix);
         ArgumentNullException.ThrowIfNull(shade);
-        return $"dark:{prefix}-{_configuration.PrimaryColor}-{shade}";
+        return $"dark:{prefix}-{CurrentTheme.PrimaryColor}-{shade}";
     }
 
     /// <summary>
@@ -113,7 +111,7 @@ public sealed class ThemeService
     {
         ArgumentNullException.ThrowIfNull(key);
         ArgumentNullException.ThrowIfNull(defaultValue);
-        return _configuration.CustomLabels.GetValueOrDefault(key, defaultValue);
+        return CurrentTheme.CustomLabels.GetValueOrDefault(key, defaultValue);
     }
 
     /// <summary>
@@ -130,7 +128,7 @@ public sealed class ThemeService
         string crmLabel,
         string ecommerceLabel)
     {
-        return _configuration.ApplicationType switch
+        return CurrentTheme.ApplicationType switch
         {
             "dating" => datingLabel,
             "crm" => crmLabel,
@@ -150,9 +148,9 @@ public sealed class ThemeService
     {
         ArgumentNullException.ThrowIfNull(overrideKey);
         ArgumentNullException.ThrowIfNull(defaultClasses);
-        
-        return _configuration.CustomClassOverrides.TryGetValue(overrideKey, out string? overrideClasses) 
-            ? overrideClasses 
+
+        return CurrentTheme.CustomClassOverrides.TryGetValue(overrideKey, out string? overrideClasses)
+            ? overrideClasses
             : defaultClasses;
     }
 
@@ -233,9 +231,9 @@ public sealed class ThemeService
         ArgumentNullException.ThrowIfNull(toShade);
         ArgumentNullException.ThrowIfNull(fromOpacity);
         ArgumentNullException.ThrowIfNull(toOpacity);
-        
-        return $"bg-gradient-{direction} from-{_configuration.PrimaryColor}-{fromShade}/[{fromOpacity}] " +
-               $"to-{_configuration.PrimaryColor}-{toShade}/[{toOpacity}]";
+
+        return $"bg-gradient-{direction} from-{CurrentTheme.PrimaryColor}-{fromShade}/[{fromOpacity}] " +
+               $"to-{CurrentTheme.PrimaryColor}-{toShade}/[{toOpacity}]";
     }
 
     /// <summary>
@@ -263,10 +261,10 @@ public sealed class ThemeService
         ArgumentNullException.ThrowIfNull(lightOpacity);
         ArgumentNullException.ThrowIfNull(darkOpacity);
         ArgumentNullException.ThrowIfNull(toOpacity);
-        
-        return $"bg-gradient-{direction} from-{_configuration.PrimaryColor}-{fromShade}/[{lightOpacity}] " +
-               $"dark:from-{_configuration.PrimaryColor}-{fromShade}/[{darkOpacity}] " +
-               $"to-{_configuration.PrimaryColor}-{toShade}/[{toOpacity}]";
+
+        return $"bg-gradient-{direction} from-{CurrentTheme.PrimaryColor}-{fromShade}/[{lightOpacity}] " +
+               $"dark:from-{CurrentTheme.PrimaryColor}-{fromShade}/[{darkOpacity}] " +
+               $"to-{CurrentTheme.PrimaryColor}-{toShade}/[{toOpacity}]";
     }
 
     /// <summary>
@@ -285,9 +283,9 @@ public sealed class ThemeService
         ArgumentNullException.ThrowIfNull(direction);
         ArgumentNullException.ThrowIfNull(fromShade);
         ArgumentNullException.ThrowIfNull(toShade);
-        
-        return $"bg-gradient-{direction} from-{_configuration.PrimaryColor}-{fromShade} " +
-               $"to-{_configuration.PrimaryColor}-{toShade}";
+
+        return $"bg-gradient-{direction} from-{CurrentTheme.PrimaryColor}-{fromShade} " +
+               $"to-{CurrentTheme.PrimaryColor}-{toShade}";
     }
 
     /// <summary>
@@ -311,9 +309,9 @@ public sealed class ThemeService
         ArgumentNullException.ThrowIfNull(toShade);
         ArgumentNullException.ThrowIfNull(fromOpacity);
         ArgumentNullException.ThrowIfNull(toOpacity);
-        
-        return $"bg-gradient-{direction} from-{_configuration.AccentColor}-{fromShade}/[{fromOpacity}] " +
-               $"to-{_configuration.AccentColor}-{toShade}/[{toOpacity}]";
+
+        return $"bg-gradient-{direction} from-{CurrentTheme.AccentColor}-{fromShade}/[{fromOpacity}] " +
+               $"to-{CurrentTheme.AccentColor}-{toShade}/[{toOpacity}]";
     }
 
     /// <summary>
@@ -327,10 +325,10 @@ public sealed class ThemeService
     {
         ArgumentNullException.ThrowIfNull(colorType);
         ArgumentNullException.ThrowIfNull(shade);
-        
+
         string color = string.Equals(colorType, "accent", StringComparison.OrdinalIgnoreCase)
-            ? _configuration.AccentColor
-            : _configuration.PrimaryColor;
+            ? CurrentTheme.AccentColor
+            : CurrentTheme.PrimaryColor;
 
         // Tailwind color-to-RGB mappings (approximate values for common shades)
         // These are standard Tailwind v3 RGB values

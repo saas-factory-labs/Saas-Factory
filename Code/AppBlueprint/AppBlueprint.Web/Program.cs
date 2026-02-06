@@ -1,3 +1,5 @@
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using AppBlueprint.Api.Client.Sdk;
 using AppBlueprint.Application.Extensions;
 using AppBlueprint.Infrastructure.Authentication;
@@ -7,13 +9,11 @@ using AppBlueprint.UiKit.Models;
 using AppBlueprint.Web;
 using AppBlueprint.Web.Components;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 using _Imports = AppBlueprint.UiKit._Imports;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.HttpOverrides;
-using System.Net;
 
 // Environment variable names
 const string DotnetDashboardOtlpEndpointUrl = "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL";
@@ -77,7 +77,7 @@ else
     // OpenTelemetry will still collect metrics/traces but won't export them
     // Set to empty/null to disable OTLP exporter
     Console.WriteLine("[Web] Production mode - OTLP telemetry export disabled (no Aspire Dashboard)");
-    
+
     // Only set if explicitly provided via environment variable (e.g., for external observability)
     string? explicitOtlpEndpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
     if (!string.IsNullOrEmpty(explicitOtlpEndpoint))
@@ -115,7 +115,7 @@ builder.Services.AddAppBlueprintApplication();
 
 var navigationRoutes = builder.Configuration
     .GetSection("Navigation:Routes")
-    .Get<List<NavLinkMetadata>>() ?? new List<NavLinkMetadata>();
+    .Get<List<NavLinkMetadata>>() ?? [];
 builder.Services.AddSingleton(navigationRoutes);
 
 // Port configuration handled by ASPNETCORE_URLS environment variable:
@@ -176,13 +176,13 @@ builder.Services.AddWebAuthentication(builder.Configuration, builder.Environment
 // Register Kiota IAuthenticationProvider for API client
 // This provider works with ASP.NET Core's cookie-based authentication (Logto SDK)
 // and optionally uses JWT tokens from storage for API calls
-builder.Services.AddScoped<IAuthenticationProvider, 
+builder.Services.AddScoped<IAuthenticationProvider,
     AppBlueprint.Infrastructure.Authorization.AspNetCoreKiotaAuthenticationProvider>();
 
 // Get API base URL from environment variable or configuration
 // Priority: Environment variable > Configuration > Default localhost
-string apiBaseUrl = Environment.GetEnvironmentVariable(ApiBaseUrl) 
-    ?? builder.Configuration["ApiBaseUrl"] 
+string apiBaseUrl = Environment.GetEnvironmentVariable(ApiBaseUrl)
+    ?? builder.Configuration["ApiBaseUrl"]
     ?? "http://localhost:9100";
 
 Console.WriteLine($"[Web] API Base URL configured: {apiBaseUrl}");
@@ -205,9 +205,9 @@ builder.Services.AddAppBlueprintSignalR();
 builder.Services.AddScoped<AppBlueprint.UiKit.Services.IMenuConfigurationService, AppBlueprint.Web.Services.MenuConfigurationService>();
 
 // Register full-text search services
-builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity>, 
+builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity>,
     AppBlueprint.Infrastructure.Services.Search.PostgreSqlSearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity, AppBlueprint.Infrastructure.DatabaseContexts.ApplicationDbContext>>();
-builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity>, 
+builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity>,
     AppBlueprint.Infrastructure.Services.Search.PostgreSqlSearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity, AppBlueprint.Infrastructure.DatabaseContexts.ApplicationDbContext>>();
 
 // Add TodoService with HttpClient configured for direct API access
@@ -248,11 +248,11 @@ builder.Services.AddHttpClient<AppBlueprint.Web.Services.FileStorageService>(cli
     // Configure retry policy
     options.Retry.MaxRetryAttempts = 2;
     options.Retry.Delay = TimeSpan.FromSeconds(2);
-    
+
     // Configure timeouts for file uploads - much longer than default
     options.AttemptTimeout.Timeout = TimeSpan.FromMinutes(5); // 5 minutes per attempt
     options.TotalRequestTimeout.Timeout = TimeSpan.FromMinutes(10); // 10 minutes total
-    
+
     // Configure circuit breaker with longer thresholds
     // Sampling duration must be at least double the attempt timeout (5 min * 2 = 10 min)
     options.CircuitBreaker.SamplingDuration = TimeSpan.FromMinutes(10);
@@ -378,22 +378,22 @@ if (app.Environment.IsDevelopment())
             IsAuthenticated = context.User?.Identity?.IsAuthenticated ?? false,
             UserName = context.User?.Identity?.Name
         };
-        
+
         return Results.Json(diagnostics);
     }).AllowAnonymous();
-    
+
     // Auth diagnostic endpoint to check authentication status
     app.MapGet("/auth-debug", (HttpContext context) =>
     {
         var diagnostics = new
         {
             IsAuthenticated = context.User?.Identity?.IsAuthenticated ?? false,
-            AuthenticationType = context.User?.Identity?.AuthenticationType,
+            context.User?.Identity?.AuthenticationType,
             UserName = context.User?.Identity?.Name,
             Claims = context.User?.Claims.Select(c => new { c.Type, c.Value }).ToList(),
             Cookies = context.Request.Cookies.Keys.ToList()
         };
-        
+
         return Results.Json(diagnostics);
     }).AllowAnonymous();
 }
@@ -405,7 +405,7 @@ Console.WriteLine("[Web] Starting application...");
 Console.WriteLine("[Web] Navigate to the app and watch for logs");
 Console.WriteLine(ConsoleSeparator);
 
- await app.RunAsync();
+await app.RunAsync();
 
 
 
