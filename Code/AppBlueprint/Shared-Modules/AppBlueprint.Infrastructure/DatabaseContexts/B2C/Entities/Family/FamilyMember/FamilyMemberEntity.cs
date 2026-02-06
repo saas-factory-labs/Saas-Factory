@@ -1,4 +1,4 @@
-﻿using AppBlueprint.Application.Attributes;
+using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;

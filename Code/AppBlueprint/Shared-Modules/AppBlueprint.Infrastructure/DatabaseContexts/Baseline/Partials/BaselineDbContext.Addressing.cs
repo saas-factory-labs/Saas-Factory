@@ -1,4 +1,4 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.EntityConfigurations;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;

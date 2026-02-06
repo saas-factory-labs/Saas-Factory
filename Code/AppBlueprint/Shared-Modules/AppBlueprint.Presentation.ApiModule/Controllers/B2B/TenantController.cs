@@ -1,10 +1,10 @@
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Contracts.B2B.Contracts.Tenant.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
 using AppBlueprint.Contracts.B2B.Tenant.Requests;
+using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Application.Interfaces.UnitOfWork;
-using AppBlueprint.Infrastructure.DatabaseContexts;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -143,7 +143,7 @@ public class TenantController : BaseController
 
         await _tenantRepository.AddAsync(newTenant);
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         var response = new TenantResponse
         {
             Id = newTenant.Id,

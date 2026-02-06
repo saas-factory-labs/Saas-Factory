@@ -18,19 +18,19 @@ public partial class ChatModuleDbContext
             entity.Property(e => e.Description).HasMaxLength(1000);
             entity.Property(e => e.IsActive).IsRequired();
             entity.Property(e => e.OwnerId).IsRequired();
-            
+
             // Relationship with Owner (UserEntity)
             entity.HasOne(e => e.Owner)
                   .WithMany()
                   .HasForeignKey(e => e.OwnerId)
                   .OnDelete(DeleteBehavior.Restrict);
-            
+
             // Relationship with ChatMessages
             entity.HasMany(e => e.ChatMessages)
                   .WithOne(m => m.Chat)
                   .HasForeignKey(m => m.ChatId)
                   .OnDelete(DeleteBehavior.Cascade);
-            
+
             entity.ToTable("Chats");
         });
 
@@ -42,25 +42,25 @@ public partial class ChatModuleDbContext
             entity.Property(e => e.Description).HasMaxLength(2000);
             entity.Property(e => e.IsActive).IsRequired();
             entity.Property(e => e.OwnerId).IsRequired();
-            
+
             // Relationship with Chat
             entity.HasOne(e => e.Chat)
                   .WithMany(c => c.ChatMessages)
                   .HasForeignKey(e => e.ChatId)
                   .OnDelete(DeleteBehavior.Cascade);
-            
+
             // Relationship with Sender (UserEntity)
             entity.HasOne(e => e.Sender)
                   .WithMany()
                   .HasForeignKey(e => e.SenderId)
                   .OnDelete(DeleteBehavior.Restrict);
-            
+
             // Relationship with Owner (UserEntity)
             entity.HasOne(e => e.Owner)
                   .WithMany()
                   .HasForeignKey(e => e.OwnerId)
                   .OnDelete(DeleteBehavior.Restrict);
-            
+
             entity.ToTable("ChatMessages");
         });
     }

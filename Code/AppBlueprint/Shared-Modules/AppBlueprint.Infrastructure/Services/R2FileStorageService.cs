@@ -58,7 +58,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
 
         string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException("Tenant context not available");
         string userId = GetCurrentUserId();
-        
+
         // Generate unique file key: tenant_xxx/folder/guid-filename
         string fileKey = GenerateFileKey(tenantId, request.Folder, request.FileName);
         string bucketName = request.IsPublic ? _options.PublicBucketName : _options.PrivateBucketName;
@@ -163,7 +163,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
             };
 
             GetObjectResponse? response = await _s3Client.GetObjectAsync(getRequest, cancellationToken);
-            
+
             _logger.LogInformation("File downloaded from R2: {FileKey}", fileKey);
 
             return new FileDownloadResult(
@@ -204,7 +204,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
             };
 
             GetObjectResponse? response = await _s3Client.GetObjectAsync(getRequest, cancellationToken);
-            
+
             _logger.LogInformation("Public file downloaded from R2: {FileKey}", fileKey);
 
             return new FileDownloadResult(
@@ -248,7 +248,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
             };
 
             string url = await _s3Client.GetPreSignedURLAsync(request);
-            
+
             _logger.LogInformation("Pre-signed URL generated for file: {FileKey}, Expiry: {Expiry}", fileKey, expiry);
 
             return url;
@@ -334,8 +334,8 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(fileKey);
 
         string? tenantId = _tenantContextAccessor.TenantId;
-        
-        _logger.LogInformation("DeleteAsync called - FileKey: {FileKey}, TenantId: {TenantId}, HasTenantContext: {HasContext}", 
+
+        _logger.LogInformation("DeleteAsync called - FileKey: {FileKey}, TenantId: {TenantId}, HasTenantContext: {HasContext}",
             fileKey, tenantId ?? "NULL", tenantId is not null);
 
         if (tenantId is null)
@@ -343,13 +343,13 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
             _logger.LogError("Tenant context not available for delete operation. FileKey: {FileKey}", fileKey);
             throw new InvalidOperationException("Tenant context not available");
         }
-        
+
         _logger.LogInformation("Proceeding with delete - TenantId: {TenantId}", tenantId);
 
         // Verify tenant ownership
         FileMetadataEntity? metadata = await _dbContext.Set<FileMetadataEntity>()
             .FirstOrDefaultAsync(f => f.FileKey == fileKey && f.TenantId == tenantId, cancellationToken);
-        
+
         _logger.LogInformation("Metadata query result - Found: {Found}, FileKey: {FileKey}", metadata is not null, fileKey);
 
         if (metadata is null)
@@ -455,7 +455,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         // Generate unique GUID-based key for obscurity (dating app pattern)
         string uniqueId = Guid.NewGuid().ToString("N");
         string sanitizedFileName = SanitizeFileName(fileName);
-        
+
         if (!string.IsNullOrWhiteSpace(folder))
         {
             return $"{tenantId}/{folder}/{uniqueId}-{sanitizedFileName}";

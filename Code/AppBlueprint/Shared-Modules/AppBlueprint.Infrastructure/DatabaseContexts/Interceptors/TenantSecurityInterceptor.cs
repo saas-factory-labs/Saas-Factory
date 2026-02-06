@@ -1,8 +1,8 @@
+using System.Security;
 using AppBlueprint.Infrastructure.Services;
 using AppBlueprint.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using System.Security;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
 

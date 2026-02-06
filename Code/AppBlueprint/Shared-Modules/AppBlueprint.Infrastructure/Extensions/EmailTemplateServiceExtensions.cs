@@ -1,10 +1,10 @@
+using System.Reflection;
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Infrastructure.Services.Email;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using RazorLight;
 using Resend;
-using System.Reflection;
 
 namespace AppBlueprint.Infrastructure.Extensions;
 
@@ -30,7 +30,7 @@ public static class EmailTemplateServiceExtensions
         IRazorLightEngine razorEngine = BuildRazorLightEngine(customTemplatesPath);
 
         services.AddSingleton(razorEngine);
-        
+
         // Register a factory that resolves IResend? from the service provider
         // This allows the service to work even when IResend is not registered
         services.AddScoped<IEmailTemplateService>(sp =>

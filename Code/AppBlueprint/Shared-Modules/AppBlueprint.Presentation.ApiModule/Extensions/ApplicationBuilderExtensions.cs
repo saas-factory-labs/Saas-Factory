@@ -64,15 +64,15 @@ public static class ApplicationBuilderExtensions
             else
             {
                 // Production - restrict to specific origins
-                string[] allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() 
+                string[] allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
                     ?? Array.Empty<string>();
-                
+
                 if (allowedOrigins.Length == 0)
                 {
                     throw new InvalidOperationException(
                         "CORS allowed origins must be configured in production. Add 'Cors:AllowedOrigins' to appsettings.json");
                 }
-                
+
                 builder.WithOrigins(allowedOrigins)
                     .AllowAnyMethod()
                     .AllowAnyHeader()

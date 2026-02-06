@@ -1,4 +1,4 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription;
 using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
 using Microsoft.EntityFrameworkCore;

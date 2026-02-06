@@ -1,10 +1,10 @@
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Domain.Entities.Notifications;
 using AppBlueprint.Domain.Interfaces.Repositories;
-using NotificationHub = AppBlueprint.Infrastructure.SignalR.NotificationHub; // Use the correct NotificationHub
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NotificationHub = AppBlueprint.Infrastructure.SignalR.NotificationHub; // Use the correct NotificationHub
 
 namespace AppBlueprint.Infrastructure.Services.Notifications;
 

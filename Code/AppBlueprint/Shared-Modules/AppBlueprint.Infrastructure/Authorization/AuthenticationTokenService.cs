@@ -14,13 +14,13 @@ public interface IAuthenticationTokenService
     /// </summary>
     /// <returns>The access token or null if not available</returns>
     Task<string?> GetAccessTokenAsync();
-    
+
     /// <summary>
     /// Retrieves the ID token from the authentication properties
     /// </summary>
     /// <returns>The ID token or null if not available</returns>
     Task<string?> GetIdTokenAsync();
-    
+
     /// <summary>
     /// Retrieves the refresh token from the authentication properties
     /// </summary>
@@ -65,29 +65,29 @@ public sealed class AuthenticationTokenService : IAuthenticationTokenService
 
         // Try the cookie scheme first (most common for Blazor Server)
         string? token = await httpContext.GetTokenAsync("Logto.Cookie", "access_token");
-        
+
         if (!string.IsNullOrEmpty(token))
         {
             _logger.LogInformation("[AuthenticationTokenService] ✅ Found access token in 'Logto.Cookie' scheme (length: {Length})", token.Length);
             return token;
         }
-        
+
         _logger.LogWarning("[AuthenticationTokenService] No token in 'Logto.Cookie' scheme, trying 'Logto' scheme");
-        
+
         // Fallback to the OIDC scheme
         token = await httpContext.GetTokenAsync("Logto", "access_token");
-        
+
         if (!string.IsNullOrEmpty(token))
         {
             _logger.LogInformation("[AuthenticationTokenService] ✅ Found access token in 'Logto' scheme (length: {Length})", token.Length);
             return token;
         }
-        
+
         _logger.LogWarning("[AuthenticationTokenService] No token in 'Logto' scheme, trying default scheme");
-        
+
         // Last fallback - try without specifying scheme
         token = await httpContext.GetTokenAsync("access_token");
-        
+
         if (!string.IsNullOrEmpty(token))
         {
             _logger.LogInformation("[AuthenticationTokenService] ✅ Found access token in default scheme (length: {Length})", token.Length);
@@ -97,7 +97,7 @@ public sealed class AuthenticationTokenService : IAuthenticationTokenService
         _logger.LogError("[AuthenticationTokenService] ❌ Failed to retrieve access token from any authentication scheme");
         _logger.LogInformation("[AuthenticationTokenService] User authenticated: {IsAuthenticated}", httpContext.User?.Identity?.IsAuthenticated ?? false);
         _logger.LogInformation("[AuthenticationTokenService] User name: {UserName}", httpContext.User?.Identity?.Name ?? "null");
-        
+
         return null;
     }
 
@@ -112,12 +112,12 @@ public sealed class AuthenticationTokenService : IAuthenticationTokenService
 
         // Try both the OpenID Connect scheme and the cookie scheme
         string? token = await httpContext.GetTokenAsync("Logto.Cookie", "id_token");
-        
+
         if (string.IsNullOrEmpty(token))
         {
             token = await httpContext.GetTokenAsync("Logto", "id_token");
         }
-        
+
         if (string.IsNullOrEmpty(token))
         {
             token = await httpContext.GetTokenAsync("id_token");
@@ -137,12 +137,12 @@ public sealed class AuthenticationTokenService : IAuthenticationTokenService
 
         // Try both the OpenID Connect scheme and the cookie scheme
         string? token = await httpContext.GetTokenAsync("Logto.Cookie", "refresh_token");
-        
+
         if (string.IsNullOrEmpty(token))
         {
             token = await httpContext.GetTokenAsync("Logto", "refresh_token");
         }
-        
+
         if (string.IsNullOrEmpty(token))
         {
             token = await httpContext.GetTokenAsync("refresh_token");

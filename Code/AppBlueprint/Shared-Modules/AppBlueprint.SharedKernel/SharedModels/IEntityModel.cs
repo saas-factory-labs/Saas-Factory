@@ -1,4 +1,4 @@
-﻿namespace AppBlueprint.SharedKernel.SharedModels;
+namespace AppBlueprint.SharedKernel.SharedModels;
 
 public interface IEntityModel : IEntity
 {

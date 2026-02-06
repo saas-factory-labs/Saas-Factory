@@ -1,14 +1,14 @@
+using System;
+using System.Threading.Tasks;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+using FluentRegex;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using System;
-using System.Threading.Tasks;
-using FluentRegex;
 
 namespace AppBlueprint.Infrastructure;
 
@@ -96,13 +96,13 @@ public static class MigrationExtensions
         {
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
             var databaseName = builder.Database;
-            
+
             // Validate database name to prevent SQL injection
             if (string.IsNullOrWhiteSpace(databaseName))
             {
                 throw new InvalidOperationException("Database name cannot be null or empty.");
             }
-            
+
             // PostgreSQL identifier validation: alphanumeric, underscore, max 63 chars
             if (!System.Text.RegularExpressions.Regex.IsMatch(databaseName, Pattern.With
                 .StartOfLine
@@ -113,7 +113,7 @@ public static class MigrationExtensions
             {
                 throw new InvalidOperationException($"Invalid database name: '{databaseName}'. Database names must start with a letter or underscore and contain only alphanumeric characters and underscores (max 63 chars).");
             }
-            
+
             // Switch to postgres database to check if our database exists
             builder.Database = "postgres";
             var postgresConnectionString = builder.ToString();
@@ -127,20 +127,20 @@ public static class MigrationExtensions
             await using var checkCommand = new NpgsqlCommand(
                 $"SELECT 1 FROM pg_database WHERE datname = @databaseName", connection);
             checkCommand.Parameters.AddWithValue("databaseName", databaseName);
-            
+
             var exists = await checkCommand.ExecuteScalarAsync();
 
             if (exists is null)
             {
                 Logger.LogInformation("Database '{DatabaseName}' does not exist. Creating it...", databaseName);
-                
+
                 // Create the database - databaseName is validated above
 #pragma warning disable CA2100 // Database name is validated against injection attacks
                 await using var createCommand = new NpgsqlCommand(
                     $"CREATE DATABASE \"{databaseName}\"", connection);
                 await createCommand.ExecuteNonQueryAsync();
 #pragma warning restore CA2100
-                
+
                 Logger.LogInformation("Database '{DatabaseName}' created successfully.", databaseName);
             }
             else
@@ -162,13 +162,13 @@ public static class MigrationExtensions
     public static Task ApplyDatabaseSeedingAsync(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app);
-        
+
         // Database seeding is now handled separately via the SeedTest project
         // For production scenarios, consider implementing database seeding through:
         // - Migration-based seed data
         // - Startup initialization tasks
         // - Dedicated seeding services
-        
+
         Logger.LogInformation("Database seeding method called - no seeding configured (use SeedTest project for development seeding).");
         return Task.CompletedTask;
     }

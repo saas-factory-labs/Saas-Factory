@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 // Assembly attributes
 [assembly: InternalsVisibleTo("AppBlueprintSharedKernel")]

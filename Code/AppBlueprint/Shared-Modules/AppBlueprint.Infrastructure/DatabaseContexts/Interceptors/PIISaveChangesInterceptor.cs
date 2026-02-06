@@ -78,7 +78,7 @@ public class PiiSaveChangesInterceptor : SaveChangesInterceptor
         if (metadataProp != null && metadataProp.PropertyType == typeof(EntityMetadata))
         {
             var existingMetadata = (EntityMetadata?)metadataProp.GetValue(entity) ?? new EntityMetadata();
-            
+
             var newMetadata = existingMetadata with
             {
                 Pii = new PIIMetadata

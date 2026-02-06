@@ -1,6 +1,6 @@
+using System.Data.Common;
 using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using System.Data.Common;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
 
@@ -19,8 +19,8 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
     }
 
     public override InterceptionResult<DbDataReader> ReaderExecuting(
-        DbCommand command, 
-        CommandEventData eventData, 
+        DbCommand command,
+        CommandEventData eventData,
         InterceptionResult<DbDataReader> result)
     {
         ArgumentNullException.ThrowIfNull(command);
@@ -29,9 +29,9 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
     }
 
     public override ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(
-        DbCommand command, 
-        CommandEventData eventData, 
-        InterceptionResult<DbDataReader> result, 
+        DbCommand command,
+        CommandEventData eventData,
+        InterceptionResult<DbDataReader> result,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(command);
@@ -40,8 +40,8 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
     }
 
     public override InterceptionResult<int> NonQueryExecuting(
-        DbCommand command, 
-        CommandEventData eventData, 
+        DbCommand command,
+        CommandEventData eventData,
         InterceptionResult<int> result)
     {
         ArgumentNullException.ThrowIfNull(command);
@@ -50,9 +50,9 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
     }
 
     public override ValueTask<InterceptionResult<int>> NonQueryExecutingAsync(
-        DbCommand command, 
-        CommandEventData eventData, 
-        InterceptionResult<int> result, 
+        DbCommand command,
+        CommandEventData eventData,
+        InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(command);
@@ -61,8 +61,8 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
     }
 
     public override InterceptionResult<object> ScalarExecuting(
-        DbCommand command, 
-        CommandEventData eventData, 
+        DbCommand command,
+        CommandEventData eventData,
         InterceptionResult<object> result)
     {
         ArgumentNullException.ThrowIfNull(command);
@@ -71,9 +71,9 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
     }
 
     public override ValueTask<InterceptionResult<object>> ScalarExecutingAsync(
-        DbCommand command, 
-        CommandEventData eventData, 
-        InterceptionResult<object> result, 
+        DbCommand command,
+        CommandEventData eventData,
+        InterceptionResult<object> result,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(command);
@@ -90,7 +90,7 @@ public sealed class TenantRlsInterceptor : DbCommandInterceptor
         // We use string interpolation here for the tenantId value.
         // It's sanitized by replacing single quotes.
         var sanitizedTenantId = tenantId.Replace("'", "''", StringComparison.Ordinal);
-        
+
         // We use 'SET LOCAL' to ensure the variable only lasts for the current transaction if any,
         // but 'SET' is usually fine for session-scoped custom variables in EF Core pooled connections.
         // Prepending ensures it runs BEFORE the main query.

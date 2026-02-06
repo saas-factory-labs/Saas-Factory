@@ -1,4 +1,4 @@
-﻿using AppBlueprint.Application.Attributes;
+using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
 using AppBlueprint.SharedKernel;
 

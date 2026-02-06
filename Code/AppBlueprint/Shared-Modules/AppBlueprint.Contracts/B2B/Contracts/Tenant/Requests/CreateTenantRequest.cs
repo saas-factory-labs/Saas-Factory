@@ -1,4 +1,4 @@
-﻿namespace AppBlueprint.Contracts.B2B.Contracts.Tenant.Requests;
+namespace AppBlueprint.Contracts.B2B.Contracts.Tenant.Requests;
 
 public class CreateTenantRequest
 {

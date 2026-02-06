@@ -1,9 +1,9 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AppBlueprint.Application.Interfaces.PII;
 using AppBlueprint.SharedKernel.SharedModels.PII;
-using System.Text.Json;
 
 namespace AppBlueprint.Infrastructure.Services.PII;
 
@@ -30,7 +30,7 @@ public class PIITaggingService : IPIITaggingService
     public async Task<string> ProcessTextAndCreateMetadataAsync(string text, string existingMetadataJson = "{}", CancellationToken cancellationToken = default)
     {
         var piiMetadata = await _piiEngine.ScanAndTagAsync(text, cancellationToken);
-        
+
         // Merge with existing metadata if necessary
         // Assuming existingMetadataJson is a JSON object
         using var doc = JsonDocument.Parse(existingMetadataJson);
@@ -46,19 +46,19 @@ public class PIITaggingService : IPIITaggingService
                 Console.WriteLine($"[PII Discovery] Found non-canonical label: {tag.Type}");
             }
         }
-        
+
         // Use a dictionary to merge properties
         var merged = new Dictionary<string, object>();
         foreach (var prop in root.EnumerateObject())
         {
             merged[prop.Name] = prop.Value;
         }
-        
+
         // Add or overwrite PII fields
         merged["PiiDetected"] = piiMetadata.PiiDetected;
         merged["PiiTags"] = piiMetadata.PiiTags;
         merged["ScannerInfo"] = piiMetadata.ScannerInfo;
-        
+
         return JsonSerializer.Serialize(merged, _jsonSerializerOptions);
     }
 }

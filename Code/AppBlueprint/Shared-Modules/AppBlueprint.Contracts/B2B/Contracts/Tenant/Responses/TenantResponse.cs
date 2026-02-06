@@ -1,4 +1,4 @@
-﻿namespace AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
+namespace AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
 
 public class TenantResponse
 {

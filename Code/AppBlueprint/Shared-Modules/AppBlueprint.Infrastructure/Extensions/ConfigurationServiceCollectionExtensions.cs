@@ -27,20 +27,20 @@ public static class ConfigurationServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(environment);
-        
+
         // Register configuration service
         services.AddSingleton<IConfigurationService, ConfigurationService>();
-        
+
         // Register all options with validation
         services.AddDatabaseContextOptions();
         services.AddMultiTenancyOptions();
         services.AddAuthenticationOptions();
         services.AddExternalServiceOptions();
         services.AddFeatureFlagsOptions();
-        
+
         return services;
     }
-    
+
     /// <summary>
     /// Registers DatabaseContext options with validation.
     /// Supports flat environment variables with UPPERCASE_UNDERSCORE naming:
@@ -58,25 +58,25 @@ public static class ConfigurationServiceCollectionExtensions
             {
                 // Override with flat environment variables
                 string prefix = "DATABASECONTEXT_";
-                
+
                 // Check TYPE first (new standard), then CONTEXTTYPE (legacy)
                 string? contextType = Environment.GetEnvironmentVariable($"{prefix}TYPE")
                                    ?? Environment.GetEnvironmentVariable($"{prefix}CONTEXTTYPE");
                 if (!string.IsNullOrWhiteSpace(contextType) && Enum.TryParse<DatabaseContextType>(contextType, ignoreCase: true, out DatabaseContextType parsedType))
                     options.ContextType = parsedType;
-                
+
                 string? enableHybridMode = Environment.GetEnvironmentVariable($"{prefix}ENABLEHYBRIDMODE");
                 if (!string.IsNullOrWhiteSpace(enableHybridMode) && bool.TryParse(enableHybridMode, out bool hybridMode))
                     options.EnableHybridMode = hybridMode;
-                
+
                 string? baselineOnly = Environment.GetEnvironmentVariable($"{prefix}BASELINEONLY");
                 if (!string.IsNullOrWhiteSpace(baselineOnly) && bool.TryParse(baselineOnly, out bool baseline))
                     options.BaselineOnly = baseline;
-                
+
                 string? commandTimeout = Environment.GetEnvironmentVariable($"{prefix}COMMANDTIMEOUT");
                 if (!string.IsNullOrWhiteSpace(commandTimeout) && int.TryParse(commandTimeout, out int timeout))
                     options.CommandTimeout = timeout;
-                
+
                 string? maxRetryCount = Environment.GetEnvironmentVariable($"{prefix}MAXRETRYCOUNT");
                 if (!string.IsNullOrWhiteSpace(maxRetryCount) && int.TryParse(maxRetryCount, out int retryCount))
                     options.MaxRetryCount = retryCount;
@@ -88,10 +88,10 @@ public static class ConfigurationServiceCollectionExtensions
                 options.Validate();
                 return true;
             });
-            
+
         return services;
     }
-    
+
     /// <summary>
     /// Registers MultiTenancy options with validation.
     /// </summary>
@@ -102,10 +102,10 @@ public static class ConfigurationServiceCollectionExtensions
             .BindConfiguration(MultiTenancyOptions.SectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
-            
+
         return services;
     }
-    
+
     /// <summary>
     /// Registers Authentication options with validation.
     /// </summary>
@@ -123,10 +123,10 @@ public static class ConfigurationServiceCollectionExtensions
             })
             .ValidateDataAnnotations()
             .ValidateOnStart();
-            
+
         return services;
     }
-    
+
     /// <summary>
     /// Registers external service options (Stripe, Cloudflare R2, Resend) with validation.
     /// </summary>
@@ -166,15 +166,15 @@ public static class ConfigurationServiceCollectionExtensions
             .Validate(options =>
             {
                 // Only validate if any credential is configured
-                bool hasCredentials = !string.IsNullOrWhiteSpace(options.AccessKeyId) || 
+                bool hasCredentials = !string.IsNullOrWhiteSpace(options.AccessKeyId) ||
                                       !string.IsNullOrWhiteSpace(options.SecretAccessKey) ||
                                       !string.IsNullOrWhiteSpace(options.EndpointUrl);
-                
+
                 if (hasCredentials)
                 {
                     options.Validate();
                 }
-                
+
                 return true;
             });
     }
@@ -182,7 +182,7 @@ public static class ConfigurationServiceCollectionExtensions
     private static void ConfigureCloudflareR2FromEnvironment(CloudflareR2Options options)
     {
         const string prefix = "CLOUDFLARE_R2_";
-        
+
         SetStringOption(prefix, "ACCESSKEYID", v => options.AccessKeyId = v);
         SetStringOption(prefix, "SECRETACCESSKEY", v => options.SecretAccessKey = v);
         SetStringOption(prefix, "ENDPOINTURL", v => options.EndpointUrl = v);
@@ -192,7 +192,7 @@ public static class ConfigurationServiceCollectionExtensions
         SetIntOption(prefix, "MAXIMAGESIZEMB", v => options.MaxImageSizeMB = v);
         SetIntOption(prefix, "MAXDOCUMENTSIZEMB", v => options.MaxDocumentSizeMB = v);
         SetIntOption(prefix, "MAXVIDEOSIZEMB", v => options.MaxVideoSizeMB = v);
-        
+
         // Debug logging
         Console.WriteLine($"[CloudflareR2Options] Loaded - AccessKeyId: {!string.IsNullOrWhiteSpace(options.AccessKeyId)}, SecretAccessKey: {!string.IsNullOrWhiteSpace(options.SecretAccessKey)}, EndpointUrl: {options.EndpointUrl}, PrivateBucket: {options.PrivateBucketName}, PublicBucket: {options.PublicBucketName}, PublicDomain: {options.PublicDomain}");
     }
@@ -226,7 +226,7 @@ public static class ConfigurationServiceCollectionExtensions
                 return true;
             });
     }
-    
+
     /// <summary>
     /// Registers feature flags options.
     /// </summary>
@@ -235,7 +235,7 @@ public static class ConfigurationServiceCollectionExtensions
     {
         services.AddOptions<FeatureFlagsOptions>()
             .BindConfiguration(FeatureFlagsOptions.SectionName);
-            
+
         return services;
     }
 }

@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.Resources;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using AppBlueprint.Infrastructure.Resources;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.Services;
 

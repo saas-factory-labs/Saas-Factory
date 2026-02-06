@@ -11,7 +11,7 @@ namespace AppBlueprint.Infrastructure.SignalR;
 public abstract class TenantScopedHub<THub> : Hub where THub : Hub
 {
     protected ILogger<THub>? Logger { get; private set; }
-    
+
     /// <summary>
     /// Sets the logger for derived hubs. Called by DI automatically if logger is injected.
     /// </summary>
@@ -28,16 +28,16 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
     protected string GetCurrentTenantId()
     {
         // Try multiple claim names (Logto JWT, custom claims, etc.)
-        string? tenantId = Context.User?.FindFirst("tenant_id")?.Value 
+        string? tenantId = Context.User?.FindFirst("tenant_id")?.Value
                            ?? Context.User?.FindFirst("tid")?.Value
                            ?? Context.User?.FindFirst("TenantId")?.Value;
-        
+
         // Fallback: Check query string (for Blazor Server where WebSocket doesn't pass cookies)
         if (string.IsNullOrEmpty(tenantId) && Context.GetHttpContext()?.Request.Query.ContainsKey("tenantId") == true)
         {
             tenantId = Context.GetHttpContext()?.Request.Query["tenantId"].ToString();
         }
-        
+
         if (string.IsNullOrEmpty(tenantId))
         {
             // Log all available claims for debugging
@@ -46,13 +46,13 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
                 string availableClaims = string.Join(", ", Context.User.Claims.Select(c => $"{c.Type}={c.Value}"));
                 Logger?.LogError("Tenant ID not found. Available claims: {Claims}", availableClaims);
             }
-            
+
             throw new HubException("Tenant ID not found in user claims. User might not have completed onboarding.");
         }
-        
+
         return tenantId;
     }
-    
+
     /// <summary>
     /// Gets the current user ID from the authenticated user's JWT claims.
     /// Falls back to query string parameter for Blazor Server compatibility.
@@ -60,24 +60,24 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
     /// <returns>User ID, or throws if not found</returns>
     protected string GetCurrentUserId()
     {
-        string? userId = Context.User?.FindFirst("sub")?.Value 
+        string? userId = Context.User?.FindFirst("sub")?.Value
                          ?? Context.User?.FindFirst("user_id")?.Value
                          ?? Context.User?.FindFirst("uid")?.Value;
-        
+
         // Fallback: Check query string (for Blazor Server where WebSocket doesn't pass cookies)
         if (string.IsNullOrEmpty(userId) && Context.GetHttpContext()?.Request.Query.ContainsKey("userId") == true)
         {
             userId = Context.GetHttpContext()?.Request.Query["userId"].ToString();
         }
-        
+
         if (string.IsNullOrEmpty(userId))
         {
             throw new HubException("User ID not found in user claims. Ensure JWT contains 'sub', 'user_id', or 'uid' claim.");
         }
-        
+
         return userId;
     }
-    
+
     /// <summary>
     /// Gets the current user's email from JWT claims (if available).
     /// </summary>
@@ -85,16 +85,16 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
     {
         return Context.User?.FindFirst("email")?.Value;
     }
-    
+
     /// <summary>
     /// Gets the current user's name from JWT claims (if available).
     /// </summary>
     protected string? GetCurrentUserName()
     {
-        return Context.User?.FindFirst("name")?.Value 
+        return Context.User?.FindFirst("name")?.Value
                ?? Context.User?.FindFirst("given_name")?.Value;
     }
-    
+
     /// <summary>
     /// Called when a client connects to the hub.
     /// Automatically adds the connection to a tenant-specific group.
@@ -107,15 +107,15 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
             // Get tenant and user ID (will throw if not found in claims or query string)
             string tenantId = GetCurrentTenantId();
             string userId = GetCurrentUserId();
-            
+
             // Add connection to tenant group for tenant-scoped broadcasts
             await Groups.AddToGroupAsync(Context.ConnectionId, $"tenant:{tenantId}");
-            
+
             // Add connection to user-specific group for direct messages
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user:{userId}");
-            
+
             Logger?.LogInformation("User {UserId} from tenant {TenantId} connected", userId, tenantId);
-            
+
             await base.OnConnectedAsync();
         }
         catch (HubException ex)
@@ -138,7 +138,7 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
             return;
         }
     }
-    
+
     /// <summary>
     /// Called when a client disconnects from the hub.
     /// </summary>
@@ -151,13 +151,13 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
             {
                 string tenantId = GetCurrentTenantId();
                 string userId = GetCurrentUserId();
-                
+
                 // Remove from tenant group
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"tenant:{tenantId}");
-                
+
                 // Remove from user group
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"user:{userId}");
-                
+
                 Logger?.LogInformation("User {UserId} from tenant {TenantId} disconnected", userId, tenantId);
             }
         }
@@ -169,10 +169,10 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
         {
             Logger?.LogWarning(ex, "Invalid operation during disconnect - connection may not have been fully established");
         }
-        
+
         await base.OnDisconnectedAsync(exception);
     }
-    
+
     /// <summary>
     /// Sends a message to all connections in the current tenant.
     /// </summary>
@@ -181,7 +181,7 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
         string tenantId = GetCurrentTenantId();
         return Clients.Group($"tenant:{tenantId}").SendAsync(method, arg1, arg2);
     }
-    
+
     /// <summary>
     /// Sends a message to a specific user (all their connections).
     /// </summary>

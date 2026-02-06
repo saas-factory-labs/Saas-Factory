@@ -1,4 +1,4 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -28,14 +28,14 @@ public partial class B2CdbContext : BaselineDbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         ArgumentNullException.ThrowIfNull(optionsBuilder);
-        
+
         // Only configure using _connectionString if:
         // 1. The options aren't already configured, AND
         // 2. We have a valid connection string
         if (!optionsBuilder.IsConfigured && !string.IsNullOrEmpty(_connectionString))
         {
             optionsBuilder.UseNpgsql(_connectionString);
-            
+
             // Simple logging pattern - warning suppressed in .editorconfig
             _logger.LogInformation("B2C DbContext configured with connection string");
         }

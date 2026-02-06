@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
@@ -43,11 +43,11 @@ public class AuditLogEntity : BaseEntity, ITenantScoped
 
     public string? Category { get; set; }
 
-    [Required] 
+    [Required]
     [PIIRisk]
     public required string NewValue { get; set; }
-    
-    [Required] 
+
+    [Required]
     [PIIRisk]
     public required string OldValue { get; set; }
 

@@ -55,10 +55,10 @@ public class TenantMiddleware(RequestDelegate next)
             {
                 // Try primary tenant claim name
                 string? tenantId = context.User.FindFirst("tenant_id")?.Value;
-                
+
                 // Fallback to alternative claim name
                 tenantId ??= context.User.FindFirst("tid")?.Value;
-                
+
                 // If tenant claim is not in JWT, look it up from database based on user's external auth ID (sub claim)
                 // This handles external IdPs like Logto that don't include custom tenant claims in access tokens
                 if (string.IsNullOrEmpty(tenantId))
@@ -66,30 +66,30 @@ public class TenantMiddleware(RequestDelegate next)
                     // Get the 'sub' claim (external auth provider user ID)
                     string? externalAuthId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                         ?? context.User.FindFirst("sub")?.Value;
-                    
+
                     Console.WriteLine($"[TenantMiddleware] No tenant claim in JWT. Looking up by ExternalAuthId (sub): {externalAuthId ?? "(null)"}");
                     Console.WriteLine($"[TenantMiddleware] JWT Claims ({context.User.Claims.Count()}):");
                     foreach (var claim in context.User.Claims)
                     {
                         Console.WriteLine($"[TenantMiddleware]   - {claim.Type}: {claim.Value}");
                     }
-                    
+
                     if (!string.IsNullOrEmpty(externalAuthId))
                     {
                         // Resolve DbContextFactory from request services (not constructor - middleware is singleton)
                         var dbContextFactory = context.RequestServices.GetService<IDbContextFactory<ApplicationDbContext>>();
-                        
+
                         if (dbContextFactory is not null)
                         {
                             await using ApplicationDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
-                            
+
                             // Query database by ExternalAuthId (Logto 'sub' claim)
                             // Use quoted column names to match exact casing in PostgreSQL
                             FormattableString query = $"SELECT \"Id\", \"TenantId\" FROM \"Users\" WHERE \"ExternalAuthId\" = {externalAuthId} LIMIT 1";
-                            
+
                             var result = await dbContext.Database.SqlQuery<UserTenantLookup>(query).FirstOrDefaultAsync();
                             tenantId = result?.TenantId;
-                            
+
                             Console.WriteLine($"[TenantMiddleware] Database lookup result: TenantId={tenantId ?? "(null)"}");
                         }
                         else
@@ -102,7 +102,7 @@ public class TenantMiddleware(RequestDelegate next)
                         Console.WriteLine("[TenantMiddleware] ⚠️ No sub/NameIdentifier claim found in JWT - cannot look up tenant");
                     }
                 }
-                
+
                 if (string.IsNullOrEmpty(tenantId))
                 {
                     context.Response.StatusCode = 401; // Unauthorized
@@ -110,7 +110,7 @@ public class TenantMiddleware(RequestDelegate next)
                     await context.Response.WriteAsync("{\"error\":\"Tenant claim missing from JWT\",\"message\":\"Authenticated users must have a tenant_id or tid claim in their JWT token.\"}\n");
                     return;
                 }
-                
+
                 context.Items["TenantId"] = tenantId;
             }
             else

@@ -6,176 +6,174 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-using OpenTelemetry.Exporter;
+namespace Microsoft.Extensions.Hosting;
 
-namespace Microsoft.Extensions.Hosting
+public static class ServiceDefaultsExtensions
 {
-    public static class ServiceDefaultsExtensions
+    private static readonly string[] LiveTags = { "live" };
+    private const string OtelExporterOtlpEndpoint = "OTEL_EXPORTER_OTLP_ENDPOINT";
+    private const string OtelExporterOtlpProtocol = "OTEL_EXPORTER_OTLP_PROTOCOL";
+
+    public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
     {
-        private static readonly string[] LiveTags = { "live" };
-        private const string OtelExporterOtlpEndpoint = "OTEL_EXPORTER_OTLP_ENDPOINT";
-        private const string OtelExporterOtlpProtocol = "OTEL_EXPORTER_OTLP_PROTOCOL";
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
 
-        public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
+        ConfigureDefaultOpenTelemetrySettings();
+
+        builder.ConfigureOpenTelemetry();
+        builder.AddDefaultHealthChecks();
+
+        builder.Services.AddServiceDiscovery();
+        builder.Services.ConfigureHttpClientDefaults(http =>
         {
-            ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+            http.AddStandardResilienceHandler();
+            http.AddServiceDiscovery();
+        });
 
-            ConfigureDefaultOpenTelemetrySettings();
+        return builder;
+    }
 
-            builder.ConfigureOpenTelemetry();
-            builder.AddDefaultHealthChecks();
-
-            builder.Services.AddServiceDiscovery();
-            builder.Services.ConfigureHttpClientDefaults(http =>
+    private static void ConfigureDefaultOpenTelemetrySettings()
+    {
+        string? dashboard = Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
+        if (!string.IsNullOrEmpty(dashboard))
+        {
+            Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, dashboard);
+        }
+        else
+        {
+            string? endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
+            if (string.IsNullOrEmpty(endpoint))
             {
-                http.AddStandardResilienceHandler();
-                http.AddServiceDiscovery();
-            });
-
-            return builder;
+                // Only set default localhost endpoint in Development
+                // In Production (Railway), leave it unset to disable OTLP export
+                string? aspnetEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                if (string.Equals(aspnetEnv, "Development", StringComparison.OrdinalIgnoreCase))
+                {
+                    Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, "http://localhost:18889");
+                }
+                // else: Leave unset in production - will skip OTLP exporters
+            }
         }
 
-        private static void ConfigureDefaultOpenTelemetrySettings()
+        string? proto = Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol);
+        if (string.IsNullOrEmpty(proto))
         {
-            string? dashboard = Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
-            if (!string.IsNullOrEmpty(dashboard))
+            Environment.SetEnvironmentVariable(OtelExporterOtlpProtocol, "http/protobuf");
+        }
+
+        if (Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS") == null)
+        {
+            Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS", string.Empty);
+        }
+    }
+
+    public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+
+        string serviceName = builder.Configuration["OTEL_SERVICE_NAME"] ?? builder.Environment.ApplicationName;
+        var resources = ResourceBuilder.CreateDefault().AddService(serviceName, "1.0.0");
+
+        // Check if OTLP endpoint is configured
+        string? endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
+        bool hasOtlpEndpoint = !string.IsNullOrEmpty(endpoint);
+
+        builder.Logging.AddOpenTelemetry(log =>
+        {
+            log.SetResourceBuilder(resources);
+            log.IncludeScopes = true;
+            log.IncludeFormattedMessage = true;
+
+            // Only add OTLP exporter if endpoint is configured
+            if (hasOtlpEndpoint)
             {
-                Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, dashboard);
+                bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
+                log.AddOtlpExporter(opt =>
+                {
+                    opt.Endpoint = new Uri(endpoint!);
+                    opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf;
+                });
             }
             else
             {
-                string? endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
-                if (string.IsNullOrEmpty(endpoint))
-                {
-                    // Only set default localhost endpoint in Development
-                    // In Production (Railway), leave it unset to disable OTLP export
-                    string? aspnetEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                    if (string.Equals(aspnetEnv, "Development", StringComparison.OrdinalIgnoreCase))
-                    {
-                        Environment.SetEnvironmentVariable(OtelExporterOtlpEndpoint, "http://localhost:18889");
-                    }
-                    // else: Leave unset in production - will skip OTLP exporters
-                }
+                // Console exporter as fallback in production without OTLP
+                log.AddConsoleExporter();
             }
+        });
 
-            string? proto = Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol);
-            if (string.IsNullOrEmpty(proto))
+        builder.Services.AddOpenTelemetry()
+            .ConfigureResource(r => r.AddService(serviceName))
+            .WithMetrics(metrics =>
             {
-                Environment.SetEnvironmentVariable(OtelExporterOtlpProtocol, "http/protobuf");
-            }
-
-            if (Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS") == null)
-            {
-                Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS", string.Empty);
-            }
-        }
-
-        public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
-        {
-            ArgumentNullException.ThrowIfNull(builder, nameof(builder));
-
-            string serviceName = builder.Configuration["OTEL_SERVICE_NAME"] ?? builder.Environment.ApplicationName;
-            var resources = ResourceBuilder.CreateDefault().AddService(serviceName, "1.0.0");
-
-            // Check if OTLP endpoint is configured
-            string? endpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
-            bool hasOtlpEndpoint = !string.IsNullOrEmpty(endpoint);
-
-            builder.Logging.AddOpenTelemetry(log =>
-            {
-                log.SetResourceBuilder(resources);
-                log.IncludeScopes = true;
-                log.IncludeFormattedMessage = true;
+                metrics.AddMeter(serviceName);
+                metrics.AddMeter("Microsoft.AspNetCore.Hosting");
+                metrics.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
+                metrics.AddAspNetCoreInstrumentation();
+                metrics.AddHttpClientInstrumentation();
+                metrics.AddRuntimeInstrumentation();
 
                 // Only add OTLP exporter if endpoint is configured
                 if (hasOtlpEndpoint)
                 {
                     bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
-                    log.AddOtlpExporter(opt => 
-                    { 
-                        opt.Endpoint = new Uri(endpoint!); 
-                        opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; 
+                    metrics.AddOtlpExporter(opt =>
+                    {
+                        opt.Endpoint = new Uri(endpoint!);
+                        opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf;
                     });
                 }
-                else
+                // Metrics are collected but not exported if no OTLP endpoint
+            })
+            .WithTracing(tracing =>
+            {
+                tracing.AddSource(serviceName);
+                tracing.AddSource("Microsoft.AspNetCore");
+                tracing.AddAspNetCoreInstrumentation(options => options.RecordException = true);
+                tracing.AddHttpClientInstrumentation(options =>
                 {
-                    // Console exporter as fallback in production without OTLP
-                    log.AddConsoleExporter();
-                }
-            });
-
-            builder.Services.AddOpenTelemetry()
-                .ConfigureResource(r => r.AddService(serviceName))
-                .WithMetrics(metrics =>
-                {
-                    metrics.AddMeter(serviceName);
-                    metrics.AddMeter("Microsoft.AspNetCore.Hosting");
-                    metrics.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
-                    metrics.AddAspNetCoreInstrumentation();
-                    metrics.AddHttpClientInstrumentation();
-                    metrics.AddRuntimeInstrumentation();
-
-                    // Only add OTLP exporter if endpoint is configured
-                    if (hasOtlpEndpoint)
-                    {
-                        bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
-                        metrics.AddOtlpExporter(opt => 
-                        { 
-                            opt.Endpoint = new Uri(endpoint!); 
-                            opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; 
-                        });
-                    }
-                    // Metrics are collected but not exported if no OTLP endpoint
-                })
-                .WithTracing(tracing =>
-                {
-                    tracing.AddSource(serviceName);
-                    tracing.AddSource("Microsoft.AspNetCore");
-                    tracing.AddAspNetCoreInstrumentation(options => options.RecordException = true);
-                    tracing.AddHttpClientInstrumentation(options => 
-                    { 
-                        options.RecordException = true; 
-                        options.FilterHttpRequestMessage = _ => true; 
-                    });
-
-                    // Only add OTLP exporter if endpoint is configured
-                    if (hasOtlpEndpoint)
-                    {
-                        bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
-                        tracing.AddOtlpExporter(opt => 
-                        { 
-                            opt.Endpoint = new Uri(endpoint!); 
-                            opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf; 
-                        });
-                    }
-                    // Traces are collected but not exported if no OTLP endpoint
+                    options.RecordException = true;
+                    options.FilterHttpRequestMessage = _ => true;
                 });
 
-            return builder;
-        }
+                // Only add OTLP exporter if endpoint is configured
+                if (hasOtlpEndpoint)
+                {
+                    bool grpc = string.Equals(Environment.GetEnvironmentVariable(OtelExporterOtlpProtocol), "grpc", StringComparison.OrdinalIgnoreCase);
+                    tracing.AddOtlpExporter(opt =>
+                    {
+                        opt.Endpoint = new Uri(endpoint!);
+                        opt.Protocol = grpc ? OtlpExportProtocol.Grpc : OtlpExportProtocol.HttpProtobuf;
+                    });
+                }
+                // Traces are collected but not exported if no OTLP endpoint
+            });
 
-        public static IHostApplicationBuilder AddDefaultHealthChecks(this IHostApplicationBuilder builder)
-        {
-            ArgumentNullException.ThrowIfNull(builder, nameof(builder));
-            builder.Services.AddHealthChecks().AddCheck("self", () => HealthCheckResult.Healthy(), LiveTags);
-            return builder;
-        }
+        return builder;
+    }
 
-        public static WebApplication MapDefaultEndpoints(this WebApplication app)
+    public static IHostApplicationBuilder AddDefaultHealthChecks(this IHostApplicationBuilder builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+        builder.Services.AddHealthChecks().AddCheck("self", () => HealthCheckResult.Healthy(), LiveTags);
+        return builder;
+    }
+
+    public static WebApplication MapDefaultEndpoints(this WebApplication app)
+    {
+        ArgumentNullException.ThrowIfNull(app, nameof(app));
+        if (app.Environment.IsDevelopment())
         {
-            ArgumentNullException.ThrowIfNull(app, nameof(app));
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapHealthChecks("/health");
-                app.MapHealthChecks("/alive", new HealthCheckOptions { Predicate = r => r.Tags.Contains("live") });
-            }
-            return app;
+            app.MapHealthChecks("/health");
+            app.MapHealthChecks("/alive", new HealthCheckOptions { Predicate = r => r.Tags.Contains("live") });
         }
+        return app;
     }
 }
 

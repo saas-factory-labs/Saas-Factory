@@ -1,4 +1,4 @@
-﻿using AppBlueprint.DeveloperCli.Commands;
+using AppBlueprint.DeveloperCli.Commands;
 using AppBlueprint.DeveloperCli.Menus;
 
 namespace AppBlueprint.DeveloperCli;

@@ -116,25 +116,25 @@ public static class DbContextConfigurator
     {
         // Override with flat UPPERCASE environment variables (following UPPERCASE_UNDERSCORE standard)
         const string Prefix = "DATABASECONTEXT_";
-        
+
         // Check TYPE first (new standard), then CONTEXTTYPE (legacy)
         string? contextType = Environment.GetEnvironmentVariable($"{Prefix}TYPE")
                            ?? Environment.GetEnvironmentVariable($"{Prefix}CONTEXTTYPE");
         if (!string.IsNullOrWhiteSpace(contextType) && Enum.TryParse<DatabaseContextType>(contextType, ignoreCase: true, out DatabaseContextType parsedType))
             options.ContextType = parsedType;
-        
+
         string? enableHybridMode = Environment.GetEnvironmentVariable($"{Prefix}ENABLEHYBRIDMODE");
         if (!string.IsNullOrWhiteSpace(enableHybridMode) && bool.TryParse(enableHybridMode, out bool hybridMode))
             options.EnableHybridMode = hybridMode;
-        
+
         string? baselineOnly = Environment.GetEnvironmentVariable($"{Prefix}BASELINEONLY");
         if (!string.IsNullOrWhiteSpace(baselineOnly) && bool.TryParse(baselineOnly, out bool baseline))
             options.BaselineOnly = baseline;
-        
+
         string? commandTimeout = Environment.GetEnvironmentVariable($"{Prefix}COMMANDTIMEOUT");
         if (!string.IsNullOrWhiteSpace(commandTimeout) && int.TryParse(commandTimeout, out int timeout))
             options.CommandTimeout = timeout;
-        
+
         string? maxRetryCount = Environment.GetEnvironmentVariable($"{Prefix}MAXRETRYCOUNT");
         if (!string.IsNullOrWhiteSpace(maxRetryCount) && int.TryParse(maxRetryCount, out int retryCount))
             options.MaxRetryCount = retryCount;
@@ -200,11 +200,11 @@ public static class DbContextConfigurator
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             ConfigureNpgsqlOptions(serviceProvider, optionsBuilder, connectionString, options, isFactory: true);
             var dbContextOptions = optionsBuilder.Options;
-            
+
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<ApplicationDbContext>();
-            
+
             return new ApplicationDbContextFactory(dbContextOptions, configuration, logger);
         });
 
@@ -257,11 +257,11 @@ public static class DbContextConfigurator
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             ConfigureNpgsqlOptions(serviceProvider, optionsBuilder, connectionString, options, isFactory: true);
             var dbContextOptions = optionsBuilder.Options;
-            
+
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<ApplicationDbContext>();
-            
+
             return new ApplicationDbContextFactory(dbContextOptions, configuration, logger);
         });
 
@@ -284,7 +284,7 @@ public static class DbContextConfigurator
         // Create NpgsqlDataSource with EnableDynamicJson for JSONB support (required since Npgsql 8.0)
         // This is required for Dictionary<string, string> and other dynamic JSON types
         var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(connectionString);
-        
+
         var jsonOptions = new System.Text.Json.JsonSerializerOptions
         {
             PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.SnakeCaseLower,
@@ -292,7 +292,7 @@ public static class DbContextConfigurator
             DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
         };
         jsonOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-        
+
         dataSourceBuilder.ConfigureJsonOptions(jsonOptions);
         dataSourceBuilder.EnableDynamicJson();
         var dataSource = dataSourceBuilder.Build();
@@ -318,7 +318,7 @@ public static class DbContextConfigurator
             {
                 dbOptions.AddInterceptors(tenantInterceptor);
             }
-            
+
             var tenantSecurityInterceptor = serviceProvider.GetService<TenantSecurityInterceptor>();
             if (tenantSecurityInterceptor is not null)
             {

@@ -5,6 +5,7 @@ using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppBlueprint.Infrastructure.Repositories;
+
 public class AccountRepository : IAccountRepository
 {
     private readonly ApplicationDbContext _context;

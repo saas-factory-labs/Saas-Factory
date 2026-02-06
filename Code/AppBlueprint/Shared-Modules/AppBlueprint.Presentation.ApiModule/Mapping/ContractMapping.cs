@@ -1,30 +1,30 @@
+using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
+using AppBlueprint.Contracts.Baseline.Address.Responses;
 using AppBlueprint.Contracts.Baseline.AuditLog.Requests;
 using AppBlueprint.Contracts.Baseline.AuditLog.Responses;
-using AppBlueprint.SharedKernel;
 using AppBlueprint.Contracts.Baseline.ContactPerson.Requests;
 using AppBlueprint.Contracts.Baseline.ContactPerson.Responses;
 using AppBlueprint.Contracts.Baseline.DataExport.Requests;
 using AppBlueprint.Contracts.Baseline.DataExport.Responses;
+using AppBlueprint.Contracts.Baseline.EmailAddress.Responses;
 using AppBlueprint.Contracts.Baseline.File.Requests;
 using AppBlueprint.Contracts.Baseline.File.Responses;
 using AppBlueprint.Contracts.Baseline.Integrations.Requests;
 using AppBlueprint.Contracts.Baseline.Integrations.Responses;
 using AppBlueprint.Contracts.Baseline.Notification.Requests;
 using AppBlueprint.Contracts.Baseline.Notification.Responses;
+using AppBlueprint.Contracts.Baseline.Permissions.Responses;
+using AppBlueprint.Contracts.Baseline.PhoneNumber.Responses;
 using AppBlueprint.Contracts.Baseline.Profile.Requests;
 using AppBlueprint.Contracts.Baseline.Profile.Responses;
 using AppBlueprint.Contracts.Baseline.Role.Requests;
 using AppBlueprint.Contracts.Baseline.Role.Responses;
+using AppBlueprint.Contracts.Baseline.User.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
 using AccountResponse = AppBlueprint.Contracts.Baseline.Account.Responses.AccountResponse;
 using CreateAccountRequest = AppBlueprint.Contracts.Baseline.Account.Requests.CreateAccountRequest;
-using AppBlueprint.Contracts.Baseline.EmailAddress.Responses;
-using AppBlueprint.Contracts.Baseline.Address.Responses;
-using AppBlueprint.Contracts.Baseline.PhoneNumber.Responses;
-using AppBlueprint.Contracts.Baseline.Permissions.Responses;
-using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
-using AppBlueprint.Contracts.Baseline.User.Responses;
 
 namespace AppBlueprint.Presentation.ApiModule.Mapping
 {

@@ -184,8 +184,8 @@
         if (ChartData is null || !ChartData.Any())
             return [];
 
-        string borderColor = ChartColor;
-        string backgroundColor = ChartColor;
+        string borderColor = ChartColor ?? string.Empty;
+        string backgroundColor = ChartColor ?? string.Empty;
 
         if (string.IsNullOrEmpty(borderColor))
         {

@@ -14,7 +14,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
     private readonly ILogger<RowLevelSecurityHealthCheck> _logger;
 
     // Tables that MUST have RLS enabled for tenant isolation
-    private static readonly string[] RequiredRlsTables = 
+    private static readonly string[] RequiredRlsTables =
     [
         "Users",
         "Teams",
@@ -27,7 +27,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
     ];
 
     // Tables that should have RLS if they exist (optional)
-    private static readonly string[] OptionalRlsTables = 
+    private static readonly string[] OptionalRlsTables =
     [
         "AuditLogs",
         "ApiLogs"
@@ -62,7 +62,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
 
             // Step 2: Check RLS status on required tables
             var rlsStatus = await GetRlsStatusAsync(connection, cancellationToken);
-            
+
             var missingRls = new List<string>();
             var missingTables = new List<string>();
 
@@ -114,7 +114,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
             var enabledTables = rlsStatus.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
             string successMessage = $"Row-Level Security enabled and configured on {enabledTables.Count} tables: {string.Join(", ", enabledTables)}";
             _logger.LogInformation("[RLS Health Check] ✅ {SuccessMessage}", successMessage);
-            
+
             return HealthCheckResult.Healthy(successMessage);
         }
         catch (NpgsqlException ex)
@@ -138,7 +138,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
     }
 
     private static async Task<bool> VerifyRlsFunctionsExistAsync(
-        NpgsqlConnection connection, 
+        NpgsqlConnection connection,
         CancellationToken cancellationToken)
     {
         const string query = @"
@@ -148,7 +148,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
 
         await using var command = new NpgsqlCommand(query, connection);
         var result = await command.ExecuteScalarAsync(cancellationToken);
-        
+
         // Should return 2 (both functions exist)
         return Convert.ToInt32(result, System.Globalization.CultureInfo.InvariantCulture) == 2;
     }

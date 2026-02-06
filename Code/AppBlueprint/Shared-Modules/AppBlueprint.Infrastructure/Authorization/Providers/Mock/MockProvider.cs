@@ -44,7 +44,7 @@ public class MockProvider : BaseAuthenticationProvider
             };
 
             await StoreTokens(result);
-            
+
             _logger.LogInformation("Mock login successful for user: {Email}", request.Email);
             return result;
         }
@@ -90,7 +90,7 @@ public class MockProvider : BaseAuthenticationProvider
             };
 
             await StoreTokens(result);
-            
+
             _logger.LogInformation("Mock token refresh successful");
             return result;
         }
@@ -211,7 +211,7 @@ public static class StringExtensions
     public static string PadBase64(this string base64)
     {
         ArgumentNullException.ThrowIfNull(base64);
-        
+
         switch (base64.Length % 4)
         {
             case 2: return base64 + "==";

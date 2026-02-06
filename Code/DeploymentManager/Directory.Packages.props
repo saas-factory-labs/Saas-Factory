@@ -145,7 +145,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.13.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.13.0" />
-    <PackageVersion Include="StrawberryShake.CodeGeneration.CSharp.Analyzers" Version="12.22.6" />
+    <!-- StrawberryShake.CodeGeneration.CSharp.Analyzers removed - see DeploymentManager.Codeflow.csproj for details -->
     <PackageVersion Include="StrawberryShake.Core" Version="15.1.3" />
     <PackageVersion Include="StrawberryShake.Transport.Http" Version="15.1.3" />
     <PackageVersion Include="StrawberryShake.Transport.WebSockets" Version="15.1.3" />

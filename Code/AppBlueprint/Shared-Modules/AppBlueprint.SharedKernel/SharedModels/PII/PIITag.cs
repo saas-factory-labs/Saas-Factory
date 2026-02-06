@@ -8,7 +8,7 @@ public record PIITag
     /// The category or label of the detected PII (e.g., "Email", "Phone", "CreditCard", "DanishCPR").
     /// </summary>
     public string Type { get; init; } = default!;
-    
+
     /// <summary>
     /// The actual sensitive value detected.
     /// </summary>

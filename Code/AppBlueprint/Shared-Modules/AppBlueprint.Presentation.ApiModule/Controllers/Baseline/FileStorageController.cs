@@ -108,7 +108,7 @@ public sealed class FileStorageController : BaseController
 
         if (!validationResult.IsValid)
         {
-            _logger.LogWarning("File validation failed: {FileName}, Errors: {Errors}", 
+            _logger.LogWarning("File validation failed: {FileName}, Errors: {Errors}",
                 file.FileName, string.Join(", ", validationResult.Errors));
             return BadRequest(new { Message = "File validation failed", Errors = validationResult.Errors });
         }
@@ -142,7 +142,7 @@ public sealed class FileStorageController : BaseController
             CustomMetadata = storedFile.CustomMetadata
         };
 
-        _logger.LogInformation("File uploaded successfully: {FileKey}, Size: {Size} bytes", 
+        _logger.LogInformation("File uploaded successfully: {FileKey}, Size: {Size} bytes",
             storedFile.FileKey, storedFile.SizeInBytes);
 
         return Ok(response);

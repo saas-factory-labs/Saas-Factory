@@ -1,4 +1,4 @@
-﻿namespace AppBlueprint.Infrastructure.Enums;
+namespace AppBlueprint.Infrastructure.Enums;
 
 public enum SaaSTypes
 {

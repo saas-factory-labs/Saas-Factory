@@ -1,9 +1,9 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Chat.Models;
 
-public class ChatModel: BaseEntity
+public class ChatModel : BaseEntity
 {
     public ChatModel()
     {
@@ -21,9 +21,9 @@ public class ChatModel: BaseEntity
 
     public required bool IsActive { get; set; }
     public string? Description { get; set; }
-    
+
     public required UserEntity Owner { get; set; }
-    public required string OwnerId { get; set; } 
+    public required string OwnerId { get; set; }
 
     public List<ChatMessageModel>? ChatMessages { get; set; }
 }

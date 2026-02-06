@@ -19,7 +19,7 @@ internal sealed class ObjectStorageService : IDisposable
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(logger);
-        
+
         _options = options.Value;
         _logger = logger;
 

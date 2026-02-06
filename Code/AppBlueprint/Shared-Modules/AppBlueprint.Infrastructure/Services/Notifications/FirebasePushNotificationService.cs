@@ -31,7 +31,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
         _configuration = configuration;
         InitializeFirebase();
     }
-    
+
     private void InitializeFirebase()
     {
         try
@@ -49,7 +49,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
                     _isInitialized = true;
                     return;
                 }
-                
+
                 string? credentialsJson = _configuration["Firebase:CredentialsJson"];
                 string? projectId = _configuration["Firebase:ProjectId"];
 
@@ -113,7 +113,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
                 _logger.LogDebug("Sending to token: {Token}", string.Concat(token.Token.AsSpan(0, Math.Min(token.Token.Length, 10)), "..."));
             }
         }
-        
+
         MulticastMessage message = BuildFcmMessage(
             request.Title,
             request.Body,
@@ -129,7 +129,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
 
         await HandleFailedTokensAsync(response, tokens);
     }
-    
+
     public async Task<int> SendToTenantAsync(string tenantId, string title, string body, Dictionary<string, string>? data = null, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
@@ -141,9 +141,9 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
             _logger.LogWarning("Firebase not initialized. Cannot send notification to tenant {TenantId}", tenantId);
             return 0;
         }
-        
+
         List<PushNotificationTokenEntity> tokens = await _tokenRepository.GetActiveByTenantIdAsync(tenantId, cancellationToken);
-        
+
         if (tokens.Count == 0)
         {
             _logger.LogInformation("No active push tokens found for tenant {TenantId}", tenantId);
@@ -164,7 +164,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
             response.SuccessCount, response.FailureCount);
 
         await HandleFailedTokensAsync(response, tokens);
-        
+
         return response.SuccessCount;
     }
 
@@ -212,11 +212,11 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
     }
 
     private MulticastMessage BuildFcmMessage(
-        string title, 
-        string body, 
-        Uri? imageUrl, 
-        Uri? actionUrl, 
-        Dictionary<string, string>? data, 
+        string title,
+        string body,
+        Uri? imageUrl,
+        Uri? actionUrl,
+        Dictionary<string, string>? data,
         List<string> tokens)
     {
         Notification notification = new()

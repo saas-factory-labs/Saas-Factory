@@ -1,9 +1,9 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
 
-public class GlobalRegionEntity: BaseEntity
+public class GlobalRegionEntity : BaseEntity
 {
     public GlobalRegionEntity()
     {

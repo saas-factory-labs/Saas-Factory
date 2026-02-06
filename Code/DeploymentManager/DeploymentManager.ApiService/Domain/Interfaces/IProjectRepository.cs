@@ -4,7 +4,7 @@ namespace Domain.Interfaces;
 
 public interface IProjectRepository
 {
-    ProjectEntity GetById(int id);
+    ProjectEntity? GetById(int id);
     IEnumerable<ProjectEntity> GetAll();
     void Add(ProjectEntity project);
     void Update(ProjectEntity project);

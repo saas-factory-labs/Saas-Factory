@@ -1,4 +1,4 @@
-﻿namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
 public sealed class ApiLogEntity
 {

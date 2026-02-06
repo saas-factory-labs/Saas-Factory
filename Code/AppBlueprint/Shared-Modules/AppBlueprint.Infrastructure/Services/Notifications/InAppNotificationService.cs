@@ -16,7 +16,7 @@ public sealed class InAppNotificationService(
     public async Task SendAsync(SendNotificationRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
-        
+
         Console.WriteLine($"[InAppNotificationService] SendAsync - TenantId: '{request.TenantId}', UserId: '{request.UserId}'");
 
         // Create and save notification

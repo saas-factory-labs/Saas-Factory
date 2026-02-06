@@ -1,8 +1,8 @@
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Contracts.B2B.Contracts.Team.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.Team.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -170,8 +170,8 @@ public sealed class PostgreSqlSearchService<TEntity, TDbContext> : ISearchServic
             return string.Empty;
 
         // If user already provided tsquery operators, use as-is
-        if (searchText.Contains('&', StringComparison.Ordinal) || 
-            searchText.Contains('|', StringComparison.Ordinal) || 
+        if (searchText.Contains('&', StringComparison.Ordinal) ||
+            searchText.Contains('|', StringComparison.Ordinal) ||
             searchText.Contains('!', StringComparison.Ordinal))
             return searchText;
 

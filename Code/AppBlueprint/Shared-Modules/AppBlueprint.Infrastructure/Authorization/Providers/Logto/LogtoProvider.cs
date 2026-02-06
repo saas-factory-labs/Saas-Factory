@@ -25,10 +25,10 @@ public class LogtoProvider : BaseAuthenticationProvider
 
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        
+
         _configuration = new LogtoConfiguration();
         configuration.GetSection("Authentication:Logto").Bind(_configuration);
-        
+
         ValidateConfiguration();
     }
 
@@ -39,7 +39,7 @@ public class LogtoProvider : BaseAuthenticationProvider
         try
         {
             _logger.LogInformation("Attempting Logto login for user: {Email}", request.Email);
-            
+
             // Logto uses OAuth2 Resource Owner Password Credentials Grant
             using var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -56,11 +56,11 @@ public class LogtoProvider : BaseAuthenticationProvider
             var response = await _httpClient.PostAsync(new Uri($"{_configuration.Endpoint}/oidc/token", UriKind.Absolute), formContent, cancellationToken);
 
             var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            
+
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Logto login successful for user: {Email}", request.Email);
-                
+
                 var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(responseContent, JsonOptions);
 
                 if (tokenResponse?.AccessToken != null)
@@ -79,9 +79,9 @@ public class LogtoProvider : BaseAuthenticationProvider
             }
 
             // Log the full error response for debugging
-            _logger.LogError("Logto login failed with status: {StatusCode}, Response: {Response}", 
+            _logger.LogError("Logto login failed with status: {StatusCode}, Response: {Response}",
                 response.StatusCode, responseContent);
-            
+
             // Try to parse error for better user feedback
             string errorMessage = "Login failed. Please check your credentials.";
             try
@@ -109,7 +109,7 @@ public class LogtoProvider : BaseAuthenticationProvider
                 // If we can't parse the error, use the default message
             }
 #pragma warning restore CA1031
-            
+
             return new AuthenticationResult
             {
                 IsSuccess = false,
@@ -213,7 +213,7 @@ public class LogtoProvider : BaseAuthenticationProvider
             // This is a simplified version - in production you'd decode the JWT
             AccessToken = storedToken;
             TokenExpiration = DateTime.UtcNow.AddHours(1); // Default expiration
-            
+
             NotifyAuthenticationStateChanged();
         }
 #pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional, use re-login on any error
@@ -230,10 +230,10 @@ public class LogtoProvider : BaseAuthenticationProvider
     {
         if (string.IsNullOrEmpty(_configuration.Endpoint))
             throw new InvalidOperationException("Logto Endpoint is required in configuration");
-        
+
         if (string.IsNullOrEmpty(_configuration.ClientId))
             throw new InvalidOperationException("Logto ClientId is required in configuration");
-        
+
         if (string.IsNullOrEmpty(_configuration.ClientSecret))
             throw new InvalidOperationException("Logto ClientSecret is required in configuration");
     }

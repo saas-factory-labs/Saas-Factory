@@ -1,9 +1,9 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.EntityConfigurations;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using OrganizationEntity = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity;
 using OrganizationEntityConfiguration = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntityConfiguration;
 
@@ -28,7 +28,7 @@ public partial class B2BDbContext : BaselineDbContext
     }
 
     public DbSet<ApiKeyEntity> ApiKeys { get; set; }
-    public DbSet<OrganizationEntity> Organizations { get; set; }    
+    public DbSet<OrganizationEntity> Organizations { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -44,7 +44,7 @@ public partial class B2BDbContext : BaselineDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
-        
+
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new ApiKeyEntityConfiguration());

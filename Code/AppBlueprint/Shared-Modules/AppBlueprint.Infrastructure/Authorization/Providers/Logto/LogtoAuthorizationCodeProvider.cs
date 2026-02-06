@@ -31,10 +31,10 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
 
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        
+
         _configuration = new LogtoConfiguration();
         configuration.GetSection("Authentication:Logto").Bind(_configuration);
-        
+
         ValidateConfiguration();
     }
 
@@ -73,7 +73,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
         // Generate PKCE parameters
         var codeVerifier = GenerateCodeVerifier();
         var codeChallenge = GenerateCodeChallenge(codeVerifier);
-        
+
         // Encode the code_verifier into the state parameter so it survives the redirect
         var stateData = new
         {
@@ -83,7 +83,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
         var stateJson = JsonSerializer.Serialize(stateData);
         var state = Base64UrlEncode(Encoding.UTF8.GetBytes(stateJson));
 
-        _logger.LogInformation("Generated PKCE parameters - CodeVerifier length: {Length}, State length: {StateLength}", 
+        _logger.LogInformation("Generated PKCE parameters - CodeVerifier length: {Length}, State length: {StateLength}",
             codeVerifier.Length, state.Length);
 
         var authUrl = $"{_configuration.Endpoint}/oidc/auth?" +
@@ -105,9 +105,9 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1054:URI parameters should not be strings", Justification = "OAuth redirect URIs are provided as strings by authentication protocols")]
     public async Task<AuthenticationResult> ExchangeCodeForTokensAsync(
-        string code, 
+        string code,
         string state,
-        string redirectUri, 
+        string redirectUri,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(state);
@@ -115,7 +115,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
         try
         {
             _logger.LogInformation("Starting token exchange for authorization code");
-            
+
             // Extract code_verifier from the state parameter
             string? codeVerifier = null;
             try
@@ -123,7 +123,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 var stateBytes = Base64UrlDecode(state);
                 var stateJson = Encoding.UTF8.GetString(stateBytes);
                 var stateData = JsonSerializer.Deserialize<JsonElement>(stateJson);
-                
+
                 if (stateData.TryGetProperty("cv", out var cvElement))
                 {
                     codeVerifier = cvElement.GetString();
@@ -138,7 +138,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             {
                 _logger.LogError(ex, "Invalid operation extracting code verifier from state parameter");
             }
-            
+
             if (string.IsNullOrEmpty(codeVerifier))
             {
                 _logger.LogError("Code verifier not found in state parameter");
@@ -162,18 +162,18 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             });
 
             var response = await _httpClient.PostAsync(
-                new Uri($"{_configuration.Endpoint}/oidc/token", UriKind.Absolute), 
-                formContent, 
+                new Uri($"{_configuration.Endpoint}/oidc/token", UriKind.Absolute),
+                formContent,
                 cancellationToken);
 
             var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            
+
             _logger.LogInformation("Token exchange response status: {StatusCode}", response.StatusCode);
 
             if (response.IsSuccessStatusCode)
             {
                 var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(
-                    responseContent, 
+                    responseContent,
                     JsonOptions);
 
                 if (tokenResponse?.AccessToken != null)
@@ -190,11 +190,11 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                     _logger.LogInformation("Successfully exchanged authorization code for tokens");
                     return result;
                 }
-                
+
                 _logger.LogError("Token response did not contain access token");
             }
 
-            _logger.LogError("Token exchange failed with status: {StatusCode}, Response: {Response}", 
+            _logger.LogError("Token exchange failed with status: {StatusCode}, Response: {Response}",
                 response.StatusCode, responseContent);
 
             return new AuthenticationResult
@@ -221,12 +221,12 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     /// Users must be redirected to Logto's hosted login page
     /// </summary>
     public override Task<AuthenticationResult> LoginAsync(
-        LoginRequest request, 
+        LoginRequest request,
         CancellationToken cancellationToken = default)
     {
         _logger.LogWarning("Direct password login is not supported with Authorization Code Flow. " +
             "Use GetAuthorizationUrl() to redirect users to Logto's hosted login page.");
-        
+
         return Task.FromResult(new AuthenticationResult
         {
             IsSuccess = false,
@@ -256,15 +256,15 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             });
 
             var response = await _httpClient.PostAsync(
-                new Uri($"{_configuration.Endpoint}/oidc/token", UriKind.Absolute), 
-                formContent, 
+                new Uri($"{_configuration.Endpoint}/oidc/token", UriKind.Absolute),
+                formContent,
                 cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(
-                    responseContent, 
+                    responseContent,
                     JsonOptions);
 
                 if (tokenResponse?.AccessToken != null)
@@ -322,10 +322,10 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     {
         if (string.IsNullOrEmpty(_configuration.Endpoint))
             throw new InvalidOperationException("Logto Endpoint is required in configuration");
-        
+
         if (string.IsNullOrEmpty(_configuration.ClientId))
             throw new InvalidOperationException("Logto ClientId is required in configuration");
-        
+
         if (string.IsNullOrEmpty(_configuration.ClientSecret))
             throw new InvalidOperationException("Logto ClientSecret is required in configuration");
     }

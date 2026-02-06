@@ -94,12 +94,16 @@ public partial class ArchitectureDiagram
         };
 
         foreach (NodeModel? node in Diagram.Nodes)
-            if (dependencies.ContainsKey(node.Title))
+        {
+            if (node is not null && node.Title is not null && dependencies.ContainsKey(node.Title))
+            {
                 foreach (string? dependency in dependencies[node.Title])
                 {
                     NodeModel? targetNode = Diagram.Nodes.First(n => n.Title == dependency);
                     if (targetNode is not null) Diagram.Links.Add(new LinkModel(node, targetNode));
                 }
+            }
+        }
     }
 
     private void ExtractApiControllers()

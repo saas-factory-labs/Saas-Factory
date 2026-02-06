@@ -64,9 +64,9 @@ public sealed class FileValidationService : IFileValidationService
     }
 
     public async Task<FileValidationResult> ValidateAsync(
-        string fileName, 
-        string contentType, 
-        long fileSizeBytes, 
+        string fileName,
+        string contentType,
+        long fileSizeBytes,
         Stream fileStream)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
@@ -110,7 +110,7 @@ public sealed class FileValidationService : IFileValidationService
         long maxImageSizeBytes = _options.MaxImageSizeMB * 1024L * 1024L;
         long maxDocumentSizeBytes = _options.MaxDocumentSizeMB * 1024L * 1024L;
         long maxVideoSizeBytes = _options.MaxVideoSizeMB * 1024L * 1024L;
-        
+
         if (fileSizeBytes <= 0)
         {
             errors.Add("File is empty.");
@@ -160,14 +160,14 @@ public sealed class FileValidationService : IFileValidationService
         {
             stream.Position = 0;
             int bytesRead = await stream.ReadAsync(buffer.AsMemory(0, 12));
-            
+
             if (bytesRead < 4)
             {
                 return false;
             }
 
             // JPEG: FF D8 FF
-            if (contentType.Contains("jpeg", StringComparison.OrdinalIgnoreCase) || 
+            if (contentType.Contains("jpeg", StringComparison.OrdinalIgnoreCase) ||
                 contentType.Contains("jpg", StringComparison.OrdinalIgnoreCase))
             {
                 return buffer[0] == 0xFF && buffer[1] == 0xD8 && buffer[2] == 0xFF;

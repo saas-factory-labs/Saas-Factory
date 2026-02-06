@@ -1,10 +1,10 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts;
+using System.Data.Common;
+using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
@@ -14,9 +14,9 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Sub
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
-using System.Data.Common;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
 using AppBlueprint.Infrastructure.Resources;
@@ -180,7 +180,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
                     logger.LogWarning("Skipping invalid table name: {TableName}", tableName);
                     continue;
                 }
-                
+
                 // Use EF Core's ExecuteSqlRaw with validated table name from schema
                 // Table names cannot be parameterized, but we validate it comes from EF schema
 #pragma warning disable CA2100 // Table name is validated from EF Core schema metadata
@@ -190,7 +190,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
                     cancellationToken);
 #pragma warning restore EF1002
 #pragma warning restore CA2100
-                
+
                 logger.LogInformation("Successfully truncated table: {TableName}", tableName);
             }
             catch (Npgsql.PostgresException ex) when (ex.SqlState == "42P01") // Table does not exist

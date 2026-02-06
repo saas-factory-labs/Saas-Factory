@@ -26,7 +26,7 @@ public sealed class PostgreSqlSessionManager
 
         // Use parameterized connection to set session variable
         NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection;
-        
+
         if (connection == null)
             throw new InvalidOperationException("Database connection is not a PostgreSQL connection");
 
@@ -38,7 +38,7 @@ public sealed class PostgreSqlSessionManager
         await using NpgsqlCommand command = connection.CreateCommand();
         command.CommandText = "SELECT set_config('app.current_tenant_id', $1, FALSE)";
         command.Parameters.AddWithValue(tenantId);
-        
+
         await command.ExecuteNonQueryAsync();
     }
 
@@ -50,7 +50,7 @@ public sealed class PostgreSqlSessionManager
     public async Task SetAdminFlagAsync(bool isAdmin)
     {
         NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection;
-        
+
         if (connection == null)
             throw new InvalidOperationException("Database connection is not a PostgreSQL connection");
 
@@ -60,7 +60,7 @@ public sealed class PostgreSqlSessionManager
         await using NpgsqlCommand command = connection.CreateCommand();
         command.CommandText = "SELECT set_config('app.is_admin', $1, FALSE)";
         command.Parameters.AddWithValue(isAdmin ? "true" : "false");
-        
+
         await command.ExecuteNonQueryAsync();
     }
 
@@ -71,7 +71,7 @@ public sealed class PostgreSqlSessionManager
     public async Task ClearSessionVariablesAsync()
     {
         NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection;
-        
+
         if (connection == null)
             return; // Not a PostgreSQL connection, nothing to clear
 
@@ -85,7 +85,7 @@ public sealed class PostgreSqlSessionManager
                 SELECT set_config('app.current_tenant_id', '', FALSE);
                 SELECT set_config('app.is_admin', 'false', FALSE);
             ";
-            
+
             await command.ExecuteNonQueryAsync();
         }
         catch
@@ -105,7 +105,7 @@ public sealed class PostgreSqlSessionManager
         ArgumentException.ThrowIfNullOrEmpty(tenantId);
 
         NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection;
-        
+
         if (connection == null)
             throw new InvalidOperationException("Database connection is not a PostgreSQL connection");
 
@@ -120,7 +120,7 @@ public sealed class PostgreSqlSessionManager
         ";
         command.Parameters.AddWithValue(tenantId);
         command.Parameters.AddWithValue(isAdmin ? "true" : "false");
-        
+
         await command.ExecuteNonQueryAsync();
     }
 }

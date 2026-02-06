@@ -10,7 +10,7 @@ public sealed class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserR
 {
     // Static readonly array for composite index (CA1861)
     private static readonly string[] UserRoleCompositeIndex = new[] { "UserId", "RoleId" };
-    
+
     public void Configure(EntityTypeBuilder<UserRoleEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);        // Define table name

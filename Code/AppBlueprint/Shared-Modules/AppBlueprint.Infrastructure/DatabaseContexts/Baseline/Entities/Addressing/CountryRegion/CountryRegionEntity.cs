@@ -1,4 +1,4 @@
-﻿using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 

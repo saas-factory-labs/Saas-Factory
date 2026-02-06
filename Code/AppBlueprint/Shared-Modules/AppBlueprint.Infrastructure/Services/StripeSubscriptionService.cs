@@ -12,7 +12,7 @@ public class StripeSubscriptionService
     public StripeSubscriptionService(IOptions<StripeOptions> options)
     {
         ArgumentNullException.ThrowIfNull(options);
-        
+
         _options = options.Value;
         StripeConfiguration.ApiKey = _options.ApiKey;
     }
@@ -29,7 +29,7 @@ public class StripeSubscriptionService
             }
         };
         var customerService = new CustomerService();
-        
+
         // TODO: Implement actual customer creation logic
         // For now, returning null is acceptable since return type is nullable
         return null;

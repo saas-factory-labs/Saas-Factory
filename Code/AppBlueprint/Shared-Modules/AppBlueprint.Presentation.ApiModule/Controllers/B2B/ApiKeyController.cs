@@ -1,10 +1,10 @@
 using AppBlueprint.Application.Constants;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Contracts.B2B.Contracts.ApiKey.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.ApiKey.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Application.Interfaces.UnitOfWork;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -89,13 +89,13 @@ public class ApiKeyController : BaseController
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(apiKeyDto);
-        
+
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        
+
         string tenantId = HttpContext.Items["TenantId"]?.ToString() ?? "default-tenant";
         string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
         string? userEmail = User.FindFirst("email")?.Value;
-        
+
         var newApiKey = new ApiKeyEntity
         {
             Name = apiKeyDto.Name,

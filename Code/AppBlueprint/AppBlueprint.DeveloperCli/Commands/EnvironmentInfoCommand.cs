@@ -37,13 +37,13 @@ internal static class EnvironmentInfoCommand
         // Create panels for different sections
         DisplayConfigurationInfo();
         AnsiConsole.WriteLine();
-        
+
         DisplayServicesStatus();
         AnsiConsole.WriteLine();
-        
+
         DisplaySystemInfo();
         AnsiConsole.WriteLine();
-        
+
         DisplayProjectPaths();
     }
 
@@ -56,13 +56,13 @@ internal static class EnvironmentInfoCommand
             .AddColumn(new TableColumn("[cyan]Value[/]"));
 
         // Database
-        string dbConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") 
+        string dbConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING")
             ?? Environment.GetEnvironmentVariable("CONNECTIONSTRINGS_DATABASE")
             ?? "Not set";
-        
+
         // Mask password in connection string for display
         string displayDbConnection = MaskPassword(dbConnectionString);
-        
+
         table.AddRow(
             "Database Connection",
             dbConnectionString == "Not set" ? "[yellow]Not set[/]" : $"[dim]{displayDbConnection}[/]"
@@ -184,14 +184,14 @@ internal static class EnvironmentInfoCommand
         var tree = new Tree("[yellow]Project Paths[/]");
 
         string currentDir = Directory.GetCurrentDirectory();
-        
+
         // Try to locate key project directories
         var projectRoot = FindProjectRoot(currentDir);
-        
+
         if (projectRoot is not null)
         {
             var rootNode = tree.AddNode($"[green]Root:[/] [dim]{projectRoot}[/]");
-            
+
             // Check for key directories
             CheckAndAddNode(rootNode, projectRoot, "Code/AppBlueprint", "AppBlueprint");
             CheckAndAddNode(rootNode, projectRoot, "Code/DeploymentManager", "DeploymentManager");
@@ -219,7 +219,7 @@ internal static class EnvironmentInfoCommand
             .Group(Pattern.With.NegatedSet(Pattern.With.Literal(";")).Repeat.OneOrMore)
             .ToString(),
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-        
+
         return regex.Replace(connectionString, "Password=***");
     }
 
@@ -274,7 +274,7 @@ internal static class EnvironmentInfoCommand
 
             string output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
-            
+
             return !string.IsNullOrWhiteSpace(output);
         }
         catch
@@ -305,7 +305,7 @@ internal static class EnvironmentInfoCommand
 
             string output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
-            
+
             // Check if port appears in netstat output
             return output.Contains($":{port}", StringComparison.Ordinal);
         }
@@ -337,7 +337,7 @@ internal static class EnvironmentInfoCommand
 
             string version = process.StandardOutput.ReadToEnd().Trim();
             process.WaitForExit();
-            
+
             return string.IsNullOrWhiteSpace(version) ? "Not found" : version;
         }
         catch
@@ -368,7 +368,7 @@ internal static class EnvironmentInfoCommand
 
             string version = process.StandardOutput.ReadToEnd().Trim();
             process.WaitForExit();
-            
+
             return string.IsNullOrWhiteSpace(version) ? "Not installed" : version;
         }
         catch
@@ -401,7 +401,7 @@ internal static class EnvironmentInfoCommand
     private static void CheckAndAddNode(TreeNode parentNode, string rootPath, string relativePath, string label)
     {
         string fullPath = Path.Combine(rootPath, relativePath);
-        
+
         if (Directory.Exists(fullPath))
         {
             parentNode.AddNode($"[green]✓[/] {label}: [dim]{relativePath}[/]");

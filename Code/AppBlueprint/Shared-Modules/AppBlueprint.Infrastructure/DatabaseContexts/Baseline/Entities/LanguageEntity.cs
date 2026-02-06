@@ -1,8 +1,8 @@
-﻿using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
-public class LanguageEntity: BaseEntity
+public class LanguageEntity : BaseEntity
 {
     public LanguageEntity()
     {

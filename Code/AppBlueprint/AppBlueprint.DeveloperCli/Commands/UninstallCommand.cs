@@ -142,17 +142,17 @@ internal static class UninstallCommand
     private static string? GetShellProfilePath()
     {
         string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        
+
         if (File.Exists(Path.Combine(home, ".zshrc")))
         {
             return Path.Combine(home, ".zshrc");
         }
-        
+
         if (File.Exists(Path.Combine(home, ".bashrc")))
         {
             return Path.Combine(home, ".bashrc");
         }
-        
+
         return Path.Combine(home, ".bash_profile");
     }
 

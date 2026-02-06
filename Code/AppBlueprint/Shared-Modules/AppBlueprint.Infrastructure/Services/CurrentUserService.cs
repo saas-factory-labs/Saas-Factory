@@ -1,6 +1,6 @@
+using System.Security.Claims;
 using AppBlueprint.Application.Services;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace AppBlueprint.Infrastructure.Services;
 
@@ -28,15 +28,15 @@ public sealed class CurrentUserService : ICurrentUserService
         get
         {
             HttpContext? context = _httpContextAccessor.HttpContext;
-            
+
             if (context?.User?.Identity?.IsAuthenticated != true)
                 return null;
 
             // Try "sub" claim first (standard JWT claim), fallback to "userId"
-            string? userId = context.User.FindFirst("sub")?.Value 
+            string? userId = context.User.FindFirst("sub")?.Value
                 ?? context.User.FindFirst("userId")?.Value
                 ?? context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
+
             return userId;
         }
     }
@@ -50,13 +50,13 @@ public sealed class CurrentUserService : ICurrentUserService
         get
         {
             HttpContext? context = _httpContextAccessor.HttpContext;
-            
+
             if (context?.User?.Identity?.IsAuthenticated != true)
                 return null;
 
-            string? email = context.User.FindFirst("email")?.Value 
+            string? email = context.User.FindFirst("email")?.Value
                 ?? context.User.FindFirst(ClaimTypes.Email)?.Value;
-            
+
             return email;
         }
     }
@@ -72,14 +72,14 @@ public sealed class CurrentUserService : ICurrentUserService
         ArgumentNullException.ThrowIfNull(role);
 
         HttpContext? context = _httpContextAccessor.HttpContext;
-        
+
         if (context?.User?.Identity?.IsAuthenticated != true)
             return false;
 
         // Check if user has the role claim
         // JWT tokens may use "role" claim, while ASP.NET uses ClaimTypes.Role
-        bool hasRole = context.User.HasClaim(c => 
-            (c.Type == "role" || c.Type == ClaimTypes.Role) && 
+        bool hasRole = context.User.HasClaim(c =>
+            (c.Type == "role" || c.Type == ClaimTypes.Role) &&
             c.Value.Equals(role, StringComparison.OrdinalIgnoreCase));
 
         return hasRole;
@@ -94,7 +94,7 @@ public sealed class CurrentUserService : ICurrentUserService
         get
         {
             HttpContext? context = _httpContextAccessor.HttpContext;
-            
+
             if (context?.User?.Identity?.IsAuthenticated != true)
                 return Enumerable.Empty<string>();
 

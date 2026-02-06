@@ -19,7 +19,7 @@ public static class ConfigurationValidator
         if (string.IsNullOrWhiteSpace(value))
         {
             var errorMessage = $"Required configuration '{configKey}' is missing or empty.\n";
-            
+
             if (!string.IsNullOrWhiteSpace(helpMessage))
             {
                 errorMessage += $"\n{helpMessage}";
@@ -28,7 +28,7 @@ public static class ConfigurationValidator
             {
                 errorMessage += $"\nPlease set the '{configKey}' configuration value.";
             }
-            
+
             throw new InvalidOperationException(errorMessage);
         }
     }
@@ -45,8 +45,8 @@ public static class ConfigurationValidator
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            var keysChecked = configKeys.Length > 0 
-                ? string.Join(", ", configKeys) 
+            var keysChecked = configKeys.Length > 0
+                ? string.Join(", ", configKeys)
                 : "DATABASE_CONNECTIONSTRING, appblueprintdb, postgres-server, DefaultConnection";
 
             throw new InvalidOperationException(
@@ -80,13 +80,13 @@ public static class ConfigurationValidator
         ArgumentNullException.ThrowIfNull(configuration);
 
         // Read from flat UPPERCASE environment variables first, then fall back to IConfiguration
-        string? logtoAppId = Environment.GetEnvironmentVariable("LOGTO_APP_ID") 
-                          ?? Environment.GetEnvironmentVariable("LOGTO_APPID") 
+        string? logtoAppId = Environment.GetEnvironmentVariable("LOGTO_APP_ID")
+                          ?? Environment.GetEnvironmentVariable("LOGTO_APPID")
                           ?? configuration["Logto:AppId"];
-        string? logtoEndpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT") 
+        string? logtoEndpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT")
                              ?? configuration["Logto:Endpoint"];
-        string? logtoAppSecret = Environment.GetEnvironmentVariable("LOGTO_APP_SECRET") 
-                              ?? Environment.GetEnvironmentVariable("LOGTO_APPSECRET") 
+        string? logtoAppSecret = Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")
+                              ?? Environment.GetEnvironmentVariable("LOGTO_APPSECRET")
                               ?? configuration["Logto:AppSecret"];
 
         bool hasEndpoint = !string.IsNullOrWhiteSpace(logtoEndpoint);
@@ -101,19 +101,19 @@ public static class ConfigurationValidator
 
         // If partial configuration exists, validate it
         var missingConfig = new List<string>();
-        
+
         if (!hasEndpoint)
             missingConfig.Add("Logto:Endpoint");
-        
+
         if (!hasAppId)
             missingConfig.Add("Logto:AppId");
-        
+
         if (!hasAppSecret)
             missingConfig.Add("Logto:AppSecret");
 
         if (missingConfig.Count > 0)
         {
-            var errorMessage = 
+            var errorMessage =
                 $"Incomplete Logto authentication configuration. Missing: {string.Join(", ", missingConfig)}\n" +
                 "\n" +
                 "To enable Logto authentication, set all required values:\n" +
@@ -181,7 +181,7 @@ public static class ConfigurationValidator
                 $"Please provide a valid URL for '{configKey}'.");
         }
 
-        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || 
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) ||
             (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
         {
             throw new InvalidOperationException(

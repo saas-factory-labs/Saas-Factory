@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.Query;
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using AppBlueprint.Infrastructure.Services;
 using AppBlueprint.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -131,15 +131,15 @@ public class ApplicationDbContext : B2CdbContext
         {
             // 3. Combine Filters: ExistingFilter AND TenantFilter
             var parameter = Expression.Parameter(typeof(TEntity), "entity");
-            
+
             var replacedExistingBody = ReplacingExpressionVisitor.Replace(
-                existingFilter.Parameters[0], 
-                parameter, 
+                existingFilter.Parameters[0],
+                parameter,
                 existingFilter.Body);
-                
+
             var replacedTenantBody = ReplacingExpressionVisitor.Replace(
-                tenantFilter.Parameters[0], 
-                parameter, 
+                tenantFilter.Parameters[0],
+                parameter,
                 tenantFilter.Body);
 
             var combinedBody = Expression.AndAlso(replacedExistingBody, replacedTenantBody);

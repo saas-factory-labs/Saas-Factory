@@ -49,7 +49,7 @@ public sealed class FileMetadataRepository : IFileMetadataRepository
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
         ArgumentException.ThrowIfNullOrWhiteSpace(folder);
-        
+
         return await _context.Set<FileMetadataEntity>()
             .Where(f => f.TenantId == tenantId && f.Folder == folder)
             .OrderByDescending(f => f.CreatedAt)

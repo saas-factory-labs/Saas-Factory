@@ -1,4 +1,4 @@
-﻿namespace AppBlueprint.SharedKernel.SharedModels;
+namespace AppBlueprint.SharedKernel.SharedModels;
 
 // IEntityModel<T>
 internal class EntityModel : IEntityModel

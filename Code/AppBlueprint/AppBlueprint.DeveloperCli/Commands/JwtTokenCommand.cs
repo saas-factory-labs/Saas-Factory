@@ -35,24 +35,24 @@ internal static class JwtTokenCommand
         AnsiConsole.WriteLine();
 
         IConfiguration? configuration = null;
-        
+
         if (string.IsNullOrEmpty(configPath))
         {
             // Ask for configuration file path
             bool useConfig = await AnsiConsole.ConfirmAsync("Do you want to use settings from [green]appsettings.json[/]?", true);
-            
+
             if (useConfig)
             {
                 // Get the current directory and construct absolute path
                 var currentDir = Directory.GetCurrentDirectory();
                 // Default to Web project's Development settings which contains Logto config
                 var defaultPath = Path.GetFullPath(Path.Combine(currentDir, "..", "AppBlueprint.Web", "appsettings.Development.json"));
-                
+
                 AnsiConsole.MarkupLine($"[dim]Current directory: {currentDir}[/]");
                 AnsiConsole.MarkupLine($"[dim]Default path: {defaultPath}[/]");
-                
+
                 configPath = await AnsiConsole.AskAsync(
-                    "Enter path to [green]appsettings.json[/]:", 
+                    "Enter path to [green]appsettings.json[/]:",
                     defaultPath);
             }
         }
@@ -66,33 +66,33 @@ internal static class JwtTokenCommand
                 var currentDir = Directory.GetCurrentDirectory();
                 configPath = Path.GetFullPath(Path.Combine(currentDir, configPath));
             }
-            
+
             if (File.Exists(configPath))
             {
                 try
                 {
                     string directory = Path.GetDirectoryName(configPath) ?? Directory.GetCurrentDirectory();
                     var fileName = Path.GetFileName(configPath);
-                    
+
                     // Load base appsettings.json first, then the specific file
                     var builder = new ConfigurationBuilder()
                         .SetBasePath(directory);
-                    
+
                     // If loading Development/Production file, also load base appsettings.json
                     var baseConfigPath = Path.Combine(directory, "appsettings.json");
                     if (File.Exists(baseConfigPath) && !fileName.Equals("appsettings.json", StringComparison.OrdinalIgnoreCase))
                     {
                         builder.AddJsonFile("appsettings.json", optional: true);
                     }
-                    
+
                     builder.AddJsonFile(fileName, optional: false);
                     configuration = builder.Build();
-                    
+
                     AnsiConsole.MarkupLine($"[green]✓[/] Loaded configuration from: {configPath}");
-                    
+
                     string provider = configuration["Authentication:Provider"] ?? "JWT";
                     AnsiConsole.MarkupLine($"[cyan]Using Provider:[/] {provider}");
-                    
+
                     if (provider.Equals(LogtoProviderName, StringComparison.OrdinalIgnoreCase))
                     {
                         // Read environment variables first (flat UPPERCASE format), then fall back to hierarchical config
@@ -105,11 +105,11 @@ internal static class JwtTokenCommand
                                         ?? Environment.GetEnvironmentVariable("LOGTO_APP_ID")
                                         ?? configuration["Authentication:Logto:ClientId"];
                         string? issuer = $"{endpoint?.TrimEnd('/')}/oidc";
-                        
+
                         AnsiConsole.MarkupLine($"[cyan]Issuer:[/] {issuer}");
                         AnsiConsole.MarkupLine($"[cyan]Audience:[/] {clientId}");
                     }
-                    
+
                     AnsiConsole.WriteLine();
                 }
                 catch (Exception ex)
@@ -129,7 +129,7 @@ internal static class JwtTokenCommand
 
         // Get provider after config is loaded
         string finalProvider = configuration?["Authentication:Provider"] ?? LogtoProviderName;
-        
+
         // For Logto, guide user to get token from browser
         if (finalProvider.Equals(LogtoProviderName, StringComparison.OrdinalIgnoreCase))
         {
@@ -144,15 +144,15 @@ internal static class JwtTokenCommand
     private static async Task GetTokenFromLogtoUser(IConfiguration? configuration)
     {
         var endpoint = configuration?["Authentication:Logto:Endpoint"]?.TrimEnd('/');
-        
+
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[yellow]⚠ Logto uses browser-based user authentication.[/]");
         AnsiConsole.WriteLine();
-        
+
         // Ask user if they want automated extraction or manual paste
         bool useAutomation = await AnsiConsole.ConfirmAsync(
             "Do you want to [green]automatically open browser[/] and extract the token?\n" +
-            "[dim](Otherwise you'll need to manually copy/paste the token)[/]", 
+            "[dim](Otherwise you'll need to manually copy/paste the token)[/]",
             defaultValue: true);
 
         if (useAutomation)
@@ -178,7 +178,7 @@ internal static class JwtTokenCommand
             string webAppUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ??
                                configuration?["WebApp:Url"] ??
                                DefaultWebAppUrl;
-            
+
             AnsiConsole.MarkupLine($"[yellow]Opening:[/] {webAppUrl}");
             AnsiConsole.MarkupLine("[dim]Waiting for you to log in...[/]");
             AnsiConsole.WriteLine();
@@ -194,7 +194,7 @@ internal static class JwtTokenCommand
                         // Initialize Playwright
                         ctx.Status("[yellow]Launching Playwright...[/]");
                         var playwright = await Playwright.CreateAsync();
-                        
+
                         ctx.Status("[yellow]Launching browser...[/]");
                         var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
                         {
@@ -213,12 +213,12 @@ internal static class JwtTokenCommand
                         await page.GotoAsync(webAppUrl, new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle, Timeout = 30000 });
 
                         ctx.Status("[yellow]Waiting for authentication...[/]");
-                        
+
                         // Wait for the user to log in and be redirected back
                         // Monitor local storage, session storage, and cookies for authentication tokens
                         var maxWaitTime = TimeSpan.FromMinutes(5);
                         var startTime = DateTime.UtcNow;
-                        
+
                         while (DateTime.UtcNow - startTime < maxWaitTime)
                         {
                             try
@@ -238,8 +238,8 @@ internal static class JwtTokenCommand
 
                                 // Look for any token-related keys
                                 var allKeys = localStorageKeys.Concat(sessionStorageKeys).ToList();
-                                var tokenKeys = allKeys.Where(k => 
-                                    k.Contains("@logto", StringComparison.OrdinalIgnoreCase) || 
+                                var tokenKeys = allKeys.Where(k =>
+                                    k.Contains("@logto", StringComparison.OrdinalIgnoreCase) ||
                                     k.Contains("access_token", StringComparison.OrdinalIgnoreCase) ||
                                     k.Contains("id_token", StringComparison.OrdinalIgnoreCase) ||
                                     k.Contains("token", StringComparison.OrdinalIgnoreCase) ||
@@ -247,7 +247,7 @@ internal static class JwtTokenCommand
                                 ).ToList();
 
                                 // Check for token in cookies
-                                var tokenCookies = cookies.Where(c => 
+                                var tokenCookies = cookies.Where(c =>
                                     c.Name.Contains("token", StringComparison.OrdinalIgnoreCase) ||
                                     c.Name.Contains("auth", StringComparison.OrdinalIgnoreCase) ||
                                     c.Name.Contains("logto", StringComparison.OrdinalIgnoreCase)
@@ -256,10 +256,10 @@ internal static class JwtTokenCommand
                                 if (tokenKeys.Count > 0 || tokenCookies.Count > 0)
                                 {
                                     ctx.Status("[yellow]Potential tokens found! Extracting...[/]");
-                                    
+
                                     // Pause the spinner to show debug info
                                     ctx.Status("[yellow]Analyzing storage...[/]");
-                                    
+
                                     // Try localStorage
                                     foreach (var key in tokenKeys.Where(k => localStorageKeys.Contains(k)))
                                     {
@@ -315,7 +315,7 @@ internal static class JwtTokenCommand
                                         foreach (var cookie in tokenCookies)
                                         {
                                             var value = cookie.Value;
-                                            
+
                                             if (string.IsNullOrWhiteSpace(value))
                                                 continue;
 
@@ -350,7 +350,7 @@ internal static class JwtTokenCommand
                         if (string.IsNullOrWhiteSpace(token))
                         {
                             ctx.Status("[yellow]No JWT found. Gathering debug info...[/]");
-                            
+
                             var localKeys = await page.EvaluateAsync<string[]>("() => Object.keys(localStorage)");
                             var sessionKeys = await page.EvaluateAsync<string[]>("() => Object.keys(sessionStorage)");
                             var allCookies = await context.CookiesAsync();
@@ -422,10 +422,10 @@ internal static class JwtTokenCommand
         try
         {
             using var jsonDoc = JsonDocument.Parse(jsonString, new JsonDocumentOptions());
-            
+
             // Try different possible token property names
             var possibleProps = new[] { "access_token", "accessToken", "idToken", "id_token", "token", "jwt", "bearerToken" };
-            
+
             foreach (var propName in possibleProps)
             {
                 if (jsonDoc.RootElement.TryGetProperty(propName, out var tokenProp))
@@ -455,7 +455,7 @@ internal static class JwtTokenCommand
         {
             // Not JSON
         }
-        
+
         return null;
     }
 
@@ -463,33 +463,33 @@ internal static class JwtTokenCommand
     {
         AnsiConsole.MarkupLine("[cyan]📋 Manual Token Extraction[/]");
         AnsiConsole.WriteLine();
-        
+
         AnsiConsole.MarkupLine("[yellow]⚠ Your app uses server-side authentication (Blazor Server)[/]");
         AnsiConsole.MarkupLine("[dim]JWT tokens are NOT sent in HTTP headers for Blazor Server SignalR connections.[/]");
         AnsiConsole.MarkupLine("[dim]The authentication happens server-side using cookies.[/]");
         AnsiConsole.WriteLine();
-        
+
         AnsiConsole.MarkupLine("[red]The Problem:[/]");
         AnsiConsole.MarkupLine("[dim]Blazor Server uses SignalR over WebSockets, not REST API calls.[/]");
         AnsiConsole.MarkupLine("[dim]SignalR uses cookie-based authentication, so there's no Authorization header to extract.[/]");
         AnsiConsole.WriteLine();
-        
+
         AnsiConsole.MarkupLine("[cyan]Solution: Test API Endpoint[/]");
         AnsiConsole.MarkupLine("[dim]I've created a development endpoint to help you get a JWT token for testing.[/]");
         AnsiConsole.WriteLine();
-        
+
         AnsiConsole.MarkupLine("[green]Option 1: Get Token via API Endpoint[/]");
         AnsiConsole.MarkupLine("[yellow]1.[/] Make sure your API is running (AppHost should be running)");
         AnsiConsole.MarkupLine("[yellow]2.[/] Log into your Logto account at [green]http://localhost:8092[/]");
         AnsiConsole.MarkupLine("[yellow]3.[/] Open a new browser tab or use PowerShell:");
         AnsiConsole.WriteLine();
-        
+
         var psCode = @"# PowerShell - Make an authenticated API call
 Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
     -Method Get `
     -UseDefaultCredentials `
     -SkipCertificateCheck";
-        
+
         var codePanel = new Panel(psCode)
         {
             Header = new PanelHeader("[green]PowerShell Command[/]"),
@@ -498,31 +498,31 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
         };
         AnsiConsole.Write(codePanel);
         AnsiConsole.WriteLine();
-        
+
         AnsiConsole.MarkupLine("[yellow]4.[/] Look for [green]'TokenPreview'[/] or [green]'HasAuthHeader: true'[/] in the response");
         AnsiConsole.WriteLine();
-        
+
         AnsiConsole.MarkupLine("[green]Option 2: Use Postman or REST Client[/]");
         AnsiConsole.MarkupLine("[yellow]1.[/] Get a JWT token from Logto directly (use their OAuth flow)");
         AnsiConsole.MarkupLine("[yellow]2.[/] Test it with: [green]GET https://localhost:9100/api/v1/authtest/protected[/]");
         AnsiConsole.MarkupLine("[yellow]3.[/] Add header: [green]Authorization: Bearer <your-token>[/]");
         AnsiConsole.WriteLine();
-        
+
         AnsiConsole.MarkupLine("[green]Option 3: Get Token from Logto Directly[/]");
         AnsiConsole.MarkupLine("[yellow]1.[/] Go to Logto admin console");
         AnsiConsole.MarkupLine("[yellow]2.[/] Navigate to: Applications → Your App → Interact");
         AnsiConsole.MarkupLine("[yellow]3.[/] Use the 'Authorization Code' flow to get a token");
         AnsiConsole.MarkupLine("[yellow]4.[/] Or use Logto's API to generate a token for testing");
         AnsiConsole.WriteLine();
-        
+
         AnsiConsole.MarkupLine($"[dim]Logto Endpoint: {endpoint}[/]");
         AnsiConsole.MarkupLine($"[dim]JWT tokens have 3 parts separated by dots: [green]header.payload.signature[/][/]");
         AnsiConsole.MarkupLine($"[dim]They always start with: [green]eyJ[/][/]");
         AnsiConsole.WriteLine();
-        
+
         AnsiConsole.MarkupLine("[yellow]Do you have a JWT token to paste?[/]");
         bool hasToken = await AnsiConsole.ConfirmAsync("Paste token now?", false);
-        
+
         if (!hasToken)
         {
             AnsiConsole.MarkupLine("[yellow]Exiting. Run this command again when you have a token.[/]");
@@ -530,7 +530,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
         }
 
         string token = await AnsiConsole.AskAsync<string>("Paste your [green]JWT token[/] here:");
-        
+
         if (string.IsNullOrWhiteSpace(token))
         {
             AnsiConsole.MarkupLine("[red]✗ No token provided[/]");
@@ -559,7 +559,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
         {
             AnsiConsole.MarkupLine("[yellow]⚠ Warning: JWT tokens typically start with 'eyJ'[/]");
             AnsiConsole.MarkupLine($"[dim]Your token starts with: {token[..Math.Min(10, token.Length)]}[/]");
-            
+
             if (!await AnsiConsole.ConfirmAsync("Do you want to continue anyway?", false))
             {
                 return;
@@ -594,7 +594,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
             string sub = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value ?? "N/A";
             string email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value ?? "N/A";
             string nameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "name")?.Value ?? "N/A";
-            
+
             table.AddRow("Subject (User ID)", sub);
             if (email != "N/A")
             {
@@ -652,7 +652,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
             AnsiConsole.MarkupLine($"[red]✗ Invalid token:[/] {ex.Message}");
             AnsiConsole.WriteException(ex);
         }
-        
+
         await Task.CompletedTask;
     }
 }

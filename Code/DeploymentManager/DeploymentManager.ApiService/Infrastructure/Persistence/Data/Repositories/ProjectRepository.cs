@@ -7,7 +7,7 @@ public class ProjectRepository : IProjectRepository
 {
     private readonly List<ProjectEntity> _projects = new();
 
-    public ProjectEntity GetById(int id)
+    public ProjectEntity? GetById(int id)
     {
         return _projects.FirstOrDefault(p => p.Id == id);
     }

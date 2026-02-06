@@ -1,5 +1,5 @@
-﻿using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +28,7 @@ public class CatalogDbContext : DbContext
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         ArgumentNullException.ThrowIfNull(configurationBuilder);
-        
+
         base.ConfigureConventions(configurationBuilder);
         // default constraints
         configurationBuilder.Properties<string>()
@@ -39,7 +39,7 @@ public class CatalogDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
-        
+
         ArgumentNullException.ThrowIfNull(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new AppProjectEntityConfiguration());
@@ -57,7 +57,7 @@ public class CatalogDbContext : DbContext
                 {
                     var type = typeof(Microsoft.EntityFrameworkCore.Storage.ValueConversion.EnumToStringConverter<>)
                         .MakeGenericType(Nullable.GetUnderlyingType(property.ClrType) ?? property.ClrType);
-                    
+
                     var converter = Activator.CreateInstance(type) as Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter;
                     property.SetValueConverter(converter);
                 }

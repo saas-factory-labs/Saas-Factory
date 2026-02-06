@@ -79,7 +79,7 @@ public class TodoRepository : ITodoRepository
         _logger.LogInformation("Deleting todo {TodoId} for tenant {TenantId}", id, tenantId);
 
         var todo = await GetByIdAsync(id, tenantId, cancellationToken);
-        
+
         if (todo is not null)
         {
             todo.IsSoftDeleted = true;

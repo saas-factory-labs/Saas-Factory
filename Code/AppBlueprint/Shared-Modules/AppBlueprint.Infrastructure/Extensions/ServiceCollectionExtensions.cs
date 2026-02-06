@@ -61,16 +61,16 @@ public static class ServiceCollectionExtensions
 
         // Use new flexible DbContext configuration
         services.AddConfiguredDbContext(configuration);
-        
+
         services.AddRepositories();
         services.AddTenantServices();
-        
+
         // Only add web authentication for non-API environments (Blazor Server)
         // API services handle authentication differently (JWT Bearer)
         // Check if this is being called from a Web project by looking for Blazor services
         // For API services, authentication is configured separately in their Program.cs
         // services.AddWebAuthentication(configuration, environment); // Commented out - add explicitly in Web project
-        
+
         services.AddUnitOfWork();
         services.AddExternalServices(configuration);
         services.AddHealthChecksServices(configuration);
@@ -138,9 +138,9 @@ public static class ServiceCollectionExtensions
 
         // Validate connection string with helpful error message
         ConfigurationValidator.ValidateDatabaseConnectionString(
-            connectionString, 
-            "appblueprintdb", 
-            "postgres-server", 
+            connectionString,
+            "appblueprintdb",
+            "postgres-server",
             "DefaultConnection");
 
         // Create NpgsqlDataSource with EnableDynamicJson for JSONB support (required since Npgsql 8.0)
@@ -235,15 +235,15 @@ public static class ServiceCollectionExtensions
         services.AddScoped<TenantConnectionInterceptor>();
         services.AddScoped<TenantSecurityInterceptor>();
         services.AddScoped<TenantRlsInterceptor>();
-        
+
         // User context and admin access
         services.AddScoped<Application.Services.ICurrentUserService, CurrentUserService>();
         services.AddScoped<Application.Services.ICurrentTenantService, CurrentTenantService>();
         services.AddScoped<Application.Services.IAdminTenantAccessService, AdminTenantAccessService>();
-        
+
         // Signup database context provider (EF Core)
         services.AddScoped<Application.Services.ISignupDbContextProvider, SignupDbContextProvider>();
-        
+
         return services;
     }
 
@@ -281,7 +281,7 @@ public static class ServiceCollectionExtensions
         // Get Stripe options to check if configured
         IServiceProvider tempProvider = services.BuildServiceProvider();
         StripeOptions? stripeOptions = tempProvider.GetService<IOptions<StripeOptions>>()?.Value;
-        
+
         if (stripeOptions is not null && !string.IsNullOrWhiteSpace(stripeOptions.ApiKey))
         {
             services.AddScoped<StripeSubscriptionService>();
@@ -305,8 +305,8 @@ public static class ServiceCollectionExtensions
         // Get R2 options to check if configured
         IServiceProvider tempProvider = services.BuildServiceProvider();
         CloudflareR2Options? r2Options = tempProvider.GetService<IOptions<CloudflareR2Options>>()?.Value;
-        
-        if (r2Options is not null && 
+
+        if (r2Options is not null &&
             !string.IsNullOrWhiteSpace(r2Options.AccessKeyId) &&
             !string.IsNullOrWhiteSpace(r2Options.SecretAccessKey) &&
             !string.IsNullOrWhiteSpace(r2Options.EndpointUrl) &&
@@ -322,14 +322,14 @@ public static class ServiceCollectionExtensions
                     ForcePathStyle = true // Required for R2 compatibility
                 });
             });
-            
+
             services.AddSingleton<ObjectStorageService>();
-            
+
             // Register new file storage services
             services.AddScoped<IFileStorageService, R2FileStorageService>();
             services.AddScoped<IFileValidationService, FileValidationService>();
             services.AddScoped<IFileMetadataRepository, FileMetadataRepository>();
-            
+
             Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 storage service registered");
         }
         else
@@ -354,15 +354,15 @@ public static class ServiceCollectionExtensions
         string? apiKey = Environment.GetEnvironmentVariable("RESEND_APIKEY")
                       ?? Environment.GetEnvironmentVariable("RESEND_API_KEY")
                       ?? configuration["Resend:ApiKey"];
-        
+
         string? fromEmail = Environment.GetEnvironmentVariable("RESEND_FROMEMAIL")
                          ?? Environment.GetEnvironmentVariable("RESEND_FROM_EMAIL")
                          ?? configuration["Resend:FromEmail"];
-        
+
         string? fromName = Environment.GetEnvironmentVariable("RESEND_FROMNAME")
                         ?? Environment.GetEnvironmentVariable("RESEND_FROM_NAME")
                         ?? configuration["Resend:FromName"];
-        
+
         if (!string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(fromEmail))
         {
             var resendOptions = new ResendEmailOptions
@@ -373,9 +373,9 @@ public static class ServiceCollectionExtensions
                 BaseUrl = configuration["Resend:BaseUrl"] ?? "https://api.resend.com",
                 TimeoutSeconds = int.TryParse(configuration["Resend:TimeoutSeconds"], out int timeout) ? timeout : 30
             };
-            
+
             services.AddSingleton<IOptions<ResendEmailOptions>>(new OptionsWrapper<ResendEmailOptions>(resendOptions));
-            
+
             // Configure Resend according to official documentation
             services.AddOptions();
             services.AddHttpClient<ResendClient>()
@@ -389,7 +389,7 @@ public static class ServiceCollectionExtensions
                 o.ApiToken = resendOptions.ApiKey;
             });
             services.AddTransient<IResend, ResendClient>();
-            
+
             services.AddScoped<TransactionEmailService>();
             Console.WriteLine("[AppBlueprint.Infrastructure] Resend email service registered");
         }
@@ -449,7 +449,7 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-    
+
     /// <summary>
     /// Adds SignalR with tenant-aware authentication and authorization.
     /// Configures MessagePack protocol for efficient binary serialization.
@@ -462,19 +462,19 @@ public static class ServiceCollectionExtensions
         {
             // Enable detailed errors in development only
             options.EnableDetailedErrors = false; // Set to true via environment variable in dev
-            
+
             // Configure client timeouts
             options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
             options.HandshakeTimeout = TimeSpan.FromSeconds(15);
             options.KeepAliveInterval = TimeSpan.FromSeconds(15);
-            
+
             // Maximum message size (1 MB default)
             options.MaximumReceiveMessageSize = 1024 * 1024;
         })
         .AddMessagePackProtocol(); // Binary protocol for better performance
-        
+
         Console.WriteLine("[AppBlueprint.Infrastructure] SignalR registered with tenant-aware authentication");
-        
+
         return services;
     }
 
@@ -498,9 +498,9 @@ public static class ServiceCollectionExtensions
         where TDbContext : DbContext
     {
         services.AddScoped<ISearchService<TEntity>, AppBlueprint.Infrastructure.Services.Search.PostgreSqlSearchService<TEntity, TDbContext>>();
-        
+
         Console.WriteLine($"[AppBlueprint.Infrastructure] PostgreSQL full-text search registered for {typeof(TEntity).Name}");
-        
+
         return services;
     }
 
@@ -514,7 +514,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPIIScanner, LlmPIIScannerPlaceholder>();
         services.AddScoped<IPIIEngine, PIIEngine>();
         services.AddScoped<PIITaggingService>();
-        
+
         // Register the EF Core interceptor
         services.AddScoped<PiiSaveChangesInterceptor>();
 

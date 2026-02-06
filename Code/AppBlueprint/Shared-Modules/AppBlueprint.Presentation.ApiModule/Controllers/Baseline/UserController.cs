@@ -1,9 +1,9 @@
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Contracts.Baseline.User.Requests;
 using AppBlueprint.Contracts.Baseline.User.Responses;
+using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Application.Interfaces.UnitOfWork;
-using AppBlueprint.Infrastructure.DatabaseContexts;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +31,7 @@ public class UserController : BaseController
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(userRepository);
         ArgumentNullException.ThrowIfNull(context);
-        
+
         _userRepository = userRepository;
         _context = context;
     }

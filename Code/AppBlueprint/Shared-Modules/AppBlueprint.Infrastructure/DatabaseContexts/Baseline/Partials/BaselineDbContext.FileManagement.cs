@@ -11,7 +11,7 @@ public partial class BaselineDbContext
     partial void OnModelCreating_FileManagement(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
-        
+
         modelBuilder.ApplyConfiguration(new FileMetadataConfiguration());
     }
 }

@@ -37,19 +37,19 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
 
     [PIIRisk]
     public required string FirstName { get; set; }
-    
+
     [PIIRisk]
     public required string LastName { get; set; }
-    
+
     [PIIRisk]
     public required string UserName { get; set; }
-    
+
     public bool IsActive { get; set; }
 
     [PIIRisk]
     [DataClassification(GDPRType.DirectlyIdentifiable)]
     public required string? Email { get; set; }
-    
+
     /// <summary>
     /// Generic metadata for the entity, including PII detection results.
     /// </summary>

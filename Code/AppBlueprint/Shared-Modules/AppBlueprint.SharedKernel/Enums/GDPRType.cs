@@ -13,5 +13,5 @@ public enum GDPRType
     Political = 7,
     Religious = 8,
     Criminal = 9,
-        SensitiveMiscellaneous = 10
+    SensitiveMiscellaneous = 10
 }

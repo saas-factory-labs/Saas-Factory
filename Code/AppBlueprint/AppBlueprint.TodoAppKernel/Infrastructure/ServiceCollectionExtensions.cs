@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
 
         // Get connection string (priority: environment variable -> configuration)
         string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
-        
+
         if (string.IsNullOrEmpty(connectionString))
         {
             connectionString = configuration.GetConnectionString("appblueprintdb") ??

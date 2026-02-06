@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using AppBlueprint.Application.Attributes;
 using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.SharedKernel.Enums;
 using AppBlueprint.SharedKernel;
-using System.Globalization;
+using AppBlueprint.SharedKernel.Enums;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 
@@ -28,11 +28,11 @@ public class AccountEntity : BaseEntity, ITenantScoped
 
     public string? Role { get; set; }
     public bool IsActive { get; set; }
-   
+
     public required UserEntity Owner { get; set; }
     public required string UserId { get; set; }
     public required string TenantId { get; set; }
-    
+
     public string Slug => GenerateSlug();
 
     private string GenerateSlug()

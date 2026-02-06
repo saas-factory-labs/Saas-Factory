@@ -14,7 +14,7 @@ public static class LuhnValidator
         if (string.IsNullOrWhiteSpace(value)) return false;
 
         var digits = value.Where(char.IsDigit).Select(c => c - '0').ToArray();
-        
+
         /* 
            Luhn Algorithm:
            1. From the rightmost digit, double the value of every second digit.

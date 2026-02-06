@@ -12,7 +12,7 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
     public UserAuthenticationProviderAdapter(IAuthenticationProviderFactory factory)
     {
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        
+
         try
         {
             _provider = _factory.CreateProvider();
@@ -40,7 +40,7 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
             Console.Error.WriteLine("Error: Authentication provider is null in IsAuthenticated()");
             return false;
         }
-        
+
         return _provider.IsAuthenticated();
     }
 
@@ -51,7 +51,7 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
             await Console.Error.WriteLineAsync("Error: Authentication provider is null in LoginAsync()");
             throw new InvalidOperationException("Authentication provider is not initialized. Check your authentication configuration.");
         }
-        
+
         var request = new LoginRequest
         {
             Email = email,
@@ -69,7 +69,7 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
             await Console.Error.WriteLineAsync("Error: Authentication provider is null in LogoutAsync()");
             return;
         }
-        
+
         await _provider.LogoutAsync();
     }
 
@@ -83,7 +83,7 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
             await Console.Error.WriteLineAsync("Error: Authentication provider is null in AuthenticateRequestAsync()");
             return;
         }
-        
+
         await _provider.AuthenticateRequestAsync(request, additionalAuthenticationContext, cancellationToken);
     }
 
@@ -94,7 +94,7 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
             await Console.Error.WriteLineAsync("Error: Authentication provider is null in InitializeFromStorageAsync()");
             return;
         }
-        
+
         await _provider.InitializeAsync();
     }
 
@@ -106,13 +106,13 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
             Console.Error.WriteLine("Error: Authentication provider is null in GetLogoutUrl()");
             return null;
         }
-        
+
         // Check if the provider is LogtoAuthorizationCodeProvider
         if (_provider is Providers.Logto.LogtoAuthorizationCodeProvider logtoProvider)
         {
             return logtoProvider.GetLogoutUrl(postLogoutRedirectUri);
         }
-        
+
         // For other providers, return null (they may not need a logout URL)
         return null;
     }

@@ -1,12 +1,12 @@
+using System.Threading;
+using System.Threading.Tasks;
+using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog;
 using AppBlueprint.Infrastructure.Repositories;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using DomainNotificationRepository = AppBlueprint.Domain.Interfaces.Repositories.INotificationRepository;
 
 namespace AppBlueprint.Infrastructure.UnitOfWork.Implementation;
@@ -18,14 +18,14 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     private readonly IDbContextFactory<ApplicationDbContext> _applicationDbContextFactory;
 
     public UnitOfWorkImplementation(
-        ApplicationDbContext context, 
+        ApplicationDbContext context,
         B2BDbContext b2bDbContext,
         IDbContextFactory<ApplicationDbContext> applicationDbContextFactory)
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(b2bDbContext);
         ArgumentNullException.ThrowIfNull(applicationDbContextFactory);
-        
+
         _applicationDbContext = context;
         _b2bDbContext = b2bDbContext;
         _applicationDbContextFactory = applicationDbContextFactory;
@@ -96,7 +96,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_tenantRepository is null) 
+            if (_tenantRepository is null)
                 _tenantRepository = new TenantRepository(_applicationDbContextFactory);
 
             return _tenantRepository;
@@ -163,7 +163,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         if (_applicationDbContext.Database.CurrentTransaction != null)
             await _applicationDbContext.Database.CurrentTransaction.CommitAsync(cancellationToken);
-        
+
         if (_b2bDbContext.Database.CurrentTransaction != null)
             await _b2bDbContext.Database.CurrentTransaction.CommitAsync(cancellationToken);
     }
@@ -172,7 +172,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         if (_applicationDbContext.Database.CurrentTransaction != null)
             await _applicationDbContext.Database.CurrentTransaction.RollbackAsync(cancellationToken);
-        
+
         if (_b2bDbContext.Database.CurrentTransaction != null)
             await _b2bDbContext.Database.CurrentTransaction.RollbackAsync(cancellationToken);
     }

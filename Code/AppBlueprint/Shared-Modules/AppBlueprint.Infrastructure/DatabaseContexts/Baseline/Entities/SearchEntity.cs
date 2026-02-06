@@ -1,8 +1,8 @@
-﻿using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
-public class SearchEntity: BaseEntity
+public class SearchEntity : BaseEntity
 {
     public required string Name { get; set; }
     public required string Description { get; set; }

@@ -1,7 +1,7 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
@@ -27,7 +27,7 @@ public static class JwtAuthenticationExtensions
 
         // Read from flat UPPERCASE environment variable first, then fall back to hierarchical config
         string authProvider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER")
-                           ?? configuration[AuthenticationProviderConfigKey] 
+                           ?? configuration[AuthenticationProviderConfigKey]
                            ?? "Logto"; // Default to Logto (only supported provider)
 
         services.AddAuthentication(options =>
@@ -56,82 +56,82 @@ public static class JwtAuthenticationExtensions
                 $"Unsupported authentication provider '{authProvider}'. Only 'Logto' is supported. " +
                 "Set AUTHENTICATION_PROVIDER=Logto in configuration.");
         }
-        
+
         ConfigureLogto(options, configuration, environment);
 
         // Common configuration for all providers
         options.SaveToken = true;
-        
+
         // Require HTTPS metadata in production
         options.RequireHttpsMetadata = !environment.IsDevelopment();
-        
+
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
             {
                 var logger = context.HttpContext.RequestServices
                     .GetRequiredService<ILogger<JwtBearerEvents>>();
-                
+
                 var authHeader = context.Request.Headers.Authorization.ToString();
                 var tokenPreview = authHeader.Replace("Bearer ", string.Empty, StringComparison.OrdinalIgnoreCase);
                 if (tokenPreview.Length > 20)
                 {
                     tokenPreview = tokenPreview[..20];
                 }
-                
-                logger.LogError(context.Exception, 
-                    "Authentication failed. Token preview: {TokenPreview}, Exception Type: {ExceptionType}, Message: {Message}", 
+
+                logger.LogError(context.Exception,
+                    "Authentication failed. Token preview: {TokenPreview}, Exception Type: {ExceptionType}, Message: {Message}",
                     tokenPreview,
                     context.Exception?.GetType().Name,
                     context.Exception?.Message);
-                
+
                 return Task.CompletedTask;
             },
             OnTokenValidated = context =>
             {
                 var logger = context.HttpContext.RequestServices
                     .GetRequiredService<ILogger<JwtBearerEvents>>();
-                
+
                 string userName = context.Principal?.Identity?.Name ?? "Unknown";
                 string userId = context.Principal?.FindFirst("sub")?.Value ?? "Unknown";
                 string issuer = context.Principal?.FindFirst("iss")?.Value ?? "Unknown";
-                
+
                 logger.LogInformation(
-                    "Token validated successfully. User: {User}, UserId: {UserId}, Issuer: {Issuer}", 
+                    "Token validated successfully. User: {User}, UserId: {UserId}, Issuer: {Issuer}",
                     userName, userId, issuer);
-                
+
                 return Task.CompletedTask;
             },
             OnChallenge = context =>
             {
                 var logger = context.HttpContext.RequestServices
                     .GetRequiredService<ILogger<JwtBearerEvents>>();
-                
+
                 var authHeader = context.Request.Headers.Authorization.ToString();
                 var hasToken = !string.IsNullOrEmpty(authHeader);
-                
+
                 logger.LogWarning(
-                    "Authorization challenge. Error: {Error}, ErrorDescription: {ErrorDescription}, HasAuthHeader: {HasToken}, Path: {Path}", 
-                    context.Error, 
+                    "Authorization challenge. Error: {Error}, ErrorDescription: {ErrorDescription}, HasAuthHeader: {HasToken}, Path: {Path}",
+                    context.Error,
                     context.ErrorDescription,
                     hasToken,
                     context.Request.Path);
-                
+
                 return Task.CompletedTask;
             },
             OnMessageReceived = context =>
             {
                 var logger = context.HttpContext.RequestServices
                     .GetRequiredService<ILogger<JwtBearerEvents>>();
-                
+
                 var authHeader = context.Request.Headers.Authorization.ToString();
                 var hasToken = !string.IsNullOrEmpty(authHeader);
-                
+
                 logger.LogDebug(
                     "Message received. HasAuthHeader: {HasToken}, Path: {Path}",
                     hasToken,
                     context.Request.Path);
-                
+
                 return Task.CompletedTask;
             }
         };
@@ -150,7 +150,7 @@ public static class JwtAuthenticationExtensions
 
         options.Authority = domain;
         options.Audience = audience;
-        
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -193,7 +193,7 @@ public static class JwtAuthenticationExtensions
         endpoint = endpoint.TrimEnd('/');
 
         options.Authority = $"{endpoint}/oidc";
-        
+
         // For development: Validate JWT access tokens for API resource
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -201,31 +201,31 @@ public static class JwtAuthenticationExtensions
             ValidateIssuer = true,
             ValidIssuer = $"{endpoint}/oidc",
             ValidIssuers = new[] { $"{endpoint}/oidc", endpoint },
-            
+
             // Validate audience if API resource is configured
             ValidateAudience = !string.IsNullOrEmpty(apiResource),
             ValidAudience = apiResource,
-            
+
             // Accept any valid token from Logto
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            
+
             // Development settings - more permissive
             ClockSkew = TimeSpan.FromMinutes(5),
             RequireSignedTokens = true,
             RequireExpirationTime = true,
-            
+
             // Require audience if API resource is configured
             RequireAudience = !string.IsNullOrEmpty(apiResource),
-            
+
             // Map standard OIDC claims
             NameClaimType = "name",
             RoleClaimType = "role"
         };
-        
+
         // Set metadata address explicitly for better error messages
         options.MetadataAddress = $"{endpoint}/oidc/.well-known/openid-configuration";
-        
+
         // Don't require HTTPS in development
         options.RequireHttpsMetadata = environment.IsDevelopment() ? false : true;
     }

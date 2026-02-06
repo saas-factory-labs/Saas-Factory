@@ -9,7 +9,7 @@ public interface IAuthenticationProvider : Microsoft.Kiota.Abstractions.Authenti
     Task LogoutAsync();
     Task<AuthenticationResult> RefreshTokenAsync(CancellationToken cancellationToken = default);
     Task InitializeAsync();
-    
+
     event Action? OnAuthenticationStateChanged;
 }
 

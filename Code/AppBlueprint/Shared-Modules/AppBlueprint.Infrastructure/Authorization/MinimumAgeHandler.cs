@@ -11,7 +11,7 @@ public class MinimumAgeHandler : AuthorizationHandler<MinimumAgeRequirement>
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(requirement);
-        
+
         if (!context.User.HasClaim(c => c.Type == ClaimTypes.DateOfBirth)) return Task.CompletedTask;
 
         var birthDate = DateTime.Parse(context.User.FindFirst(ClaimTypes.DateOfBirth)!.Value, CultureInfo.InvariantCulture);

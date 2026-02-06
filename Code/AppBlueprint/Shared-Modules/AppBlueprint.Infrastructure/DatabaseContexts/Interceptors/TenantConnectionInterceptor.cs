@@ -1,8 +1,8 @@
+using System.Data.Common;
 using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using System.Data.Common;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
 

@@ -20,10 +20,10 @@ public class Auth0Provider : BaseAuthenticationProvider
 
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        
+
         _configuration = new Auth0Configuration();
         configuration.GetSection("Authentication:Auth0").Bind(_configuration);
-        
+
         ValidateConfiguration();
     }
 
@@ -169,7 +169,7 @@ public class Auth0Provider : BaseAuthenticationProvider
             // This is a simplified version - in production you'd decode the JWT
             AccessToken = storedToken;
             TokenExpiration = DateTime.UtcNow.AddHours(1); // Default expiration
-            
+
             NotifyAuthenticationStateChanged();
         }
 #pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional, use re-login on any error
@@ -185,10 +185,10 @@ public class Auth0Provider : BaseAuthenticationProvider
     {
         if (string.IsNullOrEmpty(_configuration.Domain))
             throw new InvalidOperationException("Auth0 Domain is required in configuration");
-        
+
         if (string.IsNullOrEmpty(_configuration.ClientId))
             throw new InvalidOperationException("Auth0 ClientId is required in configuration");
-        
+
         if (string.IsNullOrEmpty(_configuration.ClientSecret))
             throw new InvalidOperationException("Auth0 ClientSecret is required in configuration");
     }

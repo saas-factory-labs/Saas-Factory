@@ -11,6 +11,6 @@ public record EntityMetadata
     /// PII detection results for this entity.
     /// </summary>
     public PIIMetadata? Pii { get; init; }
-    
+
     // Future metadata properties can be added here
 }

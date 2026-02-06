@@ -18,7 +18,7 @@ public sealed class CurrentTenantService : ICurrentTenantService
     {
         ArgumentNullException.ThrowIfNull(tenantContextAccessor);
         ArgumentNullException.ThrowIfNull(tenantRepository);
-        
+
         _tenantContextAccessor = tenantContextAccessor;
         _tenantRepository = tenantRepository;
     }
@@ -36,12 +36,12 @@ public sealed class CurrentTenantService : ICurrentTenantService
     public async Task<string?> GetTenantNameAsync()
     {
         string? tenantId = _tenantContextAccessor.TenantId;
-        
+
         if (string.IsNullOrEmpty(tenantId))
             return null;
 
         var tenant = await _tenantRepository.GetByIdAsync(tenantId);
-        
+
         return tenant?.Name;
     }
 
@@ -52,12 +52,12 @@ public sealed class CurrentTenantService : ICurrentTenantService
     public async Task<SharedKernel.Enums.TenantType?> GetTenantTypeAsync()
     {
         string? tenantId = _tenantContextAccessor.TenantId;
-        
+
         if (string.IsNullOrEmpty(tenantId))
             return null;
 
         var tenant = await _tenantRepository.GetByIdAsync(tenantId);
-        
+
         return tenant?.TenantType;
     }
 }

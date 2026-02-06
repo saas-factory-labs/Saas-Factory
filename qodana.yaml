@@ -4,6 +4,17 @@ linter: jetbrains/qodana-dotnet:2025.3
 dotnet:
   solution: "Saas-Factory.sln"
 
+profile:
+  name: qodana.recommended
+
+include:
+  - name: TaintAnalysis         # Tracks untrusted user input to prevent security holes like SQL injection or XSS.
+  - name: VulnerableLibraries   # Scans NuGet and NPM packages for known security vulnerabilities (CVEs).
+  - name: LicenseAudit          # Identifies dependency licenses to ensure compliance with your project's legal requirements.
+  - name: OwaspTopTen           # Specifically maps code issues to the top 10 most critical web security risks.
+  - name: CheckQuickFix         # Highlights issues where Qodana can automatically apply a code fix for you.
+  - name: CodeUsageInspection   # Detects "dead code" such as unused classes, methods, or properties to keep the framework lean.
+
 exclude:
   - name: All
     paths:
@@ -11,17 +22,12 @@ exclude:
       - "bin"
       - "obj"
       - "Migrations"
-      - "Generated"
-      - "docs"
+      - "node_modules"
+
   # Suppress false positive for email template layouts - the _Layout.cshtml exists and works at runtime
   - name: Razor.LayoutNotResolved
-    paths:
-      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/Email/Templates"
+    paths: ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/Email/Templates"]
+    
   # Suppress false positive for Blazor RCL static asset paths - _content/{LibraryName}/ is a runtime virtual path
   - name: Html.PathError
-    paths:
-      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit"
-  # Suppress #0 placeholder anchors in UiKit demo components - these are intentional template placeholders
-  - name: Html.IdNotResolved
-    paths:
-      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit"
+    paths: ["Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit"]

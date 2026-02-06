@@ -29,7 +29,7 @@ else
 }
 
 @code {
-    private IEnumerable<AccountEntity> _data = Enumerable.Empty<AccountEntity>();
+    private IEnumerable<AccountEntity>? _data;
     private string _loginError = string.Empty;
 
     protected override async Task OnInitializedAsync()

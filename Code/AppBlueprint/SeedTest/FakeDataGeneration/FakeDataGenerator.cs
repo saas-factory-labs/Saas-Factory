@@ -13,7 +13,7 @@ internal sealed class FakeDataGenerator
     {
         Assembly? assembly = Assembly.GetAssembly(typeof(IEntity));
         if (assembly == null) return;
-        
+
         IEnumerable<Type> entityTypes = assembly.GetTypes()
             .Where(t => t.Namespace == "Shared.Models");
 

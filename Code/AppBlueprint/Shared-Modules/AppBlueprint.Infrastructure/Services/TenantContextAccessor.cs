@@ -45,7 +45,7 @@ public sealed class TenantContextAccessor : ITenantContextAccessor
         get
         {
             HttpContext? context = _httpContextAccessor.HttpContext;
-            
+
             if (context is null)
             {
                 _logger.LogDebug("TenantId access - No HttpContext available");
@@ -63,7 +63,7 @@ public sealed class TenantContextAccessor : ITenantContextAccessor
             if (context.User?.Identity?.IsAuthenticated == true)
             {
                 string? tenantId = context.User.FindFirst("tenant_id")?.Value;
-                
+
                 if (tenantId is not null)
                 {
                     _logger.LogDebug("TenantId from JWT claim 'tenant_id': {TenantId}", tenantId);
@@ -72,10 +72,10 @@ public sealed class TenantContextAccessor : ITenantContextAccessor
                 {
                     // Log all available claims for debugging
                     string claims = string.Join(", ", context.User.Claims.Select(c => $"{c.Type}={c.Value}"));
-                    _logger.LogWarning("TenantId not found. User authenticated: {IsAuth}. Available claims: {Claims}", 
+                    _logger.LogWarning("TenantId not found. User authenticated: {IsAuth}. Available claims: {Claims}",
                         context.User.Identity.IsAuthenticated, claims);
                 }
-                
+
                 return tenantId;
             }
 

@@ -16,12 +16,12 @@ public sealed class NotificationService(
     public async Task SendAsync(SendNotificationRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
-        
+
         Console.WriteLine($"[NotificationService] SendAsync - TenantId: '{request.TenantId}', UserId: '{request.UserId}', Channels: {request.Channels}");
 
         // Get user preferences
         NotificationPreferencesEntity? preferences = await preferencesRepository.GetByUserIdAsync(request.UserId);
-        
+
         // Create default preferences if none exist
         if (preferences is null)
         {
@@ -65,7 +65,7 @@ public sealed class NotificationService(
     public async Task<IEnumerable<UserNotificationEntity>> GetUserNotificationsAsync(string userId, int count = 20)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
-        
+
         List<UserNotificationEntity> notifications = await notificationRepository.GetByUserIdAsync(userId);
         return notifications.Take(count);
     }
@@ -79,7 +79,7 @@ public sealed class NotificationService(
     public async Task MarkAsReadAsync(string notificationId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(notificationId);
-        
+
         UserNotificationEntity? notification = await notificationRepository.GetByIdAsync(notificationId);
         if (notification is not null)
         {

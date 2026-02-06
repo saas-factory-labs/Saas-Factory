@@ -57,7 +57,7 @@ public class TodoController(
         string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
         string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
 
-        _logger.LogInformation("Creating new todo: {Title} for tenant {TenantId} and user {UserId}", 
+        _logger.LogInformation("Creating new todo: {Title} for tenant {TenantId} and user {UserId}",
             request.Title, tenantId, userId);
 
         var todo = new TodoEntity(request.Title, request.Description, tenantId, userId);

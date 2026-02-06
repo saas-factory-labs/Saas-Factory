@@ -9,7 +9,7 @@ public partial class B2BDbContext
     partial void OnModelCreating_Tenant(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
-        
+
         // TenantEntity is configured in Baseline, but we need to add B2B-specific Team relationship
         modelBuilder.Entity<TenantEntity>()
             .HasMany<TeamEntity>()

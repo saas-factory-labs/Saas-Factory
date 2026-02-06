@@ -86,7 +86,7 @@
             yield return "Password must contain at least one digit";
     }
 
-    private string PasswordMatch(string arg)
+    private string? PasswordMatch(string arg)
     {
         if (_pwField1.Value != arg)
             return "Passwords don't match";

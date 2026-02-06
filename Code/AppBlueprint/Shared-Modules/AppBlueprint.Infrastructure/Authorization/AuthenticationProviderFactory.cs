@@ -49,7 +49,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
     public AuthenticationProviderType GetConfiguredProviderType()
     {
         string providerName = _configuration["Authentication:Provider"] ?? "Mock";
-        
+
         if (!Enum.TryParse<AuthenticationProviderType>(providerName, true, out var providerType))
         {
             throw new InvalidOperationException($"Invalid authentication provider configured: {providerName}. " +
@@ -72,10 +72,10 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
         var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
-        
+
         // Check if we should use Authorization Code Flow (recommended)
         var useAuthCodeFlow = _configuration.GetValue<bool>("Authentication:Logto:UseAuthorizationCodeFlow", true);
-        
+
         if (useAuthCodeFlow)
         {
             var logger = _serviceProvider.GetRequiredService<ILogger<LogtoAuthorizationCodeProvider>>();
@@ -142,32 +142,32 @@ public enum AuthenticationProviderType
     /// Mock provider for testing (no real authentication)
     /// </summary>
     Mock,
-    
+
     /// <summary>
     /// Auth0 authentication platform
     /// </summary>
     Auth0,
-    
+
     /// <summary>
     /// Logto open-source identity solution
     /// </summary>
     Logto,
-    
+
     /// <summary>
     /// Azure AD B2C (Coming soon)
     /// </summary>
     AzureAD,
-    
+
     /// <summary>
     /// AWS Cognito (Coming soon)
     /// </summary>
     Cognito,
-    
+
     /// <summary>
     /// Firebase Authentication (Coming soon)
     /// </summary>
     Firebase,
-    
+
     /// <summary>
     /// Simple JWT-based authentication (Coming soon - for development/testing only)
     /// </summary>

@@ -8,7 +8,7 @@ public class DataExportEntityConfiguration : IEntityTypeConfiguration<DataExport
     public void Configure(EntityTypeBuilder<DataExportEntity> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        
+
         builder.ToTable("DataExports");
 
         // Configure ID as ULID string

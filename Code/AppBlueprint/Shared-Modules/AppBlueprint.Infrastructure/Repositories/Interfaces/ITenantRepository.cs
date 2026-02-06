@@ -13,14 +13,14 @@ public interface ITenantRepository
     Task AddAsync(TenantEntity tenant);
     Task UpdateAsync(TenantEntity tenant);
     Task DeleteAsync(string id);
-    
+
     /// <summary>
     /// Synchronous update - not recommended for Blazor Server.
     /// Use UpdateAsync instead.
     /// </summary>
     [Obsolete("Use UpdateAsync for thread-safe operations in Blazor Server")]
     void Update(TenantEntity tenant);
-    
+
     /// <summary>
     /// Synchronous delete - not recommended for Blazor Server.
     /// Use DeleteAsync instead.

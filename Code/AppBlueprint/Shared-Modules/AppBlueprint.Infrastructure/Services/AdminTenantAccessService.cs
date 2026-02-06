@@ -99,7 +99,7 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
             throw new UnauthorizedAccessException("Only Deployment Manager Admins can access other tenants' data.");
         }
 
-        string adminUserId = _currentUserService.UserId 
+        string adminUserId = _currentUserService.UserId
             ?? throw new InvalidOperationException("Admin user ID not found");
 
         // Log admin access attempt

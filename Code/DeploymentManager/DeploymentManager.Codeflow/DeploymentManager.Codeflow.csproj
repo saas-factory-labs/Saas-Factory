@@ -21,7 +21,9 @@
         <PackageReference Include="Microsoft.Extensions.Http"/>
         <PackageReference Include="Microsoft.Extensions.Logging"/>
         <PackageReference Include="StrawberryShake"/>
-        <PackageReference Include="StrawberryShake.CodeGeneration.CSharp.Analyzers"/>
+        <!-- Analyzer package temporarily removed due to security vulnerability in v12.22.6 and compatibility issues with v13.0.0-preview -->
+        <!-- Generated code is committed to source control - regenerate manually if GraphQL schema changes -->
+        <!-- <PackageReference Include="StrawberryShake.CodeGeneration.CSharp.Analyzers"/> -->
         <PackageReference Include="StrawberryShake.Core"/>
         <PackageReference Include="StrawberryShake.Transport.Http"/>
     </ItemGroup>

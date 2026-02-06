@@ -23,13 +23,13 @@ public abstract class BaseAuthenticationProvider : IAuthenticationProvider
     }
 
     public abstract Task<AuthenticationResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);
-    
+
     public virtual async Task LogoutAsync()
     {
         AccessToken = null;
         RefreshToken = null;
         TokenExpiration = DateTime.MinValue;
-        
+
         await TokenStorage.RemoveTokenAsync();
         OnAuthenticationStateChanged?.Invoke();
     }

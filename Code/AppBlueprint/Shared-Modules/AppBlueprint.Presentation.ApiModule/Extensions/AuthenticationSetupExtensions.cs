@@ -45,7 +45,7 @@ public static class AuthenticationSetupExtensions
             {
                 [AuthenticationProviderConfigKey] = providerType.ToString()
             };
-            
+
             var tempConfig = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
                 .AddInMemoryCollection(configDict)
@@ -87,12 +87,12 @@ public static class AuthenticationSetupExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(environment);
-        
+
         if (string.IsNullOrWhiteSpace(endpoint))
         {
             throw new ArgumentException("Logto endpoint must be provided", nameof(endpoint));
         }
-        
+
         if (string.IsNullOrWhiteSpace(clientId))
         {
             throw new ArgumentException("Logto client ID must be provided", nameof(clientId));
@@ -146,12 +146,12 @@ public static class AuthenticationSetupExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(environment);
-        
+
         if (string.IsNullOrWhiteSpace(domain))
         {
             throw new ArgumentException("Auth0 domain must be provided", nameof(domain));
         }
-        
+
         if (string.IsNullOrWhiteSpace(audience))
         {
             throw new ArgumentException("Auth0 audience must be provided", nameof(audience));
@@ -205,7 +205,7 @@ public static class AuthenticationSetupExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(environment);
-        
+
         if (string.IsNullOrWhiteSpace(secretKey))
         {
             throw new ArgumentException("Secret key must be provided", nameof(secretKey));
@@ -242,12 +242,12 @@ public enum AuthProvider
     /// Logto - Modern open-source identity infrastructure
     /// </summary>
     Logto,
-    
+
     /// <summary>
     /// Auth0 - Popular authentication service
     /// </summary>
     Auth0,
-    
+
     /// <summary>
     /// Simple JWT with secret key (for development/testing)
     /// </summary>

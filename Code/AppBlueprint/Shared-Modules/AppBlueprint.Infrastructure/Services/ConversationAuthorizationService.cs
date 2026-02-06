@@ -10,12 +10,12 @@ public sealed class DatingAppConversationAuthorizationService : IConversationAut
 {
     // In production, inject your DbContext here
     // private readonly BaselineDbContext _dbContext;
-    
+
     // public DatingAppConversationAuthorizationService(BaselineDbContext dbContext)
     // {
     //     _dbContext = dbContext;
     // }
-    
+
     public async Task<bool> CanJoinConversationAsync(string conversationId, string userId, string tenantId)
     {
         ArgumentNullException.ThrowIfNull(conversationId);
@@ -24,7 +24,7 @@ public sealed class DatingAppConversationAuthorizationService : IConversationAut
 
         // Example: conversationId format = "match-{userId1}-{userId2}"
         // Extract user IDs and verify this user is one of them
-        
+
         if (conversationId.StartsWith("match-", StringComparison.Ordinal))
         {
             string[] parts = conversationId.Split('-');
@@ -32,7 +32,7 @@ public sealed class DatingAppConversationAuthorizationService : IConversationAut
             {
                 string user1 = parts[1];
                 string user2 = parts[2];
-                
+
                 // Check if current user is one of the matched users
                 if (userId == user1 || userId == user2)
                 {
@@ -41,23 +41,23 @@ public sealed class DatingAppConversationAuthorizationService : IConversationAut
                     //     .AnyAsync(m => m.ConversationId == conversationId 
                     //                 && m.IsActive 
                     //                 && (m.User1Id == userId || m.User2Id == userId));
-                    
+
                     // For demo: allow if user ID is in conversation ID
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     public async Task<bool> CanSendMessageAsync(string conversationId, string userId, string tenantId)
     {
         // Same logic as CanJoinConversationAsync
         // In some cases, you might want different rules (e.g., read-only access)
         return await CanJoinConversationAsync(conversationId, userId, tenantId);
     }
-    
+
     public async Task<List<string>> GetUserConversationsAsync(string userId, string tenantId)
     {
         // TODO: Query database for all conversations this user has access to
@@ -65,7 +65,7 @@ public sealed class DatingAppConversationAuthorizationService : IConversationAut
         //     .Where(m => m.IsActive && (m.User1Id == userId || m.User2Id == userId))
         //     .Select(m => m.ConversationId)
         //     .ToListAsync();
-        
+
         // For demo: return empty list
         return await Task.FromResult(new List<string>());
     }
@@ -78,7 +78,7 @@ public sealed class DatingAppConversationAuthorizationService : IConversationAut
 public sealed class PropertyRentalConversationAuthorizationService : IConversationAuthorizationService
 {
     // In production, inject your DbContext here
-    
+
     public async Task<bool> CanJoinConversationAsync(string conversationId, string userId, string tenantId)
     {
         ArgumentNullException.ThrowIfNull(conversationId);
@@ -87,11 +87,11 @@ public sealed class PropertyRentalConversationAuthorizationService : IConversati
 
         // Example: conversationId format = "property-{propertyId}"
         // Check if user is property owner OR has sent an inquiry
-        
+
         if (conversationId.StartsWith("property-", StringComparison.Ordinal))
         {
             string propertyId = conversationId.Replace("property-", "", StringComparison.Ordinal);
-            
+
             // TODO: Query database
             // 1. Check if user owns the property
             // var property = await _dbContext.Properties.FindAsync(propertyId);
@@ -102,19 +102,19 @@ public sealed class PropertyRentalConversationAuthorizationService : IConversati
             //     .AnyAsync(i => i.PropertyId == propertyId 
             //                 && i.InterestedUserId == userId 
             //                 && i.Status != InquiryStatus.Rejected);
-            
+
             // For demo: allow all
             return true;
         }
-        
+
         return false;
     }
-    
+
     public async Task<bool> CanSendMessageAsync(string conversationId, string userId, string tenantId)
     {
         return await CanJoinConversationAsync(conversationId, userId, tenantId);
     }
-    
+
     public async Task<List<string>> GetUserConversationsAsync(string userId, string tenantId)
     {
         // TODO: Query database for properties owned or inquired about

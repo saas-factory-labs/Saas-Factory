@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using AppBlueprint.Infrastructure.Configuration;
+using AppBlueprint.Infrastructure.DatabaseContexts;
 using Logto.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -5,13 +8,10 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using AppBlueprint.Infrastructure.Configuration;
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace AppBlueprint.Infrastructure.Authentication;
 
@@ -31,7 +31,7 @@ public static class WebAuthenticationExtensions
         "https://appblueprint-web-staging.up.railway.app/callback",
         "https://appblueprint-web-staging.up.railway.app/signout-callback-logto"
     };
-    
+
     private static readonly string[] RequiredPostLogoutRedirectUris = new[]
     {
         "https://appblueprint-web-staging.up.railway.app/"
@@ -39,13 +39,13 @@ public static class WebAuthenticationExtensions
     // Constants for authentication schemes
     private const string LogtoCookieScheme = "Logto.Cookie";
     private const string LogtoScheme = "Logto";
-    
+
     // Constants for configuration keys
     private const string LogtoEndpointKey = "Logto:Endpoint";
     private const string LogtoAppIdKey = "Logto:AppId";
     private const string LogtoAppSecretKey = "Logto:AppSecret";
     private const string LogtoResourceKey = "Logto:Resource";
-    
+
     // Constants for paths and URIs
     private const string DataProtectionKeysPath = "/app";
     private const string DataProtectionKeysFolderName = "DataProtection-Keys";
@@ -53,7 +53,7 @@ public static class WebAuthenticationExtensions
     private const string SignupPath = "/signup";
     private const string SignoutPath = "/auth/signout";
     private const string NullPlaceholder = "(null)";
-    
+
     // Constants for logging
     private const string LogSeparator = "========================================";
 
@@ -98,7 +98,7 @@ public static class WebAuthenticationExtensions
 </body>
 </html>";
     }
-    
+
     /// <summary>
     /// Configures authentication services for the web application including Logto, cookies, and data protection.
     /// </summary>
@@ -149,15 +149,15 @@ public static class WebAuthenticationExtensions
         if (!environment.IsDevelopment())
         {
             Console.WriteLine("[Web] Configuring Data Protection for production (Railway)");
-            
+
             var keysPath = Path.Combine(DataProtectionKeysPath, DataProtectionKeysFolderName);
             Directory.CreateDirectory(keysPath);
-            
+
             services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
                 .SetApplicationName(ApplicationName)
                 .SetDefaultKeyLifetime(TimeSpan.FromDays(90));
-            
+
             Console.WriteLine($"[Web] Data Protection keys will be stored at: {keysPath}");
         }
         else
@@ -177,29 +177,29 @@ public static class WebAuthenticationExtensions
         // Read from flat UPPERCASE environment variables first, then fall back to IConfiguration
         // Supports: LOGTO_APPID, LOGTO_ENDPOINT, LOGTO_APPSECRET, LOGTO_RESOURCE (flat standard)
         // Falls back to: Logto:AppId, Logto:Endpoint, Logto:AppSecret, Logto:Resource (hierarchical)
-        string? logtoAppId = Environment.GetEnvironmentVariable("LOGTO_APPID") 
-                          ?? Environment.GetEnvironmentVariable("LOGTO_APP_ID") 
+        string? logtoAppId = Environment.GetEnvironmentVariable("LOGTO_APPID")
+                          ?? Environment.GetEnvironmentVariable("LOGTO_APP_ID")
                           ?? configuration[LogtoAppIdKey];
-        string? logtoEndpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT") 
+        string? logtoEndpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT")
                              ?? configuration[LogtoEndpointKey];
-        string? logtoAppSecret = Environment.GetEnvironmentVariable("LOGTO_APPSECRET") 
-                              ?? Environment.GetEnvironmentVariable("LOGTO_APP_SECRET") 
+        string? logtoAppSecret = Environment.GetEnvironmentVariable("LOGTO_APPSECRET")
+                              ?? Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")
                               ?? configuration[LogtoAppSecretKey];
-        string? logtoResource = Environment.GetEnvironmentVariable("LOGTO_APIRESOURCE") 
-                             ?? Environment.GetEnvironmentVariable("LOGTO_RESOURCE") 
+        string? logtoResource = Environment.GetEnvironmentVariable("LOGTO_APIRESOURCE")
+                             ?? Environment.GetEnvironmentVariable("LOGTO_RESOURCE")
                              ?? configuration[LogtoResourceKey];
-        
+
         // DEBUG: Check all configuration values
         Console.WriteLine($"[Web] DEBUG - Reading configuration:");
         Console.WriteLine($"[Web] DEBUG - {LogtoEndpointKey} = {logtoEndpoint ?? NullPlaceholder}");
         Console.WriteLine($"[Web] DEBUG - {LogtoAppIdKey} = {logtoAppId ?? NullPlaceholder}");
         Console.WriteLine($"[Web] DEBUG - {LogtoAppSecretKey} = {(string.IsNullOrEmpty(logtoAppSecret) ? "(null or empty)" : $"<SET, length={logtoAppSecret.Length}>")} ");
         Console.WriteLine($"[Web] DEBUG - {LogtoResourceKey} = {logtoResource ?? NullPlaceholder}");
-        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO_APP_SECRET = {(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")) ? "(null or empty)" : $"<SET, length={Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")?.Length}>" )}");
+        Console.WriteLine($"[Web] DEBUG - Environment var LOGTO_APP_SECRET = {(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")) ? "(null or empty)" : $"<SET, length={Environment.GetEnvironmentVariable("LOGTO_APP_SECRET")?.Length}>")}");
         Console.WriteLine($"[Web] DEBUG - Environment var LOGTO_RESOURCE = {Environment.GetEnvironmentVariable("LOGTO_RESOURCE") ?? NullPlaceholder}");
-        
+
         LogLogtoConfiguration(logtoEndpoint, logtoAppId, logtoAppSecret, logtoResource);
-        
+
         // AddLogtoAuthentication ONLY registers the cookie scheme, not OIDC
         // We need to manually add the OpenID Connect handler with the "Logto" scheme
         services.AddAuthentication(options =>
@@ -215,7 +215,7 @@ public static class WebAuthenticationExtensions
             options.LoginPath = SignupPath;
             options.LogoutPath = SignoutPath;
             options.AccessDeniedPath = SignupPath;
-            
+
             if (environment.IsDevelopment())
             {
                 options.Cookie.SecurePolicy = CookieSecurePolicy.None;
@@ -224,7 +224,7 @@ public static class WebAuthenticationExtensions
             options.Cookie.HttpOnly = true;
             options.Cookie.Path = "/";
             options.Cookie.IsEssential = true;
-            
+
             Console.WriteLine($"[Web] Configured Cookie scheme: LoginPath={options.LoginPath}");
         })
         .AddOpenIdConnect(LogtoScheme, options =>
@@ -232,25 +232,25 @@ public static class WebAuthenticationExtensions
             options.Authority = logtoEndpoint;
             options.ClientId = logtoAppId ?? string.Empty;
             options.ClientSecret = logtoAppSecret;
-            
+
             options.ResponseType = "code";
             options.ResponseMode = "query";
-            
+
             options.SaveTokens = true;
-            
+
             // IMPORTANT: When using API Resources, the access token is audience-restricted
             // to the API and cannot be used to call the /userinfo endpoint (returns 401).
             // We get user claims from the ID token instead.
             // Only enable userinfo endpoint when NOT using API Resources.
             options.GetClaimsFromUserInfoEndpoint = string.IsNullOrEmpty(logtoResource);
-            
+
             // Configure scopes - include OIDC scopes and API resource scopes
             options.Scope.Clear();
             options.Scope.Add("openid");
             options.Scope.Add("profile");
             options.Scope.Add("email");
             options.Scope.Add("offline_access"); // Required for refresh tokens
-            
+
             // Configure API Resource to request JWT access tokens
             // Per Logto docs: https://docs.logto.io/authorization/global-api-resources
             // 1. Set the resource indicator
@@ -260,14 +260,14 @@ public static class WebAuthenticationExtensions
             if (!string.IsNullOrEmpty(logtoResource))
             {
                 options.Resource = logtoResource; // Request access token for this API resource
-                
+
                 // Add API resource scopes - these must be defined in Logto Console
                 // under API Resources -> Your API -> Permissions
                 // AND assigned to a Role -> assigned to the user
                 options.Scope.Add("read:files");
                 options.Scope.Add("write:files");
                 options.Scope.Add("read:todos");
-                
+
                 Console.WriteLine($"[Web] ✅ API Resource configured: {logtoResource} (will receive JWT access tokens)");
                 Console.WriteLine("[Web] ✅ Requesting scopes: openid profile email offline_access read:files write:files read:todos");
                 Console.WriteLine("[Web] ⚠️ IMPORTANT: Create a Role in Logto Console, assign these permissions to it, then assign the Role to users!");
@@ -276,37 +276,37 @@ public static class WebAuthenticationExtensions
             {
                 Console.WriteLine("[Web] ⚠️ WARNING: No API Resource configured - will receive OPAQUE access tokens");
             }
-            
+
             options.CallbackPath = "/callback";
             options.SignedOutCallbackPath = "/signout-callback-logto";
-            
+
             if (environment.IsDevelopment())
             {
                 options.RequireHttpsMetadata = false;
             }
-            
+
             // Configure correlation cookie for development (HTTP localhost)
-            options.CorrelationCookie.SecurePolicy = environment.IsDevelopment() 
-                ? CookieSecurePolicy.None 
+            options.CorrelationCookie.SecurePolicy = environment.IsDevelopment()
+                ? CookieSecurePolicy.None
                 : CookieSecurePolicy.Always;
             options.CorrelationCookie.SameSite = SameSiteMode.Lax;
             options.CorrelationCookie.HttpOnly = true;
             options.CorrelationCookie.IsEssential = true;
             options.CorrelationCookie.Path = "/";
-            
+
             // Configure nonce cookie for development (HTTP localhost)
-            options.NonceCookie.SecurePolicy = environment.IsDevelopment() 
-                ? CookieSecurePolicy.None 
+            options.NonceCookie.SecurePolicy = environment.IsDevelopment()
+                ? CookieSecurePolicy.None
                 : CookieSecurePolicy.Always;
             options.NonceCookie.SameSite = SameSiteMode.Lax;
             options.NonceCookie.HttpOnly = true;
             options.NonceCookie.IsEssential = true;
             options.NonceCookie.Path = "/";
-            
+
             Console.WriteLine($"[Web] Configured OpenID Connect 'Logto' scheme with Authority={options.Authority}");
             Console.WriteLine($"[Web] Cookie settings - SecurePolicy: {options.CorrelationCookie.SecurePolicy}, SameSite: {options.CorrelationCookie.SameSite}");
         });
-        
+
         // Configure the Logto cookie scheme (named "Logto.Cookie") specifically
         services.Configure<CookieAuthenticationOptions>("Logto.Cookie", options =>
         {
@@ -314,7 +314,7 @@ public static class WebAuthenticationExtensions
             options.LoginPath = SignupPath;
             options.LogoutPath = SignoutPath;
             options.AccessDeniedPath = SignupPath;
-            
+
             // Configure authentication cookie for development
             if (environment.IsDevelopment())
             {
@@ -324,10 +324,10 @@ public static class WebAuthenticationExtensions
             options.Cookie.HttpOnly = true;
             options.Cookie.Path = "/";
             options.Cookie.IsEssential = true;
-            
+
             Console.WriteLine($"[Web] Configured Logto.Cookie scheme: LoginPath={options.LoginPath}, Path=/, IsEssential=true, SameSite={options.Cookie.SameSite}");
         });
-        
+
         // Also configure all cookie schemes as a fallback
         services.ConfigureAll<CookieAuthenticationOptions>(options =>
         {
@@ -335,7 +335,7 @@ public static class WebAuthenticationExtensions
             options.LoginPath = SignupPath;
             options.LogoutPath = SignoutPath;
             options.AccessDeniedPath = SignupPath;
-            
+
             // Configure authentication cookie for development
             if (environment.IsDevelopment())
             {
@@ -345,12 +345,12 @@ public static class WebAuthenticationExtensions
             options.Cookie.HttpOnly = true;
             options.Cookie.Path = "/";
             options.Cookie.IsEssential = true;
-            
+
             Console.WriteLine($"[Web] Configured authentication cookie: LoginPath={options.LoginPath}, Path=/, IsEssential=true, SameSite={options.Cookie.SameSite}");
         });
-        
+
         ConfigureOpenIdConnectOptions(services, environment);
-        
+
         Console.WriteLine("[Web] Logto authentication configured successfully");
     }
 
@@ -367,7 +367,7 @@ public static class WebAuthenticationExtensions
         Console.WriteLine("[Web]   - LOGTO_ENDPOINT");
         Console.WriteLine("[Web]   - LOGTO_APPSECRET");
         Console.WriteLine($"[Web] {LogSeparator}");
-        
+
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
@@ -405,24 +405,24 @@ public static class WebAuthenticationExtensions
         services.Configure<OpenIdConnectOptions>(LogtoScheme, options =>
         {
             Console.WriteLine($"[Web] Configuring OpenID Connect '{LogtoScheme}' scheme to save tokens...");
-            
+
             options.SaveTokens = true;
-            
+
             // Logto uses /callback as the callback path (not the default /signin-oidc)
             // This must match what's configured in Logto's redirect URIs
             options.CallbackPath = "/callback";
-            
+
             ConfigureCookieSettings(options, environment);
-            
+
             Console.WriteLine($"[Web] OpenID Connect callback path: {options.CallbackPath}");
             Console.WriteLine($"[Web] Cookie SecurePolicy: {(environment.IsDevelopment() ? "None (dev - allows HTTP)" : "Always (prod - HTTPS required)")}");
             Console.WriteLine($"[Web] Cookie SameSite: {(environment.IsDevelopment() ? "Lax (dev)" : "None (prod - required for OAuth)")}");
-            
+
             ConfigureOpenIdConnectEvents(options);
-            
+
             Console.WriteLine("[Web] OpenID Connect configured to save tokens for API authentication");
         });
-        
+
         services.ConfigureAll<OpenIdConnectOptions>(options =>
         {
             if (!options.SaveTokens)
@@ -444,7 +444,7 @@ public static class WebAuthenticationExtensions
         // In production (HTTPS), use None + Always (required for OAuth cross-site redirects)
         SameSiteMode sameSiteMode;
         CookieSecurePolicy securePolicy;
-        
+
         if (environment.IsDevelopment())
         {
             // Development: HTTP localhost
@@ -457,21 +457,21 @@ public static class WebAuthenticationExtensions
             sameSiteMode = SameSiteMode.None;
             securePolicy = CookieSecurePolicy.Always;
         }
-        
+
         options.CorrelationCookie.SameSite = sameSiteMode;
         options.CorrelationCookie.SecurePolicy = securePolicy;
         options.CorrelationCookie.HttpOnly = true;
         options.CorrelationCookie.Path = "/";
         options.CorrelationCookie.IsEssential = true;
         options.CorrelationCookie.Domain = null; // Don't set domain - use current host
-        
+
         options.NonceCookie.SameSite = sameSiteMode;
         options.NonceCookie.SecurePolicy = securePolicy;
         options.NonceCookie.HttpOnly = true;
         options.NonceCookie.Path = "/";
         options.NonceCookie.IsEssential = true;
         options.NonceCookie.Domain = null; // Don't set domain - use current host
-        
+
         Console.WriteLine($"[Web] Configured correlation/nonce cookies: Path=/, IsEssential=true, SameSite={sameSiteMode}, Secure={securePolicy}, Domain=null");
     }
 
@@ -482,10 +482,10 @@ public static class WebAuthenticationExtensions
     {
         var existingOnRemoteFailure = options.Events.OnRemoteFailure;
         options.Events.OnRemoteFailure = context => HandleRemoteFailure(context, existingOnRemoteFailure);
-        
+
         var existingOnTokenValidated = options.Events.OnTokenValidated;
         options.Events.OnTokenValidated = context => HandleTokenValidated(context, existingOnTokenValidated);
-        
+
         // Add resource parameter to authorization request to get JWT tokens
         // Per Logto docs: https://docs.logto.io/authorization/global-api-resources
         // The 'resource' parameter tells Logto which API Resource the token is for
@@ -493,7 +493,7 @@ public static class WebAuthenticationExtensions
         {
             Console.WriteLine("[Web] OnRedirectToIdentityProvider - About to redirect to Logto");
             Console.WriteLine($"[Web] Redirect URL: {context.ProtocolMessage.RedirectUri}");
-            
+
             // CRITICAL: Add the 'resource' parameter to the authorization request
             // This tells Logto to issue a JWT access token instead of an opaque token
             string? resource = context.Options.Resource;
@@ -508,9 +508,9 @@ public static class WebAuthenticationExtensions
                 Console.WriteLine("[Web] ⚠️ WARNING: No 'resource' parameter set - will receive opaque token");
                 Console.WriteLine("[Web] ⚠️ Set LOGTO_RESOURCE environment variable to your API Resource identifier");
             }
-            
+
             Console.WriteLine($"[Web] Response cookies being set: {context.Response.Headers.ContainsKey("Set-Cookie")}");
-            
+
             if (context.Response.Headers.TryGetValue("Set-Cookie", out var cookies))
             {
                 Console.WriteLine($"[Web] Set-Cookie headers count: {cookies.Count}");
@@ -525,17 +525,17 @@ public static class WebAuthenticationExtensions
                     }
                 }
             }
-            
+
             return Task.CompletedTask;
         };
-        
+
         // CRITICAL: Add resource parameter to the token exchange request
         // Per Logto docs: The resource parameter must be sent in the token request to get a JWT
         // https://docs.logto.io/authorization/global-api-resources#authorization-code-or-refresh-token-flow
         options.Events.OnAuthorizationCodeReceived = context =>
         {
             Console.WriteLine("[Web] OnAuthorizationCodeReceived - About to exchange code for tokens");
-            
+
             // Add the 'resource' parameter to the token request
             // This tells Logto to issue a JWT access token instead of an opaque token
             string? resource = context.Options.Resource;
@@ -550,29 +550,29 @@ public static class WebAuthenticationExtensions
             {
                 Console.WriteLine("[Web] ⚠️ WARNING: No 'resource' parameter - will receive opaque token (length ~43)");
             }
-            
+
             return Task.CompletedTask;
         };
-        
+
         // Debug: Log when callback is received
         options.Events.OnMessageReceived = context =>
         {
             Console.WriteLine("[Web] OnMessageReceived - Callback received from Logto");
             Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
             Console.WriteLine($"[Web] Request cookies count: {context.Request.Cookies.Count}");
-            
+
             foreach (var cookie in context.Request.Cookies)
             {
                 Console.WriteLine($"[Web]   - Received cookie: {cookie.Key}");
             }
-            
+
             // Check for correlation cookie specifically
             bool hasCorrelation = context.Request.Cookies.Any(c => c.Key.Contains("Correlation", StringComparison.Ordinal));
             bool hasNonce = context.Request.Cookies.Any(c => c.Key.Contains("Nonce", StringComparison.Ordinal));
-            
+
             Console.WriteLine($"[Web] Has Correlation cookie: {hasCorrelation}");
             Console.WriteLine($"[Web] Has Nonce cookie: {hasNonce}");
-            
+
             if (!hasCorrelation || !hasNonce)
             {
                 Console.WriteLine("[Web] ⚠️ WARNING: Missing required cookies! This will cause authentication to fail.");
@@ -581,7 +581,7 @@ public static class WebAuthenticationExtensions
                 Console.WriteLine("[Web]   2. Cookie SameSite policy is too restrictive");
                 Console.WriteLine("[Web]   3. Redirect from Logto is treated as cross-site");
             }
-            
+
             return Task.CompletedTask;
         };
     }
@@ -624,17 +624,17 @@ public static class WebAuthenticationExtensions
         Console.WriteLine($"[Web] ⚠️ CALLBACK URL: {callbackUrl}");
         Console.WriteLine("[Web] ⚠️ Make sure this EXACT URL is in Logto's 'Redirect URIs' list!");
         Console.WriteLine(LogSeparator);
-        
+
         if (existingHandler is not null)
         {
             await existingHandler(context);
         }
-        
+
         if (!context.Response.HasStarted)
         {
             context.Response.StatusCode = 200;
             context.Response.ContentType = "text/html";
-            
+
             await context.Response.WriteAsync(GenerateDynamicErrorHtml(context));
             context.HandleResponse();
         }
@@ -647,11 +647,11 @@ public static class WebAuthenticationExtensions
         string errorType = context.Failure?.GetType().Name ?? "Unknown";
         string innerError = context.Failure?.InnerException?.Message ?? "None";
         string stackTrace = context.Failure?.StackTrace ?? "Not available";
-        
+
         // Check for OAuth-specific error in query string
         string oauthError = context.Request.Query.TryGetValue("error", out var err) ? err.ToString() : "None";
         string oauthErrorDesc = context.Request.Query.TryGetValue("error_description", out var desc) ? desc.ToString() : "None";
-        
+
         return $@"
 <!DOCTYPE html>
 <html>
@@ -720,7 +720,7 @@ public static class WebAuthenticationExtensions
         Func<TokenValidatedContext, Task>? existingHandler)
     {
         Console.WriteLine("[Web] OnTokenValidated event fired - saving tokens to authentication properties");
-        
+
         // DEBUG: Log all claims from OIDC token
         if (context.Principal?.Identity is ClaimsIdentity claimsIdentity)
         {
@@ -752,31 +752,31 @@ public static class WebAuthenticationExtensions
         }
 
         // Fetch user's tenant from database and add tenant_id claim
-        string? userEmail = context.Principal?.FindFirst(ClaimTypes.Email)?.Value 
+        string? userEmail = context.Principal?.FindFirst(ClaimTypes.Email)?.Value
             ?? context.Principal?.FindFirst("email")?.Value;
-        
+
         if (!string.IsNullOrEmpty(userEmail))
         {
             Console.WriteLine($"[Web] User email from JWT: {userEmail}");
-            
+
             // Get DbContextFactory from DI container to bypass RLS
             var contextFactory = context.HttpContext.RequestServices.GetService<IDbContextFactory<ApplicationDbContext>>();
-            
+
             if (contextFactory is not null)
             {
                 await using ApplicationDbContext dbContext = await contextFactory.CreateDbContextAsync();
-                
+
                 // Query database directly, bypassing RLS by using SECURITY INVOKER context
                 // This is safe because we're only reading data during authentication
                 // Use quoted column names to match exact casing in PostgreSQL
                 FormattableString query = $"SELECT \"Id\", \"TenantId\" FROM \"Users\" WHERE \"Email\" = {userEmail} LIMIT 1";
-                
+
                 var result = await dbContext.Database.SqlQuery<UserTenantLookup>(query).FirstOrDefaultAsync();
-                
+
                 if (result is not null && !string.IsNullOrEmpty(result.TenantId))
                 {
                     Console.WriteLine($"[Web] ✅ Found user's tenant: {result.TenantId}");
-                    
+
                     // Add tenant_id claim to ClaimsIdentity
                     // IMPORTANT: We need to add it to the existing identity that will be saved to the cookie
                     var identity = context.Principal?.Identity as ClaimsIdentity;
@@ -784,13 +784,13 @@ public static class WebAuthenticationExtensions
                     {
                         identity.AddClaim(new Claim("tenant_id", result.TenantId));
                         Console.WriteLine("[Web] ✅ Added tenant_id claim to ClaimsIdentity");
-                        
+
                         // CRITICAL: Create a new ClaimsPrincipal with the updated identity
                         // This ensures the claim is persisted to the authentication cookie
                         context.Principal = new ClaimsPrincipal(identity);
                         Console.WriteLine("[Web] ✅ Updated Principal with tenant_id claim");
                     }
-                    
+
                     // User has a tenant - redirect directly to dashboard (skip onboarding)
                     if (context.Properties is not null)
                     {
@@ -801,7 +801,7 @@ public static class WebAuthenticationExtensions
                 else
                 {
                     Console.WriteLine("[Web] ⚠️ User not found or has no tenant - will redirect to onboarding");
-                    
+
                     // User has no tenant - redirect to onboarding for profile completion
                     if (context.Properties is not null)
                     {
@@ -891,7 +891,7 @@ public static class WebAuthenticationExtensions
                     return;
                 }
             }
-            
+
             Console.WriteLine("[Web] User already authenticated - redirecting to /");
             Console.WriteLine(LogSeparator);
             context.Response.Redirect("/");
@@ -905,13 +905,13 @@ public static class WebAuthenticationExtensions
             Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] SignOut endpoint called");
             Console.WriteLine($"[Web] User authenticated: {context.User?.Identity?.IsAuthenticated}");
-            
+
             if (context.User?.Identity?.IsAuthenticated ?? false)
             {
                 Console.WriteLine("[Web] ✅ Signing out from both Cookie and OIDC schemes");
                 Console.WriteLine("[Web] ➡️  Will redirect to /login after sign-out completes");
                 Console.WriteLine(LogSeparator);
-                
+
                 await context.SignOutAsync(LogtoCookieScheme);
                 await context.SignOutAsync(LogtoScheme, new AuthenticationProperties { RedirectUri = "/login" });
             }
@@ -931,7 +931,7 @@ public static class WebAuthenticationExtensions
             Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] Logout complete callback - user returned from Logto");
             Console.WriteLine($"[Web] Current authentication state: {context.User?.Identity?.IsAuthenticated}");
-            
+
             try
             {
                 await context.SignOutAsync(LogtoCookieScheme);
@@ -942,10 +942,10 @@ public static class WebAuthenticationExtensions
             {
                 Console.WriteLine($"[Web] Cookie clear error (might be already cleared): {ex.Message}");
             }
-            
+
             Console.WriteLine("[Web] ✅ Sending HTML redirect to /login");
             Console.WriteLine(LogSeparator);
-            
+
             return Results.Content(HtmlTemplates.LogoutCompleteHtml, "text/html", null, statusCode: 200);
         }).AllowAnonymous();
     }
@@ -957,12 +957,12 @@ public static class WebAuthenticationExtensions
             Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] Local sign-out endpoint called (bypassing Logto end session)");
             Console.WriteLine($"[Web] User was: {context.User?.Identity?.Name ?? "unknown"}");
-            
+
             try
             {
                 await context.SignOutAsync(LogtoCookieScheme);
                 Console.WriteLine($"[Web] ✅ Cleared {LogtoCookieScheme}");
-                
+
                 context.Response.ContentType = "text/html";
                 await context.Response.WriteAsync(HtmlTemplates.LocalSignOutHtml);
                 Console.WriteLine("[Web] ✅ Sent HTML redirect to /login (forced reload)");
@@ -992,14 +992,14 @@ public static class WebAuthenticationExtensions
         app.MapGet("/test-logto-connection", async () =>
         {
             var results = new List<object>();
-            
+
             // Test 1: DNS Resolution
             try
             {
                 var host = "32nkyp.logto.app";
                 var addresses = await System.Net.Dns.GetHostAddressesAsync(host);
-                results.Add(new 
-                { 
+                results.Add(new
+                {
                     test = "DNS Resolution",
                     success = true,
                     host = host,
@@ -1008,15 +1008,15 @@ public static class WebAuthenticationExtensions
             }
             catch (System.Net.Sockets.SocketException ex)
             {
-                results.Add(new 
-                { 
+                results.Add(new
+                {
                     test = "DNS Resolution",
                     success = false,
                     error = ex.Message,
                     type = ex.GetType().Name
                 });
             }
-            
+
             // Test 2: HTTPS Connectivity (with longer timeout for Railway)
             try
             {
@@ -1026,9 +1026,9 @@ public static class WebAuthenticationExtensions
                 var response = await client.GetAsync(new Uri(url, UriKind.Absolute));
                 sw.Stop();
                 var content = await response.Content.ReadAsStringAsync();
-                
-                results.Add(new 
-                { 
+
+                results.Add(new
+                {
                     test = "HTTPS Connectivity",
                     success = response.IsSuccessStatusCode,
                     url = url,
@@ -1041,8 +1041,8 @@ public static class WebAuthenticationExtensions
             }
             catch (HttpRequestException ex)
             {
-                results.Add(new 
-                { 
+                results.Add(new
+                {
                     test = "HTTPS Connectivity",
                     success = false,
                     error = ex.Message,
@@ -1051,15 +1051,15 @@ public static class WebAuthenticationExtensions
             }
             catch (TaskCanceledException ex)
             {
-                results.Add(new 
-                { 
+                results.Add(new
+                {
                     test = "HTTPS Connectivity",
                     success = false,
                     error = "Request timed out: " + ex.Message,
                     type = ex.GetType().Name
                 });
             }
-            
+
             // Test 3: Current Logto Configuration
             var logtoConfig = new
             {
@@ -1073,9 +1073,9 @@ public static class WebAuthenticationExtensions
                 configurationInstructions = "Add these URIs to your Logto application configuration under 'Redirect URIs' and 'Post sign-out redirect URIs'"
             };
             results.Add(logtoConfig);
-            
-            return Results.Json(new 
-            { 
+
+            return Results.Json(new
+            {
                 timestamp = DateTime.UtcNow,
                 railway = !environment.IsDevelopment(),
                 tests = results,
@@ -1083,7 +1083,7 @@ public static class WebAuthenticationExtensions
                 action = "Authentication will likely fail until Railway can establish connection to Logto servers.",
                 workaround = "Increased backchannel timeout to 60s - authentication may work but will be very slow",
                 redirectUrisConfigured = "Make sure these URIs are in Logto: https://appblueprint-web-staging.up.railway.app/callback"
-            }, 
+            },
             new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
         });
 

@@ -31,7 +31,7 @@ public sealed class AdminIpWhitelistMiddleware
 
         // Read configuration
         _isEnabled = configuration.GetValue<bool>("Security:AdminIpWhitelist:Enabled", true);
-        
+
         string[]? allowedIpsConfig = configuration.GetSection("Security:AdminIpWhitelist:AllowedIps")
             .Get<string[]>();
 

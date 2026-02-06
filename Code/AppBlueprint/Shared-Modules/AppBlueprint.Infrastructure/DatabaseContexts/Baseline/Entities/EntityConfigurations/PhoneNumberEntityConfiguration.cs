@@ -1,6 +1,6 @@
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 

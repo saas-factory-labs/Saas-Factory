@@ -7,11 +7,11 @@ public class CityEntity : BaseEntity
     public CityEntity()
     {
         Id = PrefixedUlid.Generate("city");
-        Country = new CountryEntity 
-        { 
-            Name = string.Empty, 
-            CityId = string.Empty, 
-            GlobalRegionId = string.Empty 
+        Country = new CountryEntity
+        {
+            Name = string.Empty,
+            CityId = string.Empty,
+            GlobalRegionId = string.Empty
         };
         State = new StateEntity
         {

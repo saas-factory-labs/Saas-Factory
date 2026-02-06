@@ -1,5 +1,5 @@
-using AppBlueprint.Contracts.Baseline.Auth.Requests;
 using AppBlueprint.Application.Services.Users;
+using AppBlueprint.Contracts.Baseline.Auth.Requests;
 using AppBlueprint.Domain.Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

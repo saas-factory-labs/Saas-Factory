@@ -50,11 +50,11 @@ public sealed class StripeWebhookController : ControllerBase
         {
             // Enable buffering so the request body can be read multiple times if needed
             Request.EnableBuffering();
-            
+
             // Read the raw body (required for signature verification)
             using var reader = new StreamReader(Request.Body, leaveOpen: true);
             string json = await reader.ReadToEndAsync(cancellationToken);
-            
+
             // Reset the stream position for potential re-reading
             Request.Body.Position = 0;
 

@@ -23,12 +23,12 @@ public sealed class RequireScopeAttribute : Attribute, IAuthorizationFilter
     public RequireScopeAttribute(params string[] scopes)
     {
         ArgumentNullException.ThrowIfNull(scopes);
-        
+
         if (scopes.Length == 0)
         {
             throw new ArgumentException("At least one scope must be specified.", nameof(scopes));
         }
-        
+
         _requiredScopes = scopes;
     }
 
