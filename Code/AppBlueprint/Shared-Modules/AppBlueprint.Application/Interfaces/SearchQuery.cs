@@ -39,7 +39,7 @@ public sealed class SearchQuery
     /// Minimum relevance score threshold (0.0 to 1.0).
     /// Results with lower scores will be excluded.
     /// </summary>
-    public float MinRelevanceScore { get; set; } = 0.0f;
+    public float MinRelevanceScore { get; set; }
 
     /// <summary>
     /// Sort order for results.

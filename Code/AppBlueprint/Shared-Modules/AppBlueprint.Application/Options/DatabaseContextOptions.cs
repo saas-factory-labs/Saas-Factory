@@ -22,14 +22,14 @@ public sealed class DatabaseContextOptions
     /// Use this for applications that need both consumer and organizational features.
     /// Default: false.
     /// </summary>
-    public bool EnableHybridMode { get; set; } = false;
+    public bool EnableHybridMode { get; set; }
 
     /// <summary>
     /// When true, only registers the baseline DbContext with core entities.
     /// Use this for minimal applications that don't need B2B or B2C specific features.
     /// Default: false.
     /// </summary>
-    public bool BaselineOnly { get; set; } = false;
+    public bool BaselineOnly { get; set; }
 
     /// <summary>
     /// Connection string name to use for the database.

@@ -11,7 +11,7 @@ namespace AppBlueprint.UiKit;
 
 public class ExampleJsInterop(IJSRuntime jsRuntime) : IAsyncDisposable
 {
-    private readonly Lazy<Task<IJSObjectReference>> _moduleTask = new Lazy<Task<IJSObjectReference>>(() => jsRuntime.InvokeAsync<IJSObjectReference>(
+    private readonly Lazy<Task<IJSObjectReference>> _moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
             "import", "./_content/AppBlueprint.UiKit/exampleJsInterop.js").AsTask());
 
     public async ValueTask DisposeAsync()

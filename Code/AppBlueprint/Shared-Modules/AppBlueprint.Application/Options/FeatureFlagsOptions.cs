@@ -20,7 +20,7 @@ public sealed class FeatureFlagsOptions
     /// <summary>
     /// Whether analytics tracking is enabled.
     /// </summary>
-    public bool EnableAnalytics { get; set; } = false;
+    public bool EnableAnalytics { get; set; }
 
     /// <summary>
     /// Whether file uploads are enabled.
