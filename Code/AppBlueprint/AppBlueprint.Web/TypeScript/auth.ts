@@ -35,6 +35,6 @@ declare global {
     }
 }
 
-window.auth = auth;
+(globalThis as unknown as Window).auth = auth;
 
 export default auth;

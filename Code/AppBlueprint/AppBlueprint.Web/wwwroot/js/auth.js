@@ -19,6 +19,6 @@ const auth = {
         }
     }
 };
-window.auth = auth;
+globalThis.auth = auth;
 export default auth;
 //# sourceMappingURL=auth.js.map

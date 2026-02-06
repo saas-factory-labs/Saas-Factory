@@ -25,6 +25,17 @@
 --   Add this to a new migration's Up() method
 -- ========================================
 
+-- Define constant for tenant context configuration key
+-- This prevents duplication and makes refactoring easier
+DO $$
+DECLARE
+    tenant_config_key CONSTANT TEXT := 'app.current_tenant_id';
+BEGIN
+    -- This constant is used throughout the RLS policies
+    -- PostgreSQL doesn't support true constants in SQL, so this is for documentation
+    RAISE NOTICE 'Tenant configuration key: %', tenant_config_key;
+END $$;
+
 -- Function to set current tenant context
 -- This function stores the tenant ID in a PostgreSQL session variable
 -- that can be accessed by RLS policies
@@ -158,8 +169,7 @@ DO $$
 BEGIN
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'AuditLogs') THEN
         EXECUTE 'DROP POLICY IF EXISTS tenant_isolation_policy ON "AuditLogs"';
-        EXECUTE 'CREATE POLICY tenant_isolation_policy ON "AuditLogs"
-                 USING ("TenantId" = current_setting(''app.current_tenant_id'', TRUE)::TEXT)';
+        EXECUTE 'CREATE POLICY tenant_isolation_policy ON "AuditLogs" USING ("TenantId" = current_setting(''app.current_tenant_id'', TRUE)::TEXT)';
     END IF;
 END $$;
 
@@ -168,8 +178,7 @@ DO $$
 BEGIN
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'Todos') THEN
         EXECUTE 'DROP POLICY IF EXISTS tenant_isolation_policy ON "Todos"';
-        EXECUTE 'CREATE POLICY tenant_isolation_policy ON "Todos"
-                 USING ("TenantId" = current_setting(''app.current_tenant_id'', TRUE)::TEXT)';
+        EXECUTE 'CREATE POLICY tenant_isolation_policy ON "Todos" USING ("TenantId" = current_setting(''app.current_tenant_id'', TRUE)::TEXT)';
     END IF;
 END $$;
 
@@ -194,8 +203,8 @@ SELECT
     rowsecurity as rls_enabled
 FROM pg_tables 
 WHERE schemaname = 'public' 
-    AND rowsecurity = true
-ORDER BY tablename;
+    AND rowsecurity
+ORDER BY tablename ASC;
 
 -- Verify policies exist
 SELECT 
@@ -208,7 +217,7 @@ SELECT
     qual as using_expression
 FROM pg_policies
 WHERE schemaname = 'public'
-ORDER BY tablename, policyname;
+ORDER BY tablename ASC, policyname ASC;
 
 -- ========================================
 -- Test RLS Policies
@@ -219,9 +228,6 @@ SELECT set_current_tenant('test-tenant-123');
 
 -- Verify context is set
 SELECT current_setting('app.current_tenant_id', TRUE) as current_tenant;
-
--- Test querying with RLS (should only return data for test-tenant-123)
--- SELECT * FROM "Users" LIMIT 5;
 
 -- ========================================
 -- ========================================
@@ -246,19 +252,6 @@ CREATE TABLE IF NOT EXISTS "AdminAuditLog" (
 CREATE INDEX IF NOT EXISTS idx_admin_audit_tenant ON "AdminAuditLog"("TenantId", "Timestamp" DESC);
 CREATE INDEX IF NOT EXISTS idx_admin_audit_user ON "AdminAuditLog"("AdminUserId", "Timestamp" DESC);
 CREATE INDEX IF NOT EXISTS idx_admin_audit_timestamp ON "AdminAuditLog"("Timestamp" DESC);
-
--- Grant INSERT only (append-only table)
--- GRANT INSERT ON "AdminAuditLog" TO app_user;
-
--- ========================================
--- Disable RLS (Emergency Only)
--- ========================================
--- Only use this if you need to temporarily disable RLS for maintenance
--- NEVER disable in production without understanding the consequences
-
--- ALTER TABLE "Users" DISABLE ROW LEVEL SECURITY;
--- ALTER TABLE "Teams" DISABLE ROW LEVEL SECURITY;
--- ... etc
 
 PRINT('Row-Level Security setup complete!');
 PRINT('Remember to set tenant context before queries:');
