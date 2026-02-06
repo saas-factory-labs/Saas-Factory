@@ -3,6 +3,13 @@ linter: jetbrains/qodana-dotnet:2025.3
 
 dotnet:
   solution: "Saas-Factory.sln"
+  configuration: Release  # Tvinger Qodana til at analysere Release-output
+
+# Aktiver parallel behandling af rapporter
+# (Dette flag er en del af Ultimate-funktionaliteten vi aktiverer lokalt)
+properties:
+  qodana.dotnet.project.structure.parallel: true
+  qodana.analysis.threads: 16 # Sæt den til halvdelen af dine tråde (32/2)
 
 profile:
   name: qodana.recommended

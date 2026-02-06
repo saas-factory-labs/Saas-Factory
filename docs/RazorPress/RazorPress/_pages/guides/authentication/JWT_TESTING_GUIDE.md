@@ -14,13 +14,7 @@ I've created a test controller (`AuthTestController`) with several endpoints to 
 
 ## Testing Methods
 
-### Method 1: PowerShell Script (Easiest)
-
-I've created a PowerShell script to generate test tokens and call the API.
-
-Run: `.\test-jwt-auth.ps1`
-
-### Method 2: Swagger UI
+### Method 1: Swagger UI
 
 1. Start the API Service
 2. Navigate to `https://localhost:5002/swagger` (or your API URL)
@@ -30,7 +24,7 @@ Run: `.\test-jwt-auth.ps1`
 6. Click **Authorize**
 7. Try the `/api/v1/authtest/protected` endpoint
 
-### Method 3: Postman/Insomnia
+### Method 2: Postman/Insomnia
 
 1. Create a new GET request to: `https://localhost:5002/api/v1/authtest/protected`
 2. Go to **Authorization** tab
@@ -38,7 +32,7 @@ Run: `.\test-jwt-auth.ps1`
 4. Paste your JWT token
 5. Send request
 
-### Method 4: Blazor App (End-to-End)
+### Method 3: Blazor App (End-to-End)
 
 This tests the full flow from Blazor → API:
 
@@ -49,11 +43,7 @@ This tests the full flow from Blazor → API:
 
 ## Generate Test Tokens
 
-### Option A: Using PowerShell Script
-
-The `test-jwt-auth.ps1` script generates tokens automatically.
-
-### Option B: Using Online JWT Generator
+### Option A: Using Online JWT Generator
 
 1. Go to https://jwt.io/
 2. In the **PAYLOAD** section, paste:

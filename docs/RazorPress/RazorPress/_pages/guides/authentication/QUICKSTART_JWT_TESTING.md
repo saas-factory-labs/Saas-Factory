@@ -79,9 +79,8 @@ dotnet test --filter "Category=JwtAuth"
 
 1. **`AuthTestController.cs`** - Test endpoints in API
 2. **`JwtTokenGenerator/`** - Console app to generate tokens
-3. **`test-jwt-auth.ps1`** - PowerShell test script
-4. **`JwtAuthenticationTests.cs`** - Automated integration tests
-5. **`JWT_TESTING_GUIDE.md`** - Detailed testing guide
+3. **`JwtAuthenticationTests.cs`** - Automated integration tests
+4. **`JWT_TESTING_GUIDE.md`** - Detailed testing guide
 
 ## 🏃 Next Steps
 
@@ -118,13 +117,10 @@ Once basic testing works:
 cd C:\Development\Development-Projects\saas-factory-labs\Code\AppBlueprint\JwtTokenGenerator
 dotnet run
 
-# 3. Copy the token and test
+# 3. Copy the token and test with Swagger or run automated tests
 $token = "your-generated-token"
 
-# 4. Run all test scenarios
-.\test-jwt-auth.ps1
-
-# 5. Or run automated tests
+# 4. Run automated tests
 cd ..\AppBlueprint.Tests
 dotnet test --filter "Category=JwtAuth" -v n
 ```
