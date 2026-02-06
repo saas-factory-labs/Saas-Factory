@@ -9,4 +9,4 @@ VALUES
 ON CONFLICT DO NOTHING;
 
 -- Verify
-SELECT * FROM "__EFMigrationsHistory" ORDER BY "MigrationId";
+SELECT "MigrationId", "ProductVersion" FROM "__EFMigrationsHistory" ORDER BY "MigrationId" ASC;

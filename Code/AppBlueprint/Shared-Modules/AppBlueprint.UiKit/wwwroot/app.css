@@ -38,21 +38,6 @@ h1[tabindex]:focus-visible {
     box-shadow: none !important;
 }
 
-/* h1:focus,
-h1:focus-visible,
-h2:focus,
-h2:focus-visible,
-h3:focus,
-h3:focus-visible,
-h4:focus,
-h4:focus-visible,
-h5:focus,
-h5:focus-visible,
-h6:focus,
-h6:focus-visible {
-    outline: none !important;
-} */
-
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }

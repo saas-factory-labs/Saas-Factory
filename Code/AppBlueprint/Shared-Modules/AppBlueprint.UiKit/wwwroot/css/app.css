@@ -6186,8 +6186,6 @@
     &:focus {
       --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    }
-    &:focus {
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
     }
@@ -6196,22 +6194,12 @@
       @supports (color: color-mix(in lab, red, red)) {
         background-color: color-mix(in oklab, var(--color-gray-900) 30%, transparent);
       }
-    }
-    &:is(.dark *) {
       &:disabled {
         border-color: var(--color-gray-700);
-      }
-    }
-    &:is(.dark *) {
-      &:disabled {
         background-color: color-mix(in srgb, #374151 30%, transparent);
         @supports (color: color-mix(in lab, red, red)) {
           background-color: color-mix(in oklab, var(--color-gray-700) 30%, transparent);
         }
-      }
-    }
-    &:is(.dark *) {
-      &:disabled {
         &:hover {
           @media (hover: hover) {
             border-color: var(--color-gray-700);
@@ -6248,18 +6236,12 @@
       @supports (color: color-mix(in lab, red, red)) {
         border-color: color-mix(in oklab, var(--color-gray-700) 60%, transparent);
       }
-    }
-    &:is(.dark *) {
       color: var(--color-gray-100);
-    }
-    &:is(.dark *) {
       &:hover {
         @media (hover: hover) {
           border-color: var(--color-gray-600);
         }
       }
-    }
-    &:is(.dark *) {
       &:focus {
         border-color: var(--color-gray-600);
       }
@@ -6285,18 +6267,12 @@
     color: var(--color-violet-500);
     &:checked {
       border-color: transparent;
-    }
-    &:checked {
       background-color: var(--color-violet-500);
     }
     &:focus-visible {
       &:not(*:checked) {
         --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
         box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-      }
-    }
-    &:focus-visible {
-      &:not(*:checked) {
         --tw-ring-color: color-mix(in srgb, #8470ff 50%, transparent);
         @supports (color: color-mix(in lab, red, red)) {
           --tw-ring-color: color-mix(in oklab, var(--color-violet-500) 50%, transparent);
@@ -6308,8 +6284,6 @@
       @supports (color: color-mix(in lab, red, red)) {
         border-color: color-mix(in oklab, var(--color-gray-700) 60%, transparent);
       }
-    }
-    &:is(.dark *) {
       &:checked {
         border-color: transparent;
       }
@@ -6362,8 +6336,6 @@
       @supports (color: color-mix(in lab, red, red)) {
         border-color: color-mix(in oklab, var(--color-gray-700) 60%, transparent);
       }
-    }
-    &:is(.dark *) {
       background-color: color-mix(in srgb, #374151 20%, transparent);
       @supports (color: color-mix(in lab, red, red)) {
         background-color: color-mix(in oklab, var(--color-gray-700) 20%, transparent);
@@ -6414,8 +6386,6 @@
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-gray-700) 60%, transparent);
     }
-  }
-  &:is(.dark *) {
     background-color: var(--color-gray-800);
   }
   margin-left: calc(calc(var(--daysWidth) + calc(var(--calendarPadding)*2))*0.5*-1);
@@ -6463,8 +6433,6 @@
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-gray-700) 20%, transparent);
     }
-  }
-  &:is(.dark *) {
     color: var(--color-gray-100);
   }
   max-width: var(--daySize);
@@ -6516,8 +6484,6 @@
   }
   &:is(.dark *) {
     color: var(--color-gray-500);
-  }
-  &:is(.dark *) {
     &:hover {
       @media (hover: hover) {
         color: var(--color-gray-300);
@@ -6657,8 +6623,6 @@ span.flatpickr-weekday {
   }
   ::-webkit-date-and-time-value {
     min-height: 1.5em;
-  }
-  ::-webkit-date-and-time-value {
     text-align: inherit;
   }
   ::-webkit-datetime-edit {

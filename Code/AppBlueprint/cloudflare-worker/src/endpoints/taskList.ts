@@ -39,10 +39,10 @@ export class TaskList extends OpenAPIRoute {
 
 	async handle(c) {
 		// Get validated data
-		const data = await this.getValidatedData<typeof this.schema>();
+		await this.getValidatedData<typeof this.schema>();
 
-		// Retrieve the validated parameters
-		const { page, isCompleted } = data.query;
+		// TODO: Implement pagination and filtering
+		// const { page, isCompleted } = data.query;
 
 		// Implement your own object list here
 

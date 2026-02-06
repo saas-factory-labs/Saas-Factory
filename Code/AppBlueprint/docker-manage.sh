@@ -9,6 +9,7 @@ function print_usage() {
     echo "  prod-down   - Stop production environment"
     echo "  logs        - Show logs from all services"
     echo "  clean       - Remove all containers, volumes, and images"
+    return 0
 }
 
 case "$1" in

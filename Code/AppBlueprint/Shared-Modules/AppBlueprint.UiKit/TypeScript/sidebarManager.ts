@@ -40,12 +40,12 @@ const sidebarManager: SidebarManager = {
             return;
         }
         
-        if (!body.classList.contains('sidebar-expanded')) {
+        if (body.classList.contains('sidebar-expanded')) {
+            console.log('Sidebar already expanded');
+        } else {
             body.classList.add('sidebar-expanded');
             localStorage.setItem('sidebar-expanded', 'true');
             console.log('Sidebar expanded (was collapsed)');
-        } else {
-            console.log('Sidebar already expanded');
         }
     },
     
@@ -78,21 +78,19 @@ const sidebarManager: SidebarManager = {
     },
 
     isAvailable(): boolean {
-        return typeof window.sidebarManager !== 'undefined' && 
-               typeof window.sidebarManager.expand === 'function' &&
-               typeof window.sidebarManager.collapse === 'function';
+        return globalThis.sidebarManager !== undefined && 
+               globalThis.sidebarManager.expand !== undefined &&
+               globalThis.sidebarManager.collapse !== undefined;
     }
 };
 
 console.log('sidebarManager initialized:', typeof sidebarManager);
 
-// Attach to window for Blazor interop
+// Attach to globalThis for Blazor interop
 declare global {
-    interface Window {
-        sidebarManager: SidebarManager;
-    }
+    var sidebarManager: SidebarManager;
 }
 
-window.sidebarManager = sidebarManager;
+globalThis.sidebarManager = sidebarManager;
 
 export default sidebarManager;

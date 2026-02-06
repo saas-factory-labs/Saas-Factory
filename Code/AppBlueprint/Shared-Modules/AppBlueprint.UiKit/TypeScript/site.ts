@@ -141,13 +141,9 @@ const themeManager: ThemeManager = {
         const html = document.documentElement;
         localStorage.setItem('theme', theme);
 
-        if (theme === 'dark') {
-            html.classList.add('dark');
-            html.style.colorScheme = 'dark';
-        } else if (theme === 'light') {
-            html.classList.remove('dark');
-            html.style.colorScheme = 'light';
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        const isDark = theme === 'dark' || (theme === 'system' && globalThis.matchMedia('(prefers-color-scheme: dark)').matches);
+        
+        if (isDark) {
             html.classList.add('dark');
             html.style.colorScheme = 'dark';
         } else {
@@ -212,12 +208,12 @@ const sidebarManager: SidebarManager = {
             return;
         }
         
-        if (!body.classList.contains('sidebar-expanded')) {
+        if (body.classList.contains('sidebar-expanded')) {
+            console.log('Sidebar already expanded');
+        } else {
             body.classList.add('sidebar-expanded');
             localStorage.setItem('sidebar-expanded', 'true');
             console.log('Sidebar expanded (was collapsed)');
-        } else {
-            console.log('Sidebar already expanded');
         }
     },
     
@@ -322,8 +318,8 @@ const dropdownManager: DropdownManager = {
             }
         };
 
-        const keyHandler = (event: KeyboardEvent): void => { // This is already KeyboardEvent
-            if (event.keyCode === 27) { // ESC key
+        const keyHandler = (event: KeyboardEvent): void => {
+            if (event.key === 'Escape') {
                 dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
@@ -351,34 +347,39 @@ const dropdownManager: DropdownManager = {
 const modalManager: ModalManager = {
     handlers: new Map(),
 
-    _registerEventHandlers(targetElement: HTMLElement, dotNetHelper: DotNetObjectReference, includeTargetInCloseCheck: boolean): { clickHandler: EventListener, keyHandler: (event: KeyboardEvent) => void } { // Fixed type here
-        const clickHandler = (event: Event): void => {
-            if (includeTargetInCloseCheck && !targetElement.contains(event.target as Node)) {
-                dotNetHelper.invokeMethodAsync('CloseFromJS');
-            } else if (!includeTargetInCloseCheck) {
-                // For cases where closing should happen regardless of target (e.g., global ESC)
+    _registerClickOutsideHandler(targetElement: HTMLElement, dotNetHelper: DotNetObjectReference): EventListener {
+        return (event: Event): void => {
+            if (!targetElement.contains(event.target as Node)) {
                 dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
+    },
 
-        const keyHandler = (event: KeyboardEvent): void => { // Changed from Event to KeyboardEvent
-            if (event.keyCode === 27) { // ESC key
+    _registerEscapeKeyHandler(dotNetHelper: DotNetObjectReference): (event: KeyboardEvent) => void {
+        return (event: KeyboardEvent): void => {
+            if (event.key === 'Escape') {
                 dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
-
-        document.addEventListener('click', clickHandler);
-        document.addEventListener('keydown', keyHandler);
-        return { clickHandler, keyHandler };
     },
 
     initialize(modalContent: HTMLElement, dotNetHelper: DotNetObjectReference): void {
-        const { clickHandler, keyHandler } = this._registerEventHandlers(modalContent, dotNetHelper, true);
+        const clickHandler = this._registerClickOutsideHandler(modalContent, dotNetHelper);
+        const keyHandler = this._registerEscapeKeyHandler(dotNetHelper);
+        
+        document.addEventListener('click', clickHandler);
+        document.addEventListener('keydown', keyHandler);
+        
         this.handlers.set(modalContent, { clickHandler, keyHandler });
     },
 
     initializeSearch(modalContent: HTMLElement, searchInput: HTMLInputElement, dotNetHelper: DotNetObjectReference): void {
-        const { clickHandler, keyHandler } = this._registerEventHandlers(modalContent, dotNetHelper, true);
+        const clickHandler = this._registerClickOutsideHandler(modalContent, dotNetHelper);
+        const keyHandler = this._registerEscapeKeyHandler(dotNetHelper);
+        
+        document.addEventListener('click', clickHandler);
+        document.addEventListener('keydown', keyHandler);
+        
         this.handlers.set(modalContent, { clickHandler, keyHandler });
 
         // Focus search input
@@ -404,7 +405,7 @@ const modalManager: ModalManager = {
 const datepickerManager: DatepickerManager = {
     instances: {},
     initialize(input: HTMLInputElement, align?: string): void {
-        if (typeof (window as unknown as { flatpickr?: unknown }).flatpickr === 'undefined') {
+        if ((globalThis as unknown as { flatpickr?: unknown }).flatpickr === undefined) {
             console.error('Flatpickr library not loaded');
             return;
         }
@@ -417,7 +418,7 @@ const datepickerManager: DatepickerManager = {
         const customClass = align || '';
 
         // Initialize flatpickr with same config as Vue template
-        this.instances[input.id] = (window as unknown as { flatpickr: (el: HTMLInputElement, config: unknown) => unknown }).flatpickr(input, {
+        this.instances[input.id] = (globalThis as unknown as { flatpickr: (el: HTMLInputElement, config: unknown) => unknown }).flatpickr(input, {
             mode: 'range',
             static: true,
             monthSelectorType: 'static',
@@ -523,27 +524,27 @@ function downloadFileFromBase64(base64: string, fileName: string, mimeType: stri
 // CHART.JS INTEROP
 // ========================================================================
 
-declare const Chart: {
-    new (context: HTMLCanvasElement, config: unknown): {
-        data: unknown;
-        options: {
-            scales?: {
-                y?: { ticks?: { color?: string }; grid?: { color?: string } };
-                x?: { ticks?: { color?: string } };
-            };
-            plugins?: {
-                tooltip?: {
-                    titleColor?: string;
-                    bodyColor?: string;
-                    backgroundColor?: string;
-                    borderColor?: string;
-                };
+type ChartConstructor = new (context: HTMLCanvasElement, config: unknown) => {
+    data: unknown;
+    options: {
+        scales?: {
+            y?: { ticks?: { color?: string }; grid?: { color?: string } };
+            x?: { ticks?: { color?: string } };
+        };
+        plugins?: {
+            tooltip?: {
+                titleColor?: string;
+                bodyColor?: string;
+                backgroundColor?: string;
+                borderColor?: string;
             };
         };
-        update(mode?: string): void;
-        destroy(): void;
     };
+    update(mode?: string): void;
+    destroy(): void;
 };
+
+declare const Chart: ChartConstructor;
 
 const chartJsInterop: ChartJsInterop = {
     charts: new Map(),
@@ -596,7 +597,7 @@ const chartJsInterop: ChartJsInterop = {
                         border: { display: false },
                         ticks: {
                             maxTicksLimit: 5,
-                            callback: (value: string | number) => formatValue(typeof value === 'number' ? value : Number.parseFloat(value as string)),
+                            callback: (value: string | number) => formatValue(typeof value === 'number' ? value : Number.parseFloat(value)),
                             color: colors.textColor
                         },
                         grid: {
@@ -683,7 +684,7 @@ const chartJsInterop: ChartJsInterop = {
                         border: { display: false },
                         ticks: {
                             maxTicksLimit: 5,
-                            callback: (value: string | number) => formatValue(typeof value === 'number' ? value : Number.parseFloat(value as string)),
+                            callback: (value: string | number) => formatValue(typeof value === 'number' ? value : Number.parseFloat(value)),
                             color: colors.textColor,
                         },
                         grid: {
@@ -889,19 +890,19 @@ const chartJsInterop: ChartJsInterop = {
 };
 
 // ========================================================================
-// WINDOW GLOBAL EXPORTS
+// GLOBAL EXPORTS
 // ========================================================================
 
-// Export to window for Blazor interop
-(window as any).themeManager = themeManager;
-(window as any).getElementRect = getElementRect;
-(window as any).sidebarManager = sidebarManager;
-(window as any).cssHelper = cssHelper;
-(window as any).clickOutsideHelper = clickOutsideHelper;
-(window as any).dropdownManager = dropdownManager;
-(window as any).modalManager = modalManager;
-(window as any).datepickerManager = datepickerManager;
-(window as any).commandPaletteManager = commandPaletteManager;
-(window as any).infiniteScrollManager = infiniteScrollManager;
-(window as any).downloadFileFromBase64 = downloadFileFromBase64;
-(window as any).chartJsInterop = chartJsInterop;
+// Export to globalThis for Blazor interop
+(globalThis as any).themeManager = themeManager;
+(globalThis as any).getElementRect = getElementRect;
+(globalThis as any).sidebarManager = sidebarManager;
+(globalThis as any).cssHelper = cssHelper;
+(globalThis as any).clickOutsideHelper = clickOutsideHelper;
+(globalThis as any).dropdownManager = dropdownManager;
+(globalThis as any).modalManager = modalManager;
+(globalThis as any).datepickerManager = datepickerManager;
+(globalThis as any).commandPaletteManager = commandPaletteManager;
+(globalThis as any).infiniteScrollManager = infiniteScrollManager;
+(globalThis as any).downloadFileFromBase64 = downloadFileFromBase64;
+(globalThis as any).chartJsInterop = chartJsInterop;

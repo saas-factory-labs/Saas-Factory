@@ -108,15 +108,15 @@ DROP POLICY IF EXISTS tenant_isolation_write_policy ON "Users";
 CREATE POLICY tenant_isolation_read_policy ON "Users"
     FOR SELECT
     USING (
-        "TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT
+        "TenantId" = get_current_tenant()
         OR is_admin_user()  -- Admins can read any tenant
     );
 
 -- Write policy: Only normal tenant isolation (admins cannot write)
 CREATE POLICY tenant_isolation_write_policy ON "Users"
     FOR ALL  -- Covers INSERT, UPDATE, DELETE
-    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT)
-    WITH CHECK ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+    USING ("TenantId" = get_current_tenant())
+    WITH CHECK ("TenantId" = get_current_tenant());
 
 -- Teams table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "Teams";
@@ -126,50 +126,50 @@ DROP POLICY IF EXISTS tenant_isolation_write_policy ON "Teams";
 CREATE POLICY tenant_isolation_read_policy ON "Teams"
     FOR SELECT
     USING (
-        "TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT
+        "TenantId" = get_current_tenant()
         OR is_admin_user()
     );
 
 CREATE POLICY tenant_isolation_write_policy ON "Teams"
     FOR ALL
-    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT)
-    WITH CHECK ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+    USING ("TenantId" = get_current_tenant())
+    WITH CHECK ("TenantId" = get_current_tenant());
 
 -- Organizations table (old policy for reference)
 DROP POLICY IF EXISTS tenant_isolation_policy ON "Teams"
-    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+    USING ("TenantId" = get_current_tenant());
 
 -- Organizations table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "Organizations";
 CREATE POLICY tenant_isolation_policy ON "Organizations"
-    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+    USING ("TenantId" = get_current_tenant());
 
 -- ContactPersons table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "ContactPersons";
 CREATE POLICY tenant_isolation_policy ON "ContactPersons"
-    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+    USING ("TenantId" = get_current_tenant());
 
 -- EmailAddresses table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "EmailAddresses";
 CREATE POLICY tenant_isolation_policy ON "EmailAddresses"
-    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+    USING ("TenantId" = get_current_tenant());
 
 -- PhoneNumbers table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "PhoneNumbers";
 CREATE POLICY tenant_isolation_policy ON "PhoneNumbers"
-    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+    USING ("TenantId" = get_current_tenant());
 
 -- Addresses table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "Addresses";
 CREATE POLICY tenant_isolation_policy ON "Addresses"
-    USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT);
+    USING ("TenantId" = get_current_tenant());
 
 -- Audit logs (if exists and tenant-scoped)
 DO $$ 
 BEGIN
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'AuditLogs') THEN
         EXECUTE 'DROP POLICY IF EXISTS tenant_isolation_policy ON "AuditLogs"';
-        EXECUTE 'CREATE POLICY tenant_isolation_policy ON "AuditLogs" USING ("TenantId" = current_setting(''app.current_tenant_id'', TRUE)::TEXT)';
+        EXECUTE 'CREATE POLICY tenant_isolation_policy ON "AuditLogs" USING ("TenantId" = get_current_tenant())';
     END IF;
 END $$;
 
@@ -178,7 +178,7 @@ DO $$
 BEGIN
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'Todos') THEN
         EXECUTE 'DROP POLICY IF EXISTS tenant_isolation_policy ON "Todos"';
-        EXECUTE 'CREATE POLICY tenant_isolation_policy ON "Todos" USING ("TenantId" = current_setting(''app.current_tenant_id'', TRUE)::TEXT)';
+        EXECUTE 'CREATE POLICY tenant_isolation_policy ON "Todos" USING ("TenantId" = get_current_tenant())';
     END IF;
 END $$;
 
@@ -227,7 +227,7 @@ ORDER BY tablename ASC, policyname ASC;
 SELECT set_current_tenant('test-tenant-123');
 
 -- Verify context is set
-SELECT current_setting('app.current_tenant_id', TRUE) as current_tenant;
+SELECT get_current_tenant() as current_tenant;
 
 -- ========================================
 -- ========================================
