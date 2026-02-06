@@ -1,4 +1,3 @@
-"use strict";
 /**
  * AppBlueprint UiKit - Site-wide JavaScript interop module
  * Provides comprehensive Blazor interoperability for UI components
@@ -29,15 +28,8 @@ const themeManager = {
     setTheme(theme) {
         const html = document.documentElement;
         localStorage.setItem('theme', theme);
-        if (theme === 'dark') {
-            html.classList.add('dark');
-            html.style.colorScheme = 'dark';
-        }
-        else if (theme === 'light') {
-            html.classList.remove('dark');
-            html.style.colorScheme = 'light';
-        }
-        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        const isDark = theme === 'dark' || (theme === 'system' && globalThis.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
             html.classList.add('dark');
             html.style.colorScheme = 'dark';
         }
@@ -68,70 +60,8 @@ function getElementRect(selector) {
 // ========================================================================
 // SIDEBAR MANAGEMENT
 // ========================================================================
-const sidebarManager = {
-    toggleExpanded() {
-        console.log('sidebarManager.toggleExpanded called');
-        const body = document.querySelector('body');
-        if (body === null) {
-            console.error('Body element not found');
-            return;
-        }
-        const isExpanded = body.classList.contains('sidebar-expanded');
-        if (isExpanded) {
-            body.classList.remove('sidebar-expanded');
-            localStorage.setItem('sidebar-expanded', 'false');
-            console.log('Sidebar collapsed');
-        }
-        else {
-            body.classList.add('sidebar-expanded');
-            localStorage.setItem('sidebar-expanded', 'true');
-            console.log('Sidebar expanded');
-        }
-    },
-    expand() {
-        console.log('sidebarManager.expand called');
-        const body = document.querySelector('body');
-        if (body === null) {
-            console.error('Body element not found');
-            return;
-        }
-        if (!body.classList.contains('sidebar-expanded')) {
-            body.classList.add('sidebar-expanded');
-            localStorage.setItem('sidebar-expanded', 'true');
-            console.log('Sidebar expanded (was collapsed)');
-        }
-        else {
-            console.log('Sidebar already expanded');
-        }
-    },
-    collapse() {
-        console.log('sidebarManager.collapse called');
-        const body = document.querySelector('body');
-        if (body === null) {
-            console.error('Body element not found');
-            return;
-        }
-        if (body.classList.contains('sidebar-expanded')) {
-            body.classList.remove('sidebar-expanded');
-            localStorage.setItem('sidebar-expanded', 'false');
-            console.log('Sidebar collapsed (was expanded)');
-        }
-        else {
-            console.log('Sidebar already collapsed');
-        }
-    },
-    isExpanded() {
-        const body = document.querySelector('body');
-        if (body === null) {
-            console.error('Body element not found');
-            return false;
-        }
-        const expanded = body.classList.contains('sidebar-expanded');
-        console.log('sidebarManager.isExpanded:', expanded);
-        return expanded;
-    }
-};
-console.log('sidebarManager initialized:', typeof sidebarManager);
+// Import from separate module to avoid redeclaration
+import sidebarManager from './sidebarManager';
 // ========================================================================
 // CSS CUSTOM PROPERTY HELPERS
 // ========================================================================
@@ -193,7 +123,7 @@ const dropdownManager = {
             }
         };
         const keyHandler = (event) => {
-            if (event.keyCode === 27) { // ESC key
+            if (event.key === 'Escape') {
                 dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
@@ -215,31 +145,32 @@ const dropdownManager = {
 // ========================================================================
 const modalManager = {
     handlers: new Map(),
-    _registerEventHandlers(targetElement, dotNetHelper, includeTargetInCloseCheck) {
-        const clickHandler = (event) => {
-            if (includeTargetInCloseCheck && !targetElement.contains(event.target)) {
-                dotNetHelper.invokeMethodAsync('CloseFromJS');
-            }
-            else if (!includeTargetInCloseCheck) {
-                // For cases where closing should happen regardless of target (e.g., global ESC)
+    _registerClickOutsideHandler(targetElement, dotNetHelper) {
+        return (event) => {
+            if (!targetElement.contains(event.target)) {
                 dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
-        const keyHandler = (event) => {
-            if (event.keyCode === 27) { // ESC key
+    },
+    _registerEscapeKeyHandler(dotNetHelper) {
+        return (event) => {
+            if (event.key === 'Escape') {
                 dotNetHelper.invokeMethodAsync('CloseFromJS');
             }
         };
-        document.addEventListener('click', clickHandler);
-        document.addEventListener('keydown', keyHandler);
-        return { clickHandler, keyHandler };
     },
     initialize(modalContent, dotNetHelper) {
-        const { clickHandler, keyHandler } = this._registerEventHandlers(modalContent, dotNetHelper, true);
+        const clickHandler = this._registerClickOutsideHandler(modalContent, dotNetHelper);
+        const keyHandler = this._registerEscapeKeyHandler(dotNetHelper);
+        document.addEventListener('click', clickHandler);
+        document.addEventListener('keydown', keyHandler);
         this.handlers.set(modalContent, { clickHandler, keyHandler });
     },
     initializeSearch(modalContent, searchInput, dotNetHelper) {
-        const { clickHandler, keyHandler } = this._registerEventHandlers(modalContent, dotNetHelper, true);
+        const clickHandler = this._registerClickOutsideHandler(modalContent, dotNetHelper);
+        const keyHandler = this._registerEscapeKeyHandler(dotNetHelper);
+        document.addEventListener('click', clickHandler);
+        document.addEventListener('keydown', keyHandler);
         this.handlers.set(modalContent, { clickHandler, keyHandler });
         // Focus search input
         if (searchInput !== null) {
@@ -261,7 +192,7 @@ const modalManager = {
 const datepickerManager = {
     instances: {},
     initialize(input, align) {
-        if (typeof window.flatpickr === 'undefined') {
+        if (globalThis.flatpickr === undefined) {
             console.error('Flatpickr library not loaded');
             return;
         }
@@ -271,7 +202,7 @@ const datepickerManager = {
         }
         const customClass = align || '';
         // Initialize flatpickr with same config as Vue template
-        this.instances[input.id] = window.flatpickr(input, {
+        this.instances[input.id] = globalThis.flatpickr(input, {
             mode: 'range',
             static: true,
             monthSelectorType: 'static',
@@ -658,19 +589,19 @@ const chartJsInterop = {
     }
 };
 // ========================================================================
-// WINDOW GLOBAL EXPORTS
+// GLOBAL EXPORTS
 // ========================================================================
-// Export to window for Blazor interop
-window.themeManager = themeManager;
-window.getElementRect = getElementRect;
-window.sidebarManager = sidebarManager;
-window.cssHelper = cssHelper;
-window.clickOutsideHelper = clickOutsideHelper;
-window.dropdownManager = dropdownManager;
-window.modalManager = modalManager;
-window.datepickerManager = datepickerManager;
-window.commandPaletteManager = commandPaletteManager;
-window.infiniteScrollManager = infiniteScrollManager;
-window.downloadFileFromBase64 = downloadFileFromBase64;
-window.chartJsInterop = chartJsInterop;
+// Export to globalThis for Blazor interop
+globalThis.themeManager = themeManager;
+globalThis.getElementRect = getElementRect;
+globalThis.sidebarManager = sidebarManager;
+globalThis.cssHelper = cssHelper;
+globalThis.clickOutsideHelper = clickOutsideHelper;
+globalThis.dropdownManager = dropdownManager;
+globalThis.modalManager = modalManager;
+globalThis.datepickerManager = datepickerManager;
+globalThis.commandPaletteManager = commandPaletteManager;
+globalThis.infiniteScrollManager = infiniteScrollManager;
+globalThis.downloadFileFromBase64 = downloadFileFromBase64;
+globalThis.chartJsInterop = chartJsInterop;
 //# sourceMappingURL=site.js.map

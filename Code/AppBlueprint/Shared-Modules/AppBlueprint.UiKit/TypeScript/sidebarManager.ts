@@ -7,7 +7,11 @@ interface SidebarManager {
     expand(): void;
     collapse(): void;
     isExpanded(): boolean;
-    isAvailable(): boolean;
+}
+
+// Declare global before usage
+declare global {
+    var sidebarManager: SidebarManager;
 }
 
 const sidebarManager: SidebarManager = {
@@ -75,22 +79,12 @@ const sidebarManager: SidebarManager = {
         const expanded = body.classList.contains('sidebar-expanded');
         console.log('sidebarManager.isExpanded:', expanded);
         return expanded;
-    },
-
-    isAvailable(): boolean {
-        return globalThis.sidebarManager !== undefined && 
-               globalThis.sidebarManager.expand !== undefined &&
-               globalThis.sidebarManager.collapse !== undefined;
     }
 };
 
 console.log('sidebarManager initialized:', typeof sidebarManager);
 
 // Attach to globalThis for Blazor interop
-declare global {
-    var sidebarManager: SidebarManager;
-}
-
 globalThis.sidebarManager = sidebarManager;
 
 export default sidebarManager;

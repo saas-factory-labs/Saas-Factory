@@ -54,8 +54,9 @@ interface DropdownManager {
 }
 
 interface ModalManager {
-    handlers: Map<HTMLElement, { clickHandler: EventListener; keyHandler: (event: KeyboardEvent) => void }>; // Changed EventListener to (event: KeyboardEvent) => void
-    _registerEventHandlers(targetElement: HTMLElement, dotNetHelper: DotNetObjectReference, includeTargetInCloseCheck: boolean): { clickHandler: EventListener, keyHandler: (event: KeyboardEvent) => void }; // Changed EventListener to (event: KeyboardEvent) => void
+    handlers: Map<HTMLElement, { clickHandler: EventListener; keyHandler: (event: KeyboardEvent) => void }>;
+    _registerClickOutsideHandler(targetElement: HTMLElement, dotNetHelper: DotNetObjectReference): EventListener;
+    _registerEscapeKeyHandler(dotNetHelper: DotNetObjectReference): (event: KeyboardEvent) => void;
     initialize(modalContent: HTMLElement, dotNetHelper: DotNetObjectReference): void;
     initializeSearch(modalContent: HTMLElement, searchInput: HTMLInputElement, dotNetHelper: DotNetObjectReference): void;
     cleanup(modalContent: HTMLElement): void;
@@ -177,76 +178,8 @@ function getElementRect(selector: string): ElementRect | null {
 // ========================================================================
 // SIDEBAR MANAGEMENT
 // ========================================================================
-
-const sidebarManager: SidebarManager = {
-    toggleExpanded(): void {
-        console.log('sidebarManager.toggleExpanded called');
-        const body = document.querySelector<HTMLBodyElement>('body');
-        if (body === null) {
-            console.error('Body element not found');
-            return;
-        }
-        
-        const isExpanded = body.classList.contains('sidebar-expanded');
-        
-        if (isExpanded) {
-            body.classList.remove('sidebar-expanded');
-            localStorage.setItem('sidebar-expanded', 'false');
-            console.log('Sidebar collapsed');
-        } else {
-            body.classList.add('sidebar-expanded');
-            localStorage.setItem('sidebar-expanded', 'true');
-            console.log('Sidebar expanded');
-        }
-    },
-    
-    expand(): void {
-        console.log('sidebarManager.expand called');
-        const body = document.querySelector<HTMLBodyElement>('body');
-        if (body === null) {
-            console.error('Body element not found');
-            return;
-        }
-        
-        if (body.classList.contains('sidebar-expanded')) {
-            console.log('Sidebar already expanded');
-        } else {
-            body.classList.add('sidebar-expanded');
-            localStorage.setItem('sidebar-expanded', 'true');
-            console.log('Sidebar expanded (was collapsed)');
-        }
-    },
-    
-    collapse(): void {
-        console.log('sidebarManager.collapse called');
-        const body = document.querySelector<HTMLBodyElement>('body');
-        if (body === null) {
-            console.error('Body element not found');
-            return;
-        }
-        
-        if (body.classList.contains('sidebar-expanded')) {
-            body.classList.remove('sidebar-expanded');
-            localStorage.setItem('sidebar-expanded', 'false');
-            console.log('Sidebar collapsed (was expanded)');
-        } else {
-            console.log('Sidebar already collapsed');
-        }
-    },
-
-    isExpanded(): boolean {
-        const body = document.querySelector<HTMLBodyElement>('body');
-        if (body === null) {
-            console.error('Body element not found');
-            return false;
-        }
-        const expanded = body.classList.contains('sidebar-expanded');
-        console.log('sidebarManager.isExpanded:', expanded);
-        return expanded;
-    }
-};
-
-console.log('sidebarManager initialized:', typeof sidebarManager);
+// Import from separate module to avoid redeclaration
+import sidebarManager from './sidebarManager';
 
 // ========================================================================
 // CSS CUSTOM PROPERTY HELPERS

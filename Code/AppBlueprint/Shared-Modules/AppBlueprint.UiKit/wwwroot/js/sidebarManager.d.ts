@@ -6,13 +6,10 @@ interface SidebarManager {
     expand(): void;
     collapse(): void;
     isExpanded(): boolean;
-    isAvailable(): boolean;
+}
+declare global {
+    var sidebarManager: SidebarManager;
 }
 declare const sidebarManager: SidebarManager;
-declare global {
-    interface Window {
-        sidebarManager: SidebarManager;
-    }
-}
 export default sidebarManager;
 //# sourceMappingURL=sidebarManager.d.ts.map
