@@ -234,7 +234,7 @@ public sealed class FileStorageController : BaseController
 
             var response = new PreSignedUrlResponse
             {
-                Url = url,
+                Url = new Uri(url, UriKind.Absolute),
                 ExpiresAt = DateTime.UtcNow.Add(expiry)
             };
 

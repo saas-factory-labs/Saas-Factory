@@ -117,11 +117,23 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
             
             return HealthCheckResult.Healthy(successMessage);
         }
-        catch (Exception ex)
+        catch (NpgsqlException ex)
         {
-            string errorMessage = $"Failed to verify Row-Level Security status: {ex.Message}";
+            string errorMessage = $"Database error verifying Row-Level Security: {ex.Message}";
             _logger.LogError(ex, "[RLS Health Check] {ErrorMessage}", errorMessage);
             return HealthCheckResult.Unhealthy(errorMessage, ex);
+        }
+        catch (InvalidOperationException ex)
+        {
+            string errorMessage = $"Invalid operation during RLS verification: {ex.Message}";
+            _logger.LogError(ex, "[RLS Health Check] {ErrorMessage}", errorMessage);
+            return HealthCheckResult.Unhealthy(errorMessage, ex);
+        }
+        catch (TimeoutException ex)
+        {
+            string errorMessage = $"Timeout verifying Row-Level Security: {ex.Message}";
+            _logger.LogError(ex, "[RLS Health Check] {ErrorMessage}", errorMessage);
+            return HealthCheckResult.Degraded(errorMessage, ex);
         }
     }
 

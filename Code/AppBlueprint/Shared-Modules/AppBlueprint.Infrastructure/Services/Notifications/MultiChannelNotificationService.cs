@@ -3,6 +3,7 @@ using AppBlueprint.Domain.Entities.Notifications;
 using AppBlueprint.Domain.Interfaces.Repositories;
 using NotificationHub = AppBlueprint.Infrastructure.SignalR.NotificationHub; // Use the correct NotificationHub
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.Services.Notifications;
@@ -150,7 +151,11 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
             ));
             _logger.LogDebug("Saved in-app notification for user {UserId}", userId);
         }
-        catch (Exception ex)
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error saving in-app notification for user {UserId}", userId);
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Failed to save in-app notification for user {UserId}", userId);
         }
@@ -178,9 +183,13 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
             await _hubContext.Clients.Group($"user:{userId}").SendAsync("ReceiveNotification", notification, cancellationToken);
             _logger.LogDebug("Sent SignalR notification to user {UserId}", userId);
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "Failed to send SignalR notification to user {UserId}", userId);
+            _logger.LogError(ex, "SignalR hub not available or connection closed for user {UserId}", userId);
+        }
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogWarning(ex, "SignalR notification timed out for user {UserId}", userId);
         }
     }
 
@@ -208,9 +217,13 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
             await _hubContext.Clients.Group($"tenant:{tenantId}").SendAsync("ReceiveNotification", notification, cancellationToken);
             _logger.LogDebug("Sent SignalR broadcast to tenant {TenantId}", tenantId);
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "Failed to send SignalR tenant broadcast to {TenantId}", tenantId);
+            _logger.LogError(ex, "SignalR hub not available for tenant broadcast to {TenantId}", tenantId);
+        }
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogWarning(ex, "SignalR tenant broadcast timed out for {TenantId}", tenantId);
         }
     }
 
@@ -231,9 +244,17 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
             ));
             _logger.LogDebug("Sent push notification to user {UserId}", userId);
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Failed to send push notification to user {UserId}", userId);
+            _logger.LogError(ex, "Network error sending push notification to user {UserId}", userId);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "Push service not configured or available for user {UserId}", userId);
+        }
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogWarning(ex, "Push notification request timed out for user {UserId}", userId);
         }
     }
 
@@ -249,9 +270,17 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
             int sentCount = await _pushService.SendToTenantAsync(tenantId, title, message, data, cancellationToken);
             _logger.LogDebug("Sent push notification to {Count} devices in tenant {TenantId}", sentCount, tenantId);
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Failed to send push notification to tenant {TenantId}", tenantId);
+            _logger.LogError(ex, "Network error sending push notification to tenant {TenantId}", tenantId);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "Push service not configured for tenant {TenantId}", tenantId);
+        }
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogWarning(ex, "Tenant push notification timed out for {TenantId}", tenantId);
         }
     }
 }

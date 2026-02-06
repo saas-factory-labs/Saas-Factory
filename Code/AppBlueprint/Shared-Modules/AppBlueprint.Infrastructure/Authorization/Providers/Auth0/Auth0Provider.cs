@@ -76,17 +76,24 @@ public class Auth0Provider : BaseAuthenticationProvider
                 Error = "Login failed. Please check your credentials."
             };
         }
-#pragma warning disable CA1031 // Generic catch returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Error during Auth0 login");
+            _logger.LogError(ex, "Network error during Auth0 login");
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "An error occurred during login. Please try again."
+                Error = "An error occurred during login. Please check your connection."
             };
         }
-#pragma warning restore CA1031
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogError(ex, "Auth0 login request timed out");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Login request timed out. Please try again."
+            };
+        }
     }
 
     public override async Task<AuthenticationResult> RefreshTokenAsync(CancellationToken cancellationToken = default)

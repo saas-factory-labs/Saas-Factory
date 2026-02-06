@@ -48,7 +48,7 @@ public sealed class FileStorageResponse
     /// <summary>
     /// Public URL (only for public files).
     /// </summary>
-    public string? PublicUrl { get; set; }
+    public Uri? PublicUrl { get; set; }
 
     /// <summary>
     /// Custom metadata.
@@ -64,7 +64,7 @@ public sealed class PreSignedUrlResponse
     /// <summary>
     /// Pre-signed URL with time-limited access.
     /// </summary>
-    public required string Url { get; set; }
+    public required Uri Url { get; set; }
 
     /// <summary>
     /// URL expiration timestamp.

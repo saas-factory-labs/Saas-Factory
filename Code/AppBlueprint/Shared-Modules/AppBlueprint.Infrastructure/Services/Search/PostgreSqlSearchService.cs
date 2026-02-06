@@ -121,10 +121,16 @@ public sealed class PostgreSqlSearchService<TEntity, TDbContext> : ISearchServic
                 };
             }
         }
-        catch (Exception ex)
+        catch (NpgsqlException ex)
         {
             stopwatch.Stop();
-            _logger.LogError(ex, "Full-text search failed for query: {Query}", query.QueryText);
+            _logger.LogError(ex, "Database error during full-text search for query: {Query}", query.QueryText);
+            throw;
+        }
+        catch (InvalidOperationException ex)
+        {
+            stopwatch.Stop();
+            _logger.LogError(ex, "Invalid operation during search for query: {Query}", query.QueryText);
             throw;
         }
     }

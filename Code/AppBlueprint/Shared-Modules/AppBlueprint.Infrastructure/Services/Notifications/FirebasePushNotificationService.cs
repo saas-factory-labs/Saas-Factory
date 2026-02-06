@@ -70,9 +70,19 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
                 _logger.LogInformation("Firebase initialized successfully for project {ProjectId}", projectId);
             }
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
-            _logger.LogError(ex, "Failed to initialize Firebase");
+            _logger.LogError(ex, "Invalid Firebase configuration - check credentials JSON and project ID");
+            _isInitialized = false;
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "Firebase already initialized or invalid operation");
+            _isInitialized = false;
+        }
+        catch (IOException ex)
+        {
+            _logger.LogError(ex, "Failed to read Firebase credentials");
             _isInitialized = false;
         }
     }

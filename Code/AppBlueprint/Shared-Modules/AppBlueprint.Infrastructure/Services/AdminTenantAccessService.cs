@@ -4,6 +4,7 @@ using AppBlueprint.Infrastructure.Database;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace AppBlueprint.Infrastructure.Services;
 
@@ -131,9 +132,22 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
 
             return result;
         }
-        catch (Exception ex)
+        catch (NpgsqlException ex)
         {
-            // Log failed access
+            // Log failed access due to database error
+            _logger.LogError(ex,
+                "ADMIN_TENANT_ACCESS | AdminUserId={AdminUserId} | TenantId={TenantId} | " +
+                "Operation=ReadOnly | Reason={Reason} | Status=Failed | Error={ErrorMessage}",
+                adminUserId,
+                tenantId,
+                reason,
+                ex.Message);
+
+            throw;
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Log failed access due to invalid operation
             _logger.LogError(ex,
                 "ADMIN_TENANT_ACCESS | AdminUserId={AdminUserId} | TenantId={TenantId} | " +
                 "Operation=ReadOnly | Reason={Reason} | Status=Failed | Error={ErrorMessage}",
@@ -152,10 +166,15 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
                 var sessionManager = new PostgreSqlSessionManager(_dbContext);
                 await sessionManager.ClearSessionVariablesAsync();
             }
-            catch (Exception ex)
+            catch (NpgsqlException ex)
             {
-                // Log but don't throw - operation already completed
-                _logger.LogError(ex, "Failed to clear admin tenant context after operation");
+                // Log but don't throw - operation already completed, cleanup failure is not critical
+                _logger.LogError(ex, "Database error clearing admin tenant context after operation");
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Log but don't throw - operation already completed, cleanup failure is not critical
+                _logger.LogError(ex, "Invalid operation clearing admin tenant context after operation");
             }
         }
     }

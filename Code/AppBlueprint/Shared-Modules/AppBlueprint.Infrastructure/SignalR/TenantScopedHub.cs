@@ -125,9 +125,15 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
             // Do NOT re-throw - just return to prevent crash
             return;
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
-            Logger?.LogError(ex, "Unexpected error during connection - aborting");
+            Logger?.LogError(ex, "Invalid operation during hub connection - aborting");
+            Context.Abort();
+            return;
+        }
+        catch (ArgumentException ex)
+        {
+            Logger?.LogError(ex, "Invalid argument during hub connection (missing claims?) - aborting");
             Context.Abort();
             return;
         }
@@ -155,9 +161,13 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
                 Logger?.LogInformation("User {UserId} from tenant {TenantId} disconnected", userId, tenantId);
             }
         }
-        catch (Exception ex)
+        catch (HubException ex)
         {
-            Logger?.LogWarning(ex, "Error during disconnect cleanup - connection may not have been fully established");
+            Logger?.LogWarning(ex, "Hub error during disconnect cleanup");
+        }
+        catch (InvalidOperationException ex)
+        {
+            Logger?.LogWarning(ex, "Invalid operation during disconnect - connection may not have been fully established");
         }
         
         await base.OnDisconnectedAsync(exception);

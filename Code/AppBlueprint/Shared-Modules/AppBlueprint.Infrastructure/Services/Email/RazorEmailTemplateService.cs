@@ -51,9 +51,19 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
 
             return result;
         }
-        catch (Exception ex)
+        catch (RazorLightException ex)
         {
-            _logger.LogError(ex, "Failed to render email template {TemplateName}", templateName);
+            _logger.LogError(ex, "Razor template compilation/rendering failed for {TemplateName}", templateName);
+            throw;
+        }
+        catch (IOException ex)
+        {
+            _logger.LogError(ex, "Failed to load email template file {TemplateName}", templateName);
+            throw;
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError(ex, "Invalid template name or model for {TemplateName}", templateName);
             throw;
         }
     }
@@ -110,13 +120,30 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
             _logger.LogError("Failed to send email - no email ID returned");
             throw new InvalidOperationException("Failed to send email");
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
             _logger.LogError(
                 ex,
-                "Failed to send templated email {TemplateName} to {Recipient}",
+                "Network error sending templated email {TemplateName} to {Recipient}",
                 templateName,
                 to);
+            throw;
+        }
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogError(
+                ex,
+                "Timeout sending templated email {TemplateName} to {Recipient}",
+                templateName,
+                to);
+            throw;
+        }
+        catch (RazorLightException ex)
+        {
+            _logger.LogError(
+                ex,
+                "Template rendering failed for {TemplateName}",
+                templateName);
             throw;
         }
     }

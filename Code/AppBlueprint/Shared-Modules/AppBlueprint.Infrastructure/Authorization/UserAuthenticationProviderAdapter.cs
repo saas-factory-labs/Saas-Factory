@@ -21,9 +21,14 @@ public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, ID
                 Console.Error.WriteLine("Error: Authentication provider factory returned null.");
             }
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
-            Console.Error.WriteLine($"Error creating authentication provider: {ex.Message}");
+            Console.Error.WriteLine($"Error creating authentication provider - invalid configuration: {ex.Message}");
+            _provider = null;
+        }
+        catch (ArgumentException ex)
+        {
+            Console.Error.WriteLine($"Error creating authentication provider - invalid argument: {ex.Message}");
             _provider = null;
         }
     }

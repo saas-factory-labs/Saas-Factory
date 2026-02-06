@@ -84,10 +84,14 @@ public sealed class TenantConnectionInterceptor : DbConnectionInterceptor
                 await command.ExecuteNonQueryAsync(cancellationToken);
                 _logger.LogDebug("RLS session variable set: app.current_tenant_id = {TenantId}", tenantId);
             }
-            catch (Exception ex)
+            catch (NpgsqlException ex)
             {
                 // Log error but don't throw - RLS is defense-in-depth (Layer 1 Named Filters still protect)
                 _logger.LogError(ex, "Failed to set RLS session variable for tenant {TenantId}. Named Query Filters (Layer 1) still active.", tenantId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Invalid operation when setting RLS variable for tenant {TenantId}", tenantId);
             }
         }
     }
@@ -116,9 +120,13 @@ public sealed class TenantConnectionInterceptor : DbConnectionInterceptor
                 command.ExecuteNonQuery();
                 _logger.LogDebug("RLS session variable set: app.current_tenant_id = {TenantId}", tenantId);
             }
-            catch (Exception ex)
+            catch (NpgsqlException ex)
             {
                 _logger.LogError(ex, "Failed to set RLS session variable for tenant {TenantId}. Named Query Filters (Layer 1) still active.", tenantId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Invalid operation when setting RLS variable for tenant {TenantId}", tenantId);
             }
         }
     }

@@ -130,9 +130,13 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                     _logger.LogDebug("Code verifier extracted from state parameter");
                 }
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
-                _logger.LogError(ex, "Error extracting code verifier from state parameter");
+                _logger.LogError(ex, "JSON parsing error extracting code verifier from state parameter");
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Invalid operation extracting code verifier from state parameter");
             }
             
             if (string.IsNullOrEmpty(codeVerifier))
@@ -199,6 +203,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 Error = $"Failed to exchange authorization code for tokens. Status: {response.StatusCode}"
             };
         }
+#pragma warning disable CA1031 // Returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException/JsonException
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error exchanging authorization code for tokens");
@@ -208,6 +213,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 Error = "An error occurred during authentication"
             };
         }
+#pragma warning restore CA1031
     }
 
     /// <summary>
@@ -282,6 +288,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 Error = "Token refresh failed"
             };
         }
+#pragma warning disable CA1031 // Returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error during token refresh");
@@ -291,6 +298,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 Error = "Token refresh failed"
             };
         }
+#pragma warning restore CA1031
     }
 
     protected override async Task TryRestoreFromStoredToken(string storedToken)
@@ -301,11 +309,13 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             TokenExpiration = DateTime.UtcNow.AddHours(1);
             NotifyAuthenticationStateChanged();
         }
+#pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional, use re-login on any error
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error restoring token from storage");
             await TokenStorage.RemoveTokenAsync();
         }
+#pragma warning restore CA1031
     }
 
     private void ValidateConfiguration()

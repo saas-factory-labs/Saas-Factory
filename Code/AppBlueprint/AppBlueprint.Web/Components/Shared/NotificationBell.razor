@@ -176,9 +176,9 @@
             _unreadCount--;
         }
 
-        if (!string.IsNullOrEmpty(notification.ActionUrl))
+        if (notification.ActionUrl is not null)
         {
-            Navigation.NavigateTo(notification.ActionUrl);
+            Navigation.NavigateTo(notification.ActionUrl.ToString());
         }
 
         _isOpen = false;

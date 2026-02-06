@@ -3,6 +3,7 @@ using AppBlueprint.Domain.Entities.Webhooks;
 using AppBlueprint.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Logging;
 using Stripe;
+using System.Text.Json;
 
 namespace AppBlueprint.Infrastructure.Services.Webhooks;
 
@@ -104,21 +105,21 @@ public sealed class StripeWebhookService : IStripeWebhookService
         {
             _logger.LogError(
                 ex,
-                "Stripe webhook signature verification failed: {Message}",
+                "Stripe error processing webhook (signature or API): {Message}",
                 ex.Message
             );
 
-            return WebhookProcessingResult.Failed($"Signature verification failed: {ex.Message}");
+            return WebhookProcessingResult.Failed($"Stripe error: {ex.Message}");
         }
-        catch (Exception ex)
+        catch (JsonException ex)
         {
             _logger.LogError(
                 ex,
-                "Error processing Stripe webhook: {Message}",
+                "JSON parsing error in Stripe webhook: {Message}",
                 ex.Message
             );
 
-            return WebhookProcessingResult.Failed($"Processing error: {ex.Message}");
+            return WebhookProcessingResult.Failed($"Invalid JSON: {ex.Message}");
         }
     }
 
@@ -155,11 +156,11 @@ public sealed class StripeWebhookService : IStripeWebhookService
                     webhookEvent.EventId
                 );
             }
-            catch (Exception ex)
+            catch (StripeException ex)
             {
                 _logger.LogError(
                     ex,
-                    "Error retrying webhook event: {EventId}, Attempt: {RetryCount}",
+                    "Stripe error retrying webhook event: {EventId}, Attempt: {RetryCount}",
                     webhookEvent.EventId,
                     webhookEvent.RetryCount
                 );
@@ -167,6 +168,19 @@ public sealed class StripeWebhookService : IStripeWebhookService
                 if (webhookEvent.RetryCount >= maxRetries)
                 {
                     webhookEvent.MarkAsPermanentlyFailed($"Max retries exceeded: {ex.Message}");
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Invalid operation retrying webhook: {EventId}",
+                    webhookEvent.EventId
+                );
+
+                if (webhookEvent.RetryCount >= maxRetries)
+                {
+                    webhookEvent.MarkAsPermanentlyFailed($"Processing failed: {ex.Message}");
                 }
                 else
                 {
@@ -264,11 +278,20 @@ public sealed class StripeWebhookService : IStripeWebhookService
 
             return null;
         }
-        catch (Exception ex)
+        catch (JsonException ex)
         {
             _logger.LogWarning(
                 ex,
-                "Error extracting tenant ID from Stripe event: {EventType}",
+                "JSON parsing error extracting tenant ID from Stripe event: {EventType}",
+                stripeEvent.Type
+            );
+            return null;
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogWarning(
+                ex,
+                "Invalid operation extracting tenant ID: {EventType}",
                 stripeEvent.Type
             );
             return null;

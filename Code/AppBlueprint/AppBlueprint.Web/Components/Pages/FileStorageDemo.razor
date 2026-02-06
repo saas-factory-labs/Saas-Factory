@@ -123,9 +123,9 @@
                             }
 
                             <div class="flex gap-2 mt-3">
-                                @if (file.IsPublic && !string.IsNullOrEmpty(file.PublicUrl))
+                                @if (file.IsPublic && file.PublicUrl is not null)
                                 {
-                                    <button @onclick="() => CopyToClipboard(file.PublicUrl)" class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                                    <button @onclick="() => CopyToClipboard(file.PublicUrl.ToString())" class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
                                         Copy Public URL
                                     </button>
                                 }
@@ -135,7 +135,7 @@
                                         Generate Pre-signed URL
                                     </button>
                                 }
-                                <button @onclick="() => DownloadFile(file.FileKey, file.OriginalFileName, file.IsPublic, file.PublicUrl)" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
+                                <button @onclick="() => DownloadFile(file.FileKey, file.OriginalFileName, file.IsPublic, file.PublicUrl?.ToString())" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
                                     Download
                                 </button>
                                 <button @onclick="() => DeleteFile(file.FileKey)" class="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
