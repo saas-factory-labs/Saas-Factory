@@ -3,10 +3,6 @@
  * AppBlueprint UiKit - Site-wide JavaScript interop module
  * Provides comprehensive Blazor interoperability for UI components
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 // ========================================================================
 // THEME MANAGEMENT
 // ========================================================================
@@ -65,8 +61,70 @@ function getElementRect(selector) {
 // ========================================================================
 // SIDEBAR MANAGEMENT
 // ========================================================================
-// Import from separate module to avoid redeclaration
-const sidebarManager_1 = __importDefault(require("./sidebarManager"));
+const sidebarManager = {
+    toggleExpanded() {
+        console.log('sidebarManager.toggleExpanded called');
+        const body = document.querySelector('body');
+        if (body === null) {
+            console.error('Body element not found');
+            return;
+        }
+        const isExpanded = body.classList.contains('sidebar-expanded');
+        if (isExpanded) {
+            body.classList.remove('sidebar-expanded');
+            localStorage.setItem('sidebar-expanded', 'false');
+            console.log('Sidebar collapsed');
+        }
+        else {
+            body.classList.add('sidebar-expanded');
+            localStorage.setItem('sidebar-expanded', 'true');
+            console.log('Sidebar expanded');
+        }
+    },
+    expand() {
+        console.log('sidebarManager.expand called');
+        const body = document.querySelector('body');
+        if (body === null) {
+            console.error('Body element not found');
+            return;
+        }
+        if (body.classList.contains('sidebar-expanded')) {
+            console.log('Sidebar already expanded');
+        }
+        else {
+            body.classList.add('sidebar-expanded');
+            localStorage.setItem('sidebar-expanded', 'true');
+            console.log('Sidebar expanded (was collapsed)');
+        }
+    },
+    collapse() {
+        console.log('sidebarManager.collapse called');
+        const body = document.querySelector('body');
+        if (body === null) {
+            console.error('Body element not found');
+            return;
+        }
+        if (body.classList.contains('sidebar-expanded')) {
+            body.classList.remove('sidebar-expanded');
+            localStorage.setItem('sidebar-expanded', 'false');
+            console.log('Sidebar collapsed (was expanded)');
+        }
+        else {
+            console.log('Sidebar already collapsed');
+        }
+    },
+    isExpanded() {
+        const body = document.querySelector('body');
+        if (body === null) {
+            console.error('Body element not found');
+            return false;
+        }
+        const expanded = body.classList.contains('sidebar-expanded');
+        console.log('sidebarManager.isExpanded:', expanded);
+        return expanded;
+    }
+};
+console.log('sidebarManager initialized:', typeof sidebarManager);
 // ========================================================================
 // CSS CUSTOM PROPERTY HELPERS
 // ========================================================================
@@ -598,7 +656,7 @@ const chartJsInterop = {
 // Export to globalThis for Blazor interop
 globalThis.themeManager = themeManager;
 globalThis.getElementRect = getElementRect;
-globalThis.sidebarManager = sidebarManager_1.default;
+globalThis.sidebarManager = sidebarManager;
 globalThis.cssHelper = cssHelper;
 globalThis.clickOutsideHelper = clickOutsideHelper;
 globalThis.dropdownManager = dropdownManager;

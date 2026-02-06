@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "module": "esnext",
+    "module": "es2015",
+    "moduleResolution": "node",
     "outDir": "../../wwwroot/js",
     "strict": true,
     "esModuleInterop": true,

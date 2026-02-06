@@ -1,47 +1,74 @@
-"use strict";
 // Firebase Cloud Messaging Helper for Web Push Notifications
 // This file helps initialize FCM and get push tokens in the browser
+
+interface FirebaseConfig {
+    apiKey: string;
+    authDomain: string;
+    projectId: string;
+    storageBucket: string;
+    messagingSenderId: string;
+    appId: string;
+    measurementId?: string;
+}
+
+interface VapidKeyResponse {
+    vapidKey: string;
+}
+
+interface NotificationPayload {
+    notification?: {
+        title?: string;
+        body?: string;
+        icon?: string;
+        image?: string;
+    };
+    data?: {
+        [key: string]: string;
+    };
+}
+
 class FirebaseMessagingHelper {
-    constructor() {
-        this.messaging = null;
-        this.vapidKey = null;
-        this.firebaseConfig = null;
-    }
-    async loadConfigFromServer() {
+    private messaging: any = null;
+    private vapidKey: string | null = null;
+    private firebaseConfig: FirebaseConfig | null = null;
+
+    async loadConfigFromServer(): Promise<boolean> {
         try {
             // Fetch Firebase config from server
             const configResponse = await fetch('/api/firebase-config');
             if (!configResponse.ok) {
                 const errorData = await configResponse.json().catch(() => null);
-                const errorMsg = (errorData === null || errorData === void 0 ? void 0 : errorData.error) || `HTTP ${configResponse.status}`;
+                const errorMsg = errorData?.error || `HTTP ${configResponse.status}`;
                 console.error('Failed to fetch Firebase config:', errorMsg);
-                window.lastFirebaseError = errorMsg;
+                (window as any).lastFirebaseError = errorMsg;
                 return false;
             }
             this.firebaseConfig = await configResponse.json();
+
             // Fetch VAPID key from server
             const vapidResponse = await fetch('/api/firebase-config/vapid-key');
             if (!vapidResponse.ok) {
                 const errorData = await vapidResponse.json().catch(() => null);
-                const errorMsg = (errorData === null || errorData === void 0 ? void 0 : errorData.error) || `HTTP ${vapidResponse.status}`;
+                const errorMsg = errorData?.error || `HTTP ${vapidResponse.status}`;
                 console.error('Failed to fetch VAPID key:', errorMsg);
-                window.lastFirebaseError = errorMsg;
+                (window as any).lastFirebaseError = errorMsg;
                 return false;
             }
-            const vapidData = await vapidResponse.json();
+            const vapidData: VapidKeyResponse = await vapidResponse.json();
             this.vapidKey = vapidData.vapidKey;
+
             console.log('Firebase config loaded from server');
-            window.lastFirebaseError = null;
+            (window as any).lastFirebaseError = null;
             return true;
-        }
-        catch (error) {
+        } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             console.error('Failed to load Firebase config from server:', error);
-            window.lastFirebaseError = errorMessage;
+            (window as any).lastFirebaseError = errorMessage;
             return false;
         }
     }
-    async initialize(firebaseConfig = null, vapidKey = null) {
+
+    async initialize(firebaseConfig: FirebaseConfig | null = null, vapidKey: string | null = null): Promise<boolean> {
         try {
             // If config not provided, fetch from server
             if (!firebaseConfig || !vapidKey) {
@@ -50,141 +77,158 @@ class FirebaseMessagingHelper {
                     console.error('Could not load Firebase config');
                     return false;
                 }
-            }
-            else {
+            } else {
                 this.firebaseConfig = firebaseConfig;
                 this.vapidKey = vapidKey;
             }
+
             // Import Firebase modules
-            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-            const { getMessaging } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
+            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js' as any);
+            const { getMessaging } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js' as any);
+
             // Initialize Firebase
-            const app = initializeApp(this.firebaseConfig);
+            const app = initializeApp(this.firebaseConfig!);
             this.messaging = getMessaging(app);
+
             console.log('Firebase initialized successfully');
             return true;
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Failed to initialize Firebase:', error);
             return false;
         }
     }
-    async requestPermission() {
+
+    async requestPermission(): Promise<boolean> {
         try {
             const permission = await Notification.requestPermission();
             console.log('Notification permission:', permission);
             return permission === 'granted';
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Failed to request notification permission:', error);
             return false;
         }
     }
-    async getToken() {
+
+    async getToken(): Promise<string | null> {
         if (!this.messaging) {
             console.error('Firebase messaging not initialized');
             return null;
         }
+
         try {
-            const { getToken } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
+            const { getToken } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js' as any);
+            
             const currentToken = await getToken(this.messaging, {
-                vapidKey: this.vapidKey,
+                vapidKey: this.vapidKey!,
                 serviceWorkerRegistration: await this.registerServiceWorker()
             });
+
             if (currentToken) {
                 console.log('FCM Token obtained:', currentToken.substring(0, 20) + '...');
                 return currentToken;
             }
             console.log('No registration token available. Request permission to generate one.');
             return null;
-        }
-        catch (error) {
+        } catch (error) {
             console.error('An error occurred while retrieving token:', error);
             return null;
         }
     }
-    async registerServiceWorker() {
+
+    async registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
         if (!('serviceWorker' in navigator)) {
             console.error('Service Worker not supported');
             return null;
         }
+
         try {
             const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
             console.log('Service Worker registered:', registration);
             return registration;
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Service Worker registration failed:', error);
             return null;
         }
     }
-    async setupForegroundMessageHandler(callback) {
+
+    async setupForegroundMessageHandler(callback?: (payload: NotificationPayload) => void): Promise<void> {
         if (!this.messaging) {
             console.error('Firebase messaging not initialized');
             return;
         }
+
         try {
-            const { onMessage } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
-            onMessage(this.messaging, (payload) => {
-                var _a, _b, _c, _d, _e, _f;
+            const { onMessage } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js' as any);
+            
+            onMessage(this.messaging, (payload: NotificationPayload) => {
                 console.log('Foreground message received:', payload);
+                
                 if (callback && typeof callback === 'function') {
                     callback(payload);
                 }
+
                 // Show browser notification if app is in foreground
                 if (Notification.permission === 'granted') {
-                    const notificationTitle = ((_a = payload.notification) === null || _a === void 0 ? void 0 : _a.title) || 'New Notification';
-                    const notificationOptions = {
-                        body: ((_b = payload.notification) === null || _b === void 0 ? void 0 : _b.body) || ((_c = payload.data) === null || _c === void 0 ? void 0 : _c.body) || '',
-                        icon: ((_d = payload.notification) === null || _d === void 0 ? void 0 : _d.icon) || '/favicon.png',
+                    const notificationTitle = payload.notification?.title || 'New Notification';
+                    const notificationOptions: NotificationOptions = {
+                        body: payload.notification?.body || payload.data?.body || '',
+                        icon: payload.notification?.icon || '/favicon.png',
                         badge: '/favicon.png',
-                        tag: ((_e = payload.data) === null || _e === void 0 ? void 0 : _e.notificationId) || 'notification',
+                        tag: payload.data?.notificationId || 'notification',
                         data: {
-                            url: ((_f = payload.data) === null || _f === void 0 ? void 0 : _f.actionUrl) || '/'
+                            url: payload.data?.actionUrl || '/'
                         }
                     };
+
                     new Notification(notificationTitle, notificationOptions);
                 }
             });
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Failed to setup foreground message handler:', error);
         }
     }
-    async requestTokenAndPermission() {
+
+    async requestTokenAndPermission(): Promise<string | null> {
         const hasPermission = await this.requestPermission();
         if (!hasPermission) {
             console.error('Notification permission denied');
             return null;
         }
+
         return await this.getToken();
     }
 }
+
 // Export for use in Blazor
-window.firebaseMessaging = new FirebaseMessagingHelper();
+(window as any).firebaseMessaging = new FirebaseMessagingHelper();
+
 // Helper function for Blazor interop - Initialize with server config
-window.initializeFirebaseMessaging = async (config = null, vapidKey = null) => {
+(window as any).initializeFirebaseMessaging = async (config: FirebaseConfig | null = null, vapidKey: string | null = null): Promise<boolean> => {
     // If no config provided, will fetch from server automatically
-    return await window.firebaseMessaging.initialize(config, vapidKey);
+    return await (window as any).firebaseMessaging.initialize(config, vapidKey);
 };
+
 // Initialize automatically on page load (fetches config from server)
-window.initializeFirebaseMessagingFromServer = async () => {
-    return await window.firebaseMessaging.initialize();
+(window as any).initializeFirebaseMessagingFromServer = async (): Promise<boolean> => {
+    return await (window as any).firebaseMessaging.initialize();
 };
-window.requestNotificationPermission = async () => {
-    return await window.firebaseMessaging.requestPermission();
+
+(window as any).requestNotificationPermission = async (): Promise<boolean> => {
+    return await (window as any).firebaseMessaging.requestPermission();
 };
-window.getFirebaseToken = async () => {
-    return await window.firebaseMessaging.getToken();
+
+(window as any).getFirebaseToken = async (): Promise<string | null> => {
+    return await (window as any).firebaseMessaging.getToken();
 };
-window.requestFirebaseTokenAndPermission = async () => {
-    return await window.firebaseMessaging.requestTokenAndPermission();
+
+(window as any).requestFirebaseTokenAndPermission = async (): Promise<string | null> => {
+    return await (window as any).firebaseMessaging.requestTokenAndPermission();
 };
-window.setupFirebaseForegroundHandler = async (dotnetHelper, methodName) => {
-    await window.firebaseMessaging.setupForegroundMessageHandler((payload) => {
+
+(window as any).setupFirebaseForegroundHandler = async (dotnetHelper: any, methodName: string): Promise<void> => {
+    await (window as any).firebaseMessaging.setupForegroundMessageHandler((payload: NotificationPayload) => {
         if (dotnetHelper && methodName) {
             dotnetHelper.invokeMethodAsync(methodName, payload);
         }
     });
 };
-//# sourceMappingURL=firebase-messaging-helper.js.map
