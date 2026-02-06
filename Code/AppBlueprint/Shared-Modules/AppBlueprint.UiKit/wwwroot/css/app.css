@@ -6100,7 +6100,6 @@
   .h1 {
     font-size: var(--text-4xl);
     line-height: var(--tw-leading, var(--text-4xl--line-height));
-    letter-spacing: var(--tw-tracking, var(--text-4xl--letter-spacing));
     --tw-font-weight: var(--font-weight-extrabold);
     font-weight: var(--font-weight-extrabold);
     --tw-tracking: var(--tracking-tighter);
@@ -6109,7 +6108,6 @@
   .h2 {
     font-size: var(--text-3xl);
     line-height: var(--tw-leading, var(--text-3xl--line-height));
-    letter-spacing: var(--tw-tracking, var(--text-3xl--letter-spacing));
     --tw-font-weight: var(--font-weight-extrabold);
     font-weight: var(--font-weight-extrabold);
     --tw-tracking: var(--tracking-tighter);
@@ -6125,7 +6123,6 @@
   .h4 {
     font-size: var(--text-2xl);
     line-height: var(--tw-leading, var(--text-2xl--line-height));
-    letter-spacing: var(--tw-tracking, var(--text-2xl--letter-spacing));
     --tw-font-weight: var(--font-weight-extrabold);
     font-weight: var(--font-weight-extrabold);
     --tw-tracking: var(--tracking-tight);
@@ -6458,7 +6455,6 @@
 .flatpickr-day {
   background-color: var(--color-gray-50);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
   --tw-font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   color: var(--color-gray-600);

@@ -152,9 +152,9 @@ const cssHelper = {
         return color;
     },
     adjustHexOpacity(hex, opacity) {
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
+        const r = Number.parseInt(hex.slice(1, 3), 16);
+        const g = Number.parseInt(hex.slice(3, 5), 16);
+        const b = Number.parseInt(hex.slice(5, 7), 16);
         return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     },
     adjustHSLOpacity(hsl, opacity) {
@@ -348,7 +348,7 @@ function downloadFileFromBase64(base64, fileName, mimeType) {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+        byteNumbers[i] = byteCharacters.codePointAt(i) || 0;
     }
     const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], { type: mimeType });
@@ -403,7 +403,7 @@ const chartJsInterop = {
                         border: { display: false },
                         ticks: {
                             maxTicksLimit: 5,
-                            callback: (value) => formatValue(typeof value === 'number' ? value : parseFloat(value)),
+                            callback: (value) => formatValue(typeof value === 'number' ? value : Number.parseFloat(value)),
                             color: colors.textColor
                         },
                         grid: {
@@ -485,7 +485,7 @@ const chartJsInterop = {
                         border: { display: false },
                         ticks: {
                             maxTicksLimit: 5,
-                            callback: (value) => formatValue(typeof value === 'number' ? value : parseFloat(value)),
+                            callback: (value) => formatValue(typeof value === 'number' ? value : Number.parseFloat(value)),
                             color: colors.textColor,
                         },
                         grid: {
