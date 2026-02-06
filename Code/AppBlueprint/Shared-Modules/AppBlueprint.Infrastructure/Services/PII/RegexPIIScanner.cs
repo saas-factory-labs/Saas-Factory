@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppBlueprint.Application.Interfaces.PII;
 using AppBlueprint.SharedKernel.SharedModels.PII;
+using AppBlueprint.SharedKernel.Utilities;
 using FluentRegex;
 
 namespace AppBlueprint.Infrastructure.Services.PII;
@@ -194,7 +195,7 @@ public partial class RegexPIIScanner : IPIIScanner
 
     private static bool ValidateLuhn(string value)
     {
-        return AppBlueprint.SharedKernel.Utilities.LuhnValidator.IsValid(value);
+        return LuhnValidator.IsValid(value);
     }
 
     private record PIIRegexDefinition(

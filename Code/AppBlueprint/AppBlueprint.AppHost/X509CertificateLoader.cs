@@ -14,7 +14,7 @@ internal static class X509CertificateLoader
         // and will work with the browser security contexts
         try
         {
-            X509KeyStorageFlags flags = X509KeyStorageFlags.Exportable |
+            const X509KeyStorageFlags flags = X509KeyStorageFlags.Exportable |
                                        X509KeyStorageFlags.PersistKeySet |
                                        X509KeyStorageFlags.UserKeySet;
 

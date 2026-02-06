@@ -4,7 +4,7 @@
     </header>
     <!-- Chart -->
     <div class="grow px-5 py-3">
-        <AppBlueprint.UiKit.Components.Charts.LineChart
+        <Charts.LineChart
             CanvasId="fintech-line-chart"
             Height="300"
             Labels="@labels"
@@ -19,13 +19,13 @@
 @code {
     private List<string> labels = Enumerable.Range(0, 41).Select(i => $"Point {i}").ToList();
 
-    private List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset> datasets = new();
+    private List<Charts.LineChart.ChartDataset> datasets = new();
 
     protected override void OnInitialized()
     {
         datasets = new()
         {
-            new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+            new Charts.LineChart.ChartDataset
             {
                 Label = "Mosaic Portfolio",
                 Data = new List<double>
@@ -42,7 +42,7 @@
                 PointRadius = 0,
                 PointHoverRadius = 3
             },
-            new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+            new Charts.LineChart.ChartDataset
             {
                 Label = "Expected Return",
                 Data = Enumerable.Range(0, 41).Select(i => (double)i).ToList(),
@@ -53,7 +53,7 @@
                 PointRadius = 0,
                 PointHoverRadius = 3
             },
-            new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+            new Charts.LineChart.ChartDataset
             {
                 Label = "Competitors",
                 Data = new List<double>

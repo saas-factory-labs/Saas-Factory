@@ -14,7 +14,7 @@
     - Smooth transitions for hover states
     - Dark mode support
 *@
-@inject AppBlueprint.UiKit.Services.ThemeService ThemeService
+@inject ThemeService ThemeService
 
 <li class="@(IsActive ? ThemeService.GetPrimaryGradientWithDark() + " rounded-lg" : "") px-3 py-2 rounded-lg mb-0.5 last:mb-0">
     <a class="block text-gray-800 dark:text-gray-100 truncate transition @(IsActive ? "" : "hover:text-gray-900 dark:hover:text-white")"

@@ -17,7 +17,7 @@
 
     private string GetLinkClasses()
     {
-        string baseClasses = "flex items-center px-2.5 py-2 rounded-lg whitespace-nowrap";
+        const string baseClasses = "flex items-center px-2.5 py-2 rounded-lg whitespace-nowrap";
         return IsActive ? $"{baseClasses} bg-white dark:bg-gray-800" : baseClasses;
     }
 

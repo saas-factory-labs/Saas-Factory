@@ -37,7 +37,7 @@
 
     private string GetResultClasses()
     {
-        string baseClasses = "flex items-center w-full px-4 py-3 transition-colors";
+        const string baseClasses = "flex items-center w-full px-4 py-3 transition-colors";
         string primaryColor = ThemeService.GetPrimaryClass("bg", "50");
         string primaryDarkColor = ThemeService.GetPrimaryClass("bg", "500");
         
@@ -48,7 +48,7 @@
 
     private string GetIconClasses()
     {
-        string baseClasses = "shrink-0 mr-3 flex items-center justify-center w-10 h-10 rounded-lg";
+        const string baseClasses = "shrink-0 mr-3 flex items-center justify-center w-10 h-10 rounded-lg";
         string primaryBg = ThemeService.GetPrimaryClass("bg", "100");
         string primaryText = ThemeService.GetPrimaryClass("text", "600");
         string primaryDarkBg = ThemeService.GetPrimaryClass("bg", "500");

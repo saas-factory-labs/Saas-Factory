@@ -57,7 +57,7 @@ public static class ConfigurationServiceCollectionExtensions
             .Configure<IConfiguration>((options, config) =>
             {
                 // Override with flat environment variables
-                string prefix = "DATABASECONTEXT_";
+                const string prefix = "DATABASECONTEXT_";
 
                 // Check TYPE first (new standard), then CONTEXTTYPE (legacy)
                 string? contextType = Environment.GetEnvironmentVariable($"{prefix}TYPE")

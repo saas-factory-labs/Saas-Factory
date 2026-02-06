@@ -1,4 +1,4 @@
-name: "Logging: 📊 Export OpenTelemetry Trace for Github Action workflows"
+name: "📊 Logging: Export OpenTelemetry Trace for Github Action workflows"
 
 on:
   workflow_run:

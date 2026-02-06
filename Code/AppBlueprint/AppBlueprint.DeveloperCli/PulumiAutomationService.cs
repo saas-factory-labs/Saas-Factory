@@ -8,8 +8,8 @@ internal sealed class PulumiAutomationService
 
     public static async Task CreateGithubActionWorkflow(string appName)
     {
-        string dockerContext = "./Code/App1/";
-        string dockerFilePath = "./Code/App1/Dockerfile";
+        const string dockerContext = "./Code/App1/";
+        const string dockerFilePath = "./Code/App1/Dockerfile";
 
         // Define SaaS app configurations
         var saasApps = new[]
@@ -23,7 +23,7 @@ internal sealed class PulumiAutomationService
         };
 
         // Load the workflow template
-        string templatePath = "publish-container-image-github-registry.yml";
+        const string templatePath = "publish-container-image-github-registry.yml";
         string templateContent = await File.ReadAllTextAsync(templatePath);
 
         foreach (var app in saasApps)
@@ -37,7 +37,7 @@ internal sealed class PulumiAutomationService
                 .Replace("${{ dockerfile_path }}", app.DockerfilePath, StringComparison.Ordinal);
 
             // Write the generated workflow file
-            string outputPath = ".github/workflows/publish-container-image-github-registry.yml";
+            const string outputPath = ".github/workflows/publish-container-image-github-registry.yml";
             string? directoryPath = Path.GetDirectoryName(outputPath);
             if (directoryPath is not null)
             {

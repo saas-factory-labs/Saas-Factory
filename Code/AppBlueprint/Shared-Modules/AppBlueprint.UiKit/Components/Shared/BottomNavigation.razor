@@ -108,7 +108,7 @@
 
     private string GetItemClasses(bool isActive)
     {
-        var baseClasses = "relative flex flex-col items-center justify-center flex-1 h-full transition-colors";
+        const string baseClasses = "relative flex flex-col items-center justify-center flex-1 h-full transition-colors";
 
         return isActive
             ? $"{baseClasses} text-violet-600 dark:text-violet-400"
@@ -117,7 +117,7 @@
 
     private string GetIconClasses(bool isActive)
     {
-        var baseClasses = "flex items-center justify-center";
+        const string baseClasses = "flex items-center justify-center";
 
         if (Variant == "minimal")
         {
@@ -131,7 +131,7 @@
 
     private string GetLabelClasses(bool isActive)
     {
-        var baseClasses = "text-xs mt-1";
+        const string baseClasses = "text-xs mt-1";
 
         return isActive
             ? $"{baseClasses} font-medium"

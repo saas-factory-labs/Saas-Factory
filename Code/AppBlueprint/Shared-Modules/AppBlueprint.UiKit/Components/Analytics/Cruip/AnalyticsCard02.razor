@@ -15,7 +15,7 @@
 
         <!-- Chart -->
         <div>
-            <AppBlueprint.UiKit.Components.Charts.LineChart
+            <Charts.LineChart
                 CanvasId="analytics-card-02-chart"
                 Labels="@labels"
                 Datasets="@datasets"
@@ -62,7 +62,7 @@
         "12-01-2024", "01-01-2025"
     };
 
-    private List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset> datasets = new()
+    private List<Charts.LineChart.ChartDataset> datasets = new()
     {
         new()
         {

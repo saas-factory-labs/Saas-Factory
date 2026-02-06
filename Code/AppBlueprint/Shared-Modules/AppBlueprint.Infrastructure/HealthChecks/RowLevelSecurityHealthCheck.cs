@@ -55,7 +55,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
             bool functionsExist = await VerifyRlsFunctionsExistAsync(connection, cancellationToken);
             if (!functionsExist)
             {
-                string errorMessage = "Row-Level Security functions (set_current_tenant, get_current_tenant) are missing. Run SetupRowLevelSecurity.sql.";
+                const string errorMessage = "Row-Level Security functions (set_current_tenant, get_current_tenant) are missing. Run SetupRowLevelSecurity.sql.";
                 _logger.LogCritical("[RLS Health Check] {ErrorMessage}", errorMessage);
                 return HealthCheckResult.Unhealthy(errorMessage);
             }

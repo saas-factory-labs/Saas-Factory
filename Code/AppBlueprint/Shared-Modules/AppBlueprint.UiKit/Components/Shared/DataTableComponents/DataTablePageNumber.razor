@@ -17,7 +17,7 @@ else
 
     private string GetButtonClasses()
     {
-        string baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-3.5 py-2";
+        const string baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-3.5 py-2";
         return IsActive
             ? $"{baseClasses} bg-violet-500 text-white"
             : $"{baseClasses} text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50";

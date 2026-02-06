@@ -130,8 +130,8 @@
 
     private string GetContainerClasses()
     {
-        var baseClasses = "bg-white dark:bg-gray-800 rounded-xl overflow-hidden";
-        var shadowClass = "shadow-sm dark:shadow-none";
+        const string baseClasses = "bg-white dark:bg-gray-800 rounded-xl overflow-hidden";
+        const string shadowClass = "shadow-sm dark:shadow-none";
         var hoverClass = Hoverable ? "hover:shadow-lg dark:hover:shadow-gray-900/30 transition-shadow duration-200" : "";
         var clickClass = Clickable ? "cursor-pointer" : "";
 
@@ -186,7 +186,7 @@
 
     private string GetTitleClasses()
     {
-        var baseClasses = "font-semibold mb-2";
+        const string baseClasses = "font-semibold mb-2";
         var sizeClass = Variant == "minimal" ? "text-base" : "text-lg";
         var colorClass = Variant == "overlay" ? "text-white" : "text-gray-800 dark:text-gray-100";
 

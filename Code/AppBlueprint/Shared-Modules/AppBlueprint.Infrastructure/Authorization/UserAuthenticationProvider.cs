@@ -199,7 +199,7 @@ public sealed class UserAuthenticationProvider : IUserAuthenticationProvider, ID
             .TrimEnd('=').Replace('+', '-').Replace('/', '_');
 
         // In a real implementation, you would sign this with a secret key
-        var signatureBase64 = "MOCK_SIGNATURE";
+        const string signatureBase64 = "MOCK_SIGNATURE";
 
         return $"{headerBase64}.{payloadBase64}.{signatureBase64}";
     }

@@ -65,7 +65,7 @@
     private List<int> GetPageNumbers()
     {
         var pages = new List<int>();
-        var maxVisible = 5;
+        const int maxVisible = 5;
 
         if (TotalPages <= maxVisible)
         {
@@ -92,7 +92,7 @@
 
     private string GetPaginationButtonClasses(bool disabled)
     {
-        var baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-2.5 py-2 border";
+        const string baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-2.5 py-2 border";
         return disabled
             ? $"{baseClasses} border-gray-200 dark:border-gray-700/60 text-gray-300 dark:text-gray-600"
             : $"{baseClasses} border-gray-200 dark:border-gray-700/60 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50";
@@ -100,7 +100,7 @@
 
     private string GetPageNumberClasses(bool isActive)
     {
-        var baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-3.5 py-2";
+        const string baseClasses = "inline-flex items-center justify-center rounded-lg leading-5 px-3.5 py-2";
         return isActive
             ? $"{baseClasses} bg-violet-500 text-white"
             : $"{baseClasses} text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50";

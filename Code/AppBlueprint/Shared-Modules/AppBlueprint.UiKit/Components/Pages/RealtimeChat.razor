@@ -315,7 +315,7 @@
     private string _conversationId = string.Empty;
     private string _activeConversationId = string.Empty;
     
-    private System.Threading.Timer? _typingTimer;
+    private Timer? _typingTimer;
 
     protected override async Task OnInitializedAsync()
     {
@@ -463,7 +463,7 @@
 
         // Reset typing timer
         _typingTimer?.Dispose();
-        _typingTimer = new System.Threading.Timer(async _ =>
+        _typingTimer = new Timer(async _ =>
         {
             if (_hubConnection?.State == HubConnectionState.Connected)
             {

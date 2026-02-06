@@ -163,7 +163,7 @@ public partial class ArchitectureDiagram
 
     private void ExtractOpenApiSpec()
     {
-        string? openApiSpecPath =
+        const string openApiSpecPath =
             @"C:\Development\Development-Projects\SaaS-Factory\Writerside\specifications\swagger.json";
 
         using FileStream? stream = File.OpenRead(openApiSpecPath);

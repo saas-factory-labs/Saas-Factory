@@ -45,7 +45,7 @@ if (builder.Environment.IsDevelopment())
     // Development mode - configure OTLP for Aspire Dashboard
     string? dashboardEndpoint = Environment.GetEnvironmentVariable(DotnetDashboardOtlpEndpointUrl);
     string? otlpEndpoint = Environment.GetEnvironmentVariable(OtelExporterOtlpEndpoint);
-    string otlpDefaultEndpoint = "http://localhost:18889";
+    const string otlpDefaultEndpoint = "http://localhost:18889";
 
     // Set OTLP endpoint with priority: DOTNET_DASHBOARD_OTLP_ENDPOINT_URL > OTEL_EXPORTER_OTLP_ENDPOINT > default
     if (!string.IsNullOrEmpty(dashboardEndpoint))

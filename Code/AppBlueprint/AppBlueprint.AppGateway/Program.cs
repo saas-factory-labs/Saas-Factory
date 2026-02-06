@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.RateLimiting;
 
 // Configure telemetry - must come before CreateBuilder and AddServiceDefaults
 // Get the OTLP endpoint from environment or use Aspire default
-string? dashboardEndpoint = "https://localhost:21250";
+const string dashboardEndpoint = "https://localhost:21250";
 string? otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
-string otlpDefaultEndpoint = "http://localhost:18889";
+const string otlpDefaultEndpoint = "http://localhost:18889";
 
 // Set OTLP endpoint with priority: DOTNET_DASHBOARD_OTLP_ENDPOINT_URL > OTEL_EXPORTER_OTLP_ENDPOINT > default
 #pragma warning disable CA1303 // Do not pass literals as localized parameters - using resource constants

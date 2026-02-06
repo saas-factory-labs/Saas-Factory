@@ -19,6 +19,7 @@ using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
 using AppBlueprint.Infrastructure.Services.PII;
+using AppBlueprint.Infrastructure.Services.Search;
 using AppBlueprint.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -240,9 +241,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<TenantRlsInterceptor>();
 
         // User context and admin access
-        services.AddScoped<Application.Services.ICurrentUserService, CurrentUserService>();
-        services.AddScoped<Application.Services.ICurrentTenantService, CurrentTenantService>();
-        services.AddScoped<Application.Services.IAdminTenantAccessService, AdminTenantAccessService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<ICurrentTenantService, CurrentTenantService>();
+        services.AddScoped<IAdminTenantAccessService, AdminTenantAccessService>();
 
         // Signup database context provider (EF Core)
         services.AddScoped<Application.Services.ISignupDbContextProvider, SignupDbContextProvider>();
@@ -500,7 +501,7 @@ public static class ServiceCollectionExtensions
         where TEntity : class
         where TDbContext : DbContext
     {
-        services.AddScoped<ISearchService<TEntity>, AppBlueprint.Infrastructure.Services.Search.PostgreSqlSearchService<TEntity, TDbContext>>();
+        services.AddScoped<ISearchService<TEntity>, PostgreSqlSearchService<TEntity, TDbContext>>();
 
         Console.WriteLine($"[AppBlueprint.Infrastructure] PostgreSQL full-text search registered for {typeof(TEntity).Name}");
 

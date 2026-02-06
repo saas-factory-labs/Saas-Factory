@@ -163,16 +163,16 @@
 
     private string GetDayClasses(bool isCurrentMonth, bool isToday, bool isSelected)
     {
-        var baseClasses = "relative p-2 min-h-[3rem] bg-white dark:bg-gray-800 flex flex-col items-center transition-colors";
+        const string baseClasses = "relative p-2 min-h-[3rem] bg-white dark:bg-gray-800 flex flex-col items-center transition-colors";
         var monthClass = isCurrentMonth ? "" : "opacity-40";
-        var hoverClass = "hover:bg-gray-50 dark:hover:bg-gray-700/50";
+        const string hoverClass = "hover:bg-gray-50 dark:hover:bg-gray-700/50";
 
         return $"{baseClasses} {monthClass} {hoverClass}";
     }
 
     private string GetDayNumberClasses(bool isToday, bool isSelected)
     {
-        var baseClasses = "w-7 h-7 flex items-center justify-center rounded-full text-sm font-medium";
+        const string baseClasses = "w-7 h-7 flex items-center justify-center rounded-full text-sm font-medium";
 
         if (isSelected)
             return $"{baseClasses} bg-violet-500 text-white";

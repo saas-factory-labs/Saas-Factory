@@ -14,7 +14,7 @@ internal class RegexPIIScannerTests
     public async Task ScanAsync_ShouldDetectEmail()
     {
         // Arrange
-        var text = "Contact me at mette@test.dk for info.";
+        const string text = "Contact me at mette@test.dk for info.";
 
         // Act
         var results = await _scanner.ScanAsync(text);
@@ -29,7 +29,7 @@ internal class RegexPIIScannerTests
     public async Task ScanAsync_ShouldDetectDanishPhone()
     {
         // Arrange
-        var text = "My number is +45 12 34 56 78.";
+        const string text = "My number is +45 12 34 56 78.";
 
         // Act
         var results = await _scanner.ScanAsync(text);
@@ -44,7 +44,7 @@ internal class RegexPIIScannerTests
     {
         // Arrange
         // A valid test VISA card number often used for testing is 4242 4242 4242 4242
-        var text = "Pay with card 4242-4242-4242-4242.";
+        const string text = "Pay with card 4242-4242-4242-4242.";
 
         // Act
         var results = await _scanner.ScanAsync(text);
@@ -58,7 +58,7 @@ internal class RegexPIIScannerTests
     public async Task ScanAsync_ShouldNotDetectInvalidCreditCard_UsingLuhn()
     {
         // Arrange
-        var text = "Invalid card 1234-5678-9012-3456."; // Most likely fails Luhn
+        const string text = "Invalid card 1234-5678-9012-3456."; // Most likely fails Luhn
 
         // Act
         var results = await _scanner.ScanAsync(text);
@@ -72,7 +72,7 @@ internal class RegexPIIScannerTests
     public async Task ScanAsync_ShouldDetectIPv4()
     {
         // Arrange
-        var text = "Server at 192.168.1.1 is down.";
+        const string text = "Server at 192.168.1.1 is down.";
 
         // Act
         var results = await _scanner.ScanAsync(text);
@@ -86,7 +86,7 @@ internal class RegexPIIScannerTests
     public async Task ScanAsync_ShouldDetectDanishCPR()
     {
         // Arrange
-        var text = "His CPR is 010190-1234.";
+        const string text = "His CPR is 010190-1234.";
 
         // Act
         var results = await _scanner.ScanAsync(text);

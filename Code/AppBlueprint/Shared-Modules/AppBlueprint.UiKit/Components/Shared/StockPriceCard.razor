@@ -35,7 +35,7 @@
     @if (ShowChart && ChartData is not null && ChartData.Any())
     {
         <div class="grow">
-            <AppBlueprint.UiKit.Components.Charts.LineChart
+            <Charts.LineChart
                 CanvasId="@($"stock-chart-{Name.Replace(" ", "-").ToLower()}")"
                 Height="@ChartHeight"
                 Labels="@ChartLabels"
@@ -179,7 +179,7 @@
         return ChangeAmount >= 0 ? "text-green-600 dark:text-green-500" : "text-red-500";
     }
 
-    private List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset> GetChartDatasets()
+    private List<Charts.LineChart.ChartDataset> GetChartDatasets()
     {
         if (ChartData is null || !ChartData.Any())
             return [];
@@ -210,7 +210,7 @@
 
         return
         [
-            new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+            new Charts.LineChart.ChartDataset
             {
                 Data = ChartData,
                 BorderColor = borderColor,

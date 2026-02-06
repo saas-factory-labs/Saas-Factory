@@ -1,4 +1,4 @@
-name: "Nuget: 📦 Publish NuGet Packages to NuGet.org"
+name: "📦 Nuget:  Publish NuGet Packages to NuGet.org"
 
 permissions:
   contents: read

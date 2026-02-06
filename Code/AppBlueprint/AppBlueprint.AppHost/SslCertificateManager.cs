@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -46,7 +47,7 @@ internal static class SslCertificateManager
             Console.WriteLine($"Warning: Failed to get UserSecretsId: {ex.Message}");
             return null;
         }
-        catch (System.IO.IOException ex)
+        catch (IOException ex)
         {
             Console.WriteLine($"Warning: Failed to get UserSecretsId: {ex.Message}");
             return null;
@@ -360,7 +361,7 @@ internal static class SslCertificateManager
                 Console.WriteLine($"Warning: Cryptographic error adding certificate to stores: {ex.Message}");
                 Console.WriteLine("The certificate may still work correctly in your browser.");
             }
-            catch (System.IO.IOException ex)
+            catch (IOException ex)
             {
                 Console.WriteLine($"Warning: IO error adding certificate to stores: {ex.Message}");
                 Console.WriteLine("The certificate may still work correctly in your browser.");
@@ -371,7 +372,7 @@ internal static class SslCertificateManager
                 Console.WriteLine("The certificate may still work correctly in your browser.");
             }
         }
-        catch (System.IO.IOException ex)
+        catch (IOException ex)
         {
             Console.WriteLine($"Warning: IO error during certificate trust operation: {ex.Message}");
             Console.WriteLine("You may need to manually trust the certificate in your browser.");

@@ -13,8 +13,8 @@ internal class Program
     private static Dictionary<string, HashSet<string>> _classDependencies = new();
 
     private static Dictionary<string, List<string>> _classProperties = new();
-    private static readonly string _solutionPath = @"C:\Development\boligportal\Boligportal\Boligportal.sln";
-    private static readonly string _jsonFileOutputPath = @"C:\users\caspe\Downloads\classData.json";
+    private const string _solutionPath = @"C:\Development\boligportal\Boligportal\Boligportal.sln";
+    private const string _jsonFileOutputPath = @"C:\users\caspe\Downloads\classData.json";
 
     private static async Task Main(string[] args)
     {

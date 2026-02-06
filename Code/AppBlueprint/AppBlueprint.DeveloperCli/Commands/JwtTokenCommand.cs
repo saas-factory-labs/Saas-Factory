@@ -484,7 +484,7 @@ internal static class JwtTokenCommand
         AnsiConsole.MarkupLine("[yellow]3.[/] Open a new browser tab or use PowerShell:");
         AnsiConsole.WriteLine();
 
-        var psCode = @"# PowerShell - Make an authenticated API call
+        const string psCode = @"# PowerShell - Make an authenticated API call
 Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
     -Method Get `
     -UseDefaultCredentials `

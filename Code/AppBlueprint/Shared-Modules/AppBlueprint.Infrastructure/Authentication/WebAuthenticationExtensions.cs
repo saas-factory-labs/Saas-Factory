@@ -998,7 +998,7 @@ public static class WebAuthenticationExtensions
                 {
                     test = "DNS Resolution",
                     success = true,
-                    host = host,
+                    host,
                     addresses = addresses.Select(a => a.ToString()).ToArray()
                 });
             }

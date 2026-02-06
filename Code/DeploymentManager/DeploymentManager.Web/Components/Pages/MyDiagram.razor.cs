@@ -57,8 +57,8 @@ public partial class MyDiagram
     {
         if (level > 3) return; // Limit depth to 3 levels to prevent overwhelming the diagram
 
-        int offsetX = 250;
-        int offsetY = 150;
+        const int offsetX = 250;
+        const int offsetY = 150;
         int childX = (int)parentNode.Position.X + offsetX;
         int childYStart = (int)parentNode.Position.Y;
         int childIndex = 0;
@@ -96,8 +96,8 @@ public partial class MyDiagram
 
     private void ArrangeTree()
     {
-        int ySpacing = 150;
-        int xSpacing = 250;
+        const int ySpacing = 150;
+        const int xSpacing = 250;
 
         IOrderedEnumerable<IGrouping<double, NodeModel>>? levels = Diagram.Nodes.GroupBy(n => n.Position.Y / ySpacing)
             .OrderBy(g => g.Key);

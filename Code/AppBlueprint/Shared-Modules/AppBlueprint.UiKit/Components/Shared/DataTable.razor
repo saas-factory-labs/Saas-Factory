@@ -272,7 +272,7 @@
     private List<int> GetPageNumbers()
     {
         var pages = new List<int>();
-        var maxVisible = 5;
+        const int maxVisible = 5;
 
         if (TotalPages <= maxVisible)
         {

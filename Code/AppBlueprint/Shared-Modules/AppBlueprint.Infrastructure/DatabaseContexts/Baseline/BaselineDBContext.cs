@@ -67,9 +67,9 @@ public partial class BaselineDbContext : DbContext
         modelBuilder.ApplyConfiguration(new WebhookEventEntityConfiguration());
 
         // User Notifications configurations
-        modelBuilder.ApplyConfiguration(new Entities.EntityConfigurations.UserNotificationEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new Entities.EntityConfigurations.NotificationPreferencesEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new Entities.EntityConfigurations.PushNotificationTokenEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new UserNotificationEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationPreferencesEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new PushNotificationTokenEntityConfiguration());
 
         HandleSensitiveData(modelBuilder);
         HandleEnumToStringConversion(modelBuilder);
@@ -121,9 +121,9 @@ public partial class BaselineDbContext : DbContext
     public DbSet<SearchEntity> Searches { get; set; }
 
     // User Notifications
-    public DbSet<Domain.Entities.Notifications.UserNotificationEntity> UserNotifications { get; set; }
-    public DbSet<Domain.Entities.Notifications.NotificationPreferencesEntity> NotificationPreferences { get; set; }
-    public DbSet<Domain.Entities.Notifications.PushNotificationTokenEntity> PushNotificationTokens { get; set; }
+    public DbSet<UserNotificationEntity> UserNotifications { get; set; }
+    public DbSet<NotificationPreferencesEntity> NotificationPreferences { get; set; }
+    public DbSet<PushNotificationTokenEntity> PushNotificationTokens { get; set; }
 
     #endregion
 

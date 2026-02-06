@@ -209,8 +209,8 @@
 
     private string GetItemClasses(MegaMenuItem item)
     {
-        var baseClasses = "flex items-start p-2 -mx-2 rounded-lg transition-colors";
-        var hoverClasses = "hover:bg-gray-50 dark:hover:bg-gray-700/50";
+        const string baseClasses = "flex items-start p-2 -mx-2 rounded-lg transition-colors";
+        const string hoverClasses = "hover:bg-gray-50 dark:hover:bg-gray-700/50";
 
         return $"{baseClasses} {hoverClasses}";
     }

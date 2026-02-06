@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
@@ -64,9 +65,9 @@ internal static class SecretManagerHelper
             Console.WriteLine($"Warning: Null argument getting UserSecretsId: {ex.Message}");
             return null;
         }
-        catch (System.IO.IOException ex)
+        catch (IOException ex)
         {
-            Console.WriteLine($"Warning: IO exception getting UserSecretsId: {ex.Message}");
+            Console.WriteLine($"Warning: IO exception getting UserSecretsId: {ex.Message}\");", "oldString": "        catch (System.IO.IOException ex)\n        {\n            Console.WriteLine($\"Warning: IO exception getting UserSecretsId: {ex.Message}\");"}
             return null;
         }
         catch (System.Security.SecurityException ex)

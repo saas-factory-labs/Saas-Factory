@@ -310,7 +310,7 @@
 
     private string GetPresetClasses(string presetName)
     {
-        var baseClasses = "w-full px-3 py-1.5 text-left text-sm";
+        const string baseClasses = "w-full px-3 py-1.5 text-left text-sm";
         if (presetName == SelectedPreset)
             return $"{baseClasses} bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 font-medium";
         return $"{baseClasses} text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50";
@@ -318,7 +318,7 @@
 
     private string GetDayClasses(CalendarDay day)
     {
-        var baseClasses = "w-8 h-8 text-sm rounded-full transition-colors";
+        const string baseClasses = "w-8 h-8 text-sm rounded-full transition-colors";
 
         if (!day.IsCurrentMonth)
             return $"{baseClasses} text-gray-300 dark:text-gray-600 cursor-default";

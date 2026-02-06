@@ -123,13 +123,13 @@
             if (rect != null)
             {
                 // Set spotlight position
-                var padding = 8;
+                const int padding = 8;
                 spotlightStyle = $"top: {rect.Top - padding}px; left: {rect.Left - padding}px; width: {rect.Width + padding * 2}px; height: {rect.Height + padding * 2}px;";
 
                 // Calculate tooltip position
-                var tooltipWidth = 320;
-                var tooltipHeight = 200;
-                var margin = 16;
+                const int tooltipWidth = 320;
+                const int tooltipHeight = 200;
+                const int margin = 16;
 
                 var position = CurrentStep.Position ?? "bottom";
                 var (top, left) = position switch
@@ -206,7 +206,7 @@
 
     private string GetProgressDotClasses(bool isActive, bool isPast)
     {
-        var baseClasses = "w-2 h-2 rounded-full transition-colors";
+        const string baseClasses = "w-2 h-2 rounded-full transition-colors";
         if (isActive) return $"{baseClasses} bg-violet-500";
         if (isPast) return $"{baseClasses} bg-violet-300 dark:bg-violet-700";
         return $"{baseClasses} bg-gray-200 dark:bg-gray-600";

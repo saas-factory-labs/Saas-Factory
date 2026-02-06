@@ -183,7 +183,7 @@
 
     private string GetWidgetItemClasses(DashboardWidget widget)
     {
-        var baseClasses = "p-2 rounded-lg border transition-colors";
+        const string baseClasses = "p-2 rounded-lg border transition-colors";
         if (widget.IsVisible)
             return $"{baseClasses} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60";
         return $"{baseClasses} bg-gray-50 dark:bg-gray-700/30 border-gray-200/50 dark:border-gray-700/30 opacity-60";

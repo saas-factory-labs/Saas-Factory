@@ -151,7 +151,7 @@
 
     private string GetOptionClasses(string themeId)
     {
-        var baseClasses = "flex items-center w-full px-3 py-2 text-sm transition-colors";
+        const string baseClasses = "flex items-center w-full px-3 py-2 text-sm transition-colors";
         return themeId == CurrentTheme
             ? $"{baseClasses} text-violet-500"
             : $"{baseClasses} text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50";

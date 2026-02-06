@@ -75,7 +75,7 @@
 
     private string GetTabListClasses()
     {
-        var baseClasses = "flex";
+        const string baseClasses = "flex";
 
         var variantClasses = Variant switch
         {
@@ -129,7 +129,7 @@
 
     private string GetBadgeClasses(bool isActive)
     {
-        var baseClasses = "ml-1 px-1.5 py-0.5 text-xs font-medium rounded-full";
+        const string baseClasses = "ml-1 px-1.5 py-0.5 text-xs font-medium rounded-full";
 
         return isActive
             ? $"{baseClasses} bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400"

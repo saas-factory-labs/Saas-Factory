@@ -57,7 +57,7 @@ public static class EmailTemplateServiceExtensions
             // Use embedded resources from framework (fallback)
             // Templates are embedded in AppBlueprint.Infrastructure assembly
             Assembly infrastructureAssembly = typeof(RazorEmailTemplateService).Assembly;
-            string templateNamespace = "AppBlueprint.Infrastructure.Services.Email.Templates";
+            const string templateNamespace = "AppBlueprint.Infrastructure.Services.Email.Templates";
 
             builder.UseEmbeddedResourcesProject(infrastructureAssembly, templateNamespace);
         }

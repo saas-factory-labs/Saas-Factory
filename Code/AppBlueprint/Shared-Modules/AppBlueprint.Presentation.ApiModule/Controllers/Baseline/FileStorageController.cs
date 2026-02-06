@@ -7,6 +7,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
@@ -30,7 +31,7 @@ public sealed class FileStorageController : BaseController
         IFileStorageService fileStorageService,
         IFileValidationService fileValidationService,
         ILogger<FileStorageController> logger,
-        Microsoft.Extensions.Configuration.IConfiguration configuration)
+        IConfiguration configuration)
         : base(configuration)
     {
         ArgumentNullException.ThrowIfNull(fileStorageService);

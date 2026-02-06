@@ -5,7 +5,7 @@
     GoalValue="$6,000"
     Percentage="97.4">
     <ChartContent>
-        <AppBlueprint.UiKit.Components.Charts.LineChart
+        <Charts.LineChart
             CanvasId="saving-goals-chart"
             Height="262"
             Labels="@labels"
@@ -30,13 +30,13 @@
         "03-01-2025", "04-01-2025"
     };
 
-    private List<AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset> datasets = new();
+    private List<Charts.LineChart.ChartDataset> datasets = new();
 
     protected override void OnInitialized()
     {
         datasets = new()
         {
-            new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+            new Charts.LineChart.ChartDataset
             {
                 Label = "Savings Progress",
                 Data = new List<double>
@@ -51,7 +51,7 @@
                 PointRadius = 0,
                 PointHoverRadius = 3
             },
-            new AppBlueprint.UiKit.Components.Charts.LineChart.ChartDataset
+            new Charts.LineChart.ChartDataset
             {
                 Label = "Expected Return",
                 Data = new List<double>
