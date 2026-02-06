@@ -36,7 +36,7 @@ log_error() {
 }
 
 cleanup() {
-    if [ -d "$TEST_DIR" ]; then
+    if [[ -d "$TEST_DIR" ]]; then
         log_info "Cleaning up temporary test directory..."
         rm -rf "$TEST_DIR"
     fi
@@ -51,7 +51,7 @@ echo "-----------------------------------"
 
 cd "$REPO_ROOT"
 
-if [ ! -d "$PACKAGES_DIR" ]; then
+if [[ ! -d "$PACKAGES_DIR" ]]; then
     log_warn "Packages directory not found. Building packages..."
     dotnet pack --configuration Release --output "$PACKAGES_DIR"
 else
@@ -62,7 +62,7 @@ fi
 PACKAGE_COUNT=$(find "$PACKAGES_DIR" -name "SaaS-Factory.AppBlueprint.*.nupkg" ! -name "*.symbols.nupkg" | wc -l)
 log_info "Found $PACKAGE_COUNT NuGet packages"
 
-if [ "$PACKAGE_COUNT" -eq 0 ]; then
+if [[ "$PACKAGE_COUNT" -eq 0 ]]; then
     log_error "No packages found. Build failed?"
     exit 1
 fi
@@ -203,7 +203,7 @@ echo "---------------------------------"
 
 dotnet build --configuration Release
 
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     log_info "Build successful ✓"
 else
     log_error "Build failed ✗"
@@ -284,7 +284,7 @@ EOF
 # Run tests
 dotnet test --configuration Release
 
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     log_info "Integration tests passed ✓"
 else
     log_error "Integration tests failed ✗"
@@ -294,9 +294,9 @@ fi
 echo ""
 
 # Step 7: Validation summary
-echo "=========================================="
+echo "$SEPARATOR"
 echo "Validation Summary"
-echo "=========================================="
+echo "$SEPARATOR"
 echo ""
 
 log_info "Package build: SUCCESS"

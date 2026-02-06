@@ -1,4 +1,4 @@
--- ========================================
+﻿-- ========================================
 -- PostgreSQL Row-Level Security Setup
 -- for Multi-Tenant AppBlueprint Applications
 -- ========================================
@@ -26,15 +26,13 @@
 -- ========================================
 
 -- Define constant for tenant context configuration key
--- This prevents duplication and makes refactoring easier
-DO $$
-DECLARE
-    tenant_config_key CONSTANT TEXT := 'app.current_tenant_id';
+-- This helper function returns the configuration key to prevent duplication
+CREATE OR REPLACE FUNCTION get_tenant_config_key()
+RETURNS TEXT AS $$
 BEGIN
-    -- This constant is used throughout the RLS policies
-    -- PostgreSQL doesn't support true constants in SQL, so this is for documentation
-    RAISE NOTICE 'Tenant configuration key: %', tenant_config_key;
-END $$;
+    RETURN 'app.current_tenant_id';
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
 
 -- Function to set current tenant context
 -- This function stores the tenant ID in a PostgreSQL session variable
@@ -42,7 +40,7 @@ END $$;
 CREATE OR REPLACE FUNCTION set_current_tenant(tenant_id TEXT)
 RETURNS VOID AS $$
 BEGIN
-    PERFORM set_config('app.current_tenant_id', tenant_id, FALSE);
+    PERFORM set_config(get_tenant_config_key(), tenant_id, FALSE);
 END;
 $$ LANGUAGE plpgsql;
 
@@ -50,7 +48,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION get_current_tenant()
 RETURNS TEXT AS $$
 BEGIN
-    RETURN current_setting('app.current_tenant_id', TRUE);
+    RETURN current_setting(get_tenant_config_key(), TRUE);
 END;
 $$ LANGUAGE plpgsql;
 
