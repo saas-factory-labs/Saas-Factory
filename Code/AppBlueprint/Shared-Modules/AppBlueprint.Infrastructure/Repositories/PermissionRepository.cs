@@ -1,5 +1,6 @@
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Permission;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

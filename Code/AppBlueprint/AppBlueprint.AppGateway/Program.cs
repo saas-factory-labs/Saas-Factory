@@ -1,5 +1,6 @@
 using AppBlueprint.AppGateway;
 using AppBlueprint.AppGateway.Resources;
+using AppBlueprint.ServiceDefaults;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -57,11 +58,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("authenticated", policy =>
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("authenticated", policy =>
         policy.RequireAuthenticatedUser());
-});
 
 builder.Services.AddRateLimiter(rateLimiterOptions =>
 {

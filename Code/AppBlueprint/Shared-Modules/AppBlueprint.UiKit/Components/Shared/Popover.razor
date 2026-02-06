@@ -27,7 +27,7 @@
 @code {
     [Parameter] public RenderFragment? Trigger { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool IsOpen { get; set; } = false;
+    [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
     [Parameter] public string Position { get; set; } = "top"; // top, bottom, left, right
     [Parameter] public string TriggerMode { get; set; } = "hover"; // hover, click, focus

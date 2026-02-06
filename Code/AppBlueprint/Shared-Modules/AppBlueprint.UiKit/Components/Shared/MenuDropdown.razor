@@ -19,7 +19,7 @@
 @code {
     [Parameter] public RenderFragment? Trigger { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool IsOpen { get; set; } = false;
+    [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
     [Parameter] public string Align { get; set; } = "left"; // left, right
     [Parameter] public string Position { get; set; } = "bottom"; // bottom, top

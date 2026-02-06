@@ -1,10 +1,13 @@
-using AppBlueprint.Application.Attributes;
-using AppBlueprint.Application.Enums;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.City;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Street;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel.Attributes;
+using AppBlueprint.SharedKernel.Enums;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Address;
 
 public class AddressEntity : BaseEntity, ITenantScoped
 {

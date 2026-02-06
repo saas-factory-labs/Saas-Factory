@@ -1,4 +1,4 @@
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.ApiLog;
 
 public sealed class ApiLogEntity
 {

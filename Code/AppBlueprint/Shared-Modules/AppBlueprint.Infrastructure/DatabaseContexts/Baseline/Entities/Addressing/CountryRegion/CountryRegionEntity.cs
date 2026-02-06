@@ -1,6 +1,7 @@
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.CountryRegion;
 
 public class CountryRegionEntity : BaseEntity
 {

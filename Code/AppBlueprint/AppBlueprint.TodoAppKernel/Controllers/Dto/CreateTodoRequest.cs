@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AppBlueprint.TodoAppKernel.Controllers;
+namespace AppBlueprint.TodoAppKernel.Controllers.Dto;
 
 /// <summary>
 /// Request model for creating a new todo item

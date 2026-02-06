@@ -1,5 +1,8 @@
 using AppBlueprint.Application.Options;
 using AppBlueprint.Infrastructure.Configuration;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2C.Partials;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
 using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -167,7 +170,7 @@ public static class DbContextConfigurator
         string connectionString,
         DatabaseContextOptions options)
     {
-        services.AddDbContext<Baseline.BaselineDbContext>((serviceProvider, dbOptions) =>
+        services.AddDbContext<BaselineDbContext>((serviceProvider, dbOptions) =>
         {
             ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
@@ -181,7 +184,7 @@ public static class DbContextConfigurator
         DatabaseContextOptions options)
     {
         // Register B2CDbContext (includes Baseline entities)
-        services.AddDbContext<B2C.B2CdbContext>((serviceProvider, dbOptions) =>
+        services.AddDbContext<B2CdbContext>((serviceProvider, dbOptions) =>
         {
             ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
@@ -217,7 +220,7 @@ public static class DbContextConfigurator
         DatabaseContextOptions options)
     {
         // Register B2BDbContext (includes Baseline entities)
-        services.AddDbContext<B2B.B2BDbContext>((serviceProvider, dbOptions) =>
+        services.AddDbContext<B2BDbContext>((serviceProvider, dbOptions) =>
         {
             ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
@@ -231,13 +234,13 @@ public static class DbContextConfigurator
         DatabaseContextOptions options)
     {
         // Register Baseline
-        services.AddDbContext<Baseline.BaselineDbContext>((serviceProvider, dbOptions) =>
+        services.AddDbContext<BaselineDbContext>((serviceProvider, dbOptions) =>
         {
             ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
 
         // Register B2C
-        services.AddDbContext<B2C.B2CdbContext>((serviceProvider, dbOptions) =>
+        services.AddDbContext<B2CdbContext>((serviceProvider, dbOptions) =>
         {
             ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });
@@ -266,7 +269,7 @@ public static class DbContextConfigurator
         });
 
         // Register B2B
-        services.AddDbContext<B2B.B2BDbContext>((serviceProvider, dbOptions) =>
+        services.AddDbContext<B2BDbContext>((serviceProvider, dbOptions) =>
         {
             ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
         });

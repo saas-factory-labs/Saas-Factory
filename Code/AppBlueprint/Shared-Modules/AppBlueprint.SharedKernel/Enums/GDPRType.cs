@@ -1,4 +1,4 @@
-namespace AppBlueprint.Application.Enums;
+namespace AppBlueprint.SharedKernel.Enums;
 
 [Flags]
 public enum GDPRType

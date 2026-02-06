@@ -1,4 +1,4 @@
-﻿namespace Domain.Enum.User;
+﻿namespace DeploymentManager.ApiService.Domain.Enum.User;
 
 public enum UserRole
 {

@@ -103,7 +103,7 @@
     [Parameter] public List<MegaMenuSection>? Sections { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? FeaturedContent { get; set; }
-    [Parameter] public bool IsOpen { get; set; } = false;
+    [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
     [Parameter] public int Columns { get; set; } = 3; // 2, 3, 4
     [Parameter] public string TriggerMode { get; set; } = "click"; // click, hover

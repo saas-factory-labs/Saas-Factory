@@ -126,14 +126,10 @@ public static class WebAuthenticationExtensions
             ConfigureFallbackAuthentication(services);
         }
 
-        services.AddAuthorization(options =>
-        {
-            // By default, all endpoints require authentication.
-            // This is a common pattern for secure applications.
-            options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+        services.AddAuthorizationBuilder()
+            .SetFallbackPolicy(new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .Build();
-        });
+                .Build());
 
         services.AddScoped<Authorization.ITokenStorageService, Authorization.TokenStorageService>();
         services.AddScoped<Authorization.IAuthenticationTokenService, Authorization.AuthenticationTokenService>();

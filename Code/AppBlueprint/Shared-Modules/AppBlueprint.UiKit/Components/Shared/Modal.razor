@@ -33,14 +33,14 @@
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool IsOpen { get; set; } = false;
+    [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
     [Parameter] public bool ShowCloseButton { get; set; } = true;
     [Parameter] public bool CloseOnBackdropClick { get; set; } = true;
     [Parameter] public string Size { get; set; } = "md";
     [Parameter] public EventCallback OnClose { get; set; }
 
-    private bool IsAnimating { get; set; } = false;
+    private bool IsAnimating { get; set; };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

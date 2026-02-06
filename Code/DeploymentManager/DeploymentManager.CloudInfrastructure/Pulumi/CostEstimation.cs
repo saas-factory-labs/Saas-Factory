@@ -1,6 +1,8 @@
 using System.Net.Http.Headers;
 using System.Text;
 
+namespace DeploymentManager.CloudInfrastructure;
+
 public class CostEstimation
 {
     public async Task GetCostEstimate()

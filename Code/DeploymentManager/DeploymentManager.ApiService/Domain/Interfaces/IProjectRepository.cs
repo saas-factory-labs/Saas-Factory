@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
+﻿using DeploymentManager.ApiService.Domain.Entities;
 
-namespace Domain.Interfaces;
+namespace DeploymentManager.ApiService.Domain.Interfaces;
 
 public interface IProjectRepository
 {

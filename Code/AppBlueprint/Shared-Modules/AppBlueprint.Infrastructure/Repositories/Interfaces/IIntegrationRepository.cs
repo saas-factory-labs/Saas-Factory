@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
 namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 

@@ -1,13 +1,14 @@
 using System.Linq.Expressions;
-using AppBlueprint.Application.Attributes;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 using AppBlueprint.Infrastructure.Services;
 using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using B2CdbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2C.Partials.B2CdbContext;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts;
 

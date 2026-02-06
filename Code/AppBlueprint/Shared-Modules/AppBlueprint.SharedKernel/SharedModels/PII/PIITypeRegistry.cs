@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using AppBlueprint.Application.Enums;
+using AppBlueprint.SharedKernel.Enums;
 
 namespace AppBlueprint.SharedKernel.SharedModels.PII;
 

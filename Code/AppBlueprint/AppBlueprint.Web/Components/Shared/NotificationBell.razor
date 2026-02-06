@@ -100,8 +100,8 @@
 @code {
     private HubConnection? _hubConnection;
     private string? _userId;
-    private bool _isOpen = false;
-    private int _unreadCount = 0;
+    private bool _isOpen;
+    private int _unreadCount;
     private List<UserNotificationEntity> _notifications = new();
 
     protected override async Task OnInitializedAsync()

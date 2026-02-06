@@ -376,18 +376,18 @@
     private int _pageSize = 20;
     private float _minRelevance = 0.0f;
     private string _filterActiveUsers = "";
-    private bool _isSearching = false;
-    private bool _hasSearched = false;
+    private bool _isSearching;
+    private bool _hasSearched;
 
     // Results state
     private List<SearchResultItem<UserEntity>> _userResults = new();
     private List<SearchResultItem<TenantEntity>> _tenantResults = new();
-    private int _totalResults = 0;
+    private int _totalResults;
     private int _currentPage = 1;
-    private int _totalPages = 0;
-    private long _executionTime = 0;
-    private bool _hasNextPage = false;
-    private bool _hasPreviousPage = false;
+    private int _totalPages;
+    private long _executionTime;
+    private bool _hasNextPage;
+    private bool _hasPreviousPage;
 
     protected override void OnInitialized()
     {

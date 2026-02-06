@@ -1,7 +1,7 @@
-﻿using Domain.Entities;
-using Domain.Interfaces;
+﻿using DeploymentManager.ApiService.Domain.Entities;
+using DeploymentManager.ApiService.Domain.Interfaces;
 
-namespace Infrastructure.Persistence.Data.Repositories;
+namespace DeploymentManager.ApiService.Infrastructure.Persistence.Data.Repositories;
 
 public class ProjectRepository : IProjectRepository
 {

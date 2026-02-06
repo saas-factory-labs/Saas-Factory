@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials.B2BDbContext;
 
 namespace AppBlueprint.ApiService.Controllers;
 

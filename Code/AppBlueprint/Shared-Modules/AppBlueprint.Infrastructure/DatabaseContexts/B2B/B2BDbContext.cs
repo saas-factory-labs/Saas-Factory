@@ -4,6 +4,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials.BaselineDbContext;
 using OrganizationEntity = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity;
 using OrganizationEntityConfiguration = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntityConfiguration;
 
@@ -12,10 +13,10 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 public partial class B2BDbContext : BaselineDbContext
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<B2BDbContext> _logger;
+    private readonly ILogger<Partials.B2BDbContext> _logger;
     private readonly string? _connectionString;
 
-    public B2BDbContext(DbContextOptions<B2BDbContext> options, IConfiguration configuration, ILogger<B2BDbContext> logger)
+    public B2BDbContext(DbContextOptions<Partials.B2BDbContext> options, IConfiguration configuration, ILogger<Partials.B2BDbContext> logger)
         : base(options, configuration, logger)
     {
         _configuration = configuration;

@@ -1,11 +1,9 @@
-using DeploymentPortal.ApiService.Domain.Interfaces;
-using Domain.DTOs.Project;
-using Domain.Entities;
-using Domain.Interfaces;
-using Infrastructure.Persistence.Data.UnitOfWork;
+using DeploymentManager.ApiService.Domain.DTOs.Project;
+using DeploymentManager.ApiService.Domain.Entities;
+using DeploymentManager.ApiService.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Controllers.Pulumi;
+namespace DeploymentManager.ApiService.Api.Controllers.Pulumi;
 
 public class ResponseDto
 {

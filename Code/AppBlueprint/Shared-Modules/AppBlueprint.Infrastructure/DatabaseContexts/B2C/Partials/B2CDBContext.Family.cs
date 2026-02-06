@@ -1,10 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.EntityConfigurations;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyInvite;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2C.Family.FamilyInvite;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Partials;
 
 public partial class B2CdbContext
 {

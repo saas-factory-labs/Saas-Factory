@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+namespace AppBlueprint.Web;
 
 internal sealed class LoggingHandler(HttpMessageHandler innerHandler, ILogger<LoggingHandler> logger) : DelegatingHandler(innerHandler)
 {

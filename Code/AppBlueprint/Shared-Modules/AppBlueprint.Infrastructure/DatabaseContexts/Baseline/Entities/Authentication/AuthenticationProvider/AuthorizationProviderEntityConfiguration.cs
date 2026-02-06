@@ -1,8 +1,7 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authentication.AuthenticationProvider;
 
 /// <summary>
 /// Entity configuration for AuthenticationProviderEntity managing external authentication providers.

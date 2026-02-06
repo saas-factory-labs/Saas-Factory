@@ -189,18 +189,18 @@
 
     private NotificationFormModel _notificationModel = new();
     private bool _sendInApp = true;
-    private bool _sendPush = false;
-    private bool _isSending = false;
+    private bool _sendPush;
+    private bool _isSending;
 
     private string _fcmToken = "";
     private DeviceType _deviceType = DeviceType.Web;
-    private bool _isRegistering = false;
-    private bool _isRequestingToken = false;
+    private bool _isRegistering;
+    private bool _isRequestingToken;
 
     private List<ReceivedNotification> _receivedNotifications = new();
     private string? _statusMessage;
     private string? _errorMessage;
-    private bool _scriptLoaded = false;
+    private bool _scriptLoaded;
 
     protected override async Task OnInitializedAsync()
     {

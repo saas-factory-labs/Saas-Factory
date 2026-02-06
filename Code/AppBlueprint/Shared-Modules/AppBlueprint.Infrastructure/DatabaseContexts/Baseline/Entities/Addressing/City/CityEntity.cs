@@ -1,6 +1,8 @@
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.State;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.City;
 
 public class CityEntity : BaseEntity
 {

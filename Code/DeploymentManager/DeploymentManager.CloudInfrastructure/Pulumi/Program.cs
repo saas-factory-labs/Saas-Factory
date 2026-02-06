@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using DeploymentManager.CloudInfrastructure;
 using Pulumi;
 using Pulumi.AzureNative.App;
 using Pulumi.AzureNative.ContainerRegistry;

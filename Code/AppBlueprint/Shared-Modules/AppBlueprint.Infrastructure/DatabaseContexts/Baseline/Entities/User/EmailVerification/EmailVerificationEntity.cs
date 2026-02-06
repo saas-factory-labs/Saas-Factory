@@ -1,6 +1,3 @@
-using AppBlueprint.Application.Attributes;
-using AppBlueprint.Application.Enums;
-
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.EmailVerification;
 
 public sealed class EmailVerificationEntity

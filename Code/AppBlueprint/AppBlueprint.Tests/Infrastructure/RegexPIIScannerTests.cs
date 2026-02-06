@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
-using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.Services.PII;
+using AppBlueprint.SharedKernel.Enums;
 using FluentAssertions;
 
 namespace AppBlueprint.Tests.Infrastructure;

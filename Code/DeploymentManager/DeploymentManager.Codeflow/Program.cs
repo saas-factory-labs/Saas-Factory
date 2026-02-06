@@ -4,183 +4,182 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
 using Newtonsoft.Json;
 
-namespace DeploymentManager.Codeflow
+namespace DeploymentManager.Codeflow;
+
+internal class Program
 {
-    internal class Program
+    private static MSBuildWorkspace _workspace = MSBuildWorkspace.Create();
+
+    private static Dictionary<string, HashSet<string>> _classDependencies = new();
+
+    private static Dictionary<string, List<string>> _classProperties = new();
+    private static readonly string _solutionPath = @"C:\Development\boligportal\Boligportal\Boligportal.sln";
+    private static readonly string _jsonFileOutputPath = @"C:\users\caspe\Downloads\classData.json";
+
+    private static async Task Main(string[] args)
     {
-        private static MSBuildWorkspace _workspace = MSBuildWorkspace.Create();
+        List<ClassDataInput>? classes = await AnalyzeSolution(_solutionPath);
 
-        private static Dictionary<string, HashSet<string>> _classDependencies = new();
-
-        private static Dictionary<string, List<string>> _classProperties = new();
-        private static readonly string _solutionPath = @"C:\Development\boligportal\Boligportal\Boligportal.sln";
-        private static readonly string _jsonFileOutputPath = @"C:\users\caspe\Downloads\classData.json";
-
-        private static async Task Main(string[] args)
+        // Here, you would typically persist the data to a database or process it further
+        foreach (ClassDataInput? classModel in classes)
         {
-            List<ClassDataInput>? classes = await AnalyzeSolution(_solutionPath);
-
-            // Here, you would typically persist the data to a database or process it further
-            foreach (ClassDataInput? classModel in classes)
-            {
-                Console.WriteLine(
-                    $"Class {classModel.ClassName} has {classModel.Methods.Count} methods and {classModel.Properties.Count} properties.");
-                foreach (ClassDataInput? dependencyId in classModel.DependsOn)
-                    Console.WriteLine($"Class {classModel.ClassName} depends on class with ID {dependencyId}");
-            }
-
-            //var serviceCollection = new ServiceCollection();
-
-            // write to json file
-            string? json = JsonConvert.SerializeObject(classes, Formatting.Indented);
-            File.WriteAllText(_jsonFileOutputPath, json);
+            Console.WriteLine(
+                $"Class {classModel.ClassName} has {classModel.Methods.Count} methods and {classModel.Properties.Count} properties.");
+            foreach (ClassDataInput? dependencyId in classModel.DependsOn)
+                Console.WriteLine($"Class {classModel.ClassName} depends on class with ID {dependencyId}");
         }
 
-        /// <summary>
-        ///     Analyze the solution and extract class data and dependencies
-        /// </summary>
-        /// <returns></returns>
-        private static async Task<List<ClassDataInput>> AnalyzeSolution(string solutionPath)
+        //var serviceCollection = new ServiceCollection();
+
+        // write to json file
+        string? json = JsonConvert.SerializeObject(classes, Formatting.Indented);
+        File.WriteAllText(_jsonFileOutputPath, json);
+    }
+
+    /// <summary>
+    ///     Analyze the solution and extract class data and dependencies
+    /// </summary>
+    /// <returns></returns>
+    private static async Task<List<ClassDataInput>> AnalyzeSolution(string solutionPath)
+    {
+        var workspace = MSBuildWorkspace.Create();
+        Solution? solution = await workspace.OpenSolutionAsync(solutionPath);
+
+        ProjectDependencyGraph? projectDependencyGraph = solution.GetProjectDependencyGraph();
+
+        IEnumerable<IEnumerable<ProjectId>>? dependencySets =
+            solution.GetProjectDependencyGraph().GetDependencySets();
+        IEnumerable<ProjectId>? topologicallySortedProjects =
+            solution.GetProjectDependencyGraph().GetTopologicallySortedProjects();
+
+        var classModels = new List<ClassDataInput>();
+
+        foreach (Project? project in solution.Projects)
         {
-            var workspace = MSBuildWorkspace.Create();
-            Solution? solution = await workspace.OpenSolutionAsync(solutionPath);
+            IImmutableSet<ProjectId>? projectsThatDirectlyDependOnThisProject = solution.GetProjectDependencyGraph()
+                .GetProjectsThatDirectlyDependOnThisProject(project.Id);
+            IImmutableSet<ProjectId>? projectsThatThisProjectDirectlyDependsOn = solution
+                .GetProjectDependencyGraph().GetProjectsThatThisProjectDirectlyDependsOn(project.Id);
 
-            ProjectDependencyGraph? projectDependencyGraph = solution.GetProjectDependencyGraph();
-
-            IEnumerable<IEnumerable<ProjectId>>? dependencySets =
-                solution.GetProjectDependencyGraph().GetDependencySets();
-            IEnumerable<ProjectId>? topologicallySortedProjects =
-                solution.GetProjectDependencyGraph().GetTopologicallySortedProjects();
-
-            var classModels = new List<ClassDataInput>();
-
-            foreach (Project? project in solution.Projects)
+            foreach (Document? document in project.Documents)
             {
-                IImmutableSet<ProjectId>? projectsThatDirectlyDependOnThisProject = solution.GetProjectDependencyGraph()
-                    .GetProjectsThatDirectlyDependOnThisProject(project.Id);
-                IImmutableSet<ProjectId>? projectsThatThisProjectDirectlyDependsOn = solution
-                    .GetProjectDependencyGraph().GetProjectsThatThisProjectDirectlyDependsOn(project.Id);
-
-                foreach (Document? document in project.Documents)
-                {
-                    SemanticModel? semanticModel = await document.GetSemanticModelAsync();
-                    SyntaxTree? syntaxTree = await document.GetSyntaxTreeAsync();
+                SemanticModel? semanticModel = await document.GetSemanticModelAsync();
+                SyntaxTree? syntaxTree = await document.GetSyntaxTreeAsync();
                     
-                    if (syntaxTree is null)
-                        continue;
+                if (syntaxTree is null)
+                    continue;
                         
-                    SyntaxNode? root = await syntaxTree.GetRootAsync();
+                SyntaxNode? root = await syntaxTree.GetRootAsync();
 
-                    if (root is null || semanticModel is null)
-                        continue;
+                if (root is null || semanticModel is null)
+                    continue;
 
-                    IEnumerable<ClassDeclarationSyntax> classes =
-                        root.DescendantNodes().OfType<ClassDeclarationSyntax>();
-                    foreach (ClassDeclarationSyntax classDeclaration in classes)
-                    {
-                        ClassDataInput classModel = CreateClassModel(classDeclaration, semanticModel);
-                        classModels.Add(classModel);
+                IEnumerable<ClassDeclarationSyntax> classes =
+                    root.DescendantNodes().OfType<ClassDeclarationSyntax>();
+                foreach (ClassDeclarationSyntax classDeclaration in classes)
+                {
+                    ClassDataInput classModel = CreateClassModel(classDeclaration, semanticModel);
+                    classModels.Add(classModel);
 
-                        ExtractProperties(classDeclaration, classModel);
-                        ExtractMethods(classDeclaration, classModel, semanticModel);
-                        ExtractDependencies(classDeclaration, classModel, semanticModel, classModels);
-                    }
+                    ExtractProperties(classDeclaration, classModel);
+                    ExtractMethods(classDeclaration, classModel, semanticModel);
+                    ExtractDependencies(classDeclaration, classModel, semanticModel, classModels);
                 }
             }
-
-            return classModels;
         }
 
-        private static ClassDataInput CreateClassModel(ClassDeclarationSyntax classDeclaration,
-            SemanticModel semanticModel)
-        {
-            string? className = classDeclaration.Identifier.Text;
+        return classModels;
+    }
 
-            return new ClassDataInput { ClassName = className };
-        }
+    private static ClassDataInput CreateClassModel(ClassDeclarationSyntax classDeclaration,
+        SemanticModel semanticModel)
+    {
+        string? className = classDeclaration.Identifier.Text;
 
-        private static void ExtractProperties(ClassDeclarationSyntax classDeclaration, ClassDataInput classModel)
+        return new ClassDataInput { ClassName = className };
+    }
+
+    private static void ExtractProperties(ClassDeclarationSyntax classDeclaration, ClassDataInput classModel)
+    {
+        //var members = classDeclaration.Members;
+        //foreach (var item in members)
+        //{
+        //    item.
+        //}
+
+
+        IEnumerable<PropertyDeclarationSyntax>? properties =
+            classDeclaration.DescendantNodes().OfType<PropertyDeclarationSyntax>();
+        foreach (PropertyDeclarationSyntax? property in properties)
         {
-            //var members = classDeclaration.Members;
-            //foreach (var item in members)
+            string? propertyName = property.Identifier.Text;
+            TypeSyntax? propertyType = property.Type;
+            AccessorListSyntax? accessors = property.AccessorList;
+
+            //foreach (var item in accessors.Accessors)
             //{
-            //    item.
+            //    var text = item.Body;
             //}
 
-
-            IEnumerable<PropertyDeclarationSyntax>? properties =
-                classDeclaration.DescendantNodes().OfType<PropertyDeclarationSyntax>();
-            foreach (PropertyDeclarationSyntax? property in properties)
+            classModel.Properties.Add(new PropertyInput
             {
-                string? propertyName = property.Identifier.Text;
-                TypeSyntax? propertyType = property.Type;
-                AccessorListSyntax? accessors = property.AccessorList;
-
-                //foreach (var item in accessors.Accessors)
-                //{
-                //    var text = item.Body;
-                //}
-
-                classModel.Properties.Add(new PropertyInput
-                {
-                    PropertyName = propertyName,
-                    ClassName = classModel.ClassName,
-                    PropertyType = propertyType.GetType().ToString()
-                });
-            }
+                PropertyName = propertyName,
+                ClassName = classModel.ClassName,
+                PropertyType = propertyType.GetType().ToString()
+            });
         }
+    }
 
-        private static void ExtractMethods(ClassDeclarationSyntax classDeclaration, ClassDataInput classModel,
-            SemanticModel semanticModel)
+    private static void ExtractMethods(ClassDeclarationSyntax classDeclaration, ClassDataInput classModel,
+        SemanticModel semanticModel)
+    {
+        IEnumerable<MethodDeclarationSyntax>? methods =
+            classDeclaration.DescendantNodes().OfType<MethodDeclarationSyntax>();
+        foreach (MethodDeclarationSyntax? method in methods)
         {
-            IEnumerable<MethodDeclarationSyntax>? methods =
-                classDeclaration.DescendantNodes().OfType<MethodDeclarationSyntax>();
-            foreach (MethodDeclarationSyntax? method in methods)
+            string? methodName = method.Identifier.Text;
+            classModel.Methods.Add(new MethodInput
             {
-                string? methodName = method.Identifier.Text;
-                classModel.Methods.Add(new MethodInput
-                {
-                    MethodName = methodName,
-                    ClassName = classModel.ClassName,
-                    MethodReturnType = method.ReturnType.ToString()
-                });
-            }
+                MethodName = methodName,
+                ClassName = classModel.ClassName,
+                MethodReturnType = method.ReturnType.ToString()
+            });
         }
+    }
 
-        private static void ExtractDependencies(ClassDeclarationSyntax classDeclaration, ClassDataInput classModel,
-            SemanticModel semanticModel, List<ClassDataInput> classModels)
+    private static void ExtractDependencies(ClassDeclarationSyntax classDeclaration, ClassDataInput classModel,
+        SemanticModel semanticModel, List<ClassDataInput> classModels)
+    {
+        IEnumerable<MethodDeclarationSyntax>? methods =
+            classDeclaration.DescendantNodes().OfType<MethodDeclarationSyntax>();
+        foreach (MethodDeclarationSyntax? method in methods)
         {
-            IEnumerable<MethodDeclarationSyntax>? methods =
-                classDeclaration.DescendantNodes().OfType<MethodDeclarationSyntax>();
-            foreach (MethodDeclarationSyntax? method in methods)
-            {
-                ISymbol? methodSymbol = semanticModel.GetDeclaredSymbol(method);
-                IEnumerable<InvocationExpressionSyntax>? callees =
-                    method.DescendantNodes().OfType<InvocationExpressionSyntax>();
+            ISymbol? methodSymbol = semanticModel.GetDeclaredSymbol(method);
+            IEnumerable<InvocationExpressionSyntax>? callees =
+                method.DescendantNodes().OfType<InvocationExpressionSyntax>();
 
-                foreach (InvocationExpressionSyntax? callee in callees)
+            foreach (InvocationExpressionSyntax? callee in callees)
+            {
+                var calleeSymbol = semanticModel.GetSymbolInfo(callee).Symbol as IMethodSymbol;
+                if (calleeSymbol is not null)
                 {
-                    var calleeSymbol = semanticModel.GetSymbolInfo(callee).Symbol as IMethodSymbol;
-                    if (calleeSymbol is not null)
+                    string? calleeClassName = calleeSymbol.ContainingType.Name;
+                    ClassDataInput? targetClass = classModels.FirstOrDefault(c => c.ClassName == calleeClassName);
+
+                    if (targetClass is not null && targetClass.ClassId != classModel.ClassId)
                     {
-                        string? calleeClassName = calleeSymbol.ContainingType.Name;
-                        ClassDataInput? targetClass = classModels.FirstOrDefault(c => c.ClassName == calleeClassName);
+                        // FIX this!
 
-                        if (targetClass is not null && targetClass.ClassId != classModel.ClassId)
-                        {
-                            // FIX this!
-
-                            //classModel.DependsOn.Add(targetClass.ClassName);
+                        //classModel.DependsOn.Add(targetClass.ClassName);
 
 
-                            //foreach (var existingDependency in classModel.DependsOn)
-                            //{
-                            //    if (existingDependency == targetClass.ClassId)
-                            //    {
-                            //        return;
-                            //    }
-                            //}
-                        }
+                        //foreach (var existingDependency in classModel.DependsOn)
+                        //{
+                        //    if (existingDependency == targetClass.ClassId)
+                        //    {
+                        //        return;
+                        //    }
+                        //}
                     }
                 }
             }

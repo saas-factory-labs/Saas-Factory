@@ -1,6 +1,6 @@
-using AppBlueprint.Application.Enums;
+using AppBlueprint.SharedKernel.Enums;
 
-namespace AppBlueprint.Application.Attributes;
+namespace AppBlueprint.SharedKernel.Attributes;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 public sealed class DataClassificationAttribute : Attribute

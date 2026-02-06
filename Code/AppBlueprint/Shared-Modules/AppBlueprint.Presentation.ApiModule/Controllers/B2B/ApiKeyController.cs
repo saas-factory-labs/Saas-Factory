@@ -4,6 +4,7 @@ using AppBlueprint.Contracts.B2B.Contracts.ApiKey.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.ApiKey.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;

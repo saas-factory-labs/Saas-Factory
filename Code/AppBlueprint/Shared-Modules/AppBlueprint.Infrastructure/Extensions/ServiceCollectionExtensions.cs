@@ -19,6 +19,7 @@ using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
 using AppBlueprint.Infrastructure.Services.PII;
+using AppBlueprint.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Resend;
 using Stripe;
+using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials.B2BDbContext;
+using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials.BaselineDbContext;
 
 namespace AppBlueprint.Infrastructure.Extensions;
 
@@ -252,7 +255,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     private static IServiceCollection AddUnitOfWork(this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork.Implementation.UnitOfWorkImplementation>();
+        services.AddScoped<IUnitOfWork, UnitOfWorkImplementation>();
         return services;
     }
 

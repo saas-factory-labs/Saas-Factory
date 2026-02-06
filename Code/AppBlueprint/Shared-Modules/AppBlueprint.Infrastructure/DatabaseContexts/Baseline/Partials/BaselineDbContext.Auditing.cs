@@ -1,9 +1,10 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.ApiLog;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Session.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
 
 public partial class BaselineDbContext
 {

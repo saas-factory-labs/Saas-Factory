@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate.Partials;
 
 public partial class AffiliateModuleDbContext
 {

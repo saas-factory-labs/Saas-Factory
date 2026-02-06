@@ -1,4 +1,4 @@
-﻿namespace DeploymentPortal.ApiService.Domain.Interfaces;
+﻿namespace DeploymentManager.ApiService.Domain.Interfaces;
 
 public interface IEmailService
 {

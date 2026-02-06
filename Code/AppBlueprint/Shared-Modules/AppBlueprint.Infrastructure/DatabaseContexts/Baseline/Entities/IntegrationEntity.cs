@@ -1,6 +1,6 @@
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 
 public class IntegrationEntity : BaseEntity
 {

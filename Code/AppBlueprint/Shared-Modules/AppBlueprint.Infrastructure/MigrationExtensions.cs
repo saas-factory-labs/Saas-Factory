@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Npgsql;
+using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials.B2BDbContext;
+using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials.BaselineDbContext;
 
 namespace AppBlueprint.Infrastructure;
 

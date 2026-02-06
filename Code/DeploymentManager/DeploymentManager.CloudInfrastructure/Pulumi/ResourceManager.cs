@@ -4,6 +4,8 @@ using Pulumi.AzureNative.Resources;
 using Pulumi.AzureNative.Sql;
 using SQLServer = Pulumi.AzureNative.Sql.Server;
 
+namespace DeploymentManager.CloudInfrastructure;
+
 public class ResourceManager
 {
     public ResourceGroup CreateResourceGroup(string resourceGroupName, string location)

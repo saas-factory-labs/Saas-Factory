@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Controllers.Azure;
+namespace DeploymentManager.ApiService.Api.Controllers.Azure;
 
 [Route("api/[controller]")]
 [ApiController]

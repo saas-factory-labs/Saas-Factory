@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using AppBlueprint.Application.Enums;
 using AppBlueprint.Application.Interfaces.PII;
 using AppBlueprint.SharedKernel.SharedModels.PII;
 using FluentRegex;

@@ -1,15 +1,12 @@
-using System.Threading;
-using System.Threading.Tasks;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
-using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using DomainNotificationRepository = AppBlueprint.Domain.Interfaces.Repositories.INotificationRepository;
 
-namespace AppBlueprint.Infrastructure.UnitOfWork.Implementation;
+namespace AppBlueprint.Infrastructure.UnitOfWork;
 
 public sealed class UnitOfWorkImplementation : IUnitOfWork
 {

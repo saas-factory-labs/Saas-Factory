@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using AppBlueprint.TodoAppKernel.Domain
 @using AppBlueprint.TodoAppKernel.Controllers
+@using AppBlueprint.TodoAppKernel.Controllers.Dto
 @using AppBlueprint.Web.Services
 @inject TodoService TodoService
 @inject ILogger<Todos> Logger
@@ -149,7 +150,7 @@
 @code {
     private List<TodoEntity> todos = new();
     private bool isLoading = true;
-    private bool isSubmitting = false;
+    private bool isSubmitting;
     private bool showAddForm = false;
     private string? errorMessage;
     private string newTodoTitle = string.Empty;

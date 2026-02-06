@@ -1,4 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
 using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyInvite;

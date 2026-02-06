@@ -1,7 +1,7 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailVerification;
 
 public class EmailVerificationEntity : BaseEntity
 {

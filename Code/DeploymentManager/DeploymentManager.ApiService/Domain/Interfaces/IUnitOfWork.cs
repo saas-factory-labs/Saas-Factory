@@ -1,6 +1,4 @@
-﻿using Domain.Interfaces;
-
-namespace Infrastructure.Persistence.Data.UnitOfWork;
+﻿namespace DeploymentManager.ApiService.Domain.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {

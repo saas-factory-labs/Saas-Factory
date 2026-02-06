@@ -1,5 +1,6 @@
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Account;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;

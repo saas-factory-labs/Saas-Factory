@@ -1,14 +1,14 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Admin;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.EntityConfigurations;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Permission;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermission;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermissionType;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Role;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.RolePermission;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.UserRole;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
 
 public partial class BaselineDbContext
 {

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Controllers.Deployment;
+namespace DeploymentManager.ApiService.Api.Controllers.Deployment;
 
 //  /api/deployment
 [ApiController]

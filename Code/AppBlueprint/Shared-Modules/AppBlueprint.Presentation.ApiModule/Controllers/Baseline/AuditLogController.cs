@@ -4,6 +4,7 @@ using AppBlueprint.Contracts.Baseline.AuditLog.Requests;
 using AppBlueprint.Contracts.Baseline.AuditLog.Responses;
 using AppBlueprint.Contracts.Baseline.User.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;

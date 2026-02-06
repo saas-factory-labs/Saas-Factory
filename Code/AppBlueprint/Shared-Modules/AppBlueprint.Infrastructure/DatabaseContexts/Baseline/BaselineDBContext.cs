@@ -4,8 +4,6 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration.EntityConfigurations;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
@@ -18,16 +16,16 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 public partial class BaselineDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<BaselineDbContext> _logger;
+    private readonly ILogger<Partials.BaselineDbContext> _logger;
 
     // Public constructor for direct instantiation
-    public BaselineDbContext(DbContextOptions<BaselineDbContext> options, IConfiguration configuration, ILogger<BaselineDbContext> logger)
+    public BaselineDbContext(DbContextOptions<Partials.BaselineDbContext> options, IConfiguration configuration, ILogger<Partials.BaselineDbContext> logger)
         : this((DbContextOptions)options, configuration, logger)
     {
     }
 
     // Protected constructor for derived classes to pass their specific options
-    protected BaselineDbContext(DbContextOptions options, IConfiguration configuration, ILogger<BaselineDbContext> logger)
+    protected BaselineDbContext(DbContextOptions options, IConfiguration configuration, ILogger<Partials.BaselineDbContext> logger)
         : base(options)
     {
         _configuration = configuration;

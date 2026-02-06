@@ -1,9 +1,8 @@
-using AppBlueprint.Application.Attributes;
-using AppBlueprint.Application.Enums;
+using AppBlueprint.SharedKernel.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
 
 /// <summary>
 /// Entity configuration for AuditLogEntity tracking all system changes for compliance and security purposes.

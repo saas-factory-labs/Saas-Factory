@@ -1,4 +1,4 @@
-﻿namespace DeploymentPortal.Services.Pulumi.Github;
+﻿namespace DeploymentManager.ApiService.Services.Pulumi.Github;
 
 public enum GithubResourceType // Github resource types
 {

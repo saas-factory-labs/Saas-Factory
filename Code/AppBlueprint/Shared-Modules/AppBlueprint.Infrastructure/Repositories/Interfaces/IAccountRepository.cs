@@ -1,4 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Account;
 
 namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 

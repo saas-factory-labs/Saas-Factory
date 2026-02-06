@@ -1,8 +1,7 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 
 public sealed class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 {

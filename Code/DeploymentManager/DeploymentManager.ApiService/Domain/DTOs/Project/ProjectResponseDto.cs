@@ -1,6 +1,6 @@
-﻿using DeploymentPortal.ApiService.Domain.Enum.Pulumi;
+﻿using DeploymentManager.ApiService.Domain.Enum.Pulumi;
 
-namespace Domain.DTOs.Project;
+namespace DeploymentManager.ApiService.Domain.DTOs.Project;
 
 public class ProjectResponseDto
 {

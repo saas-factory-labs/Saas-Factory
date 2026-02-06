@@ -1,14 +1,13 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 
-public class B2BDbContextFactory : IDesignTimeDbContextFactory<B2BDbContext>
+public class B2BDbContextFactory : IDesignTimeDbContextFactory<Partials.B2BDbContext>
 {
-    public B2BDbContext CreateDbContext(string[] args)
+    public Partials.B2BDbContext CreateDbContext(string[] args)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -26,7 +25,7 @@ public class B2BDbContextFactory : IDesignTimeDbContextFactory<B2BDbContext>
                 ?? configuration.GetConnectionString("DefaultConnection");
         }
 
-        var optionsBuilder = new DbContextOptionsBuilder<B2BDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<Partials.B2BDbContext>();
 
         optionsBuilder.UseNpgsql(
             connectionString,
@@ -35,8 +34,8 @@ public class B2BDbContextFactory : IDesignTimeDbContextFactory<B2BDbContext>
 
         // Create logger factory for design-time
         using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        var logger = loggerFactory.CreateLogger<B2BDbContext>();
+        var logger = loggerFactory.CreateLogger<Partials.B2BDbContext>();
 
-        return new B2BDbContext(optionsBuilder.Options, configuration, logger);
+        return new Partials.B2BDbContext(optionsBuilder.Options, configuration, logger);
     }
 }

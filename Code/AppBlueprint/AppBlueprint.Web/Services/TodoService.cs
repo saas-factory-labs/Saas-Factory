@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using AppBlueprint.Infrastructure.Authorization;
 using AppBlueprint.TodoAppKernel.Controllers;
+using AppBlueprint.TodoAppKernel.Controllers.Dto;
 using AppBlueprint.TodoAppKernel.Domain;
 using Microsoft.JSInterop;
 

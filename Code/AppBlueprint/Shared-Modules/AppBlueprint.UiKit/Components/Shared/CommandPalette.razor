@@ -105,7 +105,7 @@
 }
 
 @code {
-    [Parameter] public bool IsOpen { get; set; } = false;
+    [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
     [Parameter] public List<CommandItem>? CustomCommands { get; set; }
 

@@ -1,4 +1,4 @@
-﻿namespace DeploymentPortal.Services.Pulumi.Kubernetes;
+﻿namespace DeploymentManager.ApiService.Services.Pulumi.Kubernetes;
 
 public class PulumiKubernetesService
 {

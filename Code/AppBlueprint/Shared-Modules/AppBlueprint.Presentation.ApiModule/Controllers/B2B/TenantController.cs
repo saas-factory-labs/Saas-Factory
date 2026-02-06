@@ -1,7 +1,6 @@
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Contracts.B2B.Contracts.Tenant.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
-using AppBlueprint.Contracts.B2B.Tenant.Requests;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;

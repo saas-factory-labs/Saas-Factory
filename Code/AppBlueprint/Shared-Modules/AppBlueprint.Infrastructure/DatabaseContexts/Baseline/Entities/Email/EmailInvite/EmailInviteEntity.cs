@@ -1,7 +1,7 @@
-using AppBlueprint.Application.Attributes;
-using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel.Attributes;
+using AppBlueprint.SharedKernel.Enums;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailInvite;
 

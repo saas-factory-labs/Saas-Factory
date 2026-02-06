@@ -1,7 +1,7 @@
-using DeploymentPortal.ApiService.Domain.Interfaces;
-using DeploymentPortal.ApiService.Infrastructure.Services;
-using Domain.Interfaces;
-using Infrastructure.Persistence.Data.Repositories;
+using DeploymentManager.ApiService;
+using DeploymentManager.ApiService.Domain.Interfaces;
+using DeploymentManager.ApiService.Infrastructure.Persistence.Data.Repositories;
+using DeploymentManager.ApiService.Infrastructure.Services;
 
 // using Infrastructure.Persistence.Data.Context;
 
@@ -57,7 +57,10 @@ app.MapGet("/weatherforecast", () =>
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+namespace DeploymentManager.ApiService
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+    {
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
 }

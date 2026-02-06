@@ -3,7 +3,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials;
 
 public partial class B2BDbContext
 {

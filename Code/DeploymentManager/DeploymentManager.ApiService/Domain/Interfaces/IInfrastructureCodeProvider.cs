@@ -1,7 +1,7 @@
-﻿using Domain.DTOs.Project;
-using Domain.Entities;
+﻿using DeploymentManager.ApiService.Domain.DTOs.Project;
+using DeploymentManager.ApiService.Domain.Entities;
 
-namespace DeploymentPortal.ApiService.Domain.Interfaces;
+namespace DeploymentManager.ApiService.Domain.Interfaces;
 
 public interface IInfrastructureCodeProvider : IDisposable
 {

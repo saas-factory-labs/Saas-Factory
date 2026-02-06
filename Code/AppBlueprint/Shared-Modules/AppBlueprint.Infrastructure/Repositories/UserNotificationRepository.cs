@@ -2,6 +2,7 @@ using AppBlueprint.Domain.Entities.Notifications;
 using AppBlueprint.Domain.Interfaces.Repositories;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
+using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials.BaselineDbContext;
 
 namespace AppBlueprint.Infrastructure.Repositories;
 

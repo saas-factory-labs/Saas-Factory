@@ -116,8 +116,8 @@
     [Parameter] public Func<string, Task<byte[]>>? ExportDataProvider { get; set; }
     [Parameter] public string FileName { get; set; } = "dashboard-export";
 
-    private bool IsOpen { get; set; } = false;
-    private bool IsExporting { get; set; } = false;
+    private bool IsOpen { get; set; }
+    private bool IsExporting { get; set; }
     private string ExportingFormat { get; set; } = "";
 
     private void ToggleDropdown() => IsOpen = !IsOpen;

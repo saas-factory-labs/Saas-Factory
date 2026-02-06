@@ -2,7 +2,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Cu
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
 
 /// <summary>
 /// Entity configuration for CustomerAddressEntity defining the mapping between customers and their addresses.

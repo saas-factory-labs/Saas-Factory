@@ -101,7 +101,7 @@
     [Parameter] public List<DashboardWidget>? InitialWidgets { get; set; }
     [Parameter] public EventCallback<List<DashboardWidget>> OnLayoutChanged { get; set; }
 
-    private bool IsOpen { get; set; } = false;
+    private bool IsOpen { get; set; }
     private List<DashboardWidget> Widgets { get; set; } = new();
 
     protected override void OnInitialized()

@@ -85,13 +85,13 @@
 
 @code {
     [Parameter] public List<TourStep> Steps { get; set; } = new();
-    [Parameter] public bool IsActive { get; set; } = false;
+    [Parameter] public bool IsActive { get; set; }
     [Parameter] public EventCallback<bool> IsActiveChanged { get; set; }
     [Parameter] public EventCallback OnComplete { get; set; }
     [Parameter] public EventCallback OnSkip { get; set; }
     [Parameter] public string StorageKey { get; set; } = "onboarding-tour-completed";
 
-    private int CurrentStepIndex { get; set; } = 0;
+    private int CurrentStepIndex { get; set; }
     private string spotlightStyle = "";
     private string tooltipStyle = "";
 

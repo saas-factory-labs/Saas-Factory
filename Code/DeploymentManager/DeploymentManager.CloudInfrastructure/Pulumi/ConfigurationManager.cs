@@ -1,5 +1,7 @@
 using Pulumi;
 
+namespace DeploymentManager.CloudInfrastructure;
+
 public enum SettingType
 {
     ProjectName,

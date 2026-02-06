@@ -3,6 +3,7 @@ using AppBlueprint.TodoAppKernel.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials.B2BDbContext;
 
 namespace AppBlueprint.TodoAppKernel.Infrastructure;
 

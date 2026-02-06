@@ -1,7 +1,7 @@
-using AppBlueprint.Application.Attributes;
-using AppBlueprint.Application.Enums;
 using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
 using AppBlueprint.Contracts.Baseline.Customer.Responses;
+using AppBlueprint.SharedKernel.Attributes;
+using AppBlueprint.SharedKernel.Enums;
 
 namespace AppBlueprint.Contracts.Baseline.Address.Responses;
 

@@ -1,7 +1,8 @@
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.City;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
 
 /// <summary>
 /// Entity configuration for CountryEntity defining table structure, relationships, and constraints.

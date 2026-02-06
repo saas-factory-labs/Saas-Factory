@@ -1,8 +1,7 @@
-﻿using DeploymentPortal.ApiService.Domain.Interfaces;
-using Domain.Entities;
-using Infrastructure.Persistence.Data.UnitOfWork;
+﻿using DeploymentManager.ApiService.Domain.Entities;
+using DeploymentManager.ApiService.Domain.Interfaces;
 
-namespace DeploymentPortal.ApiService.Application.Services;
+namespace DeploymentManager.ApiService.Application.Services;
 
 public class ProjectService : IProjectService
 {

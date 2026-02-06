@@ -1,6 +1,7 @@
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.State;
 
 public class StateEntity : BaseEntity
 {
@@ -11,7 +12,7 @@ public class StateEntity : BaseEntity
         {
             Id = PrefixedUlid.Generate("country"),
             Name = "Denmark",
-            IsoCode = Addressing.IsoCode.Da,
+            IsoCode = Addressing.Country.IsoCode.Da,
             CityId = string.Empty,
             GlobalRegionId = string.Empty
         };

@@ -2,6 +2,7 @@ using AppBlueprint.Infrastructure;
 using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.Presentation.ApiModule.Middleware;
+using AppBlueprint.ServiceDefaults;
 using AppBlueprint.TodoAppKernel.Infrastructure;
 using NSwag;
 using NSwag.Generation.Processors.Security;

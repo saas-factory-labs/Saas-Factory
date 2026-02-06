@@ -126,12 +126,12 @@
     [Parameter] public EventCallback<(DateTime? Start, DateTime? End)> OnRangeChanged { get; set; }
     [Parameter] public string Align { get; set; } = "left"; // left, right
 
-    private bool IsOpen { get; set; } = false;
+    private bool IsOpen { get; set; }
     private DateTime CurrentMonth { get; set; } = DateTime.Today;
     private string? SelectedPreset { get; set; }
     private DateTime? TempStartDate { get; set; }
     private DateTime? TempEndDate { get; set; }
-    private bool SelectingEndDate { get; set; } = false;
+    private bool SelectingEndDate { get; set; };
 
     private Dictionary<string, (DateTime Start, DateTime End)> Presets => new()
     {

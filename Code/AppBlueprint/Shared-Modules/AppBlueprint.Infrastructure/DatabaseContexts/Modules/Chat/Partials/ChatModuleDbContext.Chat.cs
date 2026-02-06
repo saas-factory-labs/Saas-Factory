@@ -1,7 +1,7 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Chat.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Chat;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Chat.Partials;
 
 public partial class ChatModuleDbContext
 {

@@ -1,10 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Referral;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate;
 
 public partial class ReferralModuleDbContext : ApplicationDbContext
 {

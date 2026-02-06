@@ -1,4 +1,4 @@
-﻿namespace Domain.Enum.App;
+﻿namespace DeploymentManager.ApiService.Domain.Enum.App;
 
 public enum AppType
 {

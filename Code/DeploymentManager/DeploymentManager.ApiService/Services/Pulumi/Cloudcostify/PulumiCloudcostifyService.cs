@@ -1,4 +1,4 @@
-﻿namespace DeploymentPortal.ApiService.Services.Pulumi.Cloudcostify;
+﻿namespace DeploymentManager.ApiService.Services.Pulumi.Cloudcostify;
 
 public class PulumiCloudcostifyService
 {

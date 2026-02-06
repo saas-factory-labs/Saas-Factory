@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using AppBlueprint.Application.Attributes;
-using AppBlueprint.Application.Enums;
+using AppBlueprint.SharedKernel.Attributes;
+using AppBlueprint.SharedKernel.Enums;
 
 namespace AppBlueprint.Contracts.Baseline.AuditLog.Requests;
 

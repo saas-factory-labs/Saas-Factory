@@ -199,7 +199,7 @@
 @code {
     // Template selection
     private string selectedTemplate = "WelcomeEmail";
-    private bool showRawHtml = false;
+    private bool showRawHtml;
 
     // Form fields
     private string userName = "John Doe";
@@ -215,8 +215,8 @@
     private string previewHtml = "";
     private string errorMessage = "";
     private string sendResult = "";
-    private bool sendSuccess = false;
-    private bool isLoading = false;
+    private bool sendSuccess;
+    private bool isLoading;
 
     private async Task PreviewTemplate()
     {

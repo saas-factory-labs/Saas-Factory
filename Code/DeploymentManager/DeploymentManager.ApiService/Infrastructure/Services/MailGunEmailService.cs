@@ -1,8 +1,8 @@
 using System.Net.Http.Headers;
 using System.Text;
-using DeploymentPortal.ApiService.Domain.Interfaces;
+using DeploymentManager.ApiService.Domain.Interfaces;
 
-namespace DeploymentPortal.ApiService.Infrastructure.Services;
+namespace DeploymentManager.ApiService.Infrastructure.Services;
 
 public class MailGunEmailService : IEmailService
 {

@@ -2,6 +2,7 @@ using System.IO;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Contracts.Baseline.File.Requests;
 using AppBlueprint.Contracts.Baseline.File.Responses;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.SharedKernel;

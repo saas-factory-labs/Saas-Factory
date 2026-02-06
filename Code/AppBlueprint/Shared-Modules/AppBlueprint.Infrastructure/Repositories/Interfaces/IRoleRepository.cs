@@ -1,4 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Role;
 
 namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 

@@ -4,7 +4,7 @@ using Blazor.Diagrams.Core.PathGenerators;
 using Blazor.Diagrams.Core.Routers;
 using Blazor.Diagrams.Options;
 
-namespace DeploymentManager.Web.Pages;
+namespace DeploymentManager.Web.Components.Pages;
 
 public partial class MyDiagram
 {

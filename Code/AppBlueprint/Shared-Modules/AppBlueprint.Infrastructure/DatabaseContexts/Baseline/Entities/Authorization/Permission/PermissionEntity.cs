@@ -1,6 +1,6 @@
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Permission;
 
 public class PermissionEntity : BaseEntity
 {

@@ -7,7 +7,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfi
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
 
 public partial class BaselineDbContext
 {
