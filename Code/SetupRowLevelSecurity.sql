@@ -25,8 +25,8 @@ BEGIN
     ---------------------------
     EXECUTE 'DROP POLICY IF EXISTS ' || rlsPolicyName || ' ON ' || sampleSchema || '.customer';
 
-    EXECUTE 'CREATE POLICY ' || rlsPolicyName || ' ON ' || sampleSchema || '.customer
-        USING (tenant_name = current_setting(''app.current_tenant'')::VARCHAR)';
+    EXECUTE 'CREATE POLICY ' || rlsPolicyName || ' ON ' || sampleSchema || '.customer ' ||
+        'USING (tenant_name = current_setting(''app.current_tenant'')::VARCHAR)';
 
     --------------------------------
     -- GRANTS                     --

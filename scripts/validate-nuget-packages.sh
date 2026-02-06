@@ -24,15 +24,21 @@ NC='\033[0m' # No Color
 
 # Helper functions
 log_info() {
-    echo -e "${GREEN}✓${NC} $1"
+    local message="$1"
+    echo -e "${GREEN}✓${NC} ${message}"
+    return 0
 }
 
 log_warn() {
-    echo -e "${YELLOW}⚠${NC} $1"
+    local message="$1"
+    echo -e "${YELLOW}⚠${NC} ${message}"
+    return 0
 }
 
 log_error() {
-    echo -e "${RED}✗${NC} $1"
+    local message="$1"
+    echo -e "${RED}✗${NC} ${message}"
+    return 0
 }
 
 cleanup() {
@@ -40,6 +46,7 @@ cleanup() {
         log_info "Cleaning up temporary test directory..."
         rm -rf "$TEST_DIR"
     fi
+    return 0
 }
 
 # Trap to ensure cleanup on exit

@@ -1,7 +1,7 @@
 -- Define migration constants using session variables to avoid duplication (SonarQube fix)
-SET LOCAL app.migration_id1 = '20260202085124_AddFileMetadataEntity';
-SET LOCAL app.migration_id2 = '20260203071153_AddFullTextSearchVectors';
-SET LOCAL app.history_table = '__EFMigrationsHistory';
+SET app.migration_id1 = '20260202085124_AddFileMetadataEntity';
+SET app.migration_id2 = '20260203071153_AddFullTextSearchVectors';
+SET app.history_table = '__EFMigrationsHistory';
 CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
     "MigrationId" character varying(150) NOT NULL,
     "ProductVersion" character varying(32) NOT NULL,
@@ -10,11 +10,30 @@ CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
 
 START TRANSACTION;
 
+-- Helper functions to eliminate string literal duplication (SonarQube fix)
+CREATE OR REPLACE FUNCTION _get_migration_id1() RETURNS TEXT AS $$
+BEGIN
+    RETURN current_setting('app.migration_id1');
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+CREATE OR REPLACE FUNCTION _get_migration_id2() RETURNS TEXT AS $$
+BEGIN
+    RETURN current_setting('app.migration_id2');
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+CREATE OR REPLACE FUNCTION _get_history_table() RETURNS TEXT AS $$
+BEGIN
+    RETURN current_setting('app.history_table');
+END;
+$$ LANGUAGE plpgsql STABLE;
+
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Admins" (
@@ -31,9 +50,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Credits" (
@@ -50,9 +69,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Customers" (
@@ -76,9 +95,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "DataExports" (
@@ -97,9 +116,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "FileMetadata" (
@@ -124,9 +143,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Files" (
@@ -146,9 +165,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "GlobalRegions" (
@@ -164,9 +183,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Languages" (
@@ -183,9 +202,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "PaymentProviders" (
@@ -206,9 +225,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Permissions" (
@@ -229,9 +248,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Searches" (
@@ -255,9 +274,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Sessions" (
@@ -276,9 +295,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Webhooks" (
@@ -296,9 +315,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Tenants" (
@@ -339,9 +358,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Countries" (
@@ -361,9 +380,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ApiLogs" (
@@ -393,9 +412,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ContactPersons" (
@@ -422,9 +441,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Subscriptions" (
@@ -455,9 +474,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Users" (
@@ -481,9 +500,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "CountryRegions" (
@@ -504,9 +523,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "StateEntity" (
@@ -525,9 +544,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Accounts" (
@@ -551,9 +570,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "AuditLogs" (
@@ -587,9 +606,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "EmailAddresses" (
@@ -620,9 +639,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "EmailInvites" (
@@ -643,9 +662,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "EmailVerificationEntity" (
@@ -665,9 +684,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "EmailVerifications" (
@@ -688,9 +707,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Integrations" (
@@ -719,9 +738,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Notifications" (
@@ -742,9 +761,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "PhoneNumbers" (
@@ -771,9 +790,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ProfileEntity" (
@@ -797,9 +816,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ResourcePermissions" (
@@ -817,9 +836,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Roles" (
@@ -842,9 +861,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "Cities" (
@@ -867,9 +886,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "ResourcePermissionTypes" (
@@ -886,9 +905,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "RolePermissions" (
@@ -907,9 +926,9 @@ END $EF$;
 
 DO $EF$
 DECLARE
-    migrationId1 TEXT := current_setting('app.migration_id1');
-    migrationId2 TEXT := current_setting('app.migration_id2');
-    historyTable TEXT := current_setting('app.history_table');
+    migrationId1 TEXT := _get_migration_id1();
+    migrationId2 TEXT := _get_migration_id2();
+    historyTable TEXT := _get_history_table();
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM historyTable WHERE "MigrationId" = migrationId1) THEN
     CREATE TABLE "UserRoles" (
@@ -928,7 +947,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE TABLE "Streets" (
         "Id" character varying(1024) NOT NULL,
         "Name" character varying(200) NOT NULL,
@@ -944,7 +963,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE TABLE "Addresses" (
         "Id" character varying(1024) NOT NULL,
         "CityId" character varying(1024) NOT NULL,
@@ -979,1010 +998,1010 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Accounts_Email" ON "Accounts" ("Email");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Accounts_OwnerId" ON "Accounts" ("OwnerId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Addresses_CityId" ON "Addresses" ("CityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Addresses_ContactPersonEntityId" ON "Addresses" ("ContactPersonEntityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Addresses_CountryId" ON "Addresses" ("CountryId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Addresses_CustomerId" ON "Addresses" ("CustomerId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Addresses_PostalCode" ON "Addresses" ("PostalCode");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Addresses_StreetId" ON "Addresses" ("StreetId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Addresses_TenantId" ON "Addresses" ("TenantId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Addresses_UserEntityId" ON "Addresses" ("UserEntityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Admins_Email" ON "Admins" ("Email");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ApiLogs_ApiKeyId" ON "ApiLogs" ("ApiKeyId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ApiLogs_ApiKeyId_StatusCode" ON "ApiLogs" ("ApiKeyId", "StatusCode");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ApiLogs_RequestMethod" ON "ApiLogs" ("RequestMethod");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ApiLogs_SessionId" ON "ApiLogs" ("SessionId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ApiLogs_SessionId_StatusCode" ON "ApiLogs" ("SessionId", "StatusCode");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ApiLogs_SourceIp" ON "ApiLogs" ("SourceIp");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ApiLogs_StatusCode" ON "ApiLogs" ("StatusCode");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_Category" ON "AuditLogs" ("Category") WHERE "Category" IS NOT NULL;
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_Category_ModifiedAt" ON "AuditLogs" ("Category", "ModifiedAt") WHERE "Category" IS NOT NULL;
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_IsSoftDeleted" ON "AuditLogs" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_ModifiedAt" ON "AuditLogs" ("ModifiedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_ModifiedByUserId" ON "AuditLogs" ("ModifiedByUserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_TenantId" ON "AuditLogs" ("TenantId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_TenantId_IsSoftDeleted" ON "AuditLogs" ("TenantId", "IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_TenantId_ModifiedAt" ON "AuditLogs" ("TenantId", "ModifiedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_UserId" ON "AuditLogs" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_AuditLogs_UserId_ModifiedAt" ON "AuditLogs" ("UserId", "ModifiedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Cities_CountryEntityId" ON "Cities" ("CountryEntityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Cities_CountryId" ON "Cities" ("CountryId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Cities_IsSoftDeleted" ON "Cities" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Cities_Name" ON "Cities" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Cities_PostalCode" ON "Cities" ("PostalCode");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Cities_StateId" ON "Cities" ("StateId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Cities_StateId_PostalCode_Unique" ON "Cities" ("StateId", "PostalCode");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ContactPersons_CustomerId" ON "ContactPersons" ("CustomerId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ContactPersons_CustomerId1" ON "ContactPersons" ("CustomerId1");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_ContactPersons_Id" ON "ContactPersons" ("Id");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ContactPersons_TenantId" ON "ContactPersons" ("TenantId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ContactPersons_TenantId1" ON "ContactPersons" ("TenantId1");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Countries_GlobalRegionId" ON "Countries" ("GlobalRegionId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Countries_IsoCode" ON "Countries" ("IsoCode");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Countries_IsSoftDeleted" ON "Countries" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Countries_Name" ON "Countries" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_CountryRegions_CountryId" ON "CountryRegions" ("CountryId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_CountryRegions_CountryId_Name_Unique" ON "CountryRegions" ("CountryId", "Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_CountryRegions_Name" ON "CountryRegions" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Credits_IsSoftDeleted" ON "Credits" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Credits_TenantId" ON "Credits" ("TenantId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Credits_TenantId_IsSoftDeleted" ON "Credits" ("TenantId", "IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Customers_CustomerType" ON "Customers" ("CustomerType");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Customers_Id" ON "Customers" ("Id");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Customers_IsSoftDeleted" ON "Customers" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Customers_OrganizationId" ON "Customers" ("OrganizationId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Customers_StripeCustomerId" ON "Customers" ("StripeCustomerId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Customers_Type" ON "Customers" ("Type");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Customers_VatNumber" ON "Customers" ("VatNumber");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailAddresses_ContactPersonEntityId" ON "EmailAddresses" ("ContactPersonEntityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailAddresses_ContactPersonId" ON "EmailAddresses" ("ContactPersonId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Emails_Address_Unique" ON "EmailAddresses" ("Address");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Emails_CustomerId" ON "EmailAddresses" ("CustomerId") WHERE "CustomerId" IS NOT NULL;
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Emails_TenantId" ON "EmailAddresses" ("TenantId") WHERE "TenantId" IS NOT NULL;
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Emails_UserId" ON "EmailAddresses" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Emails_UserId_CustomerId" ON "EmailAddresses" ("UserId", "CustomerId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailInvites_ExpireAt" ON "EmailInvites" ("ExpireAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailInvites_IsSoftDeleted" ON "EmailInvites" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailInvites_ReferredEmailAddress" ON "EmailInvites" ("ReferredEmailAddress");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_EmailInvites_Token" ON "EmailInvites" ("Token");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailInvites_UserEntityId" ON "EmailInvites" ("UserEntityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailVerificationEntity_UserEntityId" ON "EmailVerificationEntity" ("UserEntityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailVerifications_IsSoftDeleted" ON "EmailVerifications" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailVerifications_Token" ON "EmailVerifications" ("Token");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_EmailVerifications_UserEntityId" ON "EmailVerifications" ("UserEntityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_FileMetadata_CreatedAt" ON "FileMetadata" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_FileMetadata_FileKey" ON "FileMetadata" ("FileKey");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_FileMetadata_TenantId" ON "FileMetadata" ("TenantId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_FileMetadata_TenantId_Folder" ON "FileMetadata" ("TenantId", "Folder");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_FileMetadata_TenantId_UploadedBy" ON "FileMetadata" ("TenantId", "UploadedBy");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_GlobalRegions_Name" ON "GlobalRegions" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Integrations_CreatedAt" ON "Integrations" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Integrations_OwnerId" ON "Integrations" ("OwnerId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Integrations_OwnerId_ServiceName_Unique" ON "Integrations" ("OwnerId", "ServiceName");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Integrations_ServiceName" ON "Integrations" ("ServiceName");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Integrations_ServiceName_CreatedAt" ON "Integrations" ("ServiceName", "CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Languages_Code" ON "Languages" ("Code");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Languages_Name" ON "Languages" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Notifications_CreatedAt" ON "Notifications" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Notifications_IsRead" ON "Notifications" ("IsRead");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Notifications_OwnerId" ON "Notifications" ("OwnerId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Notifications_UserId" ON "Notifications" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_PaymentProviders_CreatedAt" ON "PaymentProviders" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_PaymentProviders_IsActive" ON "PaymentProviders" ("IsActive");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_PaymentProviders_Name" ON "PaymentProviders" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Permissions_CreatedAt" ON "Permissions" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Permissions_Name" ON "Permissions" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_PhoneNumbers_ContactPersonId" ON "PhoneNumbers" ("ContactPersonId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_PhoneNumbers_CustomerId" ON "PhoneNumbers" ("CustomerId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_PhoneNumbers_Id" ON "PhoneNumbers" ("Id");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_PhoneNumbers_TenantId" ON "PhoneNumbers" ("TenantId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_PhoneNumbers_UserId" ON "PhoneNumbers" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_ProfileEntity_UserId" ON "ProfileEntity" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ResourcePermissions_IsSoftDeleted" ON "ResourcePermissions" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ResourcePermissions_ResourceId" ON "ResourcePermissions" ("ResourceId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ResourcePermissions_UserId" ON "ResourcePermissions" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_ResourcePermissions_UserId_ResourceId_Unique" ON "ResourcePermissions" ("UserId", "ResourceId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_ResourcePermissionTypes_ResourcePermissionId" ON "ResourcePermissionTypes" ("ResourcePermissionId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_RolePermissions_PermissionId" ON "RolePermissions" ("PermissionId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_RolePermissions_RoleId" ON "RolePermissions" ("RoleId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_RolePermissions_RoleId_PermissionId_Unique" ON "RolePermissions" ("RoleId", "PermissionId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Roles_CreatedAt" ON "Roles" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Roles_Name" ON "Roles" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Roles_UserEntityId" ON "Roles" ("UserEntityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Sessions_SessionKey" ON "Sessions" ("SessionKey");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_StateEntity_CountryId" ON "StateEntity" ("CountryId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Streets_CityId" ON "Streets" ("CityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Streets_CityId_Name_Unique" ON "Streets" ("CityId", "Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Streets_Name" ON "Streets" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Subscriptions_Code" ON "Subscriptions" ("Code");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Subscriptions_CreatedAt" ON "Subscriptions" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Subscriptions_CreatedBy" ON "Subscriptions" ("CreatedBy");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Subscriptions_Name" ON "Subscriptions" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Subscriptions_Status" ON "Subscriptions" ("Status");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Subscriptions_TenantId" ON "Subscriptions" ("TenantId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_Country" ON "Tenants" ("Country");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_CustomerEntityId" ON "Tenants" ("CustomerEntityId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_CustomerId" ON "Tenants" ("CustomerId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_Email_TenantType" ON "Tenants" ("Email", "TenantType");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Tenants_Id" ON "Tenants" ("Id");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_IsActive" ON "Tenants" ("IsActive");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_IsSoftDeleted" ON "Tenants" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_Name" ON "Tenants" ("Name");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_TenantType" ON "Tenants" ("TenantType");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_Type_Active_NotDeleted" ON "Tenants" ("TenantType", "IsActive", "IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Tenants_VatNumber" ON "Tenants" ("VatNumber");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_UserRoles_RoleId" ON "UserRoles" ("RoleId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_UserRoles_UserId" ON "UserRoles" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_UserRoles_UserId_RoleId" ON "UserRoles" ("UserId", "RoleId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Users_Email" ON "Users" ("Email");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Users_Id" ON "Users" ("Id");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Users_IsActive" ON "Users" ("IsActive");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Users_IsSoftDeleted" ON "Users" ("IsSoftDeleted");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE INDEX "IX_Users_TenantId" ON "Users" ("TenantId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     CREATE UNIQUE INDEX "IX_Users_UserName" ON "Users" ("UserName");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id1')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id1()) THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES (current_setting('app.migration_id1'), '10.0.1');
+    VALUES (_get_migration_id1(), '10.0.1');
     END IF;
 END $EF$;
 COMMIT;
@@ -1991,7 +2010,7 @@ START TRANSACTION;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     ALTER TABLE "Users" ADD "SearchVector" character varying(1024) GENERATED ALWAYS AS (to_tsvector('english', coalesce("FirstName", '') || ' ' || coalesce("LastName", '') || ' ' || coalesce("UserName", '') || ' ' || coalesce("Email", ''))) STORED;
     COMMENT ON COLUMN "Users"."SearchVector" IS 'Full-text search vector for user search';
     END IF;
@@ -1999,7 +2018,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     ALTER TABLE "Tenants" ADD "SearchVector" character varying(1024) GENERATED ALWAYS AS (to_tsvector('english', coalesce("Name", '') || ' ' || coalesce("Description", '') || ' ' || coalesce("Email", '') || ' ' || coalesce("VatNumber", ''))) STORED;
     COMMENT ON COLUMN "Tenants"."SearchVector" IS 'Full-text search vector for tenant search';
     END IF;
@@ -2007,7 +2026,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     CREATE TABLE "WebhookEvents" (
         "Id" character varying(40) NOT NULL,
         "EventId" character varying(255) NOT NULL,
@@ -2041,59 +2060,65 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     CREATE INDEX "IX_Users_SearchVector" ON "Users" USING GIN ("SearchVector");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     CREATE INDEX "IX_Tenants_SearchVector" ON "Tenants" USING GIN ("SearchVector");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     CREATE UNIQUE INDEX "IX_WebhookEvents_EventId_Source" ON "WebhookEvents" ("EventId", "Source");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     CREATE UNIQUE INDEX "IX_WebhookEvents_Id" ON "WebhookEvents" ("Id");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     CREATE INDEX "IX_WebhookEvents_ReceivedAt" ON "WebhookEvents" ("ReceivedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     CREATE INDEX "IX_WebhookEvents_Status" ON "WebhookEvents" ("Status");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     CREATE INDEX "IX_WebhookEvents_TenantId" ON "WebhookEvents" ("TenantId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = current_setting('app.migration_id2')) THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = _get_migration_id2()) THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES (current_setting('app.migration_id2'), '10.0.1');
+    VALUES (_get_migration_id2(), '10.0.1');
     END IF;
 END $EF$;
+
+-- Clean up helper functions
+DROP FUNCTION IF EXISTS _get_migration_id1();
+DROP FUNCTION IF EXISTS _get_migration_id2();
+DROP FUNCTION IF EXISTS _get_history_table();
+
 COMMIT;
 
