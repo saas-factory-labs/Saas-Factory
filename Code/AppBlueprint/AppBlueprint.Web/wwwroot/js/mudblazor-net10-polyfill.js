@@ -8,17 +8,20 @@
     'use strict';
     console.log('🔧 MudBlazor .NET 10 polyfill starting...');
     // Ensure mudElementRef exists (MudBlazor should have created it)
-    if (typeof window.mudElementRef === 'undefined') {
+    if (globalThis.mudElementRef === undefined) {
         console.warn('⚠️ mudElementRef not found - creating it (MudBlazor may not have loaded yet)');
-        window.mudElementRef = {};
+        globalThis.mudElementRef = {};
     }
     else {
         console.log('✓ mudElementRef found');
     }
     // Polyfill for addOnBlurEvent - critical for MudInput
-    if (typeof window.mudElementRef.addOnBlurEvent !== 'function') {
+    if (typeof globalThis.mudElementRef.addOnBlurEvent === 'function') {
+        console.log('✓ addOnBlurEvent already exists');
+    }
+    else {
         console.log('➕ Adding addOnBlurEvent polyfill');
-        window.mudElementRef.addOnBlurEvent = function (element, dotNetRef) {
+        globalThis.mudElementRef.addOnBlurEvent = function (element, dotNetRef) {
             if (element === null) {
                 console.warn('MudBlazor polyfill: addOnBlurEvent called with null element');
                 return;
@@ -36,13 +39,13 @@
             });
         };
     }
-    else {
-        console.log('✓ addOnBlurEvent already exists');
-    }
     // Polyfill for addOnFocusEvent
-    if (typeof window.mudElementRef.addOnFocusEvent !== 'function') {
+    if (typeof globalThis.mudElementRef.addOnFocusEvent === 'function') {
+        console.log('✓ addOnFocusEvent already exists');
+    }
+    else {
         console.log('➕ Adding addOnFocusEvent polyfill');
-        window.mudElementRef.addOnFocusEvent = function (element, dotNetRef) {
+        globalThis.mudElementRef.addOnFocusEvent = function (element, dotNetRef) {
             if (element === null) {
                 console.warn('MudBlazor polyfill: addOnFocusEvent called with null element');
                 return;
@@ -59,13 +62,13 @@
             });
         };
     }
-    else {
-        console.log('✓ addOnFocusEvent already exists');
-    }
     // Polyfill for saveFocus
-    if (typeof window.mudElementRef.saveFocus !== 'function') {
+    if (typeof globalThis.mudElementRef.saveFocus === 'function') {
+        console.log('✓ saveFocus already exists');
+    }
+    else {
         console.log('➕ Adding saveFocus polyfill');
-        window.mudElementRef.saveFocus = function (element) {
+        globalThis.mudElementRef.saveFocus = function (element) {
             if (element !== null && typeof element.focus === 'function') {
                 try {
                     element.focus();
@@ -76,13 +79,13 @@
             }
         };
     }
-    else {
-        console.log('✓ saveFocus already exists');
-    }
     // Polyfill for select
-    if (typeof window.mudElementRef.select !== 'function') {
+    if (typeof globalThis.mudElementRef.select === 'function') {
+        console.log('✓ select already exists');
+    }
+    else {
         console.log('➕ Adding select polyfill');
-        window.mudElementRef.select = function (element) {
+        globalThis.mudElementRef.select = function (element) {
             if (element !== null && typeof element.select === 'function') {
                 try {
                     element.select();
@@ -93,13 +96,13 @@
             }
         };
     }
-    else {
-        console.log('✓ select already exists');
-    }
     // Polyfill for selectRange
-    if (typeof window.mudElementRef.selectRange !== 'function') {
+    if (typeof globalThis.mudElementRef.selectRange === 'function') {
+        console.log('✓ selectRange already exists');
+    }
+    else {
         console.log('➕ Adding selectRange polyfill');
-        window.mudElementRef.selectRange = function (element, start, end) {
+        globalThis.mudElementRef.selectRange = function (element, start, end) {
             if (element !== null && typeof element.setSelectionRange === 'function') {
                 try {
                     element.setSelectionRange(start, end);
@@ -110,11 +113,8 @@
             }
         };
     }
-    else {
-        console.log('✓ selectRange already exists');
-    }
     // Log final status
     console.log('✅ MudBlazor .NET 10 compatibility polyfill loaded successfully');
-    console.log('📋 mudElementRef functions available:', Object.keys(window.mudElementRef || {}));
+    console.log('📋 mudElementRef functions available:', Object.keys(globalThis.mudElementRef || {}));
 })();
 //# sourceMappingURL=mudblazor-net10-polyfill.js.map

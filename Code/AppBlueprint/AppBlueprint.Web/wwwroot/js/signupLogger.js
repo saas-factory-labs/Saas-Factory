@@ -55,6 +55,6 @@ const signupLogger = {
         // });
     }
 };
-window.signupLogger = signupLogger;
+globalThis.signupLogger = signupLogger;
 export default signupLogger;
 //# sourceMappingURL=signupLogger.js.map

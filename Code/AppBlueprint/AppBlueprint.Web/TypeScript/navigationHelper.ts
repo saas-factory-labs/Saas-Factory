@@ -8,10 +8,10 @@ interface NavigationHelper {
 
 const navigationHelper: NavigationHelper = {
     navigateTo(url: string): void {
-        window.location.href = url;
+        globalThis.location.href = url;
     }
 };
 
 // Attach to window for Blazor interop
-(window as any).navigationHelper = navigationHelper;
+(globalThis as any).navigationHelper = navigationHelper;
 

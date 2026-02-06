@@ -77,6 +77,6 @@ declare global {
     }
 }
 
-window.signupLogger = signupLogger;
+(globalThis as unknown as Window).signupLogger = signupLogger;
 
 export default signupLogger;

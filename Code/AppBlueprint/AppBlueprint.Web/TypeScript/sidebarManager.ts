@@ -71,6 +71,6 @@ declare global {
     }
 }
 
-window.sidebarManager = sidebarManager;
+(globalThis as unknown as Window).sidebarManager = sidebarManager;
 
 export default sidebarManager;

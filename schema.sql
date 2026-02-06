@@ -262,10 +262,7 @@ $$;
 -- Name: FUNCTION create_tenant_and_user(p_tenant_id text, p_tenant_name text, p_tenant_type integer, p_user_id text, p_user_first_name text, p_user_last_name text, p_user_email text, p_external_auth_id text, p_ip_address text, p_user_agent text); Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON FUNCTION public.create_tenant_and_user(p_tenant_id text, p_tenant_name text, p_tenant_type integer, p_user_id text, p_user_first_name text, p_user_last_name text, p_user_email text, p_external_auth_id text, p_ip_address text, p_user_agent text) IS 'Securely creates tenant and user during signup. 
-Uses SECURITY DEFINER to bypass RLS for initial account creation only.
-Includes input validation, rate limiting, and audit logging.
-Critical: This function should only be called from trusted signup endpoints.';
+COMMENT ON FUNCTION public.create_tenant_and_user(p_tenant_id text, p_tenant_name text, p_tenant_type integer, p_user_id text, p_user_first_name text, p_user_last_name text, p_user_email text, p_external_auth_id text, p_ip_address text, p_user_agent text) IS 'Securely creates tenant and user during signup. Uses SECURITY DEFINER to bypass RLS for initial account creation only. Includes input validation, rate limiting, and audit logging. Critical: This function should only be called from trusted signup endpoints.';
 
 
 --
@@ -275,11 +272,14 @@ Critical: This function should only be called from trusted signup endpoints.';
 CREATE FUNCTION public.email_exists(email text) RETURNS boolean
     LANGUAGE plpgsql STABLE SECURITY DEFINER
     AS $$
+DECLARE
+    email_found boolean;
 BEGIN
-    RETURN EXISTS (
-        SELECT 1 FROM "Users" 
-        WHERE LOWER("Email") = LOWER(email)
-    );
+    SELECT (COUNT(*) > 0) INTO email_found
+    FROM "Users"
+    WHERE LOWER("Email") = LOWER(email);
+    
+    RETURN email_found;
 END;
 $$;
 

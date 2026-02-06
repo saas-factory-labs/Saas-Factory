@@ -1,8 +1,10 @@
 // Firebase Cloud Messaging Service Worker for Web Push Notifications
 // Place this file in the wwwroot folder as firebase-messaging-sw.js
 
-importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
+importScripts(
+  'https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js',
+  'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js'
+);
 
 // Firebase config will be fetched from server endpoint
 // This allows using environment variables without hardcoding values in static files
@@ -64,12 +66,12 @@ function setupMessageHandler() {
   }
 
     // Show notification
-    return self.registration.showNotification(notificationTitle, notificationOptions);
+    return globalThis.registration.showNotification(notificationTitle, notificationOptions);
   });
 }
 
 // Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
+globalThis.addEventListener('notificationclick', (event) => {
   console.log('[firebase-messaging-sw.js] Notification clicked:', event);
 
   event.notification.close();
@@ -94,12 +96,12 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 // Handle notification close
-self.addEventListener('notificationclose', (event) => {
+globalThis.addEventListener('notificationclose', (event) => {
   console.log('[firebase-messaging-sw.js] Notification closed:', event);
 });
 
 // Service worker activation - initialize Firebase
-self.addEventListener('activate', (event) => {
+globalThis.addEventListener('activate', (event) => {
   console.log('[firebase-messaging-sw.js] Service Worker activated');
   event.waitUntil(
     Promise.all([
@@ -110,7 +112,7 @@ self.addEventListener('activate', (event) => {
 });
 
 // Service worker installation
-self.addEventListener('install', (event) => {
+globalThis.addEventListener('install', (event) => {
   console.log('[firebase-messaging-sw.js] Service Worker installed');
-  self.skipWaiting();
+  globalThis.skipWaiting();
 });

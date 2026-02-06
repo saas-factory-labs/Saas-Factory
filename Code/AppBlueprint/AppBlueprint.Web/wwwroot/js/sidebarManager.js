@@ -49,6 +49,6 @@ const sidebarManager = {
         return body.classList.contains('sidebar-expanded');
     }
 };
-window.sidebarManager = sidebarManager;
+globalThis.sidebarManager = sidebarManager;
 export default sidebarManager;
 //# sourceMappingURL=sidebarManager.js.map

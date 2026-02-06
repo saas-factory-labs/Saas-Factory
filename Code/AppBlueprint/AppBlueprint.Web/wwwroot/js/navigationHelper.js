@@ -4,9 +4,9 @@
  */
 const navigationHelper = {
     navigateTo(url) {
-        window.location.href = url;
+        globalThis.location.href = url;
     }
 };
 // Attach to window for Blazor interop
-window.navigationHelper = navigationHelper;
+globalThis.navigationHelper = navigationHelper;
 //# sourceMappingURL=navigationHelper.js.map
