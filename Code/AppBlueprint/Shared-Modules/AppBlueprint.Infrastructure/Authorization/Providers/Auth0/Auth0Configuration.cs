@@ -10,8 +10,8 @@ public class Auth0Configuration
 
 internal sealed class Auth0TokenResponse
 {
-    public string AccessToken { get; set; } = string.Empty;
-    public string? RefreshToken { get; set; }
-    public int ExpiresIn { get; set; }
-    public string TokenType { get; set; } = string.Empty;
+    public string AccessToken { get; init; } = string.Empty;
+    public string? RefreshToken { get; init; }
+    public int ExpiresIn { get; init; }
+    public string TokenType { get; init; } = string.Empty;
 }

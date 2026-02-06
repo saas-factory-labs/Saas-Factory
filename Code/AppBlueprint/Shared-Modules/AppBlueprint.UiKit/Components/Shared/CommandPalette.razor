@@ -279,13 +279,13 @@
     public class CommandItem
     {
         public string Id { get; set; } = "";
-        public string Label { get; set; } = "";
-        public string? Description { get; set; }
-        public string Category { get; set; } = "General";
-        public string? Href { get; set; }
-        public string? Shortcut { get; set; }
-        public RenderFragment? Icon { get; set; }
-        public Func<Task>? Action { get; set; }
+        public string Label { get; init; } = "";
+        public string? Description { get; init; }
+        public string Category { get; init; } = "General";
+        public string? Href { get; init; }
+        public string? Shortcut { get; init; }
+        public RenderFragment? Icon { get; init; }
+        public Func<Task>? Action { get; init; }
     }
 
 }

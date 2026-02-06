@@ -191,11 +191,11 @@
 
     public class DashboardWidget
     {
-        public string Id { get; set; } = "";
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
+        public string Id { get; init; } = "";
+        public string Title { get; init; } = "";
+        public string Description { get; init; } = "";
         public bool IsVisible { get; set; } = true;
         public string Size { get; set; } = "medium"; // small, medium, large, full
-        public int Order { get; set; }
+        public int Order { get; init; }
     }
 }

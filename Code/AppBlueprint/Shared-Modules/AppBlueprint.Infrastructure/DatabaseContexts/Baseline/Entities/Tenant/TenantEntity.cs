@@ -39,7 +39,7 @@ public sealed class TenantEntity : BaseEntity
     /// <summary>
     /// Type of tenant (Personal for B2C, Organization for B2B).
     /// </summary>
-    public TenantType TenantType { get; set; }
+    public TenantType TenantType { get; init; }
 
     /// <summary>
     /// Tenant name. For Personal: user's full name. For Organization: company name.

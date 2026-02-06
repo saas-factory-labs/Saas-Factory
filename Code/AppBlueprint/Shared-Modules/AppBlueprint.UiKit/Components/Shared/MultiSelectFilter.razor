@@ -88,8 +88,8 @@
     /// </summary>
     public sealed class MultiSelectOption
     {
-        public string Label { get; set; } = string.Empty;
-        public string Value { get; set; } = string.Empty;
+        public string Label { get; init; } = string.Empty;
+        public string Value { get; init; } = string.Empty;
         public int? Count { get; set; }
     }
 }

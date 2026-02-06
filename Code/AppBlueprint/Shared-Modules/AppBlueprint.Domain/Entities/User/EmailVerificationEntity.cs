@@ -9,9 +9,9 @@ public class EmailVerificationEntity : BaseEntity
 {
     public required string Token { get; set; }
     public required string Email { get; set; }
-    public string UserId { get; set; } = string.Empty;
+    public string UserId { get; init; } = string.Empty;
     public string UserEntityId => UserId; // Alias for backward compatibility
-    public DateTime ExpiresAt { get; set; }
+    public DateTime ExpiresAt { get; init; }
     public DateTime ExpireAt => ExpiresAt; // Alias for backward compatibility
     public bool HasBeenVerified { get; set; }
     public bool HasBeenOpened { get; set; }

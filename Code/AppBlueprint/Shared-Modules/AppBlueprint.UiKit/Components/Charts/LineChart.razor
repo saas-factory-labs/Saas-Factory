@@ -103,15 +103,15 @@
 
     public class ChartDataset
     {
-        public string Label { get; set; } = "";
-        public List<double> Data { get; set; } = new();
-        public string BackgroundColor { get; set; } = "rgba(99, 102, 241, 0.1)";
-        public string BorderColor { get; set; } = "rgb(99, 102, 241)";
-        public int BorderWidth { get; set; } = 2;
-        public bool Fill { get; set; } = true;
-        public double Tension { get; set; } = 0.4;
-        public int PointRadius { get; set; }
-        public int PointHoverRadius { get; set; } = 3;
+        public string Label { get; init; } = "";
+        public List<double> Data { get; init; } = new();
+        public string BackgroundColor { get; init; } = "rgba(99, 102, 241, 0.1)";
+        public string BorderColor { get; init; } = "rgb(99, 102, 241)";
+        public int BorderWidth { get; init; } = 2;
+        public bool Fill { get; init; } = true;
+        public double Tension { get; init; } = 0.4;
+        public int PointRadius { get; init; }
+        public int PointHoverRadius { get; init; } = 3;
     }
 
 }

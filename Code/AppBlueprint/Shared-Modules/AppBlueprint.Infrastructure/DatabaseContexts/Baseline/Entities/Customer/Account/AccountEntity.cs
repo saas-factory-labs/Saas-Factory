@@ -24,10 +24,10 @@ public class AccountEntity : BaseEntity, ITenantScoped
     [DataClassification(GDPRType.DirectlyIdentifiable)]
     public required string Email { get; set; } // GDPR data    
 
-    public string? Role { get; set; }
+    public string? Role { get; init; }
     public bool IsActive { get; set; }
 
-    public required UserEntity Owner { get; set; }
+    public required UserEntity Owner { get; init; }
     public required string UserId { get; set; }
     public required string TenantId { get; set; }
 

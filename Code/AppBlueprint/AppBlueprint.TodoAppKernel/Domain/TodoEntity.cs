@@ -65,7 +65,7 @@ public sealed class TodoEntity : BaseEntity, ITenantScoped
     /// <summary>
     /// The user who created this todo item.
     /// </summary>
-    public string CreatedById { get; set; }
+    public string CreatedById { get; init; }
 
     /// <summary>
     /// The user assigned to complete this todo item (defaults to creator).

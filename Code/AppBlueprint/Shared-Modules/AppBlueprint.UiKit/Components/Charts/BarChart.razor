@@ -95,13 +95,13 @@
 
     public class BarChartDataset
     {
-        public string Label { get; set; } = "";
-        public List<double> Data { get; set; } = new();
-        public string BackgroundColor { get; set; } = "rgb(99, 102, 241)";
-        public string HoverBackgroundColor { get; set; } = "rgb(79, 70, 229)";
-        public double BarPercentage { get; set; } = 0.7;
-        public double CategoryPercentage { get; set; } = 0.7;
-        public int BorderRadius { get; set; } = 4;
+        public string Label { get; init; } = "";
+        public List<double> Data { get; init; } = new();
+        public string BackgroundColor { get; init; } = "rgb(99, 102, 241)";
+        public string HoverBackgroundColor { get; init; } = "rgb(79, 70, 229)";
+        public double BarPercentage { get; init; } = 0.7;
+        public double CategoryPercentage { get; init; } = 0.7;
+        public int BorderRadius { get; init; } = 4;
     }
 
 }

@@ -60,8 +60,8 @@ public class AuditLogEntity : BaseEntity, ITenantScoped
     public DateTime ModifiedAt { get; set; }
 
     public string TenantId { get; set; } = string.Empty;
-    public required TenantEntity Tenant { get; set; }
+    public required TenantEntity Tenant { get; init; }
 
     public string UserId { get; set; } = string.Empty;
-    public required UserEntity User { get; set; }
+    public required UserEntity User { get; init; }
 }

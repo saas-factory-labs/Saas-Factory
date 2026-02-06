@@ -90,12 +90,12 @@
     /// </summary>
     public sealed class CartItemModel
     {
-        public string Title { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public string ImageUrl { get; set; } = string.Empty;
-        public string ImageAlt { get; set; } = string.Empty;
-        public decimal Rating { get; set; }
-        public decimal Price { get; set; }
-        public string ProductUrl { get; set; } = "#0";
+        public string Title { get; init; } = string.Empty;
+        public string? Description { get; init; }
+        public string ImageUrl { get; init; } = string.Empty;
+        public string ImageAlt { get; init; } = string.Empty;
+        public decimal Rating { get; init; }
+        public decimal Price { get; init; }
+        public string ProductUrl { get; init; } = "#0";
     }
 }

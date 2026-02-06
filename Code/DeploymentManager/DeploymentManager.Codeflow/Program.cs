@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -207,7 +207,7 @@ public class ClassDataInput
 {
     public int ClassId { get; set; }
     public string ClassName { get; set; }
-    public List<MethodInput> Methods { get; set; } = new();
+    public List<MethodInput> Methods { get; init; } = new();
     public List<PropertyInput> Properties { get; set; } = new();
     public List<ClassDataInput> DependsOn { get; set; } = new();
 }
@@ -707,7 +707,7 @@ public class ClassDataInput
 //    var dgraphEndpoint = Environment.GetEnvironmentVariable("DGRAPH_ENDPOINT", EnvironmentVariableTarget.User);
 //    var dgraphApiKey = Environment.GetEnvironmentVariable("DGRAPH_API_KEY", EnvironmentVariableTarget.User);
 //    //var client = new DgraphClient(SlashChannel.Create("https://nameless-brook-560077.eu-central-1.aws.cloud.dgraph.io/graphql", dgraphApiKey));
-//    // kig på hvordan jeg har lavet min tidligere dgraph kode i deployment manager depenceny tracker
+//    // kig p� hvordan jeg har lavet min tidligere dgraph kode i deployment manager depenceny tracker
 
 //    //using (var txn = client.NewTransaction())
 //    //{

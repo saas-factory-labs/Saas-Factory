@@ -16,7 +16,7 @@ public sealed class ResendEmailOptions
     /// 2. RESEND_API_KEY (legacy with underscores)
     /// </summary>
     [Required]
-    public string ApiKey { get; set; } = string.Empty;
+    public string ApiKey { get; init; } = string.Empty;
 
     /// <summary>
     /// Default "from" email address.
@@ -26,7 +26,7 @@ public sealed class ResendEmailOptions
     /// </summary>
     [Required]
     [EmailAddress]
-    public string FromEmail { get; set; } = string.Empty;
+    public string FromEmail { get; init; } = string.Empty;
 
     /// <summary>
     /// Default "from" name.
@@ -41,13 +41,13 @@ public sealed class ResendEmailOptions
     /// </summary>
     [Url]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI properties should not be strings", Justification = "Needs to be string for JSON configuration binding")]
-    public string BaseUrl { get; set; } = "https://api.resend.com";
+    public string BaseUrl { get; init; } = "https://api.resend.com";
 
     /// <summary>
     /// Request timeout in seconds.
     /// </summary>
     [Range(1, 300)]
-    public int TimeoutSeconds { get; set; } = 30;
+    public int TimeoutSeconds { get; init; } = 30;
 
     /// <summary>
     /// Validates the Resend email configuration.

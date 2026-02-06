@@ -160,11 +160,11 @@
 
     public class BottomNavItem
     {
-        public string Id { get; set; } = "";
-        public string Label { get; set; } = "";
-        public string Href { get; set; } = "#";
+        public string Id { get; init; } = "";
+        public string Label { get; init; } = "";
+        public string Href { get; init; } = "#";
         public RenderFragment? Icon { get; set; }
-        public int Badge { get; set; }
+        public int Badge { get; init; }
         public EventCallback OnClick { get; set; }
     }
 }

@@ -15,17 +15,17 @@ public interface IAuthenticationProvider : Microsoft.Kiota.Abstractions.Authenti
 
 public class LoginRequest
 {
-    public required string Email { get; set; }
-    public required string Password { get; set; }
+    public required string Email { get; init; }
+    public required string Password { get; init; }
     public Dictionary<string, object> AdditionalProperties { get; set; } = new();
 }
 
 public class AuthenticationResult
 {
-    public bool IsSuccess { get; set; }
-    public string? AccessToken { get; set; }
-    public string? RefreshToken { get; set; }
-    public DateTime? ExpiresAt { get; set; }
+    public bool IsSuccess { get; init; }
+    public string? AccessToken { get; init; }
+    public string? RefreshToken { get; init; }
+    public DateTime? ExpiresAt { get; init; }
     public string? Error { get; set; }
     public Dictionary<string, object> AdditionalData { get; set; } = new();
 }

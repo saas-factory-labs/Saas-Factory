@@ -27,9 +27,9 @@
     public class Cost
     {
         public int Id { get; set; }
-        public string App { get; set; }
-        public string Expense { get; set; }
-        public double Amount { get; set; }
+        public string App { get; init; }
+        public string Expense { get; init; }
+        public double Amount { get; init; }
     }
 
     private readonly List<Cost> _costs = new();

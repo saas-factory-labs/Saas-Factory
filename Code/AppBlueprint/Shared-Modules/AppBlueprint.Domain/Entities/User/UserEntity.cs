@@ -9,7 +9,7 @@ public class UserEntity : BaseEntity
 {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
-    public required string Email { get; set; }
+    public required string Email { get; init; }
     public required string UserName { get; set; }
 
     // Computed property for display name
@@ -23,5 +23,5 @@ public class UserEntity : BaseEntity
     public string TenantId { get; set; } = string.Empty; // Default tenant
 
     // Navigation property to Profile
-    public ProfileEntity? Profile { get; set; }
+    public ProfileEntity? Profile { get; init; }
 }

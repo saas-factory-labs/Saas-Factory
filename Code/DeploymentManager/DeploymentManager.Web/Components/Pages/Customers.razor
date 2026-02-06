@@ -36,12 +36,12 @@
     public class Customer
     {
         public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string AssociatedApp { get; set; }
-        public bool IsPayingCustomer { get; set; }
+        public string FirstName { get; init; }
+        public string LastName { get; init; }
+        public string Email { get; init; }
+        public string Phone { get; init; }
+        public string AssociatedApp { get; init; }
+        public bool IsPayingCustomer { get; init; }
     }
 
     private List<Customer> _customers;

@@ -36,7 +36,7 @@ public sealed class DatabaseContextOptions
     /// Default: "DefaultConnection".
     /// Can be overridden by DATABASE_CONNECTIONSTRING environment variable.
     /// </summary>
-    public string ConnectionStringName { get; set; } = "DefaultConnection";
+    public string ConnectionStringName { get; init; } = "DefaultConnection";
 
     /// <summary>
     /// Command timeout in seconds for database operations.
@@ -54,7 +54,7 @@ public sealed class DatabaseContextOptions
     /// Maximum delay between retry attempts in seconds.
     /// Default: 10 seconds.
     /// </summary>
-    public int MaxRetryDelaySeconds { get; set; } = 10;
+    public int MaxRetryDelaySeconds { get; init; } = 10;
 
     /// <summary>
     /// Validates the configuration and throws if invalid.

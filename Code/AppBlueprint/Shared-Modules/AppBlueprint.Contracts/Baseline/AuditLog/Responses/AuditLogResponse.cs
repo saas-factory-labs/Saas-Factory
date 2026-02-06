@@ -6,7 +6,7 @@ namespace AppBlueprint.Contracts.Baseline.AuditLog.Responses;
 
 public class AuditLogResponse
 {
-    public string Id { get; set; } = string.Empty;
+    public string Id { get; init; } = string.Empty;
 
     // create new user, update user, delete user, etc.
     // create new customer, update customer, delete customer, etc.
@@ -21,18 +21,18 @@ public class AuditLogResponse
 
     //public string EntityName { get; set; }
     //public int EntityId { get; set; }
-    public required string Action { get; set; }
-    public required string Category { get; set; }
+    public required string Action { get; init; }
+    public required string Category { get; init; }
 
-    [Required] public required string NewValue { get; set; }
-    [Required] public required string OldValue { get; set; }
+    [Required] public required string NewValue { get; init; }
+    [Required] public required string OldValue { get; init; }
 
-    [Required] public required string ModifiedBy { get; set; }
-    public required DateTime ModifiedAt { get; set; }
+    [Required] public required string ModifiedBy { get; init; }
+    public required DateTime ModifiedAt { get; init; }
 
     // public int TenantId { get; set; }
-    public required TenantResponse Tenant { get; set; }
+    public required TenantResponse Tenant { get; init; }
 
     // public int UserId { get; set; }
-    public required UserResponse User { get; set; }
+    public required UserResponse User { get; init; }
 }

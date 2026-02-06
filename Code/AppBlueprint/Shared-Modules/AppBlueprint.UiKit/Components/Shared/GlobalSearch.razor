@@ -327,20 +327,20 @@
     public class SearchResult
     {
         public string Id { get; set; } = "";
-        public string Title { get; set; } = "";
-        public string? Description { get; set; }
-        public string Category { get; set; } = "Pages";
-        public string? Href { get; set; }
-        public RenderFragment? Icon { get; set; }
+        public string Title { get; init; } = "";
+        public string? Description { get; init; }
+        public string Category { get; init; } = "Pages";
+        public string? Href { get; init; }
+        public RenderFragment? Icon { get; init; }
         public string? Badge { get; set; }
     }
 
     public class QuickAction
     {
-        public string Id { get; set; } = "";
-        public string Label { get; set; } = "";
-        public string? Shortcut { get; set; }
-        public RenderFragment? Icon { get; set; }
+        public string Id { get; init; } = "";
+        public string Label { get; init; } = "";
+        public string? Shortcut { get; init; }
+        public RenderFragment? Icon { get; init; }
     }
 
 }

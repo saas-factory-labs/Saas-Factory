@@ -91,8 +91,8 @@
     /// </summary>
     public sealed class PriceRangeItem
     {
-        public string Label { get; set; } = string.Empty;
-        public string Value { get; set; } = string.Empty;
+        public string Label { get; init; } = string.Empty;
+        public string Value { get; init; } = string.Empty;
         public decimal MinValue { get; set; }
         public decimal? MaxValue { get; set; }
     }

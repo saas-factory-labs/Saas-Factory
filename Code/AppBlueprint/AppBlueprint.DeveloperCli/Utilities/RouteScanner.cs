@@ -87,7 +87,7 @@ internal sealed class RouteDebugResponse
 
 internal sealed class RouteInfo
 {
-    public string Method { get; set; } = string.Empty;
-    public string Path { get; set; } = string.Empty;
-    public string Controller { get; set; } = string.Empty;
+    public string Method { get; init; } = string.Empty;
+    public string Path { get; init; } = string.Empty;
+    public string Controller { get; init; } = string.Empty;
 }

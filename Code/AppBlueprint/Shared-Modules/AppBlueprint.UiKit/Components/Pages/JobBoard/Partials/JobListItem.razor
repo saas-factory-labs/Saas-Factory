@@ -43,13 +43,13 @@
     public class JobItem
     {
         public int Id { get; set; }
-        public string Image { get; set; } = "";
-        public string Company { get; set; } = "";
-        public string Role { get; set; } = "";
-        public string Link { get; set; } = "";
-        public string Details { get; set; } = "";
-        public string Date { get; set; } = "";
-        public string Type { get; set; } = "";
+        public string Image { get; init; } = "";
+        public string Company { get; init; } = "";
+        public string Role { get; init; } = "";
+        public string Link { get; init; } = "";
+        public string Details { get; init; } = "";
+        public string Date { get; init; } = "";
+        public string Type { get; init; } = "";
         public bool Fav { get; set; }
     }
 }
