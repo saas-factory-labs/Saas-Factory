@@ -83,12 +83,13 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
         ArgumentNullException.ThrowIfNull(reason);
         ArgumentNullException.ThrowIfNull(queryAction);
 
+        // Guard clause: Reason validation
         if (string.IsNullOrWhiteSpace(reason))
         {
             throw new ArgumentException("Reason for admin access is required for audit logging", nameof(reason));
         }
 
-        // Verify current user has admin role
+        // Guard clause: Admin role verification
         if (!_currentUserService.IsInRole(Roles.DeploymentManagerAdmin))
         {
             _logger.LogWarning(

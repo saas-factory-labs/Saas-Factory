@@ -43,8 +43,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_accountRepository is null) _accountRepository = new AccountRepository(_applicationDbContext);
-
+            _accountRepository ??= new AccountRepository(_applicationDbContext);
             return _accountRepository;
         }
     }
@@ -53,8 +52,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (__adminRepository is null) __adminRepository = new AdminRepository(_applicationDbContext);
-
+            __adminRepository ??= new AdminRepository(_applicationDbContext);
             return __adminRepository;
         }
     }
@@ -63,8 +61,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_roleRepository is null) _roleRepository = new RoleRepository(_applicationDbContext);
-
+            _roleRepository ??= new RoleRepository(_applicationDbContext);
             return _roleRepository;
         }
     }
@@ -73,8 +70,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_permissionRepository is null) _permissionRepository = new PermissionRepository(_applicationDbContext);
-
+            _permissionRepository ??= new PermissionRepository(_applicationDbContext);
             return _permissionRepository;
         }
     }
@@ -83,8 +79,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_userRepository is null) _userRepository = new UserRepository(_applicationDbContext);
-
+            _userRepository ??= new UserRepository(_applicationDbContext);
             return _userRepository;
         }
     }
@@ -93,9 +88,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_tenantRepository is null)
-                _tenantRepository = new TenantRepository(_applicationDbContextFactory);
-
+            _tenantRepository ??= new TenantRepository(_applicationDbContextFactory);
             return _tenantRepository;
         }
     }
@@ -104,9 +97,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_organizationRepository is null)
-                _organizationRepository = new OrganizationRepository(_b2bDbContext);
-
+            _organizationRepository ??= new OrganizationRepository(_b2bDbContext);
             return _organizationRepository;
         }
     }
@@ -115,9 +106,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_notificationRepository is null)
-                _notificationRepository = new UserNotificationRepository(_applicationDbContext);
-
+            _notificationRepository ??= new UserNotificationRepository(_applicationDbContext);
             return _notificationRepository;
         }
     }
@@ -126,8 +115,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_apiKeyRepository is null) _apiKeyRepository = new ApiKeyRepository(_b2bDbContext);
-
+            _apiKeyRepository ??= new ApiKeyRepository(_b2bDbContext);
             return _apiKeyRepository;
         }
     }
@@ -136,8 +124,7 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            if (_teamRepository is null) _teamRepository = new TeamRepository(_b2bDbContext);
-
+            _teamRepository ??= new TeamRepository(_b2bDbContext);
             return _teamRepository;
         }
     }

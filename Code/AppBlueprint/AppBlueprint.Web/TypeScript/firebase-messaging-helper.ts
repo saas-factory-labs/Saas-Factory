@@ -70,7 +70,7 @@ class FirebaseMessagingHelper {
 
     async initialize(firebaseConfig: FirebaseConfig | null = null, vapidKey: string | null = null): Promise<boolean> {
         try {
-            // If config not provided, fetch from server
+            // Early return: If config not provided, fetch from server
             if (!firebaseConfig || !vapidKey) {
                 const loaded = await this.loadConfigFromServer();
                 if (!loaded) {

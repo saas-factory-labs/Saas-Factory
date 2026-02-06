@@ -39,7 +39,10 @@ public class AccountController : BaseController
         ArgumentNullException.ThrowIfNull(idOrSlug);
 
         AccountEntity? account = await _accountRepository.GetByIdAsync(idOrSlug, cancellationToken);
-        if (account is null) return NotFound(new { Message = "No account found." });
+        
+        // Guard clause: Account not found
+        if (account is null)
+            return NotFound(new { Message = "No account found." });
 
         // map to dto
         var accountDto = new
@@ -63,7 +66,10 @@ public class AccountController : BaseController
     {
         // call accountService instead of repository here
         IEnumerable<AccountEntity>? accounts = await _accountRepository.GetAllAsync(cancellationToken);
-        if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });
+        
+        // Guard clause: No accounts found
+        if (!accounts.Any())
+            return NotFound(new { Message = "No accounts found." });
 
         var accountDtOs = accounts.Select(account => new
         {

@@ -160,6 +160,8 @@ const themeManager: ThemeManager = {
 
 function getElementRect(selector: string): ElementRect | null {
     const element = document.querySelector<HTMLElement>(selector);
+    
+    // Guard clause: Element not found
     if (element === null) {
         return null;
     }
@@ -183,6 +185,8 @@ const sidebarManager: SidebarManager = {
     toggleExpanded(): void {
         console.log('sidebarManager.toggleExpanded called');
         const body = document.querySelector<HTMLBodyElement>('body');
+        
+        // Guard clause: Body not found
         if (body === null) {
             console.error('Body element not found');
             return;

@@ -67,7 +67,7 @@ public sealed class AdminIpWhitelistMiddleware
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        // Skip if middleware is disabled
+        // Early return: Skip if middleware is disabled
         if (!_isEnabled)
         {
             await _next(context);
@@ -78,6 +78,7 @@ public sealed class AdminIpWhitelistMiddleware
         bool isAdminRoute = context.Request.Path.StartsWithSegments("/api/admin", StringComparison.OrdinalIgnoreCase) ||
                            context.Request.Path.Value?.Contains("/tenant-data", StringComparison.OrdinalIgnoreCase) == true;
 
+        // Early return: Not an admin route
         if (!isAdminRoute)
         {
             await _next(context);
@@ -87,6 +88,7 @@ public sealed class AdminIpWhitelistMiddleware
         // Check if user has DeploymentManagerAdmin role
         bool isAdmin = context.User.IsInRole(Roles.DeploymentManagerAdmin);
 
+        // Early return: Not an admin user
         if (!isAdmin)
         {
             // Not an admin, let other middleware handle authorization
@@ -97,6 +99,7 @@ public sealed class AdminIpWhitelistMiddleware
         // Get client IP address
         IPAddress? remoteIp = context.Connection.RemoteIpAddress;
 
+        // Guard clause: IP cannot be determined
         if (remoteIp == null)
         {
             _logger.LogWarning("ADMIN_IP_BLOCKED | Unable to determine client IP address");
@@ -119,6 +122,7 @@ public sealed class AdminIpWhitelistMiddleware
             isAllowed = _allowedIps.Contains(ipv4);
         }
 
+        // Guard clause: IP not whitelisted
         if (!isAllowed)
         {
             _logger.LogWarning(

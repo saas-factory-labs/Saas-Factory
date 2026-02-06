@@ -28,11 +28,14 @@ public sealed class ConfigurationService : IConfigurationService
     public T GetRequired<T>() where T : class, new()
     {
         IOptions<T>? options = _serviceProvider.GetService<IOptions<T>>();
+        
+        // Guard clause: Options not registered
         if (options?.Value is null)
         {
             throw new InvalidOperationException(
                 $"Configuration for {typeof(T).Name} is not registered. Ensure AddAppBlueprintConfiguration() is called in Program.cs.");
         }
+        
         return options.Value;
     }
 
@@ -58,6 +61,8 @@ public sealed class ConfigurationService : IConfigurationService
         // Always prefer environment variable for secrets (UPPERCASE_UNDERSCORE format)
         string envKey = key.Replace(":", "_", StringComparison.Ordinal);
         string? envValue = Environment.GetEnvironmentVariable(envKey);
+        
+        // Early return if environment variable is set
         if (!string.IsNullOrEmpty(envValue))
         {
             return envValue;

@@ -97,11 +97,15 @@ public class IntegrationController : BaseController
     {
         ArgumentNullException.ThrowIfNull(integrationDto);
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        // Guard clause: Model validation
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
+        // Guard clause: Title required
         if (string.IsNullOrEmpty(integrationDto.Title))
             return BadRequest(new { Message = "Title is required" });
 
+        // Guard clause: Message required
         if (string.IsNullOrEmpty(integrationDto.Message))
             return BadRequest(new { Message = "Message is required" });
 

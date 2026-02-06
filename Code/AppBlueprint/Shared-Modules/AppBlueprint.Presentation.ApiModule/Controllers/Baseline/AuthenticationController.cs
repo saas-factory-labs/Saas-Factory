@@ -47,12 +47,15 @@ public class AuthenticationController : BaseController
         {
             UserEntity? user = await _userService.GetByEmailAsync(request.Email, cancellationToken);
 
+            // Guard clause: User not found
             if (user is null)
                 return Unauthorized(new { Message = "Invalid credentials" });
 
+            // Guard clause: Inactive account
             if (!user.IsActive)
                 return Unauthorized(new { Message = "Account is deactivated" });
 
+            // Happy path
             return Ok(new { Message = "Authentication successful" });
         }
         catch (InvalidOperationException)

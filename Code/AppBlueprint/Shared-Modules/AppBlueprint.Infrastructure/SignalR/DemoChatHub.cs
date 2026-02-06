@@ -120,9 +120,18 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         string? userName = GetCurrentUserName() ?? "Anonymous";
 
         // SECURITY: Validate user has permission to join this conversation
-        if (_authorizationService != null)
+        if (_authorizationService is null)
+        {
+            _logger.LogWarning(
+                "No authorization service configured - allowing unrestricted access to conversation {ConversationId}. This is NOT recommended for production.",
+                conversationId
+            );
+        }
+        else
         {
             bool isAuthorized = await _authorizationService.CanJoinConversationAsync(conversationId, userId, tenantId);
+            
+            // Guard clause: Authorization check
             if (!isAuthorized)
             {
                 _logger.LogWarning(
@@ -134,13 +143,6 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
 
                 throw new HubException($"You do not have permission to join conversation '{conversationId}'.");
             }
-        }
-        else
-        {
-            _logger.LogWarning(
-                "No authorization service configured - allowing unrestricted access to conversation {ConversationId}. This is NOT recommended for production.",
-                conversationId
-            );
         }
 
         // Add tenant to conversation participants
@@ -181,9 +183,11 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         string? userName = GetCurrentUserName() ?? "Anonymous";
 
         // SECURITY: Validate user has permission to send messages in this conversation
-        if (_authorizationService != null)
+        if (_authorizationService is not null)
         {
             bool isAuthorized = await _authorizationService.CanSendMessageAsync(conversationId, userId, tenantId);
+            
+            // Guard clause: Authorization check
             if (!isAuthorized)
             {
                 _logger.LogWarning(

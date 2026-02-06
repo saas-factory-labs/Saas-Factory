@@ -78,6 +78,7 @@ public sealed class FileStorageController : BaseController
         [FromForm] string? customMetadata = null,
         CancellationToken cancellationToken = default)
     {
+        // Guard clause: File validation
         if (file is null || file.Length == 0)
         {
             return BadRequest(new { Message = "No file provided or file is empty" });
@@ -107,6 +108,7 @@ public sealed class FileStorageController : BaseController
             fileStream
         );
 
+        // Guard clause: Validation failure
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("File validation failed: {FileName}, Errors: {Errors}",

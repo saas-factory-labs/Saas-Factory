@@ -38,6 +38,7 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
             tenantId = Context.GetHttpContext()?.Request.Query["tenantId"].ToString();
         }
 
+        // Guard clause: Tenant ID not found
         if (string.IsNullOrEmpty(tenantId))
         {
             // Log all available claims for debugging
@@ -70,6 +71,7 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
             userId = Context.GetHttpContext()?.Request.Query["userId"].ToString();
         }
 
+        // Guard clause: User ID not found
         if (string.IsNullOrEmpty(userId))
         {
             throw new HubException("User ID not found in user claims. Ensure JWT contains 'sub', 'user_id', or 'uid' claim.");
@@ -146,20 +148,23 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
     {
         try
         {
-            // Only attempt cleanup if user was authenticated
-            if (Context.User?.Identity?.IsAuthenticated == true)
+            // Early return: Only attempt cleanup if user was authenticated
+            if (Context.User?.Identity?.IsAuthenticated != true)
             {
-                string tenantId = GetCurrentTenantId();
-                string userId = GetCurrentUserId();
-
-                // Remove from tenant group
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"tenant:{tenantId}");
-
-                // Remove from user group
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"user:{userId}");
-
-                Logger?.LogInformation("User {UserId} from tenant {TenantId} disconnected", userId, tenantId);
+                await base.OnDisconnectedAsync(exception);
+                return;
             }
+
+            string tenantId = GetCurrentTenantId();
+            string userId = GetCurrentUserId();
+
+            // Remove from tenant group
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"tenant:{tenantId}");
+
+            // Remove from user group
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"user:{userId}");
+
+            Logger?.LogInformation("User {UserId} from tenant {TenantId} disconnected", userId, tenantId);
         }
         catch (HubException ex)
         {
