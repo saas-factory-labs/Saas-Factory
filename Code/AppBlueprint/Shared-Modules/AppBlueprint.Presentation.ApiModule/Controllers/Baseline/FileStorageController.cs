@@ -5,10 +5,7 @@ using AppBlueprint.Contracts.Baseline.File.Responses;
 using AppBlueprint.Presentation.ApiModule.Attributes;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 

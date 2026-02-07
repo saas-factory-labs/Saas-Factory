@@ -1,5 +1,3 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
-using AppBlueprint.TodoAppKernel.Infrastructure;
 using AppBlueprint.TodoAppKernel.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;

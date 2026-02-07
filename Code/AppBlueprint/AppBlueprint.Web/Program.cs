@@ -1,5 +1,3 @@
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using AppBlueprint.Api.Client.Sdk;
 using AppBlueprint.Application.Extensions;
 using AppBlueprint.Infrastructure.Authentication;
@@ -7,7 +5,6 @@ using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.ServiceDefaults;
 using AppBlueprint.UiKit;
 using AppBlueprint.UiKit.Models;
-using AppBlueprint.Web;
 using AppBlueprint.Web.Components;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.HttpOverrides;

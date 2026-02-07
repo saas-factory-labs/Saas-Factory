@@ -1,5 +1,4 @@
 using AppBlueprint.Application.Constants;
-using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Contracts.B2B.Contracts.ApiKey.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.ApiKey.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;

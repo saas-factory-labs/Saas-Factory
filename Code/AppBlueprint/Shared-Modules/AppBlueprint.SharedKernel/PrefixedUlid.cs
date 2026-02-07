@@ -1,5 +1,3 @@
-using System;
-
 namespace AppBlueprint.SharedKernel;
 
 public static class PrefixedUlid

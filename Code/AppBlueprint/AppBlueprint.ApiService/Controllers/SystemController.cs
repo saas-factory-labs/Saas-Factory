@@ -1,4 +1,3 @@
-using AppBlueprint.Infrastructure;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
@@ -7,7 +6,6 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 
 namespace AppBlueprint.ApiService.Controllers;

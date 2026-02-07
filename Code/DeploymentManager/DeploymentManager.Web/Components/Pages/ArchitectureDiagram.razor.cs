@@ -11,7 +11,7 @@ using Microsoft.OpenApi.Readers;
 
 //using Microsoft.OpenApi.Models;
 
-namespace DeploymentManager.Web.Components.Pages;
+namespace DeploymentManager.Web.Pages;
 
 public partial class ArchitectureDiagram
 {

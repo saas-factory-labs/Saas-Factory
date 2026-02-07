@@ -1,7 +1,6 @@
 using System.Net.Http.Headers;
 using AppBlueprint.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.JSInterop;
 
 namespace AppBlueprint.Web.Services;
 

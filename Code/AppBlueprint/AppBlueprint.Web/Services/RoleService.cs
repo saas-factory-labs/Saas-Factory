@@ -1,7 +1,7 @@
-using System.Net.Http.Json;
-using System.Text.Json;
 using AppBlueprint.Contracts.Baseline.Role.Requests;
 using AppBlueprint.Contracts.Baseline.Role.Responses;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace AppBlueprint.Web.Services;
 

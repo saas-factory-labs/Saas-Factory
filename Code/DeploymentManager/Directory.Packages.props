@@ -165,8 +165,8 @@
     <PackageVersion Include="Pulumi.Kubernetes" Version="4.11.0" /> <!-- Added missing -->
     <PackageVersion Include="Pulumi.Stripe" Version="0.0.24" /> <!-- Added missing -->
     <PackageVersion Include="Lbrlabs.PulumiPackage.Grafana" Version="0.2.0" /> <!-- Added missing -->
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.0" /> <!-- Added missing -->
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="10.0.0" /> <!-- Added missing -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.1" /> <!-- Added missing -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="10.0.1" /> <!-- Added missing -->
 
   </ItemGroup>
 
