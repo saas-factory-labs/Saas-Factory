@@ -1,4 +1,5 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
 using Bogus;
 
 namespace AppBlueprint.SeedTest.FakeDataGeneration.ModelSpecificDataGenerators;

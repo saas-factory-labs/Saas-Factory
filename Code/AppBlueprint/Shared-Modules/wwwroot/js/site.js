@@ -45,6 +45,7 @@ const themeManager = {
 // ========================================================================
 function getElementRect(selector) {
     const element = document.querySelector(selector);
+    // Guard clause: Element not found
     if (element === null) {
         return null;
     }
@@ -65,6 +66,7 @@ const sidebarManager = {
     toggleExpanded() {
         console.log('sidebarManager.toggleExpanded called');
         const body = document.querySelector('body');
+        // Guard clause: Body not found
         if (body === null) {
             console.error('Body element not found');
             return;

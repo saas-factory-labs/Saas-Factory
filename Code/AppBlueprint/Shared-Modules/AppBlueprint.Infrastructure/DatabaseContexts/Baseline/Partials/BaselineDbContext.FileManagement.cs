@@ -2,7 +2,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfi
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

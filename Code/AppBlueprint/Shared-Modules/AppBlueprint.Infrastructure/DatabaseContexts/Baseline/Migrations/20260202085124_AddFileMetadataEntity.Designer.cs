@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
 {
-    [DbContext(typeof(Partials.BaselineDbContext))]
+    [DbContext(typeof(BaselineDbContext))]
     [Migration("20260202085124_AddFileMetadataEntity")]
     partial class AddFileMetadataEntity
     {

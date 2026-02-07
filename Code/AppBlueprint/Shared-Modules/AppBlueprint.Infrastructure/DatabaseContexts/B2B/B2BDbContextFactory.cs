@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 
-public class B2BDbContextFactory : IDesignTimeDbContextFactory<Partials.B2BDbContext>
+public sealed class B2BDbContextFactory : IDesignTimeDbContextFactory<B2BDbContext>
 {
-    public Partials.B2BDbContext CreateDbContext(string[] args)
+    public B2BDbContext CreateDbContext(string[] args)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -25,7 +25,7 @@ public class B2BDbContextFactory : IDesignTimeDbContextFactory<Partials.B2BDbCon
                 ?? configuration.GetConnectionString("DefaultConnection");
         }
 
-        var optionsBuilder = new DbContextOptionsBuilder<Partials.B2BDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<B2BDbContext>();
 
         optionsBuilder.UseNpgsql(
             connectionString,
@@ -34,8 +34,8 @@ public class B2BDbContextFactory : IDesignTimeDbContextFactory<Partials.B2BDbCon
 
         // Create logger factory for design-time
         using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        var logger = loggerFactory.CreateLogger<Partials.B2BDbContext>();
+        var logger = loggerFactory.CreateLogger<B2BDbContext>();
 
-        return new Partials.B2BDbContext(optionsBuilder.Options, configuration, logger);
+        return new B2BDbContext(optionsBuilder.Options, configuration, logger);
     }
 }

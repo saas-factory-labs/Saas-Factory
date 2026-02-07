@@ -4,7 +4,6 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials.BaselineDbContext;
 using OrganizationEntity = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity;
 using OrganizationEntityConfiguration = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntityConfiguration;
 
@@ -13,16 +12,32 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 public partial class B2BDbContext : BaselineDbContext
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<Partials.B2BDbContext> _logger;
+    private readonly ILogger _logger;
     private readonly string? _connectionString;
 
-    public B2BDbContext(DbContextOptions<Partials.B2BDbContext> options, IConfiguration configuration, ILogger<Partials.B2BDbContext> logger)
-        : base(options, configuration, logger)
+    public B2BDbContext(
+        DbContextOptions<B2BDbContext> options,
+        IConfiguration configuration,
+        ILogger<B2BDbContext> logger)
+        : base((DbContextOptions)options, configuration, logger)
     {
         _configuration = configuration;
         _logger = logger;
         // Try multiple connection string names, don't throw if not found
         // The options passed in already have the connection configured from DI
+        _connectionString = configuration.GetConnectionString("appblueprintdb")
+                           ?? configuration.GetConnectionString("postgres-server")
+                           ?? configuration.GetConnectionString("DefaultConnection");
+    }
+
+    protected B2BDbContext(
+        DbContextOptions options,
+        IConfiguration configuration,
+        ILogger logger)
+        : base(options, configuration, logger)
+    {
+        _configuration = configuration;
+        _logger = logger;
         _connectionString = configuration.GetConnectionString("appblueprintdb")
                            ?? configuration.GetConnectionString("postgres-server")
                            ?? configuration.GetConnectionString("DefaultConnection");

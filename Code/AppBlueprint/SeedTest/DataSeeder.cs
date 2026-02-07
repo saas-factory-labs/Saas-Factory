@@ -6,16 +6,25 @@ using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Address;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.City;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.CountryRegion;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Street;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Permission;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Role;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.RolePermission;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.UserRole;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Account;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Integration;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
@@ -263,8 +272,8 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         if (await dbContext.Accounts.AnyAsync(cancellationToken)) return;
 
         var faker = new Faker<AccountEntity>()
-            .RuleFor(a => a.Email, f => f.Internet.Email())
-            .RuleFor(a => a.CustomerType, f => CustomerType.Business);
+            .RuleFor(a => a.Email, (f, _) => f.Internet.Email())
+            .RuleFor(a => a.CustomerType, (_, _) => CustomerType.Business);
 
         var accounts = faker.Generate(10);
         await dbContext.Accounts.AddRangeAsync(accounts, cancellationToken);
@@ -277,9 +286,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         if (await dbContext.Subscriptions.AnyAsync(cancellationToken)) return;
 
         var faker = new Faker<SubscriptionEntity>()
-            .RuleFor(s => s.CreatedAt, f => f.Date.Past())
-            .RuleFor(s => s.LastUpdatedAt, f => f.Date.Past())
-            .RuleFor(s => s.Name, f => f.Random.AlphaNumeric(8));
+            .RuleFor(s => s.CreatedAt, (f, _) => f.Date.Past())
+            .RuleFor(s => s.LastUpdatedAt, (f, _) => f.Date.Past())
+            .RuleFor(s => s.Name, (f, _) => f.Random.AlphaNumeric(8));
 
         var subscriptions = faker.Generate(5);
         await dbContext.Subscriptions.AddRangeAsync(subscriptions, cancellationToken);
@@ -347,7 +356,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         if (await dbContext.Cities.AnyAsync(cancellationToken)) return;
 
         var faker = new Faker<CityEntity>()
-            .RuleFor(c => c.Name, f => f.Address.City());
+            .RuleFor(c => c.Name, (f, _) => f.Address.City());
 
         var cities = faker.Generate(20);
         await dbContext.Cities.AddRangeAsync(cities, cancellationToken);
@@ -363,8 +372,8 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         if (cities.Count == 0) return;
 
         var faker = new Faker<StreetEntity>()
-            .RuleFor(s => s.Name, f => f.Address.StreetName())
-            .RuleFor(s => s.CityId, f => f.PickRandom(cities).Id);
+            .RuleFor(s => s.Name, (f, _) => f.Address.StreetName())
+            .RuleFor(s => s.CityId, (f, _) => f.PickRandom(cities).Id);
 
         var streets = faker.Generate(50);
         await dbContext.Streets.AddRangeAsync(streets, cancellationToken);
@@ -380,8 +389,8 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         if (streets.Count == 0) return;
 
         var faker = new Faker<AddressEntity>()
-            .RuleFor(a => a.StreetNumber, f => f.Address.BuildingNumber())
-            .RuleFor(a => a.StreetId, f => f.PickRandom(streets).Id);
+            .RuleFor(a => a.StreetNumber, (f, _) => f.Address.BuildingNumber())
+            .RuleFor(a => a.StreetId, (f, _) => f.PickRandom(streets).Id);
 
         var addresses = faker.Generate(30);
         await dbContext.Addresses.AddRangeAsync(addresses, cancellationToken);

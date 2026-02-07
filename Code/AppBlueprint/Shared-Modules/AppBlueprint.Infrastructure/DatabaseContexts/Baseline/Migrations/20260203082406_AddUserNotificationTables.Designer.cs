@@ -8,15 +8,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials.BaselineDbContext;
-
-#nullable disable
-
-namespace AppBlueprint.Infrastructure.Migrations.BaselineDb
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
 {
     [DbContext(typeof(BaselineDbContext))]
     [Migration("20260203082406_AddUserNotificationTables")]
-    partial class AddUserNotificationTables
+    partial class AddUserNotificationTables : Migration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

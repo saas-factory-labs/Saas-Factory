@@ -3,7 +3,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Ac
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

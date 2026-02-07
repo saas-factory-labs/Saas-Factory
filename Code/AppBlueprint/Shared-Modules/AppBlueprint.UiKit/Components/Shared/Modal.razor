@@ -40,7 +40,7 @@
     [Parameter] public string Size { get; set; } = "md";
     [Parameter] public EventCallback OnClose { get; set; }
 
-    private bool IsAnimating { get; set; };
+    private bool IsAnimating { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

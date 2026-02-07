@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
 {
-    [DbContext(typeof(Partials.BaselineDbContext))]
+    [DbContext(typeof(BaselineDbContext))]
     partial class BaselineDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

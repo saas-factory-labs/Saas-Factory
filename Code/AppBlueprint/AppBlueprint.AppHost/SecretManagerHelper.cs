@@ -2,6 +2,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
+using Aspire.Hosting;
+using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
 
@@ -9,7 +11,9 @@ namespace AppBlueprint.AppHost;
 
 internal static class SecretManagerHelper
 {
-    private static readonly IConfigurationRoot ConfigurationRoot = InitializeConfiguration(); private static IConfigurationRoot InitializeConfiguration()
+    private static readonly IConfigurationRoot ConfigurationRoot = InitializeConfiguration();
+
+    private static IConfigurationRoot InitializeConfiguration()
     {
         var builder = new ConfigurationBuilder();
         try
@@ -67,7 +71,7 @@ internal static class SecretManagerHelper
         }
         catch (IOException ex)
         {
-            Console.WriteLine($"Warning: IO exception getting UserSecretsId: {ex.Message}\");", "oldString": "        catch (System.IO.IOException ex)\n        {\n            Console.WriteLine($\"Warning: IO exception getting UserSecretsId: {ex.Message}\");"}
+            Console.WriteLine($"Warning: IO exception getting UserSecretsId: {ex.Message}");
             return null;
         }
         catch (System.Security.SecurityException ex)

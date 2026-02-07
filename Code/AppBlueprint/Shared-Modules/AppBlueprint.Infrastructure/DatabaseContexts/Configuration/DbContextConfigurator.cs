@@ -1,8 +1,8 @@
 using AppBlueprint.Application.Options;
 using AppBlueprint.Infrastructure.Configuration;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2C.Partials;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;

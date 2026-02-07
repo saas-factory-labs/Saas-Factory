@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Migrations
 {
-    [DbContext(typeof(Partials.B2BDbContext))]
+    [DbContext(typeof(B2BDbContext))]
     partial class B2BDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

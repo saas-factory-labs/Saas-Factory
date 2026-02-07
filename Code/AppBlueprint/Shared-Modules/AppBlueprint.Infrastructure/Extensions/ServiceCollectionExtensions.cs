@@ -30,8 +30,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Resend;
 using Stripe;
-using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials.B2BDbContext;
-using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials.BaselineDbContext;
+using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.B2BDbContext;
+using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.BaselineDbContext;
 
 namespace AppBlueprint.Infrastructure.Extensions;
 

@@ -7,7 +7,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Street;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

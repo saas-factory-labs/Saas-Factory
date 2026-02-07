@@ -1,6 +1,6 @@
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Partials;
+using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;

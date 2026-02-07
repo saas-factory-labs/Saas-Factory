@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials.BaselineDbContext;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts;
 

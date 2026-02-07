@@ -9,11 +9,11 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Chat;
 public partial class ChatModuleDbContext : ApplicationDbContext
 {
     public ChatModuleDbContext(
-        DbContextOptions<Partials.ChatModuleDbContext> options,
+        DbContextOptions<ChatModuleDbContext> options,
         IConfiguration configuration,
-        ILogger<Partials.ChatModuleDbContext> logger,
+        ILogger<ChatModuleDbContext> logger,
         ITenantContextAccessor? tenantContextAccessor = null) :
-        base((DbContextOptions)(DbContextOptions<Partials.ChatModuleDbContext>)options, configuration, logger, tenantContextAccessor)
+        base((DbContextOptions)options, configuration, logger, tenantContextAccessor)
     {
     }
 

@@ -3,7 +3,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Sub
 using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

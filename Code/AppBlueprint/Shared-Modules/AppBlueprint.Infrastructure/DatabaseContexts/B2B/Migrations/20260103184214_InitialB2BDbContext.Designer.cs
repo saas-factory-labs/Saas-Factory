@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Migrations
 {
-    [DbContext(typeof(Partials.B2BDbContext))]
+    [DbContext(typeof(B2BDbContext))]
     [Migration("20260103184214_InitialB2BDbContext")]
     partial class InitialB2BDbContext
     {

@@ -11,8 +11,8 @@
         <Router AppAssembly="@typeof(Program).Assembly"
                 AdditionalAssemblies="@AdditionalAssemblies">
             <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)">
-                    <NotAuthorized>
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(AppBlueprint.UiKit.Components.Layout.MainLayout)">
+                    <NotAuthorized Context="context">
                         @{
                             Console.WriteLine($"[Routes] NotAuthorized triggered for path: {NavigationManager.Uri}");
                             Console.WriteLine($"[Routes] User.Identity.IsAuthenticated: {context.User.Identity?.IsAuthenticated}");

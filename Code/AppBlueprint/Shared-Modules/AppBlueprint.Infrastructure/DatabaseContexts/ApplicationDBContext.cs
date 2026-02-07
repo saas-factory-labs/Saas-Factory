@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using B2CdbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2C.Partials.B2CdbContext;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts;
 
@@ -35,6 +34,17 @@ public class ApplicationDbContext : B2CdbContext
         DbContextOptions options,
         IConfiguration configuration,
         ILogger<ApplicationDbContext> logger,
+        ITenantContextAccessor? tenantContextAccessor = null
+    ) : base(options, configuration, logger)
+    {
+        _tenantContextAccessor = tenantContextAccessor;
+    }
+
+    // Protected constructor for module DbContexts that have their own options/logger generic types.
+    protected ApplicationDbContext(
+        DbContextOptions options,
+        IConfiguration configuration,
+        ILogger logger,
         ITenantContextAccessor? tenantContextAccessor = null
     ) : base(options, configuration, logger)
     {

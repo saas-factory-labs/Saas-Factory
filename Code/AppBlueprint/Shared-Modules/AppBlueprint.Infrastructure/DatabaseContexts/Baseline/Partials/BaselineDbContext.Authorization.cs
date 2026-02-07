@@ -8,7 +8,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorizati
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials;
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

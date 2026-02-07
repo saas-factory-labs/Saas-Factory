@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AppBlueprint.Infrastructure.Migrations.BaselineDb
+namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
 {
     /// <inheritdoc />
     public partial class AddUserNotificationTables : Migration

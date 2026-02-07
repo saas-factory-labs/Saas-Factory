@@ -2,23 +2,25 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Partials.BaselineDbContext;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C;
 
 public partial class B2CdbContext : BaselineDbContext
 {
     private readonly string? _connectionString;
-    private readonly ILogger<Partials.B2CdbContext> _logger;
+    private readonly ILogger _logger;
 
     // Public constructor for direct instantiation
-    public B2CdbContext(DbContextOptions<Partials.B2CdbContext> options, IConfiguration configuration, ILogger<Partials.B2CdbContext> logger)
+    public B2CdbContext(
+        DbContextOptions<B2CdbContext> options,
+        IConfiguration configuration,
+        ILogger<B2CdbContext> logger)
         : this((DbContextOptions)options, configuration, logger)
     {
     }
 
     // Protected constructor for derived classes
-    protected B2CdbContext(DbContextOptions options, IConfiguration configuration, ILogger<Partials.B2CdbContext> logger)
+    protected B2CdbContext(DbContextOptions options, IConfiguration configuration, ILogger logger)
         : base(options, configuration, logger)
     {
         // Try to get connectionstring, but don't throw if it's not found
