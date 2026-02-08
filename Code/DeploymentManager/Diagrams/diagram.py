@@ -33,27 +33,27 @@ with Diagram("SaaS B2B system", show=False, direction="LR"):
    
    # group resources into clusters
 
-    # with Cluster("API containers"):
-    #     apiContainers = [AKS("1"),
-    #                     AKS("2"),
-    #                     AKS("3")]        
+    with Cluster("API containers"):
+        apiContainers = [AKS("1"),
+                        AKS("2"),
+                        AKS("3")]        
 
-    # with Cluster("Web App containers"):
-    #     webAppContainers = [AKS("1"),
-    #                         AKS("2"),
-    #                         AKS("3")]        
+    with Cluster("Web App containers"):
+        webAppContainers = [AKS("1"),
+                            AKS("2"),
+                            AKS("3")]        
 
-    # with Cluster("Batch processor containers"):
-    #     batchProcessorContainers = [AKS("1"),
-    #                                 AKS("2"),
-    #                                 AKS("3")]
+    with Cluster("Batch processor containers"):
+        batchProcessorContainers = [AKS("1"),
+                                    AKS("2"),
+                                    AKS("3")]
         
 
     # make connections between resources
 
-    # cloudflare >> webApp >> webAppContainers >> api >> apiContainers >> serviceBus >> batchProcessor >> batchProcessorContainers >> blobStorage
+    cloudflare >> webApp >> webAppContainers >> api >> apiContainers >> serviceBus >> batchProcessor >> batchProcessorContainers >> blobStorage
 
-    # cloudflare >> webApp >> webAppContainers >> api >> apiContainers >> postgreSQL >> serviceBus >> batchProcessorContainers >> blobStorage
+    cloudflare >> webApp >> webAppContainers >> api >> apiContainers >> postgreSQL >> serviceBus >> batchProcessorContainers >> blobStorage
 
     cloudflare >> webApp >> api >> serviceBus >> batchProcessor >> blobStorage
     
@@ -68,14 +68,14 @@ with Diagram("SaaS B2B system", show=False, direction="LR"):
     api >> elasticSearchCloud
 
 
-    # webApp >> keyVault
-    # api >> keyVault
-    # batchProcessor >> keyVault
+    webApp >> keyVault
+    api >> keyVault
+    batchProcessor >> keyVault
     
     
 
 
 
-    # ELB("lb") >> EC2("web") >> RDS("userdb")
+    ELB("lb") >> EC2("web") >> RDS("userdb")
 
     

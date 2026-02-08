@@ -41,11 +41,6 @@ export class TaskList extends OpenAPIRoute {
 		// Get validated data
 		await this.getValidatedData<typeof this.schema>();
 
-		// TODO: Implement pagination and filtering
-		// const { page, isCompleted } = data.query;
-
-		// Implement your own object list here
-
 		return {
 			success: true,
 			tasks: [

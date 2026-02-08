@@ -15,7 +15,7 @@
         "DOTNET_ENVIRONMENT": "Development",
         "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:7200",
         "API_BASE_URL": "http://localhost:8091",
-        "DATABASE_CONNECTION_STRING": "Host=switchyard.proxy.rlwy.net;Port=58225;Database=appblueprintdb;Username=postgres;Password=ZLMisikWihderhrqtdEfUkVQFmVbEfwQ",
+        "//DATABASE_CONNECTION_STRING": "Use Doppler secrets - do not commit real credentials here",
         "DATABASECONTEXT_CONTEXTTYPE": "B2C",
         "DATABASECONTEXT_ENABLEHYBRIDMODE": "true"
       }
