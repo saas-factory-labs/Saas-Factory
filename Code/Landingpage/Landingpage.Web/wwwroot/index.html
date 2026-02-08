@@ -6,28 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SaaS Factory - AppBlueprint | Enterprise SaaS Framework</title>
     <base href="/" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+    
+    <!-- Self-hosted fonts with SRI -->
+    <link rel="stylesheet" href="fonts.css" />
+    
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="output.css" />
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="Landingpage.styles.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand-orange': '#ff6b35',
-                        'brand-dark': '#1a1a1a',
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 
 <body>

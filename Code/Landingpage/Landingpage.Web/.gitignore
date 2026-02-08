@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Build outputs - DO NOT IGNORE THESE (they're needed for production)
+# wwwroot/output.css - KEEP (compiled Tailwind CSS)
+# wwwroot/fonts.css - KEEP (font definitions)
+# wwwroot/fonts/ - KEEP (self-hosted fonts)
+
+# Development only
+*.log
+npm-debug.log*

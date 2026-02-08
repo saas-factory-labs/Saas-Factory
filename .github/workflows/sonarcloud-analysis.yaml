@@ -14,18 +14,18 @@ jobs:
 
     steps:
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b  # v4.6.0
         with:
           java-version: 17
           distribution: 'zulu'
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
         with:
           fetch-depth: 0
 
       - name: Cache SonarQube Cloud packages
-        uses: actions/cache@v4
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a  # v4.2.0
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
@@ -33,14 +33,14 @@ jobs:
 
       - name: Cache SonarQube Cloud scanner
         id: cache-sonar-scanner
-        uses: actions/cache@v4
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a  # v4.2.0
         with:
           path: ./.sonar/scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
 
       - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v3.4.2        
+        uses: actions/setup-dotnet@baa11fbfe1d6520db94683bd5c7a3818018e4309  # v5.1.0
       
       - name: Export DOTNET_ROOT and update PATH
         run: |
@@ -53,12 +53,9 @@ jobs:
           mkdir -p ./.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
 
-      # Ensure SONAR_TOKEN is available
-      - name: Set Sonar Token
-        run: echo "SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}" >> $GITHUB_ENV
-
+      # Set SONAR_TOKEN from secret to environment (secured in env block)
       - name: Start SonarCloud analysis
-        if: env.SONAR_TOKEN != ''
+        if: secrets.SONAR_TOKEN != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -66,7 +63,7 @@ jobs:
           ./.sonar/scanner/dotnet-sonarscanner begin \
             /k:"saas-factory-labs_Saas-Factory" \
             /o:"saas-factory-labs" \
-            /d:sonar.token=$SONAR_TOKEN \
+            /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.inclusions="Code/AppBlueprint/**"
 
@@ -78,6 +75,8 @@ jobs:
           done
 
       - name: End SonarCloud analysis
-        if: env.SONAR_TOKEN != ''
+        if: secrets.SONAR_TOKEN != ''
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token=$SONAR_TOKEN
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"

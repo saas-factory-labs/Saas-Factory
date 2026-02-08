@@ -54,17 +54,19 @@ jobs:
       env:
         DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
         DOTNET_ENVIRONMENT: ${{ secrets.DOTNET_ENVIRONMENT }}
+        MIGRATION_ACTION: ${{ github.event.inputs.action }}
+        TARGET_MIGRATION: ${{ github.event.inputs.target_rollback_migration }}
       run: |
-        if [ "${{ github.event.inputs.action }}" = "migrate" ]; then
+        if [ "$MIGRATION_ACTION" = "migrate" ]; then
           echo "Applying migration bundle..."
           dotnet ef migrations apply --project AppBlueprint.Infrastructure --bundle ./MigrationsBundle
-        elif [ "${{ github.event.inputs.action }}" = "rollback" ]; then
-          if [ -z "${{ github.event.inputs.target_rollback_migration }}" ]; then
+        elif [ "$MIGRATION_ACTION" = "rollback" ]; then
+          if [ -z "$TARGET_MIGRATION" ]; then
             echo "Error: Target migration must be specified for rollback."
             exit 1
           fi
-          echo "Rolling back to migration ${{ github.event.inputs.target_rollback_migration }}..."
-          dotnet ef database update ${{ github.event.inputs.target_rollback_migration }} --project AppBlueprint.Infrastructure --connection "$DB_CONNECTION_STRING"
+          echo "Rolling back to migration $TARGET_MIGRATION..."
+          dotnet ef database update "$TARGET_MIGRATION" --project AppBlueprint.Infrastructure --connection "$DB_CONNECTION_STRING"
         else
           echo "Invalid action specified. Use 'migrate' or 'rollback'."
           exit 1

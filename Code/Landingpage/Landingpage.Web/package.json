@@ -1,0 +1,13 @@
+{
+  "name": "landingpage-web",
+  "version": "1.0.0",
+  "description": "SaaS Factory Landing Page",
+  "scripts": {
+    "build:css": "tailwindcss -i ./wwwroot/input.css -o ./wwwroot/output.css --minify",
+    "watch:css": "tailwindcss -i ./wwwroot/input.css -o ./wwwroot/output.css --watch",
+    "download:fonts": "node download-fonts.js"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

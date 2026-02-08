@@ -41,6 +41,10 @@ jobs:
       # Step 3: Generate the SQL schema dump with retry logic
       - name: Generate schema dump
         env:
+          PGHOST: ${{ secrets.PG_HOST }}
+          PGPORT: ${{ secrets.PG_PORT }}
+          PGUSER: ${{ secrets.PG_USER }}
+          PGDATABASE: ${{ secrets.PG_DB }}
           PGPASSWORD: ${{ secrets.PG_PASSWORD }}
         run: |
           MAX_RETRIES=3
@@ -50,11 +54,7 @@ jobs:
           while [ $ATTEMPT -le $MAX_RETRIES ]; do
             echo "Attempt $ATTEMPT of $MAX_RETRIES..."
             
-            if pg_dump --host=${{ secrets.PG_HOST }} \
-                       --port=${{ secrets.PG_PORT }} \
-                       --username=${{ secrets.PG_USER }} \
-                       --dbname=${{ secrets.PG_DB }} \
-                       --schema-only \
+            if pg_dump --schema-only \
                        --no-owner \
                        --no-privileges \
                        --file=schema.sql; then

@@ -93,10 +93,12 @@ jobs:
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
 
       - name: Push to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           echo "Pushing ${{ matrix.package-name }} version ${{ env.VERSION }} to NuGet.org..."
           dotnet nuget push ./bin/Release/*.nupkg \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --api-key "$NUGET_API_KEY" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
         working-directory: Code/AppBlueprint/Shared-Modules/${{ matrix.package-name }}
