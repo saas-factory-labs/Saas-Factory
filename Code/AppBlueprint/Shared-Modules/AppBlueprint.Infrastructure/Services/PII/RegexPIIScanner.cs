@@ -193,7 +193,7 @@ public partial class RegexPIIScanner : IPIIScanner
         return LuhnValidator.IsValid(value);
     }
 
-    private record PIIRegexDefinition(
+    private sealed record PIIRegexDefinition(
         string Label,
         Regex Regex,
         Func<string, bool>? ValidationFunc = null);

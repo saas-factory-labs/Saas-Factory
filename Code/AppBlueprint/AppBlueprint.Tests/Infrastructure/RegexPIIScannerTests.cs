@@ -4,7 +4,7 @@ using FluentAssertions;
 
 namespace AppBlueprint.Tests.Infrastructure;
 
-internal class RegexPIIScannerTests
+internal sealed class RegexPIIScannerTests
 {
     private readonly RegexPIIScanner _scanner = new();
 

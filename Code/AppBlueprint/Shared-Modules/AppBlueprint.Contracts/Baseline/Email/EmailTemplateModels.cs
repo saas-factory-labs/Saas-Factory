@@ -59,7 +59,7 @@ public sealed record WeeklyDigestEmailModel(
     DateTime WeekEndDate,
     int NewNotifications,
     int NewMessages,
-    string[] HighlightedActivities);
+    IReadOnlyList<string> HighlightedActivities);
 
 /// <summary>
 /// Email template model for sending admin notifications.

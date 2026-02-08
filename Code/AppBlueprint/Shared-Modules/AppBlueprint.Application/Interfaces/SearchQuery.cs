@@ -66,7 +66,7 @@ public sealed class SearchRankingOptions
     public static readonly SearchRankingOptions Default = new()
     {
         UseNormalization = true,
-        WeightLabels = [1.0f, 0.4f, 0.2f, 0.1f] // D, C, B, A
+        WeightLabels = new[] { 1.0f, 0.4f, 0.2f, 0.1f } // D, C, B, A
     };
 
     /// <summary>
@@ -80,7 +80,7 @@ public sealed class SearchRankingOptions
     /// PostgreSQL supports weighted search vectors with labels D (most important), C, B, A (least important).
     /// Default: D=1.0, C=0.4, B=0.2, A=0.1
     /// </summary>
-    public float[] WeightLabels { get; set; } = [1.0f, 0.4f, 0.2f, 0.1f];
+    public IReadOnlyList<float> WeightLabels { get; set; } = new[] { 1.0f, 0.4f, 0.2f, 0.1f };
 }
 
 /// <summary>
