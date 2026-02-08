@@ -7,7 +7,7 @@ namespace AppBlueprint.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-internal class TokenController : ControllerBase
+internal sealed class TokenController : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetToken()

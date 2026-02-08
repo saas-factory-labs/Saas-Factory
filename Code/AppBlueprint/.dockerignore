@@ -1,12 +1,98 @@
-**/.env
-**/.git
-**/.gitignore
-**/.vs
-**/.vscode
+# Build outputs
 **/bin
 **/obj
 **/out
+**/*.dll
+**/*.exe
+**/*.pdb
+
+# Environment and secrets - CRITICAL SECURITY
+**/.env
+**/.env.*
+**/*.local
+**/appsettings.*.json
+!**/appsettings.json
+**/launchSettings.json
+**/secrets.json
+**/secrets.dev.yaml
+**/values.dev.yaml
+doppler.yaml
+
+# Certificates and keys - CRITICAL SECURITY
+**/*.pfx
+**/*.p12
+**/*.key
+**/*.pem
+**/*.cer
+**/*.crt
+**/*.cert
+
+# Version control
+**/.git
+**/.gitignore
+**/.gitattributes
+**/.github
+
+# IDE and editor files
+**/.vs
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+**/*~
+**/.DS_Store
+**/*.*proj.user
+**/.classpath
+**/.project
+**/.settings
 **/.toolstarget
-**/*.user
+
+# Docker files
+**/Dockerfile*
+**/docker-compose*
+**/compose*
+**/.dockerignore
+
+# Dependencies
+**/node_modules
+**/npm-debug.log
+**/.pnp
+**/.pnp.js
+
+# Test results
+**/TestResults
+**/coverage
+**/*.coverage
+**/*.coveragexml
+
+# Database files - CRITICAL SECURITY
+**/*.db
+**/*.sqlite
+**/*.mdf
+**/*.ldf
 **/*.dbmdl
 **/*.jfm
+
+# Logs
+**/*.log
+**/logs/
+
+# Cloud configs - CRITICAL SECURITY
+**/.azure
+**/*.publishsettings
+
+# Kubernetes
+**/charts
+**/azds.yaml
+
+# Documentation
+LICENSE
+README.md
+**/*.md
+!**/README.md
+
+# Temporary files
+**/tmp/
+**/temp/
+**/*.tmp
+**/*.bak

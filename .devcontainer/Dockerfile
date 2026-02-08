@@ -81,8 +81,13 @@ CMD ["/opt/mssql/bin/sqlservr"]
 # Set the working directory for the DevContainer
 WORKDIR /workspace
 
-# Copy your application code if needed (this is typically done in the Codespace)
-COPY . .
+# NOTE: Do NOT copy application code here - VS Code DevContainers automatically 
+# mounts the workspace at runtime. Copying here would:
+# 1. Bake code into the image (slow rebuild on every change)
+# 2. Risk including sensitive files despite .dockerignore
+# 3. Contradict the DevContainer architecture (code should be mounted, not copied)
+#
+# If you need to pre-install dependencies, use postCreateCommand in devcontainer.json instead.
 
 # Restore project dependencies
 # RUN dotnet restore

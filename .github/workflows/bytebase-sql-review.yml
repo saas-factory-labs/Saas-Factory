@@ -12,11 +12,11 @@ jobs:
     runs-on: self-hosted
     name: SQL Review
     steps:
-      - uses: actions/checkout@v3
+      # SECURITY: Using full commit SHA for immutable, verifiable builds
+      # v4.3.1 (Nov 17, 2025): https://github.com/actions/checkout/releases/tag/v4.3.1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
       - name: Check SQL
-        # You can change it to a specific version like bytebase/sql-review-action@0.0.4
-        # We suggest using the latest version through the tag. Check it at https://github.com/Bytebase/sql-review-action/tags
-        uses: bytebase/sql-review-action@main
+        uses: bytebase/sql-review-action@8ccd33832304934154de305b91cd9d09370460cf  # Latest from main (Jan 22, 2026)
         with:
           # override-file-path: "<Your SQL review rules configuration file path>"
           # template-id: "<SQL review rule template id>"

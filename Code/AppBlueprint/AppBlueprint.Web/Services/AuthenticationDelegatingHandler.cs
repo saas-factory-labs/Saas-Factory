@@ -7,7 +7,7 @@ namespace AppBlueprint.Web.Services;
 /// <summary>
 /// Delegating handler that adds JWT authentication token and tenant-id to HTTP requests
 /// </summary>
-internal class AuthenticationDelegatingHandler : DelegatingHandler
+internal sealed class AuthenticationDelegatingHandler : DelegatingHandler
 {
     private readonly ITokenStorageService _tokenStorageService;
     private readonly IHttpContextAccessor _httpContextAccessor;

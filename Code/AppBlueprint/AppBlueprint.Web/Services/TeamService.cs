@@ -8,7 +8,7 @@ namespace AppBlueprint.Web.Services;
 /// <summary>
 /// Service for managing teams via API calls
 /// </summary>
-internal class TeamService
+internal sealed class TeamService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<TeamService> _logger;

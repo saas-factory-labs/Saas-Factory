@@ -1,7 +1,85 @@
+# Dependencies
 node_modules
 npm-debug.log
+.pnp
+.pnp.js
+
+# Build outputs
+**/bin
+**/obj
+dist
+build
+*.dll
+*.exe
+*.pdb
+
+# Version control
 .git
-Dockerfile
-docker-compose.yml
+.gitignore
+.gitattributes
+.github
+
+# IDE and editor files
+.vs
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment and secrets
+.env
+.env.*
+*.local
+**/appsettings.*.json
+!**/appsettings.json
+**/launchSettings.json
+secrets.json
+doppler.yaml
+
+# Certificates and keys
+*.pfx
+*.p12
+*.key
+*.pem
+*.cer
+*.crt
+*.cert
+
+# Docker files
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# DevContainer files
+.devcontainer
 .devcontainer.json
+
+# Test results
+**/TestResults
+coverage
+*.coverage
+*.coveragexml
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+
+# Azure and cloud configs
+.azure
+*.publishsettings
+
+# Database files
+*.db
+*.sqlite
+*.mdf
+*.ldf
 

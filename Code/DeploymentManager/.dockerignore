@@ -80,9 +80,15 @@ doppler.yaml
 # Cloud configs - CRITICAL SECURITY
 **/.azure
 **/*.publishsettings
+azure.yaml
 
 # Kubernetes
 **/charts
+**/azds.yaml
+
+# Bicep and Infrastructure files (not needed in runtime container)
+**/*.bicep
+**/Diagrams/
 
 # Documentation
 LICENSE

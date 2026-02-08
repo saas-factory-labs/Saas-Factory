@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Export Workflow Trace
-        uses: corentinmusard/otel-cicd-action@v1
+        uses: corentinmusard/otel-cicd-action@0f9f16fceb53fd8c996042e28c642ec61f844876  # v4.0.0
         with:
           otlpEndpoint: "https://otlp.eu01.nr-data.net/v1/traces"
           otlpHeaders: "api-key=${{ secrets.NEW_RELIC_OPEN_TELEMETRY_API_KEY }}"

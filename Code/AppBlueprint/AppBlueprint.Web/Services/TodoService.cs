@@ -1,7 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using AppBlueprint.Infrastructure.Authorization;
-using AppBlueprint.TodoAppKernel.Controllers;
 using AppBlueprint.TodoAppKernel.Controllers.Dto;
 using AppBlueprint.TodoAppKernel.Domain;
 using Microsoft.JSInterop;
@@ -11,7 +10,7 @@ namespace AppBlueprint.Web.Services;
 /// <summary>
 /// Service for managing todo items via API calls
 /// </summary>
-internal class TodoService
+internal sealed class TodoService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<TodoService> _logger;

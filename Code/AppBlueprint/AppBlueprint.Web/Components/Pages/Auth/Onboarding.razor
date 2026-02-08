@@ -393,13 +393,12 @@
                 "[Onboarding] Personal account created - TenantId: {TenantId}, UserId: {UserId}",
                 result.TenantId, result.UserId);
 
-            // Update loading message and trigger authentication refresh
-            loadingMessage = "Account created! Refreshing your session...";
+            // Show success state
+            isProcessing = false;
+            isSuccess = true;
             StateHasChanged();
             
-            // Redirect to /onboarding-complete which will handle the re-authentication flow
-            Logger.LogInformation("[Onboarding] Redirecting to onboarding-complete");
-            Navigation.NavigateTo("/onboarding-complete", forceLoad: true);
+            Logger.LogInformation("[Onboarding] Personal account setup complete");
         }
         catch (Exception ex)
         {
@@ -454,13 +453,12 @@
                 "[Onboarding] Business account created - Company: {CompanyName}, TenantId: {TenantId}, UserId: {UserId}",
                 businessModel.CompanyName, result.TenantId, result.UserId);
 
-            // Update loading message and trigger authentication refresh
-            loadingMessage = "Account created! Refreshing your session...";
+            // Show success state
+            isProcessing = false;
+            isSuccess = true;
             StateHasChanged();
             
-            // Redirect to /onboarding-complete which will handle the re-authentication flow
-            Logger.LogInformation("[Onboarding] Redirecting to onboarding-complete");
-            Navigation.NavigateTo("/onboarding-complete", forceLoad: true);
+            Logger.LogInformation("[Onboarding] Business account setup complete");
         }
         catch (Exception ex)
         {

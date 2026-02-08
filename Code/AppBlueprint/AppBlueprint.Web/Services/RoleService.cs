@@ -8,7 +8,7 @@ namespace AppBlueprint.Web.Services;
 /// <summary>
 /// Service for managing roles via API calls
 /// </summary>
-internal class RoleService
+internal sealed class RoleService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<RoleService> _logger;
