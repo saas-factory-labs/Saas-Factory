@@ -1,4 +1,4 @@
-﻿namespace DeploymentManager.ApiService.Services.Pulumi.Stripe;
+namespace DeploymentManager.ApiService.Services.Pulumi.Stripe;
 
 public enum StripeResourceType // Stripe resource types
 {

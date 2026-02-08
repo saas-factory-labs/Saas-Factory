@@ -71,4 +71,6 @@ public sealed class RequireScopeAttribute : Attribute, IAuthorizationFilter
             }
         }
     }
+
+    public string[] Scopes { get; }
 }

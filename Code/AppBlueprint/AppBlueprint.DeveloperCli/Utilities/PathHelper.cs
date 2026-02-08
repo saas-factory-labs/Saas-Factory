@@ -247,7 +247,6 @@ internal static class PathHelper
         const uint WM_SETTINGCHANGE = 0x001a;
         const uint SMTO_ABORTIFHUNG = 0x0002;
 
-        IntPtr result;
         SendMessageTimeout(
             new IntPtr(HWND_BROADCAST),
             WM_SETTINGCHANGE,
@@ -255,6 +254,6 @@ internal static class PathHelper
             "Environment",
             SMTO_ABORTIFHUNG,
             5000,
-            out result);
+            out var result);
     }
 }

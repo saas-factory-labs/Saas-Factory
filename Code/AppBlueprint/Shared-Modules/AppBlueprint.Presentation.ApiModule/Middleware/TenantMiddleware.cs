@@ -67,7 +67,7 @@ public class TenantMiddleware(RequestDelegate next)
         // SECURITY: For authenticated requests, ALWAYS extract tenant from JWT claims
         // JWT tokens are cryptographically signed and cannot be tampered with
         // Headers, subdomains, and path segments can all be forged by malicious clients
-        
+
         // Try primary tenant claim name
         string? tenantId = context.User.FindFirst("tenant_id")?.Value;
 
@@ -149,7 +149,7 @@ public class TenantMiddleware(RequestDelegate next)
                                       requestPath.Contains("docs", StringComparison.OrdinalIgnoreCase) ||
                                       requestPath.EndsWith("/v1", StringComparison.OrdinalIgnoreCase) ||
                                       requestPath.StartsWith("/v1/", StringComparison.OrdinalIgnoreCase) ||
-                                      (!isApiEndpoint && HasStaticFileExtension(requestPath)); // Only check file extensions for non-API paths
+                                      !isApiEndpoint && HasStaticFileExtension(requestPath); // Only check file extensions for non-API paths
 
         if (isDocumentationOrStatic) return true;
 

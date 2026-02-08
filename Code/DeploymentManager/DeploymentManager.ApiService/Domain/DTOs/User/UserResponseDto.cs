@@ -1,4 +1,4 @@
-﻿using DeploymentManager.ApiService.Domain.Enum.User;
+using DeploymentManager.ApiService.Domain.Enum.User;
 using JetBrains.Annotations;
 
 namespace DeploymentManager.ApiService.Domain.DTOs.User;

@@ -1,4 +1,4 @@
-﻿// using Pulumi.AzureNative.App.Inputs;
+// using Pulumi.AzureNative.App.Inputs;
 // using Pulumi.AzureNative.AzureData;
 // using Pulumi.AzureNative.Cache;
 // using Pulumi.AzureNative.Resources;

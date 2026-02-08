@@ -8,11 +8,6 @@ namespace DeploymentManager.Codeflow;
 
 internal class Program
 {
-    private static MSBuildWorkspace _workspace = MSBuildWorkspace.Create();
-
-    private static Dictionary<string, HashSet<string>> _classDependencies = new();
-
-    private static Dictionary<string, List<string>> _classProperties = new();
     private const string _solutionPath = @"C:\Development\boligportal\Boligportal\Boligportal.sln";
     private const string _jsonFileOutputPath = @"C:\users\caspe\Downloads\classData.json";
 
@@ -65,10 +60,10 @@ internal class Program
             {
                 SemanticModel? semanticModel = await document.GetSemanticModelAsync();
                 SyntaxTree? syntaxTree = await document.GetSyntaxTreeAsync();
-                    
+
                 if (syntaxTree is null)
                     continue;
-                        
+
                 SyntaxNode? root = await syntaxTree.GetRootAsync();
 
                 if (root is null || semanticModel is null)
@@ -707,7 +702,7 @@ public class ClassDataInput
 //    var dgraphEndpoint = Environment.GetEnvironmentVariable("DGRAPH_ENDPOINT", EnvironmentVariableTarget.User);
 //    var dgraphApiKey = Environment.GetEnvironmentVariable("DGRAPH_API_KEY", EnvironmentVariableTarget.User);
 //    //var client = new DgraphClient(SlashChannel.Create("https://nameless-brook-560077.eu-central-1.aws.cloud.dgraph.io/graphql", dgraphApiKey));
-//    // kig på hvordan jeg har lavet min tidligere dgraph kode i deployment manager depenceny tracker
+//    // kig pÃ¥ hvordan jeg har lavet min tidligere dgraph kode i deployment manager depenceny tracker
 
 //    //using (var txn = client.NewTransaction())
 //    //{

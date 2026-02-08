@@ -1,4 +1,3 @@
-using System.Net.Http.Json;
 using System.Text.Json;
 using AppBlueprint.Infrastructure.Authorization;
 using AppBlueprint.TodoAppKernel.Controllers.Dto;

@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using DomainProfileEntity = AppBlueprint.Domain.Entities.User.ProfileEntity;
-using InfraUserEntity = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
 

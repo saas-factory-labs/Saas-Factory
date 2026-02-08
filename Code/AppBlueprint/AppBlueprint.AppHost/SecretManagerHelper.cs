@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography;
-using Aspire.Hosting;
-using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
 

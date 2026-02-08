@@ -26,13 +26,6 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
         "Todos"
     ];
 
-    // Tables that should have RLS if they exist (optional)
-    private static readonly string[] OptionalRlsTables =
-    [
-        "AuditLogs",
-        "ApiLogs"
-    ];
-
     public RowLevelSecurityHealthCheck(string connectionString, ILogger<RowLevelSecurityHealthCheck> logger)
     {
         ArgumentNullException.ThrowIfNull(connectionString);

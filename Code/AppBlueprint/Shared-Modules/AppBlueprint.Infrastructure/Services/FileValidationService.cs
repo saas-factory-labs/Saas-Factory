@@ -147,9 +147,20 @@ public sealed class FileValidationService : IFileValidationService
         return FileValidationResult.Success();
     }
 
-    private static bool IsImageType(string contentType) => AllowedImageTypes.Contains(contentType);
-    private static bool IsDocumentType(string contentType) => AllowedDocumentTypes.Contains(contentType);
-    private static bool IsVideoType(string contentType) => AllowedVideoTypes.Contains(contentType);
+    private static bool IsImageType(string contentType)
+    {
+        return AllowedImageTypes.Contains(contentType);
+    }
+
+    private static bool IsDocumentType(string contentType)
+    {
+        return AllowedDocumentTypes.Contains(contentType);
+    }
+
+    private static bool IsVideoType(string contentType)
+    {
+        return AllowedVideoTypes.Contains(contentType);
+    }
 
     private static async Task<bool> ValidateImageSignatureAsync(Stream stream, string contentType)
     {

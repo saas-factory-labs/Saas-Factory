@@ -1,4 +1,3 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

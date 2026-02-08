@@ -9,8 +9,10 @@ public class CostEstimation
     {
         // call Cloudcostify API to get cost estimation
 
-        var client = new HttpClient();
-        client.BaseAddress = new Uri("https://api.cloudcostify.com");
+        var client = new HttpClient
+        {
+            BaseAddress = new Uri("https://api.cloudcostify.com")
+        };
         client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
         client.DefaultRequestHeaders.Add("x-api-key", "key");

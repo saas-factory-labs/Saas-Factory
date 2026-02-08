@@ -1,5 +1,4 @@
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 
 namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 

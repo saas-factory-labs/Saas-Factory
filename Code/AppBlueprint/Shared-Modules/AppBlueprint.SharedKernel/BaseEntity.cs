@@ -1,5 +1,3 @@
-using System;
-
 namespace AppBlueprint.SharedKernel;
 
 public abstract class BaseEntity : IEntity

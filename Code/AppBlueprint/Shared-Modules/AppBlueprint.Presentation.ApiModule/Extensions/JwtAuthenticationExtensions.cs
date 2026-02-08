@@ -1,6 +1,5 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
@@ -137,32 +136,6 @@ public static class JwtAuthenticationExtensions
         };
     }
 
-    private static void ConfigureAuth0(JwtBearerOptions options, IConfiguration configuration)
-    {
-        var domain = configuration["Authentication:Auth0:Domain"];
-        var audience = configuration["Authentication:Auth0:Audience"];
-
-        if (string.IsNullOrEmpty(domain) || string.IsNullOrEmpty(audience))
-        {
-            throw new InvalidOperationException(
-                "Auth0 Domain and Audience must be configured in appsettings.json");
-        }
-
-        options.Authority = domain;
-        options.Audience = audience;
-
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = domain,
-            ValidateAudience = true,
-            ValidAudience = audience,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.FromMinutes(5)
-        };
-    }
-
     private static void ConfigureLogto(JwtBearerOptions options, IConfiguration configuration, IHostEnvironment environment)
     {
         // Read environment variables first (flat UPPERCASE format), then fall back to hierarchical config
@@ -228,36 +201,6 @@ public static class JwtAuthenticationExtensions
 
         // Don't require HTTPS in development
         options.RequireHttpsMetadata = environment.IsDevelopment() ? false : true;
-    }
-
-    private static void ConfigureCustomJwt(JwtBearerOptions options, IConfiguration configuration)
-    {
-        var secretKey = configuration["Authentication:JWT:SecretKey"];
-        string issuer = configuration["Authentication:JWT:Issuer"] ?? "AppBlueprintAPI";
-        string audience = configuration["Authentication:JWT:Audience"] ?? "AppBlueprintClient";
-
-        if (string.IsNullOrEmpty(secretKey))
-        {
-            throw new InvalidOperationException(
-                "JWT SecretKey is missing. Set Authentication:JWT:SecretKey in configuration.");
-        }
-
-        var key = Encoding.ASCII.GetBytes(secretKey);
-
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = true,
-            ValidIssuer = issuer,
-            ValidateAudience = true,
-            ValidAudience = audience,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(5),
-            // Additional security settings
-            RequireExpirationTime = true,
-            RequireSignedTokens = true
-        };
     }
 }
 

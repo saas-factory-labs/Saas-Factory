@@ -1,4 +1,4 @@
-﻿namespace DeploymentManager.ApiService.Infrastructure.Services;
+namespace DeploymentManager.ApiService.Infrastructure.Services;
 
 public class LogSnagService
 {

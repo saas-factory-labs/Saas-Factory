@@ -1,4 +1,4 @@
-﻿namespace DeploymentManager.ApiService.Services.Pulumi.GrafanaCloud;
+namespace DeploymentManager.ApiService.Services.Pulumi.GrafanaCloud;
 
 public class PulumiGrafanaCloudService
 {

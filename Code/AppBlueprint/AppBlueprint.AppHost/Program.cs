@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Sockets;
-using Aspire.Hosting.ApplicationModel;
 
 const string LogtoApiResourceKey = "LOGTO_APIRESOURCE";
 const string DatabaseContextTypeKey = "DATABASECONTEXT_TYPE";

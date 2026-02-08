@@ -1,4 +1,3 @@
-using AppBlueprint.TodoAppKernel.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppBlueprint.TodoAppKernel.Infrastructure;

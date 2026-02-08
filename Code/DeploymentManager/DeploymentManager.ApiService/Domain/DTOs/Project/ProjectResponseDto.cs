@@ -1,4 +1,4 @@
-﻿using DeploymentManager.ApiService.Domain.Enum.Pulumi;
+using DeploymentManager.ApiService.Domain.Enum.Pulumi;
 
 namespace DeploymentManager.ApiService.Domain.DTOs.Project;
 

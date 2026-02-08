@@ -1,4 +1,4 @@
-﻿namespace DeploymentManager.ApiService.Services.Pulumi.ElasticCloud;
+namespace DeploymentManager.ApiService.Services.Pulumi.ElasticCloud;
 
 public enum ElasticCloudResourceType // Elastic cloud resource types
 {

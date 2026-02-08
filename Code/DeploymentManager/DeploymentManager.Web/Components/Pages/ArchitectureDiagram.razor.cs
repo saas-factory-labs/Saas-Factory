@@ -106,79 +106,6 @@ public partial class ArchitectureDiagram
         }
     }
 
-    private void ExtractApiControllers()
-    {
-        Console.Clear();
-
-        Console.WriteLine("Extracting api controller metadata");
-
-        var assembly =
-            Assembly.LoadFile(
-                @"C:\\Development\\Development-Projects\\SaaS-Factory\\Code\\AppBlueprint\\Shared-Modules\\AppBlueprint.Presentation.ApiModule\\bin\\Debug\\net9.0\AppBlueprint.Presentation.ApiModule.dll");
-
-        // Load the target assembly by its name.
-        //var assembly = Assembly.Load("AppBlueprint.Presentation.ApiModule");
-
-        // Optionally, if your controllers aren�t public, use GetTypes() instead:
-        // var types = assembly.GetTypes();
-        Type[]? controllers = assembly.GetExportedTypes()
-            .Where(t => t.IsClass
-                        && !t.IsAbstract
-                        && typeof(ControllerBase).IsAssignableFrom(t)
-                        && t.GetCustomAttributes(typeof(ApiControllerAttribute), true).Any())
-            .ToArray();
-
-        foreach (Type? controller in controllers) Console.WriteLine(controller.FullName);
-
-        //var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        //foreach (var assembly in assemblies)
-        //{
-        //    //Console.WriteLine("Processing assembly : " + assembly.FullName);
-
-        //    var controllerTypes = assembly.GetTypes()
-        //        .Where(t => t.IsSubclassOf(typeof(ControllerBase)) || t.GetCustomAttributes<ApiControllerAttribute>().Any());
-
-        //    foreach (var controllerType in controllerTypes)
-        //    {
-        //        Console.WriteLine("Found controller type : " + controllerType.FullName);
-
-        //        var methods = controllerType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-        //        foreach (var method in methods)
-        //        {
-        //            Console.WriteLine("Found api method  : " + method.Name);
-
-        //            var routeAttributes = method.GetCustomAttributes<RouteAttribute>();
-        //            foreach (var routeAttribute in routeAttributes)
-        //            {
-        //                Console.WriteLine("Found route attribute : " + routeAttribute.Name);
-
-        //                var route = routeAttribute.Template;
-        //                var node = CreateNode($"{controllerType.Name}.{method.Name}", new Point(0, 0));
-        //                Diagram.Nodes.Add(node);
-        //            }
-        //        }
-        //    }
-        //}
-    }
-
-    private void ExtractOpenApiSpec()
-    {
-        const string openApiSpecPath =
-            @"C:\Development\Development-Projects\SaaS-Factory\Writerside\specifications\swagger.json";
-
-        using FileStream? stream = File.OpenRead(openApiSpecPath);
-        OpenApiDocument? openApiDocument = new OpenApiStreamReader().Read(stream, out OpenApiDiagnostic? diagnostic);
-
-        foreach (KeyValuePair<string, OpenApiPathItem> path in openApiDocument.Paths)
-            foreach (KeyValuePair<OperationType, OpenApiOperation> operation in path.Value.Operations)
-            {
-                NodeModel? node = CreateNode($"{operation.Key} {path.Key}", new Point(0, 0));
-                Diagram.Nodes.Add(node);
-
-                Console.WriteLine("node :" + node.Title);
-            }
-    }
-
     //private void ConfigureOpenTelemetry()
     //{
     //    Sdk.CreateTracerProviderBuilder()
@@ -189,24 +116,4 @@ public partial class ArchitectureDiagram
     //        .AddJaegerExporter()
     //        .Build();
     //}
-
-    private void VisualizeTelemetryData()
-    {
-        // Example of visualizing telemetry data
-        var telemetryData = new List<(string Source, string Target)>
-        {
-            ("API Method", "Service"),
-            ("Service", "Database"),
-            ("Service", "Message Queue"),
-            ("Message Queue", "Topic")
-        };
-
-        foreach ((string Source, string Target) data in telemetryData)
-        {
-            NodeModel? sourceNode = Diagram.Nodes.First(n => n.Title == data.Source);
-            NodeModel? targetNode = Diagram.Nodes.First(n => n.Title == data.Target);
-            if (sourceNode is not null && targetNode is not null)
-                Diagram.Links.Add(new LinkModel(sourceNode, targetNode));
-        }
-    }
 }

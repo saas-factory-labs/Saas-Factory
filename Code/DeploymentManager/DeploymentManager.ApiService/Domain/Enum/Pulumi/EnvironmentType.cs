@@ -1,4 +1,4 @@
-﻿namespace DeploymentManager.ApiService.Domain.Enum.Pulumi;
+namespace DeploymentManager.ApiService.Domain.Enum.Pulumi;
 
 public enum EnvironmentType
 {

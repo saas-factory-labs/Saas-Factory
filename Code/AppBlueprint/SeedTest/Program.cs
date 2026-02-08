@@ -1,8 +1,6 @@
-using AppBlueprint.Infrastructure;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -102,21 +100,22 @@ internal static class Program
     {
         try
         {
-            var counts = new Dictionary<string, int>();
-
-            // Check core tables
-            counts["Languages"] = await dbContext.Languages.CountAsync();
-            counts["Countries"] = await dbContext.Countries.CountAsync();
-            counts["GlobalRegions"] = await dbContext.GlobalRegions.CountAsync();
-            counts["Addresses"] = await dbContext.Addresses.CountAsync();
-            counts["Users"] = await dbContext.Users.CountAsync();
-            counts["Tenants"] = await dbContext.Tenants.CountAsync();
-            counts["Customers"] = await dbContext.Customers.CountAsync();
-            counts["EmailAddresses"] = await dbContext.EmailAddresses.CountAsync();
-            counts["Roles"] = await dbContext.Roles.CountAsync();
-            counts["Permissions"] = await dbContext.Permissions.CountAsync();
-            counts["Teams"] = await b2bDbContext.Teams.CountAsync();
-            counts["AuditLogs"] = await dbContext.AuditLogs.CountAsync();
+            var counts = new Dictionary<string, int>
+            {
+                // Check core tables
+                ["Languages"] = await dbContext.Languages.CountAsync(),
+                ["Countries"] = await dbContext.Countries.CountAsync(),
+                ["GlobalRegions"] = await dbContext.GlobalRegions.CountAsync(),
+                ["Addresses"] = await dbContext.Addresses.CountAsync(),
+                ["Users"] = await dbContext.Users.CountAsync(),
+                ["Tenants"] = await dbContext.Tenants.CountAsync(),
+                ["Customers"] = await dbContext.Customers.CountAsync(),
+                ["EmailAddresses"] = await dbContext.EmailAddresses.CountAsync(),
+                ["Roles"] = await dbContext.Roles.CountAsync(),
+                ["Permissions"] = await dbContext.Permissions.CountAsync(),
+                ["Teams"] = await b2bDbContext.Teams.CountAsync(),
+                ["AuditLogs"] = await dbContext.AuditLogs.CountAsync()
+            };
 
             foreach (var kvp in counts)
             {

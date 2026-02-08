@@ -54,32 +54,20 @@ public class ConfigurationManager
 
     public string GetSetting(SettingType settingType)
     {
-        switch (settingType)
+        return settingType switch
         {
-            case SettingType.ProjectName:
-                return _projectName;
-            case SettingType.StackName:
-                return _stackName;
-            case SettingType.TenantId:
-                return _tenantId;
-            case SettingType.Region:
-                return _region;
-            case SettingType.CloudProvider:
-                return _cloudProvider;
-            case SettingType.SubscriptionId:
-                return _subscriptionId;
-            case SettingType.ClientId:
-                return _clientId;
-            case SettingType.ClientSecret:
-                return _clientSecret;
-            case SettingType.ContainerRegistryAdminUsername:
-                return _containerRegistryAdminUsername;
-            case SettingType.ContainerRegistryAdminPassword:
-                return _containerRegistryAdminPassword;
-            case SettingType.ResourcePrefixName:
-                return _resourcePrefixName;
-            default:
-                return "";
-        }
+            SettingType.ProjectName => _projectName,
+            SettingType.StackName => _stackName,
+            SettingType.TenantId => _tenantId,
+            SettingType.Region => _region,
+            SettingType.CloudProvider => _cloudProvider,
+            SettingType.SubscriptionId => _subscriptionId,
+            SettingType.ClientId => _clientId,
+            SettingType.ClientSecret => _clientSecret,
+            SettingType.ContainerRegistryAdminUsername => _containerRegistryAdminUsername,
+            SettingType.ContainerRegistryAdminPassword => _containerRegistryAdminPassword,
+            SettingType.ResourcePrefixName => _resourcePrefixName,
+            _ => "",
+        };
     }
 }

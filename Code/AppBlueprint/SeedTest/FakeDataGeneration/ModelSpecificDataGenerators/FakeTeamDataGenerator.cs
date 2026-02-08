@@ -17,14 +17,15 @@ internal sealed class FakeTeamDataGenerator
 
     public TeamEntity GenerateTeamModelFakeData()
     {
-        var fakeTeam = new TeamEntity();
-
-        fakeTeam.Name = _faker.Company.CompanyName();
-        fakeTeam.CreatedAt = _faker.Date.Past();
-        fakeTeam.Id = PrefixedUlid.Generate("team");
-        fakeTeam.Description = _faker.Lorem.Sentence();
-        fakeTeam.IsActive = _faker.Random.Bool();
-        fakeTeam.LastUpdatedAt = _faker.Date.Past();
+        var fakeTeam = new TeamEntity
+        {
+            Name = _faker.Company.CompanyName(),
+            CreatedAt = _faker.Date.Past(),
+            Id = PrefixedUlid.Generate("team"),
+            Description = _faker.Lorem.Sentence(),
+            IsActive = _faker.Random.Bool(),
+            LastUpdatedAt = _faker.Date.Past()
+        };
 
         return fakeTeam;
     }

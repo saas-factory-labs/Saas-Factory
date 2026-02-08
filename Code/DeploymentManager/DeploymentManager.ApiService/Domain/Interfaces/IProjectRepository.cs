@@ -1,4 +1,4 @@
-﻿using DeploymentManager.ApiService.Domain.Entities;
+using DeploymentManager.ApiService.Domain.Entities;
 
 namespace DeploymentManager.ApiService.Domain.Interfaces;
 

@@ -44,7 +44,10 @@ public static class PIITypeRegistry
         return new PIITypeDefinition(label, GDPRType.SensitiveMiscellaneous, false);
     }
 
-    public static IEnumerable<PIITypeDefinition> GetAll() => _registry.Values;
+    public static IEnumerable<PIITypeDefinition> GetAll()
+    {
+        return _registry.Values;
+    }
 }
 
 public record PIITypeDefinition(string Label, GDPRType Classification, bool IsCanonical);

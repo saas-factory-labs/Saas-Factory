@@ -1,11 +1,9 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using NpgsqlTypes;
 
 namespace AppBlueprint.Infrastructure.Services.Search;
 
@@ -21,7 +19,6 @@ public sealed class PostgreSqlSearchService<TEntity, TDbContext> : ISearchServic
 {
     private readonly TDbContext _dbContext;
     private readonly ILogger<PostgreSqlSearchService<TEntity, TDbContext>> _logger;
-    private const string SearchVectorColumnName = "SearchVector";
     private static readonly char[] SpaceSeparator = [' '];
 
     public PostgreSqlSearchService(
@@ -199,19 +196,6 @@ public sealed class PostgreSqlSearchService<TEntity, TDbContext> : ISearchServic
         }
 
         return queryable;
-    }
-
-    /// <summary>
-    /// Normalizes relevance scores to 0.0-1.0 range.
-    /// </summary>
-    private static float NormalizeScore(float rawScore, bool useNormalization)
-    {
-        if (!useNormalization)
-            return rawScore;
-
-        // PostgreSQL ts_rank_cd() typically returns values between 0 and 1
-        // but can exceed 1 for highly relevant matches
-        return Math.Min(rawScore, 1.0f);
     }
 
     /// <summary>

@@ -2,7 +2,6 @@ using System.Reflection;
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Infrastructure.Services.Email;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using RazorLight;
 using Resend;
 

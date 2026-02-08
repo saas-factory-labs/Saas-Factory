@@ -1,8 +1,5 @@
 using AppBlueprint.Application.Extensions;
 using AppBlueprint.Infrastructure.Extensions;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 

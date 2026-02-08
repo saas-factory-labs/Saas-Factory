@@ -1,4 +1,3 @@
-using System.Data.Common;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
@@ -13,7 +12,6 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Street;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Permission;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Role;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.RolePermission;
@@ -24,7 +22,6 @@ using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Account;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;

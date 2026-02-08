@@ -1,4 +1,3 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
 
 namespace AppBlueprint.Infrastructure.Repositories.Interfaces;

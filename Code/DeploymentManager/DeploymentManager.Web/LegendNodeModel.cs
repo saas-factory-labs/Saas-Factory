@@ -1,4 +1,4 @@
-﻿using Blazor.Diagrams.Core.Geometry;
+using Blazor.Diagrams.Core.Geometry;
 using Blazor.Diagrams.Core.Models;
 
 namespace DeploymentManager.Web;

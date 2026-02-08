@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace AppBlueprint.SharedKernel.SharedModels.PII;
 
 public record PIIMetadata

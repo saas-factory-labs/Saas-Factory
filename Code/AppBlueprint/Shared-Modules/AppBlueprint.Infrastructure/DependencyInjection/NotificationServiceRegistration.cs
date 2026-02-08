@@ -2,7 +2,6 @@ using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Domain.Interfaces.Repositories;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Services.Notifications;
-using AppBlueprint.Infrastructure.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AppBlueprint.Infrastructure.DependencyInjection;

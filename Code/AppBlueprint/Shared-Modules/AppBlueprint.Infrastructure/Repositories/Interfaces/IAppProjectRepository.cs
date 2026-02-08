@@ -4,9 +4,9 @@ namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
 
 public interface IAppProjectRepository
 {
-    public Task<IEnumerable<AppProjectEntity>> GetAllAsync(CancellationToken cancellationToken);
-    public Task<AppProjectEntity> GetByIdAsync(string id, CancellationToken cancellationToken);
-    public Task AddAsync(AppProjectEntity account, CancellationToken cancellationToken);
-    public Task UpdateAsync(AppProjectEntity account, CancellationToken cancellationToken);
-    public Task DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<IEnumerable<AppProjectEntity>> GetAllAsync(CancellationToken cancellationToken);
+    Task<AppProjectEntity> GetByIdAsync(string id, CancellationToken cancellationToken);
+    Task AddAsync(AppProjectEntity account, CancellationToken cancellationToken);
+    Task UpdateAsync(AppProjectEntity account, CancellationToken cancellationToken);
+    Task DeleteAsync(int id, CancellationToken cancellationToken);
 }

@@ -1,4 +1,4 @@
-﻿using Blazor.Diagrams;
+using Blazor.Diagrams;
 using Blazor.Diagrams.Core.Models;
 using Blazor.Diagrams.Core.PathGenerators;
 using Blazor.Diagrams.Core.Routers;
@@ -51,38 +51,6 @@ public partial class MyDiagram
         // Diagram.Nodes.Add(rootNode);
 
         // await TraverseComponents(rootPath, rootNode, 0);
-    }
-
-    private async Task TraverseComponents(string path, NodeModel parentNode, int level)
-    {
-        if (level > 3) return; // Limit depth to 3 levels to prevent overwhelming the diagram
-
-        const int offsetX = 250;
-        const int offsetY = 150;
-        int childX = (int)parentNode.Position.X + offsetX;
-        int childYStart = (int)parentNode.Position.Y;
-        int childIndex = 0;
-
-        // Process directories and subdirectories
-        // foreach (string? dir in Directory.GetDirectories(path).Where(d => !ShouldExcludeDirectory(d)))
-        // {
-        //     string dirName = Path.GetFileName(dir);
-        //     NodeModel dirNode = CreateNode(dirName, new Point(childX, childYStart + childIndex * offsetY), true);
-
-        //     Diagram.Nodes.Add(dirNode);
-        //     Diagram.Links.Add(new LinkModel(parentNode, dirNode));
-
-        //     // Recursively process subdirectories
-        //     await TraverseComponents(dir, dirNode, level + 1);
-
-        //     childIndex++;
-        // }
-    }
-
-    private bool ShouldExcludeDirectory(string directoryPath)
-    {
-        string? dirName = Path.GetFileName(directoryPath);
-        return _excludedDirectories.Contains(dirName, StringComparer.OrdinalIgnoreCase);
     }
 
     // private NodeModel CreateNode(string title, Point position, bool isDirectory)

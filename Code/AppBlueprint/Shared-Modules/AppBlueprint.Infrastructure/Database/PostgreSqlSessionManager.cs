@@ -25,10 +25,7 @@ public sealed class PostgreSqlSessionManager
         ArgumentException.ThrowIfNullOrEmpty(tenantId);
 
         // Use parameterized connection to set session variable
-        NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection;
-
-        if (connection == null)
-            throw new InvalidOperationException("Database connection is not a PostgreSQL connection");
+        NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection ?? throw new InvalidOperationException("Database connection is not a PostgreSQL connection");
 
         // Ensure connection is open
         if (connection.State != System.Data.ConnectionState.Open)
@@ -49,11 +46,7 @@ public sealed class PostgreSqlSessionManager
     /// <param name="isAdmin">Whether the current user is an admin.</param>
     public async Task SetAdminFlagAsync(bool isAdmin)
     {
-        NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection;
-
-        if (connection == null)
-            throw new InvalidOperationException("Database connection is not a PostgreSQL connection");
-
+        NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection ?? throw new InvalidOperationException("Database connection is not a PostgreSQL connection");
         if (connection.State != System.Data.ConnectionState.Open)
             await connection.OpenAsync();
 
@@ -70,9 +63,7 @@ public sealed class PostgreSqlSessionManager
     /// </summary>
     public async Task ClearSessionVariablesAsync()
     {
-        NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection;
-
-        if (connection == null)
+        if (_dbContext.Database.GetDbConnection() is not NpgsqlConnection connection)
             return; // Not a PostgreSQL connection, nothing to clear
 
         if (connection.State != System.Data.ConnectionState.Open)
@@ -104,11 +95,7 @@ public sealed class PostgreSqlSessionManager
     {
         ArgumentException.ThrowIfNullOrEmpty(tenantId);
 
-        NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection;
-
-        if (connection == null)
-            throw new InvalidOperationException("Database connection is not a PostgreSQL connection");
-
+        NpgsqlConnection? connection = _dbContext.Database.GetDbConnection() as NpgsqlConnection ?? throw new InvalidOperationException("Database connection is not a PostgreSQL connection");
         if (connection.State != System.Data.ConnectionState.Open)
             await connection.OpenAsync();
 

@@ -1,9 +1,7 @@
 using AppBlueprint.Application.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Webhooks;
 
@@ -101,9 +99,9 @@ public sealed class StripeWebhookController : ControllerBase
             return Ok(new
             {
                 Message = "Webhook processed successfully",
-                EventId = result.EventId,
-                EventType = result.EventType,
-                WasDuplicate = result.WasDuplicate
+                result.EventId,
+                result.EventType,
+                result.WasDuplicate
             });
         }
         catch (Exception ex)

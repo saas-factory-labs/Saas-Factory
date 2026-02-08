@@ -1,11 +1,8 @@
-using AppBlueprint.Application.Interfaces.UnitOfWork;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Account;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
@@ -39,7 +36,7 @@ public class AccountController : BaseController
         ArgumentNullException.ThrowIfNull(idOrSlug);
 
         AccountEntity? account = await _accountRepository.GetByIdAsync(idOrSlug, cancellationToken);
-        
+
         // Guard clause: Account not found
         if (account is null)
             return NotFound(new { Message = "No account found." });
@@ -47,8 +44,8 @@ public class AccountController : BaseController
         // map to dto
         var accountDto = new
         {
-            Id = account.Id,
-            Email = account.Email,
+            account.Id,
+            account.Email,
         };
 
         return Ok(accountDto);
@@ -66,14 +63,14 @@ public class AccountController : BaseController
     {
         // call accountService instead of repository here
         IEnumerable<AccountEntity>? accounts = await _accountRepository.GetAllAsync(cancellationToken);
-        
+
         // Guard clause: No accounts found
         if (!accounts.Any())
             return NotFound(new { Message = "No accounts found." });
 
         var accountDtOs = accounts.Select(account => new
         {
-            Id = account.Id,
+            account.Id,
             account.Email
         }).ToList();
 
@@ -94,7 +91,7 @@ public class AccountController : BaseController
         if (!accounts.Any()) return NotFound(new { Message = "No accounts found." });        // map to dto
         var accountDtOs = accounts.Select(account => new
         {
-            Id = account.Id,
+            account.Id,
             account.Email
         }).ToList();
 

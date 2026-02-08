@@ -110,7 +110,7 @@ public sealed class FileStorageController : BaseController
         {
             _logger.LogWarning("File validation failed: {FileName}, Errors: {Errors}",
                 file.FileName, string.Join(", ", validationResult.Errors));
-            return BadRequest(new { Message = "File validation failed", Errors = validationResult.Errors });
+            return BadRequest(new { Message = "File validation failed", validationResult.Errors });
         }
 
         // Reset stream position for upload

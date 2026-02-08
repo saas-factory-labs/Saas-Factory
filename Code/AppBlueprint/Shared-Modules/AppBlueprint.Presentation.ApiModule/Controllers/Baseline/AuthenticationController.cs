@@ -3,7 +3,6 @@ using AppBlueprint.Contracts.Baseline.Auth.Requests;
 using AppBlueprint.Domain.Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
@@ -101,7 +100,7 @@ public class AuthenticationController : BaseController
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new { Message = ex.Message });
+            return BadRequest(new { ex.Message });
         }
     }
 

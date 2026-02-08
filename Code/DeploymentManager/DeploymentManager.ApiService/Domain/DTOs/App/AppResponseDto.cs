@@ -1,4 +1,4 @@
-﻿namespace DeploymentManager.ApiService.Domain.DTOs.App;
+namespace DeploymentManager.ApiService.Domain.DTOs.App;
 
 public class AppResponseDto
 {

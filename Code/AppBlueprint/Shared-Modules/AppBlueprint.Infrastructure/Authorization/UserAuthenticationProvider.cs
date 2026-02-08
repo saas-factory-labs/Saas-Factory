@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.Kiota.Abstractions;
-using Microsoft.Kiota.Abstractions.Authentication;
 
 namespace AppBlueprint.Infrastructure.Authorization;
 
@@ -185,7 +184,7 @@ public sealed class UserAuthenticationProvider : IUserAuthenticationProvider, ID
         {
             sub = "123456",
             name = email,
-            email = email,
+            email,
             iat = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
             exp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds()
         };
@@ -223,11 +222,11 @@ public static class StringExtensions
     {
         ArgumentNullException.ThrowIfNull(base64);
 
-        switch (base64.Length % 4)
+        return (base64.Length % 4) switch
         {
-            case 2: return base64 + "==";
-            case 3: return base64 + "=";
-            default: return base64;
-        }
+            2 => base64 + "==",
+            3 => base64 + "=",
+            _ => base64,
+        };
     }
 }

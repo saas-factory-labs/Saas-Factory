@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Hosting;
-
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
 /// <summary>

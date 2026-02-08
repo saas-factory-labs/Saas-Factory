@@ -182,7 +182,7 @@ public static class ConfigurationValidator
         }
 
         if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) ||
-            (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
         {
             throw new InvalidOperationException(
                 $"Configuration '{configKey}' contains an invalid URL: '{url}'\n" +

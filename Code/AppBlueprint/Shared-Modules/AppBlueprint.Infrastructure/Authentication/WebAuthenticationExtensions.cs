@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
-using Logto.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -810,20 +809,14 @@ public static class WebAuthenticationExtensions
             {
                 Console.WriteLine("[Web] ⚠️ DbContextFactory not available in DI container");
                 // Fallback to onboarding if we can't check database
-                if (context.Properties is not null)
-                {
-                    context.Properties.RedirectUri = "/onboarding";
-                }
+                context.Properties?.RedirectUri = "/onboarding";
             }
         }
         else
         {
             Console.WriteLine("[Web] ⚠️ No email claim found in JWT");
             // Fallback to onboarding if we can't identify user
-            if (context.Properties is not null)
-            {
-                context.Properties.RedirectUri = "/onboarding";
-            }
+            context.Properties?.RedirectUri = "/onboarding";
         }
 
         Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");
@@ -1027,7 +1020,7 @@ public static class WebAuthenticationExtensions
                 {
                     test = "HTTPS Connectivity",
                     success = response.IsSuccessStatusCode,
-                    url = url,
+                    url,
                     statusCode = (int)response.StatusCode,
                     statusDescription = response.ReasonPhrase,
                     contentLength = content.Length,

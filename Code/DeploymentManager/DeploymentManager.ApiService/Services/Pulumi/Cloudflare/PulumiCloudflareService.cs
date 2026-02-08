@@ -1,4 +1,4 @@
-﻿namespace DeploymentManager.ApiService.Services.Pulumi.Cloudflare;
+namespace DeploymentManager.ApiService.Services.Pulumi.Cloudflare;
 
 public enum CloudflareResourceType // Cloudflare resource types
 {

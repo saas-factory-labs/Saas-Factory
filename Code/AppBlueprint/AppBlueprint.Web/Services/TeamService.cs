@@ -1,7 +1,6 @@
+using System.Text.Json;
 using AppBlueprint.Contracts.B2B.Contracts.Team.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.Team.Responses;
-using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace AppBlueprint.Web.Services;
 

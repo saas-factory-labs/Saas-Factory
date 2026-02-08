@@ -28,23 +28,12 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
         _applicationDbContextFactory = applicationDbContextFactory;
     }
 
-    private IAdminRepository? __adminRepository;
-    private IAccountRepository? _accountRepository;
-    private IApiKeyRepository? _apiKeyRepository;
-    private DomainNotificationRepository? _notificationRepository;
-    private IOrganizationRepository? _organizationRepository;
-    private IPermissionRepository? _permissionRepository;
-    private IRoleRepository? _roleRepository;
-    private ITeamRepository? _teamRepository;
-    private ITenantRepository? _tenantRepository;
-    private IUserRepository? _userRepository;
-
     public IAccountRepository AccountRepository
     {
         get
         {
-            _accountRepository ??= new AccountRepository(_applicationDbContext);
-            return _accountRepository;
+            field ??= new AccountRepository(_applicationDbContext);
+            return field;
         }
     }
 
@@ -52,8 +41,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            __adminRepository ??= new AdminRepository(_applicationDbContext);
-            return __adminRepository;
+            field ??= new AdminRepository(_applicationDbContext);
+            return field;
         }
     }
 
@@ -61,8 +50,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            _roleRepository ??= new RoleRepository(_applicationDbContext);
-            return _roleRepository;
+            field ??= new RoleRepository(_applicationDbContext);
+            return field;
         }
     }
 
@@ -70,8 +59,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            _permissionRepository ??= new PermissionRepository(_applicationDbContext);
-            return _permissionRepository;
+            field ??= new PermissionRepository(_applicationDbContext);
+            return field;
         }
     }
 
@@ -79,8 +68,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            _userRepository ??= new UserRepository(_applicationDbContext);
-            return _userRepository;
+            field ??= new UserRepository(_applicationDbContext);
+            return field;
         }
     }
 
@@ -88,8 +77,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            _tenantRepository ??= new TenantRepository(_applicationDbContextFactory);
-            return _tenantRepository;
+            field ??= new TenantRepository(_applicationDbContextFactory);
+            return field;
         }
     }
 
@@ -97,8 +86,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            _organizationRepository ??= new OrganizationRepository(_b2bDbContext);
-            return _organizationRepository;
+            field ??= new OrganizationRepository(_b2bDbContext);
+            return field;
         }
     }
 
@@ -106,8 +95,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            _notificationRepository ??= new UserNotificationRepository(_applicationDbContext);
-            return _notificationRepository;
+            field ??= new UserNotificationRepository(_applicationDbContext);
+            return field;
         }
     }
 
@@ -115,8 +104,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            _apiKeyRepository ??= new ApiKeyRepository(_b2bDbContext);
-            return _apiKeyRepository;
+            field ??= new ApiKeyRepository(_b2bDbContext);
+            return field;
         }
     }
 
@@ -124,8 +113,8 @@ public sealed class UnitOfWorkImplementation : IUnitOfWork
     {
         get
         {
-            _teamRepository ??= new TeamRepository(_b2bDbContext);
-            return _teamRepository;
+            field ??= new TeamRepository(_b2bDbContext);
+            return field;
         }
     }
 

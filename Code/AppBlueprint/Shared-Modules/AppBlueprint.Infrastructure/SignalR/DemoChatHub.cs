@@ -130,7 +130,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         else
         {
             bool isAuthorized = await _authorizationService.CanJoinConversationAsync(conversationId, userId, tenantId);
-            
+
             // Guard clause: Authorization check
             if (!isAuthorized)
             {
@@ -186,7 +186,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         if (_authorizationService is not null)
         {
             bool isAuthorized = await _authorizationService.CanSendMessageAsync(conversationId, userId, tenantId);
-            
+
             // Guard clause: Authorization check
             if (!isAuthorized)
             {

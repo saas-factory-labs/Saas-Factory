@@ -1,5 +1,3 @@
-using Microsoft.Kiota.Abstractions.Authentication;
-
 namespace AppBlueprint.Infrastructure.Authorization.Providers;
 
 public interface IAuthenticationProvider : Microsoft.Kiota.Abstractions.Authentication.IAuthenticationProvider

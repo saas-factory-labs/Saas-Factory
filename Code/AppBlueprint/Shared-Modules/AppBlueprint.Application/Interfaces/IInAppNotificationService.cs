@@ -1,5 +1,3 @@
-using AppBlueprint.Application.Interfaces;
-
 namespace AppBlueprint.Application.Interfaces;
 
 /// <summary>

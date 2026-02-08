@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.Logging;

@@ -1,6 +1,5 @@
 using AppBlueprint.Infrastructure.Authorization.Providers;
 using Microsoft.Kiota.Abstractions;
-using Microsoft.Kiota.Abstractions.Authentication;
 
 namespace AppBlueprint.Infrastructure.Authorization;
 

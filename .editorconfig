@@ -211,6 +211,9 @@ dotnet_diagnostic.S5042.severity = error # Weak Cryptography
 
 #### Code Analysis Rules ####
 
+# IDE0005: Remove unnecessary using directives
+dotnet_diagnostic.IDE0005.severity = warning
+
 # General suppressions
 dotnet_diagnostic.CA1000.severity = none
 dotnet_diagnostic.CA1031.severity = warning

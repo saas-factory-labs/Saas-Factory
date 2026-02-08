@@ -1,4 +1,3 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;

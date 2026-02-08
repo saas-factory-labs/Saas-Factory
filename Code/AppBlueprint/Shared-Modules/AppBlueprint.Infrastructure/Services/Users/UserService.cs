@@ -1,8 +1,6 @@
 using System.Security.Cryptography;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailVerification;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.PasswordReset;
@@ -29,11 +27,13 @@ public class UserServiceInfrastructure
     private static readonly TimeSpan EmailTokenValidity = TimeSpan.FromHours(24);
     private static readonly TimeSpan ResetTokenValidity = TimeSpan.FromHours(1);
 
-    private static string ToUrlToken(byte[] bytes) =>
-        Convert.ToBase64String(bytes)
+    private static string ToUrlToken(byte[] bytes)
+    {
+        return Convert.ToBase64String(bytes)
             .Replace("/", "_", StringComparison.Ordinal)
             .Replace("+", "-", StringComparison.Ordinal)
             .Replace("=", "", StringComparison.Ordinal);
+    }
 
     public UserServiceInfrastructure(
         IUnitOfWork unitOfWork,

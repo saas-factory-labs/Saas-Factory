@@ -1,4 +1,4 @@
-﻿//namespace DeploymentPortal.ApiService.Infrastructure.Services
+//namespace DeploymentPortal.ApiService.Infrastructure.Services
 //{
 //    public class StripePaymentService
 //{

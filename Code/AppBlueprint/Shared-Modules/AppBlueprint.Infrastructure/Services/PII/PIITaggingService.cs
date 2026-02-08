@@ -1,6 +1,5 @@
 using System.Text.Json;
 using AppBlueprint.Application.Interfaces.PII;
-using AppBlueprint.SharedKernel.SharedModels.PII;
 
 namespace AppBlueprint.Infrastructure.Services.PII;
 

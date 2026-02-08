@@ -1,4 +1,4 @@
-﻿namespace DeploymentManager.ApiService.Domain.Entities;
+namespace DeploymentManager.ApiService.Domain.Entities;
 
 public class CustomerEntity
 {

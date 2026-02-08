@@ -161,38 +161,6 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         }
     }
 
-    private async Task SendSignalRNotificationAsync(
-        string userId,
-        string title,
-        string message,
-        string type,
-        Uri? actionUrl,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            object notification = new
-            {
-                title,
-                message,
-                type,
-                actionUrl = actionUrl?.ToString(),
-                timestamp = DateTime.UtcNow
-            };
-
-            await _hubContext.Clients.Group($"user:{userId}").SendAsync("ReceiveNotification", notification, cancellationToken);
-            _logger.LogDebug("Sent SignalR notification to user {UserId}", userId);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogError(ex, "SignalR hub not available or connection closed for user {UserId}", userId);
-        }
-        catch (TaskCanceledException ex)
-        {
-            _logger.LogWarning(ex, "SignalR notification timed out for user {UserId}", userId);
-        }
-    }
-
     private async Task SendSignalRTenantNotificationAsync(
         string tenantId,
         string title,

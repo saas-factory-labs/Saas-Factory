@@ -1,4 +1,4 @@
-﻿//namespace DeploymentManager.Web.Pages
+//namespace DeploymentManager.Web.Pages
 //{
 //    public partial class MyDiagram
 //    {

@@ -1,4 +1,3 @@
-using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Contracts.Baseline.User.Requests;
 using AppBlueprint.Contracts.Baseline.User.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts;
