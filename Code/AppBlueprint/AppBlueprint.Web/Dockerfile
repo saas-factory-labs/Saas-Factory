@@ -14,6 +14,14 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
+# Install Node.js for TypeScript compilation
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Copy package management files
 COPY Code/AppBlueprint/Directory.Packages.props ./
 COPY Code/AppBlueprint/NuGet.Config /root/.nuget/NuGet.Config
