@@ -82,7 +82,7 @@
                         </td>
                         <td class="p-2 whitespace-nowrap">
                             <div class="w-[96px]">
-                                <Charts.LineChart
+                                <LineChart
                                     CanvasId="@($"trend-chart-{item.Symbol}")"
                                     Height="32"
                                     Width="96"
@@ -118,7 +118,7 @@
         public string MarketCap { get; set; } = "";
         public string Price { get; set; } = "";
         public string Change { get; set; } = "";
-        public List<Charts.LineChart.ChartDataset> ChartDatasets { get; set; } = new();
+        public List<LineChart.ChartDataset> ChartDatasets { get; set; } = new();
     }
 
     private List<MarketItem> items = new();
@@ -134,9 +134,9 @@
                 MarketCap = "33.94B",
                 Price = "$43.07",
                 Change = "+$4.20 (4%)",
-                ChartDatasets = new List<Charts.LineChart.ChartDataset>
+                ChartDatasets = new List<LineChart.ChartDataset>
                 {
-                    new Charts.LineChart.ChartDataset
+                    new LineChart.ChartDataset
                     {
                         Data = new List<double> { 540, 466, 540, 466, 385, 432, 334, 334, 289, 289, 200, 289, 222, 289, 289, 403, 554, 304, 289, 270, 134, 270, 829, 644, 688, 664 },
                         BorderColor = "rgb(62, 201, 114)", // custom green-500
@@ -153,9 +153,9 @@
                 MarketCap = "903.71B",
                 Price = "$324.81",
                 Change = "+$12.20 (3.7%)",
-                ChartDatasets = new List<Charts.LineChart.ChartDataset>
+                ChartDatasets = new List<LineChart.ChartDataset>
                 {
-                    new Charts.LineChart.ChartDataset
+                    new LineChart.ChartDataset
                     {
                         Data = new List<double> { 245, 288, 332, 404, 404, 314, 314, 314, 314, 314, 234, 314, 234, 234, 314, 314, 314, 388, 314, 202, 202, 202, 202, 514, 720, 642 },
                         BorderColor = "rgb(62, 201, 114)", // custom green-500
@@ -172,9 +172,9 @@
                 MarketCap = "1.70T",
                 Price = "$2,860.96",
                 Change = "-$12.20 (3.7%)",
-                ChartDatasets = new List<Charts.LineChart.ChartDataset>
+                ChartDatasets = new List<LineChart.ChartDataset>
                 {
-                    new Charts.LineChart.ChartDataset
+                    new LineChart.ChartDataset
                     {
                         Data = new List<double> { 732, 610, 610, 504, 504, 504, 349, 349, 504, 342, 504, 610, 391, 192, 154, 273, 191, 191, 126, 263, 349, 252, 323, 322, 270, 232 },
                         BorderColor = "rgb(255, 86, 86)", // custom red-500
@@ -191,9 +191,9 @@
                 MarketCap = "2.77T",
                 Price = "$168.55",
                 Change = "+$7.44 (1.4%)",
-                ChartDatasets = new List<Charts.LineChart.ChartDataset>
+                ChartDatasets = new List<LineChart.ChartDataset>
                 {
-                    new Charts.LineChart.ChartDataset
+                    new LineChart.ChartDataset
                     {
                         Data = new List<double> { 222, 222, 226, 271, 365, 365, 238, 324, 288, 206, 324, 324, 500, 409, 409, 273, 232, 273, 500, 570, 767, 808, 685, 767, 685, 685 },
                         BorderColor = "rgb(62, 201, 114)", // custom green-500
@@ -210,9 +210,9 @@
                 MarketCap = "50.89B",
                 Price = "$236.48",
                 Change = "-$24,30 (6.2%)",
-                ChartDatasets = new List<Charts.LineChart.ChartDataset>
+                ChartDatasets = new List<LineChart.ChartDataset>
                 {
-                    new Charts.LineChart.ChartDataset
+                    new LineChart.ChartDataset
                     {
                         Data = new List<double> { 632, 510, 610, 404, 504, 404, 449, 349, 404, 542, 404, 410, 491, 392, 254, 273, 291, 191, 226, 363, 449, 252, 223, 222, 170, 132 },
                         BorderColor = "rgb(255, 86, 86)", // custom red-500

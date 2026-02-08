@@ -142,6 +142,7 @@
     <PackageVersion Include="Pulumi.Cloudflare" Version="6.1.2" />
     <PackageVersion Include="Dgraph-dotnet" Version="0.7.0" />
     <PackageVersion Include="HotChocolate" Version="15.1.3" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="18.0.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.13.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.13.0" />

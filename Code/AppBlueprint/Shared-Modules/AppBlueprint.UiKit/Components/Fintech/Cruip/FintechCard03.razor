@@ -6,7 +6,7 @@
     </header>
     <!-- Chart -->
     <div class="grow px-5 py-3">
-        <Charts.BarChart
+        <BarChart
             CanvasId="fintech-bar-chart"
             Height="248"
             Labels="@labels"
@@ -19,13 +19,13 @@
 @code {
     private List<string> labels = new() { "Jan", "Feb", "Mar", "Apr", "May", "Jun" };
 
-    private List<Charts.BarChart.BarChartDataset> datasets = new();
+    private List<BarChart.BarChartDataset> datasets = new();
 
     protected override void OnInitialized()
     {
         datasets = new()
         {
-            new Charts.BarChart.BarChartDataset
+            new BarChart.BarChartDataset
             {
                 Label = "Income",
                 Data = new List<double> { 800, 2600, 4000, 1200, 3200, 1700 },
@@ -36,7 +36,7 @@
                 BorderRadius = 4
             },
             // Gray bars (Outflow)
-            new Charts.BarChart.BarChartDataset
+            new BarChart.BarChartDataset
             {
                 Label = "Outflow",
                 Data = new List<double> { 2800, 1700, 900, 2900, 1950, 3100 },

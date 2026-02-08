@@ -25,7 +25,6 @@
         <PackageReference Include="Aspire.Hosting.Testing" />
         <PackageReference Include="coverlet.collector" />
         <PackageReference Include="Moq" />
-        <PackageReference Include="System.Text.Json" />
         <PackageReference Include="TUnit" />
         <PackageReference Include="TUnit.Assertions" />
     </ItemGroup>

@@ -38,3 +38,13 @@ exclude:
   # Suppress false positive for Blazor RCL static asset paths - _content/{LibraryName}/ is a runtime virtual path
   - name: Html.PathError
     paths: ["Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit"]
+  
+  # Suppress AutoPropertyCanBeMadeGetOnly for EF entities, DTOs, and configuration classes
+  # These require { get; set; } for EF Core materialization, JSON serialization, and config binding
+  - name: AutoPropertyCanBeMadeGetOnly.Global
+    paths:
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/Entities"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Configuration"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel"

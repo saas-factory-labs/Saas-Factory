@@ -38,7 +38,6 @@
         <PackageReference Include="NUlid"/>
         <PackageReference Include="OpenTelemetry"/>
         <!-- <PackageReference Include="Scrutor" /> -->
-        <PackageReference Include="System.Text.Json"/>
         <PackageReference Include="xunit"/>
         <PackageReference Include="xunit.runner.visualstudio">
             <PrivateAssets>all</PrivateAssets>

@@ -2,7 +2,7 @@
     Title="Acquisition Channels"
     GridColumnClass="sm:col-span-6"
     HeaderClass="flex items-center">
-    <Charts.BarChart
+    <BarChart
         CanvasId="analytics-card-03-chart"
         Labels="@labels"
         Datasets="@datasets"
@@ -18,7 +18,7 @@
         "03-01-2023", "04-01-2023", "05-01-2023"
     };
 
-    private List<Charts.BarChart.BarChartDataset> datasets = new()
+    private List<BarChart.BarChartDataset> datasets = new()
     {
         new()
         {

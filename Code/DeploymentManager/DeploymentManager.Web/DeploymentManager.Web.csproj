@@ -17,7 +17,6 @@
         <PackageReference Include="Z.Blazor.Diagrams"/>
         <PackageReference Include="Microsoft.OpenApi.Readers"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore"/>
     </ItemGroup>
     <ItemGroup>

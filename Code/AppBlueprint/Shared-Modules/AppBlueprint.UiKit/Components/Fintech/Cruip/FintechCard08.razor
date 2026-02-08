@@ -10,7 +10,7 @@
     </div>
     <!-- Chart -->
     <div class="grow">
-        <Charts.LineChart
+        <LineChart
             CanvasId="growth-portfolio-chart"
             Height="168"
             Labels="@labels"
@@ -25,13 +25,13 @@
 @code {
     private List<string> labels = Enumerable.Range(0, 26).Select(i => $"Point {i}").ToList();
 
-    private List<Charts.LineChart.ChartDataset> datasets = new();
+    private List<LineChart.ChartDataset> datasets = new();
 
     protected override void OnInitialized()
     {
         datasets = new()
         {
-            new Charts.LineChart.ChartDataset
+            new LineChart.ChartDataset
             {
                 Label = "Growth",
                 Data = new List<double>
