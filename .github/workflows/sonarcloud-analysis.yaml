@@ -55,7 +55,6 @@ jobs:
 
       # Set SONAR_TOKEN from secret to environment (secured in env block)
       - name: Start SonarCloud analysis
-        if: secrets.SONAR_TOKEN != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -75,7 +74,6 @@ jobs:
           done
 
       - name: End SonarCloud analysis
-        if: secrets.SONAR_TOKEN != ''
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
