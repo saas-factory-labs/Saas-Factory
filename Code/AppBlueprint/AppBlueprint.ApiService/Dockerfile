@@ -1,5 +1,5 @@
-# Base runtime image (ASP.NET Core for API) - Microsoft Chiseled (Distroless)
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled AS base
+# Base runtime image (ASP.NET Core for API) - Includes ICU for globalization
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 USER $APP_UID
 WORKDIR /app
 
