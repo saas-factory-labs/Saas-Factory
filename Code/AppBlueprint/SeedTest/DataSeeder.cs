@@ -230,13 +230,13 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
     {
         if (await dbContext.Languages.AnyAsync(cancellationToken)) return;
 
-        var languages = new List<LanguageEntity>
-        {
+        LanguageEntity[] languages =
+        [
             new() { Name = "English", Code = "en" },
             new() { Name = "Danish", Code = "da" },
             new() { Name = "Spanish", Code = "es" },
             new() { Name = "French", Code = "fr" }
-        };
+        ];
 
         await dbContext.Languages.AddRangeAsync(languages, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -247,8 +247,8 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
     {
         if (await dbContext.Countries.AnyAsync(cancellationToken)) return;
 
-        var countries = new List<CountryEntity>
-        {
+        CountryEntity[] countries =
+        [
             new()
             {
                 Name = "United States",
@@ -257,7 +257,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
                 GlobalRegionId = PrefixedUlid.Generate("region"),
                 GlobalRegion = new GlobalRegionEntity { Name = "America" }
             }
-        };
+        ];
 
         await dbContext.Countries.AddRangeAsync(countries, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -297,13 +297,13 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
     {
         if (await dbContext.Roles.AnyAsync(cancellationToken)) return;
 
-        var roles = new List<RoleEntity>
-        {
+        RoleEntity[] roles =
+        [
             new() { Name = "Admin" },
             new() { Name = "User" },
             new() { Name = "Manager" },
             new() { Name = "Owner" }
-        };
+        ];
 
         await dbContext.Roles.AddRangeAsync(roles, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -314,15 +314,15 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
     {
         if (await dbContext.GlobalRegions.AnyAsync(cancellationToken)) return;
 
-        var globalRegions = new List<GlobalRegionEntity>
-        {
+        GlobalRegionEntity[] globalRegions =
+        [
             new() { Name = "North America" },
             new() { Name = "Europe" },
             new() { Name = "Asia" },
             new() { Name = "South America" },
             new() { Name = "Africa" },
             new() { Name = "Oceania" }
-        };
+        ];
 
         await dbContext.GlobalRegions.AddRangeAsync(globalRegions, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -399,15 +399,15 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
     {
         if (await dbContext.Permissions.AnyAsync(cancellationToken)) return;
 
-        var permissions = new List<PermissionEntity>
-        {
+        PermissionEntity[] permissions =
+        [
             new() { Name = "Create", Description = "Create new resources" },
             new() { Name = "Read", Description = "Read existing resources" },
             new() { Name = "Update", Description = "Update existing resources" },
             new() { Name = "Delete", Description = "Delete existing resources" },
             new() { Name = "ManageUsers", Description = "Manage user accounts" },
             new() { Name = "ManageRoles", Description = "Manage user roles" }
-        };
+        ];
 
         await dbContext.Permissions.AddRangeAsync(permissions, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -436,7 +436,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         var manageUsersPerm = permissions.FirstOrDefault(p => p.Name == "ManageUsers");
         var manageRolesPerm = permissions.FirstOrDefault(p => p.Name == "ManageRoles");
 
-        var rolePermissions = new List<RolePermissionEntity>();
+        List<RolePermissionEntity> rolePermissions = [];
 
         // Admin Role - Full permissions
         if (adminRole is not null)
@@ -503,7 +503,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var userRole = roles.FirstOrDefault(r => r.Name == "User");
             var ownerRole = roles.FirstOrDefault(r => r.Name == "Owner");
 
-            var userRoles = new List<UserRoleEntity>();
+            List<UserRoleEntity> userRoles = [];
 
             // Distribute roles realistically:
             // - Owner: first 2 users
@@ -856,15 +856,15 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         {
             if (await dbContext.PaymentProviders.AnyAsync(cancellationToken)) return;
 
-            var paymentProviders = new List<PaymentProviderEntity>
-            {
+            PaymentProviderEntity[] paymentProviders =
+            [
                 new() { Name = "Stripe", Description = "Online payment processing for internet businesses", IsActive = true },
                 new() { Name = "PayPal", Description = "Digital payment platform and online money transfer service", IsActive = true },
                 new() { Name = "Square", Description = "Point-of-sale and financial services platform", IsActive = true },
                 new() { Name = "Klarna", Description = "Buy now, pay later payment solution", IsActive = true },
                 new() { Name = "Adyen", Description = "Global payment platform for omnichannel commerce", IsActive = true },
                 new() { Name = "Braintree", Description = "Full-stack payment platform owned by PayPal", IsActive = false }
-            };
+            ];
 
             await dbContext.PaymentProviders.AddRangeAsync(paymentProviders, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);

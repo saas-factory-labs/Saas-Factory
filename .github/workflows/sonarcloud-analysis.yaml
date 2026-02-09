@@ -59,6 +59,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "⚠️ SONAR_TOKEN not configured - skipping SonarCloud analysis"
+            echo "To enable SonarCloud: Configure SONAR_TOKEN secret in repository settings"
+            exit 0
+          fi
           ./.sonar/scanner/dotnet-sonarscanner begin \
             /k:"saas-factory-labs_Saas-Factory" \
             /o:"saas-factory-labs" \
@@ -77,4 +82,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "⚠️ SONAR_TOKEN not configured - skipping SonarCloud analysis end"
+            exit 0
+          fi
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"

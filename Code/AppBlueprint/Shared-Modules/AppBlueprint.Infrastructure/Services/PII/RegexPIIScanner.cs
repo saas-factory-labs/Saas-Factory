@@ -159,7 +159,7 @@ public partial class RegexPIIScanner : IPIIScanner
             return Task.FromResult(Enumerable.Empty<PIITag>());
         }
 
-        var tags = new List<PIITag>();
+        List<PIITag> tags = [];
 
         foreach (var def in _definitions)
         {

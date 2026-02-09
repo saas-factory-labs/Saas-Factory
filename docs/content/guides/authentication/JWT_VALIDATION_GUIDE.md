@@ -51,7 +51,7 @@ The new `JwtAuthenticationExtensions` configures Microsoft's JWT middleware to:
 
 ### API Service (`appsettings.json`)
 
-```json
+```jsonc
 {
   "Authentication": {
     "Provider": "JWT",  // or "Auth0" or "Logto"

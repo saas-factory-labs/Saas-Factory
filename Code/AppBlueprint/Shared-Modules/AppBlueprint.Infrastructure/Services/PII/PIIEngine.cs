@@ -23,7 +23,7 @@ public class PIIEngine : IPIIEngine
             };
         }
 
-        var allTags = new List<PIITag>();
+        List<PIITag> allTags = [];
         foreach (var scanner in _scanners)
         {
             var results = await scanner.ScanAsync(text, cancellationToken);
@@ -39,7 +39,7 @@ public class PIIEngine : IPIIEngine
 
         return new PIIMetadata
         {
-            PiiDetected = distinctTags.Any(),
+            PiiDetected = distinctTags.Count > 0,
             PiiTags = distinctTags,
             ScannerInfo = new ScannerInfo { Engine = GetEngineSummary() }
         };

@@ -45,7 +45,7 @@ $env:DATABASE_CONNECTION_STRING="Host=localhost;Port=5432;Database=dating_app;Us
 
 **OR** use `appsettings.json`:
 
-```json
+```jsonc
 {
   "Logto": {
     "Endpoint": "https://your-tenant.logto.app",

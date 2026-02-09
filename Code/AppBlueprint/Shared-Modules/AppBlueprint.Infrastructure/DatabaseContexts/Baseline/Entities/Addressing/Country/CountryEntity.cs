@@ -15,7 +15,7 @@ public class CountryEntity : BaseEntity
     public CountryEntity()
     {
         Id = PrefixedUlid.Generate("country");
-        Cities = new List<CityEntity>();
+        Cities = [];
         GlobalRegion = new GlobalRegionEntity
         {
             Name = string.Empty

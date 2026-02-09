@@ -42,14 +42,14 @@ public class StripeSubscriptionService
         var subscriptionOptions = new SubscriptionCreateOptions
         {
             Customer = customerId,
-            Items = new List<SubscriptionItemOptions>
-            {
+            Items =
+            [
                 new()
                 {
                     Price = priceId // Price ID from your Stripe Dashboard
                 }
-            },
-            Expand = new List<string> { "latest_invoice.payment_intent" }
+            ],
+            Expand = ["latest_invoice.payment_intent"]
         };
         var subscriptionService = new SubscriptionService();
         return subscriptionService.Create(subscriptionOptions);

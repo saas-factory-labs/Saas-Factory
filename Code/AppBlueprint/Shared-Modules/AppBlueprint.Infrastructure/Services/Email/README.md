@@ -408,15 +408,15 @@ Create `Templates/_Layout.cshtml` to customize branding:
 
 All models are in `AppBlueprint.Contracts.Baseline.Email`:
 
-| Model | Properties | Use Case |
-|-------|-----------|----------|
-| `WelcomeEmailModel` | UserName, EmailAddress, TenantName, ActivationLink | New user onboarding |
-| `PasswordResetEmailModel` | UserName, EmailAddress, ResetLink, ExpiresAt | Password reset flow |
-| `OrderConfirmationEmailModel` | CustomerName, OrderId, OrderDate, TotalAmount, OrderDetailsLink | E-commerce orders |
-| `InvoiceEmailModel` | CustomerName, InvoiceNumber, InvoiceDate, DueDate, TotalAmount, InvoiceLink | Billing/invoices |
-| `BookingConfirmationEmailModel` | UserName, PropertyName, CheckInDate, CheckOutDate, TotalPrice, BookingReference | Property rentals |
-| `WeeklyDigestEmailModel` | UserName, WeekStartDate, WeekEndDate, NewNotifications, NewMessages, HighlightedActivities | Weekly summaries |
-| `AdminNotificationEmailModel` | AdminName, NotificationType, Title, Message, ActionLink, OccurredAt | Admin alerts |
+| Model                              | Properties                                                                                   | Use Case             |
+|------------------------------------|----------------------------------------------------------------------------------------------|----------------------|
+| `WelcomeEmailModel`                | UserName, EmailAddress, TenantName, ActivationLink                                           | New user onboarding  |
+| `PasswordResetEmailModel`          | UserName, EmailAddress, ResetLink, ExpiresAt                                                 | Password reset flow  |
+| `OrderConfirmationEmailModel`      | CustomerName, OrderId, OrderDate, TotalAmount, OrderDetailsLink                              | E-commerce orders    |
+| `InvoiceEmailModel`                | CustomerName, InvoiceNumber, InvoiceDate, DueDate, TotalAmount, InvoiceLink                  | Billing/invoices     |
+| `BookingConfirmationEmailModel`    | UserName, PropertyName, CheckInDate, CheckOutDate, TotalPrice, BookingReference              | Property rentals     |
+| `WeeklyDigestEmailModel`           | UserName, WeekStartDate, WeekEndDate, NewNotifications, NewMessages, HighlightedActivities   | Weekly summaries     |
+| `AdminNotificationEmailModel`      | AdminName, NotificationType, Title, Message, ActionLink, OccurredAt                          | Admin alerts         |
 
 ---
 

@@ -293,11 +293,11 @@ The `TenantTypeAuthorize` component provides route-level protection based on ten
 
 ### TenantTypeAuthorize Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `AllowedTenantTypes` | `List<TenantType>?` | List of tenant types allowed to access this page (e.g., `TenantType.Personal`, `TenantType.Organization`) |
-| `AllowUnauthenticated` | `bool` | If `true`, only unauthenticated users can access (useful for demo pages) |
-| `ChildContent` | `RenderFragment?` | Content to render if authorized |
+| Parameter                | Type                      | Description |
+|--------------------------|---------------------------|-------------|
+| `AllowedTenantTypes`     | `List<TenantType>?`       | List of tenant types allowed to access this page (e.g., `TenantType.Personal`, `TenantType.Organization`) |
+| `AllowUnauthenticated`   | `bool`                    | If `true`, only unauthenticated users can access (useful for demo pages) |
+| `ChildContent`           | `RenderFragment?`         | Content to render if authorized |
 
 ### TenantTypeAuthorize Behavior
 
@@ -511,8 +511,8 @@ When UiKit is updated:
 
 For issues, questions, or contributions, please visit:
 - GitHub: [saas-factory-labs/Saas-Factory](https://github.com/saas-factory-labs/Saas-Factory)
-- Documentation: [Writerside Docs](../../../../Writerside/topic/README.md)
+- Documentation: [docs/README.md](../../../../docs/README.md)
 
 ## License
 
-See [LICENSE.md](../../../../LICENSE.md) for details.
+See [LICENSE](../../../../LICENSE) for details.

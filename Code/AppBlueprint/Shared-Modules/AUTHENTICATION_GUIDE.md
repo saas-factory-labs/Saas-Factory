@@ -349,10 +349,12 @@ To switch authentication providers, simply update your configuration:
 ```json
 {
   "Authentication": {
-    "Provider": "Auth0"  // Changed from "Logto" to "Auth0"
+    "Provider": "Auth0"
   }
 }
 ```
+
+> **Example:** Changed from `Logto` to `Auth0`
 
 Or via environment variable:
 ```bash

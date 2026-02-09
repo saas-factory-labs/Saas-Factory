@@ -349,7 +349,7 @@ app.UseAuthorization();   // ← Must be second
 
 Make sure your configuration keys match exactly:
 
-```json
+```jsonc
 {
   "Authentication": {
     "Provider": "Logto",

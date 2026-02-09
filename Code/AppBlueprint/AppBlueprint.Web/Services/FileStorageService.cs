@@ -42,15 +42,24 @@ internal sealed class FileStorageService(HttpClient httpClient, ILogger<FileStor
 
         if (!string.IsNullOrWhiteSpace(folder))
         {
+            // CA2000: StringContent is disposed by MultipartFormDataContent when it's disposed
+            #pragma warning disable CA2000
             content.Add(new StringContent(folder), "folder");
+            #pragma warning restore CA2000
         }
 
+        // CA2000: StringContent is disposed by MultipartFormDataContent when it's disposed
+        #pragma warning disable CA2000
         content.Add(new StringContent(isPublic.ToString()), "isPublic");
+        #pragma warning restore CA2000
 
         if (customMetadata is not null)
         {
             string metadataJson = JsonSerializer.Serialize(customMetadata);
+            // CA2000: StringContent is disposed by MultipartFormDataContent when it's disposed
+            #pragma warning disable CA2000
             content.Add(new StringContent(metadataJson), "customMetadata");
+            #pragma warning restore CA2000
         }
 
         var requestUri = new Uri("api/v1/filestorage/upload", UriKind.Relative);

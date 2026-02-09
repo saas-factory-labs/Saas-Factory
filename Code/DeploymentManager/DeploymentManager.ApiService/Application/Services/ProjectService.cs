@@ -24,7 +24,7 @@ public class ProjectService : IProjectService
         return _unitOfWork.ProjectRepository.GetAll();
     }
 
-    public ProjectEntity GetProjectById(int id)
+    public ProjectEntity? GetProjectById(int id)
     {
         return _unitOfWork.ProjectRepository.GetById(id);
     }

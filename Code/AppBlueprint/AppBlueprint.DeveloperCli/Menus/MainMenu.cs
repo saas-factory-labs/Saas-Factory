@@ -211,7 +211,7 @@ internal static class MainMenu
                 break;
             case "Generate JWT Token (for testing)":
                 AnsiConsole.MarkupLine("[yellow]Generating JWT Token...[/]");
-                JwtTokenCommand.ExecuteInteractive();
+                JwtTokenCommand.ExecuteInteractive().GetAwaiter().GetResult();
                 break;
             case "Validate PostGreSQL Password":
                 AnsiConsole.MarkupLine("[yellow]Validating PostGreSQL Password...[/]");

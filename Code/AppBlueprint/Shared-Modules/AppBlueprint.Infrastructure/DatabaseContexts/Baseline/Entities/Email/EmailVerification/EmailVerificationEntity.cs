@@ -10,7 +10,7 @@ public class EmailVerificationEntity : BaseEntity
         Id = PrefixedUlid.Generate("email_verif");
     }
 
-    public required string Token { get; set; }
+    public required string Token { get; init; }
     public DateTime ExpireAt { get; set; }
     public bool HasBeenOpened { get; set; }
     public bool HasBeenVerified { get; set; }

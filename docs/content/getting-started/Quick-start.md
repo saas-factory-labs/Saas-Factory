@@ -89,7 +89,7 @@ ASP.NET Core determines port mappings in the following order (highest to lowest 
    ```
 
 3. **Launch Settings / Environment Variables**
-   ```json
+   ```jsonc
    // launchSettings.json
    "environmentVariables": {
      "ASPNETCORE_URLS": "https://localhost:8081"
@@ -97,7 +97,7 @@ ASP.NET Core determines port mappings in the following order (highest to lowest 
    ```
 
 4. **App Settings Files**
-   ```json
+   ```jsonc
    // appsettings.json
    "Kestrel": {
      "Endpoints": { ... }

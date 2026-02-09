@@ -74,14 +74,14 @@ The TodoController will be automatically discovered by ASP.NET Core when the pro
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/todos` | Get all todos for current tenant |
-| POST | `/api/v1/todos` | Create a new todo |
-| GET | `/api/v1/todos/{id}` | Get specific todo by ID |
-| PUT | `/api/v1/todos/{id}` | Update existing todo |
-| DELETE | `/api/v1/todos/{id}` | Delete todo |
-| PATCH | `/api/v1/todos/{id}/complete` | Mark todo as complete |
+| Method  | Endpoint                         | Description                       |
+|---------|----------------------------------|-----------------------------------|
+| GET     | `/api/v1/todos`                  | Get all todos for current tenant  |
+| POST    | `/api/v1/todos`                  | Create a new todo                 |
+| GET     | `/api/v1/todos/{id}`             | Get specific todo by ID           |
+| PUT     | `/api/v1/todos/{id}`             | Update existing todo              |
+| DELETE  | `/api/v1/todos/{id}`             | Delete todo                       |
+| PATCH   | `/api/v1/todos/{id}/complete`    | Mark todo as complete             |
 
 ## Request Models
 
@@ -110,19 +110,19 @@ The TodoController will be automatically discovered by ASP.NET Core when the pro
 
 The TodoEntity creates a `Todos` table with the following structure:
 
-| Column | Type | Description |
-|--------|------|-------------|
-| Id | string(40) | Prefixed ULID primary key |
-| Title | string(200) | Todo title (required) |
-| Description | string(1000) | Optional description |
-| IsCompleted | boolean | Completion status |
-| Priority | int | Priority level (0-3) |
-| DueDate | datetime | Optional due date |
-| CompletedAt | datetime | Completion timestamp |
-| TenantId | string(40) | Tenant identifier |
-| CreatedById | string(40) | Creator user ID |
-| AssignedToId | string(40) | Assigned user ID |
-| CreatedAt | datetime | Creation timestamp |
+| Column         | Type          | Description                  |
+|----------------|---------------|------------------------------|
+| Id             | string(40)    | Prefixed ULID primary key    |
+| Title          | string(200)   | Todo title (required)        |
+| Description    | string(1000)  | Optional description         |
+| IsCompleted    | boolean       | Completion status            |
+| Priority       | int           | Priority level (0-3)         |
+| DueDate        | datetime      | Optional due date            |
+| CompletedAt    | datetime      | Completion timestamp         |
+| TenantId       | string(40)    | Tenant identifier            |
+| CreatedById    | string(40)    | Creator user ID              |
+| AssignedToId   | string(40)    | Assigned user ID             |
+| CreatedAt      | datetime      | Creation timestamp           |
 | LastUpdatedAt | datetime | Last update timestamp |
 | IsSoftDeleted | boolean | Soft delete flag |
 

@@ -67,7 +67,7 @@ public sealed class DatingAppConversationAuthorizationService : IConversationAut
         //     .ToListAsync();
 
         // For demo: return empty list
-        return await Task.FromResult(new List<string>());
+        return await Task.FromResult<List<string>>([]);
     }
 }
 
@@ -118,6 +118,6 @@ public sealed class PropertyRentalConversationAuthorizationService : IConversati
     public async Task<List<string>> GetUserConversationsAsync(string userId, string tenantId)
     {
         // TODO: Query database for properties owned or inquired about
-        return await Task.FromResult(new List<string>());
+        return await Task.FromResult<List<string>>([]);
     }
 }

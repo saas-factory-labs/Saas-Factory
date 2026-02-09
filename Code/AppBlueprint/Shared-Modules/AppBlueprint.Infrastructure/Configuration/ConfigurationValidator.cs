@@ -100,7 +100,7 @@ public static class ConfigurationValidator
         }
 
         // If partial configuration exists, validate it
-        var missingConfig = new List<string>();
+        List<string> missingConfig = [];
 
         if (!hasEndpoint)
             missingConfig.Add("Logto:Endpoint");

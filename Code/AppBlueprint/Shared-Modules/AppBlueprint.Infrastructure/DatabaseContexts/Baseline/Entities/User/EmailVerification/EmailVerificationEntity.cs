@@ -4,7 +4,7 @@ public sealed class EmailVerificationEntity
 {
     public int Id { get; set; }
 
-    public required string Token { get; set; }
+    public required string Token { get; init; }
 
     public DateTime CreatedAt { get; set; }
     public DateTime? LastUpdatedAt { get; set; }

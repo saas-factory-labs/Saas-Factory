@@ -16,6 +16,6 @@ public class OrganizationEntity
     public DateTime CreatedAt { get; set; }
 
     public DateTime? LastUpdatedAt { get; set; }
-    public required List<CustomerEntity> Customers { get; set; } = new List<CustomerEntity>();
-    public List<TeamEntity>? Teams { get; set; } = new List<TeamEntity>();
+    public required List<CustomerEntity> Customers { get; set; } = [];
+    public List<TeamEntity>? Teams { get; set; } = [];
 }

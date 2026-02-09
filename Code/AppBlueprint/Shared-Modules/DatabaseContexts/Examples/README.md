@@ -321,10 +321,12 @@ export DATABASE_CONNECTION_STRING="Host=localhost;Database=myapp;Username=postgr
 {
   "DatabaseContext": {
     "BaselineOnly": true,
-    "EnableHybridMode": false  // Can't be true when BaselineOnly is true
+    "EnableHybridMode": false
   }
 }
 ```
+
+> **Note:** `EnableHybridMode` can't be true when `BaselineOnly` is true
 
 ### Issue: Wrong context registered
 
@@ -332,10 +334,12 @@ export DATABASE_CONNECTION_STRING="Host=localhost;Database=myapp;Username=postgr
 ```json
 {
   "DatabaseContext": {
-    "ContextType": "B2C"  // or "B2B" or "Baseline"
+    "ContextType": "B2C"
   }
 }
 ```
+
+> **Available Values:** `B2C`, `B2B`, `Baseline`
 
 ### Issue: Migrations fail
 
@@ -351,12 +355,16 @@ Adjust performance settings based on your needs:
 ```json
 {
   "DatabaseContext": {
-    "CommandTimeout": 90,        // Increase for long-running queries
-    "MaxRetryCount": 10,          // Increase for unstable networks
-    "MaxRetryDelaySeconds": 15   // Increase max delay between retries
+    "CommandTimeout": 90,
+    "MaxRetryCount": 10,
+    "MaxRetryDelaySeconds": 15
   }
 }
 ```
+
+- **CommandTimeout**: Increase for long-running queries
+- **MaxRetryCount**: Increase for unstable networks
+- **MaxRetryDelaySeconds**: Increase max delay between retries
 
 ## Environment-Specific Configuration
 

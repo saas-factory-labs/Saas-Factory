@@ -67,13 +67,13 @@ internal static class RouteScanner
 
     private static List<RouteInfo> GetFallbackRoutes()
     {
-        return new List<RouteInfo>
-        {
+        return
+        [
             new RouteInfo { Method = "GET", Path = "/api/todo", Controller = TodoControllerName },
             new RouteInfo { Method = "POST", Path = "/api/todo", Controller = TodoControllerName },
             new RouteInfo { Method = "PUT", Path = "/api/todo/{id}", Controller = TodoControllerName },
             new RouteInfo { Method = "DELETE", Path = "/api/todo/{id}", Controller = TodoControllerName }
-        };
+        ];
     }
 }
 

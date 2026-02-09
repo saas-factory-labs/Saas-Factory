@@ -7,7 +7,7 @@ namespace AppBlueprint.Domain.Entities.User;
 /// </summary>
 public class PasswordResetEntity : BaseEntity
 {
-    public required string Token { get; set; }
+    public required string Token { get; init; }
     public DateTime ExpireAt { get; init; }
     public bool IsUsed { get; set; }
     public string UserId { get; set; } = string.Empty;

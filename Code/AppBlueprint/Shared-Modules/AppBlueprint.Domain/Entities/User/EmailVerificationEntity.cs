@@ -7,8 +7,8 @@ namespace AppBlueprint.Domain.Entities.User;
 /// </summary>
 public class EmailVerificationEntity : BaseEntity
 {
-    public required string Token { get; set; }
-    public required string Email { get; set; }
+    public required string Token { get; init; }
+    public required string Email { get; init; }
     public string UserId { get; init; } = string.Empty;
     public string UserEntityId => UserId; // Alias for backward compatibility
     public DateTime ExpiresAt { get; init; }

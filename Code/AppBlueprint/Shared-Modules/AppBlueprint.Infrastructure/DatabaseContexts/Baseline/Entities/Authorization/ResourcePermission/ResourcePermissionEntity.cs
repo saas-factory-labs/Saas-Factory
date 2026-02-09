@@ -9,7 +9,7 @@ public class ResourcePermissionEntity : BaseEntity
     public ResourcePermissionEntity()
     {
         Id = PrefixedUlid.Generate("resource_permission");
-        PermissionTypes = new List<ResourcePermissionTypeEntity>();
+        PermissionTypes = [];
         ResourceId = string.Empty;
         UserId = string.Empty;
     }

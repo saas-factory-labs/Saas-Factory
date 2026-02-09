@@ -30,6 +30,7 @@ public sealed class RequireScopeAttribute : Attribute, IAuthorizationFilter
         }
 
         _requiredScopes = scopes;
+        Scopes = scopes;
     }
 
     public void OnAuthorization(AuthorizationFilterContext context)

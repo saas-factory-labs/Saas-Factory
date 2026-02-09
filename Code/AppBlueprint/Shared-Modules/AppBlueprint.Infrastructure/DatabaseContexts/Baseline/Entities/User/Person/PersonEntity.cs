@@ -7,8 +7,8 @@ public class PersonEntity
 {
     public PersonEntity()
     {
-        Addresses = new List<AddressEntity>();
-        Emails = new List<EmailAddressEntity>();
+        Addresses = [];
+        Emails = [];
     }
 
     // used in user model and customer model

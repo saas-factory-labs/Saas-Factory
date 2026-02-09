@@ -184,27 +184,27 @@ internal class Program
 
 public class MethodInput
 {
-    public int MethodId { get; set; }
-    public string MethodName { get; set; }
-    public string MethodReturnType { get; set; }
-    public string ClassName { get; set; }
+    public int MethodId { get; init; }
+    public string MethodName { get; init; }
+    public string MethodReturnType { get; init; }
+    public string ClassName { get; init; }
 }
 
 public class PropertyInput
 {
-    public int PropertyId { get; set; }
-    public string PropertyType { get; set; }
-    public string PropertyName { get; set; }
-    public string ClassName { get; set; }
+    public int PropertyId { get; init; }
+    public string PropertyType { get; init; }
+    public string PropertyName { get; init; }
+    public string ClassName { get; init; }
 }
 
 public class ClassDataInput
 {
-    public int ClassId { get; set; }
-    public string ClassName { get; set; }
+    public int ClassId { get; init; }
+    public string ClassName { get; init; }
     public List<MethodInput> Methods { get; init; } = new();
-    public List<PropertyInput> Properties { get; set; } = new();
-    public List<ClassDataInput> DependsOn { get; set; } = new();
+    public List<PropertyInput> Properties { get; init; } = new();
+    public List<ClassDataInput> DependsOn { get; init; } = new();
 }
 
 

@@ -73,7 +73,7 @@ public sealed class FileValidationService : IFileValidationService
         ArgumentException.ThrowIfNullOrWhiteSpace(contentType);
         ArgumentNullException.ThrowIfNull(fileStream);
 
-        var errors = new List<string>();
+        List<string> errors = [];
 
         // 1. Validate content type
         if (!AllowedContentTypes.Contains(contentType))
@@ -100,7 +100,7 @@ public sealed class FileValidationService : IFileValidationService
             errors.Add("File name is too long (max 255 characters).");
         }
 
-        if (fileName.Contains("..", StringComparison.Ordinal) || fileName.Contains("/", StringComparison.Ordinal))
+        if (fileName.Contains("..", StringComparison.Ordinal) || fileName.Contains('/'))
         {
             errors.Add("File name contains invalid path characters.");
             _logger.LogWarning("Rejected file with invalid path characters: {FileName}", fileName);

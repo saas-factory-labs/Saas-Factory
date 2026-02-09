@@ -129,14 +129,14 @@ logWorkspaceCreated(accountType);
 
 ## Comparison: Before vs After
 
-| Aspect | ❌ Unsafe (eval/inline) | ✅ Safe (JS Interop) |
-|--------|------------------------|---------------------|
-| **Method** | `eval()` or inline `<script>` | `JSRuntime.InvokeVoidAsync()` |
-| **Data Flow** | String concatenation | Parameter passing |
-| **Serialization** | Manual (unsafe) | Automatic (safe) |
-| **XSS Risk** | High | None |
-| **Validation** | None | Input sanitized |
-| **Maintainability** | Poor | Excellent |
+| Aspect               | ❌ Unsafe (eval/inline)              | ✅ Safe (JS Interop)               |
+|----------------------|--------------------------------------|------------------------------------|
+| **Method**           | `eval()` or inline `<script>`        | `JSRuntime.InvokeVoidAsync()`      |
+| **Data Flow**        | String concatenation                 | Parameter passing                  |
+| **Serialization**    | Manual (unsafe)                      | Automatic (safe)                   |
+| **XSS Risk**         | High                                 | None                               |
+| **Validation**       | None                                 | Input sanitized                    |
+| **Maintainability**  | Poor                                 | Excellent                          |
 
 ---
 

@@ -56,8 +56,8 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
             // Step 2: Check RLS status on required tables
             var rlsStatus = await GetRlsStatusAsync(connection, cancellationToken);
 
-            var missingRls = new List<string>();
-            var missingTables = new List<string>();
+            List<string> missingRls = [];
+            List<string> missingTables = [];
 
             foreach (string table in RequiredRlsTables)
             {

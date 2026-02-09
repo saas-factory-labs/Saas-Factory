@@ -92,11 +92,11 @@ Press Ctrl+C to stop all services
 
 ## Options
 
-| Option | Short | Default | Description |
-|--------|-------|---------|-------------|
-| `--port` | `-p` | 18888 | Port for the Aspire dashboard |
-| `--watch` | `-w` | false | Enable hot reload (watch mode for automatic recompilation) |
-| `--help` | `-h` | - | Show help and usage information |
+| Option       | Short  | Default  | Description                                                     |
+|--------------|--------|----------|-----------------------------------------------------------------|
+| `--port`     | `-p`   | 18888    | Port for the Aspire dashboard                                   |
+| `--watch`    | `-w`   | false    | Enable hot reload (watch mode for automatic recompilation)      |
+| `--help`     | `-h`   | -        | Show help and usage information                                 |
 
 ## Global Installation
 
@@ -207,14 +207,12 @@ After running `saas run`, you can:
 
 This command follows industry-standard CLI patterns:
 
-| Tool | Command | What It Does |
-|------|---------|--------------|
-| **npm** | `npm run dev` | Start Node.js dev server |
-| **cargo** | `cargo run` | Build and run Rust project |
-| **docker** | `docker run` | Start container |
-| **SaaS Factory** | `saas run` | Start all services via Aspire |
-
-We use `run` instead of `serve` to align with these established patterns while maintaining Laravel-inspired DX.
+| Tool               | Command          | What It Does                      |
+|--------------------|------------------|-----------------------------------|
+| **npm**            | `npm run dev`    | Start Node.js dev server          |
+| **cargo**          | `cargo run`      | Build and run Rust project        |
+| **docker**         | `docker run`     | Start container                   |
+| **SaaS Factory**   | `saas run`       | Start all services via Aspire     |
 
 ## Related Commands
 

@@ -6,7 +6,7 @@ public class AppProjectEntity
 {
     public AppProjectEntity()
     {
-        Customers = new List<CustomerEntity>();
+        Customers = [];
     }
 
     public int Id { get; set; }

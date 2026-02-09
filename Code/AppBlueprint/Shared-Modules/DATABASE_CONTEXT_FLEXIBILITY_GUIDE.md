@@ -202,12 +202,16 @@ Name of the connection string in `ConnectionStrings` section. Default: `"Default
 ```json
 {
   "DatabaseContext": {
-    "CommandTimeout": 60,           // Command timeout in seconds (default: 60)
-    "MaxRetryCount": 5,              // Retry attempts on transient failures (default: 5)
-    "MaxRetryDelaySeconds": 10      // Max delay between retries (default: 10)
+    "CommandTimeout": 60,
+    "MaxRetryCount": 5,
+    "MaxRetryDelaySeconds": 10
   }
 }
 ```
+
+- **CommandTimeout**: Command timeout in seconds (default: 60)
+- **MaxRetryCount**: Retry attempts on transient failures (default: 5)
+- **MaxRetryDelaySeconds**: Max delay between retries (default: 10)
 
 ## Usage Examples
 

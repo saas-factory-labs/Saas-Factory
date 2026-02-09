@@ -98,9 +98,9 @@ public static class ContactPersonsExtensions
         return new ContactPersonResponse(
             request.FirstName,
             request.LastName,
-            new List<EmailAddressResponse?>(),
-            new List<AddressResponse>(),
-            new List<PhoneNumberResponse>()
+            [],
+            [],
+            []
         );
     }
 }

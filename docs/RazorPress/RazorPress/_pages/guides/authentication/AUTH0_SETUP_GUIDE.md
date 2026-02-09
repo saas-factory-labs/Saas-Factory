@@ -187,7 +187,7 @@ Add these in **Configuration** → **Application settings**:
 ```
 
 ### Use Auth0 (Production):
-```json
+```jsonc
 {
   "Authentication": {
     "Provider": "Auth0",

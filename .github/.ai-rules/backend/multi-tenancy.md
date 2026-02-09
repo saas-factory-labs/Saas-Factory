@@ -173,7 +173,7 @@ context.Items["TenantId"] = requestedTenant;
 
 The `ResolutionStrategy` enum exists for pre-authentication scenarios only:
 
-```json
+```jsonc
 {
   "MultiTenancy": {
     "ResolutionStrategy": "JwtClaim",  // For authenticated requests (enforced)

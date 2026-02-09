@@ -17,10 +17,12 @@ Set the authentication provider in your `appsettings.json`:
 ```json
 {
   "Authentication": {
-    "Provider": "Mock"  // Options: Mock, Auth0, Logto
+    "Provider": "Logto"
   }
 }
 ```
+
+> **Available Providers:** `Logto`
 
 ### 2. Auth0 Configuration
 

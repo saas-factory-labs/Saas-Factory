@@ -111,34 +111,32 @@ See example configurations in:
 
 ### Color Class Generation
 
-| Method | Example | Result |
-|--------|---------|--------|
-| `GetPrimaryClass("bg", "500")` | Pink theme | `"bg-pink-500"` |
-| `GetAccentClass("text", "600")` | Rose theme | `"text-rose-600"` |
-| `GetPrimaryHoverClass("bg", "600")` | Pink theme | `"hover:bg-pink-600"` |
-| `GetPrimaryFocusClass("ring", "500")` | Pink theme | `"focus:ring-pink-500"` |
-| `GetPrimaryDarkClass("text", "400")` | Pink theme | `"dark:text-pink-400"` |
+| Method                                  | Example     | Result                     |
+|-----------------------------------------|-------------|----------------------------|
+| `GetPrimaryClass("bg", "500")`          | Pink theme  | `"bg-pink-500"`            |
+| `GetAccentClass("text", "600")`         | Rose theme  | `"text-rose-600"`          |
+| `GetPrimaryHoverClass("bg", "600")`     | Pink theme  | `"hover:bg-pink-600"`      |
+| `GetPrimaryFocusClass("ring", "500")`   | Pink theme  | `"focus:ring-pink-500"`    |
+| `GetPrimaryDarkClass("text", "400")`    | Pink theme  | `"dark:text-pink-400"`     |
 
 ### Pre-built Component Classes
 
-| Method | Use Case |
-|--------|----------|
-| `GetPrimaryButtonClasses()` | Solid primary buttons |
-| `GetOutlineButtonClasses()` | Outline/ghost buttons |
-| `GetBadgeClasses()` | Status badges |
-| `GetLinkClasses()` | Themed hyperlinks |
-| `GetCardAccentClasses()` | Colored card borders |
+| Method                        | Use Case                |
+|-------------------------------|-------------------------|
+| `GetPrimaryButtonClasses()`   | Solid primary buttons   |
+| `GetOutlineButtonClasses()`   | Outline/ghost buttons   |
+| `GetBadgeClasses()`           | Status badges           |
+| `GetLinkClasses()`            | Themed hyperlinks       |
+| `GetCardAccentClasses()`      | Colored card borders    |
 
 ### Gradient Backgrounds
 
-| Method | Use Case | Example |
-|--------|----------|---------|
-| `GetPrimaryGradient()` | Subtle gradient (transparent) | `bg-gradient-to-r from-violet-500/[0.12] to-violet-500/[0.04]` |
-| `GetPrimaryGradientWithDark()` | Gradient with dark mode | Used for active navigation states |
-| `GetPrimarySolidGradient()` | Solid gradient (no transparency) | Buttons and prominent elements |
-| `GetAccentGradient()` | Accent color gradient | Alternative gradient styling |
-
-**Gradient Parameters:**
+| Method                           | Use Case                            | Example                                                           |
+|----------------------------------|-------------------------------------|-------------------------------------------------------------------|
+| `GetPrimaryGradient()`           | Subtle gradient (transparent)       | `bg-gradient-to-r from-violet-500/[0.12] to-violet-500/[0.04]`   |
+| `GetPrimaryGradientWithDark()`   | Gradient with dark mode             | Used for active navigation states                                 |
+| `GetPrimarySolidGradient()`      | Solid gradient (no transparency)    | Buttons and prominent elements                                    |
+| `GetAccentGradient()`            | Accent color gradient               | Alternative gradient styling                                      |
 - `direction`: `"to-r"`, `"to-l"`, `"to-t"`, `"to-b"`, `"to-br"`, etc.
 - `fromShade`/`toShade`: Tailwind shades (`"50"` to `"950"`)
 - `fromOpacity`/`toOpacity`: Opacity values (e.g., `"0.12"`, `"0.24"`)
@@ -170,14 +168,12 @@ See example configurations in:
 
 ### Content Configuration
 
-| Method | Purpose |
-|--------|---------|
-| `GetLabel(key, default)` | Get custom label with fallback |
-| `GetLabelByType(...)` | Get label by app type |
-| `CurrentTheme.BrandName` | Access brand name |
-| `CurrentTheme.LogoUrl` | Access logo URL |
-
----
+| Method                      | Purpose                           |
+|-----------------------------|-----------------------------------|
+| `GetLabel(key, default)`    | Get custom label with fallback    |
+| `GetLabelByType(...)`       | Get label by app type             |
+| `CurrentTheme.BrandName`    | Access brand name                 |
+| `CurrentTheme.LogoUrl`      | Access logo URL                   |
 
 ## Complete Example Component
 
@@ -431,8 +427,9 @@ builder.Services.AddUiKitWithTheme(theme =>
 });
 ```
 
+**Appsettings.json:**
+
 ```json
-// appsettings.json
 {
   "Theme": {
     "ApplicationType": "dating",
@@ -486,12 +483,14 @@ public string GetAccentClass(string prefix, string? shade = null)
     "ApplicationType": "dating",
     "PrimaryColor": "rose",
     "AccentColor": "pink",
-    "DefaultPrimaryShade": "400",  // Softer rose
-    "DefaultAccentShade": "300",   // Very soft pink
+    "DefaultPrimaryShade": "400",
+    "DefaultAccentShade": "300",
     "BrandName": "LoveConnect"
   }
 }
 ```
+
+> **Note:** `DefaultPrimaryShade` is set to `"400"` for a softer rose color, and `DefaultAccentShade` is set to `"300"` for an even softer pink accent (defaults are `"500"` if not specified).
 
 With this configuration:
 - `GetPrimaryClass("bg")` → `bg-rose-400` (not 500)
@@ -566,8 +565,9 @@ builder.Services.AddUiKitWithTheme(theme =>
 });
 ```
 
+# Appsettings.json: #
+
 ```json
-// appsettings.json
 {
   "Theme": {
     "CustomLabels": {

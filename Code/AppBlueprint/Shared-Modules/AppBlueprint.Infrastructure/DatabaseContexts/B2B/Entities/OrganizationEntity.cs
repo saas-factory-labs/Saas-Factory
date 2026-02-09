@@ -10,8 +10,8 @@ public class OrganizationEntity
 {
     public OrganizationEntity()
     {
-        Customers = new List<CustomerEntity>();
-        Teams = new List<TeamEntity>();
+        Customers = [];
+        Teams = [];
     }
 
     public OrganizationEntity(List<CustomerEntity> customers)

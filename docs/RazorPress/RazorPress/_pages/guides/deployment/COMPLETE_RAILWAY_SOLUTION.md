@@ -271,7 +271,7 @@ Console.WriteLine($"[Web] API Base URL configured: {apiBaseUrl}");
 ```
 
 ### 3. AppBlueprint.Web/appsettings.json
-```json
+```jsonc
 {
   "ApiBaseUrl": "http://localhost:8091",
   "Logto": {

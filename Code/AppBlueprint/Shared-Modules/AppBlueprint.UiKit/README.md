@@ -83,8 +83,8 @@ builder.Services.AddUiKit(options =>
 ## Documentation
 
 - **[Complete Usage Guide](./USAGE.md)** - Installation, configuration, components
-- **[VERSIONING.md](../../../../../VERSIONING.md)** - Version compatibility
-- **[MIGRATION.md](../../../../../MIGRATION.md)** - Upgrade guides
+- **[Architecture & Integration Guide](./USAGE-GUIDE.md)** - IMenuConfigurationService implementation
+- **[Theme Usage Guide](./THEME-USAGE-GUIDE.md)** - Theme system and customization
 
 ## Component Library
 
@@ -108,7 +108,7 @@ builder.Services.AddUiKit(options =>
 
 ## License
 
-MIT License - see [LICENSE](../../../../../LICENSE)
+MIT License - see [LICENSE](../../../../LICENSE)
 
 ## Links
 

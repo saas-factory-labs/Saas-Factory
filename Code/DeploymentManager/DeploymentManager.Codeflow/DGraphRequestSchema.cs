@@ -2,13 +2,13 @@ namespace DeploymentManager.Codeflow;
 
 public class DGraphRequestSchema
 {
-    public Set[] Set { get; set; }
+    public Set[] Set { get; init; }
 }
 
 public class Set
 {
-    public string Uid { get; set; }
-    public string Dgraphtype { get; set; }
+    public string Uid { get; init; }
+    public string Dgraphtype { get; init; }
     public string ClassName { get; set; }
     public Method[] Methods { get; set; }
     public Property1[] Properties { get; set; }

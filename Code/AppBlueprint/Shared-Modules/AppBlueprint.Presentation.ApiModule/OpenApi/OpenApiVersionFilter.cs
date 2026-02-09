@@ -19,9 +19,9 @@ public class OpenApiVersionFilter : IDocumentFilter
 
         // Add server URL if not present, without /api prefix
         if (swaggerDoc.Servers is null || swaggerDoc.Servers.Count == 0)
-            swaggerDoc.Servers = new List<OpenApiServer>
-            {
+            swaggerDoc.Servers =
+            [
                 new() { Url = "/" }
-            };
+            ];
     }
 }

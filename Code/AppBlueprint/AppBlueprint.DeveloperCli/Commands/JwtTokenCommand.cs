@@ -367,7 +367,7 @@ internal static class JwtTokenCommand
                         await browser.CloseAsync();
                         playwright.Dispose();
                     }
-                    catch (PlaywrightException ex) when (ex.Message.Contains("Executable doesn't exist") || ex.Message.Contains("browserType.launch"))
+                    catch (PlaywrightException ex) when (ex.Message.Contains("Executable doesn't exist", StringComparison.Ordinal) || ex.Message.Contains("browserType.launch", StringComparison.Ordinal))
                     {
                         throw new InvalidOperationException(
                             "Playwright browsers are not installed. Please run: playwright install chromium",
@@ -393,7 +393,7 @@ internal static class JwtTokenCommand
                 await GetTokenFromLogtoManual(endpoint);
             }
         }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("Playwright browsers"))
+        catch (InvalidOperationException ex) when (ex.Message.Contains("Playwright browsers", StringComparison.Ordinal))
         {
             AnsiConsole.MarkupLine($"[red]✗ {ex.Message}[/]");
             AnsiConsole.WriteLine();
@@ -444,7 +444,7 @@ internal static class JwtTokenCommand
                 if (prop.Value.ValueKind == JsonValueKind.String)
                 {
                     var propValue = prop.Value.GetString();
-                    if (!string.IsNullOrEmpty(propValue) && propValue.Split('.').Length == 3 && propValue.StartsWith("ey"))
+                    if (!string.IsNullOrEmpty(propValue) && propValue.Split('.').Length == 3 && propValue.StartsWith("ey", StringComparison.Ordinal))
                     {
                         return propValue;
                     }

@@ -49,7 +49,7 @@ public class PiiSaveChangesInterceptor : SaveChangesInterceptor
 
         if (propertiesToScan.Count == 0) return;
 
-        var allTags = new List<PIITag>();
+        List<PIITag> allTags = [];
         foreach (var prop in propertiesToScan)
         {
             var value = prop.GetValue(entry.Entity)?.ToString();

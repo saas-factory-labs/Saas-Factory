@@ -133,7 +133,7 @@ builder.WebHost.ConfigureKestrel(options =>
 ```
 
 ### appsettings.json (Ignored in Practice)
-```json
+```jsonc
 {
   "Kestrel": {
     "EndPoints": {

@@ -8,7 +8,7 @@ This guide shows how to configure IP whitelisting for admin access to prevent un
 
 Add to your `appsettings.json` or `appsettings.Production.json`:
 
-```json
+```jsonc
 {
   "Security": {
     "AdminIpWhitelist": {
@@ -31,11 +31,13 @@ For local development (`appsettings.Development.json`):
 {
   "Security": {
     "AdminIpWhitelist": {
-      "Enabled": false  // Disable in development for convenience
+      "Enabled": false
     }
   }
 }
 ```
+
+> **Note:** Disabled in development for convenience
 
 **Note:** Localhost (127.0.0.1 and ::1) is always allowed automatically.
 

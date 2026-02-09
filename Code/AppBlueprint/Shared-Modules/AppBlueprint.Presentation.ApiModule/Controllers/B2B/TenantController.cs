@@ -194,8 +194,7 @@ public class TenantController : BaseController
             existingTenant.Description = tenantDto.Description;
         existingTenant.LastUpdatedAt = DateTime.UtcNow;
 
-        _tenantRepository.Update(existingTenant);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _tenantRepository.UpdateAsync(existingTenant);
 
         return NoContent();
     }
@@ -225,8 +224,7 @@ public class TenantController : BaseController
         TenantEntity? existingTenant = await _tenantRepository.GetByIdAsync(id);
         if (existingTenant is null) return NotFound(new { Message = $"Tenant with ID {id} not found." });
 
-        _tenantRepository.Delete(existingTenant.Id);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _tenantRepository.DeleteAsync(existingTenant.Id);
 
         return NoContent();
     }

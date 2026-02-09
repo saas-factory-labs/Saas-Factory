@@ -22,14 +22,14 @@ This document catalogs all TODO comments found in the AppBlueprint codebase with
 
 ### 🔴 High Priority - Quick Wins (Ready for Implementation)
 
-2. **Tenant ID Validation** - `TenantProvider.cs:21`
+1. **Tenant ID Validation** - `TenantProvider.cs:21`
    - Location: `Infrastructure/Services/TenantProvider.cs`
    - Context: Need to validate tenant ID exists in catalog database
    - Effort: Medium
    - Impact: Data integrity
    - Note: "TODO: also remember to add check to check if the tenant id actually exist in the tenant catalog database"
 
-3. **Database Test Fixture** - `B2BDbContextTests.cs:14-15`
+2. **Database Test Fixture** - `B2BDbContextTests.cs:14-15`
    - Location: `Infrastructure/DatabaseContexts/B2B/Tests/B2BDbContextTests.cs`
    - Context: Add shared database fixture class and fake data generation
    - Effort: Medium
@@ -39,7 +39,7 @@ This document catalogs all TODO comments found in the AppBlueprint codebase with
      - "TODO: [SFVDM-348] Add database fixture class to add common test methods and properties across all db contexts"
      - "TODO: [SFVDM-348] Setup shared common fake data generation for all db contexts to use in unit tests (e.g. Faker, Bogus, etc.)"
 
-4. **Entity Modeling** - `DataSeeder.cs:148, 152`
+3. **Entity Modeling** - `DataSeeder.cs:148, 152`
    - Location: `SeedTest/DataSeeder.cs`
    - Context: Missing entities in ApplicationDbContext
    - Effort: Small-Medium
@@ -48,7 +48,7 @@ This document catalogs all TODO comments found in the AppBlueprint codebase with
      - Line 148: "TODO: Add these when available in ApplicationDbContext"
      - Line 152: "TODO: Add these when available in ApplicationDbContext"
 
-5. **Download URL Generation** - `DataExportService.cs:108`
+4. **Download URL Generation** - `DataExportService.cs:108`
    - Location: `Infrastructure/Services/DataExport/DataExportService.cs`
    - Context: Generate actual download URL based on business rules
    - Effort: Medium
@@ -56,7 +56,7 @@ This document catalogs all TODO comments found in the AppBlueprint codebase with
    - Note: "TODO: Generate actual download URL based on business rules"
    - Current: Using placeholder `new Uri("about:blank")`
 
-6. **Entity Configuration Enhancement** - Multiple locations
+5. **Entity Configuration Enhancement** - Multiple locations
    - Location: `Infrastructure/DatabaseContexts/Baseline/Entities/`
    - Context: Missing optional properties in entities
    - Effort: Small per item
@@ -67,7 +67,7 @@ This document catalogs all TODO comments found in the AppBlueprint codebase with
 
 ### 🔵 Low Priority - Future Features (Authentication Providers)
 
-7-10. **Authentication Provider Implementations** - `AuthenticationProviderFactory.cs:93, 102, 111, 120`
+6. **Authentication Provider Implementations** - `AuthenticationProviderFactory.cs:93, 102, 111, 120`
    - Location: `Infrastructure/Authorization/AuthenticationProviderFactory.cs`
    - Context: Multiple authentication provider implementations needed
    - Effort: Large per provider

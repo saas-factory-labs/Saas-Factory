@@ -82,7 +82,7 @@ internal static class TestCommand
         string workingDirectory = GetDefaultTestProjectPath();
 
         // Build dotnet test command
-        var args = new List<string>();
+        List<string> args = [];
 
         if (watch)
         {

@@ -15,6 +15,6 @@ public class LegendNodeModel : NodeModel
         Color = color;
     }
 
-    public string LegendText { get; set; }
-    public string Color { get; set; }
+    public string LegendText { get; init; }
+    public string Color { get; init; }
 }
