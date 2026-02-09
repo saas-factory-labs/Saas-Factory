@@ -55,7 +55,11 @@ public static class ConfigurationValidator
                 "To fix this, set the connection string using one of these methods:\n" +
                 "\n" +
                 "1. Environment Variable (recommended for production):\n" +
+                "   Key-Value Format:\n" +
                 "   DATABASE_CONNECTIONSTRING=Host=localhost;Database=appblueprint;Username=postgres;Password=yourpassword\n" +
+                "\n" +
+                "   PostgreSQL URI Format (Railway/Cloud):\n" +
+                "   DATABASE_CONNECTIONSTRING=postgresql://postgres:yourpassword@host:5432/appblueprint\n" +
                 "\n" +
                 "2. Configuration file (appsettings.json):\n" +
                 "   {\n" +

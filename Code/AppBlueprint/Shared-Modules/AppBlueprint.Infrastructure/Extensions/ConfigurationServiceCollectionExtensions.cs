@@ -193,8 +193,8 @@ public static class ConfigurationServiceCollectionExtensions
         SetIntOption(prefix, "MAXDOCUMENTSIZEMB", v => options.MaxDocumentSizeMB = v);
         SetIntOption(prefix, "MAXVIDEOSIZEMB", v => options.MaxVideoSizeMB = v);
 
-        // Debug logging
-        Console.WriteLine($"[CloudflareR2Options] Loaded - AccessKeyId: {!string.IsNullOrWhiteSpace(options.AccessKeyId)}, SecretAccessKey: {!string.IsNullOrWhiteSpace(options.SecretAccessKey)}, EndpointUrl: {options.EndpointUrl}, PrivateBucket: {options.PrivateBucketName}, PublicBucket: {options.PublicBucketName}, PublicDomain: {options.PublicDomain}");
+        // Log confirmation without exposing sensitive infrastructure details
+        Console.WriteLine($"[CloudflareR2Options] Configuration loaded - AccessKeyId: {!string.IsNullOrWhiteSpace(options.AccessKeyId)}, SecretAccessKey: {!string.IsNullOrWhiteSpace(options.SecretAccessKey)}");
     }
 
     private static void SetStringOption(string prefix, string key, Action<string> setter)

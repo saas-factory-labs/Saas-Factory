@@ -53,6 +53,15 @@ public static class DbContextConfigurator
         // Get connection string with priority: Environment Variable > Configuration
         string? connectionString = GetConnectionString(configuration, dbContextOptions);
 
+        // DIAGNOSTIC: Check if password present after GetConnectionString
+        bool hasPasswordBeforeValidation = HasPassword(connectionString);
+        Console.WriteLine($"[DbContextConfigurator] DIAGNOSTIC - After GetConnectionString - Has Password: {hasPasswordBeforeValidation}");
+        if (!hasPasswordBeforeValidation)
+        {
+            Console.WriteLine($"[DbContextConfigurator] ERROR - Connection string from GetConnectionString does NOT contain password!");
+            Console.WriteLine($"[DbContextConfigurator] Connection string preview: {(connectionString != null ? string.Concat(connectionString.AsSpan(0, Math.Min(50, connectionString.Length)), "...") : "NULL")}");
+        }
+
         // Validate connection string
         ConfigurationValidator.ValidateDatabaseConnectionString(
             connectionString,
@@ -141,6 +150,134 @@ public static class DbContextConfigurator
         string? maxRetryCount = Environment.GetEnvironmentVariable($"{Prefix}MAXRETRYCOUNT");
         if (!string.IsNullOrWhiteSpace(maxRetryCount) && int.TryParse(maxRetryCount, out int retryCount))
             options.MaxRetryCount = retryCount;
+    }
+
+    /// <summary>
+    /// Checks if a connection string contains a password in either key-value or URI format.
+    /// </summary>
+    /// <param name="connectionString">The connection string to check.</param>
+    /// <returns>True if password is present, false otherwise.</returns>
+    private static bool HasPassword(string? connectionString)
+    {
+        if (string.IsNullOrWhiteSpace(connectionString))
+            return false;
+        
+        // Check key-value format: Password=...
+        if (connectionString.Contains("Password=", StringComparison.OrdinalIgnoreCase))
+            return true;
+        
+        // Check PostgreSQL URI format: postgresql://username:password@host:port/database
+        if (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
+            connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+        {
+            int schemeEnd = connectionString.IndexOf("://", StringComparison.Ordinal);
+            int atIndex = connectionString.IndexOf('@', schemeEnd + 3);
+            int colonIndex = connectionString.IndexOf(':', schemeEnd + 3);
+            
+            // Password exists if there's a colon between :// and @
+            return colonIndex > schemeEnd && colonIndex < atIndex && atIndex > 0;
+        }
+        
+        return false;
+    }
+
+    /// <summary>
+    /// Normalizes a PostgreSQL connection string from URI format to key-value format.
+    /// If already in key-value format, returns the string unchanged.
+    /// </summary>
+    /// <param name="connectionString">The connection string to normalize.</param>
+    /// <returns>Connection string in key-value format.</returns>
+    private static string NormalizeConnectionString(string connectionString)
+    {
+        ArgumentNullException.ThrowIfNull(connectionString);
+        
+        // If already in key-value format, return as-is
+        if (!connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) &&
+            !connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+        {
+            return connectionString;
+        }
+        
+        try
+        {
+            // Parse URI format: postgresql://username:password@host:port/database?params
+            var uri = new Uri(connectionString);
+            
+            string host = uri.Host;
+            int port = uri.Port > 0 ? uri.Port : 5432;
+            string database = uri.AbsolutePath.TrimStart('/');
+            
+            // Extract username and password from UserInfo (username:password)
+            string? username = null;
+            string? password = null;
+            
+            if (!string.IsNullOrEmpty(uri.UserInfo))
+            {
+                int colonIndex = uri.UserInfo.IndexOf(':', StringComparison.Ordinal);
+                if (colonIndex >= 0)
+                {
+                    username = Uri.UnescapeDataString(uri.UserInfo.AsSpan(0, colonIndex).ToString());
+                    password = Uri.UnescapeDataString(uri.UserInfo.AsSpan(colonIndex + 1).ToString());
+                }
+                else
+                {
+                    username = Uri.UnescapeDataString(uri.UserInfo);
+                }
+            }
+            
+            // Build key-value connection string
+            var builder = new System.Text.StringBuilder();
+            builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Host={host};");
+            builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Port={port};");
+            builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Database={database};");
+            
+            if (!string.IsNullOrEmpty(username))
+            {
+                builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Username={username};");
+            }
+            
+            if (!string.IsNullOrEmpty(password))
+            {
+                builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Password={password};");
+            }
+            
+            // Add query parameters if present
+            if (!string.IsNullOrEmpty(uri.Query))
+            {
+                // Parse query string and add parameters
+                string query = uri.Query.TrimStart('?');
+                string[] parameters = query.Split('&', StringSplitOptions.RemoveEmptyEntries);
+                
+                foreach (string param in parameters)
+                {
+                    int equalsIndex = param.IndexOf('=', StringComparison.Ordinal);
+                    if (equalsIndex > 0)
+                    {
+                        string key = Uri.UnescapeDataString(param.AsSpan(0, equalsIndex).ToString());
+                        string value = Uri.UnescapeDataString(param.AsSpan(equalsIndex + 1).ToString());
+                        
+                        // Convert common URI query parameters to Npgsql format
+                        if (key.Equals("sslmode", StringComparison.OrdinalIgnoreCase))
+                        {
+                            builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"SslMode={value};");
+                        }
+                        else
+                        {
+                            builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"{key}={value};");
+                        }
+                    }
+                }
+            }
+            
+            string result = builder.ToString().TrimEnd(';');
+            Console.WriteLine($"[DbContextConfigurator] Converted URI format to key-value format (password: {HasPassword(result)})");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[DbContextConfigurator] ERROR: Failed to parse PostgreSQL URI: {ex.Message}");
+            throw new InvalidOperationException($"Failed to parse PostgreSQL connection string URI format: {ex.Message}", ex);
+        }
     }
 
     private static string? GetConnectionString(IConfiguration configuration, DatabaseContextOptions options)
@@ -284,9 +421,12 @@ public static class DbContextConfigurator
         DatabaseContextOptions options,
         bool isFactory = false)
     {
+        // Normalize connection string to key-value format if it's in URI format
+        string normalizedConnectionString = NormalizeConnectionString(connectionString);
+        
         // Create NpgsqlDataSource with EnableDynamicJson for JSONB support (required since Npgsql 8.0)
         // This is required for Dictionary<string, string> and other dynamic JSON types
-        var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(connectionString);
+        var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(normalizedConnectionString);
 
         var jsonOptions = new System.Text.Json.JsonSerializerOptions
         {

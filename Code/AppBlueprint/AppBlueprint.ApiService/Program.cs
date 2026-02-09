@@ -14,6 +14,15 @@ internal static class Program // Make class static
 {
     public static async Task Main(string[] args) // Make Main static
     {
+        // DIAGNOSTIC: Check what ApiService receives from AppHost
+        string? connString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
+        bool hasPassword = HasPassword(connString);
+        Console.WriteLine($"[ApiService] DATABASE_CONNECTIONSTRING received - Contains Password: {hasPassword}");
+        if (!hasPassword)
+        {
+            Console.WriteLine("[ApiService] ERROR: ApiService did NOT receive password from AppHost!");
+        }
+
         var builder = WebApplication.CreateBuilder(args);
 
         // Add service defaults & Aspire components.
@@ -102,5 +111,34 @@ internal static class Program // Make class static
         app.MapControllers();
 
         await app.RunAsync();
+    }
+
+    /// <summary>
+    /// Checks if a connection string contains a password in either key-value or URI format.
+    /// </summary>
+    /// <param name="connectionString">The connection string to check.</param>
+    /// <returns>True if password is present, false otherwise.</returns>
+    private static bool HasPassword(string? connectionString)
+    {
+        if (string.IsNullOrWhiteSpace(connectionString))
+            return false;
+        
+        // Check key-value format: Password=...
+        if (connectionString.Contains("Password=", StringComparison.OrdinalIgnoreCase))
+            return true;
+        
+        // Check PostgreSQL URI format: postgresql://username:password@host:port/database
+        if (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
+            connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+        {
+            int schemeEnd = connectionString.IndexOf("://", StringComparison.Ordinal);
+            int atIndex = connectionString.IndexOf('@', schemeEnd + 3);
+            int colonIndex = connectionString.IndexOf(':', schemeEnd + 3);
+            
+            // Password exists if there's a colon between :// and @
+            return colonIndex > schemeEnd && colonIndex < atIndex && atIndex > 0;
+        }
+        
+        return false;
     }
 }

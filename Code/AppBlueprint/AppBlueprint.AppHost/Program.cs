@@ -22,11 +22,40 @@ static string GetLocalIpAddress()
 
 var localIp = GetLocalIpAddress();
 
+static bool HasPassword(string connectionString)
+{
+    // Check key-value format: Password=...
+    if (connectionString.Contains("Password=", StringComparison.OrdinalIgnoreCase))
+        return true;
+    
+    // Check PostgreSQL URI format: postgresql://username:password@host:port/database
+    if (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
+        connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+    {
+        int schemeEnd = connectionString.IndexOf("://", StringComparison.Ordinal);
+        int atIndex = connectionString.IndexOf('@', schemeEnd + 3);
+        int colonIndex = connectionString.IndexOf(':', schemeEnd + 3);
+        
+        // Password exists if there's a colon between :// and @
+        return colonIndex > schemeEnd && colonIndex < atIndex && atIndex > 0;
+    }
+    
+    return false;
+}
+
 // --- DATABASE CONFIGURATION (Doppler & Railway) ---
 // Database connection string must be set as DATABASE_CONNECTIONSTRING environment variable
 var databaseConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING")
     ?? throw new InvalidOperationException(
         "Database connection string not found. Set DATABASE_CONNECTIONSTRING environment variable. Ensure Doppler is running (doppler run).");
+
+// Diagnostic: Verify password is present (security: don't log actual value)
+bool hasPassword = HasPassword(databaseConnectionString);
+Console.WriteLine($"[AppHost] DATABASE_CONNECTIONSTRING loaded - Contains Password: {hasPassword}");
+if (!hasPassword)
+{
+    Console.WriteLine("[AppHost] WARNING: Database connection string is missing password! Check Doppler secrets.");
+}
 
 // Read Logto configuration from environment variables (Doppler)
 string? logtoEndpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT");
