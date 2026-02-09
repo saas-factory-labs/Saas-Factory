@@ -216,24 +216,36 @@ railway logs
 - "1/1 replicas never became healthy!"
 - All healthcheck attempts return "service unavailable"
 - Or "Container failed to start"
+- Logs show: `System.ArgumentException: Format of the initialization string does not conform to specification starting at index 0`
 
 **Root Causes & Fixes**:
 
-1. **❌ Missing Port Configuration** (Most Common)
+1. **❌ Empty/Invalid Database Connection String** (Most Common)
+   - **Symptom in logs**: 
+     ```
+     System.ArgumentException: Format of the initialization string does not conform to specification starting at index 0.
+     at Npgsql.NpgsqlConnection..ctor(String connectionString)
+     at AppBlueprint.Infrastructure.HealthChecks.RowLevelSecurityHealthCheck.CheckHealthAsync
+     ```
+   - **Root Cause**: The `DATABASE_CONNECTIONSTRING` environment variable is not set or is empty
+   - **Fix**: Add the database connection string in Railway dashboard:
+     ```bash
+     # Option 1: Reference Railway's Postgres service (RECOMMENDED)
+     DATABASE_CONNECTIONSTRING=${{Postgres.DATABASE_URL}}
+     
+     # Option 2: Use a literal connection string
+     DATABASE_CONNECTIONSTRING=postgresql://user:password@host:port/database
+     ```
+   - **Important**: Use Railway's variable reference syntax `${{Postgres.DATABASE_URL}}` (with double braces)
+   - **Verification**: Check Railway logs for `[AppBlueprint.Infrastructure] Database Connection Source: Environment Variable`
+
+2. **❌ Missing Port Configuration**
    - **Fix**: Add environment variable in Railway dashboard:
      ```
      ASPNETCORE_HTTP_PORTS=${{PORT}}
      ```
    - Railway injects dynamic `PORT` - ASP.NET Core needs `ASPNETCORE_HTTP_PORTS` to listen on it
    - Without this, app listens on port 8080 but Railway expects it on `$PORT` (random high port)
-
-2. **❌ Empty/Invalid Database Connection String**
-   - Check Railway logs for: `Format of the initialization string does not conform to specification`
-   - **Fix**: Ensure `DATABASE_CONNECTIONSTRING` references Postgres correctly:
-     ```bash
-     DATABASE_CONNECTIONSTRING=${{Postgres.DATABASE_URL}}
-     ```
-   - Use Railway's variable reference feature (not literal string)
 
 3. **❌ Missing Required Environment Variables**
    - **Fix**: Ensure all required variables are set:

@@ -425,13 +425,20 @@ public static class ServiceCollectionExtensions
             // CRITICAL: Row-Level Security validation
             // Application MUST NOT start if RLS is not properly configured
             // This prevents tenant data leakage if RLS policies are missing
-            healthChecksBuilder.AddCheck(
-                "row-level-security",
+            // Register as a typed health check with dependency injection
+            services.AddSingleton<RowLevelSecurityHealthCheck>(sp => 
                 new RowLevelSecurityHealthCheck(
                     dbConnectionString,
-                    services.BuildServiceProvider().GetRequiredService<ILogger<RowLevelSecurityHealthCheck>>()),
+                    sp.GetRequiredService<ILogger<RowLevelSecurityHealthCheck>>()));
+            
+            healthChecksBuilder.AddCheck<RowLevelSecurityHealthCheck>(
+                "row-level-security",
                 failureStatus: HealthStatus.Unhealthy,
                 tags: RlsHealthCheckTags);
+        }
+        else
+        {
+            Console.WriteLine("[AppBlueprint.Infrastructure] WARNING: Database connection string not configured. Health checks will not include database or RLS validation.");
         }
 
         // Redis health check (if configured)
