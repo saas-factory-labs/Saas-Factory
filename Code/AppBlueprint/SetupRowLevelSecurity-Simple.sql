@@ -1,46 +1,39 @@
-﻿-- ========================================
+-- ========================================
 -- PostgreSQL Row-Level Security Setup
+-- SIMPLIFIED VERSION for GUI tools
 -- ========================================
 
--- Helper functions
+-- Create RLS helper functions
 CREATE OR REPLACE FUNCTION get_tenant_config_key()
-RETURNS TEXT
-LANGUAGE plpgsql IMMUTABLE
-AS $func$
+RETURNS TEXT AS $$
 BEGIN
     RETURN 'app.current_tenant_id';
-END
-$func$;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION set_current_tenant(tenant_id TEXT)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $func$
+RETURNS VOID AS $$
 BEGIN
     PERFORM set_config(get_tenant_config_key(), tenant_id, FALSE);
-END
-$func$;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION get_current_tenant()
-RETURNS TEXT
-LANGUAGE plpgsql
-AS $func$
+RETURNS TEXT AS $$
 BEGIN
     RETURN current_setting(get_tenant_config_key(), TRUE);
-END
-$func$;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION is_admin_user()
-RETURNS BOOLEAN
-LANGUAGE plpgsql STABLE
-AS $func$
+RETURNS BOOLEAN AS $$
 BEGIN
     RETURN current_setting('app.is_admin', TRUE) = 'true';
 EXCEPTION
     WHEN OTHERS THEN
         RETURN FALSE;
-END
-$func$;
+END;
+$$ LANGUAGE plpgsql STABLE;
 
 -- Enable RLS on core tables
 ALTER TABLE "Users" ENABLE ROW LEVEL SECURITY;
@@ -51,7 +44,8 @@ ALTER TABLE "EmailAddresses" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "PhoneNumbers" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Addresses" ENABLE ROW LEVEL SECURITY;
 
--- Users policies
+-- Create policies for Users table
+DROP POLICY IF EXISTS tenant_isolation_policy ON "Users";
 DROP POLICY IF EXISTS tenant_isolation_read_policy ON "Users";
 DROP POLICY IF EXISTS tenant_isolation_write_policy ON "Users";
 
@@ -64,7 +58,8 @@ CREATE POLICY tenant_isolation_write_policy ON "Users"
     USING ("TenantId" = get_current_tenant())
     WITH CHECK ("TenantId" = get_current_tenant());
 
--- Teams policies
+-- Create policies for Teams table
+DROP POLICY IF EXISTS tenant_isolation_policy ON "Teams";
 DROP POLICY IF EXISTS tenant_isolation_read_policy ON "Teams";
 DROP POLICY IF EXISTS tenant_isolation_write_policy ON "Teams";
 
@@ -77,28 +72,32 @@ CREATE POLICY tenant_isolation_write_policy ON "Teams"
     USING ("TenantId" = get_current_tenant())
     WITH CHECK ("TenantId" = get_current_tenant());
 
--- Simple policies for other tables
+-- Create policies for Organizations table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "Organizations";
 CREATE POLICY tenant_isolation_policy ON "Organizations"
     USING ("TenantId" = get_current_tenant());
 
+-- Create policies for ContactPersons table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "ContactPersons";
 CREATE POLICY tenant_isolation_policy ON "ContactPersons"
     USING ("TenantId" = get_current_tenant());
 
+-- Create policies for EmailAddresses table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "EmailAddresses";
 CREATE POLICY tenant_isolation_policy ON "EmailAddresses"
     USING ("TenantId" = get_current_tenant());
 
+-- Create policies for PhoneNumbers table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "PhoneNumbers";
 CREATE POLICY tenant_isolation_policy ON "PhoneNumbers"
     USING ("TenantId" = get_current_tenant());
 
+-- Create policies for Addresses table
 DROP POLICY IF EXISTS tenant_isolation_policy ON "Addresses";
 CREATE POLICY tenant_isolation_policy ON "Addresses"
     USING ("TenantId" = get_current_tenant());
 
--- Admin audit log table
+-- Create Admin Audit Log table
 CREATE TABLE IF NOT EXISTS "AdminAuditLog" (
     "Id" SERIAL PRIMARY KEY,
     "AdminUserId" TEXT NOT NULL,
@@ -114,5 +113,19 @@ CREATE INDEX IF NOT EXISTS idx_admin_audit_tenant ON "AdminAuditLog"("TenantId",
 CREATE INDEX IF NOT EXISTS idx_admin_audit_user ON "AdminAuditLog"("AdminUserId", "Timestamp" DESC);
 CREATE INDEX IF NOT EXISTS idx_admin_audit_timestamp ON "AdminAuditLog"("Timestamp" DESC);
 
--- Success message
-SELECT 'Row-Level Security setup complete!' AS message;
+-- Verify RLS is enabled
+SELECT 
+    tablename, 
+    rowsecurity as rls_enabled
+FROM pg_tables 
+WHERE schemaname = 'public' 
+    AND rowsecurity
+ORDER BY tablename;
+
+-- Verify policies exist
+SELECT 
+    tablename,
+    policyname
+FROM pg_policies
+WHERE schemaname = 'public'
+ORDER BY tablename, policyname;

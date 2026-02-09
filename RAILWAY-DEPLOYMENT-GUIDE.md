@@ -165,12 +165,51 @@ In Railway dashboard:
 1. Click **New** → **Database** → **Add PostgreSQL**
 2. Railway auto-creates `DATABASE_URL` variable
 
-### 3. Set Environment Variables
+### 3. Set Environment Variables (CRITICAL)
 
-#### Option A: Railway Dashboard
-1. Go to your service → **Variables** tab
-2. Click **New Variable** for each required variable
-3. Deploy
+**⚠️ IMPORTANT**: The application will crash on startup without these variables set.
+
+#### Option A: Railway Dashboard (RECOMMENDED for first-time setup)
+1. Go to your service in Railway dashboard
+2. Click **Variables** tab
+3. Click **New Variable**
+4. Add the following **REQUIRED** variables:
+
+   **Database Connection (MUST BE SET FIRST)**:
+   ```
+   Variable: DATABASE_CONNECTIONSTRING
+   Value: ${{Postgres.DATABASE_URL}}
+   ```
+   ⚠️ Use the reference syntax `${{Postgres.DATABASE_URL}}` to link to your Postgres service
+   
+   **Port Configuration**:
+   ```
+   Variable: ASPNETCORE_HTTP_PORTS
+   Value: ${{PORT}}
+   ```
+   
+   **Authentication** (required for API to work):
+   ```
+   Variable: AUTHENTICATION_PROVIDER
+   Value: Logto
+   
+   Variable: LOGTO_ENDPOINT
+   Value: https://YOUR-SUBDOMAIN.logto.app
+   
+   Variable: LOGTO_APPID
+   Value: your-client-id-from-logto
+   
+   Variable: LOGTO_APIRESOURCE
+   Value: https://api.your-domain.com
+   ```
+   
+   **Environment**:
+   ```
+   Variable: ASPNETCORE_ENVIRONMENT
+   Value: Production
+   ```
+
+5. Click **Deploy** to redeploy with new variables
 
 #### Option B: Railway CLI
 ```bash

@@ -10,7 +10,6 @@ using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
 using AppBlueprint.Infrastructure.DependencyInjection;
-using AppBlueprint.Infrastructure.HealthChecks;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
@@ -22,7 +21,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Resend;
 using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.B2BDbContext;
@@ -401,9 +399,47 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
+    /// Normalizes a PostgreSQL connection string from URI format to key-value format.
+    /// Helper method for health checks to ensure Npgsql compatibility.
+    /// </summary>
+    private static string NormalizeConnectionStringForHealthCheck(string connectionString)
+    {
+        // If already in key-value format, return as-is
+        if (!connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) &&
+            !connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+        {
+            return connectionString;
+        }
+        
+        var uri = new Uri(connectionString);
+        var builder = new System.Text.StringBuilder();
+        
+        builder.Append($"Host={uri.Host};");
+        builder.Append($"Port={(uri.Port > 0 ? uri.Port : 5432)};");
+        builder.Append($"Database={uri.AbsolutePath.TrimStart('/')};");
+        
+        if (!string.IsNullOrEmpty(uri.UserInfo))
+        {
+            int colonIndex = uri.UserInfo.IndexOf(':', StringComparison.Ordinal);
+            if (colonIndex >= 0)
+            {
+                builder.Append($"Username={Uri.UnescapeDataString(uri.UserInfo.Substring(0, colonIndex))};");
+                builder.Append($"Password={Uri.UnescapeDataString(uri.UserInfo.Substring(colonIndex + 1))};");
+            }
+            else
+            {
+                builder.Append($"Username={Uri.UnescapeDataString(uri.UserInfo)};");
+            }
+        }
+        
+        return builder.ToString().TrimEnd(';');
+    }
+
+    /// <summary>
     /// Registers health check services for database, Redis, and external endpoints.
     /// Uses environment variables or configuration for connection strings.
     /// CRITICAL: Includes Row-Level Security validation to prevent application startup without RLS.
+    /// NOTE: Health checks will fetch connection strings at RUNTIME (not registration time).
     /// </summary>
     private static IServiceCollection AddHealthChecksServices(
         this IServiceCollection services,
@@ -411,37 +447,102 @@ public static class ServiceCollectionExtensions
     {
         var healthChecksBuilder = services.AddHealthChecks();
 
-        // Database health check
-        string? dbConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") ??
-                                configuration.GetConnectionString("appblueprintdb");
-
-        if (!string.IsNullOrEmpty(dbConnectionString))
+        // PostgreSQL health check - uses IConfiguration to get connection string at runtime
+        healthChecksBuilder.AddCheck("postgresql", () =>
         {
-            healthChecksBuilder.AddNpgSql(
-                dbConnectionString,
-                name: "postgresql",
-                tags: PostgreSqlHealthCheckTags);
-
-            // CRITICAL: Row-Level Security validation
-            // Application MUST NOT start if RLS is not properly configured
-            // This prevents tenant data leakage if RLS policies are missing
-            // Register as a typed health check with dependency injection
-            services.AddSingleton<RowLevelSecurityHealthCheck>(sp => 
-                new RowLevelSecurityHealthCheck(
-                    dbConnectionString,
-                    sp.GetRequiredService<ILogger<RowLevelSecurityHealthCheck>>()));
+            using var scope = services.BuildServiceProvider().CreateScope();
+            var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
             
-            healthChecksBuilder.AddCheck<RowLevelSecurityHealthCheck>(
-                "row-level-security",
-                failureStatus: HealthStatus.Unhealthy,
-                tags: RlsHealthCheckTags);
-        }
-        else
-        {
-            Console.WriteLine("[AppBlueprint.Infrastructure] WARNING: Database connection string not configured. Health checks will not include database or RLS validation.");
-        }
+            string? connString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") ??
+                               config.GetConnectionString("appblueprintdb") ??
+                               config.GetConnectionString("postgres-server");
+            
+            if (string.IsNullOrEmpty(connString))
+            {
+                return HealthCheckResult.Unhealthy(
+                    "DATABASE_CONNECTIONSTRING not found. Ensure environment variable or ConnectionStrings:appblueprintdb is set.");
+            }
 
-        // Redis health check (if configured)
+            try
+            {
+                // Normalize connection string to handle both URI and key-value formats
+                string normalizedConnString = NormalizeConnectionStringForHealthCheck(connString);
+                
+                using var connection = new Npgsql.NpgsqlConnection(normalizedConnString);
+                connection.Open();
+                connection.Close();
+                return HealthCheckResult.Healthy($"Connected successfully");
+            }
+            catch (Exception ex)
+            {
+                return HealthCheckResult.Unhealthy($"PostgreSQL connection failed: {ex.Message}", ex);
+            }
+        }, tags: PostgreSqlHealthCheckTags);
+
+        // CRITICAL: Row-Level Security validation
+        // Application MUST NOT start if RLS is not properly configured
+        // This prevents tenant data leakage if RLS policies are missing
+        healthChecksBuilder.AddCheck("row-level-security", () =>
+        {
+            using var scope = services.BuildServiceProvider().CreateScope();
+            var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+            
+            string? connString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") ??
+                               config.GetConnectionString("appblueprintdb") ??
+                               config.GetConnectionString("postgres-server");
+            
+            if (string.IsNullOrEmpty(connString))
+            {
+                return HealthCheckResult.Unhealthy(
+                    "DATABASE_CONNECTIONSTRING not found for RLS validation.");
+            }
+
+            try
+            {
+                // Normalize connection string to handle both URI and key-value formats
+                string normalizedConnString = NormalizeConnectionStringForHealthCheck(connString);
+                
+                using var connection = new Npgsql.NpgsqlConnection(normalizedConnString);
+                connection.Open();
+                
+                // Check if RLS is enabled on tenant-scoped tables
+                var checkCommand = connection.CreateCommand();
+                checkCommand.CommandText = @"
+                    SELECT tablename 
+                    FROM pg_tables 
+                    WHERE schemaname = 'public' 
+                    AND tablename IN ('Users', 'Teams', 'TodoItems')
+                    AND tablename NOT IN (
+                        SELECT tablename FROM pg_tables t
+                        JOIN pg_class c ON c.relname = t.tablename
+                        WHERE c.relrowsecurity = true
+                    );";
+                
+                var reader = checkCommand.ExecuteReader();
+                var tablesWithoutRls = new List<string>();
+                while (reader.Read())
+                {
+                    tablesWithoutRls.Add(reader.GetString(0));
+                }
+                reader.Close();
+                connection.Close();
+                
+                if (tablesWithoutRls.Count > 0)
+                {
+                    return HealthCheckResult.Unhealthy(
+                        $"RLS NOT ENABLED on tables: {string.Join(", ", tablesWithoutRls)}. " +
+                        "Run SetupRowLevelSecurity.sql to enable RLS policies.");
+                }
+                
+                return HealthCheckResult.Healthy("RLS enabled on all tenant-scoped tables");
+            }
+            catch (Exception ex)
+            {
+                return HealthCheckResult.Unhealthy($"RLS validation failed: {ex.Message}", ex);
+            }
+        }, tags: RlsHealthCheckTags);
+
+        // Redis health check (if configured at startup)
         string? redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ??
                                    configuration.GetConnectionString("redis");
 
