@@ -61,4 +61,5 @@ ENV PORT=8080 \
 # Chiseled images don't include curl/wget for minimal attack surface
 
 # Start the API service - Railway will override PORT at runtime
-CMD dotnet AppBlueprint.ApiService.dll --urls "http://+:${PORT}"
+# Using JSON array format for proper signal handling
+CMD ["sh", "-c", "dotnet AppBlueprint.ApiService.dll --urls http://+:${PORT}"]

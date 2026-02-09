@@ -3,7 +3,6 @@ builder = "dockerfile"
 dockerfilePath = "Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile"
 
 [deploy]
-startCommand = "dotnet AppBlueprint.ApiService.dll"
 healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "on_failure"
