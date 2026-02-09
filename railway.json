@@ -1,0 +1,16 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile",
+    "dockerContext": "."
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "startCommand": "dotnet AppBlueprint.ApiService.dll",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}

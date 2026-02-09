@@ -51,7 +51,8 @@ WORKDIR /app
 COPY --from=publish --chown=$APP_UID:$APP_UID /app/publish .
 
 # Security hardening environment variables
-ENV ASPNETCORE_URLS=http://+:8080 \
+# Railway injects PORT dynamically - if not set, default to 8080
+ENV PORT=8080 \
     DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
     DOTNET_EnableDiagnostics=0 \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
@@ -59,5 +60,5 @@ ENV ASPNETCORE_URLS=http://+:8080 \
 # Note: Health checks should be configured in orchestration layer (Kubernetes/Docker Compose)
 # Chiseled images don't include curl/wget for minimal attack surface
 
-# Start the API service
-ENTRYPOINT ["dotnet", "AppBlueprint.ApiService.dll"]
+# Start the API service - Railway will override PORT at runtime
+CMD dotnet AppBlueprint.ApiService.dll --urls "http://+:${PORT}"
