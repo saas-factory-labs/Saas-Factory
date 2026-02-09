@@ -135,9 +135,14 @@ CLOUDFLARE_R2_MAXVIDEOSIZEMB="500"
 # ASP.NET Core Environment
 ASPNETCORE_ENVIRONMENT="Production"
 
-# Port (Railway sets this automatically - DO NOT override)
-# PORT is automatically injected by Railway and used by Dockerfile
+# Port Configuration (CRITICAL for Railway)
+# Railway injects $PORT dynamically - map it to ASP.NET Core's port variable
+ASPNETCORE_HTTP_PORTS=${{PORT}}
+
+# Note: Do not manually set PORT - Railway manages it automatically
 ```
+
+**Important**: Railway automatically injects the `PORT` variable. You must map it to `ASPNETCORE_HTTP_PORTS` for ASP.NET Core to listen on the correct port.
 
 ## 🚀 Deployment Steps
 
@@ -178,6 +183,9 @@ railway variables set LOGTO_APIRESOURCE="https://api.your-domain.com"
 # Set database connection (Railway auto-creates this when you add PostgreSQL)
 railway variables set DATABASE_CONNECTIONSTRING="${{Postgres.DATABASE_URL}}"
 
+# Set port mapping (CRITICAL - Railway needs this to route traffic correctly)
+railway variables set ASPNETCORE_HTTP_PORTS='${{PORT}}'
+
 # Set Firebase credentials (optional - single-line JSON)
 railway variables set FIREBASE_CREDENTIALSJSON='{"type":"service_account","project_id":"...","private_key":"...","client_email":"..."}'
 railway variables set FIREBASE_PROJECTID="your-firebase-project-id"
@@ -202,25 +210,68 @@ railway logs
 
 ## 🔍 Troubleshooting
 
-### Container Failed to Start
+### Healthcheck Timeout / Container Failed to Start
 
-**Symptom**: Build succeeds, but "Container failed to start"
+**Symptom**: Build succeeds but deployment fails with:
+- "1/1 replicas never became healthy!"
+- All healthcheck attempts return "service unavailable"
+- Or "Container failed to start"
 
-**Common Causes**:
+**Root Causes & Fixes**:
 
-1. **Missing environment variables** - Check logs for configuration errors:
-   ```bash
-   railway logs
-   ```
+1. **❌ Missing Port Configuration** (Most Common)
+   - **Fix**: Add environment variable in Railway dashboard:
+     ```
+     ASPNETCORE_HTTP_PORTS=${{PORT}}
+     ```
+   - Railway injects dynamic `PORT` - ASP.NET Core needs `ASPNETCORE_HTTP_PORTS` to listen on it
+   - Without this, app listens on port 8080 but Railway expects it on `$PORT` (random high port)
 
-2. **Database migration failures** - Ensure `DATABASE_CONNECTION_STRING` is set correctly
+2. **❌ Empty/Invalid Database Connection String**
+   - Check Railway logs for: `Format of the initialization string does not conform to specification`
+   - **Fix**: Ensure `DATABASE_CONNECTIONSTRING` references Postgres correctly:
+     ```bash
+     DATABASE_CONNECTIONSTRING=${{Postgres.DATABASE_URL}}
+     ```
+   - Use Railway's variable reference feature (not literal string)
 
-3. **Health check failures** - API must respond to `/health` within 100 seconds:
-   ```bash
-   curl https://your-api.railway.app/health
-   ```
+3. **❌ Missing Required Environment Variables**
+   - **Fix**: Ensure all required variables are set:
+     - `AUTHENTICATION_PROVIDER=Logto`
+     - `LOGTO_ENDPOINT` (your Logto subdomain)
+     - `LOGTO_APPID` (client ID)
+     - `LOGTO_APIRESOURCE` (API resource URL)
+     - `DATABASE_CONNECTIONSTRING`
+     - `ASPNETCORE_HTTP_PORTS=${{PORT}}`
 
-4. **Port binding issues** - Ensure Dockerfile uses `CMD` with `${PORT}` (fixed in this repo)
+4. **❌ Health Check Timeout**
+   - API must respond to `/health` within 100 seconds
+   - Check logs for startup errors:
+     ```bash
+     railway logs --deployment <id>
+     ```
+   - Common startup failures: missing DB, RLS not setup, invalid auth config
+
+5. **❌ Database Not Linked**
+   - **Fix**: In Railway dashboard, ensure PostgreSQL is added to your project
+   - Verify the `DATABASE_URL` variable exists in your Postgres service
+   - Link services: Go to API service → Settings → Service Variables → Add Reference
+
+**Debug Steps**:
+```bash
+# 1. Check recent deployment logs
+railway logs
+
+# 2. Verify environment variables are set
+railway variables
+
+# 3. Check service status
+railway status
+
+# 4. Test health endpoint locally with same env vars
+dotnet run
+curl http://localhost:8080/health
+```
 
 ### Authentication Errors (401 Unauthorized)
 
