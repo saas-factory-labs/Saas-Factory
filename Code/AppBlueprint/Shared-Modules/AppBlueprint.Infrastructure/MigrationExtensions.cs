@@ -36,13 +36,21 @@ public static class MigrationExtensions
 
         try
         {
-            // Get connection string from environment variable (same source as DbContext configuration)
-            // Note: dbContext.Database.GetConnectionString() doesn't return password when using NpgsqlDataSource
+            // ROOT CAUSE OF PASSWORD LOSS:
+            // When DbContext is configured with NpgsqlDataSource (see DbContextConfigurator.ConfigureNpgsqlOptions),
+            // NpgsqlDataSource stores the password internally for security but does NOT expose it in the
+            // ConnectionString property. This causes EF Core's GetConnectionString() to return a connection
+            // string WITHOUT the password, leading to authentication failure:
+            //   Npgsql.NpgsqlException: "No password has been provided but the backend requires one (in SASL/SCRAM-SHA-256)"
+            //
+            // SOLUTION: Retrieve connection string directly from environment variable before it's parsed by
+            // NpgsqlDataSource. This preserves the original password that was stripped for security.
             string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
             
             if (string.IsNullOrEmpty(connectionString))
             {
                 // Fallback to DbContext connection string if environment variable not set
+                // (works only if DbContext wasn't configured with NpgsqlDataSource)
                 connectionString = dbContext.Database.GetConnectionString();
                 Logger.LogWarning("DATABASE_CONNECTIONSTRING environment variable not set, using DbContext connection string");
             }
@@ -298,6 +306,12 @@ public static class MigrationExtensions
     /// <summary>
     /// Normalizes a PostgreSQL connection string from URI format to key-value format.
     /// If already in key-value format, returns the string unchanged.
+    /// 
+    /// BACKGROUND:
+    /// Railway and cloud providers use: postgresql://user:password@host:port/database
+    /// Npgsql requires: Host=host;Port=port;Username=user;Password=password;Database=database
+    /// 
+    /// This conversion is needed because NpgsqlConnectionStringBuilder cannot parse URI format.
     /// </summary>
     /// <param name="connectionString">The connection string to normalize.</param>
     /// <returns>Connection string in key-value format.</returns>

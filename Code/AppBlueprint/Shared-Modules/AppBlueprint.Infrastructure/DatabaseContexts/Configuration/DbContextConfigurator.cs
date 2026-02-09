@@ -184,6 +184,21 @@ public static class DbContextConfigurator
     /// <summary>
     /// Normalizes a PostgreSQL connection string from URI format to key-value format.
     /// If already in key-value format, returns the string unchanged.
+    /// 
+    /// ROOT CAUSE OF CONNECTION FAILURE:
+    /// NpgsqlDataSourceBuilder (used in ConfigureNpgsqlOptions below) CANNOT parse PostgreSQL URI format.
+    /// When attempting to create a data source with URI format, Npgsql throws:
+    ///   System.ArgumentException: "Format of the initialization string does not conform to specification starting at index 0"
+    ///     at Npgsql.NpgsqlConnectionStringBuilder.GetProperty(String keyword)
+    ///     at Npgsql.NpgsqlDataSourceBuilder..ctor(String connectionString)
+    /// 
+    /// Railway and many cloud providers use PostgreSQL URI format by default:
+    ///   postgresql://user:password@host:port/database
+    /// 
+    /// But Npgsql's NpgsqlDataSourceBuilder requires key-value format:
+    ///   Host=host;Port=port;Username=user;Password=password;Database=database
+    /// 
+    /// This method performs the necessary conversion to prevent the ArgumentException.
     /// </summary>
     /// <param name="connectionString">The connection string to normalize.</param>
     /// <returns>Connection string in key-value format.</returns>
