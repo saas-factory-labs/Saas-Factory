@@ -110,7 +110,7 @@ if (!string.IsNullOrEmpty(baseHref))
 |---------|---------|------------------------|
 | `(href&#124;src)="/(css&#124;mjs&#124;lib&#124;img&#124;js&#124;pages)/` | Asset paths | `/css/app.css` → `/Saas-Factory/docs/css/app.css` |
 | `"/(mjs&#124;lib)/` | Import map paths | `"/mjs/app.mjs"` → `"/Saas-Factory/docs/mjs/app.mjs"` |
-| `href="/"` | Root navigation | `href="/"` → `href="/Saas-Factory/docs/"` | |
+| `href="/"` | Root navigation | `href="/"` → `href="/Saas-Factory/docs/"` |
 
 **Purpose:** Browsers treat paths starting with `/` as absolute from domain root, ignoring the `<base>` tag. This post-processing rewrites all absolute paths to include the baseHref prefix.
 

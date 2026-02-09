@@ -15,7 +15,7 @@ GitHub Pages to be hosted from your **gh-pages** branch in your Repository setti
 You should then register a [Custom domain for GitHub Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages)
 by registering a `CNAME` DNS entry for your preferred Custom Domain, e.g:
 
-| Record | Type | Value | TTL|
+| Record | Type | Value | TTL |
 | - | - | - | - |
 | **mydomain.org** | CNAME | **org_name**.github.io | 3600 |
 

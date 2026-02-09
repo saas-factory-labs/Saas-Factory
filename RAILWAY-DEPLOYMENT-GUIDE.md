@@ -21,14 +21,17 @@ This guide covers deploying the AppBlueprint API Service to Railway with all req
 # Priority: DATABASE_CONNECTIONSTRING env var > ConnectionStrings:appblueprintdb config
 DATABASE_CONNECTIONSTRING="${{Postgres.DATABASE_URL}}"
 
-# Database Context Options (Optional - defaults applied if not set)
-DATABASECONTEXT_TYPE="Hybrid"  # Values: PostgreSQL, Hybrid (default: Hybrid)
-DATABASECONTEXT_ENABLEHYBRIDMODE="true"  # Enable hybrid mode (default: true)
-DATABASECONTEXT_COMMANDTIMEOUT="60"  # Command timeout in seconds (default: 60)
-DATABASECONTEXT_MAXRETRYCOUNT="5"  # Max retry count for transient errors (default: 5)
+# Database Context Options (Optional - defaults shown below)
+# Only set these if you need to override the defaults
+# DATABASECONTEXT_TYPE="B2C"  # Values: Baseline, B2C, B2B (default: B2C)
+# DATABASECONTEXT_ENABLEHYBRIDMODE="true"  # Registers all contexts (default: true)
+# DATABASECONTEXT_COMMANDTIMEOUT="60"  # Command timeout in seconds (default: 60)
+# DATABASECONTEXT_MAXRETRYCOUNT="5"  # Max retry count for transient errors (default: 5)
 ```
 
-**Note**: Railway automatically creates `DATABASE_URL` when you add PostgreSQL. Reference it using `${{Postgres.DATABASE_URL}}`.
+**Note**: 
+- Railway automatically creates `DATABASE_URL` when you add PostgreSQL. Reference it using `${{Postgres.DATABASE_URL}}`.
+- `DATABASECONTEXT_ENABLEHYBRIDMODE` defaults to `true`, registering all database contexts (Baseline, B2C, B2B) to support all features. This ensures services like file storage, notifications, and repositories work correctly in production.
 
 ### Authentication (Logto) - **REQUIRED**
 

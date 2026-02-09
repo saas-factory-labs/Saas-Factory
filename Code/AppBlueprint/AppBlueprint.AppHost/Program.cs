@@ -3,6 +3,7 @@ using System.Net.Sockets;
 
 const string LogtoApiResourceKey = "LOGTO_APIRESOURCE";
 const string DatabaseContextTypeKey = "DATABASECONTEXT_TYPE";
+const string DatabaseContextEnableHybridModeKey = "DATABASECONTEXT_ENABLEHYBRIDMODE";
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ string? logtoAppSecret = Environment.GetEnvironmentVariable("LOGTO_APPSECRET");
 string? logtoApiResource = Environment.GetEnvironmentVariable(LogtoApiResourceKey);
 string? authenticationProvider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER");
 string? databaseContextType = Environment.GetEnvironmentVariable(DatabaseContextTypeKey);
+string? databaseContextEnableHybridMode = Environment.GetEnvironmentVariable(DatabaseContextEnableHybridModeKey) ?? "true";
 
 builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
     .WithHttpEndpoint(port: 9000, name: "gateway", isProxied: false)
@@ -56,6 +58,8 @@ if (!string.IsNullOrWhiteSpace(authenticationProvider))
     apiService = apiService.WithEnvironment("AUTHENTICATION_PROVIDER", authenticationProvider);
 if (!string.IsNullOrWhiteSpace(databaseContextType))
     apiService = apiService.WithEnvironment(DatabaseContextTypeKey, databaseContextType);
+if (!string.IsNullOrWhiteSpace(databaseContextEnableHybridMode))
+    apiService = apiService.WithEnvironment(DatabaseContextEnableHybridModeKey, databaseContextEnableHybridMode);
 
 var webFrontend = builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithHttpEndpoint(port: 9200, name: "web-http", isProxied: false)
@@ -76,6 +80,8 @@ if (!string.IsNullOrWhiteSpace(authenticationProvider))
     webFrontend = webFrontend.WithEnvironment("AUTHENTICATION_PROVIDER", authenticationProvider);
 if (!string.IsNullOrWhiteSpace(databaseContextType))
     webFrontend = webFrontend.WithEnvironment(DatabaseContextTypeKey, databaseContextType);
+if (!string.IsNullOrWhiteSpace(databaseContextEnableHybridMode))
+    webFrontend = webFrontend.WithEnvironment(DatabaseContextEnableHybridModeKey, databaseContextEnableHybridMode);
 webFrontend = webFrontend.WithEnvironment("LOGTO_APPSECRET", logtoAppSecret);
 if (!string.IsNullOrWhiteSpace(logtoApiResource))
     webFrontend = webFrontend.WithEnvironment(LogtoApiResourceKey, logtoApiResource);

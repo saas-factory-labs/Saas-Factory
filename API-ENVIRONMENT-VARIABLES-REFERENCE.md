@@ -61,11 +61,11 @@ LOGTO_APIRESOURCE="https://api.your-domain.com"
 ### Database Context Options
 
 ```bash
-# Context type (default: Hybrid)
-DATABASECONTEXT_TYPE="Hybrid"  # Values: PostgreSQL, Hybrid
+# Context type (default: B2C)
+DATABASECONTEXT_TYPE="B2C"  # Values: Baseline, B2C, B2B
 # OR: DATABASECONTEXT_CONTEXTTYPE (legacy)
 
-# Hybrid mode flag (default: true)
+# Hybrid mode flag (default: true - registers ALL contexts regardless of TYPE)
 DATABASECONTEXT_ENABLEHYBRIDMODE="true"
 
 # Baseline only mode (default: false)
@@ -77,6 +77,11 @@ DATABASECONTEXT_COMMANDTIMEOUT="60"
 # Max retry count (default: 5)
 DATABASECONTEXT_MAXRETRYCOUNT="5"
 ```
+
+**Code Behavior**:
+- When `ENABLEHYBRIDMODE=true` (default): All contexts (Baseline, B2C, B2B) are registered regardless of TYPE setting
+- When `ENABLEHYBRIDMODE=false`: Only the specified TYPE context is registered
+- `BASELINEONLY=true` overrides both settings and registers only BaselineDbContext
 
 ### Stripe Payment Processing
 

@@ -112,11 +112,11 @@ DatabaseContext__CommandTimeout="90"
 
 Determines which DbContext to use:
 
-| Value      | Use Case                              | Entities Included                |
-|------------|---------------------------------------|----------------------------------|
-| `Baseline` | Minimal apps, custom contexts         | Core entities only               |
-| `B2C`      | Consumer SaaS (default)               | Baseline + consumer features     |
-| `B2B`      | Organization SaaS                     | Baseline + organizational features|
+| Value      | Use Case                              | Entities Included                 |
+|------------|---------------------------------------|-----------------------------------|
+| `Baseline` | Minimal apps, custom contexts         | Core entities only                |
+| `B2C`      | Consumer SaaS (default)               | Baseline + consumer features      |
+| `B2B`      | Organization SaaS                     | Baseline + organizational features |
 
 
 **Example:**

@@ -535,9 +535,7 @@ public sealed class AdminTenantController : ControllerBase
 ```
 
 ---
-Read/Write** | Read + Write | **READ-ONLY** (`.AsNoTracking()`) |
-| **Modifications** | Allowed (own tenant) | **FORBIDDEN** (all tenants) |
-| **
+
 ## Comparison: Admin Access vs Regular Access
 
 | Aspect | Regular User Access | Admin Access |
@@ -547,6 +545,8 @@ Read/Write** | Read + Write | **READ-ONLY** (`.AsNoTracking()`) |
 | **RLS Enforcement** | Active (session var from JWT) | Active (session var set manually) |
 | **Authorization** | Tenant membership | Admin role + reason |
 | **Audit Logging** | Optional | **MANDATORY** |
+| **Read/Write** | Read + Write | **READ-ONLY** (`.AsNoTracking()`) |
+| **Modifications** | Allowed (own tenant) | **FORBIDDEN** (all tenants) |
 | **UI Warning** | None | Prominent banner |
 | **Rate Limiting** | Standard | Strict (prevent bulk extraction) |
 

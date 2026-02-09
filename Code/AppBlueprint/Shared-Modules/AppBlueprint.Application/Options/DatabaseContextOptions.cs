@@ -20,9 +20,9 @@ public sealed class DatabaseContextOptions
     /// <summary>
     /// When true, enables all entity sets from both B2B and B2C contexts.
     /// Use this for applications that need both consumer and organizational features.
-    /// Default: false.
+    /// Default: true.
     /// </summary>
-    public bool EnableHybridMode { get; set; }
+    public bool EnableHybridMode { get; set; } = true;
 
     /// <summary>
     /// When true, only registers the baseline DbContext with core entities.
