@@ -16,6 +16,9 @@ public static class MigrationExtensions
         .Create(builder => builder.AddConsole())
         .CreateLogger(typeof(MigrationExtensions));
 
+    private const int MaxRetryAttempts = 10;
+    private const int InitialRetryDelayMs = 1000;
+
     public static async Task ApplyMigrationsAsync(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app);
@@ -33,17 +36,22 @@ public static class MigrationExtensions
 
         try
         {
-            // Get connection string for logging
+            // Get connection string without logging it (security)
             string? connectionString = dbContext.Database.GetConnectionString();
-            Logger.LogInformation("Attempting to apply migrations with connection: {ConnectionString}",
-                connectionString?.Replace(";Password=", ";Password=*****", StringComparison.Ordinal));
+            Logger.LogInformation("Attempting to apply database migrations...");
 
-            // Try to ensure the database exists first
-            await EnsureDatabaseExistsAsync(connectionString);
+            // Try to ensure the database exists first with retry logic
+            await RetryWithExponentialBackoffAsync(
+                async () => await EnsureDatabaseExistsAsync(connectionString),
+                "database creation check");
 
-            // Check if the database exists before trying to migrate
-            Logger.LogInformation("Checking database connection...");
-            if (await dbContext.Database.CanConnectAsync())
+            // Check if the database exists before trying to migrate with retry logic
+            Logger.LogInformation("Checking database connection with retry...");
+            bool canConnect = await RetryWithExponentialBackoffAsync(
+                async () => await dbContext.Database.CanConnectAsync(),
+                "database connection check");
+
+            if (canConnect)
             {
                 Logger.LogInformation("Successfully connected to database. Applying ApplicationDbContext migrations...");
                 await dbContext.Database.MigrateAsync();
@@ -80,6 +88,69 @@ public static class MigrationExtensions
             Logger.LogError(ex, "A timeout occurred while applying migrations: {Message}", ex.Message);
             Logger.LogWarning("Application will continue without applying migrations.");
         }
+    }
+
+    private static async Task<T> RetryWithExponentialBackoffAsync<T>(Func<Task<T>> operation, string operationName)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        int retryCount = 0;
+        int delayMs = InitialRetryDelayMs;
+
+        while (true)
+        {
+            try
+            {
+                return await operation();
+            }
+            catch (NpgsqlException ex) when (retryCount < MaxRetryAttempts && IsTransientError(ex))
+            {
+                retryCount++;
+                Logger.LogWarning(ex,
+                    "Transient error during {OperationName} (attempt {RetryCount}/{MaxRetries}). Retrying in {DelayMs}ms...",
+                    operationName, retryCount, MaxRetryAttempts, delayMs);
+
+                await Task.Delay(delayMs);
+                delayMs = Math.Min(delayMs * 2, 10000); // Cap at 10 seconds
+            }
+            catch (Exception ex) when (retryCount < MaxRetryAttempts)
+            {
+                retryCount++;
+                Logger.LogWarning(ex,
+                    "Error during {OperationName} (attempt {RetryCount}/{MaxRetries}). Retrying in {DelayMs}ms...",
+                    operationName, retryCount, MaxRetryAttempts, delayMs);
+
+                await Task.Delay(delayMs);
+                delayMs = Math.Min(delayMs * 2, 10000);
+            }
+        }
+    }
+
+    private static async Task RetryWithExponentialBackoffAsync(Func<Task> operation, string operationName)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        await RetryWithExponentialBackoffAsync(async () =>
+        {
+            await operation();
+            return true;
+        }, operationName);
+    }
+
+    private static bool IsTransientError(NpgsqlException ex)
+    {
+        ArgumentNullException.ThrowIfNull(ex);
+
+        // Common PostgreSQL transient error codes
+        // 08000 - connection_exception
+        // 08003 - connection_does_not_exist
+        // 08006 - connection_failure
+        // 53300 - too_many_connections
+        // 57P03 - cannot_connect_now
+        return ex.SqlState is "08000" or "08003" or "08006" or "53300" or "57P03"
+               || ex.Message.Contains("server is starting up", StringComparison.OrdinalIgnoreCase)
+               || ex.Message.Contains("authentication", StringComparison.OrdinalIgnoreCase)
+               || ex.Message.Contains("connection", StringComparison.OrdinalIgnoreCase);
     }
 
     private static async Task EnsureDatabaseExistsAsync(string? connectionString)
