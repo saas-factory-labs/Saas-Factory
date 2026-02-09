@@ -375,7 +375,6 @@ export Authentication__Provider=Auth0
 | Mobile SDKs | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Realtime DB | ❌ | ❌ | ✅ | ❌ | ❌ |
 | Implementation Status | ✅ | ✅ | 🚧 | 🚧 | 🚧 |
-
 ## Troubleshooting
 
 ### Provider Not Configured

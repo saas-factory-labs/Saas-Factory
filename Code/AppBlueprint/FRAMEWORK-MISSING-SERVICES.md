@@ -528,6 +528,7 @@ Only if:
 | **Scalability** | ⭐⭐⭐ 1M docs | ⭐⭐⭐⭐⭐ Unlimited | ⭐⭐⭐⭐⭐ Unlimited | ⭐⭐⭐⭐ 10M docs | ⭐⭐⭐ 5M docs |
 | **Best For** | MVP/Bootstrap | Enterprise | Large Scale | Mid-Market | Startups |
 
+
 ---
 
 **Proposed Solution (Recommended):**

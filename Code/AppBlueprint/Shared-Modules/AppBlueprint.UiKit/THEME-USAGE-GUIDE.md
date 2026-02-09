@@ -129,6 +129,7 @@ See example configurations in:
 | `GetLinkClasses()`            | Themed hyperlinks       |
 | `GetCardAccentClasses()`      | Colored card borders    |
 
+
 ### Gradient Backgrounds
 
 | Method                           | Use Case                            | Example                                                           |
@@ -137,6 +138,7 @@ See example configurations in:
 | `GetPrimaryGradientWithDark()`   | Gradient with dark mode             | Used for active navigation states                                 |
 | `GetPrimarySolidGradient()`      | Solid gradient (no transparency)    | Buttons and prominent elements                                    |
 | `GetAccentGradient()`            | Accent color gradient               | Alternative gradient styling                                      |
+
 - `direction`: `"to-r"`, `"to-l"`, `"to-t"`, `"to-b"`, `"to-br"`, etc.
 - `fromShade`/`toShade`: Tailwind shades (`"50"` to `"950"`)
 - `fromOpacity`/`toOpacity`: Opacity values (e.g., `"0.12"`, `"0.24"`)
@@ -174,6 +176,7 @@ See example configurations in:
 | `GetLabelByType(...)`       | Get label by app type             |
 | `CurrentTheme.BrandName`    | Access brand name                 |
 | `CurrentTheme.LogoUrl`      | Access logo URL                   |
+
 
 ## Complete Example Component
 

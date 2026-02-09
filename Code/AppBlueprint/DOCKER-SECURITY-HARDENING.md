@@ -137,16 +137,19 @@ USER root  # Temporary elevation for build operations
 |------------------|--------|-------|--------|
 | **Image Source** | Microsoft MCR | Docker Hardened Images | Official DHI support |
 | **Image Size** | ~220MB | ~90-110MB | 50-60% reduction |
+
 | **Package Count** | ~200 | ~40-60 | 70-80% reduction |
 | **CVE Count** | 10-30 | Near-zero | Significant reduction |
 | **Shell Access** | Yes (bash) | None | Attack vector eliminated |
 | **Package Manager** | Yes (apt/apk) | None | Installation vector eliminated |
 | **Port Privilege** | 80 (root) | 8080 (non-root) | Reduced privilege |
+
 | **User Privilege** | non-root | non-root | Maintained |
 | **Diagnostics** | Enabled | Disabled | Reduced surface |
 | **Health Monitoring** | Manual | Orchestration layer | Improved reliability |
 | **Supply Chain** | Standard | SLSA Level 3 | Verified provenance |
 | **SBOMs** | Not included | Transparent, signed | Full visibility |
+
 
 ## 🔍 Verification
 

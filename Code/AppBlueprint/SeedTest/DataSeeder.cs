@@ -869,7 +869,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             await dbContext.PaymentProviders.AddRangeAsync(paymentProviders, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation("Successfully seeded {Count} payment providers", paymentProviders.Count);
+            logger.LogInformation("Successfully seeded {Count} payment providers", paymentProviders.Length);
         }
         catch (Exception ex)
         {

@@ -122,6 +122,7 @@ spec:
 | **Package Manager** | Yes | No | Eliminated |
 | **CVE Exposure** | Higher | Lower | Reduced |
 
+
 ## Next Steps
 
 ### Immediate (Required)

@@ -271,6 +271,7 @@ app.Run();
 | `/health/ready` | Is the app ready for traffic? | readinessProbe |
 | `/health/startup` | Has the app finished starting? | startupProbe |
 
+
 ### Probe Strategy
 
 1. **Startup Probe**: Protects slow-starting apps from being killed during initialization

@@ -237,6 +237,7 @@ Expected response:
 | TodoApp | ❌ Inherits unavailable B2BDbContext | ✅ Works |
 | UnitOfWork | ❌ Needs both contexts | ✅ Works |
 
+
 ## Troubleshooting
 
 ### Error: "Unable to resolve service for type 'B2BDbContext'"

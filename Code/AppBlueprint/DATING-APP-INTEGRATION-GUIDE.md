@@ -386,6 +386,7 @@ If you need full control over authentication, implement your own provider using 
 | **Branding Control** | Limited (paid plans) | Full control | Full control |
 | **Offline Development** | ❌ No | ✅ Yes | ✅ Yes |
 
+
 ---
 
 ## 🎯 **Recommendation for Dating App**

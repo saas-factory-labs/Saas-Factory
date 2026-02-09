@@ -83,6 +83,7 @@ The TodoController will be automatically discovered by ASP.NET Core when the pro
 | DELETE  | `/api/v1/todos/{id}`             | Delete todo                       |
 | PATCH   | `/api/v1/todos/{id}/complete`    | Mark todo as complete             |
 
+
 ## Request Models
 
 ### Create Todo Request
@@ -125,6 +126,7 @@ The TodoEntity creates a `Todos` table with the following structure:
 | CreatedAt      | datetime      | Creation timestamp           |
 | LastUpdatedAt | datetime | Last update timestamp |
 | IsSoftDeleted | boolean | Soft delete flag |
+
 
 ### Indexes
 

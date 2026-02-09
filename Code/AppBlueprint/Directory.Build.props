@@ -17,6 +17,18 @@
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
         <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+        
+        <!-- Suppress CA2007: ConfigureAwait is not needed in .NET 6+ ASP.NET Core applications -->
+        <!-- Microsoft guidance: Don't use ConfigureAwait(false) in modern web applications -->
+        <!-- ASP.NET Core has no SynchronizationContext, and Blazor Server requires returning to sync context -->
+        <!-- Additional suppressions aligned with project philosophy (see root .editorconfig): -->
+        <!-- CA1848: LoggerMessage delegates - project prefers code readability over micro-optimizations -->
+        <!-- CA1303: Localization - application does not require localization -->
+        <!-- CA1002: List<T> in public APIs - required for EF navigation properties -->
+        <!-- CA2227: Collection readonly - required for EF lazy loading and change tracking -->
+        <!-- CA1812: Uninstantiated internal classes - instantiated by DI containers -->
+        <!-- CA1822: Mark as static - partial DbContext methods cannot be static -->
+        <NoWarn>$(NoWarn);CA2007;CA1848;CA1303;CA1002;CA2227;CA1812;CA1822</NoWarn>
 
         <!-- Assembly Information and Copyright -->
         <Company>SaaS Factory Labs</Company>

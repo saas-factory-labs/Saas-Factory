@@ -299,6 +299,7 @@ The `TenantTypeAuthorize` component provides route-level protection based on ten
 | `AllowUnauthenticated`   | `bool`                    | If `true`, only unauthenticated users can access (useful for demo pages) |
 | `ChildContent`           | `RenderFragment?`         | Content to render if authorized |
 
+
 ### TenantTypeAuthorize Behavior
 
 - If **unauthenticated** and `AllowUnauthenticated=true` → Shows content

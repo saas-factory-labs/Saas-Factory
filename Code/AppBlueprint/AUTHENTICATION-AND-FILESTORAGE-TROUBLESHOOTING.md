@@ -601,6 +601,7 @@ PostgreSQL handles identifiers differently based on quoting:
 | `SELECT * FROM "FileMetadata"` | `FileMetadata` | Quoted = exact case |
 | `SELECT * FROM FILEMETADATA` | `filemetadata` | Unquoted = lowercase |
 
+
 **EF Core Default Behavior:**
 EF Core quotes all identifiers, so it generates:
 ```sql

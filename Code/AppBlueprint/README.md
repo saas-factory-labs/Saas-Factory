@@ -28,8 +28,7 @@ dotnet run
 | Quick Access | Description |
 |--------------|-------------|
 | [📑 **Documentation Index**](./DATABASE_CONTEXT_DOCUMENTATION_INDEX.md) | **Complete index** of all database context documentation |
-| [⚙️ **Hybrid Mode Setup**](./DATABASE_HYBRID_MODE_SETUP.md) | **Demo app configuration** - why and how Hybrid Mode works |
-| [📖 Flexibility Guide](./Shared-Modules/DATABASE_CONTEXT_FLEXIBILITY_GUIDE.md) | Complete reference (930+ lines) - all context types and scenarios |
+| [⚙️ **Hybrid Mode Setup**](./DATABASE_HYBRID_MODE_SETUP.md) | **Demo app configuration** - why and how Hybrid Mode works || [📖 Flexibility Guide](./Shared-Modules/DATABASE_CONTEXT_FLEXIBILITY_GUIDE.md) | Complete reference (930+ lines) - all context types and scenarios |
 | [📋 Configuration Examples](./Shared-Modules/DatabaseContexts/Examples/README.md) | Copy-paste templates for B2C, B2B, Hybrid, Baseline |
 
 ### Core Guides
@@ -61,6 +60,7 @@ dotnet run
 | [📦 TodoApp Module](./AppBlueprint.TodoAppKernel/) | Example feature module |
 | [🎨 UI Kit](./Shared-Modules/AppBlueprint.UiKit/) | Reusable Blazor components |
 
+
 ### Infrastructure & Deployment
 
 | Resource | Description |
@@ -68,6 +68,7 @@ dotnet run
 | [🐳 Docker Compose](./docker-compose.yml) | Local development environment |
 | [☁️ Railway Deployment](./railway.toml) | Production deployment configuration |
 | [🔒 Logto Authentication](./LOGTO-AUTHENTICATION-SETUP.md) | SSO setup guide |
+
 
 ## 🏗️ Architecture
 

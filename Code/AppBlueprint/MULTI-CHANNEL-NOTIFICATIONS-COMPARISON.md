@@ -823,6 +823,7 @@ public class NotificationHub : TenantScopedHub<NotificationHub>
 | Web Push | PWA Web Push API | $0 |
 | **Total** | | **$0/month** |
 
+
 **Assumptions:**
 - < 1,000 notifications/day
 - < 100 concurrent SignalR connections
@@ -839,6 +840,7 @@ public class NotificationHub : TenantScopedHub<NotificationHub>
 | Mobile Push | Firebase Cloud Messaging (FCM) | $0 |
 | **Total** | | **$0/month** |
 
+
 **Assumptions:**
 - 10,000 notifications/day
 - Free FCM tier
@@ -852,6 +854,7 @@ public class NotificationHub : TenantScopedHub<NotificationHub>
 | All Channels | OneSignal (10k subscribers) | $99/month |
 | SMS | Twilio (1k messages/month) | $8/month |
 | **Total** | | **$107/month** |
+
 
 ---
 

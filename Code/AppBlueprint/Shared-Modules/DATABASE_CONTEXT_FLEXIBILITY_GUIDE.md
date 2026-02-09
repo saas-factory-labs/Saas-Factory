@@ -18,6 +18,7 @@ AppBlueprint supports flexible DbContext configuration, allowing you to choose t
 | **Hybrid** | Platform apps | **ALL** (Baseline + B2C + B2B) | Marketplaces, demo apps with dynamic UIs |
 | **Baseline** | Microservices | Core only | Auth services, minimal apps |
 
+
 ### Environment Variables (Quick Setup)
 
 ```bash
@@ -116,6 +117,7 @@ Determines which DbContext to use:
 | `Baseline` | Minimal apps, custom contexts         | Core entities only               |
 | `B2C`      | Consumer SaaS (default)               | Baseline + consumer features     |
 | `B2B`      | Organization SaaS                     | Baseline + organizational features|
+
 
 **Example:**
 ```json

@@ -93,3 +93,4 @@ After adding variables and restarting AppHost, check logs for:
 | Opaque tokens (43 chars) | API Resource not requested | Set `LOGTO_RESOURCE` environment variable |
 | JWT without scopes | Permissions not assigned in Logto | Add permissions in Logto Dashboard |
 | Audience validation fails | Mismatched API Resource URLs | Ensure both Web and API use same URL |
+

@@ -418,6 +418,7 @@ All models are in `AppBlueprint.Contracts.Baseline.Email`:
 | `WeeklyDigestEmailModel`           | UserName, WeekStartDate, WeekEndDate, NewNotifications, NewMessages, HighlightedActivities   | Weekly summaries     |
 | `AdminNotificationEmailModel`      | AdminName, NotificationType, Title, Message, ActionLink, OccurredAt                          | Admin alerts         |
 
+
 ---
 
 ## Best Practices

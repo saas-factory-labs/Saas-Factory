@@ -22,7 +22,7 @@ Set the authentication provider in your `appsettings.json`:
 }
 ```
 
-> **Available Providers:** `Logto`
+> **Available Providers:** `Mock`, `Auth0`, `Logto`
 
 ### 2. Auth0 Configuration
 

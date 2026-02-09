@@ -113,6 +113,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS debug
 | **Cost** | Less bandwidth, less storage, FREE |
 | **Trust** | Docker-maintained, open source (Apache 2.0) |
 
+
 ## ⚠️ Breaking Changes
 
 1. **Port 8080** - Update all configs

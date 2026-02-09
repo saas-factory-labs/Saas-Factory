@@ -74,6 +74,7 @@ This document outlines **Option 4: Stored Procedure with SECURITY DEFINER** for 
 | **Rate limit bypass** | LOW | Audit log tracks all attempts, easy to detect |
 | **Email enumeration** | MEDIUM | Return generic error "Signup failed" (don't reveal "email exists") |
 
+
 ---
 
 ## Files Created
@@ -476,11 +477,13 @@ USING ("TenantId" = current_setting('app.current_tenant_id', TRUE)::TEXT
 | **Security** | ⚠️ Slight weakness | ✅ Strongest |
 | **Code Complexity** | ⭐ Simple | ⭐⭐⭐ Moderate |
 | **Audit Trail** | Manual logging needed | ✅ Built-in |
+
 | **Rate Limiting** | Must implement separately | ✅ Built-in |
 | **Attack Surface** | Larger (any NULL context) | Smaller (signup only) |
 | **Maintenance** | Easy | Moderate (SQL + C#) |
 | **Performance** | ⚡ Fast | ⚡⚡ Faster (single DB call) |
 | **Supabase Compatible** | ❌ Unsafe | ✅ Safe |
+
 
 ---
 

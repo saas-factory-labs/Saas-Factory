@@ -68,6 +68,7 @@ This directory contains comprehensive documentation for AppBlueprint's flexible 
 |-------------|----------|---------------|
 | **Hybrid** (Demo App) | Apps with both B2C and B2B features, dynamic UIs | [DATABASE_HYBRID_MODE_SETUP.md](./DATABASE_HYBRID_MODE_SETUP.md) |
 | **B2C** | Consumer apps (fitness, finance, personal tools) | [Section in Flexibility Guide](./Shared-Modules/DATABASE_CONTEXT_FLEXIBILITY_GUIDE.md#example-1-b2c-consumer-saas-default) |
+
 | **B2B** | Enterprise apps (CRM, project management) | [Section in Flexibility Guide](./Shared-Modules/DATABASE_CONTEXT_FLEXIBILITY_GUIDE.md#example-2-b2b-organization-saas) |
 | **Baseline** | Microservices, custom contexts | [Section in Flexibility Guide](./Shared-Modules/DATABASE_CONTEXT_FLEXIBILITY_GUIDE.md#example-3-minimal-microservice-baseline-only) |
 
@@ -166,6 +167,7 @@ DatabaseContext__BaselineOnly="true"
 | Production Deployment | Environment vars, Key Vault, Docker | ✅ Complete |
 | Testing | TestContainers integration | ✅ Complete |
 | Migration Guide | Legacy → Flexible config | ✅ Complete |
+
 
 ---
 
