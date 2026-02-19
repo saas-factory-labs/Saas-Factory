@@ -40,7 +40,7 @@ env:
 jobs:
   build-and-test:
     name: Build and Test
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - name: Checkout Code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
@@ -77,7 +77,7 @@ jobs:
     if: |
       (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging' && (github.event.inputs.service == 'all' || github.event.inputs.service == 'api'))
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     environment: staging
     outputs:
       deployment_url: ${{ steps.get-url.outputs.url }}
@@ -128,7 +128,7 @@ jobs:
     if: |
       (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging' && (github.event.inputs.service == 'all' || github.event.inputs.service == 'web'))
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     environment: staging
     outputs:
       deployment_url: ${{ steps.get-url.outputs.url }}
@@ -171,7 +171,7 @@ jobs:
   run-migrations-staging:
     name: Run Database Migrations (Staging)
     needs: deploy-api-staging
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     environment: staging
     steps:
       - name: Checkout Code
@@ -223,7 +223,7 @@ jobs:
       github.event_name == 'workflow_dispatch' && 
       github.event.inputs.environment == 'production' && 
       (github.event.inputs.service == 'all' || github.event.inputs.service == 'api')
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     environment: production
     outputs:
       deployment_url: ${{ steps.get-url.outputs.url }}
@@ -274,7 +274,7 @@ jobs:
       github.event_name == 'workflow_dispatch' && 
       github.event.inputs.environment == 'production' && 
       (github.event.inputs.service == 'all' || github.event.inputs.service == 'web')
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     environment: production
     outputs:
       deployment_url: ${{ steps.get-url.outputs.url }}
@@ -317,7 +317,7 @@ jobs:
   run-migrations-production:
     name: Run Database Migrations (Production)
     needs: deploy-api-production
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     environment: production
     steps:
       - name: Checkout Code
@@ -377,7 +377,7 @@ jobs:
     name: Notify Deployment Status
     needs: [deploy-web-staging, run-migrations-staging]
     if: always() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging'))
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - name: Deployment Summary
         run: |
@@ -393,7 +393,7 @@ jobs:
     name: Notify Production Deployment Status
     needs: [deploy-web-production, run-migrations-production]
     if: always() && github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - name: Deployment Summary
         run: |

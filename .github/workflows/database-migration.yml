@@ -18,7 +18,7 @@ on:
 jobs:
   run-migrations:
     name: Run Database Migrations
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     environment: ${{ github.event.inputs.environment }}
 
     steps:

@@ -9,7 +9,7 @@ on:
 
 jobs:
   sql-review:
-    runs-on: self-hosted
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     name: SQL Review
     steps:
       # SECURITY: Using full commit SHA for immutable, verifiable builds
