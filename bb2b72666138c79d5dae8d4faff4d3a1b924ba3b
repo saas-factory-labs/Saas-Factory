@@ -1,0 +1,23 @@
+.github/workflows/generate-sql-schema-docs.yml
+  fe0a016cc280a66b 88-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.3",
+  "base_commit_sha": "bb2b72666138c79d5dae8d4faff4d3a1b924ba3b",
+  "prompts": {
+    "fe0a016cc280a66b": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6f0cd8fc-82d3-40e3-9bec-2abfffd81889",
+        "model": "copilot/claude-sonnet-4.5"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 7,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  }
+}
