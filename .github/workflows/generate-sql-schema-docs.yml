@@ -21,7 +21,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
         with:
-          token: ${{ secrets.GH_ACTION_SCHEMA_AUTOMATION_TOKEN }}
+          token: ${{ secrets.GH_ACTION_SCHEMA_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
           persist-credentials: true
 
       # Step 2: Install PostgreSQL 17 client tools
@@ -84,6 +84,8 @@ jobs:
 
       # Step 4: Commit and push schema file directly
       - name: Commit and push schema file
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTION_SCHEMA_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -97,6 +99,9 @@ jobs:
           fi
           
           git commit -m "Update PostgreSQL schema dump [skip ci]"
+          
+          # Configure git to use the token for authentication
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           git push
   
           

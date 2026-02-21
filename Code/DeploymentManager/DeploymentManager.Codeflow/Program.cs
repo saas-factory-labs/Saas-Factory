@@ -8,7 +8,7 @@ namespace DeploymentManager.Codeflow;
 
 internal class Program
 {
-    private const string _solutionPath = @"C:\Development\boligportal\Boligportal\Boligportal.sln";
+    private const string _solutionPath = @"D:\Development\Personal-Projects\boligportal\Boligportal\Boligportal.sln";
     private const string _jsonFileOutputPath = @"C:\users\caspe\Downloads\classData.json";
 
     private static async Task Main(string[] args)

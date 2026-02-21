@@ -43,12 +43,8 @@
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=sqale_index)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=sqale_index)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
 [![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
-
 [![Security: CodeQL](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-codeql.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-codeql.yml)
 [![Security: Snyk](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-snyk.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-snyk.yml)
-
----
-
 [![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
 
 ## 📚 Documentation
@@ -72,8 +68,21 @@ The comprehensive documentation includes:
 
 Deploy a fully functional, production-ready SaaS application in under 30 minutes using a single command via the Developer CLI, with all foundational features already in place - ready for you to add your application-specific features.
 
-Inspired by Laravel's approach to developer experience and opinionated best practices, SaaS Factory brings the same philosophy to .NET - purpose-built for multi-tenant SaaS applications.
+Inspired by Laravel's approach to developer experience and opinionated best practices, SaaS Factory brings the same philosophy to .NET - purpose-built for multi-tenant B2C and B2B SaaS application.
 
+* Some of the key features inspired by Laravel and other modern frameworks that will be included out of the box: 
+
+- Developer CLI for scaffolding and management
+- Payment integration with Stripe
+- Full text search with PostgreSQL
+- Social authentication with OAuth providers
+- Email verification and password reset flows
+- Team management, user roles and permissions and profiles
+- Multitenancy support out of the box
+- Background job processing with workers and a dashboard for monitoring and managing jobs centrally instead of per application such as Laravel Horizon
+- Feature flag management system for gradual rollouts and A/B testing
+- Comprehensive audit logging and monitoring tools
+- GDPR compliance features like data export and deletion requests
 
 
 <summary><h4>Purpose</h4></summary>
