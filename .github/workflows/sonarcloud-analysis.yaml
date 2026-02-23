@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Build and analyze
-    runs-on: blacksmith-2vcpu-ubuntu-2404  # Runs in GitHub cloud by default
+    runs-on: blacksmith-4vcpu-ubuntu-2404  # Runs in GitHub cloud by default
 
     steps:
       - name: Set up JDK 17
