@@ -7,6 +7,7 @@ The UiKit now includes a **pure Tailwind CSS theming system** that enables:
 - ✅ **Dynamic Tailwind classes** - no custom CSS needed
 - ✅ **Configurable content** - customize labels per application type
 - ✅ **Runtime theme switching** - change themes without recompilation
+- ✅ **Zero MudBlazor Dependency** - fully migrated to pure HTML/Tailwind components
 
 ---
 

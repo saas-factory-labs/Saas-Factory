@@ -3,7 +3,7 @@
 [![NuGet Version](https://img.shields.io/nuget/v/SaaS-Factory.AppBlueprint.UiKit)](https://www.nuget.org/packages/SaaS-Factory.AppBlueprint.UiKit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A comprehensive Blazor Razor Class Library providing reusable UI components, themes, and layouts built with MudBlazor for rapid SaaS application development.
+A comprehensive Blazor Razor Class Library providing reusable UI components, themes, and layouts built with pure Tailwind CSS for rapid SaaS application development.
 
 ## Features
 
@@ -11,19 +11,17 @@ A comprehensive Blazor Razor Class Library providing reusable UI components, the
 - 🧩 **Rich Component Library** - Dashboard cards, charts, forms, navigation
 - 📱 **Responsive Layouts** - Mobile-first design
 - 🎯 **Type-Safe Configuration** - Strongly-typed options
-- ⚡ **Performance Optimized** - Feature flags to reduce bundle size
+- ⚡ **Performance Optimized** - Pure Tailwind CSS, no heavy third-party JS/CSS dependencies
 - 🔧 **Extensible** - Easy to override and extend
 
 ## Quick Start
 
 ```bash
 dotnet add package SaaS-Factory.AppBlueprint.UiKit --version 0.1.*
-dotnet add package MudBlazor --version 8.14.0
 ```
 
 ```csharp
 // Program.cs
-builder.Services.AddMudServices();
 builder.Services.AddUiKit();
 ```
 
@@ -32,7 +30,6 @@ builder.Services.AddUiKit();
 @using AppBlueprint.UiKit.Components
 
 @* MainLayout.razor *@
-<MudThemeProvider />
 <NavigationMenu />
 <main>@Body</main>
 ```
