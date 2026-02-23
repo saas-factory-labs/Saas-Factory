@@ -33,7 +33,7 @@
 [![GitHub issues with bug label](https://img.shields.io/github/issues-raw/saas-factory-labs/Saas-Factory/bug?label=bugs&logo=github&color=red)](https://github.com/saas-factory-labs/Saas-Factory/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 [![GitHub open issues](https://img.shields.io/github/issues-raw/saas-factory-labs/Saas-Factory?label=open%20issues&logo=github)](https://github.com/saas-factory-labs/Saas-Factory/issues?q=is%3Aissue+is%3Aopen)
 
-### Code Quality & Security (SonarCloud)
+### Quality & security analysis
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=security_rating)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=Security)
