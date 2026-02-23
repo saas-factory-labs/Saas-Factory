@@ -45,8 +45,8 @@
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=sqale_index)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=sqale_index)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
 [![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
-[![Security: CodeQL](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-codeql.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-codeql.yml)
-[![Security: Snyk](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-snyk.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/security-snyk.yml)
+[![Security: CodeQL](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/codeql-analysis.yml)
+[![Security: Snyk](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/snyk-analysis.yaml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/snyk-analysis.yaml)
 [![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
 
 ## 📚 Documentation
