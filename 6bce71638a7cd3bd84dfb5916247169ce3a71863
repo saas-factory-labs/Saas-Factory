@@ -1,0 +1,29 @@
+Code/AppBlueprint/STABILITY-AND-INTEGRATION-GUIDE.md
+  5ca7b5c05ce0d1e8 1-86
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/README.md
+  5ca7b5c05ce0d1e8 6,14
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/USAGE.md
+  5ca7b5c05ce0d1e8 104,137,160-161,165,176
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/THEME-USAGE-GUIDE.md
+  5ca7b5c05ce0d1e8 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.3",
+  "base_commit_sha": "6bce71638a7cd3bd84dfb5916247169ce3a71863",
+  "prompts": {
+    "5ca7b5c05ce0d1e8": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "8e156f98-25d4-4602-83fa-0223894790d4",
+        "model": "copilot/gemini-3.1-pro-preview"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 101,
+      "total_deletions": 27,
+      "accepted_lines": 95,
+      "overriden_lines": 0
+    }
+  }
+}
