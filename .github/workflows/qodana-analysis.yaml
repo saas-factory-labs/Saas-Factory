@@ -1,4 +1,4 @@
-name: "💎 Code Quality: Sonarcloud & Qodana"
+name: "💎 Code Quality: Qodana"
 on:
   workflow_dispatch:
   pull_request:
