@@ -9,11 +9,12 @@ on:
     - cron: '0 6 * * 1'
 
 jobs:
-  snyk:
-    name: Snyk .NET Vulnerability Scan
+  snyk-code:
+    name: Snyk - Open Source (All Languages)
     runs-on: ubuntu-latest
     permissions:
       security-events: write
+      actions: read
       contents: read
 
     steps:
@@ -25,16 +26,78 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/dotnet@master
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Restore .NET dependencies
+        run: dotnet restore SaaS-Factory.sln
+
+      - name: Install Node.js dependencies
+        run: |
+          for pkg in $(find . -name "package.json" -not -path "*/node_modules/*" -not -path "*/.git/*"); do
+            dir=$(dirname "$pkg")
+            echo "Installing npm deps in $dir"
+            npm ci --prefix "$dir" || npm install --prefix "$dir" || true
+          done
+
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
+
+      - name: Run Snyk - scan all projects
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high --sarif-file-output=snyk.sarif --file=SaaS-Factory.sln
+        run: snyk test --all-projects --severity-threshold=high --sarif-file-output=snyk.sarif
 
       - name: Upload Snyk results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: snyk.sarif
+
+  snyk-docker:
+    name: Snyk - Docker Container Scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        dockerfile:
+          - path: Code/AppBlueprint/AppBlueprint.Web/Dockerfile
+            image: appblueprint-web
+          - path: Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile
+            image: appblueprint-apiservice
+          - path: Code/AppBlueprint/AppBlueprint.AppGateway/Dockerfile
+            image: appblueprint-gateway
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
+
+      - name: Build Docker image
+        run: docker build -f ${{ matrix.dockerfile.path }} -t ${{ matrix.dockerfile.image }}:latest .
+
+      - name: Run Snyk container scan
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: >
+          snyk container test ${{ matrix.dockerfile.image }}:latest
+          --severity-threshold=high
+          --sarif-file-output=snyk-${{ matrix.dockerfile.image }}.sarif
+          --file=${{ matrix.dockerfile.path }}
+
+      - name: Upload container scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: snyk-${{ matrix.dockerfile.image }}.sarif
+          category: snyk-docker-${{ matrix.dockerfile.image }}
