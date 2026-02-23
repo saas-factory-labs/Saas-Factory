@@ -8,6 +8,7 @@
 <p> Database schema diagram for appblueprintdb </p>
 
 [![Explore database with Azimutt](https://img.shields.io/badge/PostgreSQL-browse_online-gray?labelColor=4169E1&logo=postgresql&logoColor=fff&style=flat)](https://azimutt.app/create?sql=https://raw.githubusercontent.com/saas-factory-labs/Saas-Factory/refs/heads/main/schema.sql)
+[![Azimutt Database Analysis](https://img.shields.io/badge/Azimutt-database_analysis-gray?labelColor=7C3AED&logo=postgresql&logoColor=fff&style=flat)](docs/azimutt-database-analysis-report.md)
 
 ![Database Schema Diagram](docs/images/image.png)
 
@@ -21,6 +22,7 @@
 ### CI/CD & Build Status
 
 [![SonarCloud Analysis](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/sonarcloud-analysis.yaml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/sonarcloud-analysis.yaml?query=branch%3Amain)
+[![Azimutt Database Analysis](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/azimutt-database-analysis.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/azimutt-database-analysis.yml?query=branch%3Amain)
 [![Deploy to Railway](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/deploy-to-railway.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/deploy-to-railway.yml?query=branch%3Amain)
 [![Docker Scout Vulnerability Scan](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/docker-scout-vulnerability-scan.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/docker-scout-vulnerability-scan.yml?query=branch%3Amain)
 [![Publish NuGet Packages](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/publish-nuget-packages.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/publish-nuget-packages.yml?query=branch%3Amain)
