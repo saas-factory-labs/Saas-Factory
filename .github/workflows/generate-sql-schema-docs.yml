@@ -10,7 +10,8 @@ on:
       - main
 
 permissions:
-  contents: write  # Required to push changes back to the repository
+  contents: write       # Required to push changes back to the repository
+  pull-requests: write  # Required to create pull requests
 
 jobs:
   generate-schema:
@@ -87,6 +88,7 @@ jobs:
         id: create-pr
         uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f  # v7.0.5
         with:
+          token: ${{ secrets.GH_ACTION_SCHEMA_AUTOMATION_TOKEN || github.token }}
           commit-message: "Update PostgreSQL schema dump [skip ci]"
           title: "🗄️ Update PostgreSQL schema documentation"
           body: |
