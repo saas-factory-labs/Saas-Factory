@@ -1,0 +1,45 @@
+name: "💎 Quality: Azimutt Database Analysis"
+
+on:
+  workflow_dispatch: # Allows manual trigger
+  push:
+    branches:
+      - main
+    paths:
+      - "schema.sql"
+  schedule:
+    - cron: "0 6 * * 1" # Every Monday at 06:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  analyze-database:
+    name: Azimutt Database Lint & Analysis
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e  # v4.3.0
+        with:
+          node-version: "22"
+
+      - name: Run Azimutt analyze
+        env:
+          DB_URL: "postgresql://${{ secrets.PG_USER }}:${{ secrets.PG_PASSWORD }}@${{ secrets.PG_HOST }}:${{ secrets.PG_PORT }}/${{ secrets.PG_DB }}"
+        run: |
+          npx azimutt@latest analyze "$DB_URL" \
+            --folder ./azimutt-report \
+            --size 20
+
+      - name: Upload analysis report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: azimutt-analysis-report-${{ github.run_id }}
+          path: ./azimutt-report/
+          retention-days: 30
+          if-no-files-found: warn
