@@ -1,0 +1,54 @@
+# Local development Docker Compose
+# Starts PostgreSQL and Logto locally so you don't need cloud services during dev
+#
+# Usage:
+#   docker compose -f docker-compose.local.yml up -d
+#
+# After startup:
+#   PostgreSQL: localhost:5432 (user: appblueprint, pass: localdev123, db: appblueprint)
+#   Logto Admin: http://localhost:3002
+#   Logto API:   http://localhost:3001
+
+services:
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: appblueprint
+      POSTGRES_USER: appblueprint
+      POSTGRES_PASSWORD: localdev123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appblueprint -d appblueprint"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+      - local-dev
+
+  logto:
+    image: svhd/logto:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TRUST_PROXY_HEADER: "1"
+      DB_URL: postgresql://appblueprint:localdev123@postgres:5432/logto
+      ENDPOINT: http://localhost:3001
+      ADMIN_ENDPOINT: http://localhost:3002
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+    networks:
+      - local-dev
+
+volumes:
+  postgres_data:
+
+networks:
+  local-dev:
+    driver: bridge

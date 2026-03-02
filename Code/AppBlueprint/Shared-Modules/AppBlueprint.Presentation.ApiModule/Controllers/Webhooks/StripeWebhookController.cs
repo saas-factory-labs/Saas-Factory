@@ -122,6 +122,7 @@ public sealed class StripeWebhookController : ControllerBase
     /// Gets recent webhook events (for testing/debugging).
     /// Requires authentication.
     /// </summary>
+    [Authorize]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRecentEvents(CancellationToken cancellationToken)
@@ -134,6 +135,7 @@ public sealed class StripeWebhookController : ControllerBase
     /// Gets a specific webhook event by ID (for testing/debugging).
     /// Requires authentication.
     /// </summary>
+    [Authorize]
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
