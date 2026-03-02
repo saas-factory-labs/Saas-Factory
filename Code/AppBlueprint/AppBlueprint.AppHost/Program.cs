@@ -104,7 +104,7 @@ if (!string.IsNullOrWhiteSpace(logtoEndpoint))
 if (!string.IsNullOrWhiteSpace(logtoAppId))
     webFrontend = webFrontend.WithEnvironment("LOGTO_APPID", logtoAppId);
 if (!string.IsNullOrWhiteSpace(logtoAppSecret))
-    webFrontend = webFrontend.WithEnvironment(LogtoApiResourceKey, logtoApiResource);
+    webFrontend = webFrontend.WithEnvironment("LOGTO_APPSECRET", logtoAppSecret);
 if (!string.IsNullOrWhiteSpace(authenticationProvider))
     webFrontend = webFrontend.WithEnvironment("AUTHENTICATION_PROVIDER", authenticationProvider);
 if (!string.IsNullOrWhiteSpace(databaseContextType))

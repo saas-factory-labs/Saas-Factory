@@ -6,7 +6,7 @@ AppBlueprint supports multiple authentication providers through a unified abstra
 
 - **Logto** - Open-source identity solution (recommended for new projects)
 - **Auth0** - Popular authentication platform  
-- **Firebase** - Google's authentication and app platform (Coming soon)
+- **Firebase** - Google's authentication and app platform
 - **Azure AD B2C** - Microsoft's B2C identity solution (Coming soon)
 - **AWS Cognito** - Amazon's user authentication service (Coming soon)
 - **JWT** - Simple JWT-based authentication (development/testing)
@@ -374,7 +374,7 @@ export Authentication__Provider=Auth0
 | MFA | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Mobile SDKs | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Realtime DB | ❌ | ❌ | ✅ | ❌ | ❌ |
-| Implementation Status | ✅ | ✅ | 🚧 | 🚧 | 🚧 |
+| Implementation Status | ✅ | ✅ | ✅ | 🚧 | 🚧 |
 ## Troubleshooting
 
 ### Provider Not Configured

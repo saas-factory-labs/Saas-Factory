@@ -2,27 +2,32 @@ using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Authorization.Providers.Auth0;
+namespace AppBlueprint.Infrastructure.Authorization.Providers.Firebase;
 
-public class Auth0Provider : BaseAuthenticationProvider
+public class FirebaseProvider : BaseAuthenticationProvider
 {
     private readonly HttpClient _httpClient;
-    private readonly Auth0Configuration _configuration;
-    private readonly ILogger<Auth0Provider> _logger;
+    private readonly FirebaseConfiguration _configuration;
+    private readonly ILogger<FirebaseProvider> _logger;
 
-    public Auth0Provider(
+    private const string SignInUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword";
+    private const string RefreshUrl = "https://securetoken.googleapis.com/v1/token";
+
+    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
+
+    public FirebaseProvider(
         ITokenStorageService tokenStorage,
         HttpClient httpClient,
         IConfiguration configuration,
-        ILogger<Auth0Provider> logger) : base(tokenStorage)
+        ILogger<FirebaseProvider> logger) : base(tokenStorage)
     {
         ArgumentNullException.ThrowIfNull(configuration);
 
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        _configuration = new Auth0Configuration();
-        configuration.GetSection("Authentication:Auth0").Bind(_configuration);
+        _configuration = new FirebaseConfiguration();
+        configuration.GetSection("Authentication:Firebase").Bind(_configuration);
 
         ValidateConfiguration();
     }
@@ -33,35 +38,35 @@ public class Auth0Provider : BaseAuthenticationProvider
 
         try
         {
-            var auth0Request = new
+            var firebaseRequest = new
             {
-                client_id = _configuration.ClientId,
-                client_secret = _configuration.ClientSecret,
-                audience = _configuration.Audience,
-                grant_type = "password",
-                username = request.Email,
+                email = request.Email,
                 password = request.Password,
-                scope = "openid profile email"
+                returnSecureToken = true
             };
 
-            var jsonContent = JsonSerializer.Serialize(auth0Request);
+            var jsonContent = JsonSerializer.Serialize(firebaseRequest);
             using var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync(new Uri($"{_configuration.Domain}/oauth/token", UriKind.Absolute), content, cancellationToken);
+            var requestUrl = new Uri($"{SignInUrl}?key={_configuration.ApiKey}", UriKind.Absolute);
+            var response = await _httpClient.PostAsync(requestUrl, content, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                var tokenResponse = JsonSerializer.Deserialize<Auth0TokenResponse>(responseContent);
+                var options = JsonOptions;
+                var tokenResponse = JsonSerializer.Deserialize<FirebaseSignInResponse>(responseContent, options);
 
-                if (tokenResponse?.AccessToken != null)
+                if (tokenResponse is not null && !string.IsNullOrEmpty(tokenResponse.IdToken))
                 {
+                    var expiresInSeconds = int.TryParse(tokenResponse.ExpiresIn, out var seconds) ? seconds : 3600;
+
                     var result = new AuthenticationResult
                     {
                         IsSuccess = true,
-                        AccessToken = tokenResponse.AccessToken,
+                        AccessToken = tokenResponse.IdToken,
                         RefreshToken = tokenResponse.RefreshToken,
-                        ExpiresAt = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn)
+                        ExpiresAt = DateTime.UtcNow.AddSeconds(expiresInSeconds)
                     };
 
                     await StoreTokens(result);
@@ -69,16 +74,20 @@ public class Auth0Provider : BaseAuthenticationProvider
                 }
             }
 
-            _logger.LogWarning("Auth0 login failed with status: {StatusCode}", response.StatusCode);
+            // Try to parse Firebase error for better error messages
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            var errorMessage = TryParseFirebaseError(errorContent);
+
+            _logger.LogWarning("Firebase login failed with status: {StatusCode}", response.StatusCode);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Login failed. Please check your credentials."
+                Error = errorMessage ?? "Login failed. Please check your credentials."
             };
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Network error during Auth0 login");
+            _logger.LogError(ex, "Network error during Firebase login");
             return new AuthenticationResult
             {
                 IsSuccess = false,
@@ -87,7 +96,7 @@ public class Auth0Provider : BaseAuthenticationProvider
         }
         catch (TaskCanceledException ex)
         {
-            _logger.LogError(ex, "Auth0 login request timed out");
+            _logger.LogError(ex, "Firebase login request timed out");
             return new AuthenticationResult
             {
                 IsSuccess = false,
@@ -111,8 +120,6 @@ public class Auth0Provider : BaseAuthenticationProvider
         {
             var refreshRequest = new
             {
-                client_id = _configuration.ClientId,
-                client_secret = _configuration.ClientSecret,
                 grant_type = "refresh_token",
                 refresh_token = RefreshToken
             };
@@ -120,21 +127,25 @@ public class Auth0Provider : BaseAuthenticationProvider
             var jsonContent = JsonSerializer.Serialize(refreshRequest);
             using var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync(new Uri($"{_configuration.Domain}/oauth/token", UriKind.Absolute), content, cancellationToken);
+            var requestUrl = new Uri($"{RefreshUrl}?key={_configuration.ApiKey}", UriKind.Absolute);
+            var response = await _httpClient.PostAsync(requestUrl, content, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                var tokenResponse = JsonSerializer.Deserialize<Auth0TokenResponse>(responseContent);
+                var options = JsonOptions;
+                var tokenResponse = JsonSerializer.Deserialize<FirebaseRefreshResponse>(responseContent, options);
 
-                if (tokenResponse?.AccessToken != null)
+                if (tokenResponse is not null && !string.IsNullOrEmpty(tokenResponse.Id_token))
                 {
+                    var expiresInSeconds = int.TryParse(tokenResponse.Expires_in, out var seconds) ? seconds : 3600;
+
                     var result = new AuthenticationResult
                     {
                         IsSuccess = true,
-                        AccessToken = tokenResponse.AccessToken,
-                        RefreshToken = tokenResponse.RefreshToken ?? RefreshToken,
-                        ExpiresAt = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn)
+                        AccessToken = tokenResponse.Id_token,
+                        RefreshToken = tokenResponse.Refresh_token ?? RefreshToken,
+                        ExpiresAt = DateTime.UtcNow.AddSeconds(expiresInSeconds)
                     };
 
                     await StoreTokens(result);
@@ -148,10 +159,10 @@ public class Auth0Provider : BaseAuthenticationProvider
                 Error = "Token refresh failed"
             };
         }
-#pragma warning disable CA1031 // Generic catch returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException
+#pragma warning disable CA1031 // Generic catch returns error result instead of throwing
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error during token refresh");
+            _logger.LogError(ex, "Error during Firebase token refresh");
             return new AuthenticationResult
             {
                 IsSuccess = false,
@@ -170,10 +181,10 @@ public class Auth0Provider : BaseAuthenticationProvider
 
             NotifyAuthenticationStateChanged();
         }
-#pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional, use re-login on any error
+#pragma warning disable CA1031 // Generic catch for graceful degradation
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error restoring Auth0 token from storage");
+            _logger.LogError(ex, "Error restoring Firebase token from storage");
             await TokenStorage.RemoveTokenAsync();
         }
 #pragma warning restore CA1031
@@ -187,7 +198,6 @@ public class Auth0Provider : BaseAuthenticationProvider
             if (parts.Length != 3) return null;
 
             var payload = parts[1];
-            // Add padding if needed for Base64
             switch (payload.Length % 4)
             {
                 case 2: payload += "=="; break;
@@ -197,7 +207,7 @@ public class Auth0Provider : BaseAuthenticationProvider
             var bytes = Convert.FromBase64String(payload.Replace('-', '+').Replace('_', '/'));
             var json = System.Text.Encoding.UTF8.GetString(bytes);
 
-            using var doc = JsonDocument.Parse(json);
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
             if (doc.RootElement.TryGetProperty("exp", out var expElement))
             {
                 var expUnix = expElement.GetInt64();
@@ -216,13 +226,37 @@ public class Auth0Provider : BaseAuthenticationProvider
 
     private void ValidateConfiguration()
     {
-        if (string.IsNullOrEmpty(_configuration.Domain))
-            throw new InvalidOperationException("Auth0 Domain is required in configuration");
+        if (string.IsNullOrEmpty(_configuration.ApiKey))
+            throw new InvalidOperationException("Firebase ApiKey is required in configuration");
+    }
 
-        if (string.IsNullOrEmpty(_configuration.ClientId))
-            throw new InvalidOperationException("Auth0 ClientId is required in configuration");
+    private static string? TryParseFirebaseError(string responseContent)
+    {
+        try
+        {
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var errorResponse = JsonSerializer.Deserialize<FirebaseErrorResponse>(responseContent, options);
 
-        if (string.IsNullOrEmpty(_configuration.ClientSecret))
-            throw new InvalidOperationException("Auth0 ClientSecret is required in configuration");
+            if (errorResponse?.Error is not null)
+            {
+                return errorResponse.Error.Message switch
+                {
+                    "EMAIL_NOT_FOUND" => "No account found with this email address.",
+                    "INVALID_PASSWORD" => "Incorrect password. Please try again.",
+                    "USER_DISABLED" => "This account has been disabled.",
+                    "TOO_MANY_ATTEMPTS_TRY_LATER" => "Too many failed attempts. Please try again later.",
+                    "INVALID_LOGIN_CREDENTIALS" => "Invalid email or password.",
+                    _ => $"Authentication failed: {errorResponse.Error.Message}"
+                };
+            }
+        }
+#pragma warning disable CA1031
+        catch
+        {
+            // Could not parse error response, return null to use default message
+        }
+#pragma warning restore CA1031
+
+        return null;
     }
 }
