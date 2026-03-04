@@ -190,6 +190,19 @@ A monorepo is a powerful way to organize a codebase, used by Google, Facebook, U
 │  ├─ guides                          # Testing guides and quick references
 ├─ scripts                            # Utility scripts
 │  ├─ powershell                      # PowerShell scripts for Windows development
-├─ Writerside                         # Comprehensive documentation source
 ```
+## 👥 Maintainers
 
+SaaS Factory is actively developed and maintained by:
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Trubador">
+        <img src="https://github.com/Trubador.png" width="100px;" alt="Casper Rubæk Mølvadgaard"/><br />
+        <sub><b>Casper Rubæk Mølvadgaard</b></sub>
+      </a><br />
+      Lead Architect & Primary Maintainer
+    </td>
+  </tr>
+</table>
