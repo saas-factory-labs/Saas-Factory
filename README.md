@@ -168,14 +168,24 @@ A monorepo is a powerful way to organize a codebase, used by Google, Facebook, U
 ├─ build-artifacts                    # Build output, logs, and temporary files (gitignored)
 ├─ Code                               # Contains the application source code
 │  ├─ AppBlueprint        
-│     ├─ Appblueprint.AppHost         # .NET Aspire project starting app and all dependencies in Docker
-│      ├─ Appblueprint.Gateway        # Blazor Server app utilizing Mudblazor components
-│      ├─ Appblueprint.Web            # Blazor Server app utilizing Mudblazor components
-│      ├─ Appblueprint.ApiService     # .Net Rest/GraphQL API
-│      ├─ Appblueprint.Workers        # Background workers for long-running tasks and event processing
-│      ├─ Appblueprint.SharedKernel   # Shared code between all projects
-│      ├─ Appblueprint.UiKit          # Shared UI components
-│      ├─ Appblueprint.Tests          # Tests for all projects
+│     ├─ AppBlueprint.AppHost         # .NET Aspire project starting app and all dependencies in Docker
+│     ├─ AppBlueprint.AppGateway      # YARP reverse proxy / API gateway
+│     ├─ AppBlueprint.Web             # Blazor Server app utilizing MudBlazor components
+│     ├─ AppBlueprint.ApiService      # .NET REST API
+│     ├─ AppBlueprint.ServiceDefaults # Shared Aspire service configuration
+│     ├─ AppBlueprint.TodoAppKernel   # Todo feature module
+│     ├─ AppBlueprint.DeveloperCli    # CLI tools for scaffolding and management
+│     ├─ AppBlueprint.Tests           # Tests for all projects
+│     ├─ Shared-Modules               # Clean Architecture shared modules
+│        ├─ AppBlueprint.Domain           # Entities, value objects, aggregates, domain logic
+│        ├─ AppBlueprint.Application      # Use cases, commands, queries, DTOs (CQRS)
+│        ├─ AppBlueprint.Infrastructure   # EF Core, repositories, external service integrations
+│        ├─ AppBlueprint.Presentation.ApiModule  # Minimal API endpoints and versioning
+│        ├─ AppBlueprint.Contracts        # Shared contracts and interfaces
+│        ├─ AppBlueprint.SharedKernel     # Shared kernel code across all projects
+│        ├─ AppBlueprint.UiKit            # Reusable UI components
+│        ├─ AppBlueprint.Api.Client.Sdk   # Kiota-generated API client SDK
+│        ├─ AppBlueprint.Tests            # Shared test utilities and integration tests
 ├─ docs                               # Documentation and guides
 │  ├─ guides                          # Testing guides and quick references
 ├─ scripts                            # Utility scripts
