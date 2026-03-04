@@ -12,7 +12,7 @@
 
 ![Database Schema Diagram](docs/images/image.png)
 
-<a href="https://appblueprint-web-production-production.up.railway.app/dashboard"> View live demo site </a>
+<!-- <a href="https://appblueprint-web-production-production.up.railway.app/dashboard"> View live demo site </a> -->
 
 </h5>
 
@@ -51,7 +51,7 @@
 
 ## 📚 Documentation
 
-**[📖 View Complete Documentation](https://saas-factory-labs.github.io/Saas-Factory/docs/)**
+<!-- **[📖 View Complete Documentation](https://saas-factory-labs.github.io/Saas-Factory/docs/)** -->
 
 The comprehensive documentation includes:
 
