@@ -21,10 +21,10 @@
 
 ### CI/CD & Build Status
 
-[![SonarCloud Analysis](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/sonarcloud-analysis.yaml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/sonarcloud-analysis.yaml?query=branch%3Amain)
+<!--[![SonarCloud Analysis](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/sonarcloud-analysis.yaml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/sonarcloud-analysis.yaml?query=branch%3Amain) -->
 [![Azimutt Database Analysis](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/azimutt-database-analysis.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/azimutt-database-analysis.yml?query=branch%3Amain)
-[![Deploy to Railway](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/deploy-to-railway.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/deploy-to-railway.yml?query=branch%3Amain)
-[![Docker Scout Vulnerability Scan](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/docker-scout-vulnerability-scan.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/docker-scout-vulnerability-scan.yml?query=branch%3Amain)
+<!-- [![Deploy to Railway](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/deploy-to-railway.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/deploy-to-railway.yml?query=branch%3Amain) -->
+<!-- [![Docker Scout Vulnerability Scan](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/docker-scout-vulnerability-scan.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/docker-scout-vulnerability-scan.yml?query=branch%3Amain) -->
 [![Publish NuGet Packages](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/publish-nuget-packages.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/publish-nuget-packages.yml?query=branch%3Amain)
 
 ### GitHub Issues & Project Management
@@ -35,7 +35,7 @@
 
 ### Quality & security analysis
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
+<!-- [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory) -->
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=security_rating)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=Security)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=reliability_rating)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=Reliability)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=sqale_rating)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=Maintainability)
@@ -44,10 +44,10 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=vulnerabilities)](https://sonarcloud.io/project/issues?id=saas-factory-labs_Saas-Factory&resolved=false&types=VULNERABILITY)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=sqale_index)](https://sonarcloud.io/component_measures?id=saas-factory-labs_Saas-Factory&metric=sqale_index)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
-[![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
+<!-- [![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory) -->
 [![Security: CodeQL](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/codeql-analysis.yml)
-[![Security: Snyk](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/snyk-analysis.yaml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/snyk-analysis.yaml)
-[![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory)
+<!-- [![Security: Snyk](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/snyk-analysis.yaml/badge.svg)](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/snyk-analysis.yaml) -->
+ <!-- [![Quality: SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saas-factory-labs_Saas-Factory&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saas-factory-labs_Saas-Factory) -->
 
 ## 📚 Documentation
 
