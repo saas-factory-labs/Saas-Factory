@@ -1,0 +1,54 @@
+Code/AppBlueprint/CreateSignupStoredProcedure.sql
+  5345dc2c1b67c634 77,84
+Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile
+  f51df202e880d8f4 54,57,59,61-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "f9575fbb56f2595fa76c83a351604c00be9b2c5c",
+  "prompts": {
+    "3a2cad579354e8e8": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6138bd8d-2e0f-48b5-a6b1-6d429dee298d",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 64,
+      "total_deletions": 66,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/deb2f4242458bb3476643ee6be8cacafc14a8c0f73a9457e3cb0c6753eddf97d"
+    },
+    "5345dc2c1b67c634": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6e8a2030-ebbd-4f03-8dcc-58e868d110a2",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/cf2f5650442fdeb77fed417c24190e299abe4f54dfa4c9a1d6b6355fcfc5ee01"
+    },
+    "f51df202e880d8f4": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "5fed9599-cf2e-4a0c-aaa0-945b275f8453",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 7,
+      "total_deletions": 9,
+      "accepted_lines": 7,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/df4b73f516a89a5b274d3e921085c1aa16d21b20e6997cd4b1133eae24d3a924"
+    }
+  }
+}
