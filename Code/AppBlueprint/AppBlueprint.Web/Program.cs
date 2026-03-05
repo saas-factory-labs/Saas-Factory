@@ -358,7 +358,11 @@ Console.WriteLine("[Web] SignalR hub mapped: /hubs/notifications (auth validated
 
 app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(_Imports).Assembly)
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .AllowAnonymous(); // Auth is handled inside the Blazor tree by AuthorizeRouteView.
+                       // AllowAnonymous exempts /_blazor/* (circuit init, SignalR negotiation) and
+                       // all component renders from the middleware-level fallback RequireAuthenticatedUser
+                       // policy, preventing CORS errors caused by 302→Logto for fetch() requests.
 
 // Diagnostic endpoint to test Logto connectivity from Railway
 app.MapLogtoTestEndpoint(builder.Configuration, app.Environment);
