@@ -116,8 +116,12 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // Priority 1: Environment variable
+        // Priority 1: Environment variable (our standard name, then Railway's default DATABASE_URL fallback)
         string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
+        if (connectionString is null)
+        {
+            connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+        }
 
         // Priority 2: Configuration fallback
         if (string.IsNullOrEmpty(connectionString))
@@ -453,9 +457,19 @@ public static class ServiceCollectionExtensions
             using var scope = services.BuildServiceProvider().CreateScope();
             var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
             
-            string? connString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") ??
-                               config.GetConnectionString("appblueprintdb") ??
-                               config.GetConnectionString("postgres-server");
+            string? connString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
+            if (connString is null)
+            {
+                connString = Environment.GetEnvironmentVariable("DATABASE_URL");
+            }
+            if (connString is null)
+            {
+                connString = config.GetConnectionString("appblueprintdb");
+            }
+            if (connString is null)
+            {
+                connString = config.GetConnectionString("postgres-server");
+            }
             
             if (string.IsNullOrEmpty(connString))
             {

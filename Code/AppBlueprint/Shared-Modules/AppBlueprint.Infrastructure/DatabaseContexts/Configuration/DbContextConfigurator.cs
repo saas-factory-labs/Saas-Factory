@@ -297,8 +297,12 @@ public static class DbContextConfigurator
 
     private static string? GetConnectionString(IConfiguration configuration, DatabaseContextOptions options)
     {
-        // Priority 1: Environment variable
+        // Priority 1: Environment variable (our standard name, then Railway's default DATABASE_URL fallback)
         string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
+        if (connectionString is null)
+        {
+            connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+        }
 
         // Priority 2: Configuration using specified connection string name
         if (string.IsNullOrEmpty(connectionString))
