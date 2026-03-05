@@ -74,14 +74,14 @@ END;
 $$ LANGUAGE plpgsql IMMUTABLE SECURITY DEFINER;
 
 -- Check for duplicate email (case-insensitive)
-CREATE OR REPLACE FUNCTION email_exists(email TEXT)
+CREATE OR REPLACE FUNCTION email_exists(p_email TEXT)
 RETURNS BOOLEAN AS $$
 DECLARE
     email_found BOOLEAN;
 BEGIN
     SELECT (COUNT(*) > 0) INTO email_found
-    FROM "Users"
-    WHERE LOWER("Email") = LOWER(email);
+    FROM Users
+    WHERE LOWER(Email) = LOWER(p_email);
     
     RETURN email_found;
 END;

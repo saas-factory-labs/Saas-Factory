@@ -1,7 +1,7 @@
 // Download Inter font files for self-hosting
-const https = require('https');
-const fs = require('fs');
-const path = require('path');
+const https = require('node:https');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const fontsDir = path.join(__dirname, 'wwwroot', 'fonts');
 if (!fs.existsSync(fontsDir)) {

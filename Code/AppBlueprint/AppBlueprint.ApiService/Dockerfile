@@ -51,16 +51,14 @@ WORKDIR /app
 COPY --from=publish --chown=$APP_UID:$APP_UID /app/publish .
 
 # Security hardening environment variables
-# Railway injects PORT dynamically - ASP.NET Core will use ASPNETCORE_HTTP_PORTS
+# ASPNETCORE_HTTP_PORTS is NOT set here - it is resolved at runtime from Railway's PORT variable below
 ENV DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
     DOTNET_EnableDiagnostics=0 \
-    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
-    ASPNETCORE_HTTP_PORTS=8080
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-# Note: Health checks should be configured in orchestration layer (Kubernetes/Docker Compose)
-# Chiseled images don't include curl/wget for minimal attack surface
+# Note: Health checks are configured in railway.json / railway.toml
 
-# Start the API service
-# Railway's PORT environment variable will be mapped to ASPNETCORE_HTTP_PORTS via Railway config
-# Using JSON array format (not shell form) for proper signal handling in distroless images
-ENTRYPOINT ["dotnet", "AppBlueprint.ApiService.dll"]
+# Start the API service.
+# Railway injects PORT at runtime. We use shell form to expand ${PORT:-8080} so the app
+# always binds on the port Railway expects and the /health check succeeds.
+ENTRYPOINT ["/bin/sh", "-c", "ASPNETCORE_HTTP_PORTS=${PORT:-8080} exec dotnet AppBlueprint.ApiService.dll"]
