@@ -1,0 +1,64 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/EmailAddress/Requests/CreateEmailAddressRequest.cs
+  4d45ae83c378655c 16-18
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Examples/IntegrationTest.Example.cs
+  49f6ddf65f3a85e7 204,207
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/DashboardLayoutEditor.razor
+  49f6ddf65f3a85e7 105,125,137
+Code/AppBlueprint/SeedTest/DataSeeder.cs
+  49f6ddf65f3a85e7 339-340,344
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/HealthChecks/RowLevelSecurityHealthCheck.cs
+  49f6ddf65f3a85e7 195
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/ApiKeyAuthenticationHandler.cs
+  4d45ae83c378655c 64-65,71
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/B2B/TeamController.cs
+  4d45ae83c378655c 164
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/RoleController.cs
+  4d45ae83c378655c 49,81
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/ServiceCollectionExtensions.cs
+  49f6ddf65f3a85e7 541
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/WebAuthenticationExtensions.cs
+  49f6ddf65f3a85e7 983
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/ApplicationDBContext.cs
+  4d45ae83c378655c 126
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Mapping/ContractMapping.cs
+  4d45ae83c378655c 205
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Services/NavigationService.cs
+  4d45ae83c378655c 12
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Utilities/RouteScanner.cs
+  4d45ae83c378655c 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "73f808a28f1a183b9bcb489f4a965d27439deb50",
+  "prompts": {
+    "49f6ddf65f3a85e7": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "e8eba7cb-41f1-4741-9d44-1799bbbabfbd",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 4586,
+      "total_deletions": 4586,
+      "accepted_lines": 694,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/05663705f31ddeeb23039d8cb269654a26cffe37ca31f01716c3b94ea814d47f"
+    },
+    "4d45ae83c378655c": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "219d64d7-d077-4fa9-8723-3ea8971e8963",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 66,
+      "total_deletions": 66,
+      "accepted_lines": 22,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/115ee99beadd2a2ba4ac2fea82653d11073bedf3a44a08d93bbf223cb413e0b2"
+    }
+  }
+}
