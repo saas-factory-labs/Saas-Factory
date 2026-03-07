@@ -9,7 +9,7 @@ public class NavigationService(IConfiguration configuration)
 {
     public static List<NavLinkMetadata> GetNavLinks()
     {
-        var links = new List<NavLinkMetadata>();
+        List<NavLinkMetadata> links = [];
 
         // 1. Load Pages via Reflection (Pages already in the UiKit Library)
         var assembly = Assembly.GetExecutingAssembly(); // Blazor Web App Assembly

@@ -202,7 +202,7 @@ public static class RolesExtensions
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        return new RoleResponse(new List<PermissionResponse>().AsReadOnly());
+        return new RoleResponse([]);
     }
 }
 

@@ -538,7 +538,7 @@ public static class ServiceCollectionExtensions
                     );";
                 
                 var reader = checkCommand.ExecuteReader();
-                var tablesWithoutRls = new List<string>();
+                List<string> tablesWithoutRls = [];
                 while (reader.Read())
                 {
                     tablesWithoutRls.Add(reader.GetString(0));

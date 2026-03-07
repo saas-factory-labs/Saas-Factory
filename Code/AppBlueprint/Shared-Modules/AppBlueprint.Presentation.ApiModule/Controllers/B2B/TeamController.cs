@@ -161,7 +161,7 @@ public class TeamController : BaseController
         await _teamRepository.AddAsync(newTeam);
         // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
-        return CreatedAtAction(nameof(GetTeam), new { id = newTeam.Id }, new TeamResponse(new List<TeamMemberResponse>())
+        return CreatedAtAction(nameof(GetTeam), new { id = newTeam.Id }, new TeamResponse([])
         {
             Id = newTeam.Id,
             Name = newTeam.Name,

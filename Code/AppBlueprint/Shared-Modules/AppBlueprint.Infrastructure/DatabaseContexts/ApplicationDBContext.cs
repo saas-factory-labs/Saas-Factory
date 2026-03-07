@@ -123,7 +123,7 @@ public class ApplicationDbContext : B2CdbContext
                 var method = typeof(ApplicationDbContext)
                     .GetMethod(nameof(SetTenantFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                     ?.MakeGenericMethod(entityType.ClrType);
-                method?.Invoke(this, new object[] { modelBuilder });
+                method?.Invoke(this, [modelBuilder]);
             }
         }
     }

@@ -336,12 +336,12 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         var countries = await dbContext.Countries.ToListAsync(cancellationToken);
         if (countries.Count == 0) return;
 
-        var countryRegions = new List<CountryRegionEntity>
-        {
+        List<CountryRegionEntity> countryRegions =
+        [
             new() { Name = "Western Europe", CountryId = countries[0].Id },
             new() { Name = "Eastern Europe", CountryId = countries[0].Id },
             new() { Name = "Central Region", CountryId = countries[0].Id }
-        };
+        ];
 
         await dbContext.CountryRegions.AddRangeAsync(countryRegions, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);

@@ -61,14 +61,14 @@ public sealed class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAu
             return AuthenticateResult.Fail("API key has expired.");
         }
 
-        var claims = new List<Claim>
-        {
+        List<Claim> claims =
+        [
             new(ClaimTypes.NameIdentifier, apiKey.UserId),
             new("sub", apiKey.UserId),
             new("tenant_id", apiKey.TenantId),
             new("api_key_id", apiKey.Id),
             new("api_key_name", apiKey.Name)
-        };
+        ];
 
         var identity = new ClaimsIdentity(claims, SchemeName);
         var principal = new ClaimsPrincipal(identity);

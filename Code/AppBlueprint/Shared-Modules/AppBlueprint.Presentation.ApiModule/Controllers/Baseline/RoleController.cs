@@ -46,7 +46,7 @@ public class RoleController : BaseController
         IEnumerable<RoleEntity>? roles = await _roleRepository.GetAllAsync();
         if (!roles.Any()) return NotFound(new { Message = "No roles found." });
 
-        IEnumerable<RoleResponse>? response = roles.Select(role => new RoleResponse(new List<PermissionResponse>())
+        IEnumerable<RoleResponse>? response = roles.Select(role => new RoleResponse([])
         {
             Id = role.Id,
             Name = role.Name
@@ -78,7 +78,7 @@ public class RoleController : BaseController
         RoleEntity? role = await _roleRepository.GetByIdAsync(id);
         if (role is null) return NotFound(new { Message = $"Role with ID {id} not found." });
 
-        var response = new RoleResponse(new List<PermissionResponse>())
+        var response = new RoleResponse([])
         {
             Id = role.Id,
             Name = role.Name

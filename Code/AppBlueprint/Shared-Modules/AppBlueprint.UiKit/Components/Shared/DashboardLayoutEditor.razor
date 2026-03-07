@@ -102,7 +102,7 @@
     [Parameter] public EventCallback<List<DashboardWidget>> OnLayoutChanged { get; set; }
 
     private bool IsOpen { get; set; }
-    private List<DashboardWidget> Widgets { get; set; } = new();
+    private List<DashboardWidget> Widgets { get; set; } = [];
 
     protected override void OnInitialized()
     {
@@ -121,8 +121,8 @@
         else
         {
             // Default widgets
-            Widgets = new List<DashboardWidget>
-            {
+            Widgets =
+            [
                 new() { Id = "card01", Title = "Acme Plus", Description = "Sales line chart", IsVisible = true, Size = "medium", Order = 1 },
                 new() { Id = "card02", Title = "Acme Advanced", Description = "Sales line chart", IsVisible = true, Size = "medium", Order = 2 },
                 new() { Id = "card03", Title = "Acme Professional", Description = "Sales line chart", IsVisible = true, Size = "medium", Order = 3 },
@@ -134,7 +134,7 @@
                 new() { Id = "card09", Title = "Sales vs Refunds", Description = "Stacked bar chart", IsVisible = true, Size = "large", Order = 9 },
                 new() { Id = "card10", Title = "Recent Activity", Description = "Activity feed", IsVisible = true, Size = "medium", Order = 10 },
                 new() { Id = "card11", Title = "Income/Expenses", Description = "Financial summary", IsVisible = true, Size = "medium", Order = 11 }
-            };
+            ];
         }
     }
 

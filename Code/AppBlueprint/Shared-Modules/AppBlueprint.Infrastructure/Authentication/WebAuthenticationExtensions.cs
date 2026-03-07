@@ -980,7 +980,7 @@ public static class WebAuthenticationExtensions
     {
         app.MapGet("/test-logto-connection", async () =>
         {
-            var results = new List<object>();
+            List<object> results = [];
 
             // Test 1: DNS Resolution
             try

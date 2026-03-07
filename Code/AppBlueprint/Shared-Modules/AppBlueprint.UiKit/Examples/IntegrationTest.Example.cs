@@ -200,11 +200,11 @@ public class UiKitIntegrationTests : TestContext
         var service = new BreadcrumbService();
 
         // Act
-        service.SetBreadcrumbs(new List<BreadcrumbItem>
-        {
+        service.SetBreadcrumbs(
+        [
             new() { Text = "Home", Href = "/" },
             new() { Text = "Dashboard", Href = "/dashboard" }
-        });
+        ]);
 
         // Assert
         service.Breadcrumbs.Should().HaveCount(2);

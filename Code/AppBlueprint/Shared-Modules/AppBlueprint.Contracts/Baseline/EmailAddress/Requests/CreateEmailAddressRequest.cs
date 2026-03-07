@@ -13,9 +13,9 @@ public class CreateEmailAddressRequest
     {
         Address = string.Empty;
         Tenant = new CreateTenantRequest { Name = string.Empty };
-        var emailAddresses = new List<CreateEmailAddressRequest>();
-        var Addresses = new List<CreateAddressRequest>();
-        var PhoneNumbers = new List<CreatePhoneNumberRequest>();
+        List<CreateEmailAddressRequest> emailAddresses = [];
+        List<CreateAddressRequest> Addresses = [];
+        List<CreatePhoneNumberRequest> PhoneNumbers = [];
         ContactPerson = new CreateContactPersonRequest
         {
             FirstName = string.Empty,

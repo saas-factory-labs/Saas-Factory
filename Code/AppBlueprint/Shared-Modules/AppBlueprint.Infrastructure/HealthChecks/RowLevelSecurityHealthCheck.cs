@@ -192,7 +192,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
         }
 
         // Find tables that should have policies but don't
-        var missingPolicies = new List<string>();
+        List<string> missingPolicies = [];
         var rlsStatus = await GetRlsStatusAsync(connection, cancellationToken);
 
         foreach (string table in requiredTables)
