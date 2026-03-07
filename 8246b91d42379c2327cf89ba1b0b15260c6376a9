@@ -1,0 +1,30 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/StatsCard.razor
+  2893777748042f41 97,103-105
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/DropdownMenuItem.razor
+  2893777748042f41 38-41
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/LoadingSkeletonTable.razor
+  2893777748042f41 63,65
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/InfiniteScroll.razor
+  2893777748042f41 48-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "8246b91d42379c2327cf89ba1b0b15260c6376a9",
+  "prompts": {
+    "2893777748042f41": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "cf648c44-918b-4211-a272-4fa7ab353998",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 169,
+      "total_deletions": 169,
+      "accepted_lines": 25,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/162a51467a6cd6152ecaf45031b739b8a8ac29ab9b0a1030d23ad05638c3df08"
+    }
+  }
+}
