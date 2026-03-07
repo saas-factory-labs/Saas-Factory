@@ -164,4 +164,14 @@ public static class ApiEndpoints
         public const string CreateSubscription = ControllerBaseUrl + "/subscriptions";
         public const string CancelSubscription = ControllerBaseUrl + "/subscriptions/cancel";
     }
+
+    internal static class Webhooks
+    {
+        private const string ControllerBaseUrl = "webhooks";
+        public const string Create = ControllerBaseUrl;
+        public const string GetById = $"{ControllerBaseUrl}/{{id}}";
+        public const string GetAll = ControllerBaseUrl;
+        public const string UpdateById = $"{ControllerBaseUrl}/{{id}}";
+        public const string DeleteById = $"{ControllerBaseUrl}/{{id}}";
+    }
 }

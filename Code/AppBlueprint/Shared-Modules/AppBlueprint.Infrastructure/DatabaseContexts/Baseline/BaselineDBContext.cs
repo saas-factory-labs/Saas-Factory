@@ -67,6 +67,7 @@ public partial class BaselineDbContext : DbContext
         modelBuilder.ApplyConfiguration(new IntegrationEntityConfiguration());
         modelBuilder.ApplyConfiguration(new LanguageEntityConfiguration());
         modelBuilder.ApplyConfiguration(new WebhookEventEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new Entities.EntityConfigurations.WebhookEntityConfiguration());
 
         // User Notifications configurations
         modelBuilder.ApplyConfiguration(new UserNotificationEntityConfiguration());

@@ -15,6 +15,7 @@ using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
 using AppBlueprint.Infrastructure.Services.PII;
 using AppBlueprint.Infrastructure.Services.Search;
+using AppBlueprint.Infrastructure.Services.Webhooks;
 using AppBlueprint.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -223,6 +224,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITenantRepository, TenantRepository>();
         services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+        services.AddScoped<IWebhookRepository, WebhookRepository>();
+        services.AddScoped<IWebhookDeliveryService, WebhookDeliveryService>();
+        services.AddHttpClient("WebhookDelivery");
 
         return services;
     }
