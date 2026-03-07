@@ -1,4 +1,4 @@
-using AppBlueprint.Application.Services;
+using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 

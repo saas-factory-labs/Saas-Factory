@@ -248,7 +248,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAdminTenantAccessService, AdminTenantAccessService>();
 
         // Signup database context provider (EF Core)
-        services.AddScoped<Application.Services.ISignupDbContextProvider, SignupDbContextProvider>();
+        services.AddScoped<Application.Interfaces.ISignupDbContextProvider, SignupDbContextProvider>();
 
         return services;
     }

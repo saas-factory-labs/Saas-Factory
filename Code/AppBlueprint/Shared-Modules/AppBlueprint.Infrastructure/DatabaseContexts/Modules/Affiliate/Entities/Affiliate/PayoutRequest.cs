@@ -2,9 +2,9 @@ using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate.Entities.Affiliate;
 
-public class PayoutRequest : BaseEntity
+public class PayoutRequestEntity : BaseEntity
 {
-    public PayoutRequest()
+    public PayoutRequestEntity()
     {
         Id = PrefixedUlid.Generate("payout");
         AffiliateId = string.Empty;
@@ -24,3 +24,4 @@ public class PayoutRequest : BaseEntity
     // Navigation properties
     public AffiliateEntity? Affiliate { get; set; }
 }
+

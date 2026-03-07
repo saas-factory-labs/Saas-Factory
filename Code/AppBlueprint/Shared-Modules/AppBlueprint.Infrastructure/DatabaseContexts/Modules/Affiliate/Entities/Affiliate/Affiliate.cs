@@ -4,9 +4,9 @@ namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate.Entitie
 
 public sealed class AffiliateEntity : BaseEntity
 {
-    private readonly List<Commission> _commissions = new();
+    private readonly List<CommissionEntity> _commissions = new();
     private readonly List<ReferralEntity> _referrals = new();
-    private readonly List<PayoutRequest> _payoutRequests = new();
+    private readonly List<PayoutRequestEntity> _payoutRequests = new();
 
     public AffiliateEntity()
     {
@@ -26,12 +26,12 @@ public sealed class AffiliateEntity : BaseEntity
     public DateTime? LastPayoutDate { get; set; }
 
     // Navigation properties
-    public IReadOnlyCollection<Commission> Commissions => _commissions.AsReadOnly();
+    public IReadOnlyCollection<CommissionEntity> Commissions => _commissions.AsReadOnly();
     public IReadOnlyCollection<ReferralEntity> Referrals => _referrals.AsReadOnly();
-    public IReadOnlyCollection<PayoutRequest> PayoutRequests => _payoutRequests.AsReadOnly();
+    public IReadOnlyCollection<PayoutRequestEntity> PayoutRequests => _payoutRequests.AsReadOnly();
 
     // Domain methods for controlled collection management
-    public void AddCommission(Commission commission)
+    public void AddCommission(CommissionEntity commission)
     {
         ArgumentNullException.ThrowIfNull(commission);
 
@@ -42,7 +42,7 @@ public sealed class AffiliateEntity : BaseEntity
         commission.AffiliateId = Id;
     }
 
-    public void RemoveCommission(Commission commission)
+    public void RemoveCommission(CommissionEntity commission)
     {
         ArgumentNullException.ThrowIfNull(commission);
         _commissions.Remove(commission);
@@ -65,7 +65,7 @@ public sealed class AffiliateEntity : BaseEntity
         _referrals.Remove(referral);
     }
 
-    public void AddPayoutRequest(PayoutRequest payoutRequest)
+    public void AddPayoutRequest(PayoutRequestEntity payoutRequest)
     {
         ArgumentNullException.ThrowIfNull(payoutRequest);
 
@@ -76,7 +76,7 @@ public sealed class AffiliateEntity : BaseEntity
         payoutRequest.AffiliateId = Id;
     }
 
-    public void RemovePayoutRequest(PayoutRequest payoutRequest)
+    public void RemovePayoutRequest(PayoutRequestEntity payoutRequest)
     {
         ArgumentNullException.ThrowIfNull(payoutRequest);
         _payoutRequests.Remove(payoutRequest);

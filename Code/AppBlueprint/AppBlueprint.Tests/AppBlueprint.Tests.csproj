@@ -27,6 +27,7 @@
         <PackageReference Include="Moq" />
         <PackageReference Include="TUnit" />
         <PackageReference Include="TUnit.Assertions" />
+        <PackageReference Include="NetArchTest.Rules" />
     </ItemGroup>
 
     <ItemGroup>

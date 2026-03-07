@@ -8,9 +8,9 @@ public partial class AffiliateModuleDbContext
     private const string DecimalRateType = "decimal(5,4)";
 
     public required DbSet<Entities.Affiliate.AffiliateEntity> Affiliates { get; set; }
-    public required DbSet<Entities.Affiliate.Commission> Commissions { get; set; }
+    public required DbSet<Entities.Affiliate.CommissionEntity> Commissions { get; set; }
     public required DbSet<Entities.Affiliate.ReferralEntity> Referrals { get; set; }
-    public required DbSet<Entities.Affiliate.PayoutRequest> PayoutRequests { get; set; }
+    public required DbSet<Entities.Affiliate.PayoutRequestEntity> PayoutRequests { get; set; }
 
     partial void OnModelCreating_Affiliate(ModelBuilder modelBuilder)
     {
@@ -31,7 +31,7 @@ public partial class AffiliateModuleDbContext
         });
 
         // Commission entity configuration
-        modelBuilder.Entity<Entities.Affiliate.Commission>(entity =>
+        modelBuilder.Entity<Entities.Affiliate.CommissionEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Amount).HasColumnType(DecimalMoneyType);
@@ -63,7 +63,7 @@ public partial class AffiliateModuleDbContext
         });
 
         // PayoutRequest entity configuration
-        modelBuilder.Entity<Entities.Affiliate.PayoutRequest>(entity =>
+        modelBuilder.Entity<Entities.Affiliate.PayoutRequestEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Amount).HasColumnType(DecimalMoneyType);

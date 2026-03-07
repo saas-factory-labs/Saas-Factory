@@ -2,9 +2,9 @@ using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate.Entities.Affiliate;
 
-public class Commission : BaseEntity
+public class CommissionEntity : BaseEntity
 {
-    public Commission()
+    public CommissionEntity()
     {
         Id = PrefixedUlid.Generate("comm");
         AffiliateId = string.Empty;

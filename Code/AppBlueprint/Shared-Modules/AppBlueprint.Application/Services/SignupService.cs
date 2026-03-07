@@ -1,4 +1,5 @@
 using System.Text.Json;
+using AppBlueprint.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
@@ -17,18 +18,6 @@ public interface ISignupService
     Task<SignupResult> CreateTenantAndUserAsync(
         SignupRequest request,
         CancellationToken cancellationToken = default);
-}
-
-/// <summary>
-/// Database context provider for signup operations.
-/// Provides access to DbContext for EF Core operations.
-/// </summary>
-public interface ISignupDbContextProvider
-{
-    /// <summary>
-    /// Gets a database context for signup operations.
-    /// </summary>
-    Task<DbContext> GetDbContextAsync(CancellationToken cancellationToken = default);
 }
 
 public sealed class SignupService : ISignupService
