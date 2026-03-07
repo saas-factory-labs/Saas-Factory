@@ -138,7 +138,11 @@ public static class ServiceDefaultsExtensions
                 tracing.AddHttpClientInstrumentation(options =>
                 {
                     options.RecordException = true;
-                    options.FilterHttpRequestMessage = _ => true;
+                    // Filter out health check requests to avoid flooding the dashboard
+                    options.FilterHttpRequestMessage = req =>
+                        req.RequestUri is not null &&
+                        !req.RequestUri.PathAndQuery.Contains("/health", StringComparison.Ordinal) &&
+                        !req.RequestUri.PathAndQuery.Contains("/alive", StringComparison.Ordinal);
                 });
 
                 // Only add OTLP exporter if endpoint is configured

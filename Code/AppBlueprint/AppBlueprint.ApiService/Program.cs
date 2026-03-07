@@ -28,9 +28,16 @@ internal static class Program // Make class static
         // Add service defaults & Aspire components.
         builder.AddServiceDefaults();
 
-        // Explicitly add console logger and set minimum level
+        builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
-        builder.Logging.SetMinimumLevel(LogLevel.Trace); // Set to Trace to capture everything
+
+        // Suppress noisy infrastructure logs to prevent Aspire dashboard memory exhaustion
+        builder.Logging.AddFilter("OpenTelemetry", LogLevel.Warning);
+        builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection", LogLevel.Warning);
+        builder.Logging.AddFilter("Microsoft.AspNetCore.Server.Kestrel", LogLevel.Warning);
+        builder.Logging.AddFilter("Microsoft.Hosting.Lifetime", LogLevel.Information);
+        builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+        builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
 
         builder.Host.UseDefaultServiceProvider(options =>
        {
