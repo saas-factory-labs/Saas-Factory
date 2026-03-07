@@ -1,4 +1,3 @@
-@using AppBlueprint.UiKit.Components.Layout
 @inject ThemeService ThemeService
 
 @*
@@ -56,7 +55,7 @@
     public string Label { get; set; } = string.Empty;
 
     /// <summary>
-    /// SVG path data for the icon (just the <path> elements)
+    /// SVG path data for the icon (just the &lt;path&gt; elements)
     /// </summary>
     [Parameter, EditorRequired]
     public RenderFragment IconPath { get; set; } = default!;

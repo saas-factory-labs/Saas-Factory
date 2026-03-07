@@ -43,7 +43,7 @@
     public string Label { get; set; } = string.Empty;
 
     /// <summary>
-    /// SVG path data for the icon (just the <path> elements)
+    /// SVG path data for the icon (just the &lt;path&gt; elements, no wrapping &lt;svg&gt; tag needed)
     /// </summary>
     [Parameter, EditorRequired]
     public RenderFragment IconPath { get; set; } = default!;
