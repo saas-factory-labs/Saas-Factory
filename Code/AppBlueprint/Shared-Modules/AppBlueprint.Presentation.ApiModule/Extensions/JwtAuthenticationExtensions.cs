@@ -1,3 +1,4 @@
+using AppBlueprint.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -32,10 +33,26 @@ public static class JwtAuthenticationExtensions
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            // When a request carries only x-api-key (no Bearer token), forward to the ApiKey scheme.
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         })
         .AddJwtBearer(options =>
         {
             ConfigureJwtBearerOptions(options, configuration, authProvider, environment);
+        })
+        .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(
+            ApiKeyAuthenticationHandler.SchemeName,
+            _ => { });
+
+        services.AddAuthorization(options =>
+        {
+            // Policy that accepts either a valid JWT or a valid API key.
+            options.AddPolicy(Controllers.Baseline.AuthorizationPolicies.ApiKey, policy =>
+                policy.AddAuthenticationSchemes(
+                        JwtBearerDefaults.AuthenticationScheme,
+                        ApiKeyAuthenticationHandler.SchemeName)
+                    .RequireAuthenticatedUser());
         });
 
         return services;

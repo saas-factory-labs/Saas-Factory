@@ -59,5 +59,22 @@ public sealed class ApiKeyEntityConfiguration : IEntityTypeConfiguration<ApiKeyE
 
         builder.HasIndex(t => t.CreatedAt)
             .HasDatabaseName("IX_ApiKeys_CreatedAt");
+
+        builder.Property(t => t.KeyHash)
+            .HasMaxLength(64)
+            .HasComment("SHA-256 hex hash of the raw API key for fast lookup");
+
+        builder.Property(t => t.ExpiresAt)
+            .HasComment("Optional expiry timestamp; null means the key never expires");
+
+        builder.Property(t => t.IsRevoked)
+            .IsRequired()
+            .HasDefaultValue(false)
+            .HasComment("Whether this API key has been revoked");
+
+        // Unique index enables O(1) lookup during authentication
+        builder.HasIndex(t => t.KeyHash)
+            .IsUnique()
+            .HasDatabaseName("IX_ApiKeys_KeyHash");
     }
 }

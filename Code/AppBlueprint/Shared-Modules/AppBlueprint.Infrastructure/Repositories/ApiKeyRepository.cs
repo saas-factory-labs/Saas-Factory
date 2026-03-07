@@ -24,6 +24,13 @@ public class ApiKeyRepository : IApiKeyRepository
         return await _context.ApiKeys.FindAsync(id);
     }
 
+    public async Task<ApiKeyEntity?> GetByKeyHashAsync(string keyHash)
+    {
+        ArgumentNullException.ThrowIfNull(keyHash);
+        return await _context.ApiKeys
+            .FirstOrDefaultAsync(k => k.KeyHash == keyHash && !k.IsRevoked);
+    }
+
     public async Task AddAsync(ApiKeyEntity apiKey)
     {
         await _context.ApiKeys.AddAsync(apiKey);

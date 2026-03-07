@@ -221,7 +221,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITeamRepository, TeamRepository>();
         services.AddScoped<IDataExportRepository, DataExportRepository>();
         services.AddScoped<ITenantRepository, TenantRepository>();
-        // Add more repositories as they are implemented
+        services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
 
         return services;
     }
