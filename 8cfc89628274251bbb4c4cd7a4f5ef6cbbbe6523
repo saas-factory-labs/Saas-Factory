@@ -1,0 +1,70 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Layout/SidebarMenuItem.razor
+  3ca83ac3d9b83e93 46
+Code/AppBlueprint/AppBlueprint.Web/Components/Pages/FileStorageDemo.razor
+  314fc13bb06f16ad 45
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Layout/SidebarMenuGroup.razor
+  2e34af17680c15d3 58
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/ForumPost.razor
+  314fc13bb06f16ad 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "8cfc89628274251bbb4c4cd7a4f5ef6cbbbe6523",
+  "prompts": {
+    "2e34af17680c15d3": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "006f753b-8a42-4319-b6df-b5f582dae3e3",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "314fc13bb06f16ad": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "09c256bd-3a2b-419f-b76b-654a97933f04",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 623,
+      "total_deletions": 623,
+      "accepted_lines": 93,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ed16c6e795479b7490f6ae6642fd4a39d01a78c1e067239a934a0f1c6ff83d5e"
+    },
+    "3ca83ac3d9b83e93": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "f3e2154a-8653-40f2-bfcd-4f5edad4cb59",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 53,
+      "total_deletions": 54,
+      "accepted_lines": 10,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/fb6cda8aedb3a74b70d506ce2668e1e2acd9cff57f264fb295b0d4facd0047f8"
+    },
+    "ba0a3749b5b8c682": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "72eccb3c-8bc0-4f2d-9f6e-6421996511a7",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
