@@ -1,0 +1,36 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/Modules/Affiliate/Entities/Affiliate/Commission.cs
+  2339b8d18ddfbff9 5,7
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/ServiceCollectionExtensions.cs
+  2339b8d18ddfbff9 251
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/SignupDbConnectionProvider.cs
+  2339b8d18ddfbff9 1
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/Modules/Affiliate/Partials/AffiliateModuleDbContext.Affiliate.cs
+  2339b8d18ddfbff9 11,13,34,66
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Services/SignupService.cs
+  2339b8d18ddfbff9 2
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/Modules/Affiliate/Entities/Affiliate/Affiliate.cs
+  2339b8d18ddfbff9 7,9,29,31,34,45,68,79
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/Modules/Affiliate/Entities/Affiliate/PayoutRequest.cs
+  2339b8d18ddfbff9 5,7,27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "36139b64deb81baf41b9d7b809e5c29425b7bf69",
+  "prompts": {
+    "2339b8d18ddfbff9": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "ede6605b-b97e-4097-97b9-8604ea6b6fab",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1082,
+      "total_deletions": 1092,
+      "accepted_lines": 222,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/f283cf22e81d10d085cfe3ead5c6c8948288083e91a28ba6c4b789c53f911a72"
+    }
+  }
+}
