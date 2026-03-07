@@ -1,90 +1,88 @@
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Http;
-// using Microsoft.AspNetCore.Mvc;
-// using Microsoft.Extensions.Configuration;
-// using Microsoft.Extensions.Logging;
-// using Newtonsoft.Json;
-// using Stripe;
-//
-// namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
-//
-// [Authorize (Roles = Roles.CustomerAdmin)]
-// [ApiController]
-// [Route("api/payment")]
-// [Produces("application/json")]
-// public class PaymentController : BaseController
-// {
-//     private readonly IConfiguration _configuration;
-//     private readonly ILogger<PaymentController> _logger;
-//
-//     public PaymentController(ILogger<PaymentController> logger): base(configuration)
-//     {
-//         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-//         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-//         
-//     }
-//
-//     /// <summary>
-//     /// Retrieves subscriptions.
-//     /// </summary>
-//     [HttpGet("get-subscriptions")]
-//     [ProducesResponseType(StatusCodes.Status200OK)]
-//     public async Task<IActionResult> GetSubscriptions(CancellationToken cancellationToken)
-//     {
-//         // Simulate retrieving subscriptions (replace with real implementation)
-//         return Ok("Subscriptions....");
-//     }
-//
-//     /// <summary>
-//     /// Creates a subscription for the customer.
-//     /// </summary>
-//     [HttpPost("create-subscription")]
-//     [ProducesResponseType(StatusCodes.Status200OK)]
-//     public async Task<IActionResult> CreateSubscription(CancellationToken cancellationToken)
-//     {
-//         var options = new SubscriptionCreateOptions
-//         {
-//             Customer = "cus_9s6XGagagagagDTHzA66Po",
-//             Items = new List<SubscriptionItemOptions>
-//             {
-//                 new SubscriptionItemOptions
-//                 {
-//                     Price = "subscription_plan_price_id",
-//                 },
-//             }
-//         };
-//         var service = new SubscriptionService();
-//         service.Create(options);
-//
-//         return Ok("Subscription created successfully.");
-//     }
-//
-//     /// <summary>
-//     /// Cancels the subscription with the specified ID.
-//     /// </summary>
-//     /// <param name="req">Request containing subscription ID.</param>
-//     [HttpPost("cancel-subscription")]
-//     [ProducesResponseType(typeof(Subscription), StatusCodes.Status200OK)]
-//     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-//     public ActionResult<Subscription> CancelSubscription([FromBody] CancelSubscriptionRequest req)
-//     {
-//         if (string.IsNullOrEmpty(req.Subscription))
-//         {
-//             return BadRequest("Subscription ID is required.");
-//         }
-//
-//         var service = new SubscriptionService();
-//         var subscription = service.Cancel(req.Subscription, null);
-//         return Ok(subscription);
-//     }
-//
-//     
-// }
-//
-// public class CancelSubscriptionRequest
-// {
-//     [JsonProperty("subscriptionId")]
-//     public string Subscription { get; set; }
-// }
+using AppBlueprint.Application.Constants;
+using AppBlueprint.Contracts.Baseline.Payment.Requests;
+using AppBlueprint.Contracts.Baseline.Payment.Responses;
+using AppBlueprint.Infrastructure.Services;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
+
+[Authorize]
+[ApiController]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/payments")]
+[Produces("application/json")]
+public class PaymentController : BaseController
+{
+    private readonly StripeSubscriptionService _stripeSubscriptionService;
+
+    public PaymentController(
+        IConfiguration configuration,
+        StripeSubscriptionService stripeSubscriptionService)
+        : base(configuration)
+    {
+        _stripeSubscriptionService = stripeSubscriptionService ?? throw new ArgumentNullException(nameof(stripeSubscriptionService));
+    }
+
+    /// <summary>
+    /// Creates a Stripe subscription for a customer.
+    /// </summary>
+    /// <param name="dto">Customer ID and Stripe Price ID.</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <returns>Created subscription details.</returns>
+    [HttpPost(ApiEndpoints.Payments.CreateSubscription)]
+    [ProducesResponseType(typeof(StripeSubscriptionResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public ActionResult<StripeSubscriptionResponse> CreateSubscription(
+        [FromBody] CreateStripeSubscriptionRequest dto,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(dto);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var subscription = _stripeSubscriptionService.CreateSubscription(dto.CustomerId, dto.PriceId);
+
+        var response = new StripeSubscriptionResponse
+        {
+            SubscriptionId = subscription.Id,
+            Status = subscription.Status,
+            CustomerId = subscription.CustomerId,
+            CurrentPeriodEnd = subscription.Items?.Data?.FirstOrDefault()?.CurrentPeriodEnd
+        };
+
+        return CreatedAtAction(nameof(CreateSubscription), response);
+    }
+
+    /// <summary>
+    /// Cancels a Stripe subscription.
+    /// </summary>
+    /// <param name="dto">Subscription ID to cancel.</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
+    /// <returns>Cancelled subscription details.</returns>
+    [HttpPost(ApiEndpoints.Payments.CancelSubscription)]
+    [ProducesResponseType(typeof(StripeSubscriptionResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public ActionResult<StripeSubscriptionResponse> CancelSubscription(
+        [FromBody] CancelStripeSubscriptionRequest dto,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(dto);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var subscription = _stripeSubscriptionService.CancelSubscription(dto.SubscriptionId);
+
+        var response = new StripeSubscriptionResponse
+        {
+            SubscriptionId = subscription.Id,
+            Status = subscription.Status,
+            CustomerId = subscription.CustomerId,
+            CurrentPeriodEnd = subscription.Items?.Data?.FirstOrDefault()?.CurrentPeriodEnd
+        };
+
+        return Ok(response);
+    }
+}
+

@@ -157,4 +157,11 @@ public static class ApiEndpoints
         public const string UpdateById = $"{ControllerBaseUrl}/{{id}}";
         public const string DeleteById = $"{ControllerBaseUrl}/{{id}}";
     }
+
+    internal static class Payments
+    {
+        private const string ControllerBaseUrl = "payments";
+        public const string CreateSubscription = ControllerBaseUrl + "/subscriptions";
+        public const string CancelSubscription = ControllerBaseUrl + "/subscriptions/cancel";
+    }
 }

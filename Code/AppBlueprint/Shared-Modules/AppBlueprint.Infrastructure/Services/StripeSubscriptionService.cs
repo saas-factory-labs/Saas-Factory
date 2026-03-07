@@ -38,7 +38,6 @@ public class StripeSubscriptionService
 
     public Subscription CreateSubscription(string customerId, string priceId)
     {
-        // Create a subscription
         var subscriptionOptions = new SubscriptionCreateOptions
         {
             Customer = customerId,
@@ -46,12 +45,19 @@ public class StripeSubscriptionService
             [
                 new()
                 {
-                    Price = priceId // Price ID from your Stripe Dashboard
+                    Price = priceId
                 }
             ],
             Expand = ["latest_invoice.payment_intent"]
         };
         var subscriptionService = new SubscriptionService();
         return subscriptionService.Create(subscriptionOptions);
+    }
+
+    public Subscription CancelSubscription(string subscriptionId)
+    {
+        ArgumentNullException.ThrowIfNull(subscriptionId);
+        var subscriptionService = new SubscriptionService();
+        return subscriptionService.Cancel(subscriptionId);
     }
 }
