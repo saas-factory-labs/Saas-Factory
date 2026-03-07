@@ -66,10 +66,14 @@ jobs:
           fi
           ./.sonar/scanner/dotnet-sonarscanner begin \
             /k:"saas-factory-labs_Saas-Factory" \
+            /n:"Saas-Factory" \
             /o:"saas-factory-labs" \
             /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.inclusions="Code/AppBlueprint/**"
+            /d:sonar.inclusions="Code/AppBlueprint/**" \
+            /d:sonar.exclusions="**/wwwroot/lib/**/*,**/bin/**/*,**/obj/**/*,**/Migrations/**/*,**/*.g.cs,**/docs/**/*,**/*.mjs,**/GeneratedSQLScripts/**/*,**/*.d.ts,**/*.d.ts.map" \
+            /d:sonar.javascript.exclusions="**/wwwroot/js/*.js,**/docs/**/*.js,**/*.mjs,**/scripts/**/*.js" \
+            /d:sonar.css.exclusions="**/wwwroot/css/*.css"
 
       - name: Build the project (ignore errors)
         continue-on-error: true
