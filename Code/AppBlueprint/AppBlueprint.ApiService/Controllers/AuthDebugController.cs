@@ -2,6 +2,7 @@ using AppBlueprint.Application.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+// ReSharper disable LocalizableElement
 namespace AppBlueprint.ApiService.Controllers;
 
 /// <summary>
@@ -69,19 +70,19 @@ internal sealed class AuthDebugController(ILogger<AuthDebugController> logger) :
         var hasAuth = !string.IsNullOrEmpty(authHeader);
         var hasTenantId = !string.IsNullOrEmpty(tenantIdHeader);
 
-        // Log to console for debugging, don't return sensitive data
-        Console.WriteLine($"Headers endpoint called. HasAuth: {hasAuth}, HasTenantId: {hasTenantId}");
-        Console.WriteLine($"Authorization header: {authHeader}");
-        Console.WriteLine($"Tenant ID: {tenantIdHeader}");
+        // Log using logger for debugging, don't return sensitive data
+        _logger.LogInformation("Headers endpoint called. HasAuth: {HasAuth}, HasTenantId: {HasTenantId}", hasAuth, hasTenantId);
+        _logger.LogDebug("Authorization header: {AuthHeader}", authHeader);
+        _logger.LogDebug("Tenant ID: {TenantId}", tenantIdHeader);
 
         foreach (var header in Request.Headers)
         {
-            Console.WriteLine($"{header.Key}: {header.Value}");
+            _logger.LogDebug("Header {HeaderKey}: {HeaderValue}", header.Key, header.Value);
         }
 
         return Ok(new
         {
-            message = "Headers logged to console. Check application logs for details.",
+            message = "Headers logged to application logs. Check application logs for details.",
             timestamp = DateTime.UtcNow
         });
     }

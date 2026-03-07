@@ -1,3 +1,4 @@
+// ReSharper disable LocalizableElement
 using System.Net;
 using System.Net.Sockets;
 

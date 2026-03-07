@@ -1,3 +1,4 @@
+// ReSharper disable LocalizableElement
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
 /// <summary>

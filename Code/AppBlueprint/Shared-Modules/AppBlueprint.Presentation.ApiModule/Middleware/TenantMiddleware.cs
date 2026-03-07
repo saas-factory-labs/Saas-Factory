@@ -2,6 +2,7 @@ using System.Security.Claims;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
+// ReSharper disable LocalizableElement
 namespace AppBlueprint.Presentation.ApiModule.Middleware;
 
 /// <summary>

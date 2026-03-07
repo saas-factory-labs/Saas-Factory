@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
+// ReSharper disable LocalizableElement
 namespace AppBlueprint.Presentation.ApiModule.Attributes;
 
 /// <summary>

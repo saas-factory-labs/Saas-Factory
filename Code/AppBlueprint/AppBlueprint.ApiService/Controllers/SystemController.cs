@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
+// ReSharper disable LocalizableElement
 namespace AppBlueprint.ApiService.Controllers;
 
 [Authorize(Roles = Roles.DeploymentManagerAdmin)]

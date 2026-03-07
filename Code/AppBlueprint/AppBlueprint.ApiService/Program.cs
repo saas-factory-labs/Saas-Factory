@@ -7,6 +7,7 @@ using AppBlueprint.TodoAppKernel.Infrastructure;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
+// ReSharper disable LocalizableElement
 
 namespace AppBlueprint.ApiService;
 

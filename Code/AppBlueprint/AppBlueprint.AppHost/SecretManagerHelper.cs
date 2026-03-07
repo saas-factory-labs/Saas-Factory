@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
 
+// ReSharper disable LocalizableElement
 namespace AppBlueprint.AppHost;
 
 internal static class SecretManagerHelper
