@@ -1,0 +1,50 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/ApiKeyAuthenticationHandler.cs
+  2bc062fa4a362a11 1-86,89-98
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Repositories/Interfaces/IApiKeyRepository.cs
+  2bc062fa4a362a11 9-10
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Repositories/ApiKeyRepository.cs
+  2bc062fa4a362a11 27-33
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/B2B/Entities/ApiKeyEntity.cs
+  2bc062fa4a362a11 19-27
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/ServiceCollectionExtensions.cs
+  7d4d8698dc43854e 224
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/JwtAuthenticationExtensions.cs
+  7d4d8698dc43854e 1,36-38,43-50,52-55
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/B2B/Entities/EntityConfigurations/ApiKeyEntityConfiguration.cs
+  2bc062fa4a362a11 62-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "864477d9238a19bbf4087a7c51171760e2393383",
+  "prompts": {
+    "2bc062fa4a362a11": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "9b5a54a1-56cf-4d0a-9e4e-30e4875ebf14",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 168,
+      "total_deletions": 0,
+      "accepted_lines": 131,
+      "overriden_lines": 2,
+      "messages_url": "https://usegitai.com/cas/2baaa2fe0f8820e6451c60390ea86d23784fbe13f67686956dedfe9e2b44ed39"
+    },
+    "7d4d8698dc43854e": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "30e6fe07-2cb7-435d-ae13-55dca0debee3",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1042,
+      "total_deletions": 990,
+      "accepted_lines": 187,
+      "overriden_lines": 1,
+      "messages_url": "https://usegitai.com/cas/8648fbfaa5187ea82eb6857f07677fd3025efa0c5cd22cc6c2cc65c1d79fb45e"
+    }
+  }
+}
