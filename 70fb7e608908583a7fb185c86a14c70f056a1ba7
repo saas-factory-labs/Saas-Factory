@@ -1,0 +1,38 @@
+Code/AppBlueprint/TODO-ANALYSIS.md
+  5e34a2fc4226b22a 92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "70fb7e608908583a7fb185c86a14c70f056a1ba7",
+  "prompts": {
+    "5e34a2fc4226b22a": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "a1863198-f10d-4827-9c09-81d9273447fc",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 136,
+      "total_deletions": 147,
+      "accepted_lines": 34,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/3aba04cd999540b84445b946cf89e06e9b4272b62df6bfec5745fd0ba8ebddfb"
+    },
+    "985ac55a59ddc863": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "a4f6ec8a-c1ca-42ed-b6d7-fc915d91feab",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 1,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/a9d4531600d0d04f9388aa2aa48397c6f104a82055e1f6bc34f996e086efa08f"
+    }
+  }
+}
