@@ -89,18 +89,7 @@ This document catalogs all TODO comments found in the AppBlueprint codebase with
      - Line 28: "TODO: Register command handlers when implemented"
      - Line 29: "TODO: Register query handlers when implemented"
 
-### 🔶 Testing TODOs
-
-12-13. **Missing Blazor Components** - `PasswordResetTests.cs:20, 32`
-   - Location: `AppBlueprint.Tests/Blazor/PasswordResetTests.cs`
-   - Context: Tests exist but components don't
-   - Effort: Medium-Large
-   - Impact: Feature completeness
-   - Notes:
-     - Line 20: "TODO: ForgotPassword component doesn't exist yet"
-     - Line 32: "TODO: ResetPassword component doesn't exist yet"
-
-### 🟣 Subscription Service
+###  Subscription Service
 
 14. **Stripe Customer Creation** - `StripeSubscriptionService.cs:33`
    - Location: `Infrastructure/Services/StripeSubscriptionService.cs`
