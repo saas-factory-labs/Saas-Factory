@@ -46,7 +46,7 @@ public static class MigrationExtensions
             // SOLUTION: Retrieve connection string directly from environment variable before it's parsed by
             // NpgsqlDataSource. This preserves the original password that was stripped for security.
             string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
-            
+
             if (string.IsNullOrEmpty(connectionString))
             {
                 // Fallback to DbContext connection string if environment variable not set
@@ -54,7 +54,7 @@ public static class MigrationExtensions
                 connectionString = dbContext.Database.GetConnectionString();
                 Logger.LogWarning("DATABASE_CONNECTIONSTRING environment variable not set, using DbContext connection string");
             }
-            
+
             Logger.LogInformation("Attempting to apply database migrations...");
 
             // Try to ensure the database exists first with retry logic
@@ -182,13 +182,13 @@ public static class MigrationExtensions
         {
             // Normalize connection string to key-value format if it's in URI format
             string normalizedConnectionString = NormalizeConnectionString(connectionString);
-            
+
             // DIAGNOSTIC: Check password before parsing
             bool hadPasswordBefore = HasPassword(normalizedConnectionString);
             Logger.LogWarning("[DIAGNOSTIC] Before NpgsqlConnectionStringBuilder - Has Password: {HasPassword}", hadPasswordBefore);
-            
+
             var builder = new NpgsqlConnectionStringBuilder(normalizedConnectionString);
-            
+
             // DIAGNOSTIC: Check password after parsing
             bool hasPasswordAfter = !string.IsNullOrEmpty(builder.Password);
             Logger.LogWarning("[DIAGNOSTIC] After NpgsqlConnectionStringBuilder - Has Password: {HasPassword}", hasPasswordAfter);
@@ -283,11 +283,11 @@ public static class MigrationExtensions
     {
         if (string.IsNullOrWhiteSpace(connectionString))
             return false;
-        
+
         // Check key-value format: Password=...
         if (connectionString.Contains("Password=", StringComparison.OrdinalIgnoreCase))
             return true;
-        
+
         // Check PostgreSQL URI format: postgresql://username:password@host:port/database
         if (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
             connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
@@ -295,11 +295,11 @@ public static class MigrationExtensions
             int schemeEnd = connectionString.IndexOf("://", StringComparison.Ordinal);
             int atIndex = connectionString.IndexOf('@', schemeEnd + 3);
             int colonIndex = connectionString.IndexOf(':', schemeEnd + 3);
-            
+
             // Password exists if there's a colon between :// and @
             return colonIndex > schemeEnd && colonIndex < atIndex && atIndex > 0;
         }
-        
+
         return false;
     }
 
@@ -318,27 +318,27 @@ public static class MigrationExtensions
     private static string NormalizeConnectionString(string connectionString)
     {
         ArgumentNullException.ThrowIfNull(connectionString);
-        
+
         // If already in key-value format, return as-is
         if (!connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) &&
             !connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
         {
             return connectionString;
         }
-        
+
         try
         {
             // Parse URI format: postgresql://username:password@host:port/database?params
             var uri = new Uri(connectionString);
-            
+
             string host = uri.Host;
             int port = uri.Port > 0 ? uri.Port : 5432;
             string database = uri.AbsolutePath.TrimStart('/');
-            
+
             // Extract username and password from UserInfo (username:password)
             string? username = null;
             string? password = null;
-            
+
             if (!string.IsNullOrEmpty(uri.UserInfo))
             {
                 int colonIndex = uri.UserInfo.IndexOf(':', StringComparison.Ordinal);
@@ -352,30 +352,30 @@ public static class MigrationExtensions
                     username = Uri.UnescapeDataString(uri.UserInfo);
                 }
             }
-            
+
             // Build key-value connection string
             var builder = new System.Text.StringBuilder();
             builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Host={host};");
             builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Port={port};");
             builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Database={database};");
-            
+
             if (!string.IsNullOrEmpty(username))
             {
                 builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Username={username};");
             }
-            
+
             if (!string.IsNullOrEmpty(password))
             {
                 builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Password={password};");
             }
-            
+
             // Add query parameters if present
             if (!string.IsNullOrEmpty(uri.Query))
             {
                 // Parse query string and add parameters
                 string query = uri.Query.TrimStart('?');
                 string[] parameters = query.Split('&', StringSplitOptions.RemoveEmptyEntries);
-                
+
                 foreach (string param in parameters)
                 {
                     int equalsIndex = param.IndexOf('=', StringComparison.Ordinal);
@@ -383,7 +383,7 @@ public static class MigrationExtensions
                     {
                         string key = Uri.UnescapeDataString(param.AsSpan(0, equalsIndex).ToString());
                         string value = Uri.UnescapeDataString(param.AsSpan(equalsIndex + 1).ToString());
-                        
+
                         // Convert common URI query parameters to Npgsql format
                         if (key.Equals("sslmode", StringComparison.OrdinalIgnoreCase))
                         {
@@ -396,7 +396,7 @@ public static class MigrationExtensions
                     }
                 }
             }
-            
+
             string result = builder.ToString().TrimEnd(';');
             Logger.LogInformation("[MigrationExtensions] Converted URI format to key-value format (password: {HasPassword})", HasPassword(result));
             return result;

@@ -130,11 +130,11 @@ internal static class Program // Make class static
     {
         if (string.IsNullOrWhiteSpace(connectionString))
             return false;
-        
+
         // Check key-value format: Password=...
         if (connectionString.Contains("Password=", StringComparison.OrdinalIgnoreCase))
             return true;
-        
+
         // Check PostgreSQL URI format: postgresql://username:password@host:port/database
         if (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
             connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
@@ -142,11 +142,11 @@ internal static class Program // Make class static
             int schemeEnd = connectionString.IndexOf("://", StringComparison.Ordinal);
             int atIndex = connectionString.IndexOf('@', schemeEnd + 3);
             int colonIndex = connectionString.IndexOf(':', schemeEnd + 3);
-            
+
             // Password exists if there's a colon between :// and @
             return colonIndex > schemeEnd && colonIndex < atIndex && atIndex > 0;
         }
-        
+
         return false;
     }
 }

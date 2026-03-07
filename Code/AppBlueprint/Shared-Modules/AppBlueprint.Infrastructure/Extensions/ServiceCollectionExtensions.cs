@@ -419,14 +419,14 @@ public static class ServiceCollectionExtensions
         {
             return connectionString;
         }
-        
+
         var uri = new Uri(connectionString);
         var builder = new System.Text.StringBuilder();
-        
+
         builder.Append($"Host={uri.Host};");
         builder.Append($"Port={(uri.Port > 0 ? uri.Port : 5432)};");
         builder.Append($"Database={uri.AbsolutePath.TrimStart('/')};");
-        
+
         if (!string.IsNullOrEmpty(uri.UserInfo))
         {
             int colonIndex = uri.UserInfo.IndexOf(':', StringComparison.Ordinal);
@@ -440,7 +440,7 @@ public static class ServiceCollectionExtensions
                 builder.Append($"Username={Uri.UnescapeDataString(uri.UserInfo)};");
             }
         }
-        
+
         return builder.ToString().TrimEnd(';');
     }
 
@@ -461,7 +461,7 @@ public static class ServiceCollectionExtensions
         {
             using var scope = services.BuildServiceProvider().CreateScope();
             var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-            
+
             string? connString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
             if (connString is null)
             {
@@ -475,7 +475,7 @@ public static class ServiceCollectionExtensions
             {
                 connString = config.GetConnectionString("postgres-server");
             }
-            
+
             if (string.IsNullOrEmpty(connString))
             {
                 return HealthCheckResult.Unhealthy(
@@ -486,7 +486,7 @@ public static class ServiceCollectionExtensions
             {
                 // Normalize connection string to handle both URI and key-value formats
                 string normalizedConnString = NormalizeConnectionStringForHealthCheck(connString);
-                
+
                 using var connection = new Npgsql.NpgsqlConnection(normalizedConnString);
                 connection.Open();
                 connection.Close();
@@ -505,11 +505,11 @@ public static class ServiceCollectionExtensions
         {
             using var scope = services.BuildServiceProvider().CreateScope();
             var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-            
+
             string? connString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") ??
                                config.GetConnectionString("appblueprintdb") ??
                                config.GetConnectionString("postgres-server");
-            
+
             if (string.IsNullOrEmpty(connString))
             {
                 return HealthCheckResult.Unhealthy(
@@ -520,10 +520,10 @@ public static class ServiceCollectionExtensions
             {
                 // Normalize connection string to handle both URI and key-value formats
                 string normalizedConnString = NormalizeConnectionStringForHealthCheck(connString);
-                
+
                 using var connection = new Npgsql.NpgsqlConnection(normalizedConnString);
                 connection.Open();
-                
+
                 // Check if RLS is enabled on tenant-scoped tables
                 var checkCommand = connection.CreateCommand();
                 checkCommand.CommandText = @"
@@ -536,7 +536,7 @@ public static class ServiceCollectionExtensions
                         JOIN pg_class c ON c.relname = t.tablename
                         WHERE c.relrowsecurity = true
                     );";
-                
+
                 var reader = checkCommand.ExecuteReader();
                 List<string> tablesWithoutRls = [];
                 while (reader.Read())
@@ -545,14 +545,14 @@ public static class ServiceCollectionExtensions
                 }
                 reader.Close();
                 connection.Close();
-                
+
                 if (tablesWithoutRls.Count > 0)
                 {
                     return HealthCheckResult.Unhealthy(
                         $"RLS NOT ENABLED on tables: {string.Join(", ", tablesWithoutRls)}. " +
                         "Run SetupRowLevelSecurity.sql to enable RLS policies.");
                 }
-                
+
                 return HealthCheckResult.Healthy("RLS enabled on all tenant-scoped tables");
             }
             catch (Exception ex)

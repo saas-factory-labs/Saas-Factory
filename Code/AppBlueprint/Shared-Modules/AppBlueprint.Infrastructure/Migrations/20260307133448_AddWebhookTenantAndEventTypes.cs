@@ -1,4 +1,3 @@
-﻿using System;
 using AppBlueprint.SharedKernel.SharedModels;
 using Microsoft.EntityFrameworkCore.Migrations;
 

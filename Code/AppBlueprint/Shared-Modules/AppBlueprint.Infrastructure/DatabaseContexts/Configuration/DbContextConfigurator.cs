@@ -161,11 +161,11 @@ public static class DbContextConfigurator
     {
         if (string.IsNullOrWhiteSpace(connectionString))
             return false;
-        
+
         // Check key-value format: Password=...
         if (connectionString.Contains("Password=", StringComparison.OrdinalIgnoreCase))
             return true;
-        
+
         // Check PostgreSQL URI format: postgresql://username:password@host:port/database
         if (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
             connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
@@ -173,11 +173,11 @@ public static class DbContextConfigurator
             int schemeEnd = connectionString.IndexOf("://", StringComparison.Ordinal);
             int atIndex = connectionString.IndexOf('@', schemeEnd + 3);
             int colonIndex = connectionString.IndexOf(':', schemeEnd + 3);
-            
+
             // Password exists if there's a colon between :// and @
             return colonIndex > schemeEnd && colonIndex < atIndex && atIndex > 0;
         }
-        
+
         return false;
     }
 
@@ -205,27 +205,27 @@ public static class DbContextConfigurator
     private static string NormalizeConnectionString(string connectionString)
     {
         ArgumentNullException.ThrowIfNull(connectionString);
-        
+
         // If already in key-value format, return as-is
         if (!connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) &&
             !connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
         {
             return connectionString;
         }
-        
+
         try
         {
             // Parse URI format: postgresql://username:password@host:port/database?params
             var uri = new Uri(connectionString);
-            
+
             string host = uri.Host;
             int port = uri.Port > 0 ? uri.Port : 5432;
             string database = uri.AbsolutePath.TrimStart('/');
-            
+
             // Extract username and password from UserInfo (username:password)
             string? username = null;
             string? password = null;
-            
+
             if (!string.IsNullOrEmpty(uri.UserInfo))
             {
                 int colonIndex = uri.UserInfo.IndexOf(':', StringComparison.Ordinal);
@@ -239,30 +239,30 @@ public static class DbContextConfigurator
                     username = Uri.UnescapeDataString(uri.UserInfo);
                 }
             }
-            
+
             // Build key-value connection string
             var builder = new System.Text.StringBuilder();
             builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Host={host};");
             builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Port={port};");
             builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Database={database};");
-            
+
             if (!string.IsNullOrEmpty(username))
             {
                 builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Username={username};");
             }
-            
+
             if (!string.IsNullOrEmpty(password))
             {
                 builder.Append(System.Globalization.CultureInfo.InvariantCulture, $"Password={password};");
             }
-            
+
             // Add query parameters if present
             if (!string.IsNullOrEmpty(uri.Query))
             {
                 // Parse query string and add parameters
                 string query = uri.Query.TrimStart('?');
                 string[] parameters = query.Split('&', StringSplitOptions.RemoveEmptyEntries);
-                
+
                 foreach (string param in parameters)
                 {
                     int equalsIndex = param.IndexOf('=', StringComparison.Ordinal);
@@ -270,7 +270,7 @@ public static class DbContextConfigurator
                     {
                         string key = Uri.UnescapeDataString(param.AsSpan(0, equalsIndex).ToString());
                         string value = Uri.UnescapeDataString(param.AsSpan(equalsIndex + 1).ToString());
-                        
+
                         // Convert common URI query parameters to Npgsql format
                         if (key.Equals("sslmode", StringComparison.OrdinalIgnoreCase))
                         {
@@ -283,7 +283,7 @@ public static class DbContextConfigurator
                     }
                 }
             }
-            
+
             string result = builder.ToString().TrimEnd(';');
             Console.WriteLine($"[DbContextConfigurator] Converted URI format to key-value format (password: {HasPassword(result)})");
             return result;
@@ -442,7 +442,7 @@ public static class DbContextConfigurator
     {
         // Normalize connection string to key-value format if it's in URI format
         string normalizedConnectionString = NormalizeConnectionString(connectionString);
-        
+
         // Create NpgsqlDataSource with EnableDynamicJson for JSONB support (required since Npgsql 8.0)
         // This is required for Dictionary<string, string> and other dynamic JSON types
         var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(normalizedConnectionString);

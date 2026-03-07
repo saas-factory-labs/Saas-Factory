@@ -1,4 +1,4 @@
-﻿using AppBlueprint.Application.Interfaces;
+using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Contracts.Baseline.Webhook.Requests;
 using AppBlueprint.Contracts.Baseline.Webhook.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;

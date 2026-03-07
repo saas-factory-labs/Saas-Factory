@@ -171,7 +171,7 @@ public static class ServiceDefaultsExtensions
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
     {
         ArgumentNullException.ThrowIfNull(app, nameof(app));
-        
+
         // Always map health check endpoints (required for production health checks in Railway, K8s, etc.)
         app.MapHealthChecks("/health", new HealthCheckOptions
         {
@@ -194,7 +194,7 @@ public static class ServiceDefaultsExtensions
             }
         });
         app.MapHealthChecks("/alive", new HealthCheckOptions { Predicate = r => r.Tags.Contains("live") });
-        
+
         return app;
     }
 }
