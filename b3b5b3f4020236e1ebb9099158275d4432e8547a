@@ -1,0 +1,59 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Payment/Requests/CreateStripeSubscriptionRequest.cs
+  7d4d8698dc43854e 1-12
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/ServiceCollectionExtensions.cs
+  7d4d8698dc43854e 225
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/ApiEndpoints.cs
+  2bc062fa4a362a11 160-166
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/PaymentController.cs
+  7d4d8698dc43854e 52,82
+  2bc062fa4a362a11 1-7,10-51,53-81,83-88
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Payment/Responses/StripeSubscriptionResponse.cs
+  7d4d8698dc43854e 1-7,9
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/StripeSubscriptionService.cs
+  2bc062fa4a362a11 48,56-61
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/SubscriptionController.cs
+  2bc062fa4a362a11 1-7,10-184
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Subscription/Requests/UpdateSubscriptionRequest.cs
+  7d4d8698dc43854e 1-17
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Subscription/Responses/SubscriptionResponse.cs
+  7d4d8698dc43854e 1-11
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Subscription/Requests/CreateSubscriptionRequest.cs
+  7d4d8698dc43854e 1-21
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Payment/Requests/CancelStripeSubscriptionRequest.cs
+  7d4d8698dc43854e 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "b3b5b3f4020236e1ebb9099158275d4432e8547a",
+  "prompts": {
+    "2bc062fa4a362a11": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "9b5a54a1-56cf-4d0a-9e4e-30e4875ebf14",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 298,
+      "total_deletions": 228,
+      "accepted_lines": 281,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/32c03ec988c108ff56ca710545088a37fc7987bd843947d1be244fb4a4454bb3"
+    },
+    "7d4d8698dc43854e": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "30e6fe07-2cb7-435d-ae13-55dca0debee3",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 584,
+      "total_deletions": 447,
+      "accepted_lines": 81,
+      "overriden_lines": 1,
+      "messages_url": "https://usegitai.com/cas/0c6786a1b6834f2faecd2927d049252d703b261469365b940cc734329314e60a"
+    }
+  }
+}
