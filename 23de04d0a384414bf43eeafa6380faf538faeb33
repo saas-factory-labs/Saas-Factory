@@ -1,0 +1,82 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/AuthenticationSetupExtensions.cs
+  e0bc22c70391a207 1
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Attributes/RequireScopeAttribute.cs
+  e0bc22c70391a207 4
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Middleware/TenantMiddleware.cs
+  e0bc22c70391a207 5
+Code/AppBlueprint/AppBlueprint.ApiService/Program.cs
+  e0bc22c70391a207 10
+Code/AppBlueprint/AppBlueprint.ApiService/Controllers/SystemController.cs
+  e0bc22c70391a207 11
+Code/AppBlueprint/AppBlueprint.AppHost/SslCertificateManager.cs
+  e0bc22c70391a207 9
+Code/AppBlueprint/AppBlueprint.AppHost/SecretManagerHelper.cs
+  e0bc22c70391a207 7
+Code/AppBlueprint/AppBlueprint.ApiService/Controllers/AuthDebugController.cs
+  5a087a9af83237d5 73-74,85
+  e0bc22c70391a207 5
+  9ede198fff8c015d 75-76,80
+Code/AppBlueprint/AppBlueprint.AppHost/Program.cs
+  5967f115af4becf8 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "23de04d0a384414bf43eeafa6380faf538faeb33",
+  "prompts": {
+    "5967f115af4becf8": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "65c13176-2feb-414a-a39c-e7abc504be6e",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/049d18ddd25761f795220e5351441047078a12bde04a999244228b59ec4ada2d"
+    },
+    "5a087a9af83237d5": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "e755b73b-1edb-4e59-91ca-f787c25943db",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 6,
+      "total_deletions": 6,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    },
+    "9ede198fff8c015d": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "73ac678f-670b-4443-98b1-6e89d22923cc",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 9,
+      "total_deletions": 5,
+      "accepted_lines": 6,
+      "overriden_lines": 0
+    },
+    "e0bc22c70391a207": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "b2c85c3b-4d81-472e-a07c-ba778db7110d",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1646,
+      "total_deletions": 1637,
+      "accepted_lines": 510,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/6013f0a050a5b1cb01c98cc706b5eeba3b6db61c3d8d0d1d7be132bc5da8bf30"
+    }
+  }
+}
