@@ -1,0 +1,43 @@
+Code/AppBlueprint/AppBlueprint.Tests/Layers/DesignRuleTests.cs
+  6c3f442d6f66eddf 1-31,33-64,66-109,111-126,128-144
+Code/AppBlueprint/AppBlueprint.Tests/Layers/LayerTests.cs
+  2339b8d18ddfbff9 6,17,25,99-150
+  6c3f442d6f66eddf 1-5,7-16,18-24,26-98,151-158
+Code/AppBlueprint/AppBlueprint.Tests/Layers/FrameworkDependencyTests.cs
+  6c3f442d6f66eddf 1-142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "62ab532d74ce349b5281ebc8c334e97c2f13db92",
+  "prompts": {
+    "2339b8d18ddfbff9": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "ede6605b-b97e-4097-97b9-8604ea6b6fab",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 55,
+      "total_deletions": 0,
+      "accepted_lines": 55,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/795b59c56880a35b171d079f67f3b9335f4be2c03d6167a5bc49de2197a4e467"
+    },
+    "6c3f442d6f66eddf": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "f4da5058-202f-4c03-82d1-36f117d89284",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 393,
+      "total_deletions": 0,
+      "accepted_lines": 385,
+      "overriden_lines": 4,
+      "messages_url": "https://usegitai.com/cas/07c83b069e4b1e979cd32d463318304224fafa85caa30a838ad0ba68d8933179"
+    }
+  }
+}
