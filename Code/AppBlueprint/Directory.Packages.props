@@ -43,8 +43,8 @@
     <!-- Aspire -->
     <PackageVersion Include="Aspire.Hosting.Azure" Version="13.0.0" />
     <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="13.0.0" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.0" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.2" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.1.2" />
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="13.0.0" />
     <PackageVersion Include="Aspire.Hosting.Testing" Version="13.0.0" />
     <PackageVersion Include="Aspire.StackExchange.Redis.OutputCaching" Version="13.0.0" />
