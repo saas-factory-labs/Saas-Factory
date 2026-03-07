@@ -94,15 +94,15 @@
     [Parameter] public string Label { get; set; } = "";
     [Parameter] public string? Prefix { get; set; }
     [Parameter] public string? Suffix { get; set; }
-    [Parameter] public decimal TrendValue { get; set; } = 0;
+    [Parameter] public decimal TrendValue { get; set; }
     [Parameter] public bool ShowTrend { get; set; } = true;
     [Parameter] public string Variant { get; set; } = "default"; // default, primary, success, warning, danger
     [Parameter] public RenderFragment? Icon { get; set; }
     [Parameter] public string? IconName { get; set; }
     [Parameter] public List<decimal>? SparklineData { get; set; }
-    [Parameter] public bool ShowSparkline { get; set; } = false;
-    [Parameter] public bool ShowProgress { get; set; } = false;
-    [Parameter] public int ProgressValue { get; set; } = 0;
+    [Parameter] public bool ShowSparkline { get; set; }
+    [Parameter] public bool ShowProgress { get; set; }
+    [Parameter] public int ProgressValue { get; set; }
     [Parameter] public string ProgressLabel { get; set; } = "Progress";
     [Parameter] public RenderFragment? Footer { get; set; }
     [Parameter] public string? Class { get; set; }

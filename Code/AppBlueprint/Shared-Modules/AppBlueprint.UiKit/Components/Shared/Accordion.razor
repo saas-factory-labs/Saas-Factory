@@ -6,7 +6,7 @@
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool AllowMultiple { get; set; } = false;
+    [Parameter] public bool AllowMultiple { get; set; }
 
     private HashSet<string> _expandedItems = new();
 

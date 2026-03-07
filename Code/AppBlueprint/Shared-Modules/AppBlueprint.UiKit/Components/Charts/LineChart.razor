@@ -13,8 +13,8 @@
     [Parameter] public string ContainerClass { get; set; } = "grow";
     [Parameter] public List<string> Labels { get; set; } = new();
     [Parameter] public List<ChartDataset> Datasets { get; set; } = new();
-    [Parameter] public bool ShowXAxis { get; set; } = false;
-    [Parameter] public bool ShowYAxis { get; set; } = false;
+    [Parameter] public bool ShowXAxis { get; set; }
+    [Parameter] public bool ShowYAxis { get; set; }
     [Parameter] public bool UseTimeScale { get; set; } = true;
 
     private bool _initialized;

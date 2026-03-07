@@ -46,8 +46,8 @@
     [Parameter] public bool ShowPanels { get; set; } = true;
     [Parameter] public string Variant { get; set; } = "underline"; // underline, pills, boxed, minimal
     [Parameter] public string Size { get; set; } = "md"; // sm, md, lg
-    [Parameter] public bool FullWidth { get; set; } = false;
-    [Parameter] public bool UseRouting { get; set; } = false;
+    [Parameter] public bool FullWidth { get; set; }
+    [Parameter] public bool UseRouting { get; set; }
     [Parameter] public string? ContainerClass { get; set; }
     [Parameter] public string? PanelContainerClass { get; set; }
 
@@ -143,6 +143,6 @@
         public RenderFragment? Icon { get; set; }
         public string? Badge { get; set; }
         public string? Href { get; set; }
-        public bool Disabled { get; set; } = false;
+        public bool Disabled { get; set; }
     }
 }

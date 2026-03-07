@@ -70,7 +70,7 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public string Preset { get; set; } = ""; // no-data, no-results, error, no-access, empty-inbox, no-notifications
     [Parameter] public string Size { get; set; } = "md"; // sm, md, lg
-    [Parameter] public bool Compact { get; set; } = false;
+    [Parameter] public bool Compact { get; set; }
 
     [Parameter] public string PrimaryActionText { get; set; } = "Get Started";
     [Parameter] public EventCallback PrimaryAction { get; set; }

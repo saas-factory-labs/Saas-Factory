@@ -78,7 +78,7 @@
 
 @code {
     [Parameter] public string Variant { get; set; } = "simple";
-    [Parameter] public bool ShowLabel { get; set; } = false;
+    [Parameter] public bool ShowLabel { get; set; }
     [Parameter] public string Size { get; set; } = "md";
     [Parameter] public EventCallback<string> OnThemeChanged { get; set; }
 

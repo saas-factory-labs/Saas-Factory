@@ -60,9 +60,9 @@
     [Parameter] public int Rows { get; set; } = 5;
     [Parameter] public int Columns { get; set; } = 4;
     [Parameter] public bool ShowHeader { get; set; } = true;
-    [Parameter] public bool ShowAvatar { get; set; } = false;
+    [Parameter] public bool ShowAvatar { get; set; }
     [Parameter] public bool ShowActions { get; set; } = true;
-    [Parameter] public bool Selectable { get; set; } = false;
+    [Parameter] public bool Selectable { get; set; }
     [Parameter] public string? Class { get; set; }
 
 #pragma warning disable CA5394 // Random is used for UI animation variety, not security

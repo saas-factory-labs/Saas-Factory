@@ -48,9 +48,9 @@
     [Parameter] public List<SelectOption> Options { get; set; } = new();
     [Parameter] public string? HelpText { get; set; }
     [Parameter] public string? ErrorMessage { get; set; }
-    [Parameter] public bool HasError { get; set; } = false;
-    [Parameter] public bool Disabled { get; set; } = false;
-    [Parameter] public bool Required { get; set; } = false;
+    [Parameter] public bool HasError { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool Required { get; set; }
     [Parameter] public string Size { get; set; } = "md"; // sm, md, lg
     [Parameter] public string? ContainerClass { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }

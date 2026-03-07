@@ -40,12 +40,12 @@
 </div>
 
 @code {
-    [Parameter] public bool ShowImage { get; set; } = false;
+    [Parameter] public bool ShowImage { get; set; }
     [Parameter] public string ImageHeight { get; set; } = "160px";
-    [Parameter] public bool ShowAvatar { get; set; } = false;
+    [Parameter] public bool ShowAvatar { get; set; }
     [Parameter] public bool ShowTitle { get; set; } = true;
     [Parameter] public int TextLines { get; set; } = 3;
-    [Parameter] public bool ShowActions { get; set; } = false;
+    [Parameter] public bool ShowActions { get; set; }
     [Parameter] public string? Class { get; set; }
 
     private string GetContainerClasses()

@@ -45,8 +45,8 @@
     [Parameter] public RenderFragment? LoadingTemplate { get; set; }
     [Parameter] public RenderFragment? EndTemplate { get; set; }
     [Parameter] public EventCallback OnLoadMore { get; set; }
-    [Parameter] public bool IsLoading { get; set; } = false;
-    [Parameter] public bool HasReachedEnd { get; set; } = false;
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public bool HasReachedEnd { get; set; }
     [Parameter] public string LoadingText { get; set; } = "Loading more...";
     [Parameter] public string EndText { get; set; } = "You've reached the end";
     [Parameter] public int Threshold { get; set; } = 100;

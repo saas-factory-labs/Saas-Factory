@@ -35,10 +35,10 @@ else
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? IconContent { get; set; }
-    [Parameter] public bool IsDivider { get; set; } = false;
-    [Parameter] public bool IsHeader { get; set; } = false;
-    [Parameter] public bool Disabled { get; set; } = false;
-    [Parameter] public bool HasSubmenu { get; set; } = false;
+    [Parameter] public bool IsDivider { get; set; }
+    [Parameter] public bool IsHeader { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool HasSubmenu { get; set; }
     [Parameter] public string Variant { get; set; } = "default"; // default, danger
     [Parameter] public EventCallback OnItemClick { get; set; }
 

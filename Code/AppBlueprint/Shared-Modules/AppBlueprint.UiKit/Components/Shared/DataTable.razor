@@ -301,7 +301,7 @@
     {
         public string PropertyName { get; set; } = "";
         public string Title { get; set; } = "";
-        public bool Sortable { get; set; } = false;
+        public bool Sortable { get; set; }
         public Func<TItem, object>? SortFunc { get; set; }
     }
 }

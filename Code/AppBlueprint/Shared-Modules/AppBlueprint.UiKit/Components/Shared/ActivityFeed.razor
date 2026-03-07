@@ -142,7 +142,7 @@
     [Parameter] public string? Title { get; set; }
     [Parameter] public List<ActivityItem> Activities { get; set; } = new();
     [Parameter] public bool ShowTimeline { get; set; } = true;
-    [Parameter] public bool ShowLoadMore { get; set; } = false;
+    [Parameter] public bool ShowLoadMore { get; set; }
     [Parameter] public RenderFragment? HeaderActions { get; set; }
     [Parameter] public EventCallback OnLoadMore { get; set; }
     [Parameter] public EventCallback<ActivityAction> OnActionClick { get; set; }
@@ -201,7 +201,7 @@
         public string? Description { get; set; }
         public string Time { get; set; } = "";
         public string? Type { get; set; }
-        public bool ShowBadge { get; set; } = false;
+        public bool ShowBadge { get; set; }
         public string? BadgeType { get; set; }
         public ActivityAttachment? Attachment { get; set; }
         public List<ActivityAction>? Actions { get; set; }
