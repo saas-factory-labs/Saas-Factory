@@ -1,0 +1,22 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "600e3fd169b7074aefc24058b6b92b11e4d81684",
+  "prompts": {
+    "c317226a24f433c9": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "0d935fc1-6f45-43f7-91ec-3907d3a5ddb0",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 168,
+      "total_deletions": 172,
+      "accepted_lines": 29,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/d781484dc8fe5175de7301fd4ae35552ff374e0025f5b4189cc8b362b7e2d3c4"
+    }
+  }
+}
