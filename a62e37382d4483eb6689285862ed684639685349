@@ -1,0 +1,23 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Profile.razor
+  e53c459d76f1d88d 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "a62e37382d4483eb6689285862ed684639685349",
+  "prompts": {
+    "e53c459d76f1d88d": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "954cbf77-b7bf-45a5-bc19-2b373824181b",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}
