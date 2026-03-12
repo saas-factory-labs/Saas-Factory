@@ -5,6 +5,5 @@
         "connectionId": "saas-factory-labs",
         "projectKey": "saas-factory-labs_Saas-Factory"
     },
-    "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
-    "qodana.projectId": "20dDr"
+    "tailwindCSS.lint.suggestCanonicalClasses": "ignore"
 }
