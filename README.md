@@ -204,5 +204,12 @@ SaaS Factory is actively developed and maintained by:
       </a><br />
       Lead Architect & Primary Maintainer
     </td>
+    <td align="center">
+      <a href="https://github.com/hornvieh3u">
+        <img src="https://github.com/hornvieh3u.png" width="100px;" alt="hornvieh3u"/><br />
+        <sub><b>hornvieh3u</b></sub>
+      </a><br />
+      Contributor
+    </td>
   </tr>
 </table>
