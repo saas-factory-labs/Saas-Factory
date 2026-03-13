@@ -1,0 +1,54 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Firebase/FirebaseProvider.cs
+  0896b88dba127e31 180-186,188-189
+  76ce921ec6ba89bc 99,164
+  917989c19c051f7a 123,125-126,129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "bd91a517ca316c99565652960188587bc3fb6b39",
+  "prompts": {
+    "0896b88dba127e31": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "7cc99286-b897-4d8a-8e81-05847dbef130",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 9,
+      "total_deletions": 2,
+      "accepted_lines": 9,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/071191ebb2b2ee7c8d0462df516410a4a581162fcfb88bfbcd5f56d4a873a733"
+    },
+    "76ce921ec6ba89bc": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "79190f5f-60c9-4b32-8e1b-75b745aed1ea",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/f69350f7e62dfbc950a62fae11e9e6d994f09afcde98ac3851b508be2e7a97d8"
+    },
+    "917989c19c051f7a": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "a881f5c0-356e-410f-baa0-4993f05d4102",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 5,
+      "accepted_lines": 4,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/69c15a46e552d13a4138b91631a38ebdc8423ee85c4c314f19c47ec7beb9708a"
+    }
+  }
+}
