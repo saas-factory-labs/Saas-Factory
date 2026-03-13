@@ -1,0 +1,36 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "d40e26b3e01c8d229287fa6dda0f833dcb3e1f00",
+  "prompts": {
+    "017530f3fe85c953": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "c9295be7-9273-4e64-8426-5d2fac9f34a7",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 5,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/eb7e50d547c1711099b4c4f5213b73f71c8050a44db838750f71569385923c50"
+    },
+    "05c3a5cbf5aab5b2": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "5ffed30b-9a69-4105-9d44-4ced0f8eeec7",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 6,
+      "accepted_lines": 1,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/1ff6af25cb75873c0d87647327f2ac89740a1a2c1f9658df1888d28ec0b1c35c"
+    }
+  }
+}
