@@ -1,0 +1,24 @@
+.github/workflows/snyk-analysis.yaml
+  c05898a47cad4ebd 29-33,37-40,65-70,93-98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "3d0bf47d284ff2f02691c918213c39257527f034",
+  "prompts": {
+    "c05898a47cad4ebd": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "d73b0b61-c50c-4870-846b-f377e448f937",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 23,
+      "total_deletions": 0,
+      "accepted_lines": 23,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/85f064eb614be0df49fce82b28a671bae06c2a729a28e0fba1b893a2212f79eb"
+    }
+  }
+}
