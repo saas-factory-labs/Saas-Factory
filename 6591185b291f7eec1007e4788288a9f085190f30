@@ -1,0 +1,24 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Firebase/FirebaseConfiguration.cs
+  13e0785716bf984d 14,16,18,20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "6591185b291f7eec1007e4788288a9f085190f30",
+  "prompts": {
+    "13e0785716bf984d": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "fce27db8-1fd4-4e02-aaab-3a96237c514b",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 49,
+      "total_deletions": 49,
+      "accepted_lines": 9,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/5ab63452de4577c52a9c52a6a325ca150c1d24641490338371d2db555035c16f"
+    }
+  }
+}
