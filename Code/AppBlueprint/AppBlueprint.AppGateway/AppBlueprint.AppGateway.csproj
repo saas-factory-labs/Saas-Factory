@@ -21,10 +21,5 @@
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Content Include="..\..\..\config\.dockerignore">
-            <Link>.dockerignore</Link>
-        </Content>
-    </ItemGroup>
 
 </Project>
