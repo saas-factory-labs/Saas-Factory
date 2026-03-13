@@ -6,7 +6,10 @@ permissions:
   pull-requests: write  # Required to comment on PRs
 
 on:
-  push:
+  workflow_run:
+    workflows: ["💎 Quality: CodeQL advanced analysis"]
+    types:
+      - completed
     branches:
       - main
       - develop
@@ -15,6 +18,7 @@ jobs:
   release:
     name: Create Release and Tag
     runs-on: blacksmith-2vcpu-ubuntu-2404
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
     
     outputs:
       new_release_published: ${{ steps.semantic.outputs.new_release_published }}
