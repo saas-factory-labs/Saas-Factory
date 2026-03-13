@@ -70,10 +70,13 @@ jobs:
         dockerfile:
           - path: Code/AppBlueprint/AppBlueprint.Web/Dockerfile
             image: appblueprint-web
+            context: Code/AppBlueprint
           - path: Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile
             image: appblueprint-apiservice
+            context: Code/AppBlueprint
           - path: Code/AppBlueprint/AppBlueprint.AppGateway/Dockerfile
             image: appblueprint-gateway
+            context: Code/AppBlueprint
 
     steps:
       - name: Checkout repository
@@ -83,7 +86,7 @@ jobs:
         uses: snyk/actions/setup@master
 
       - name: Build Docker image
-        run: docker build -f ${{ matrix.dockerfile.path }} -t ${{ matrix.dockerfile.image }}:latest .
+        run: docker build -f ${{ matrix.dockerfile.path }} -t ${{ matrix.dockerfile.image }}:latest ${{ matrix.dockerfile.context }}
 
       - name: Run Snyk container scan
         continue-on-error: true
