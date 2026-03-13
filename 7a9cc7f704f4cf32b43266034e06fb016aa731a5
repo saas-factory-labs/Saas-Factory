@@ -1,0 +1,32 @@
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/JwtTokenCommand.cs
+  7ef4517ab43499cf 447,462-468
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Services/Users/UserService.cs
+  7ef4517ab43499cf 235,250,268-276
+.github/copilot-instructions.md
+  7ef4517ab43499cf 176-204
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/Users/UserService.cs
+  7ef4517ab43499cf 262,296-299
+Code/AppBlueprint/AppBlueprint.Web/Controllers/FirebaseConfigController.cs
+  7ef4517ab43499cf 31,51-55,57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "7a9cc7f704f4cf32b43266034e06fb016aa731a5",
+  "prompts": {
+    "7ef4517ab43499cf": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "07c1fa9d-97eb-436c-91cc-f3d71cf5bcb5",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1329,
+      "total_deletions": 1271,
+      "accepted_lines": 401,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/3ffdce4cc09a2e1bcad5521661ab0b6be67d03c5571bb3c6cc5e8bbfeb604d5a"
+    }
+  }
+}
