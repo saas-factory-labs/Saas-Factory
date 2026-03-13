@@ -26,7 +26,7 @@ This starts:
 
 Set these environment variables before running the AppHost:
 
-```
+```bash
 DATABASE_CONNECTIONSTRING=Host=localhost;Port=5432;Database=appblueprint;Username=appblueprint;Password=localdev123
 LOGTO_ENDPOINT=http://localhost:3001
 AUTHENTICATION_PROVIDER=Logto
@@ -34,7 +34,7 @@ AUTHENTICATION_PROVIDER=Logto
 
 Or for Firebase:
 
-```
+```bash
 AUTHENTICATION_PROVIDER=Firebase
 Authentication__Firebase__ApiKey=your-firebase-api-key
 ```
