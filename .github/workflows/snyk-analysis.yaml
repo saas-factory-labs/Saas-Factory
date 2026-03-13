@@ -34,21 +34,24 @@ jobs:
 
       - name: Run Snyk - AppBlueprint.Web
         continue-on-error: true
+        working-directory: Code/AppBlueprint/AppBlueprint.Web
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test --file=Code/AppBlueprint/AppBlueprint.Web/AppBlueprint.Web.csproj --severity-threshold=high --sarif-file-output=snyk-web.sarif
+        run: snyk test --file=AppBlueprint.Web.csproj --severity-threshold=high --sarif-file-output=${{ github.workspace }}/snyk-web.sarif
 
       - name: Run Snyk - AppBlueprint.ApiService
         continue-on-error: true
+        working-directory: Code/AppBlueprint/AppBlueprint.ApiService
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test --file=Code/AppBlueprint/AppBlueprint.ApiService/AppBlueprint.ApiService.csproj --severity-threshold=high --sarif-file-output=snyk-api.sarif
+        run: snyk test --file=AppBlueprint.ApiService.csproj --severity-threshold=high --sarif-file-output=${{ github.workspace }}/snyk-api.sarif
 
       - name: Run Snyk - AppBlueprint.AppGateway
         continue-on-error: true
+        working-directory: Code/AppBlueprint/AppBlueprint.AppGateway
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test --file=Code/AppBlueprint/AppBlueprint.AppGateway/AppBlueprint.AppGateway.csproj --severity-threshold=high --sarif-file-output=snyk-gateway.sarif
+        run: snyk test --file=AppBlueprint.AppGateway.csproj --severity-threshold=high --sarif-file-output=${{ github.workspace }}/snyk-gateway.sarif
 
       - name: Upload Snyk results - Web
         uses: github/codeql-action/upload-sarif@v4
