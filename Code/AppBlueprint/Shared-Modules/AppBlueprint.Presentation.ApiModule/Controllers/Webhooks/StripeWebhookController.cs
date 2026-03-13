@@ -7,14 +7,13 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Webhooks;
 
 /// <summary>
 /// Controller for handling Stripe webhook events.
-/// This endpoint must be publicly accessible (no authentication) per Stripe's webhook requirements.
 /// Security is enforced via signature verification in the service layer.
 /// </summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/webhooks/stripe")]
 [Produces("application/json")]
-[AllowAnonymous]
+[Authorize]
 public sealed class StripeWebhookController : ControllerBase
 {
     private readonly IStripeWebhookService _webhookService;
@@ -39,6 +38,7 @@ public sealed class StripeWebhookController : ControllerBase
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>200 OK if event was processed or is a duplicate, 400 Bad Request if signature verification fails.</returns>
     [HttpPost]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

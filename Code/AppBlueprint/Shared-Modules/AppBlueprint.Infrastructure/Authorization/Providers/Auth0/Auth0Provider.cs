@@ -165,10 +165,17 @@ public class Auth0Provider : BaseAuthenticationProvider
     {
         try
         {
-            // For Auth0, you would typically validate the token and extract expiration
-            // This is a simplified version - in production you'd decode the JWT
             AccessToken = storedToken;
-            TokenExpiration = DateTime.UtcNow.AddHours(1); // Default expiration
+            
+            DateTime? extractedExpiration = ExtractExpirationFromJwt(storedToken);
+            if (extractedExpiration is null)
+            {
+                TokenExpiration = DateTime.UtcNow.AddHours(1);
+            }
+            else
+            {
+                TokenExpiration = extractedExpiration.Value;
+            }
 
             NotifyAuthenticationStateChanged();
         }
@@ -179,6 +186,41 @@ public class Auth0Provider : BaseAuthenticationProvider
             await TokenStorage.RemoveTokenAsync();
         }
 #pragma warning restore CA1031
+    }
+
+    private static DateTime? ExtractExpirationFromJwt(string token)
+    {
+        try
+        {
+            var parts = token.Split('.');
+            if (parts.Length != 3) return null;
+
+            var payload = parts[1];
+            // Add padding if needed for Base64
+            switch (payload.Length % 4)
+            {
+                case 2: payload += "=="; break;
+                case 3: payload += "="; break;
+            }
+
+            var bytes = Convert.FromBase64String(payload.Replace('-', '+').Replace('_', '/'));
+            var json = System.Text.Encoding.UTF8.GetString(bytes);
+
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("exp", out var expElement))
+            {
+                var expUnix = expElement.GetInt64();
+                return DateTimeOffset.FromUnixTimeSeconds(expUnix).UtcDateTime;
+            }
+        }
+#pragma warning disable CA1031
+        catch
+        {
+            // Could not decode JWT, caller will use fallback
+        }
+#pragma warning restore CA1031
+
+        return null;
     }
 
     private void ValidateConfiguration()

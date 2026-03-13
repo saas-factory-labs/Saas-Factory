@@ -1,5 +1,6 @@
 using AppBlueprint.Infrastructure.Authorization.Providers;
 using AppBlueprint.Infrastructure.Authorization.Providers.Auth0;
+using AppBlueprint.Infrastructure.Authorization.Providers.Firebase;
 using AppBlueprint.Infrastructure.Authorization.Providers.Logto;
 using AppBlueprint.Infrastructure.Authorization.Providers.Mock;
 using Microsoft.Extensions.Configuration;
@@ -62,8 +63,10 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
     private IAuthenticationProvider CreateAuth0Provider()
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
-        var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
+        var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
         var logger = _serviceProvider.GetRequiredService<ILogger<Auth0Provider>>();
+
+        var httpClient = httpClientFactory.CreateClient();
 
         return new Auth0Provider(tokenStorage, httpClient, _configuration, logger);
     }
@@ -108,11 +111,13 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
 
     private IAuthenticationProvider CreateFirebaseProvider()
     {
-        // TODO: Implement Firebase Authentication provider
-        throw new NotImplementedException(
-            "Firebase Authentication provider is not yet implemented. " +
-            "Supported providers: Auth0, Logto, Mock. " +
-            "Please set Authentication:Provider to one of these in your configuration.");
+        var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
+        var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
+        var logger = _serviceProvider.GetRequiredService<ILogger<FirebaseProvider>>();
+
+        var httpClient = httpClientFactory.CreateClient();
+
+        return new FirebaseProvider(tokenStorage, httpClient, _configuration, logger);
     }
 
     private IAuthenticationProvider CreateJwtProvider()
@@ -164,7 +169,7 @@ public enum AuthenticationProviderType
     Cognito,
 
     /// <summary>
-    /// Firebase Authentication (Coming soon)
+    /// Firebase Authentication
     /// </summary>
     Firebase,
 

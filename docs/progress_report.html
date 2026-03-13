@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            color: #222;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        h2 {
+            color: #1a1a2e;
+            margin-top: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
+            font-size: 18px;
+        }
+
+        h3 {
+            color: #333;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        strong {
+            color: #111;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <p>Hey bro here's a progress update. Got through quite a bit since the last report.</p>
+
+    <h2>What's done</h2>
+
+    <h3>1. Firebase Authentication Provider</h3>
+    <p>Built the full Firebase provider following the same pattern as Auth0 and Logto. It uses Firebase Auth REST API
+        for login (identitytoolkit.googleapis.com) and token refresh (securetoken.googleapis.com). Also added proper
+        error messages for things like wrong password, disabled account, too many login attempts, etc.</p>
+    <p>The factory now creates a real Firebase provider instead of throwing an error. To use it, you just set the config
+        to:</p>
+    <p><code>Authentication:Provider = "Firebase"</code><br>
+        <code>Authentication:Firebase:ApiKey = "your-firebase-api-key"</code>
+    </p>
+
+    <h3>2. Identity/Provider Mapping Table</h3>
+    <p>Added a new UserExternalIdentities table that links users to their external auth provider accounts. This means a
+        single user can be linked to Logto, Auth0, and Firebase at the same time. The table stores the external user ID,
+        the email from that provider, and tracks when they last logged in through each one.</p>
+    <p>Key constraints: a user can only have one link per provider, and looking up users by their external provider ID
+        is indexed for fast lookups.</p>
+
+    <h3>3. AppHost Environment Variable Bug</h3>
+    <p>Found and fixed a bug in AppHost/Program.cs where it was checking for the Logto app secret but writing the API
+        resource environment variable instead. The correct LOGTO_APPSECRET is now being set properly.</p>
+
+    <h3>4. Token Restore Fix</h3>
+    <p>Both the Auth0 and Firebase providers were assuming a hardcoded 1 hour token expiry when restoring saved tokens.
+        Fixed both to actually decode the JWT and read the real expiration. Falls back to 1 hour if the token can't be
+        decoded for whatever reason.</p>
+
+    <h3>5. Security Review</h3>
+    <p>Went through all 25 API controllers. All 15 active controllers inherit from BaseController which has [Authorize]
+        globally, so they're all protected. The AuthenticationController correctly allows Login and Register without
+        requiring an existing session. FileStorageController has one intentional public endpoint for downloading public
+        files like profile images, which makes sense. StripeWebhookController allows anonymous access, which is correct
+        since Stripe needs to hit it.</p>
+    <p>6 controllers are fully commented out and not active yet (Metrics, Search, Webhook, Credit, Payment,
+        Subscription, Notification). When those get activated they should inherit from BaseController so they
+        automatically get the auth protection.</p>
+    <p>No security gaps found in the active codebase.</p>
+
+    <h2>Still remaining</h2>
+
+    <p>1. Local Docker setup for PostgreSQL and Logto so we don't need cloud services during dev</p>
+    <p>2. Testing the Firebase provider end to end with a real Firebase project</p>
+    <p>3. Running the EF Core migration for the new UserExternalIdentities table</p>
+
+    <p>Let me know what you want me to focus on next or if there's anything else you need.</p>
+
+</body>
+
+</html>
