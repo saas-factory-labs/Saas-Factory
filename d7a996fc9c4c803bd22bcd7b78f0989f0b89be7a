@@ -1,0 +1,38 @@
+.github/workflows/auto-release.yml
+  f6dca02ea8790236 53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "d7a996fc9c4c803bd22bcd7b78f0989f0b89be7a",
+  "prompts": {
+    "b6a4f0f664393d0d": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "56226d22-8205-431c-b2d3-be4d4c43b8e6",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 15,
+      "total_deletions": 15,
+      "accepted_lines": 14,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/8911fc9c4a702fc8d1bb69c846ccc37fbb9993d506a52b2a5be2e7dd11ae82a0"
+    },
+    "f6dca02ea8790236": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "699082cd-662f-445b-a088-6fb8423e5fe5",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 15,
+      "accepted_lines": 1,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/c2105202e4da9a36a8476546fcd46eca8eabc0c18bbe430f68f0da53e2c1b9b2"
+    }
+  }
+}
