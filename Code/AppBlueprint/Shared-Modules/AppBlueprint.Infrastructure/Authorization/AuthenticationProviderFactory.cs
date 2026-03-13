@@ -63,8 +63,10 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
     private IAuthenticationProvider CreateAuth0Provider()
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
-        var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
+        var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
         var logger = _serviceProvider.GetRequiredService<ILogger<Auth0Provider>>();
+
+        var httpClient = httpClientFactory.CreateClient();
 
         return new Auth0Provider(tokenStorage, httpClient, _configuration, logger);
     }
@@ -110,8 +112,10 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
     private IAuthenticationProvider CreateFirebaseProvider()
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
-        var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
+        var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
         var logger = _serviceProvider.GetRequiredService<ILogger<FirebaseProvider>>();
+
+        var httpClient = httpClientFactory.CreateClient();
 
         return new FirebaseProvider(tokenStorage, httpClient, _configuration, logger);
     }

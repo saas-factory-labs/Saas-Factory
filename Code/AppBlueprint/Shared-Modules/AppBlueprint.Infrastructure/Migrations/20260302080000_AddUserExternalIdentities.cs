@@ -21,7 +21,7 @@ public partial class AddUserExternalIdentities : Migration
             {
                 Id = table.Column<int>(type: "integer", nullable: false, comment: "Unique identifier for the external identity link")
                     .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                UserId = table.Column<string>(type: "character varying(1024)", nullable: false, comment: "Internal user ID"),
+                UserId = table.Column<string>(type: "character varying(40)", nullable: false, comment: "Internal user ID"),
                 AuthenticationProviderId = table.Column<int>(type: "integer", nullable: false, comment: "Foreign key to the authentication provider"),
                 ExternalUserId = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false, comment: "User ID from the external auth provider (e.g., Logto sub, Auth0 user_id, Firebase localId)"),
                 ExternalEmail = table.Column<string>(type: "character varying(320)", maxLength: 320, nullable: true, comment: "Email from the external provider (may differ from primary email)"),

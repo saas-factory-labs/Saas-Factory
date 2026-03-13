@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace AppBlueprint.Infrastructure.Authorization.Providers.Firebase;
 
 public class FirebaseConfiguration
@@ -9,9 +11,13 @@ public class FirebaseConfiguration
 
 internal sealed class FirebaseSignInResponse
 {
+    [JsonPropertyName("id_token")]
     public string IdToken { get; init; } = string.Empty;
+    [JsonPropertyName("refresh_token")]
     public string? RefreshToken { get; init; }
+    [JsonPropertyName("expires_in")]
     public string ExpiresIn { get; init; } = string.Empty;
+    [JsonPropertyName("local_id")]
     public string LocalId { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public bool Registered { get; init; }
@@ -19,11 +25,16 @@ internal sealed class FirebaseSignInResponse
 
 internal sealed class FirebaseRefreshResponse
 {
-    public string Id_token { get; init; } = string.Empty;
-    public string? Refresh_token { get; init; }
-    public string Expires_in { get; init; } = string.Empty;
-    public string User_id { get; init; } = string.Empty;
-    public string Token_type { get; init; } = string.Empty;
+    [JsonPropertyName("id_token")]
+    public string IdToken { get; init; } = string.Empty;
+    [JsonPropertyName("refresh_token")]
+    public string? RefreshToken { get; init; }
+    [JsonPropertyName("expires_in")]
+    public string ExpiresIn { get; init; } = string.Empty;
+    [JsonPropertyName("user_id")]
+    public string UserId { get; init; } = string.Empty;
+    [JsonPropertyName("token_type")]
+    public string TokenType { get; init; } = string.Empty;
 }
 
 internal sealed class FirebaseErrorResponse

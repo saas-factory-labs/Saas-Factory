@@ -115,7 +115,7 @@ Authentication__Auth0__Audience=https://your-api.example.com
 }
 ```
 
-#### Firebase Configuration (Coming Soon)
+#### Firebase Configuration
 
 ```json
 {
@@ -375,6 +375,7 @@ export Authentication__Provider=Auth0
 | Mobile SDKs | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Realtime DB | ❌ | ❌ | ✅ | ❌ | ❌ |
 | Implementation Status | ✅ | ✅ | ✅ | 🚧 | 🚧 |
+
 ## Troubleshooting
 
 ### Provider Not Configured

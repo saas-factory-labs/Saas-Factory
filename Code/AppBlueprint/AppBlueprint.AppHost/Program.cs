@@ -81,6 +81,8 @@ if (!string.IsNullOrWhiteSpace(logtoEndpoint))
     apiService = apiService.WithEnvironment("LOGTO_ENDPOINT", logtoEndpoint);
 if (!string.IsNullOrWhiteSpace(logtoAppId))
     apiService = apiService.WithEnvironment("LOGTO_APPID", logtoAppId);
+if (!string.IsNullOrWhiteSpace(logtoAppSecret))
+    apiService = apiService.WithEnvironment("LOGTO_APPSECRET", logtoAppSecret);
 if (!string.IsNullOrWhiteSpace(logtoApiResource))
     apiService = apiService.WithEnvironment(LogtoApiResourceKey, logtoApiResource);
 if (!string.IsNullOrWhiteSpace(authenticationProvider))
@@ -111,7 +113,6 @@ if (!string.IsNullOrWhiteSpace(databaseContextType))
     webFrontend = webFrontend.WithEnvironment(DatabaseContextTypeKey, databaseContextType);
 if (!string.IsNullOrWhiteSpace(databaseContextEnableHybridMode))
     webFrontend = webFrontend.WithEnvironment(DatabaseContextEnableHybridModeKey, databaseContextEnableHybridMode);
-webFrontend = webFrontend.WithEnvironment("LOGTO_APPSECRET", logtoAppSecret);
 if (!string.IsNullOrWhiteSpace(logtoApiResource))
     webFrontend = webFrontend.WithEnvironment(LogtoApiResourceKey, logtoApiResource);
 if (!string.IsNullOrWhiteSpace(databaseContextType))

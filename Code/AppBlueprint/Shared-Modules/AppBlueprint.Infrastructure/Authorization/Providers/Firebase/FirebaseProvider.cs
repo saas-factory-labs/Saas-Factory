@@ -22,9 +22,11 @@ public class FirebaseProvider : BaseAuthenticationProvider
         ILogger<FirebaseProvider> logger) : base(tokenStorage)
     {
         ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(logger);
 
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _httpClient = httpClient;
+        _logger = logger;
 
         _configuration = new FirebaseConfiguration();
         configuration.GetSection("Authentication:Firebase").Bind(_configuration);
@@ -94,7 +96,7 @@ public class FirebaseProvider : BaseAuthenticationProvider
                 Error = "An error occurred during login. Please check your connection."
             };
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
         {
             _logger.LogError(ex, "Firebase login request timed out");
             return new AuthenticationResult
@@ -118,14 +120,13 @@ public class FirebaseProvider : BaseAuthenticationProvider
 
         try
         {
-            var refreshRequest = new
+            var formFields = new Dictionary<string, string>
             {
-                grant_type = "refresh_token",
-                refresh_token = RefreshToken
+                { "grant_type", "refresh_token" },
+                { "refresh_token", RefreshToken }
             };
 
-            var jsonContent = JsonSerializer.Serialize(refreshRequest);
-            using var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+            using var content = new FormUrlEncodedContent(formFields);
 
             var requestUrl = new Uri($"{RefreshUrl}?key={_configuration.ApiKey}", UriKind.Absolute);
             var response = await _httpClient.PostAsync(requestUrl, content, cancellationToken);
@@ -136,15 +137,15 @@ public class FirebaseProvider : BaseAuthenticationProvider
                 var options = JsonOptions;
                 var tokenResponse = JsonSerializer.Deserialize<FirebaseRefreshResponse>(responseContent, options);
 
-                if (tokenResponse is not null && !string.IsNullOrEmpty(tokenResponse.Id_token))
+                if (tokenResponse is not null && !string.IsNullOrEmpty(tokenResponse.IdToken))
                 {
-                    var expiresInSeconds = int.TryParse(tokenResponse.Expires_in, out var seconds) ? seconds : 3600;
+                    var expiresInSeconds = int.TryParse(tokenResponse.ExpiresIn, out var seconds) ? seconds : 3600;
 
                     var result = new AuthenticationResult
                     {
                         IsSuccess = true,
-                        AccessToken = tokenResponse.Id_token,
-                        RefreshToken = tokenResponse.Refresh_token ?? RefreshToken,
+                        AccessToken = tokenResponse.IdToken,
+                        RefreshToken = tokenResponse.RefreshToken ?? RefreshToken,
                         ExpiresAt = DateTime.UtcNow.AddSeconds(expiresInSeconds)
                     };
 
@@ -160,7 +161,7 @@ public class FirebaseProvider : BaseAuthenticationProvider
             };
         }
 #pragma warning disable CA1031 // Generic catch returns error result instead of throwing
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             _logger.LogError(ex, "Error during Firebase token refresh");
             return new AuthenticationResult
@@ -176,9 +177,16 @@ public class FirebaseProvider : BaseAuthenticationProvider
     {
         try
         {
-            AccessToken = storedToken;
-            TokenExpiration = ExtractExpirationFromJwt(storedToken) ?? DateTime.UtcNow.AddHours(1);
+            DateTime? expiration = ExtractExpirationFromJwt(storedToken);
+            if (expiration is null)
+            {
+                _logger.LogWarning("Stored Firebase token has no parseable expiration; treating as invalid and removing.");
+                await TokenStorage.RemoveTokenAsync();
+                return;
+            }
 
+            AccessToken = storedToken;
+            TokenExpiration = expiration.Value;
             NotifyAuthenticationStateChanged();
         }
 #pragma warning disable CA1031 // Generic catch for graceful degradation
@@ -237,26 +245,30 @@ public class FirebaseProvider : BaseAuthenticationProvider
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var errorResponse = JsonSerializer.Deserialize<FirebaseErrorResponse>(responseContent, options);
 
-            if (errorResponse?.Error is not null)
+            if (errorResponse?.Error?.Message is not null)
             {
-                return errorResponse.Error.Message switch
+                // Firebase kan returnere "FEJL_KODE : Beskrivelse", så vi tager kun første del
+                var errorCode = errorResponse.Error.Message.Split(' ')[0];
+
+                return errorCode switch
                 {
-                    "EMAIL_NOT_FOUND" => "No account found with this email address.",
-                    "INVALID_PASSWORD" => "Incorrect password. Please try again.",
-                    "USER_DISABLED" => "This account has been disabled.",
-                    "TOO_MANY_ATTEMPTS_TRY_LATER" => "Too many failed attempts. Please try again later.",
-                    "INVALID_LOGIN_CREDENTIALS" => "Invalid email or password.",
-                    _ => $"Authentication failed: {errorResponse.Error.Message}"
+                    "EMAIL_NOT_FOUND" => "Der blev ikke fundet en konto med denne e-mail.",
+                    "INVALID_PASSWORD" => "Adgangskoden er forkert. Prøv igen.",
+                    "USER_DISABLED" => "Denne konto er blevet deaktiveret.",
+                    "USER_NOT_FOUND" => "Brugeren findes ikke.",
+                    "TOO_MANY_ATTEMPTS_TRY_LATER" => "For mange mislykkede forsøg. Vent lidt og prøv igen.",
+                    "INVALID_LOGIN_CREDENTIALS" => "Ugyldig e-mail eller adgangskode.",
+                    "EMAIL_EXISTS" => "E-mailen er allerede i brug.",
+                    "OPERATION_NOT_ALLOWED" => "Login-metoden er ikke slået til i Firebase Console.",
+                    "WEAK_PASSWORD" => "Adgangskoden er for svag.",
+                    _ => $"Der opstod en fejl: {errorResponse.Error.Message}"
                 };
             }
         }
-#pragma warning disable CA1031
         catch
         {
-            // Could not parse error response, return null to use default message
+            // Ignorer parse fejl og returner null for default besked
         }
-#pragma warning restore CA1031
-
         return null;
     }
 }

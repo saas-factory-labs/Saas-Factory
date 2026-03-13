@@ -166,7 +166,16 @@ public class Auth0Provider : BaseAuthenticationProvider
         try
         {
             AccessToken = storedToken;
-            TokenExpiration = ExtractExpirationFromJwt(storedToken) ?? DateTime.UtcNow.AddHours(1);
+            
+            DateTime? extractedExpiration = ExtractExpirationFromJwt(storedToken);
+            if (extractedExpiration is null)
+            {
+                TokenExpiration = DateTime.UtcNow.AddHours(1);
+            }
+            else
+            {
+                TokenExpiration = extractedExpiration.Value;
+            }
 
             NotifyAuthenticationStateChanged();
         }
