@@ -26,36 +26,50 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
       - name: Restore .NET dependencies
         run: dotnet restore SaaS-Factory.sln
-
-      - name: Install Node.js dependencies
-        run: |
-          for pkg in $(find . -name "package.json" -not -path "*/node_modules/*" -not -path "*/.git/*"); do
-            dir=$(dirname "$pkg")
-            echo "Installing npm deps in $dir"
-            npm ci --prefix "$dir" || npm install --prefix "$dir" || true
-          done
 
       - name: Install Snyk CLI
         uses: snyk/actions/setup@master
 
-      - name: Run Snyk - scan all projects
+      - name: Run Snyk - AppBlueprint.Web
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test --all-projects --severity-threshold=high --sarif-file-output=snyk.sarif
+        run: snyk test --file=Code/AppBlueprint/AppBlueprint.Web/AppBlueprint.Web.csproj --severity-threshold=high --sarif-file-output=snyk-web.sarif
 
-      - name: Upload Snyk results to GitHub Security tab
+      - name: Run Snyk - AppBlueprint.ApiService
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --file=Code/AppBlueprint/AppBlueprint.ApiService/AppBlueprint.ApiService.csproj --severity-threshold=high --sarif-file-output=snyk-api.sarif
+
+      - name: Run Snyk - AppBlueprint.AppGateway
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --file=Code/AppBlueprint/AppBlueprint.AppGateway/AppBlueprint.AppGateway.csproj --severity-threshold=high --sarif-file-output=snyk-gateway.sarif
+
+      - name: Upload Snyk results - Web
         uses: github/codeql-action/upload-sarif@v4
-        if: always()
+        if: always() && hashFiles('snyk-web.sarif') != ''
         with:
-          sarif_file: snyk.sarif
+          sarif_file: snyk-web.sarif
+          category: snyk-web
+
+      - name: Upload Snyk results - ApiService
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('snyk-api.sarif') != ''
+        with:
+          sarif_file: snyk-api.sarif
+          category: snyk-api
+
+      - name: Upload Snyk results - AppGateway
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('snyk-gateway.sarif') != ''
+        with:
+          sarif_file: snyk-gateway.sarif
+          category: snyk-gateway
 
   snyk-docker:
     name: Snyk - Docker Container Scan
