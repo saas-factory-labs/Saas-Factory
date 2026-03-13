@@ -7,7 +7,7 @@ namespace AppBlueprint.Infrastructure.Migrations;
 
 /// <summary>
 /// Adds UserExternalIdentities table for multi-provider auth support
-/// and registers the AuthenticationProviders DbSet.
+/// with provider/user linkage constraints and indexes.
 /// </summary>
 public partial class AddUserExternalIdentities : Migration
 {

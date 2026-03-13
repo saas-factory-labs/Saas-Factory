@@ -37,7 +37,7 @@ services:
         condition: service_healthy
     environment:
       TRUST_PROXY_HEADER: "1"
-      DB_URL: postgresql://appblueprint:localdev123@postgres:5432/logto
+      DB_URL: postgresql://appblueprint:localdev123@postgres:5432/appblueprint
       ENDPOINT: http://localhost:3001
       ADMIN_ENDPOINT: http://localhost:3002
     ports:
