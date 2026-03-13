@@ -23,6 +23,24 @@ internal sealed class FirebaseSignInResponse
     public bool Registered { get; init; }
 }
 
+internal sealed class FirebaseRefreshResponse
+{
+    [JsonPropertyName("id_token")]
+    public string IdToken { get; init; } = string.Empty;
+
+    [JsonPropertyName("refresh_token")]
+    public string? RefreshToken { get; init; }
+
+    [JsonPropertyName("expires_in")]
+    public string ExpiresIn { get; init; } = string.Empty;
+
+    [JsonPropertyName("user_id")]
+    public string UserId { get; init; } = string.Empty;
+
+    [JsonPropertyName("project_id")]
+    public string ProjectId { get; init; } = string.Empty;
+}
+
 internal sealed class FirebaseErrorResponse
 {
     [JsonPropertyName("error")]

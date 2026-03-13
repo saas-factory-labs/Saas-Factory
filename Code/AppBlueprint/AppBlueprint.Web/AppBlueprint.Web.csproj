@@ -26,6 +26,9 @@
         
         <!-- RazorLight Requirements - Enable runtime template compilation -->
         <PreserveCompilationContext>true</PreserveCompilationContext>
+
+        <!-- Suppress duplicate publish error for tsconfig.json files from TypeScript MSBuild (build-time only, not needed at runtime) -->
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     </PropertyGroup>
 
     <ItemGroup>
