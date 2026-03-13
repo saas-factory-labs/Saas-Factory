@@ -1,0 +1,52 @@
+.github/workflows/snyk-analysis.yaml
+  c05898a47cad4ebd 35,39,41-65,67,69,71-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "b29a035c28136626a67d052fd731ad8127c696eb",
+  "prompts": {
+    "6abe02f95a958122": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "90d13737-a400-49b4-aec3-1b3742e7c222",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 39,
+      "total_deletions": 3,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/337b98b1dbf7ebd6860428a4088e1a148c8063b7dd865b32f52a3ff129f2cb05"
+    },
+    "c05898a47cad4ebd": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "d73b0b61-c50c-4870-846b-f377e448f937",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 63,
+      "total_deletions": 49,
+      "accepted_lines": 33,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/d158817777cea1352f847c7581163e047ae6fdf2f887d248cf608e97d76e5116"
+    },
+    "d772584e8dea8851": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "3d81a8d1-ddf7-41a6-92c1-9da619e39073",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 24,
+      "total_deletions": 46,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/80aa74cdbc1ed49da0e505ec452dad50a107c0c666790832107f26abc35865e9"
+    }
+  }
+}
