@@ -26,8 +26,17 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
       - name: Restore .NET dependencies
         run: dotnet restore SaaS-Factory.sln
+
+      - name: Install Cloudflare worker dependencies
+        working-directory: Code/AppBlueprint/cloudflare-worker
+        run: npm ci
 
       - name: Install Snyk CLI
         uses: snyk/actions/setup@master
@@ -53,6 +62,13 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk test --file=AppBlueprint.AppGateway.csproj --severity-threshold=high --sarif-file-output=${{ github.workspace }}/snyk-gateway.sarif
 
+      - name: Run Snyk - Cloudflare Worker
+        continue-on-error: true
+        working-directory: Code/AppBlueprint/cloudflare-worker
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --file=package.json --severity-threshold=high --sarif-file-output=${{ github.workspace }}/snyk-cloudflare-worker.sarif
+
       - name: Upload Snyk results - Web
         uses: github/codeql-action/upload-sarif@v4
         if: always() && hashFiles('snyk-web.sarif') != ''
@@ -73,6 +89,13 @@ jobs:
         with:
           sarif_file: snyk-gateway.sarif
           category: snyk-gateway
+
+      - name: Upload Snyk results - Cloudflare Worker
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('snyk-cloudflare-worker.sarif') != ''
+        with:
+          sarif_file: snyk-cloudflare-worker.sarif
+          category: snyk-cloudflare-worker
 
   snyk-docker:
     name: Snyk - Docker Container Scan
