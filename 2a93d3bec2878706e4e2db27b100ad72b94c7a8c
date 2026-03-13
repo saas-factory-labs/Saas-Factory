@@ -1,0 +1,24 @@
+.github/workflows/auto-release.yml
+  3e7e395d92205b42 9-12,21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "2a93d3bec2878706e4e2db27b100ad72b94c7a8c",
+  "prompts": {
+    "3e7e395d92205b42": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "57624cbf-b1af-4caa-8969-4fe88be77e11",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 78,
+      "total_deletions": 74,
+      "accepted_lines": 15,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ae698e3209d567ccdc0bc4a430b8853104694cd4f1932cf81076eeaa8bc6db34"
+    }
+  }
+}
