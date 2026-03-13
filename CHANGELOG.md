@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.0.3...v1.0.4) (2026-03-13)
+
+
+### Bug Fixes
+
+* update Firebase configuration to include refresh response model and adjust Profile component namespace ([ffb2c34](https://github.com/saas-factory-labs/Saas-Factory/commit/ffb2c343145003656c92665e0acc660f4ac6c206))
+
 ## [1.0.3](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.0.2...v1.0.3) (2026-03-13)
 
 
