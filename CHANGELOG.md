@@ -5,6 +5,14 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.0.4...v1.0.5) (2026-03-13)
+
+
+### Bug Fixes
+
+* refine Snyk analysis workflow by removing Node.js setup and enhancing project-specific scans ([b29a035](https://github.com/saas-factory-labs/Saas-Factory/commit/b29a035c28136626a67d052fd731ad8127c696eb))
+* update Snyk analysis workflow to specify working directories and correct project file paths ([4e06fa5](https://github.com/saas-factory-labs/Saas-Factory/commit/4e06fa52b2ba9ae9209d7a2c3fc34941f1ca541d))
+
 ## [1.0.4](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.0.3...v1.0.4) (2026-03-13)
 
 
