@@ -259,7 +259,7 @@ public class UserServiceInfrastructure
         ArgumentNullException.ThrowIfNull(token);
         ArgumentNullException.ThrowIfNull(newPassword);
 
-        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(newPassword))
+        if (HasEmptyPasswordResetInputs(email, token, newPassword))
         {
             return false;
         }
@@ -292,5 +292,10 @@ public class UserServiceInfrastructure
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
+    }
+
+    private static bool HasEmptyPasswordResetInputs(string email, string token, string newPassword)
+    {
+        return string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(newPassword);
     }
 }

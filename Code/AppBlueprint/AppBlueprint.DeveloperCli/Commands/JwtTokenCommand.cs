@@ -444,7 +444,7 @@ internal static class JwtTokenCommand
                 if (prop.Value.ValueKind == JsonValueKind.String)
                 {
                     var propValue = prop.Value.GetString();
-                    if (!string.IsNullOrEmpty(propValue) && propValue.Split('.').Length == 3 && propValue.StartsWith("ey", StringComparison.Ordinal))
+                    if (LooksLikeJwt(propValue))
                     {
                         return propValue;
                     }
@@ -457,6 +457,13 @@ internal static class JwtTokenCommand
         }
 
         return null;
+    }
+
+    private static bool LooksLikeJwt(string? value)
+    {
+        return !string.IsNullOrEmpty(value)
+            && value.Split('.').Length == 3
+            && value.StartsWith("ey", StringComparison.Ordinal);
     }
 
     private static async Task GetTokenFromLogtoManual(string? endpoint)

@@ -28,7 +28,7 @@ internal sealed class FirebaseConfigController(IConfiguration configuration) : C
         string? appId = _configuration["FIREBASE_APP_ID"];
 
         // Check if any required values are missing
-        if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(projectId) || string.IsNullOrEmpty(appId))
+        if (!HasRequiredFirebaseConfig(apiKey, projectId, appId))
         {
             return BadRequest(new
             {
@@ -46,6 +46,13 @@ internal sealed class FirebaseConfigController(IConfiguration configuration) : C
             messagingSenderId = messagingSenderId ?? "",
             appId
         });
+    }
+
+    private static bool HasRequiredFirebaseConfig(string? apiKey, string? projectId, string? appId)
+    {
+        return !string.IsNullOrEmpty(apiKey)
+            && !string.IsNullOrEmpty(projectId)
+            && !string.IsNullOrEmpty(appId);
     }
 
     /// <summary>

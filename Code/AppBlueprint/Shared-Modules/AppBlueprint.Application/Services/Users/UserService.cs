@@ -232,7 +232,7 @@ public class UserService(
         ArgumentNullException.ThrowIfNull(token);
         ArgumentNullException.ThrowIfNull(newPassword);
 
-        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(newPassword))
+        if (HasEmptyPasswordResetInputs(email, token, newPassword))
         {
             return false;
         }
@@ -247,9 +247,9 @@ public class UserService(
         PasswordResetEntity? resetRecord = await _passwordResetRepository
             .GetByUserIdAndTokenAsync(user.Id, token, cancellationToken);
 
-        if (resetRecord is null || resetRecord.ExpireAt <= DateTime.UtcNow || resetRecord.IsUsed)
+        if (IsPasswordResetTokenInvalid(resetRecord))
         {
-            return false; // Invalid, expired, or already used token
+            return false;
         }
 
         // Mark token as used
@@ -264,5 +264,15 @@ public class UserService(
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
+    }
+
+    private static bool IsPasswordResetTokenInvalid(PasswordResetEntity? resetRecord)
+    {
+        return resetRecord is null || resetRecord.ExpireAt <= DateTime.UtcNow || resetRecord.IsUsed;
+    }
+
+    private static bool HasEmptyPasswordResetInputs(string email, string token, string newPassword)
+    {
+        return string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(newPassword);
     }
 }

@@ -2,7 +2,7 @@
 
 This directory contains the rules for AI assistants to follow when working with this codebase from https://github.com/saas-factory-labs/Saas-Factory
 This directory contains specific guidance for AI assistants to follow when working with this codebase.
-Claude 4.5 Sonnet works best in this context in Github Copilot, possibly other models such as Gemini 3 Pro and GPT 5.2 could also work.
+Claude 4.6 Sonnet works best in this context in Github Copilot, possibly other models such as Gemini 3 Pro and GPT 5.4 could also work.
 
 ## 🤖 Agent personality
 
@@ -172,6 +172,35 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
     // ❌ Incorrect - missing StringComparison
     if (errorMessage.Contains("JavaScript interop"))
     if (key.StartsWith(".Token."))
+    ```
+- **Extract complex `if` conditions into named methods**: When an `if` condition has more than one `&&` or `||` clause, or combines unrelated checks, extract it into a private method with a name that expresses the intent. This makes the call site read like prose and isolates the logic for easier testing and maintenance.
+  - **When to extract**:
+    - Multiple `&&` / `||` operators in a single condition
+    - Conditions mixing multiple concerns (e.g. null check + business rule + expiry check)
+    - Conditions that appear more than once
+    - Conditions whose meaning is not immediately obvious from the operands alone
+  - **Naming convention**: Use positive or negative boolean names that read naturally in an `if` statement — e.g. `LooksLikeJwt`, `IsPasswordResetTokenInvalid`, `HasRequiredFirebaseConfig`.
+  - **Examples**:
+    ```csharp
+    // ❌ Complex condition inline — intent unclear
+    if (!string.IsNullOrEmpty(value) && value.Split('.').Length == 3 && value.StartsWith("ey", StringComparison.Ordinal))
+    
+    // ✅ Extracted to named method — reads like prose
+    if (LooksLikeJwt(value))
+    
+    private static bool LooksLikeJwt(string? value)
+        => !string.IsNullOrEmpty(value)
+            && value.Split('.').Length == 3
+            && value.StartsWith("ey", StringComparison.Ordinal);
+    
+    // ❌ Business rule buried in a void if-check
+    if (resetRecord is null || resetRecord.ExpireAt <= DateTime.UtcNow || resetRecord.IsUsed)
+    
+    // ✅ Named method expresses the domain rule
+    if (IsPasswordResetTokenInvalid(resetRecord))
+    
+    private static bool IsPasswordResetTokenInvalid(PasswordResetEntity? record)
+        => record is null || record.ExpireAt <= DateTime.UtcNow || record.IsUsed;
     ```
 - **When generating or showing FluentRegex code, always include the standard regular expression string just above it**: This allows for easier testing with online regex tools and provides a standard reference for comparison.
   - **Example**:
