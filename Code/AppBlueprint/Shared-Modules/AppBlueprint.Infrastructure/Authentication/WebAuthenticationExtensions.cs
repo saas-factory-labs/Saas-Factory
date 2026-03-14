@@ -38,6 +38,8 @@ public static class WebAuthenticationExtensions
     // Constants for authentication schemes
     private const string LogtoCookieScheme = "Logto.Cookie";
     private const string LogtoScheme = "Logto";
+    private const string FirebaseCookieScheme = "Firebase.Cookie";
+    private const string FirebaseLoginPath = "/signin/firebase";
 
     // Constants for configuration keys
     private const string LogtoEndpointKey = "Logto:Endpoint";
@@ -114,9 +116,14 @@ public static class WebAuthenticationExtensions
 
         ConfigureDataProtection(services, environment);
 
+        bool hasFirebaseConfig = IsFirebaseConfigured(configuration);
         bool hasLogtoConfig = ConfigurationValidator.ValidateLogtoConfiguration(configuration, throwOnMissing: false);
 
-        if (hasLogtoConfig)
+        if (hasFirebaseConfig)
+        {
+            ConfigureFirebaseAuthentication(services, environment);
+        }
+        else if (hasLogtoConfig)
         {
             ConfigureLogtoAuthentication(services, configuration, environment);
         }
@@ -134,6 +141,58 @@ public static class WebAuthenticationExtensions
         services.AddScoped<Authorization.IAuthenticationTokenService, Authorization.AuthenticationTokenService>();
 
         return services;
+    }
+
+    /// <summary>
+    /// Returns true when AUTHENTICATION_PROVIDER=Firebase is configured.
+    /// </summary>
+    private static bool IsFirebaseConfigured(IConfiguration configuration)
+    {
+        string? provider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER")
+                        ?? configuration["Authentication:Provider"];
+        return string.Equals(provider, "Firebase", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Configures cookie-based authentication for Firebase (no OIDC redirect; login is handled
+    /// by FirebaseAuthController POSTing to /auth/firebase-signin).
+    /// </summary>
+    private static void ConfigureFirebaseAuthentication(IServiceCollection services, IHostEnvironment environment)
+    {
+        Console.WriteLine("[Web] Firebase authentication mode detected");
+        Console.WriteLine($"[Web] Login path: {FirebaseLoginPath}");
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = FirebaseCookieScheme;
+            options.DefaultChallengeScheme = FirebaseCookieScheme;
+            options.DefaultSignInScheme = FirebaseCookieScheme;
+            options.DefaultAuthenticateScheme = FirebaseCookieScheme;
+            options.DefaultSignOutScheme = FirebaseCookieScheme;
+        })
+        .AddCookie(FirebaseCookieScheme, options =>
+        {
+            options.LoginPath = FirebaseLoginPath;
+            options.LogoutPath = SignoutPath;
+            options.AccessDeniedPath = FirebaseLoginPath;
+
+            if (environment.IsDevelopment())
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            }
+
+            options.Cookie.HttpOnly = true;
+            options.Cookie.Path = "/";
+            options.Cookie.IsEssential = true;
+
+            Console.WriteLine($"[Web] Configured Firebase.Cookie scheme: LoginPath={options.LoginPath}");
+        });
+
+        // Register the lightweight Firebase sign-in service (no JSInterop dependency)
+        services.AddScoped<IFirebaseSignInService, FirebaseSignInService>();
+
+        Console.WriteLine("[Web] Firebase authentication configured successfully");
     }
 
     /// <summary>

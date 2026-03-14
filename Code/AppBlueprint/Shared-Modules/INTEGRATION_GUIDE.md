@@ -8,11 +8,12 @@ This guide shows how to integrate AppBlueprint NuGet packages into your existing
 
 ```csharp
 using AppBlueprint.Infrastructure.Extensions;
+using AppBlueprint.Presentation.ApiModule.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add all AppBlueprint services in one call
-builder.Services.AddAppBlueprint(builder.Configuration);
+builder.Services.AddAppBlueprint(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 
@@ -32,9 +33,9 @@ using AppBlueprint.Presentation.ApiModule.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services layer by layer
-builder.Services.AddAppBlueprintInfrastructure(builder.Configuration);
+builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddAppBlueprintApplication();
-builder.Services.AddAppBlueprintPresentation();
+builder.Services.AddAppBlueprintPresentation(builder.Environment, builder.Configuration);
 
 var app = builder.Build();
 
@@ -101,7 +102,7 @@ using DatingApp.Infrastructure.DatabaseContexts;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Add AppBlueprint Infrastructure and Application
-builder.Services.AddAppBlueprintInfrastructure(builder.Configuration);
+builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddAppBlueprintApplication();
 
 // 2. Add your own DbContext (inherits ApplicationDbContext)
@@ -118,7 +119,7 @@ builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 
 // 4. Add Presentation layer (if you want AppBlueprint controllers)
-builder.Services.AddAppBlueprintPresentation();
+builder.Services.AddAppBlueprintPresentation(builder.Environment, builder.Configuration);
 
 // 5. Add your own controllers
 builder.Services.AddControllers();
@@ -136,13 +137,18 @@ app.Run();
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using DatingApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace DatingApp.Infrastructure.DatabaseContexts;
 
 public class DatingDbContext : ApplicationDbContext
 {
-    public DatingDbContext(DbContextOptions<DatingDbContext> options)
-        : base(options)
+    public DatingDbContext(
+        DbContextOptions<DatingDbContext> options,
+        IConfiguration configuration,
+        ILogger<DatingDbContext> logger)
+        : base(options, configuration, logger)
     {
     }
 
@@ -171,7 +177,7 @@ using AppBlueprint.Application.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add AppBlueprint services
-builder.Services.AddAppBlueprintInfrastructure(builder.Configuration);
+builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddAppBlueprintApplication();
 
 // Add your e-commerce services
@@ -216,7 +222,7 @@ using MultiTenantApp.Infrastructure.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add AppBlueprint services
-builder.Services.AddAppBlueprint(builder.Configuration);
+builder.Services.AddAppBlueprint(builder.Configuration, builder.Environment);
 
 // Add multi-tenancy
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
@@ -249,7 +255,7 @@ app.Run();
 - ✅ Repository implementations (`ITodoRepository`, `ITeamRepository`, `IDataExportRepository`)
 - ✅ Unit of Work pattern (`IUnitOfWork`)
 - ✅ Health checks (Database, Redis)
-- ✅ Authentication providers (Logto)
+- ✅ Authentication providers (Logto, Firebase)
 
 ### Application Layer (`AddAppBlueprintApplication`)
 - ✅ FluentValidation validators
@@ -280,8 +286,11 @@ app.Run();
 ```csharp
 public class DatingDbContext : ApplicationDbContext
 {
-    public DatingDbContext(DbContextOptions<DatingDbContext> options)
-        : base(options)
+    public DatingDbContext(
+        DbContextOptions<DatingDbContext> options,
+        IConfiguration configuration,
+        ILogger<DatingDbContext> logger)
+        : base(options, configuration, logger)
     {
     }
 
@@ -521,6 +530,7 @@ dotnet ef migrations remove --context DatingDbContext --project ./DatingApp.Infr
 ### Troubleshooting
 
 **Problem:** "Table 'TodoItems' already exists"
+
 ```bash
 # Solution: EF Core thinks migration wasn't applied
 # Manually add migration record:
@@ -529,6 +539,7 @@ VALUES ('20250716183440_InitialULIDSchema', '10.0.0');
 ```
 
 **Problem:** "The context type 'DatingDbContext' is not registered"
+
 ```bash
 # Solution: Make sure you registered the DbContext
 builder.Services.AddDbContext<DatingDbContext>(options => 
@@ -536,6 +547,7 @@ builder.Services.AddDbContext<DatingDbContext>(options =>
 ```
 
 **Problem:** "Cannot access AppBlueprint tables from DatingDbContext"
+
 ```bash
 # Solution: Make sure DatingDbContext inherits ApplicationDbContext
 public class DatingDbContext : ApplicationDbContext
@@ -549,12 +561,15 @@ public class DatingDbContext : ApplicationDbContext
 ### Issue: Missing DATABASE_CONNECTION_STRING
 
 **Error:**
-```
+
+```bash
+
 ArgumentException: Value cannot be null or empty. (Parameter 'connectionString')
 ```
 
 **Solution:**
 Set the environment variable or add to `appsettings.json`:
+
 ```json
 {
   "ConnectionStrings": {
@@ -572,16 +587,19 @@ Set the environment variable or add to `appsettings.json`:
 ### Issue: Cannot Access AppBlueprint Entities
 
 **Error:**
+
 ```csharp
 var todos = datingDbContext.TodoItems; // Error: TodoItems not found
 ```
 
 **Solution:** If your DbContext inherits `ApplicationDbContext`, use the base properties:
+
 ```csharp
 var todos = datingDbContext.Set<TodoItem>();
 ```
 
 Or make your DbContext inherit `ApplicationDbContext`:
+
 ```csharp
 public class DatingDbContext : ApplicationDbContext { ... }
 ```
@@ -598,5 +616,6 @@ public class DatingDbContext : ApplicationDbContext { ... }
 ## Support
 
 For issues, questions, or contributions:
+
 - GitHub: https://github.com/saas-factory-labs/Saas-Factory
 - License: MIT

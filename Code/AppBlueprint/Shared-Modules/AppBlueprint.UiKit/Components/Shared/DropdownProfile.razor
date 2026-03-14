@@ -1,7 +1,9 @@
 @using Microsoft.JSInterop
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.Extensions.Configuration
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IConfiguration Configuration
 @implements IDisposable
 
 <div class="relative inline-flex" @ref="dropdownRef">
@@ -31,7 +33,7 @@
                     <a class="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3" href="/settings/account" @onclick="CloseDropdown">Settings</a>
                 </li>
                 <li>
-                    <a class="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3" href="/auth/signout" @onclick="HandleSignOut">Sign Out</a>
+                    <a class="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3" href="@_signOutUrl" @onclick="HandleSignOut">Sign Out</a>
                 </li>
             </ul>
         </div>
@@ -46,9 +48,18 @@
     private ElementReference triggerRef;
     private string displayName = "Loading...";
     private string userRole = "User";
+    private string _signOutUrl = "/auth/signout";
 
     protected override async Task OnInitializedAsync()
     {
+        string? authProvider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER")
+                        ?? Configuration["Authentication:Provider"];
+
+        if (string.Equals(authProvider, "Firebase", StringComparison.OrdinalIgnoreCase))
+        {
+            _signOutUrl = "/auth/firebase-signout";
+        }
+
         await LoadUserInfoAsync();
         
         // Subscribe to authentication state changes

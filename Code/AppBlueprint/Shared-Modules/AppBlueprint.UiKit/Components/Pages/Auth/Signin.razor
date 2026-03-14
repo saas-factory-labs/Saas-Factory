@@ -1,13 +1,25 @@
 @page "/signin"
 @page "/login"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Configuration
 @attribute [AllowAnonymous]
 @inject NavigationManager Navigation
+@inject IConfiguration Configuration
 
 @code {
     protected override void OnInitialized()
     {
-        // Redirect to the signup flow page to choose B2C or B2B account
-        Navigation.NavigateTo("/signup", forceLoad: true);
+        string? provider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER")
+                        ?? Configuration["Authentication:Provider"];
+
+        if (string.Equals(provider, "Firebase", StringComparison.OrdinalIgnoreCase))
+        {
+            Navigation.NavigateTo("/signin/firebase", forceLoad: true);
+        }
+        else
+        {
+            // Default: redirect to the Logto signup flow
+            Navigation.NavigateTo("/signup", forceLoad: true);
+        }
     }
 }

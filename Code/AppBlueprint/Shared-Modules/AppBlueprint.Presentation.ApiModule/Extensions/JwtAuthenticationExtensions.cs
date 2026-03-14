@@ -64,15 +64,20 @@ public static class JwtAuthenticationExtensions
         string authProvider,
         IHostEnvironment environment)
     {
-        // Only Logto authentication is supported
-        if (!authProvider.Equals("LOGTO", StringComparison.OrdinalIgnoreCase))
+        if (authProvider.Equals("LOGTO", StringComparison.OrdinalIgnoreCase))
+        {
+            ConfigureLogto(options, configuration, environment);
+        }
+        else if (authProvider.Equals("FIREBASE", StringComparison.OrdinalIgnoreCase))
+        {
+            ConfigureFirebase(options, configuration, environment);
+        }
+        else
         {
             throw new InvalidOperationException(
-                $"Unsupported authentication provider '{authProvider}'. Only 'Logto' is supported. " +
-                "Set AUTHENTICATION_PROVIDER=Logto in configuration.");
+                $"Unsupported authentication provider '{authProvider}'. Supported providers: 'Logto', 'Firebase'. " +
+                "Set AUTHENTICATION_PROVIDER in configuration.");
         }
-
-        ConfigureLogto(options, configuration, environment);
 
         // Common configuration for all providers
         options.SaveToken = true;
@@ -217,6 +222,48 @@ public static class JwtAuthenticationExtensions
 
         // Don't require HTTPS in development
         options.RequireHttpsMetadata = environment.IsDevelopment() ? false : true;
+    }
+
+    private static void ConfigureFirebase(JwtBearerOptions options, IConfiguration configuration, IHostEnvironment environment)
+    {
+        // Read project ID from flat UPPERCASE env var first, then hierarchical config
+        string? projectId = Environment.GetEnvironmentVariable("FIREBASE_PROJECT_ID")
+                         ?? Environment.GetEnvironmentVariable("AUTHENTICATION_FIREBASE_PROJECTID")
+                         ?? configuration["Authentication:Firebase:ProjectId"];
+
+        if (string.IsNullOrEmpty(projectId))
+        {
+            throw new InvalidOperationException(
+                "Firebase authentication configuration is missing. Required environment variable:\n" +
+                "  - FIREBASE_PROJECT_ID (e.g., my-firebase-project)\n" +
+                "Set this in AppHost Program.cs or environment variables.");
+        }
+
+        string issuer = $"https://securetoken.google.com/{projectId}";
+
+        options.Authority = issuer;
+        options.MetadataAddress = $"{issuer}/.well-known/openid-configuration";
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = issuer,
+
+            ValidateAudience = true,
+            ValidAudience = projectId,
+
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ClockSkew = TimeSpan.FromMinutes(5),
+            RequireSignedTokens = true,
+            RequireExpirationTime = true,
+
+            NameClaimType = "name",
+            RoleClaimType = "role"
+        };
+
+        options.RequireHttpsMetadata = !environment.IsDevelopment();
     }
 }
 
