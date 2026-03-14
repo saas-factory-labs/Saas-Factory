@@ -49,7 +49,8 @@ internal static class Program // Make class static
         // Port configuration handled by ASPNETCORE_URLS environment variable:
         // - Development: Set via launchSettings.json or appsettings (http://localhost:8081)
         // - Production: Set via Dockerfile ENV ASPNETCORE_URLS=http://+:80 (Railway handles SSL termination)
-        // No ConfigureKestrel needed - avoids conflicts with environment variables
+        // Suppress the "Server: Kestrel" response header to avoid leaking server technology details.
+        builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
         // Add services to the container.
         builder.Services.AddProblemDetails();

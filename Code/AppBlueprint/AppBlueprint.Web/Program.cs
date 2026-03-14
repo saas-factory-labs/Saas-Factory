@@ -119,7 +119,8 @@ builder.Services.AddSingleton(navigationRoutes);
 // Port configuration handled by ASPNETCORE_URLS environment variable:
 // - Development: Set via launchSettings.json (http://localhost:5000;https://localhost:5001)
 // - Production: Set via Dockerfile ENV ASPNETCORE_URLS=http://+:80 (Railway handles SSL termination)
-// No ConfigureKestrel needed - avoids conflicts with environment variables
+// Suppress the "Server: Kestrel" response header to avoid leaking server technology details.
+builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
 // Configure cookie policy for HTTP LAN access (fixes "Correlation failed" error)
 // This allows authentication cookies to work over HTTP in development
@@ -287,6 +288,15 @@ app.UseStaticFiles();
 // Security Headers Middleware - Add security headers to all responses
 app.Use(async (context, next) =>
 {
+    // Remove headers that leak real server technology details
+    context.Response.Headers.Remove("Server");
+    context.Response.Headers.Remove("X-Powered-By");
+    context.Response.Headers.Remove("X-AspNet-Version");
+
+    // Deception headers - mislead attackers with false server technology information
+    context.Response.Headers.Append("Server", "Apache/2.4.62 (Ubuntu)");
+    context.Response.Headers.Append("X-Powered-By", "PHP/8.2.28");
+
     // Prevent MIME-sniffing attacks
     context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
 
