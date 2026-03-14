@@ -668,4 +668,3 @@ globalThis.commandPaletteManager = commandPaletteManager;
 globalThis.infiniteScrollManager = infiniteScrollManager;
 globalThis.downloadFileFromBase64 = downloadFileFromBase64;
 globalThis.chartJsInterop = chartJsInterop;
-//# sourceMappingURL=site.js.map

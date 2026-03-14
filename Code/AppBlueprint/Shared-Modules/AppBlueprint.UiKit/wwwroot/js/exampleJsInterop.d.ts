@@ -9,4 +9,3 @@
  * @returns The user's input or null if cancelled
  */
 export declare function showPrompt(message: string): string | null;
-//# sourceMappingURL=exampleJsInterop.d.ts.map

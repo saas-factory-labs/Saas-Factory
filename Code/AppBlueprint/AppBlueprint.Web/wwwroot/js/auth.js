@@ -21,4 +21,3 @@ const auth = {
 };
 globalThis.auth = auth;
 export default auth;
-//# sourceMappingURL=auth.js.map

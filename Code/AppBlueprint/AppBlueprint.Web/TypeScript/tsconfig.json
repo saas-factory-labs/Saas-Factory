@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": false,
-    "sourceMap": true,
+    "sourceMap": false,
     "allowJs": true
   },
   "include": [

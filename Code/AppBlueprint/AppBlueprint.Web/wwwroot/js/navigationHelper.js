@@ -9,4 +9,3 @@ const navigationHelper = {
 };
 // Attach to window for Blazor interop
 globalThis.navigationHelper = navigationHelper;
-//# sourceMappingURL=navigationHelper.js.map

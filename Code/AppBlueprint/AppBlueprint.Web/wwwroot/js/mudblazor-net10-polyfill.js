@@ -117,4 +117,3 @@
     console.log('✅ MudBlazor .NET 10 compatibility polyfill loaded successfully');
     console.log('📋 mudElementRef functions available:', Object.keys(globalThis.mudElementRef || {}));
 })();
-//# sourceMappingURL=mudblazor-net10-polyfill.js.map

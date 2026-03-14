@@ -11,4 +11,3 @@ declare global {
     }
 }
 export default auth;
-//# sourceMappingURL=auth.d.ts.map

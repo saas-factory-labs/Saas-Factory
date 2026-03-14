@@ -142,4 +142,3 @@ type ChartConstructor = new (context: HTMLCanvasElement, config: unknown) => {
 };
 declare const Chart: ChartConstructor;
 declare const chartJsInterop: ChartJsInterop;
-//# sourceMappingURL=site.d.ts.map

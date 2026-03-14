@@ -13,4 +13,3 @@ declare global {
     }
 }
 export default signupLogger;
-//# sourceMappingURL=signupLogger.d.ts.map

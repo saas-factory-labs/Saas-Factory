@@ -33,4 +33,3 @@ declare class FirebaseMessagingHelper {
     setupForegroundMessageHandler(callback?: (payload: NotificationPayload) => void): Promise<void>;
     requestTokenAndPermission(): Promise<string | null>;
 }
-//# sourceMappingURL=firebase-messaging-helper.d.ts.map

@@ -17,4 +17,3 @@ interface MudElementRef {
 interface Window {
     mudElementRef: MudElementRef;
 }
-//# sourceMappingURL=mudblazor-net10-polyfill.d.ts.map

@@ -187,4 +187,3 @@ globalThis.setupFirebaseForegroundHandler = async (dotnetHelper, methodName) => 
         }
     });
 };
-//# sourceMappingURL=firebase-messaging-helper.js.map
