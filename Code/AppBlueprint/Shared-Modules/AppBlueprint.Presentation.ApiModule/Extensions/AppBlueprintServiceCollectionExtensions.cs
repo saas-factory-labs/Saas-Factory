@@ -39,4 +39,31 @@ public static class AppBlueprintServiceCollectionExtensions
 
         return services;
     }
+
+    /// <summary>
+    /// Adds all AppBlueprint services using prototype-friendly defaults (no environment parameter).
+    /// Registers Infrastructure (+ configuration options), Application, and Presentation layers.
+    /// CORS defaults to allow-any-origin. For production, use the overload with explicit environment.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// builder.Services
+    ///     .AddAppBlueprintInfrastructure(builder.Configuration)
+    ///     .AddAppBlueprintApplication()
+    ///     .AddAppBlueprintPresentation();
+    /// </code>
+    /// </example>
+    public static IServiceCollection AddAppBlueprint(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        services.AddAppBlueprintInfrastructure(configuration);
+        services.AddAppBlueprintApplication();
+        services.AddAppBlueprintPresentation();
+
+        return services;
+    }
 }

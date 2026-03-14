@@ -28,6 +28,23 @@ public static class ConfigurationServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(environment);
 
+        return services.AddAppBlueprintConfiguration(configuration);
+    }
+
+    /// <summary>
+    /// Registers all AppBlueprint configuration options with validation.
+    /// Simplified overload for prototype / consuming-app integration — no environment parameter needed.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configuration">The configuration instance.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddAppBlueprintConfiguration(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
         // Register configuration service
         services.AddSingleton<IConfigurationService, ConfigurationService>();
 
@@ -39,6 +56,21 @@ public static class ConfigurationServiceCollectionExtensions
         services.AddFeatureFlagsOptions();
 
         return services;
+    }
+
+    /// <summary>
+    /// Idempotent registration — only registers configuration options if not already registered.
+    /// Used internally by AddAppBlueprintInfrastructure's simplified overload.
+    /// </summary>
+    internal static IServiceCollection TryAddAppBlueprintConfiguration(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Guard against double-registration when the caller also calls AddAppBlueprintConfiguration
+        if (services.Any(d => d.ServiceType == typeof(IConfigurationService)))
+            return services;
+
+        return services.AddAppBlueprintConfiguration(configuration);
     }
 
     /// <summary>

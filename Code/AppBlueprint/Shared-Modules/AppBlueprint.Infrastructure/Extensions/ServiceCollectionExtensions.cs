@@ -40,6 +40,37 @@ public static class ServiceCollectionExtensions
     private static readonly string[] RedisHealthCheckTags = new[] { "cache", "redis" };
 
     /// <summary>
+    /// Adds AppBlueprint Infrastructure services including database contexts, repositories,
+    /// external service integrations, and health checks.
+    /// Simplified overload for prototype / consuming-app integration — no environment parameter needed.
+    /// Also registers configuration options (calls AddAppBlueprintConfiguration internally).
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configuration">The configuration (used as fallback if environment variables not set).</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddAppBlueprintInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        // Ensure configuration options are registered
+        services.TryAddAppBlueprintConfiguration(configuration);
+
+        services.AddConfiguredDbContext(configuration);
+        services.AddRepositories();
+        services.AddTenantServices();
+        services.AddUnitOfWork();
+        services.AddExternalServices(configuration);
+        services.AddHealthChecksServices(configuration);
+        services.AddNotificationServices();
+        services.AddPIIServices();
+
+        return services;
+    }
+
+    /// <summary>
     /// Adds AppBlueprint Infrastructure services including database contexts, repositories, 
     /// external service integrations, and health checks.
     /// Uses the new flexible DbContext configuration based on DatabaseContextOptions.

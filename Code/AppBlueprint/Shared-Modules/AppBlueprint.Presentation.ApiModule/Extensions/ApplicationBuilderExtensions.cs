@@ -22,6 +22,33 @@ public static class ApplicationBuilderExtensions
     /// </code>
     /// </example>
     /// <returns>The service collection for chaining.</returns>
+    /// <summary>
+    /// Adds AppBlueprint Presentation services with prototype-friendly defaults.
+    /// CORS is set to allow any origin (suitable for local development / prototyping).
+    /// For production use, call the overload with explicit environment and configuration.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddAppBlueprintPresentation(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddControllers();
+        services.AddEndpointsApiExplorer();
+        services.AddProblemDetails();
+        services.AddAntiforgery();
+        services.AddHttpContextAccessor();
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+
+        // Default to open CORS for prototype/development use
+        services.AddCors(policy => policy.AddDefaultPolicy(builder =>
+            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
+        services.ConfigureApiVersioning();
+
+        return services;
+    }
+
     public static IServiceCollection AddAppBlueprintPresentation(this IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(services);
