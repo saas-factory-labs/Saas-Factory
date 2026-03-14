@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.1.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.0.6...v1.1.0) (2026-03-14)
+
+
+### Features
+
+* add security headers middleware to obscure server technology details and enhance security ([2c14b7a](https://github.com/saas-factory-labs/Saas-Factory/commit/2c14b7ac12991bf84274764b81adeb0f31380c57))
+
 ## [1.0.6](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.0.5...v1.0.6) (2026-03-13)
 
 
