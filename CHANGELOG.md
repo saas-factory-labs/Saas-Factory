@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.2.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.1.0...v1.2.0) (2026-03-14)
+
+
+### Features
+
+* add error and not found pages with custom illustrations and messages ([472f140](https://github.com/saas-factory-labs/Saas-Factory/commit/472f14062e1a1d14e91e7af76e302a3c10ead13d))
+
 # [1.1.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.0.6...v1.1.0) (2026-03-14)
 
 
