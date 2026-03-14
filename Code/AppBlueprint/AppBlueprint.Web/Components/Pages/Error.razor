@@ -1,0 +1,32 @@
+@page "/error"
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
+@layout AppBlueprint.UiKit.Components.Layout.MainLayout
+
+<PageTitle>Error</PageTitle>
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <div class="max-w-2xl m-auto mt-16">
+
+        <div class="text-center px-4">
+            <div class="inline-flex mb-8">
+                <!-- Error Illustration -->
+                <svg class="w-44 h-44" viewBox="0 0 176 176" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="none" fill-rule="evenodd">
+                        <circle fill="#E5E7EB" cx="88" cy="88" r="88" class="dark:fill-gray-700"/>
+                        <path d="M88 24c35.346 0 64 28.654 64 64s-28.654 64-64 64-64-28.654-64-64 28.654-64 64-64z" fill="#F3F4F6" class="dark:fill-gray-800"/>
+                        <g transform="translate(52 44)">
+                            <circle fill="#9CA3AF" cx="36" cy="36" r="36" class="dark:fill-gray-500"/>
+                            <path d="M36 12v28M36 52v8" stroke="#F9FAFB" stroke-width="6" stroke-linecap="round" class="dark:stroke-gray-200"/>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="text-lg text-gray-600 dark:text-gray-400 mb-6">Something went wrong on our end. Please try again later.</div>
+            <a href="/" class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">Back To Dashboard</a>
+        </div>
+
+    </div>
+
+</div>

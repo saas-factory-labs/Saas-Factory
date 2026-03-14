@@ -265,6 +265,23 @@ Console.WriteLine("[Web] Application built successfully");
 Console.WriteLine($"[Web] Environment: {app.Environment.EnvironmentName}");
 Console.WriteLine(ConsoleSeparator);
 
+// Exception handling and status code pages - must be first in the pipeline
+// UseExceptionHandler catches unhandled exceptions from downstream middleware (non-Blazor)
+// UseDeveloperExceptionPage is automatically wired in development for detailed error output
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/error");
+    Console.WriteLine("[Web] Exception handler middleware enabled (production)");
+}
+
+// Intercept non-success HTTP status codes (e.g. static file 404s, API 404s) before Blazor routing
+// Must come before UseStaticFiles and UseRouting so it can intercept responses from those layers
+app.UseStatusCodePagesWithReExecute("/not-found");
+
 // IMPORTANT: UseForwardedHeaders must come BEFORE UseRouting
 // This ensures redirect URIs use HTTPS when behind Railway's proxy
 app.UseForwardedHeaders();
