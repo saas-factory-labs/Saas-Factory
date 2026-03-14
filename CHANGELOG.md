@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.4.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.3.0...v1.4.0) (2026-03-14)
+
+
+### Features
+
+* add prototype-friendly overloads for AppBlueprint service registration ([1350604](https://github.com/saas-factory-labs/Saas-Factory/commit/13506043a9a92c3c3857a8447867799437a1ce52))
+
 # [1.3.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.2.0...v1.3.0) (2026-03-14)
 
 
