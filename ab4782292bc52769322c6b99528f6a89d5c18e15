@@ -1,0 +1,46 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/TypeScript/tsconfig.json
+  8f6fb161f5afb5b7 12
+Code/AppBlueprint/AppBlueprint.Web/tsconfig.json
+  8f6fb161f5afb5b7 14-15
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/tsconfig.json
+  8f6fb161f5afb5b7 14-15
+Code/AppBlueprint/AppBlueprint.Web/TypeScript/tsconfig.json
+  8f6fb161f5afb5b7 11
+Code/AppBlueprint/cloudflare-worker/tsconfig.json
+  8f6fb161f5afb5b7 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "ab4782292bc52769322c6b99528f6a89d5c18e15",
+  "prompts": {
+    "84d2af0f45a34219": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "5d3c5479-6c89-45c9-b079-d4f076b570af",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 7,
+      "total_deletions": 7,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/f4fe33f06a4e763c162ebb0476897a175c6fca6257e8a3af58f7ee46632b7900"
+    },
+    "8f6fb161f5afb5b7": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "83a9dcb1-0ab0-46b3-b806-7d64417008e8",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 22,
+      "total_deletions": 22,
+      "accepted_lines": 7,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/50766b603a9f3c7e17daf4c924ad260d8f5869963d04ccc29b684dde0ab265e8"
+    }
+  }
+}
