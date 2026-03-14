@@ -1,0 +1,53 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/JwtAuthenticationExtensions.cs
+  5c027da05cc2d8f6 67,69-75,78-79,226-266
+Code/AppBlueprint/Shared-Modules/INTEGRATION_GUIDE.md
+  20e128c9fb60b5ef 11,16,36,38,105,122,140-141,148-151,180,225,258,290-293
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/FirebaseSignInService.cs
+  5c027da05cc2d8f6 1-148
+Code/AppBlueprint/AppBlueprint.Web/Controllers/FirebaseAuthController.cs
+  5c027da05cc2d8f6 1-73,86-92
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/WebAuthenticationExtensions.cs
+  5c027da05cc2d8f6 119,122-126
+  20e128c9fb60b5ef 41-42,147-198
+Code/AppBlueprint/AppBlueprint.Web/Components/Pages/Auth/FirebaseSignin.razor
+  5c027da05cc2d8f6 1-78
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Auth/Signin.razor
+  5c027da05cc2d8f6 4,7,12-21,23
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/DropdownProfile.razor
+  5c027da05cc2d8f6 3,6,36,51,55-62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "92b06b8dcb5c575bf78865015c22e3bf5895ea40",
+  "prompts": {
+    "20e128c9fb60b5ef": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "d21ac1aa-20a4-4cfc-bca9-809c06d704bd",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 171,
+      "total_deletions": 96,
+      "accepted_lines": 73,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/1d27c8266f0a68574eeaf9ca024a6c0a83be7f5d7315daa53b67f0c6ce85485e"
+    },
+    "5c027da05cc2d8f6": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "48e6e19b-919f-4494-aa6f-0b5cd78319cd",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 441,
+      "total_deletions": 18,
+      "accepted_lines": 390,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/53aab98ff04eecad18dc451ea2c7a1df578a10af0c09b3ea7226843abfb3e8b0"
+    }
+  }
+}
