@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.3.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.2.0...v1.3.0) (2026-03-14)
+
+
+### Features
+
+* implement Firebase authentication support with sign-in and sign-out functionality ([92b06b8](https://github.com/saas-factory-labs/Saas-Factory/commit/92b06b8dcb5c575bf78865015c22e3bf5895ea40))
+
 # [1.2.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.1.0...v1.2.0) (2026-03-14)
 
 
