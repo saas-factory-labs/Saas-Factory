@@ -1,5 +1,7 @@
 using AppBlueprint.Presentation.ApiModule.Middleware;
 using Asp.Versioning;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
@@ -152,6 +154,61 @@ public static class ApplicationBuilderExtensions
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+
+        return app;
+    }
+
+    /// <summary>
+    /// Applies AppBlueprint migrations AND your consuming app's DbContext migrations, then
+    /// configures the full middleware pipeline. One-call startup for prototype integration.
+    /// </summary>
+    /// <typeparam name="TDbContext">Your app's DbContext (e.g. DatingDbContext).</typeparam>
+    /// <param name="app">The web application.</param>
+    /// <returns>A task that completes once migrations are applied and middleware is configured.</returns>
+    /// <example>
+    /// <code>
+    /// var app = builder.Build();
+    /// await app.UseAppBlueprintAsync&lt;DatingDbContext&gt;();
+    /// app.MapRazorComponents&lt;App&gt;().AddInteractiveServerRenderMode();
+    /// app.Run();
+    /// </code>
+    /// </example>
+    public static async Task<WebApplication> UseAppBlueprintAsync<TDbContext>(this WebApplication app)
+        where TDbContext : DbContext
+    {
+        ArgumentNullException.ThrowIfNull(app);
+
+        // Apply AppBlueprint's own context migrations (ApplicationDbContext, B2BDbContext, BaselineDbContext)
+        await AppBlueprint.Infrastructure.MigrationExtensions.ApplyMigrationsAsync(app);
+
+        // Apply the consuming app's DbContext migrations
+        using (IServiceScope scope = app.Services.CreateScope())
+        {
+            TDbContext? dbContext = scope.ServiceProvider.GetService<TDbContext>();
+            if (dbContext is not null)
+            {
+                await dbContext.Database.MigrateAsync();
+            }
+        }
+
+        // Configure the standard middleware pipeline
+        app.ConfigureAppBlueprintMiddleware();
+
+        return app;
+    }
+
+    /// <summary>
+    /// Applies AppBlueprint migrations only (no consuming-app DbContext), then configures
+    /// the middleware pipeline. Use when your app shares AppBlueprint's DbContext directly.
+    /// </summary>
+    /// <param name="app">The web application.</param>
+    /// <returns>A task that completes once migrations are applied and middleware is configured.</returns>
+    public static async Task<WebApplication> UseAppBlueprintAsync(this WebApplication app)
+    {
+        ArgumentNullException.ThrowIfNull(app);
+
+        await AppBlueprint.Infrastructure.MigrationExtensions.ApplyMigrationsAsync(app);
+        app.ConfigureAppBlueprintMiddleware();
 
         return app;
     }
