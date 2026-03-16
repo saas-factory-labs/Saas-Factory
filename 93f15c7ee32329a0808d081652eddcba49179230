@@ -1,0 +1,38 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/ApplicationBuilderExtensions.cs
+  decb1b60c0cf6604 3-4,160-214
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "93f15c7ee32329a0808d081652eddcba49179230",
+  "prompts": {
+    "060ff4ff524f0284": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "24cfe7e2-f8b4-4d02-834d-ea15155b2247",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 57,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/56660109f1ac9bd74d7a2cbb9ace88a0270f037c47a64d66f2be7a97b1b65d3b"
+    },
+    "decb1b60c0cf6604": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "2b7badd4-77c0-4875-8ecc-cd138628842c",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 57,
+      "total_deletions": 0,
+      "accepted_lines": 57,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/7e3cf3a10709565cf12b059e3a09ec2a272945a10e54fc8d9e90d107f241fd6c"
+    }
+  }
+}
