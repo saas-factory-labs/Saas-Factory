@@ -12,7 +12,7 @@
 
 ![Database Schema Diagram](docs/images/image.png)
 
-<!-- <a href="https://appblueprint-web-production-production.up.railway.app/dashboard"> View live demo site </a> -->
+<a href="https://appblueprint-web-production-production.up.railway.app/dashboard"> View live demo site </a>
 
 </h5>
 
