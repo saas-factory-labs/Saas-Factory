@@ -1,0 +1,24 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/DropdownProfile.razor
+  b05d9d9ae41ead69 7,137-139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "b06b6bc12c42ac692ea52180eabb3a11de208ae7",
+  "prompts": {
+    "b05d9d9ae41ead69": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6cb3763c-aef3-4c71-9bcd-5cb29034ce43",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 196,
+      "total_deletions": 195,
+      "accepted_lines": 196,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/13f5e17aea415120109ad0d17cc9d884933ce2b64fb027cbbc5401e11d034b89"
+    }
+  }
+}
