@@ -3,7 +3,7 @@
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile",
-    "dockerContext": "."
+    "dockerContext": "Code/AppBlueprint"
   },
   "deploy": {
     "numReplicas": 1,
