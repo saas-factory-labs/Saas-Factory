@@ -1,0 +1,72 @@
+# Railway build: context is the repo root, so all paths are prefixed with Code/AppBlueprint/
+# Base runtime image (ASP.NET Core for Web) - Includes ICU for globalization
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+USER $APP_UID
+WORKDIR /app
+
+# Expose default port (Railway overrides via PORT env var at runtime)
+EXPOSE 8080
+
+# Build stage - Microsoft SDK
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+
+# Install Node.js for TypeScript compilation
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy package management files
+COPY Code/AppBlueprint/Directory.Packages.props ./
+COPY Code/AppBlueprint/NuGet.Config /root/.nuget/NuGet.Config
+
+# Copy project files for Web and all dependencies
+COPY ["Code/AppBlueprint/AppBlueprint.Web/AppBlueprint.Web.csproj", "AppBlueprint.Web/"]
+COPY ["Code/AppBlueprint/AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj", "AppBlueprint.ServiceDefaults/"]
+COPY ["Code/AppBlueprint/AppBlueprint.TodoAppKernel/AppBlueprint.TodoAppKernel.csproj", "AppBlueprint.TodoAppKernel/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/AppBlueprint.Api.Client.Sdk.csproj", "Shared-Modules/AppBlueprint.Api.Client.Sdk/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj", "Shared-Modules/AppBlueprint.Application/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/AppBlueprint.Contracts.csproj", "Shared-Modules/AppBlueprint.Contracts/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/AppBlueprint.Domain.csproj", "Shared-Modules/AppBlueprint.Domain/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj", "Shared-Modules/AppBlueprint.Infrastructure/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj", "Shared-Modules/AppBlueprint.SharedKernel/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj", "Shared-Modules/AppBlueprint.UiKit/"]
+
+# Restore dependencies
+RUN dotnet restore "AppBlueprint.Web/AppBlueprint.Web.csproj"
+
+# Copy the rest of the source code
+COPY Code/AppBlueprint/ .
+
+WORKDIR "/src/AppBlueprint.Web"
+
+# Build the Web project
+RUN dotnet build "AppBlueprint.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
+
+# Publish stage
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "AppBlueprint.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
+
+# Final runtime image
+FROM base AS final
+USER $APP_UID
+WORKDIR /app
+
+# Copy published app with proper ownership
+COPY --from=publish --chown=$APP_UID:$APP_UID /app/publish .
+
+# Security hardening environment variables
+# ASPNETCORE_HTTP_PORTS is NOT set here - it is resolved at runtime from Railway's PORT variable
+ENV DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
+    DOTNET_EnableDiagnostics=0 \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+# Start the Web service.
+# Railway injects PORT at runtime. We use shell form to expand ${PORT:-8080} so the app
+# always binds on the port Railway expects.
+ENTRYPOINT ["/bin/sh", "-c", "ASPNETCORE_HTTP_PORTS=${PORT:-8080} exec dotnet AppBlueprint.Web.dll"]
