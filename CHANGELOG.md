@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.6](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.6.5...v1.6.6) (2026-03-29)
+
+
+### Bug Fixes
+
+* replace Tailwind gradient classes with solid colors across onboarding page ([78bbab0](https://github.com/saas-factory-labs/Saas-Factory/commit/78bbab0ef06f7624c4223d7b8d47fd368ca19117))
+
 ## [1.6.5](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.6.4...v1.6.5) (2026-03-29)
 
 
