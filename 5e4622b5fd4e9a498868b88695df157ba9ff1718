@@ -1,0 +1,28 @@
+railway.json
+  0db6fa8faf53cfec 6
+railway.toml
+  0db6fa8faf53cfec 4
+Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile
+  0db6fa8faf53cfec 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "5e4622b5fd4e9a498868b88695df157ba9ff1718",
+  "prompts": {
+    "0db6fa8faf53cfec": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "c7767228-3ec3-4c3b-a49b-6319c2b8cb25",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 89,
+      "total_deletions": 87,
+      "accepted_lines": 89,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/e414d358b9bcab1dcccdbb49b4cf17646964b5f8898ebc1cbdb83a5af0b85f64"
+    }
+  }
+}
