@@ -696,68 +696,30 @@ public static class WebAuthenticationExtensions
 
     private static string GenerateDynamicErrorHtml(RemoteFailureContext context)
     {
-        // Build dynamic error page with actual error details
-        string errorMessage = context.Failure?.Message ?? "Unknown error";
-        string errorType = context.Failure?.GetType().Name ?? "Unknown";
-        string innerError = context.Failure?.InnerException?.Message ?? "None";
-        string stackTrace = context.Failure?.StackTrace ?? "Not available";
+        // Log full details server-side for debugging purposes
+        Console.WriteLine($"[Web] GenerateDynamicErrorHtml - full error: {context.Failure?.Message}");
+        Console.WriteLine($"[Web] GenerateDynamicErrorHtml - inner: {context.Failure?.InnerException?.Message}");
 
-        // Check for OAuth-specific error in query string
-        string oauthError = context.Request.Query.TryGetValue("error", out var err) ? err.ToString() : "None";
-        string oauthErrorDesc = context.Request.Query.TryGetValue("error_description", out var desc) ? desc.ToString() : "None";
-
-        return $@"
+        return @"
 <!DOCTYPE html>
 <html>
 <head>
     <title>Authentication Error</title>
     <style>
-        body {{ font-family: system-ui; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #1a1a2e; color: white; padding: 20px; box-sizing: border-box; }}
-        .error-box {{ background: #16213e; padding: 40px; border-radius: 10px; text-align: left; max-width: 800px; width: 100%; }}
-        h1 {{ color: #e94560; text-align: center; }}
-        .error-section {{ background: #0f0f23; padding: 15px; border-radius: 5px; margin: 15px 0; overflow-x: auto; }}
-        .error-label {{ color: #e94560; font-weight: bold; margin-bottom: 5px; }}
-        .error-value {{ color: #bbe1fa; word-break: break-all; font-family: monospace; font-size: 14px; }}
-        pre {{ white-space: pre-wrap; word-wrap: break-word; margin: 0; color: #888; font-size: 12px; max-height: 200px; overflow-y: auto; }}
-        a {{ color: #0f4c75; background: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px; }}
-        .button-container {{ text-align: center; }}
+        body { font-family: system-ui; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #1a1a2e; color: white; padding: 20px; box-sizing: border-box; }
+        .error-box { background: #16213e; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; width: 100%; }
+        h1 { color: #e94560; }
+        p { color: #bbe1fa; line-height: 1.6; }
+        .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        a { color: #0f4c75; background: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; }
     </style>
 </head>
 <body>
     <div class='error-box'>
-        <h1>Authentication Failed</h1>
-        
-        <div class='error-section'>
-            <div class='error-label'>Error Type:</div>
-            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(errorType)}</div>
-        </div>
-        
-        <div class='error-section'>
-            <div class='error-label'>Error Message:</div>
-            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(errorMessage)}</div>
-        </div>
-        
-        <div class='error-section'>
-            <div class='error-label'>Inner Exception:</div>
-            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(innerError)}</div>
-        </div>
-        
-        <div class='error-section'>
-            <div class='error-label'>OAuth Error:</div>
-            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(oauthError)}</div>
-        </div>
-        
-        <div class='error-section'>
-            <div class='error-label'>OAuth Error Description:</div>
-            <div class='error-value'>{System.Net.WebUtility.HtmlEncode(oauthErrorDesc)}</div>
-        </div>
-        
-        <div class='error-section'>
-            <div class='error-label'>Stack Trace (first 500 chars):</div>
-            <pre>{System.Net.WebUtility.HtmlEncode(stackTrace.Length > 500 ? string.Concat(stackTrace.AsSpan(0, 500), "...") : stackTrace)}</pre>
-        </div>
-        
-        <div class='button-container'>
+        <h1>Sign In Unavailable</h1>
+        <p>We were unable to complete the sign-in process. This may be a temporary issue.</p>
+        <p>Please try again in a few moments. If the problem persists, contact support.</p>
+        <div class='actions'>
             <a href='/auth/signin'>Try Again</a>
             <a href='/'>Go Home</a>
         </div>
@@ -934,8 +896,7 @@ public static class WebAuthenticationExtensions
                         Console.WriteLine($"[Web] ❌ Inner message: {ex.InnerException.Message}");
                     }
                     Console.WriteLine(LogSeparator);
-                    context.Response.StatusCode = 500;
-                    await context.Response.WriteAsync($"Authentication error: {ex.Message}");
+                    context.Response.Redirect("/auth/error?reason=service_unavailable");
                     return;
                 }
             }
