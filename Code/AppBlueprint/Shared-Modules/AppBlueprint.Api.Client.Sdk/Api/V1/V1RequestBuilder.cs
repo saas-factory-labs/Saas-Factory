@@ -8,6 +8,7 @@ using AppBlueprint.Api.Client.Sdk.Api.V1.Authentication;
 using AppBlueprint.Api.Client.Sdk.Api.V1.DataExports;
 using AppBlueprint.Api.Client.Sdk.Api.V1.Demos;
 using AppBlueprint.Api.Client.Sdk.Api.V1.Organization;
+using AppBlueprint.Api.Client.Sdk.Api.V1.Search;
 using AppBlueprint.Api.Client.Sdk.Api.V1.Team;
 using AppBlueprint.Api.Client.Sdk.Api.V1.Tenant;
 using AppBlueprint.Api.Client.Sdk.Api.V1.Users;
@@ -64,6 +65,11 @@ namespace AppBlueprint.Api.Client.Sdk.Api.V1
         public global::AppBlueprint.Api.Client.Sdk.Api.V1.Organization.OrganizationRequestBuilder Organization
         {
             get => new global::AppBlueprint.Api.Client.Sdk.Api.V1.Organization.OrganizationRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The search property</summary>
+        public global::AppBlueprint.Api.Client.Sdk.Api.V1.Search.SearchRequestBuilder Search
+        {
+            get => new global::AppBlueprint.Api.Client.Sdk.Api.V1.Search.SearchRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The team property</summary>
         public global::AppBlueprint.Api.Client.Sdk.Api.V1.Team.TeamRequestBuilder Team

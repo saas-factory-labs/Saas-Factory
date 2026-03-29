@@ -203,11 +203,11 @@ builder.Services.AddAppBlueprintSignalR();
 // Register menu configuration service for customizing sidebar visibility
 builder.Services.AddScoped<AppBlueprint.UiKit.Services.IMenuConfigurationService, AppBlueprint.Web.Services.MenuConfigurationService>();
 
-// Register full-text search services
+// Register search services backed by the API service via the Kiota HTTP client
 builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity>,
-    AppBlueprint.Infrastructure.Services.Search.PostgreSqlSearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity, AppBlueprint.Infrastructure.DatabaseContexts.ApplicationDbContext>>();
+    AppBlueprint.Web.Services.HttpTenantSearchService>();
 builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity>,
-    AppBlueprint.Infrastructure.Services.Search.PostgreSqlSearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity, AppBlueprint.Infrastructure.DatabaseContexts.ApplicationDbContext>>();
+    AppBlueprint.Web.Services.HttpUserSearchService>();
 
 // Add TodoService with HttpClient configured for direct API access
 builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>

@@ -1,48 +1,131 @@
-// using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-// using AppBlueprint.Infrastructure.UnitOfWork;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Http;
-// using Microsoft.AspNetCore.Mvc;
-//
-// namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline
-// {
-//     [Authorize]
-//
-//     [ApiController]
-//     [Route("api/search")]
-//     [Produces("application/json")]
-//     public class SearchController : ControllerBase
-//     {
-//         private readonly ISearchRepository _searchRepository;
-//         private readonly IUnitOfWork _unitOfWork;
-//
-//         public SearchController(ISearchRepository searchRepository, IUnitOfWork unitOfWork)
-//         {
-//             _searchRepository = searchRepository ?? throw new ArgumentNullException(nameof(searchRepository));
-//             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-//         }
-//
-//         /// <summary>
-//         /// Gets all search results.
-//         /// </summary>
-//         /// <returns>List of search results</returns>
-//         [HttpGet]
-//         [ProducesResponseType(typeof(IEnumerable<SearchResponseDto>), StatusCodes.Status200OK)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public async Task<ActionResult<IEnumerable<SearchResponseDto>>> Get(CancellationToken cancellationToken)
-//         {
-//             var searches = await _searchRepository.GetAllAsync(cancellationToken);
-//             if (!searches.Any()) return NotFound(new { Message = "No searches found." });
-//
-//             var response = searches.Select(search => new SearchResponseDto
-//             {
-//                 Id = search.Id,
-//                 Name = search.Name,
-//                 // Email = search.Email
-//             });
-//
-//             return Ok(response);
-//         }
+using AppBlueprint.Application.Interfaces;
+using AppBlueprint.Contracts.Baseline.Search.Requests;
+using AppBlueprint.Contracts.Baseline.Search.Responses;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
+
+[Authorize]
+[ApiController]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/search")]
+[Produces("application/json")]
+public class SearchController : BaseController
+{
+    private readonly ISearchService<TenantEntity> _tenantSearchService;
+    private readonly ISearchService<UserEntity> _userSearchService;
+
+    public SearchController(
+        IConfiguration configuration,
+        ISearchService<TenantEntity> tenantSearchService,
+        ISearchService<UserEntity> userSearchService)
+        : base(configuration)
+    {
+        ArgumentNullException.ThrowIfNull(tenantSearchService);
+        ArgumentNullException.ThrowIfNull(userSearchService);
+
+        _tenantSearchService = tenantSearchService;
+        _userSearchService = userSearchService;
+    }
+
+    /// <summary>
+    ///     Performs a full-text search across tenants.
+    /// </summary>
+    /// <param name="request">The search query parameters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Paged search results for tenants.</returns>
+    /// <response code="200">Returns the matching tenants.</response>
+    [HttpPost(ApiEndpoints.Search.Tenants)]
+    [ProducesResponseType(typeof(TenantSearchResponse), StatusCodes.Status200OK)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult<TenantSearchResponse>> SearchTenants(
+        [FromBody] SearchRequest request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        SearchQuery query = MapToSearchQuery(request);
+        SearchResult<TenantEntity> result = await _tenantSearchService.SearchAsync(query, cancellationToken);
+
+        return Ok(new TenantSearchResponse
+        {
+            Items = result.Items.Select(item => new TenantSearchItem
+            {
+                Id = item.Entity.Id,
+                Name = item.Entity.Name,
+                Description = item.Entity.Description,
+                RelevanceScore = item.RelevanceScore,
+                Headline = item.Headline,
+                MatchedTerms = item.MatchedTerms.ToList()
+            }).ToList(),
+            TotalCount = result.TotalCount,
+            PageNumber = result.PageNumber,
+            PageSize = result.PageSize,
+            ExecutionTimeMs = result.ExecutionTimeMs,
+            Query = result.Query
+        });
+    }
+
+    /// <summary>
+    ///     Performs a full-text search across users.
+    /// </summary>
+    /// <param name="request">The search query parameters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Paged search results for users.</returns>
+    /// <response code="200">Returns the matching users.</response>
+    [HttpPost(ApiEndpoints.Search.Users)]
+    [ProducesResponseType(typeof(UserSearchResponse), StatusCodes.Status200OK)]
+    [MapToApiVersion(ApiVersions.V1)]
+    public async Task<ActionResult<UserSearchResponse>> SearchUsers(
+        [FromBody] SearchRequest request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        SearchQuery query = MapToSearchQuery(request);
+        SearchResult<UserEntity> result = await _userSearchService.SearchAsync(query, cancellationToken);
+
+        return Ok(new UserSearchResponse
+        {
+            Items = result.Items.Select(item => new UserSearchItem
+            {
+                Id = item.Entity.Id,
+                FirstName = item.Entity.FirstName,
+                LastName = item.Entity.LastName,
+                UserName = item.Entity.UserName,
+                Email = item.Entity.Email,
+                RelevanceScore = item.RelevanceScore,
+                Headline = item.Headline,
+                MatchedTerms = item.MatchedTerms.ToList()
+            }).ToList(),
+            TotalCount = result.TotalCount,
+            PageNumber = result.PageNumber,
+            PageSize = result.PageSize,
+            ExecutionTimeMs = result.ExecutionTimeMs,
+            Query = result.Query
+        });
+    }
+
+    private static SearchQuery MapToSearchQuery(SearchRequest request)
+    {
+        return new SearchQuery
+        {
+            QueryText = request.QueryText,
+            PageSize = request.PageSize,
+            PageNumber = request.PageNumber,
+            MinRelevanceScore = request.MinRelevanceScore,
+            SortBy = request.SortBy,
+            SortDirection = Enum.TryParse<SortDirection>(request.SortDirection, ignoreCase: true, out SortDirection dir)
+                ? dir
+                : SortDirection.Descending
+        };
+    }
+}
+
 //
 //         /// <summary>
 //         /// Gets a search result by ID.
@@ -156,5 +239,3 @@
 //         public string Email { get; set; }
 //     }
 // }
-
-namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;

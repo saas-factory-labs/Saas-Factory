@@ -1,5 +1,10 @@
 using AppBlueprint.Infrastructure;
+using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Extensions;
+using AppBlueprint.Infrastructure.Services.Search;
+using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.Presentation.ApiModule.Middleware;
 using AppBlueprint.ServiceDefaults;
@@ -62,6 +67,12 @@ internal static class Program // Make class static
         builder.Services.AddAppBlueprintConfiguration(builder.Configuration, builder.Environment);
 
         builder.Services.AddAppBlueprintInfrastructure(builder.Configuration, builder.Environment);
+
+        // Register full-text search services for the API search endpoints
+        builder.Services.AddScoped<ISearchService<TenantEntity>,
+            PostgreSqlSearchService<TenantEntity, ApplicationDbContext>>();
+        builder.Services.AddScoped<ISearchService<UserEntity>,
+            PostgreSqlSearchService<UserEntity, ApplicationDbContext>>();
 
         // Add Stripe webhook service
         builder.Services.AddStripeWebhookService(builder.Configuration);

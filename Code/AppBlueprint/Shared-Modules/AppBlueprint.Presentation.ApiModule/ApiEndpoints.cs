@@ -174,4 +174,10 @@ public static class ApiEndpoints
         public const string UpdateById = $"{ControllerBaseUrl}/{{id}}";
         public const string DeleteById = $"{ControllerBaseUrl}/{{id}}";
     }
+
+    internal static class Search
+    {
+        public const string Tenants = "tenants";
+        public const string Users = "users";
+    }
 }
