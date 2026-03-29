@@ -1,6 +1,6 @@
 [build]
 builder = "dockerfile"
-dockerfilePath = "Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile"
+dockerfilePath = "Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile.railway"
 
 [deploy]
 healthcheckPath = "/health"
