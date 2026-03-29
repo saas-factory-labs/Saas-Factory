@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.8](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.6.7...v1.6.8) (2026-03-29)
+
+
+### Bug Fixes
+
+* redirect to login instead of showing Guest in profile dropdown ([b06b6bc](https://github.com/saas-factory-labs/Saas-Factory/commit/b06b6bc12c42ac692ea52180eabb3a11de208ae7))
+
 ## [1.6.7](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.6.6...v1.6.7) (2026-03-29)
 
 
