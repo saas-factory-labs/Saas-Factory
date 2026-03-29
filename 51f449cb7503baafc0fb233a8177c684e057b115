@@ -1,0 +1,28 @@
+Code/AppBlueprint/AppBlueprint.ApiService/Controllers/SystemController.cs
+  0db6fa8faf53cfec 26,44,49-54
+railway.json
+  0db6fa8faf53cfec 5
+Code/AppBlueprint/AppBlueprint.ApiService/AppBlueprint.ApiService.csproj
+  0db6fa8faf53cfec 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "51f449cb7503baafc0fb233a8177c684e057b115",
+  "prompts": {
+    "0db6fa8faf53cfec": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "c7767228-3ec3-4c3b-a49b-6319c2b8cb25",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 282,
+      "total_deletions": 297,
+      "accepted_lines": 282,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/fe55db8ac84648377374882b706c8f4398e3c49684caa8cda0c3d9026fec963c"
+    }
+  }
+}
