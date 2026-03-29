@@ -1,0 +1,26 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/WebAuthenticationExtensions.cs
+  5ae784cece599c85 894-907
+Code/AppBlueprint/AppBlueprint.Web/Components/Pages/RedirectRoot.razor
+  5ae784cece599c85 42-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "0b98c6322389f70ffeadbff94fe4d14806588f61",
+  "prompts": {
+    "5ae784cece599c85": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "14785d7d-aa63-4990-866b-7d65f0d86251",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1172,
+      "total_deletions": 1148,
+      "accepted_lines": 1172,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/a32521f05e0da82bcc8219ec7f06cc51e2549e2c9019fb88dc00f944ee17e7d0"
+    }
+  }
+}
