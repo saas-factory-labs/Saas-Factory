@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.8](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.5.7...v1.5.8) (2026-03-29)
+
+
+### Bug Fixes
+
+* **deploy:** disable HTTPS redirection for Railway SSL termination to prevent 502 errors ([0c8f5be](https://github.com/saas-factory-labs/Saas-Factory/commit/0c8f5beaaa1771cf288c6c350deb0146daf17084))
+
 ## [1.5.7](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.5.6...v1.5.7) (2026-03-29)
 
 
