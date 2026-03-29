@@ -1,0 +1,22 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "d6605873dcbca34cc9db8f09c1793de7e9aafb40",
+  "prompts": {
+    "32dac0176e111314": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "0f68ce47-c743-4c6b-b62b-6c4dff6adadc",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 19,
+      "total_deletions": 23,
+      "accepted_lines": 19,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/328c3835d94340e85084140c3a1f0de7daeb28164d350b3db2ae1b010b8cf7d4"
+    }
+  }
+}
