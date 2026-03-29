@@ -1,7 +1,6 @@
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
 using AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
-using AppBlueprint.SeedTest;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,23 +19,19 @@ internal class SystemController : ControllerBase
     private readonly ApplicationDbContext _dbContext;
     private readonly B2BDbContext _b2bDbContext;
     private readonly ILogger<SystemController> _logger;
-    private readonly ILoggerFactory _loggerFactory;
 
     public SystemController(
         ApplicationDbContext dbContext,
         B2BDbContext b2bDbContext,
-        ILogger<SystemController> logger,
-        ILoggerFactory loggerFactory)
+        ILogger<SystemController> logger)
     {
         ArgumentNullException.ThrowIfNull(dbContext);
         ArgumentNullException.ThrowIfNull(b2bDbContext);
         ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(loggerFactory);
 
         _dbContext = dbContext;
         _b2bDbContext = b2bDbContext;
         _logger = logger;
-        _loggerFactory = loggerFactory;
     }
 
     [HttpPost("migrate")]
@@ -46,22 +41,17 @@ internal class SystemController : ControllerBase
         {
             _logger.LogInformation("Manually applying database migrations...");
 
-            // Check database connection
-            if (await _dbContext.Database.CanConnectAsync())
-            {
-                // Call the seeder as well
-                var dataSeederLogger = _loggerFactory.CreateLogger<DataSeeder>();
-                var dataSeeder = new DataSeeder(_dbContext, _b2bDbContext, dataSeederLogger);
-                await dataSeeder.SeedDatabaseAsync();
-                _logger.LogInformation("Database seeding completed successfully");
-
-                return Ok(new { success = true, message = "Migrations applied successfully" });
-            }
-            else
+            if (!await _dbContext.Database.CanConnectAsync())
             {
                 _logger.LogWarning("Cannot connect to the database");
                 return StatusCode(500, new { success = false, message = "Cannot connect to the database" });
             }
+
+            await _dbContext.Database.MigrateAsync();
+            await _b2bDbContext.Database.MigrateAsync();
+            _logger.LogInformation("Database migrations applied successfully");
+
+            return Ok(new { success = true, message = "Migrations applied successfully" });
         }
         catch (NpgsqlException ex)
         {
