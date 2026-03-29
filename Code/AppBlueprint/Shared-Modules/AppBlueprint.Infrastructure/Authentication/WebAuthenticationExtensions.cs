@@ -98,6 +98,33 @@ public static class WebAuthenticationExtensions
     <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
 </body>
 </html>";
+
+        public const string SignInUnavailableHtml = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign In Unavailable</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #1a1a2e; color: white; padding: 20px; box-sizing: border-box; }
+        .error-box { background: #16213e; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; width: 100%; }
+        h1 { color: #e94560; margin-top: 0; }
+        p { color: #bbe1fa; line-height: 1.6; }
+        .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        a { color: #0f4c75; background: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class='error-box'>
+        <h1>Sign In Unavailable</h1>
+        <p>We were unable to complete the sign-in process. This may be a temporary issue.</p>
+        <p>Please try again in a few moments. If the problem persists, contact support.</p>
+        <div class='actions'>
+            <a href='/auth/signin'>Try Again</a>
+            <a href='/'>Go Home</a>
+        </div>
+    </div>
+</body>
+</html>";
     }
 
     /// <summary>
@@ -695,7 +722,7 @@ public static class WebAuthenticationExtensions
 
         if (!context.Response.HasStarted)
         {
-            context.Response.StatusCode = 200;
+            context.Response.StatusCode = 500;
             context.Response.ContentType = "text/html";
 
             await context.Response.WriteAsync(GenerateDynamicErrorHtml(context));
@@ -894,18 +921,22 @@ public static class WebAuthenticationExtensions
                     Console.WriteLine(LogSeparator);
                     return;
                 }
-                catch (InvalidOperationException ex)
+                catch (Exception ex)
                 {
+                    // Log full details server-side only — never expose exception details to the client
                     Console.WriteLine($"[Web] ❌ ERROR in ChallengeAsync: {ex.GetType().Name}");
                     Console.WriteLine($"[Web] ❌ Message: {ex.Message}");
-                    Console.WriteLine($"[Web] ❌ Stack trace: {ex.StackTrace}");
                     if (ex.InnerException is not null)
                     {
                         Console.WriteLine($"[Web] ❌ Inner exception: {ex.InnerException.GetType().Name}");
                         Console.WriteLine($"[Web] ❌ Inner message: {ex.InnerException.Message}");
                     }
                     Console.WriteLine(LogSeparator);
-                    context.Response.Redirect("/auth/error?reason=service_unavailable");
+
+                    // Return 500 with a generic message — do NOT leak exception details to the browser
+                    context.Response.StatusCode = 500;
+                    context.Response.ContentType = "text/html; charset=utf-8";
+                    await context.Response.WriteAsync(HtmlTemplates.SignInUnavailableHtml);
                     return;
                 }
             }
