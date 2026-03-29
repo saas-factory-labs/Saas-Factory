@@ -1,4 +1,5 @@
 @page "/onboarding"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @layout AuthLayout
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
 @using AppBlueprint.Web.Models.Auth
@@ -19,17 +20,7 @@
     <div class="relative min-h-screen flex flex-col justify-center py-6 px-4">
         <div class="w-full max-w-4xl mx-auto">
             
-            @if (!_isInitialized)
-            {
-                <!-- Waiting for interactive circuit connection -->
-                <div class="text-center">
-                    <div class="mb-6">
-                        <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto"></div>
-                    </div>
-                    <p class="text-gray-600 dark:text-gray-400">Loading...</p>
-                </div>
-            }
-            else if (isProcessing)
+            @if (isProcessing)
             {
                 <!-- Loading State -->
                 <div class="text-center">
@@ -320,7 +311,6 @@
 </main>
 
 @code {
-    private bool _isInitialized;
     private bool showAccountTypeSelection = true;
     private bool showPersonalForm;
     private bool showBusinessForm;
@@ -332,17 +322,6 @@
 
     private PersonalSignupModel personalModel = new();
     private BusinessSignupModel businessModel = new();
-
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _isInitialized = true;
-            StateHasChanged();
-        }
-
-        return Task.CompletedTask;
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -358,7 +337,7 @@
             if (!string.IsNullOrEmpty(tenantIdClaim))
             {
                 Logger.LogInformation("[Onboarding] User already has tenant_id: {TenantId} - redirecting to dashboard", tenantIdClaim);
-                Navigation.NavigateTo("/", forceLoad: true);
+                Navigation.NavigateTo("/dashboard", forceLoad: false);
                 return;
             }
 
@@ -441,6 +420,7 @@
             // Show success state
             isProcessing = false;
             isSuccess = true;
+            showPersonalForm = false;
             StateHasChanged();
             
             Logger.LogInformation("[Onboarding] Personal account setup complete");
@@ -501,6 +481,7 @@
             // Show success state
             isProcessing = false;
             isSuccess = true;
+            showBusinessForm = false;
             StateHasChanged();
             
             Logger.LogInformation("[Onboarding] Business account setup complete");
