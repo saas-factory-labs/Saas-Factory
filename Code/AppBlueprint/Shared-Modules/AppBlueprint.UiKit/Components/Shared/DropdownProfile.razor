@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IConfiguration Configuration
+@inject NavigationManager Navigation
 @implements IDisposable
 
 <div class="relative inline-flex" @ref="dropdownRef">
@@ -133,9 +134,9 @@
             }
             else
             {
-                displayName = "Guest";
-                userRole = "Not authenticated";
-                Console.WriteLine("[DropdownProfile] User not authenticated");
+                Console.WriteLine("[DropdownProfile] User not authenticated - redirecting to login");
+                Navigation.NavigateTo("/signup", forceLoad: true);
+                return;
             }
         }
         catch (Exception ex)
