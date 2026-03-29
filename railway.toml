@@ -1,7 +1,0 @@
-[build]
-builder = "dockerfile"
-dockerfilePath = "Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile.railway"
-
-[deploy]
-restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 10
