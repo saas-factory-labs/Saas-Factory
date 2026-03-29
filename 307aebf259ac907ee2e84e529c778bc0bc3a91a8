@@ -1,0 +1,48 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/ApiEndpoints.cs
+  cd1282741413b14e 177-182
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/Models/TenantSearchResponseDto.cs
+  cd1282741413b14e 1-77
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/Api/V1/V1RequestBuilder.cs
+  cd1282741413b14e 11,69-73
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/SearchController.cs
+  cd1282741413b14e 1-128
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/Models/UserSearchItemDto.cs
+  cd1282741413b14e 1-115
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/Api/V1/Search/SearchRequestBuilder.cs
+  cd1282741413b14e 1-44
+Code/AppBlueprint/AppBlueprint.Web/Program.cs
+  cd1282741413b14e 206,208,210
+Code/AppBlueprint/AppBlueprint.ApiService/Program.cs
+  cd1282741413b14e 2-4,6-7,71-76
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Search/Responses/UserSearchResponse.cs
+  cd1282741413b14e 1-23
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Search/Responses/TenantSearchResponse.cs
+  cd1282741413b14e 1-21
+Code/AppBlueprint/AppBlueprint.Web/Services/HttpUserSearchService.cs
+  cd1282741413b14e 1-91
+Code/AppBlueprint/AppBlueprint.Web/Services/HttpTenantSearchService.cs
+  cd1282741413b14e 4
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Search/Requests/SearchRequest.cs
+  cd1282741413b14e 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "307aebf259ac907ee2e84e529c778bc0bc3a91a8",
+  "prompts": {
+    "cd1282741413b14e": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "956f60be-36c9-4639-acbe-0e0dcea5ffbe",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1608,
+      "total_deletions": 1030,
+      "accepted_lines": 1518,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/40a94cfa7137a6c5918954e38afca674e295d83329149db9e426678839d2d870"
+    }
+  }
+}
