@@ -1,0 +1,24 @@
+Code/AppBlueprint/AppBlueprint.Web/Program.cs
+  32dac0176e111314 290-295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "0c8f5beaaa1771cf288c6c350deb0146daf17084",
+  "prompts": {
+    "32dac0176e111314": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "0f68ce47-c743-4c6b-b62b-6c4dff6adadc",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 435,
+      "total_deletions": 440,
+      "accepted_lines": 435,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/73feaf8a85daad579287ce23b9688ee8d08739762c48c2ae71c51d4fa3932c26"
+    }
+  }
+}
