@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.5.0...v1.5.1) (2026-03-29)
+
+
+### Bug Fixes
+
+* **auth:** prevent raw exception details from being sent to users ([83cb10b](https://github.com/saas-factory-labs/Saas-Factory/commit/83cb10b36e1a3f1520f4dd607ddc802e44855f9d))
+
 # [1.5.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.4.0...v1.5.0) (2026-03-16)
 
 
