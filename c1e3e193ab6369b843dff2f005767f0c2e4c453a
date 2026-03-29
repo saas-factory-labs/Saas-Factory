@@ -1,0 +1,24 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/WebAuthenticationExtensions.cs
+  0db6fa8faf53cfec 100-126,725,924,926,935-939
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "c1e3e193ab6369b843dff2f005767f0c2e4c453a",
+  "prompts": {
+    "0db6fa8faf53cfec": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "c7767228-3ec3-4c3b-a49b-6319c2b8cb25",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1144,
+      "total_deletions": 1113,
+      "accepted_lines": 1142,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/003b67b9585628b0492b4a12cb7958eb6a6183683fe7a4c29670ec9b46beaeee"
+    }
+  }
+}
