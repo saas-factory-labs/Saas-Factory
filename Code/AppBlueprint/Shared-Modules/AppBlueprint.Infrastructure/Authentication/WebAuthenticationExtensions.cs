@@ -98,33 +98,6 @@ public static class WebAuthenticationExtensions
     <p>If not redirected automatically, <a href='/login'>click here</a>.</p>
 </body>
 </html>";
-
-        public const string SignInUnavailableHtml = @"
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sign In Unavailable</title>
-    <style>
-        body { font-family: system-ui, -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #1a1a2e; color: white; padding: 20px; box-sizing: border-box; }
-        .error-box { background: #16213e; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; width: 100%; }
-        h1 { color: #e94560; margin-top: 0; }
-        p { color: #bbe1fa; line-height: 1.6; }
-        .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-        a { color: #0f4c75; background: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; }
-    </style>
-</head>
-<body>
-    <div class='error-box'>
-        <h1>Sign In Unavailable</h1>
-        <p>We were unable to complete the sign-in process. This may be a temporary issue.</p>
-        <p>Please try again in a few moments. If the problem persists, contact support.</p>
-        <div class='actions'>
-            <a href='/auth/signin'>Try Again</a>
-            <a href='/'>Go Home</a>
-        </div>
-    </div>
-</body>
-</html>";
     }
 
     /// <summary>
@@ -156,6 +129,22 @@ public static class WebAuthenticationExtensions
         }
         else
         {
+            // In production, authentication must be fully configured.
+            // Silently falling back to a bare Cookies scheme causes a runtime crash
+            // the first time any endpoint challenges with the "Logto" scheme.
+            // Failing fast at startup produces a clear error in the deployment logs.
+            if (!environment.IsDevelopment())
+            {
+                throw new InvalidOperationException(
+                    "Authentication is not configured. " +
+                    "Set the following environment variables in your Railway web service:\n" +
+                    "  LOGTO_ENDPOINT   — e.g. https://32nkyp.logto.app\n" +
+                    "  LOGTO_APPID      — Logto Application ID\n" +
+                    "  LOGTO_APPSECRET  — Logto Application Secret\n" +
+                    "  LOGTO_APIRESOURCE — (optional) API resource indicator\n" +
+                    "These must be set directly on the web service, not only in AppHost.");
+            }
+
             ConfigureFallbackAuthentication(services);
         }
 
@@ -723,45 +712,8 @@ public static class WebAuthenticationExtensions
         if (!context.Response.HasStarted)
         {
             context.Response.StatusCode = 500;
-            context.Response.ContentType = "text/html";
-
-            await context.Response.WriteAsync(GenerateDynamicErrorHtml(context));
             context.HandleResponse();
         }
-    }
-
-    private static string GenerateDynamicErrorHtml(RemoteFailureContext context)
-    {
-        // Log full details server-side for debugging purposes
-        Console.WriteLine($"[Web] GenerateDynamicErrorHtml - full error: {context.Failure?.Message}");
-        Console.WriteLine($"[Web] GenerateDynamicErrorHtml - inner: {context.Failure?.InnerException?.Message}");
-
-        return @"
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Authentication Error</title>
-    <style>
-        body { font-family: system-ui; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #1a1a2e; color: white; padding: 20px; box-sizing: border-box; }
-        .error-box { background: #16213e; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; width: 100%; }
-        h1 { color: #e94560; }
-        p { color: #bbe1fa; line-height: 1.6; }
-        .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-        a { color: #0f4c75; background: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; }
-    </style>
-</head>
-<body>
-    <div class='error-box'>
-        <h1>Sign In Unavailable</h1>
-        <p>We were unable to complete the sign-in process. This may be a temporary issue.</p>
-        <p>Please try again in a few moments. If the problem persists, contact support.</p>
-        <div class='actions'>
-            <a href='/auth/signin'>Try Again</a>
-            <a href='/'>Go Home</a>
-        </div>
-    </div>
-</body>
-</html>";
     }
 
     /// <summary>
@@ -933,10 +885,8 @@ public static class WebAuthenticationExtensions
                     }
                     Console.WriteLine(LogSeparator);
 
-                    // Return 500 with a generic message — do NOT leak exception details to the browser
+                    // Return 500 with no body — do NOT leak any details to the browser
                     context.Response.StatusCode = 500;
-                    context.Response.ContentType = "text/html; charset=utf-8";
-                    await context.Response.WriteAsync(HtmlTemplates.SignInUnavailableHtml);
                     return;
                 }
             }

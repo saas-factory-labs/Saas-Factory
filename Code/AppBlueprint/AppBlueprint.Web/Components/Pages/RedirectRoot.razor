@@ -5,49 +5,27 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-@if (!string.IsNullOrEmpty(_errorMessage))
-{
-    <div class="mb-4 p-4 text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
-        @_errorMessage
-    </div>
-}
-
 <div class="flex justify-center items-center h-screen">
     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
     <span class="ml-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Checking authentication...</span>
 </div>
 
 @code {
-    private string? _errorMessage;
-    
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine("========================================");
         Console.WriteLine("[RedirectRoot] OnInitializedAsync START");
         Console.WriteLine("========================================");
-        
-        // Check for authentication error in query string
+
+        // Log any auth-error query param server-side only — never surface to the user
         var uri = new Uri(Navigation.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
         var authError = query["auth-error"];
-        
         if (!string.IsNullOrEmpty(authError))
         {
-            _errorMessage = authError switch
-            {
-                "session-expired" => "Your login session expired. Please sign in again.",
-                "redirect-uri-mismatch" => "❌ Redirect URI not configured in Logto. Please add the correct redirect URI to your Logto application's settings.",
-                "logto-unreachable" => "Cannot connect to the authentication provider. Please check your network connection.",
-                "network-failed" => "Network error during authentication. Please try again.",
-                "auth-failed" => "Authentication failed. Please try again or contact support.",
-                "remote-failed" => "Authentication service error. This may be a configuration issue. Check the logs for details.",
-                "challenge-failed" => "Failed to initiate authentication. Please try again.",
-                _ => "Authentication error occurred. Please try again or check the application logs."
-            };
-            
-            Console.WriteLine($"[RedirectRoot] ❌ Authentication error: {authError}");
-            Console.WriteLine($"[RedirectRoot] Error message: {_errorMessage}");
+            Console.WriteLine($"[RedirectRoot] ❌ Authentication error code: {authError}");
         }
+
         
         // Check if user is authenticated using ASP.NET Core auth state
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
