@@ -1,0 +1,26 @@
+railway.json
+  0db6fa8faf53cfec 5
+railway.toml
+  0db6fa8faf53cfec 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "47b2b9232e001b30102ad4b5e6818656bf9f61e8",
+  "prompts": {
+    "0db6fa8faf53cfec": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "c7767228-3ec3-4c3b-a49b-6319c2b8cb25",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 23,
+      "total_deletions": 23,
+      "accepted_lines": 23,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/29c3460b51e5eb06f6cb84aa9a3e8f902bb21cc2a2671ce106418ab7824b1db3"
+    }
+  }
+}
