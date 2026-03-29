@@ -287,17 +287,12 @@ app.UseStatusCodePagesWithReExecute("/not-found");
 app.UseForwardedHeaders();
 
 app.UseRouting();
-// Force HTTPS for OAuth authentication to work correctly
-// Disabled in development to avoid cookie issues with self-signed certificates
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-    Console.WriteLine("[Web] HTTPS redirection enabled (production)");
-}
-else
-{
-    Console.WriteLine("[Web] HTTPS redirection disabled (development - avoiding cookie issues)");
-}
+// HTTPS redirection is intentionally disabled: Railway handles SSL termination at the proxy
+// level and forwards plain HTTP to the container. Enabling UseHttpsRedirection() here would
+// redirect Railway's internal HTTP connections to HTTPS (unreachable inside the container),
+// causing 502 errors. ForwardedHeaders (X-Forwarded-Proto: https) already ensures that
+// redirect URIs and auth callbacks use the correct public HTTPS URL.
+Console.WriteLine("[Web] HTTPS redirection disabled (Railway handles SSL termination)");
 
 // Serve static files FIRST - before security headers to ensure proper Content-Type is set
 app.UseStaticFiles();
