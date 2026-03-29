@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.7](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.5.6...v1.5.7) (2026-03-29)
+
+
+### Bug Fixes
+
+* **deploy:** add Dockerfile.railway for web with dynamic PORT binding to fix Railway 502 error ([49888e8](https://github.com/saas-factory-labs/Saas-Factory/commit/49888e8bfee12d7e510e4466efc7ffc5db876546))
+
 ## [1.5.6](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.5.5...v1.5.6) (2026-03-29)
 
 
