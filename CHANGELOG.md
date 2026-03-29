@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.2](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.6.1...v1.6.2) (2026-03-29)
+
+
+### Bug Fixes
+
+* **onboarding:** fix invisible icon/title and cut-off buttons on account setup forms ([853989a](https://github.com/saas-factory-labs/Saas-Factory/commit/853989a5ced02433aae9249f0aec8360f29dd7c4))
+
 ## [1.6.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.6.0...v1.6.1) (2026-03-29)
 
 
