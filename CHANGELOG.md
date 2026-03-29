@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.4](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.5.3...v1.5.4) (2026-03-29)
+
+
+### Bug Fixes
+
+* set dockerContext to Code/AppBlueprint in root railway configs ([5e4622b](https://github.com/saas-factory-labs/Saas-Factory/commit/5e4622b5fd4e9a498868b88695df157ba9ff1718))
+
 ## [1.5.3](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.5.2...v1.5.3) (2026-03-29)
 
 
