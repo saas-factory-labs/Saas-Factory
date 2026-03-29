@@ -283,7 +283,16 @@ public static class WebAuthenticationExtensions
         })
         .AddOpenIdConnect(LogtoScheme, options =>
         {
-            options.Authority = logtoEndpoint;
+            // Logto's OIDC discovery endpoint lives under /oidc, so the authority
+            // must include the /oidc path segment. Without it, the middleware would
+            // try https://<tenant>/.well-known/openid-configuration (404).
+            string? oidcBase = string.IsNullOrEmpty(logtoEndpoint)
+                ? logtoEndpoint
+                : logtoEndpoint.TrimEnd('/') + "/oidc";
+            options.Authority = oidcBase;
+            options.MetadataAddress = string.IsNullOrEmpty(oidcBase)
+                ? null
+                : $"{oidcBase}/.well-known/openid-configuration";
             options.ClientId = logtoAppId ?? string.Empty;
             options.ClientSecret = logtoAppSecret;
 
