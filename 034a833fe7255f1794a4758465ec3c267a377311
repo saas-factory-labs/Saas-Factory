@@ -1,0 +1,24 @@
+Code/AppBlueprint/AppBlueprint.Web/Components/Pages/Auth/Onboarding.razor
+  48bce612a6552fd2 70-73,99-101,108-117,143-145,152-158,161-162,165-168,170-180,182-190,193-202,208-216,219-220,223-226,229-231,235-237,240-250,252-260,263-272
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "034a833fe7255f1794a4758465ec3c267a377311",
+  "prompts": {
+    "48bce612a6552fd2": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "a140ba6b-abdb-4753-afcf-3380851cd202",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 582,
+      "total_deletions": 566,
+      "accepted_lines": 495,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/695b0a4ad8f7d9e56522f1fbdb76e386e89803d4c128ccc811c7dafa418eb4bd"
+    }
+  }
+}
