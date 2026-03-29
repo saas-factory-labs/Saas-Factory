@@ -39,10 +39,23 @@
         
         if (isAuthenticated)
         {
-            // Authenticated users go to dashboard
-            Console.WriteLine("[RedirectRoot] ✅ User is authenticated - redirecting to /dashboard");
-            Console.WriteLine("========================================");
-            Navigation.NavigateTo("/dashboard", forceLoad: false);
+            // Check if user has completed onboarding (has a tenant_id claim)
+            string? tenantIdClaim = user.FindFirst("tenant_id")?.Value;
+
+            if (!string.IsNullOrEmpty(tenantIdClaim))
+            {
+                // User has a tenant - go to dashboard
+                Console.WriteLine($"[RedirectRoot] ✅ User is authenticated with tenant {tenantIdClaim} - redirecting to /dashboard");
+                Console.WriteLine("========================================");
+                Navigation.NavigateTo("/dashboard", forceLoad: false);
+            }
+            else
+            {
+                // User is authenticated but has no tenant yet - must complete onboarding first
+                Console.WriteLine("[RedirectRoot] ⚠️ User is authenticated but has no tenant_id claim - redirecting to /onboarding");
+                Console.WriteLine("========================================");
+                Navigation.NavigateTo("/onboarding", forceLoad: false);
+            }
         }
         else
         {

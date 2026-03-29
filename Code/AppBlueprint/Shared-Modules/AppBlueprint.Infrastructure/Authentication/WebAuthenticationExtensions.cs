@@ -891,9 +891,20 @@ public static class WebAuthenticationExtensions
                 }
             }
 
-            Console.WriteLine("[Web] User already authenticated - redirecting to /");
-            Console.WriteLine(LogSeparator);
-            context.Response.Redirect("/");
+            // Check if user has completed onboarding (has a tenant_id claim)
+            string? tenantId = context.User?.FindFirst("tenant_id")?.Value;
+            if (!string.IsNullOrEmpty(tenantId))
+            {
+                Console.WriteLine($"[Web] User already authenticated with tenant {tenantId} - redirecting to /dashboard");
+                Console.WriteLine(LogSeparator);
+                context.Response.Redirect("/dashboard");
+            }
+            else
+            {
+                Console.WriteLine("[Web] User already authenticated but has no tenant - redirecting to /onboarding");
+                Console.WriteLine(LogSeparator);
+                context.Response.Redirect("/onboarding");
+            }
         }).AllowAnonymous();
     }
 
