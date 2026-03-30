@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.3](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.9.2...v1.9.3) (2026-03-30)
+
+
+### Bug Fixes
+
+* **welcome-banner:** guard against empty string claims for display name ([497bf84](https://github.com/saas-factory-labs/Saas-Factory/commit/497bf84fdfdd145a3ec86f618e9e0e4f3ab6bd14))
+
 ## [1.9.2](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.9.1...v1.9.2) (2026-03-30)
 
 ## [1.9.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.9.0...v1.9.1) (2026-03-30)
