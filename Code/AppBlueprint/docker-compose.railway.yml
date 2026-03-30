@@ -26,7 +26,7 @@ services:
       # Railway provides PORT environment variable
       - ASPNETCORE_URLS=http://+:${PORT:-80}
       # API Service URL (from Railway internal DNS or public URL)
-      - APISERVICE_BASEURL=${API_SERVICE_URL:-http://api-service:80}
+      - API_BASE_URL=${API_SERVICE_URL:-http://api-service:80}
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
       - DOTNET_ENVIRONMENT=${DOTNET_ENVIRONMENT:-Production}

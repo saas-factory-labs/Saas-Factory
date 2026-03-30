@@ -16,6 +16,7 @@ services:
       - DOTNET_USE_POLLING_FILE_WATCHER=1
       - ASPNETCORE_URLS=http://+:80  # Internal only inside the container
       - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - API_BASE_URL=http://api-service:80
     command: ["dotnet", "watch", "run", "--project", "AppBlueprint.Web.csproj", "--urls", "http://+:80"]
     depends_on:
       - api-service
