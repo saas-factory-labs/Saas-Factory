@@ -53,7 +53,7 @@ jobs:
         id: build-and-push
         uses: useblacksmith/build-push-action@v2
         with:
-          context: ./Code/AppBlueprint/  # Adjust context for your Dockerfile's location
+          context: .  # Repo root - Dockerfile COPY paths are prefixed with Code/AppBlueprint/
           file: ./Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile
           target: final  # Use 'dev' if you want a development build
           push: ${{ github.event_name != 'pull_request' }}
