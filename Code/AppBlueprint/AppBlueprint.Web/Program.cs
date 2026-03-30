@@ -300,14 +300,10 @@ app.UseStaticFiles();
 // Security Headers Middleware - Add security headers to all responses
 app.Use(async (context, next) =>
 {
-    // Remove headers that leak real server technology details
+    // Remove headers that leak server technology details
     context.Response.Headers.Remove("Server");
     context.Response.Headers.Remove("X-Powered-By");
     context.Response.Headers.Remove("X-AspNet-Version");
-
-    // Deception headers - mislead attackers with false server technology information
-    context.Response.Headers.Append("Server", "Apache/2.4.62 (Ubuntu)");
-    context.Response.Headers.Append("X-Powered-By", "PHP/8.2.28");
 
     // Prevent MIME-sniffing attacks
     context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
@@ -325,11 +321,11 @@ app.Use(async (context, next) =>
     // Note: Adjust this policy based on your application's requirements
     context.Response.Headers.Append("Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://cdn.jsdelivr.net https://www.gstatic.com; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://www.gstatic.com; " +
-        "font-src 'self' https://fonts.gstatic.com; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "font-src 'self'; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' https://32nkyp.logto.app wss: ws: https://cdn.jsdelivr.net https://www.gstatic.com https://*.firebaseio.com https://*.googleapis.com;");
+        "connect-src 'self' https://32nkyp.logto.app wss: ws: https://www.gstatic.com https://*.firebaseio.com https://*.googleapis.com;");
 
     // Permissions Policy - control browser features
     context.Response.Headers.Append("Permissions-Policy",

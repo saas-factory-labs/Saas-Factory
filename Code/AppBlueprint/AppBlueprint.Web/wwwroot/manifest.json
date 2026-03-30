@@ -19,6 +19,5 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "AppBlueprint Multi-Tenant SaaS Platform",
-  "gcm_sender_id": "103953800507"
+  "description": "AppBlueprint Multi-Tenant SaaS Platform"
 }

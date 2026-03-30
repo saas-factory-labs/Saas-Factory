@@ -2,8 +2,8 @@
 // Place this file in the wwwroot folder as firebase-messaging-sw.js
 
 importScripts(
-  'https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js',
-  'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js'
+  '/js/firebase-app-compat.js',
+  '/js/firebase-messaging-compat.js'
 );
 
 // Firebase config will be fetched from server endpoint
