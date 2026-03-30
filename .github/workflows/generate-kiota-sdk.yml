@@ -1,0 +1,183 @@
+name: "🤖 Generate: Kiota API Client SDK"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Code/AppBlueprint/AppBlueprint.ApiService/**"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/**"
+      - ".github/workflows/generate-kiota-sdk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  DOTNET_VERSION: '10.0'
+  KIOTA_VERSION: '1.23.0'
+  SDK_OUTPUT_DIR: Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk
+  SWAGGER_FILE: Code/AppBlueprint/AppBlueprint.ApiService/swagger.json
+  API_PORT: 8081
+
+jobs:
+  generate-kiota-sdk:
+    name: Regenerate Kiota SDK
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.KIOTA_POSTGRES_PASSWORD }}
+          POSTGRES_DB: appblueprint
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@baa11fbfe1d6520db94683bd5c7a3818018e4309  # v5.1.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          global-json-file: global.json
+
+      - name: Restore dependencies
+        working-directory: Code/AppBlueprint
+        run: dotnet restore
+
+      - name: Build ApiService
+        working-directory: Code/AppBlueprint/AppBlueprint.ApiService
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Start ApiService in background
+        working-directory: Code/AppBlueprint/AppBlueprint.ApiService
+        env:
+          DATABASE_CONNECTIONSTRING: "Host=localhost;Port=5432;Database=appblueprint;Username=postgres;Password=${{ secrets.KIOTA_POSTGRES_PASSWORD }}"
+          ASPNETCORE_ENVIRONMENT: Development
+          ASPNETCORE_URLS: "http://localhost:${{ env.API_PORT }}"
+          # Logto placeholders — only needed to pass startup validation.
+          # JWT token validation is lazy and never called during swagger generation.
+          AUTHENTICATION_PROVIDER: Logto
+          LOGTO_ENDPOINT: "https://placeholder.logto.app"
+          LOGTO_APPID: "placeholder-client-id"
+          LOGTO_APIRESOURCE: "https://api.placeholder.local"
+        run: |
+          dotnet run --no-build --configuration Release &
+          echo $! > /tmp/apiservice.pid
+          echo "ApiService started with PID $(cat /tmp/apiservice.pid)"
+
+      - name: Wait for ApiService swagger endpoint
+        run: |
+          echo "Waiting for ApiService to be ready on port ${{ env.API_PORT }}..."
+          for i in $(seq 1 30); do
+            if curl -sf "http://localhost:${{ env.API_PORT }}/swagger/v1/swagger.json" > /dev/null 2>&1; then
+              echo "ApiService is ready after ${i} attempts"
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "::error::ApiService failed to become ready within 60 seconds"
+              cat /tmp/apiservice.pid | xargs kill 2>/dev/null || true
+              exit 1
+            fi
+            echo "Attempt $i/30 — retrying in 2 seconds..."
+            sleep 2
+          done
+
+      - name: Fetch swagger.json from running ApiService
+        run: |
+          curl -sf "http://localhost:${{ env.API_PORT }}/swagger/v1/swagger.json" \
+            -o "${{ env.SWAGGER_FILE }}"
+          echo "Fetched swagger.json ($(wc -c < ${{ env.SWAGGER_FILE }}) bytes)"
+
+      - name: Stop ApiService
+        if: always()
+        run: |
+          if [ -f /tmp/apiservice.pid ]; then
+            kill "$(cat /tmp/apiservice.pid)" 2>/dev/null || true
+            rm -f /tmp/apiservice.pid
+          fi
+
+      - name: Install Kiota CLI
+        run: dotnet tool install --global Microsoft.OpenApi.Kiota --version ${{ env.KIOTA_VERSION }}
+
+      - name: Regenerate Kiota SDK
+        working-directory: ${{ env.SDK_OUTPUT_DIR }}
+        run: |
+          kiota generate \
+            --language CSharp \
+            --class-name ApiClient \
+            --namespace-name AppBlueprint.Api.Client.Sdk \
+            --openapi "$GITHUB_WORKSPACE/${{ env.SWAGGER_FILE }}" \
+            --output . \
+            --clean-output \
+            --serializer Microsoft.Kiota.Serialization.Json.JsonSerializationWriterFactory \
+            --serializer Microsoft.Kiota.Serialization.Text.TextSerializationWriterFactory \
+            --serializer Microsoft.Kiota.Serialization.Form.FormSerializationWriterFactory \
+            --serializer Microsoft.Kiota.Serialization.Multipart.MultipartSerializationWriterFactory \
+            --deserializer Microsoft.Kiota.Serialization.Json.JsonParseNodeFactory \
+            --deserializer Microsoft.Kiota.Serialization.Text.TextParseNodeFactory \
+            --deserializer Microsoft.Kiota.Serialization.Form.FormParseNodeFactory
+
+      - name: Build SDK to verify generation
+        run: dotnet build ${{ env.SDK_OUTPUT_DIR }} --no-restore --configuration Release
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet -- "${{ env.SDK_OUTPUT_DIR }}" "${{ env.SWAGGER_FILE }}" \
+            && echo "changed=false" >> $GITHUB_OUTPUT \
+            || echo "changed=true" >> $GITHUB_OUTPUT
+          echo "Files changed: $(git diff --name-only -- "${{ env.SDK_OUTPUT_DIR }}" "${{ env.SWAGGER_FILE }}" | wc -l)"
+
+      - name: Create Pull Request
+        if: steps.diff.outputs.changed == 'true'
+        id: create-pr
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f  # v7.0.5
+        with:
+          token: ${{ secrets.GH_ACTION_SCHEMA_AUTOMATION_TOKEN || github.token }}
+          commit-message: "chore(kiota): regenerate API client SDK from live swagger.json [skip ci]"
+          title: "🤖 chore(kiota): regenerate API client SDK"
+          body: |
+            ## Automated Kiota SDK Regeneration
+
+            This PR regenerates the Kiota API client SDK by starting the ApiService, fetching its live `swagger.json`, and re-running `kiota generate`.
+
+            **Source:** `AppBlueprint.ApiService/swagger.json` (fetched from running service)
+            **Output:** `Shared-Modules/AppBlueprint.Api.Client.Sdk/`
+            **Kiota version:** ${{ env.KIOTA_VERSION }}
+            **Triggered by:** Changes to `AppBlueprint.ApiService/` or `Presentation.ApiModule/`
+
+            ---
+            ✅ Safe to merge — the SDK build was verified as part of generation.
+          branch: automated/kiota-sdk-regeneration
+          delete-branch: true
+          labels: |
+            automated
+            kiota
+          add-paths: |
+            ${{ env.SDK_OUTPUT_DIR }}
+            ${{ env.SWAGGER_FILE }}
+
+      - name: Enable auto-merge
+        if: steps.create-pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr merge ${{ steps.create-pr.outputs.pull-request-number }} \
+            --auto \
+            --squash \
+            --subject "chore(kiota): regenerate API client SDK from live swagger.json"
+
+      - name: No changes detected
+        if: steps.diff.outputs.changed == 'false'
+        run: echo "SDK is already up to date — no PR needed."
