@@ -2,6 +2,8 @@
 @layout AuthLayout
 @attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
 
 <main class="min-h-screen bg-slate-900">
     <div class="relative min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -111,10 +113,10 @@
             <!-- Footer -->
             <div class="text-center">
                 <p class="text-sm text-slate-400">
-                    Already have an account? 
-                    <a class="font-medium text-indigo-400 hover:text-indigo-300 ml-1" href="/auth/signin">
+                    Already have an account?
+                    <button type="button" @onclick="HandleSignIn" class="font-medium text-indigo-400 hover:text-indigo-300 ml-1 bg-transparent border-0 p-0 cursor-pointer">
                         Sign in
-                    </a>
+                    </button>
                 </p>
             </div>
 
@@ -123,12 +125,35 @@
 </main>
 
 @code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            string? tenantId = user.FindFirst("tenant_id")?.Value;
+            Navigation.NavigateTo(
+                !string.IsNullOrEmpty(tenantId) ? "/dashboard" : "/onboarding",
+                forceLoad: false);
+        }
+    }
+
     /// <summary>
-    /// Redirects to Logto authentication.
+    /// Redirects to Logto authentication for new account creation.
     /// After successful authentication, user will be redirected to /onboarding
     /// where they can fill in their profile details and choose account type.
     /// </summary>
     private void HandleSignup()
+    {
+        Navigation.NavigateTo("/auth/signin", forceLoad: true);
+    }
+
+    /// <summary>
+    /// Uses forceLoad to bypass Blazor's client-side router and hit the /auth/signin
+    /// minimal API endpoint which performs the OIDC challenge against Logto.
+    /// </summary>
+    private void HandleSignIn()
     {
         Navigation.NavigateTo("/auth/signin", forceLoad: true);
     }

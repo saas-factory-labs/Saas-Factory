@@ -299,12 +299,10 @@ public static class WebAuthenticationExtensions
         })
         .AddOpenIdConnect(LogtoScheme, options =>
         {
-            // Logto's OIDC discovery endpoint lives under /oidc, so the authority
-            // must include the /oidc path segment. Without it, the middleware would
-            // try https://<tenant>/.well-known/openid-configuration (404).
-            string? oidcBase = string.IsNullOrEmpty(logtoEndpoint)
-                ? logtoEndpoint
-                : logtoEndpoint.TrimEnd('/') + "/oidc";
+            // Normalize the endpoint so the OIDC authority always ends with /oidc.
+            // Accepts both https://tenant.logto.app and https://tenant.logto.app/oidc
+            // so the Doppler/env value can be set either way without double-appending.
+            string? oidcBase = NormalizeLogtoOidcEndpoint(logtoEndpoint);
             options.Authority = oidcBase;
             options.MetadataAddress = string.IsNullOrEmpty(oidcBase)
                 ? null
@@ -862,14 +860,18 @@ public static class WebAuthenticationExtensions
             {
                 Console.WriteLine("[Web] User NOT authenticated - calling ChallengeAsync to redirect to Logto");
                 Console.WriteLine("[Web] Redirect URI after login: /");
-                Console.WriteLine($"[Web] Expected callback URL: {context.Request.Scheme}://{context.Request.Host}/Callback");
+                Console.WriteLine($"[Web] Expected callback URL: {context.Request.Scheme}://{context.Request.Host}/callback");
 
                 try
                 {
+                    // Explicitly challenge with the Logto scheme so the OIDC middleware
+                    // redirects the browser to the Logto authorization endpoint.
+                    // Using the explicit scheme name is more reliable than relying on
+                    // DefaultChallengeScheme resolution, which can vary by runtime context.
                     await context.ChallengeAsync(LogtoScheme, new AuthenticationProperties { RedirectUri = "/" });
                     Console.WriteLine("[Web] ✅ ChallengeAsync(LogtoScheme) completed - should redirect to Logto now");
                     Console.WriteLine("[Web] ⚠️ IMPORTANT: Make sure your Logto application has this redirect URI configured:");
-                    Console.WriteLine($"[Web]    - {context.Request.Scheme}://{context.Request.Host}/Callback");
+                    Console.WriteLine($"[Web]    - {context.Request.Scheme}://{context.Request.Host}/callback");
                     Console.WriteLine(LogSeparator);
                     return;
                 }
@@ -883,10 +885,13 @@ public static class WebAuthenticationExtensions
                         Console.WriteLine($"[Web] ❌ Inner exception: {ex.InnerException.GetType().Name}");
                         Console.WriteLine($"[Web] ❌ Inner message: {ex.InnerException.Message}");
                     }
+                    Console.WriteLine("[Web] ❌ Check LOGTO_ENDPOINT, LOGTO_APPID, LOGTO_APPSECRET env vars are set and the Logto service is reachable.");
                     Console.WriteLine(LogSeparator);
 
-                    // Return 500 with no body — do NOT leak any details to the browser
-                    context.Response.StatusCode = 500;
+                    // Redirect to signup with an error indicator rather than returning 500.
+                    // A 500 gets caught by UseStatusCodePagesWithReExecute and renders the
+                    // Blazor <NotFound> template at this URL, which is confusing to users.
+                    context.Response.Redirect("/signup?auth-error=provider-unavailable");
                     return;
                 }
             }
@@ -1098,6 +1103,23 @@ public static class WebAuthenticationExtensions
         });
 
         return app;
+    }
+
+    /// <summary>
+    /// Normalizes a Logto endpoint URL so it always ends with exactly one /oidc suffix.
+    /// Accepts both https://tenant.logto.app and https://tenant.logto.app/oidc so that
+    /// the Doppler/environment value can be set either way without double-appending /oidc.
+    /// Returns null/empty unchanged.
+    /// </summary>
+    public static string? NormalizeLogtoOidcEndpoint(string? endpoint)
+    {
+        if (string.IsNullOrEmpty(endpoint))
+            return endpoint;
+
+        string trimmed = endpoint.TrimEnd('/');
+        return trimmed.EndsWith("/oidc", StringComparison.OrdinalIgnoreCase)
+            ? trimmed
+            : trimmed + "/oidc";
     }
 }
 
