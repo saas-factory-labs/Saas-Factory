@@ -1,0 +1,24 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Layout/MainLayout.razor.css
+  b6153b5691143742 5-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "dd5304084f3c5d157611f60e234f50865a933f8c",
+  "prompts": {
+    "b6153b5691143742": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "a3619a5a-ecce-4c77-8489-f58c80446bbd",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 12,
+      "total_deletions": 7,
+      "accepted_lines": 12,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ac6b737a20bb9b677921d18a2864f39f3032478c3af7a9d0065c7c9e1b47d92b"
+    }
+  }
+}
