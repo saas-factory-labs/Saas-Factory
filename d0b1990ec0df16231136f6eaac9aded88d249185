@@ -1,0 +1,26 @@
+Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile
+  7873760bc2e85b0e 15-16,19-27,32
+.github/workflows/publish-container-image-github-registry.yml
+  7873760bc2e85b0e 56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "d0b1990ec0df16231136f6eaac9aded88d249185",
+  "prompts": {
+    "7873760bc2e85b0e": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "95025981-f587-498d-8819-7c9500931acd",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 138,
+      "total_deletions": 138,
+      "accepted_lines": 138,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/6084e3c0fe2963ebb242842fcaab6f648ee929ce9cc1caad947a330d30c8bce0"
+    }
+  }
+}
