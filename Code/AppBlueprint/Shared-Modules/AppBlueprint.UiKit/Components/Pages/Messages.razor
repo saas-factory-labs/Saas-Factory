@@ -1,5 +1,6 @@
 @page "/messages"
 
+<TenantTypeAuthorize>
 <div class="relative flex h-full">
 
     <!-- Messages sidebar -->
@@ -185,6 +186,7 @@
     </div>
 
 </div>
+</TenantTypeAuthorize>
 
 @code {
     private bool msgSidebarOpen = true;

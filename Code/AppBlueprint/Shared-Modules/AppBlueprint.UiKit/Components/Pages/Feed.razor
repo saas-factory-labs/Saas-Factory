@@ -1,5 +1,7 @@
 @page "/community/feed"
+@using AppBlueprint.SharedKernel.Enums
 
+<TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Organization })">
 <div class="px-4 sm:px-6 lg:px-8 py-8 md:py-0 w-full max-w-[96rem] mx-auto">
 
     <div class="xl:flex">
@@ -211,6 +213,7 @@
     </div>
 
 </div>
+</TenantTypeAuthorize>
 
 @code {
     private string searchQuery = "";

@@ -1,5 +1,6 @@
 @page "/job/company-profile"
 
+<TenantTypeAuthorize>
 <!-- Profile background -->
 <div class="h-56 bg-gray-200 dark:bg-gray-900">
     <img class="object-cover h-full w-full" src="_content/AppBlueprint.UiKit/images/company-bg.jpg" width="2560" height="440" alt="Company background" />
@@ -91,6 +92,7 @@
 
     </div>
 </div>
+</TenantTypeAuthorize>
 
 @code {
     private List<JobListItem.JobItem> programmingJobs = new();

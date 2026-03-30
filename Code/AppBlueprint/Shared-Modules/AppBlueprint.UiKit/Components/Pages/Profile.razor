@@ -1,7 +1,9 @@
 @page "/community/profile"
 @using AppBlueprint.UiKit.Components.Pages.ProfileComponents
+@using AppBlueprint.SharedKernel.Enums
 @inject ThemeService ThemeService
 
+<TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Organization })">
 <div class="relative flex">
 
 <!-- Profile sidebar -->
@@ -213,6 +215,7 @@
 </div>
 
 </div>
+</TenantTypeAuthorize>
 
 @code {
     private bool sidebarOpen;

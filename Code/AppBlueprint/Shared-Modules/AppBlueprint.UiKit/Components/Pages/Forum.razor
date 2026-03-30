@@ -1,7 +1,9 @@
 @page "/community/forum"
 @layout EmptyLayout
+@using AppBlueprint.SharedKernel.Enums
 @* Trigger Rebuild *@
 
+<TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Organization })">
 <div class="flex h-[100dvh] overflow-hidden">
 
     <!-- Sidebar -->
@@ -72,6 +74,7 @@
     </div>
 
 </div>
+</TenantTypeAuthorize>
 
 @code {
     private bool sidebarOpen;

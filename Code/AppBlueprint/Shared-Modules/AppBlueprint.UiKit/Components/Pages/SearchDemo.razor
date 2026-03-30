@@ -12,6 +12,7 @@
 @inject IWebHostEnvironment Environment
 @inject NavigationManager NavigationManager
 
+<TenantTypeAuthorize>
 <PageTitle>Full-Text Search Demo</PageTitle>
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
@@ -366,6 +367,7 @@
         </div>
     </div>
 </div>
+</TenantTypeAuthorize>
 
 @code {
     private enum SearchEntityType { Users, Tenants }
