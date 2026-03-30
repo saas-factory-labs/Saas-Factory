@@ -415,8 +415,13 @@ const datepickerManager: DatepickerManager = {
             return;
         }
 
+        // Assign a stable id if the element has none
+        if (!input.id) {
+            input.id = `datepicker-${Math.random().toString(36).slice(2)}`;
+        }
+
         // Destroy existing instance if any
-        if (this.instances[input.id] !== null) {
+        if (this.instances[input.id]) {
             (this.instances[input.id] as { destroy: () => void }).destroy();
         }
 

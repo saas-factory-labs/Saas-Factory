@@ -43,19 +43,26 @@
     <div class="sm:flex sm:justify-end sm:items-center mb-8">
 
         <!-- Right: Actions -->
-        <div class="grid grid-flow-col sm:auto-cols-max justify-end gap-2">
+        <div class="relative grid grid-flow-col sm:auto-cols-max justify-end gap-2">
 
             <!-- Filter button -->
             <DropdownFilter Align="right"/>
             <!-- Datepicker built with flatpickr -->
             <Datepicker Align="right"/>
             <!-- Add view button -->
-            <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
+            <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white cursor-pointer"
+                    @onclick="ToggleAddView">
                 <svg class="fill-current shrink-0 xs:hidden" width="16" height="16" viewBox="0 0 16 16">
                     <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z"/>
                 </svg>
                 <span class="max-xs:sr-only">Add View</span>
             </button>
+            @if (_addViewOpen)
+            {
+                <div class="absolute right-0 top-full z-10 mt-1 min-w-44 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/60 rounded-lg shadow-lg p-3 text-sm text-gray-500 dark:text-gray-400">
+                    This feature is coming soon.
+                </div>
+            }
         </div>
 
     </div>
@@ -92,12 +99,15 @@
 
 @code {
     private TenantType? tenantType;
+    private bool _addViewOpen;
 
     protected override async Task OnInitializedAsync()
     {
         tenantType = await CurrentTenantService.GetTenantTypeAsync();
         Logger.LogInformation("[Dashboard] Loaded tenant type: {TenantType}", tenantType);
     }
+
+    private void ToggleAddView() => _addViewOpen = !_addViewOpen;
 
     protected override void OnParametersSet()
     {

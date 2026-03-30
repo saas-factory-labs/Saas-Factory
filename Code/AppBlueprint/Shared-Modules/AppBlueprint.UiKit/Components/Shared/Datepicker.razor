@@ -4,9 +4,10 @@
 @inject ILogger<Datepicker> Logger
 
 <div class="relative">
-    <input @ref="inputRef"
+    <input id="@_inputId"
+           @ref="inputRef"
            type="text"
-           class="form-input pl-9 dark:bg-gray-800 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 font-medium w-[15.5rem]"
+           class="form-input pl-9 dark:bg-gray-800 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 font-medium w-[15.5rem] cursor-pointer"
            placeholder="Select date range"
            readonly />
     <div class="absolute inset-0 right-auto flex items-center pointer-events-none">
@@ -21,6 +22,7 @@
     [Parameter]
     public string? Align { get; set; }
 
+    private readonly string _inputId = $"datepicker-{Guid.NewGuid():N}";
     private ElementReference inputRef;
 
     protected override void OnInitialized()
