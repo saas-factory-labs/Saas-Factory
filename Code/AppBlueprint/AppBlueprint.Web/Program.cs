@@ -317,19 +317,34 @@ app.Use(async (context, next) =>
     // Control referrer information sent with requests
     context.Response.Headers.Append("Referrer-Policy", "no-referrer");
 
-    // Content Security Policy - restrict resource loading to prevent XSS
-    // Note: Adjust this policy based on your application's requirements
+    // Content Security Policy - restrict resource loading to prevent XSS.
+    // 'unsafe-inline' is intentionally absent from script-src: the only init script has been moved
+    // to wwwroot/js/app-init.js so the browser fetches it as an external resource.
+    // 'unsafe-eval' is not needed by Blazor Server (only required by Blazor WASM).
+    // 'unsafe-inline' in style-src is required by MudBlazor which injects inline styles at runtime.
     context.Response.Headers.Append("Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com; " +
-        "style-src 'self' 'unsafe-inline'; " +
-        "font-src 'self'; " +
+        "script-src 'self' https://www.gstatic.com https://cdn.jsdelivr.net; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
+        "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' https://32nkyp.logto.app wss: ws: https://www.gstatic.com https://*.firebaseio.com https://*.googleapis.com;");
+        "connect-src 'self' https://32nkyp.logto.app wss: ws: " +
+        "https://www.gstatic.com https://*.firebaseio.com https://*.googleapis.com https://cdn.jsdelivr.net; " +
+        "worker-src 'self' blob:; " +
+        "frame-ancestors 'none';");
+
+    // Restrict cross-domain policy files (Flash, PDF, etc.)
+    context.Response.Headers.Append("X-Permitted-Cross-Domain-Policies", "none");
 
     // Permissions Policy - control browser features
     context.Response.Headers.Append("Permissions-Policy",
         "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
+
+    // HSTS - only in production (Railway terminates SSL at the proxy level, browser enforces HTTPS)
+    if (!app.Environment.IsDevelopment())
+    {
+        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    }
 
     await next();
 });

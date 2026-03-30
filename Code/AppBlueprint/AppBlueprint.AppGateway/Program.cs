@@ -122,18 +122,34 @@ app.Use(async (context, next) =>
     // Control referrer information sent with requests
     context.Response.Headers.Append("Referrer-Policy", "no-referrer");
 
-    // Content Security Policy - restrict resource loading to prevent XSS
-    context.Response.Headers.Append("Content-Security-Policy",
-        "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://cdn.jsdelivr.net https://www.gstatic.com; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://www.gstatic.com; " +
-        "font-src 'self' https://fonts.gstatic.com; " +
-        "img-src 'self' data: https:; " +
-        "connect-src 'self' https://32nkyp.logto.app wss: ws: https://cdn.jsdelivr.net https://www.gstatic.com https://*.firebaseio.com https://*.googleapis.com;");
+    // Content Security Policy.
+    // In development the gateway serves Swagger UI which needs 'unsafe-inline' for its bundled scripts.
+    // In production the gateway is a pure reverse proxy with no browser-facing HTML, so enforce a
+    // strict policy. 'unsafe-eval' is never required.
+    string csp = app.Environment.IsDevelopment()
+        ? "default-src 'self'; " +
+          "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://www.gstatic.com; " +
+          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://www.gstatic.com; " +
+          "font-src 'self' https://fonts.gstatic.com; " +
+          "img-src 'self' data: https:; " +
+          "connect-src 'self' https://32nkyp.logto.app wss: ws: https://cdn.jsdelivr.net https://www.gstatic.com https://*.firebaseio.com https://*.googleapis.com; " +
+          "frame-ancestors 'none';"
+        : "default-src 'none'; frame-ancestors 'none';";
+
+    context.Response.Headers.Append("Content-Security-Policy", csp);
+
+    // Restrict cross-domain policy files (Flash, PDF, etc.)
+    context.Response.Headers.Append("X-Permitted-Cross-Domain-Policies", "none");
 
     // Permissions Policy - control browser features
     context.Response.Headers.Append("Permissions-Policy",
         "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
+
+    // HSTS - only in production (Railway terminates SSL at the proxy level, browser enforces HTTPS)
+    if (!app.Environment.IsDevelopment())
+    {
+        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    }
 
     await next();
 });
