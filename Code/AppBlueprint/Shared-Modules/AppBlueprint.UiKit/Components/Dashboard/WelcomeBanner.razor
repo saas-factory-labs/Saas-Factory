@@ -70,12 +70,19 @@
 
         if (user.Identity?.IsAuthenticated == true)
         {
-            _displayName = user.FindFirst("name")?.Value
-                ?? user.FindFirst("given_name")?.Value
-                ?? user.Identity.Name
+            _displayName = NonEmpty(user.FindFirst("name")?.Value)
+                ?? NonEmpty(user.FindFirst("given_name")?.Value)
+                ?? NonEmpty(user.FindFirst("preferred_username")?.Value)
+                ?? NonEmpty(user.FindFirst("email")?.Value)
+                ?? NonEmpty(user.Identity.Name)
                 ?? "there";
+
+            Logger.LogInformation("[WelcomeBanner] Claims available: {Claims}",
+                string.Join(", ", user.Claims.Select(c => $"{c.Type}={c.Value}")));
         }
     }
+
+    private static string? NonEmpty(string? value) => string.IsNullOrEmpty(value) ? null : value;
 
     private static string GetTimeOfDayGreeting()
     {
