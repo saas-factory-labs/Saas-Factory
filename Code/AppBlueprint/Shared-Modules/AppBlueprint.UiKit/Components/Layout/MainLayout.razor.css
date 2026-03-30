@@ -2,7 +2,12 @@
 .content-area-bg {
     background-color: #f3f4f6 !important;
 }
-/* Force dark mode background when dark class is present */
-:global(.dark) .content-area-bg {
+/* Force dark mode background when dark class is present on <html>.
+   Blazor CSS isolation rewrites this to .dark .content-area-bg[b-xxxxx],
+   which correctly matches because .dark is on the <html> ancestor and
+   .content-area-bg[b-xxxxx] is on the scoped element rendered by this component.
+   The extra class selector makes this rule more specific than the light-mode rule above,
+   so it wins when dark mode is active even though both carry !important. */
+.dark .content-area-bg {
     background-color: #111827 !important;
 }
