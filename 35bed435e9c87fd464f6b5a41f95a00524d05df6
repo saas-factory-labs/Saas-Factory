@@ -1,0 +1,82 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Messages.razor
+  0db1166bf9f7432a 3,189
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Product.razor
+  0db1166bf9f7432a 3,159
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Settings/Feedback.razor
+  0db1166bf9f7432a 3,73
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Cart.razor
+  0db1166bf9f7432a 4,73
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/ForumPost.razor
+  0db1166bf9f7432a 2-4,50
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Forum.razor
+  0db1166bf9f7432a 3,6,77
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Inbox.razor
+  0db1166bf9f7432a 4,211
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Meetups.razor
+  0db1166bf9f7432a 2,4,84
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/MeetupsPost.razor
+  0db1166bf9f7432a 2,4,202
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/CompanyProfile.razor
+  0db1166bf9f7432a 3,95
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/JobPost.razor
+  0db1166bf9f7432a 3,166
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Transactions.razor
+  0db1166bf9f7432a 4,144
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/EmailTemplates.razor
+  0db1166bf9f7432a 11,199
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Fintech.razor
+  0db1166bf9f7432a 3,66
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Cart3.razor
+  0db1166bf9f7432a 3,213
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Campaigns.razor
+  0db1166bf9f7432a 4,93
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Pay.razor
+  0db1166bf9f7432a 5,122
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Profile.razor
+  0db1166bf9f7432a 3,6,218
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/RealtimeChat.razor
+  0db1166bf9f7432a 11,297
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Feed.razor
+  0db1166bf9f7432a 2,4,216
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Shop2.razor
+  0db1166bf9f7432a 3,63
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Calendar.razor
+  0db1166bf9f7432a 4,148
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Settings/Plans.razor
+  0db1166bf9f7432a 4,196
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/TasksList.razor
+  0db1166bf9f7432a 4,139
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Orders.razor
+  0db1166bf9f7432a 4,176
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Cart2.razor
+  0db1166bf9f7432a 3,117
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Analytics.razor
+  0db1166bf9f7432a 3,51
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/SearchDemo.razor
+  0db1166bf9f7432a 15,370
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Settings/Apps.razor
+  0db1166bf9f7432a 3,120
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Invoices.razor
+  0db1166bf9f7432a 4,72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "35bed435e9c87fd464f6b5a41f95a00524d05df6",
+  "prompts": {
+    "0db1166bf9f7432a": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "f7441064-8604-4479-b76d-2b6a8b08ad21",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 5968,
+      "total_deletions": 5901,
+      "accepted_lines": 5968,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/3a175520a198dfe9e170b403d99a501122ad1b033dd694c502ed47c10cfab056"
+    }
+  }
+}
