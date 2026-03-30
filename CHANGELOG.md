@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.10.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.9.4...v1.10.0) (2026-03-30)
+
+
+### Features
+
+* enforce authentication on all app pages ([35bed43](https://github.com/saas-factory-labs/Saas-Factory/commit/35bed435e9c87fd464f6b5a41f95a00524d05df6))
+
 ## [1.9.4](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.9.3...v1.9.4) (2026-03-30)
 
 
