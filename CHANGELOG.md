@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.7.1...v1.7.2) (2026-03-30)
+
+
+### Bug Fixes
+
+* restore repo-root build context in API Dockerfile and CI workflow ([d0b1990](https://github.com/saas-factory-labs/Saas-Factory/commit/d0b1990ec0df16231136f6eaac9aded88d249185))
+
 ## [1.7.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.7.0...v1.7.1) (2026-03-30)
 
 
