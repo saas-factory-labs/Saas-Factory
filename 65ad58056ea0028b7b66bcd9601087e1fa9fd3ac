@@ -1,0 +1,47 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/MiddlewareExtensions.cs
+  b6153b5691143742 12-13,25-52
+Code/AppBlueprint/AppBlueprint.AppGateway/Program.cs
+  b6153b5691143742 125-142,148-153
+Code/AppBlueprint/AppBlueprint.Web/Components/App.razor
+  b6153b5691143742 23-26
+Code/AppBlueprint/AppBlueprint.Web/wwwroot/js/app-init.js
+  b6153b5691143742 1-31
+Code/AppBlueprint/AppBlueprint.Web/Program.cs
+  b6153b5691143742 320-324,327-329,331-337,343-347
+  7c9ca4ac028dc961 348
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "65ad58056ea0028b7b66bcd9601087e1fa9fd3ac",
+  "prompts": {
+    "7c9ca4ac028dc961": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "ff27078f-7c52-4c58-96f7-b36f8e892d42",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 437,
+      "total_deletions": 431,
+      "accepted_lines": 425,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/6cf15532d59cf7027bd75c784e118d5d54d66d6dab158630a8da38c4275d79ea"
+    },
+    "b6153b5691143742": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "a3619a5a-ecce-4c77-8489-f58c80446bbd",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 400,
+      "total_deletions": 343,
+      "accepted_lines": 392,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/d1f14d9375f7281c7e47f0937d22fc6acfd76d60d0736117af0f1558e85006d0"
+    }
+  }
+}
