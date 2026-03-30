@@ -1,0 +1,24 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Dashboard/WelcomeBanner.razor
+  5f3d07a939331518 73-77,79-81,85-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "497bf84fdfdd145a3ec86f618e9e0e4f3ab6bd14",
+  "prompts": {
+    "5f3d07a939331518": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "897511a0-024c-47f2-9c65-e1d55c2de1ef",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 103,
+      "total_deletions": 96,
+      "accepted_lines": 103,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/863470a072405774879def0049c84ffdb155facf3edaf78e9c484c6c4df56607"
+    }
+  }
+}
