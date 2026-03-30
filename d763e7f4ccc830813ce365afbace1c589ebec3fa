@@ -1,0 +1,26 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/kiota-lock.json
+  cd1282741413b14e 3
+.github/workflows/generate-kiota-sdk.yml
+  cd1282741413b14e 8-10,22,29-43,54-56,58-73,75-107,109-111,120,137,140,148,153,155,158,169,179,183
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "d763e7f4ccc830813ce365afbace1c589ebec3fa",
+  "prompts": {
+    "cd1282741413b14e": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "956f60be-36c9-4639-acbe-0e0dcea5ffbe",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 119,
+      "total_deletions": 52,
+      "accepted_lines": 117,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/6190ae3939cd736dfb38d1c92011a3ecd15cb0d5db94ff44b0a406936a9e961b"
+    }
+  }
+}
