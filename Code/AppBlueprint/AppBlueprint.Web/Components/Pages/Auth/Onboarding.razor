@@ -201,9 +201,43 @@
                                             <ValidationMessage For="@(() => businessModel.LastName)" class="text-rose-500 text-xs mt-0.5" />
                                         </div>
                                     </div>
-                                    <div>
+                                    <div class="relative" @onfocusout="OnCountryDropdownFocusOut">
                                         <label class="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300" for="business-country">Country <span class="text-rose-500">*</span></label>
-                                        <InputText id="business-country" @bind-Value="businessModel.Country" class="form-input w-full" placeholder="United States" />
+                                        <div class="relative">
+                                            <input id="business-country"
+                                                   type="text"
+                                                   class="form-input w-full pr-10"
+                                                   placeholder="Search country..."
+                                                   autocomplete="off"
+                                                   value="@countrySearchText"
+                                                   @oninput="OnCountrySearchInput"
+                                                   @onfocus="OpenCountryDropdown"
+                                                   @onkeydown="OnCountryKeyDown" />
+                                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                </svg>
+                                            </div>
+                                            @if (showCountryDropdown && filteredCountries.Count > 0)
+                                            {
+                                                <div class="absolute z-20 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg max-h-48 overflow-y-auto">
+                                                    @foreach (var country in filteredCountries)
+                                                    {
+                                                        <button type="button"
+                                                                class="w-full text-left px-4 py-2 text-sm text-gray-800 dark:text-gray-100 hover:bg-violet-50 dark:hover:bg-violet-900/30 hover:text-violet-600 dark:hover:text-violet-400 focus:outline-none"
+                                                                @onclick="@(() => SelectCountry(country))">
+                                                            @country
+                                                        </button>
+                                                    }
+                                                </div>
+                                            }
+                                            else if (showCountryDropdown && !string.IsNullOrEmpty(countrySearchText) && filteredCountries.Count == 0)
+                                            {
+                                                <div class="absolute z-20 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg">
+                                                    <div class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">No countries found</div>
+                                                </div>
+                                            }
+                                        </div>
                                         <ValidationMessage For="@(() => businessModel.Country)" class="text-rose-500 text-xs mt-0.5" />
                                     </div>
                                     <div class="flex items-center mt-2">
@@ -285,6 +319,97 @@
     private PersonalSignupModel personalModel = new();
     private BusinessSignupModel businessModel = new();
 
+    // Country dropdown state
+    private string countrySearchText = string.Empty;
+    private bool showCountryDropdown;
+    private List<string> filteredCountries = new();
+
+    private static readonly List<string> AllCountries =
+    [
+        "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
+        "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain",
+        "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+        "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria",
+        "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada",
+        "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros",
+        "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark",
+        "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador",
+        "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji",
+        "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece",
+        "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras",
+        "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel",
+        "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati",
+        "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
+        "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi",
+        "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania",
+        "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro",
+        "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands",
+        "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia",
+        "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea",
+        "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania",
+        "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines",
+        "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia",
+        "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+        "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka",
+        "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan",
+        "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago",
+        "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine",
+        "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
+        "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+    ];
+
+    private void OnCountrySearchInput(ChangeEventArgs e)
+    {
+        countrySearchText = e.Value?.ToString() ?? string.Empty;
+        businessModel.Country = string.Empty;
+        FilterCountries();
+        showCountryDropdown = true;
+    }
+
+    private void OpenCountryDropdown()
+    {
+        FilterCountries();
+        showCountryDropdown = true;
+    }
+
+    private void FilterCountries()
+    {
+        if (string.IsNullOrWhiteSpace(countrySearchText))
+        {
+            filteredCountries = AllCountries.Take(20).ToList();
+        }
+        else
+        {
+            filteredCountries = AllCountries
+                .Where(c => c.Contains(countrySearchText, StringComparison.OrdinalIgnoreCase))
+                .Take(20)
+                .ToList();
+        }
+    }
+
+    private void SelectCountry(string country)
+    {
+        businessModel.Country = country;
+        countrySearchText = country;
+        showCountryDropdown = false;
+        StateHasChanged();
+    }
+
+    private void OnCountryKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape")
+        {
+            showCountryDropdown = false;
+        }
+    }
+
+    private async Task OnCountryDropdownFocusOut()
+    {
+        await Task.Delay(150);
+        showCountryDropdown = false;
+        StateHasChanged();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -335,6 +460,9 @@
         showBusinessForm = false;
         showAccountTypeSelection = true;
         selectedAccountType = string.Empty;
+        countrySearchText = string.Empty;
+        showCountryDropdown = false;
+        filteredCountries.Clear();
     }
 
     private async Task CreatePersonalAccountAsync()
