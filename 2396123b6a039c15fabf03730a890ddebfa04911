@@ -1,0 +1,32 @@
+Code/AppBlueprint/AppBlueprint.Web/Components/App.razor
+  7c9ca4ac028dc961 14-15,62-64
+Code/AppBlueprint/AppBlueprint.Web/Program.cs
+  7c9ca4ac028dc961 303,324-326,328
+Code/AppBlueprint/AppBlueprint.Web/wwwroot/manifest.json
+  7c9ca4ac028dc961 22
+Code/AppBlueprint/AppBlueprint.Web/wwwroot/firebase-messaging-sw.js
+  7c9ca4ac028dc961 5-6
+Code/AppBlueprint/AppBlueprint.Web/wwwroot/css/fonts.css
+  7c9ca4ac028dc961 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "2396123b6a039c15fabf03730a890ddebfa04911",
+  "prompts": {
+    "7c9ca4ac028dc961": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "ff27078f-7c52-4c58-96f7-b36f8e892d42",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 666,
+      "total_deletions": 635,
+      "accepted_lines": 659,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/7fb1e780f5f4dad48e1659dd5ed8c106dffaffd3001c7b33d18adf3d5fb603f1"
+    }
+  }
+}
