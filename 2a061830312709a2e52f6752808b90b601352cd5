@@ -1,0 +1,26 @@
+Code/AppBlueprint/docker-compose.railway.yml
+  cd1282741413b14e 29
+Code/AppBlueprint/docker-compose.yml
+  cd1282741413b14e 19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "2a061830312709a2e52f6752808b90b601352cd5",
+  "prompts": {
+    "cd1282741413b14e": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "956f60be-36c9-4639-acbe-0e0dcea5ffbe",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 296,
+      "total_deletions": 295,
+      "accepted_lines": 296,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ffdb81bffdc0e23f9eefe344719e773bb5c936dac652ade0600a20200e020bc7"
+    }
+  }
+}
