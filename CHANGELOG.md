@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.9.0...v1.9.1) (2026-03-30)
+
+
+### Bug Fixes
+
+* **dashboard:** fix unclickable datepicker and Add View button ([69e44c8](https://github.com/saas-factory-labs/Saas-Factory/commit/69e44c8ac1504326167588995283f62d85bc9aac))
+
 # [1.9.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.8.0...v1.9.0) (2026-03-30)
 
 
