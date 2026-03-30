@@ -2,6 +2,7 @@
 @layout EmptyLayout
 @inject ThemeService ThemeService
 
+<TenantTypeAuthorize>
 <header class="bg-white dark:bg-gray-900">
     <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -118,6 +119,7 @@
         </div>
     </div>
 </main>
+</TenantTypeAuthorize>
 
 @code {
     private bool card = true;

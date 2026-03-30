@@ -1,5 +1,6 @@
 @page "/job/job-post"
 
+<TenantTypeAuthorize>
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full">
 
     <!-- Page content -->
@@ -162,6 +163,7 @@
     </div>
 
 </div>
+</TenantTypeAuthorize>
 
 @code {
     private List<JobListItem.JobItem> items = new();
