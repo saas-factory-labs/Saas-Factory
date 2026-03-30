@@ -318,14 +318,17 @@ app.Use(async (context, next) =>
     context.Response.Headers.Append("Referrer-Policy", "no-referrer");
 
     // Content Security Policy - restrict resource loading to prevent XSS.
-    // 'unsafe-inline' is intentionally absent from script-src: the only init script has been moved
+    // 'unsafe-inline' is absent from script-src: the only init script has been moved
     // to wwwroot/js/app-init.js so the browser fetches it as an external resource.
     // 'unsafe-eval' is not needed by Blazor Server (only required by Blazor WASM).
-    // 'unsafe-inline' in style-src is required by MudBlazor which injects inline styles at runtime.
+    // 'unsafe-inline' is absent from style-src: static <style> blocks have been moved to
+    // .razor.css files (compiled to {Assembly}.styles.css). Dynamic Blazor component
+    // style= attributes are re-applied via CSSOM in app-init.js DOMContentLoaded before
+    // the Blazor circuit connects — JS-applied CSSOM updates are CSP-exempt per CSP3 spec.
     context.Response.Headers.Append("Content-Security-Policy",
         "default-src 'self'; " +
         "script-src 'self' https://www.gstatic.com https://cdn.jsdelivr.net; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
+        "style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https:; " +
         "connect-src 'self' https://32nkyp.logto.app wss: ws: " +

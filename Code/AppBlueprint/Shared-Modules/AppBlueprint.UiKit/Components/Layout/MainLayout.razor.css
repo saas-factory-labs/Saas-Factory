@@ -1,4 +1,8 @@
-/* 
-   Styles removed to avoid conflict with Cruip Tailwind template.
-   Original styles were default Blazor layout styles.
-*/
+/* Force light mode background */
+.content-area-bg {
+    background-color: #f3f4f6 !important;
+}
+/* Force dark mode background when dark class is present */
+:global(.dark) .content-area-bg {
+    background-color: #111827 !important;
+}
