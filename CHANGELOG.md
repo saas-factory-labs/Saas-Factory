@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.4](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.9.3...v1.9.4) (2026-03-30)
+
+
+### Bug Fixes
+
+* **auth:** normalize LOGTO_ENDPOINT to prevent double /oidc suffix ([3372f84](https://github.com/saas-factory-labs/Saas-Factory/commit/3372f84795b1a525e7c506ddcc99f9ee822c1155))
+
 ## [1.9.3](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.9.2...v1.9.3) (2026-03-30)
 
 
