@@ -1,0 +1,30 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/Datepicker.razor
+  5f3d07a939331518 7-8,10,25
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/TypeScript/site.ts
+  5f3d07a939331518 418-422,424
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/wwwroot/js/site.js
+  5f3d07a939331518 264-267,269
+Code/AppBlueprint/AppBlueprint.Web/Components/Pages/Dashboard.razor
+  5f3d07a939331518 46,53-54,60-65,102,110-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "69e44c8ac1504326167588995283f62d85bc9aac",
+  "prompts": {
+    "5f3d07a939331518": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "897511a0-024c-47f2-9c65-e1d55c2de1ef",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 249,
+      "total_deletions": 228,
+      "accepted_lines": 248,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/5ab7b0f51211e41ce57d731b454d607bdb5a7a8fa0702898cce387c2a70b9a11"
+    }
+  }
+}
