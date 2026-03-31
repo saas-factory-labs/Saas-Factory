@@ -98,6 +98,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Cloudflare IP filter – blocks requests that do not originate from Cloudflare's
+// published IP ranges or are missing the required CF-Ray / CF-Connecting-IP headers.
+// Disabled automatically in Development; override via CloudflareFilter:Enabled.
+app.UseMiddleware<CloudflareIpFilterMiddleware>();
+
 // Security Headers Middleware - Add security headers to all responses
 app.Use(async (context, next) =>
 {
