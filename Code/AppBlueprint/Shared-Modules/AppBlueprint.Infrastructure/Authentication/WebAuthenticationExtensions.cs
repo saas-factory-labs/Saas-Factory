@@ -311,7 +311,7 @@ public static class WebAuthenticationExtensions
             options.ClientSecret = logtoAppSecret;
 
             options.ResponseType = "code";
-            options.ResponseMode = "query";
+            options.ResponseMode = "form_post"; // Prevents auth code from appearing in URL (browser history, referrer, logs)
 
             options.SaveTokens = true;
 
@@ -635,7 +635,8 @@ public static class WebAuthenticationExtensions
         options.Events.OnMessageReceived = context =>
         {
             Console.WriteLine("[Web] OnMessageReceived - Callback received from Logto");
-            Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+            // Do not log QueryString - it may contain the authorization code or state parameter
+            Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}");
             Console.WriteLine($"[Web] Request cookies count: {context.Request.Cookies.Count}");
 
             foreach (var cookie in context.Request.Cookies)
@@ -677,7 +678,8 @@ public static class WebAuthenticationExtensions
         Console.WriteLine($"[Web] Request Path: {context.Request.Path}");
         Console.WriteLine($"[Web] Request Host: {context.Request.Host}");
         Console.WriteLine($"[Web] Request Scheme: {context.Request.Scheme}");
-        Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+        // Do not log QueryString - it may contain OAuth state or error tokens
+        Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}");
         Console.WriteLine($"[Web] Cookies Received: {string.Join(", ", context.Request.Cookies.Keys)}");
         Console.WriteLine($"[Web] Cookies Count: {context.Request.Cookies.Count}");
 
@@ -853,7 +855,8 @@ public static class WebAuthenticationExtensions
             Console.WriteLine("[Web] /auth/signin endpoint called");
             Console.WriteLine($"[Web] User authenticated: {context.User?.Identity?.IsAuthenticated ?? false}");
             Console.WriteLine($"[Web] User name: {context.User?.Identity?.Name ?? "null"}");
-            Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+            // Do not log QueryString to avoid leaking query parameters
+            Console.WriteLine($"[Web] Request URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}");
             Console.WriteLine($"[Web] Existing cookies: {string.Join(", ", context.Request.Cookies.Keys)}");
 
             if (!(context.User?.Identity?.IsAuthenticated ?? false))

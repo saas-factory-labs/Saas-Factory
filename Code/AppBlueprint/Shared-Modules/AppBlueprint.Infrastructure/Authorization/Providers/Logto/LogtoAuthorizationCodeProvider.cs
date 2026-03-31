@@ -45,6 +45,9 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI return values should not be strings", Justification = "OAuth logout URLs are returned as strings for authentication protocols")]
     public string GetLogoutUrl(string postLogoutRedirectUri)
     {
+        ArgumentNullException.ThrowIfNull(postLogoutRedirectUri);
+        ValidateRedirectUri(postLogoutRedirectUri);
+
         var logoutUrl = $"{_configuration.Endpoint}/oidc/session/end?" +
             $"client_id={Uri.EscapeDataString(_configuration.ClientId)}&" +
             $"post_logout_redirect_uri={Uri.EscapeDataString(postLogoutRedirectUri)}";
@@ -70,6 +73,9 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1054:URI parameters should not be strings", Justification = "OAuth redirect URIs are provided as strings by authentication protocols")]
     public async Task<string> GetAuthorizationUrlAsync(string redirectUri)
     {
+        ArgumentNullException.ThrowIfNull(redirectUri);
+        ValidateRedirectUri(redirectUri);
+
         // Generate PKCE parameters
         var codeVerifier = GenerateCodeVerifier();
         var codeChallenge = GenerateCodeChallenge(codeVerifier);
@@ -81,7 +87,9 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             cv = codeVerifier  // Store code verifier in state
         };
         var stateJson = JsonSerializer.Serialize(stateData);
-        var state = Base64UrlEncode(Encoding.UTF8.GetBytes(stateJson));
+        var statePayload = Base64UrlEncode(Encoding.UTF8.GetBytes(stateJson));
+        var stateSignature = ComputeStateHmac(statePayload);
+        var state = $"{statePayload}.{stateSignature}";
 
         _logger.LogInformation("Generated PKCE parameters - CodeVerifier length: {Length}, State length: {StateLength}",
             codeVerifier.Length, state.Length);
@@ -116,18 +124,38 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
         {
             _logger.LogInformation("Starting token exchange for authorization code");
 
-            // Extract code_verifier from the state parameter
+            // Verify state integrity before trusting its contents (CSRF and tampering protection)
+            int sigSeparatorIndex = state.LastIndexOf('.');
+            if (sigSeparatorIndex <= 0)
+            {
+                _logger.LogError("State parameter has an invalid format - missing HMAC signature");
+                return new AuthenticationResult { IsSuccess = false, Error = "Invalid state parameter format." };
+            }
+
+            string statePayload = state[..sigSeparatorIndex];
+            string receivedSignature = state[(sigSeparatorIndex + 1)..];
+            string expectedSignature = ComputeStateHmac(statePayload);
+
+            if (!CryptographicOperations.FixedTimeEquals(
+                Encoding.UTF8.GetBytes(receivedSignature),
+                Encoding.UTF8.GetBytes(expectedSignature)))
+            {
+                _logger.LogError("State parameter HMAC verification failed - possible CSRF or tampering detected");
+                return new AuthenticationResult { IsSuccess = false, Error = "State validation failed." };
+            }
+
+            // Extract code_verifier from the verified state payload
             string? codeVerifier = null;
             try
             {
-                var stateBytes = Base64UrlDecode(state);
+                var stateBytes = Base64UrlDecode(statePayload);
                 var stateJson = Encoding.UTF8.GetString(stateBytes);
                 var stateData = JsonSerializer.Deserialize<JsonElement>(stateJson);
 
                 if (stateData.TryGetProperty("cv", out var cvElement))
                 {
                     codeVerifier = cvElement.GetString();
-                    _logger.LogDebug("Code verifier extracted from state parameter");
+                    _logger.LogDebug("Code verifier extracted from verified state parameter");
                 }
             }
             catch (JsonException ex)
@@ -328,6 +356,31 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
 
         if (string.IsNullOrEmpty(_configuration.ClientSecret))
             throw new InvalidOperationException("Logto ClientSecret is required in configuration");
+    }
+
+    // State integrity helper
+    private string ComputeStateHmac(string payload)
+    {
+        var key = Encoding.UTF8.GetBytes(_configuration.ClientSecret);
+        var data = Encoding.UTF8.GetBytes(payload);
+        var hash = HMACSHA256.HashData(key, data);
+        return Base64UrlEncode(hash);
+    }
+
+    // Redirect URI validation helper
+    private static void ValidateRedirectUri(string redirectUri)
+    {
+        if (!Uri.TryCreate(redirectUri, UriKind.Absolute, out Uri? uri))
+            throw new ArgumentException("The redirect URI must be an absolute URI.", nameof(redirectUri));
+
+        bool isHttps = string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
+        bool isHttpLoopback = string.Equals(uri.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)
+            && uri.IsLoopback;
+
+        if (!isHttps && !isHttpLoopback)
+            throw new ArgumentException(
+                "The redirect URI must use HTTPS, or HTTP for loopback addresses only.",
+                nameof(redirectUri));
     }
 
     // PKCE helper methods
