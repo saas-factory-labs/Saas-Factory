@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.12.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.11.2...v1.12.0) (2026-03-31)
+
+
+### Features
+
+* **middleware:** add Cloudflare IP filter middleware to restrict incoming requests ([ec2958a](https://github.com/saas-factory-labs/Saas-Factory/commit/ec2958a4f307ecaa7850ba767401d985f6d21c8e))
+
 ## [1.11.2](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.11.1...v1.11.2) (2026-03-31)
 
 
