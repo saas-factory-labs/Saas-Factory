@@ -1,0 +1,26 @@
+Code/AppBlueprint/AppBlueprint.AppGateway/Program.cs
+  3fd1bd0eee92b4fc 101-105
+Code/AppBlueprint/AppBlueprint.AppGateway/CloudflareIpFilterMiddleware.cs
+  3fd1bd0eee92b4fc 18,86,101,184-191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "ec2958a4f307ecaa7850ba767401d985f6d21c8e",
+  "prompts": {
+    "3fd1bd0eee92b4fc": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "324f419b-6d6c-4f3b-9d73-228f38eb4021",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 189,
+      "total_deletions": 182,
+      "accepted_lines": 189,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/64b6e3e19b5e7fc70628cee8b4b423321cd202115b51e291da0f9f703b4318bc"
+    }
+  }
+}
