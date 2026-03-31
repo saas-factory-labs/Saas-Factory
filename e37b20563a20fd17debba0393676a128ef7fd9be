@@ -1,0 +1,26 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/WebAuthenticationExtensions.cs
+  3fba2f261d7f3013 314,638-639,681-682,858-859
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authorization/Providers/Logto/LogtoAuthorizationCodeProvider.cs
+  3fba2f261d7f3013 48-50,76-78,90-92,127-147,151,158,361-385
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "e37b20563a20fd17debba0393676a128ef7fd9be",
+  "prompts": {
+    "3fba2f261d7f3013": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "c04051b9-a479-492b-91ba-ea717bf1a8a3",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 1553,
+      "total_deletions": 1497,
+      "accepted_lines": 1553,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/3e6ce6edeab1fc1bdf9fce1d353b7cdbeee58858e373909d8a4c23fa386d66ea"
+    }
+  }
+}
