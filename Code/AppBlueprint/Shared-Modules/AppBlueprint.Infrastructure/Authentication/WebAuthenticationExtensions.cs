@@ -571,6 +571,12 @@ public static class WebAuthenticationExtensions
             Console.WriteLine("[Web] OnRedirectToIdentityProvider - About to redirect to Logto");
             Console.WriteLine($"[Web] Redirect URL: {context.ProtocolMessage.RedirectUri}");
 
+            // Remove Microsoft Identity library fingerprint parameters (x-client-SKU, x-client-ver).
+            // These reveal the exact .NET identity library name and version number in every
+            // authorization request URL, enabling targeted CVE lookups against the specific version.
+            context.ProtocolMessage.Parameters.Remove("x-client-SKU");
+            context.ProtocolMessage.Parameters.Remove("x-client-ver");
+
             // CRITICAL: Add the 'resource' parameter to the authorization request
             // This tells Logto to issue a JWT access token instead of an opaque token
             string? resource = context.Options.Resource;
