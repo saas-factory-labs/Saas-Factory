@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.11.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.10.0...v1.11.0) (2026-03-30)
+
+
+### Features
+
+* **onboarding:** implement country search dropdown for business signup ([05d1af9](https://github.com/saas-factory-labs/Saas-Factory/commit/05d1af96760f228b63f2b16924da856fb4afabf4))
+
 # [1.10.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.9.4...v1.10.0) (2026-03-30)
 
 
