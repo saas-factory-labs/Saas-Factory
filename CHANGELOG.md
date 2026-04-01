@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.13.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.12.0...v1.13.0) (2026-04-01)
+
+
+### Features
+
+* **authentication:** add external auth ID retrieval in user repository and controller ([c34ae39](https://github.com/saas-factory-labs/Saas-Factory/commit/c34ae3925bec70c59aefaba4c8fc241b4f648030))
+
 # [1.12.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.11.2...v1.12.0) (2026-03-31)
 
 
