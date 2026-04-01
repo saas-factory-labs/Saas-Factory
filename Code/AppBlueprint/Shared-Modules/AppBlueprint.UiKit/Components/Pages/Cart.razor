@@ -1,4 +1,6 @@
 @page "/ecommerce/cart"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
 @inject ThemeService ThemeService
 
 <TenantTypeAuthorize>

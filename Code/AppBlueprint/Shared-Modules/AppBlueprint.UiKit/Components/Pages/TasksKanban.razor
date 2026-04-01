@@ -1,4 +1,6 @@
 @page "/tasks/kanban"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
 @inject ThemeService ThemeService
 
 <TenantTypeAuthorize>

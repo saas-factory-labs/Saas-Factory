@@ -1,4 +1,6 @@
 @page "/settings/plans"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
 @inject ThemeService ThemeService
 
 <TenantTypeAuthorize>

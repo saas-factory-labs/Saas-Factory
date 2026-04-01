@@ -1,6 +1,7 @@
 @page "/onboarding-complete"
+@using Microsoft.AspNetCore.Authorization
 @layout AuthLayout
-@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@attribute [Authorize]
 @inject NavigationManager Navigation
 @inject ILogger<OnboardingComplete> Logger
 

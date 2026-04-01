@@ -1,4 +1,6 @@
 @page "/community/meetups-post"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
 @using AppBlueprint.SharedKernel.Enums
 
 <TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Organization })">

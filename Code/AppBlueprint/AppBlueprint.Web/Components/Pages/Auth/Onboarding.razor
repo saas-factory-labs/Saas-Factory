@@ -1,11 +1,12 @@
 @page "/onboarding"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @layout AuthLayout
-@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@attribute [Authorize]
 @using AppBlueprint.Web.Models.Auth
 @using AppBlueprint.Infrastructure.Authorization
 @using AppBlueprint.Application.Services
 @using AppBlueprint.SharedKernel
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Http
 @inject NavigationManager Navigation
