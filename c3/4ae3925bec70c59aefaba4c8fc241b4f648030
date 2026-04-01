@@ -1,0 +1,38 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/UserController.cs
+  157a7e1f518ee739 1,11,63-64,66-69,76,95,143-148
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Repositories/UserRepository.cs
+  157a7e1f518ee739 31-35
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Messages.razor
+  157a7e1f518ee739 2-3
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Repositories/Interfaces/IUserRepository.cs
+  157a7e1f518ee739 10
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/WebAuthenticationExtensions.cs
+  157a7e1f518ee739 1016-1017
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/CreditCards.razor
+  157a7e1f518ee739 2-3
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Profile.razor
+  157a7e1f518ee739 2-3
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/UsersTabs.razor
+  157a7e1f518ee739 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "c34ae3925bec70c59aefaba4c8fc241b4f648030",
+  "prompts": {
+    "157a7e1f518ee739": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "a2c894b4-7f8c-4acf-82c5-78e1b21e41bf",
+        "model": "copilot/claude-sonnet-4.6"
+      },
+      "human_author": "Casper Rubæk <casper@fambm.dk>",
+      "messages": [],
+      "total_additions": 2361,
+      "total_deletions": 2333,
+      "accepted_lines": 2358,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/f26953b61196e9297345c2c78b2a219e6a82c49a2ed0d357b1f9d46eddeec01a"
+    }
+  }
+}
