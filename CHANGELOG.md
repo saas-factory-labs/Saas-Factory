@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.14.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.13.0...v1.14.0) (2026-04-01)
+
+
+### Features
+
+* **auth:** add [Authorize] attribute and using directive to multiple pages for access control ([d6e4798](https://github.com/saas-factory-labs/Saas-Factory/commit/d6e4798b56fb2354888daf89eaab66874c4e1bd8))
+
 # [1.13.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.12.0...v1.13.0) (2026-04-01)
 
 
