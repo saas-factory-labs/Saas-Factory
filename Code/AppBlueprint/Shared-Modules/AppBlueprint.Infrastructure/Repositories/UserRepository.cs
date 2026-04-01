@@ -28,6 +28,11 @@ public class UserRepository : IUserRepository
         return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
 
+    public async Task<UserEntity?> GetByExternalAuthIdAsync(string externalAuthId)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.ExternalAuthId == externalAuthId);
+    }
+
     public async Task AddAsync(UserEntity user)
     {
         await _context.Users.AddAsync(user);

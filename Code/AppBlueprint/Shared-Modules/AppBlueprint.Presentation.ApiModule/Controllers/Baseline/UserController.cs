@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AppBlueprint.Contracts.Baseline.User.Requests;
 using AppBlueprint.Contracts.Baseline.User.Responses;
 using AppBlueprint.Infrastructure.DatabaseContexts;
@@ -7,6 +8,7 @@ using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ApplicationRoles = AppBlueprint.Application.Constants.Roles;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
@@ -58,17 +60,20 @@ public class UserController : BaseController
     [MapToApiVersion(ApiVersions.V2)]
     public async Task<ActionResult> GetLoggedInUser(CancellationToken cancellationToken)
     {
-        IEnumerable<UserEntity>? users = await _userRepository.GetAllAsync();
-        if (!users.Any()) return NotFound(new { Message = "No users found." });
+        string? externalAuthId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(externalAuthId)) return Unauthorized(new { Message = "Unable to identify the authenticated user." });
 
-        IEnumerable<UserResponse>? response = users.Select(user => new UserResponse
+        UserEntity? user = await _userRepository.GetByExternalAuthIdAsync(externalAuthId);
+        if (user is null) return NotFound(new { Message = "User profile not found." });
+
+        var response = new UserResponse
         {
             Id = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
             UserName = user.UserName,
             Email = user.Email
-        });
+        };
 
         return Ok(response);
     }
@@ -87,6 +92,7 @@ public class UserController : BaseController
     /// <response code="404">No users found in the system.</response>
     /// <response code="401">User is not authenticated.</response>
     [HttpGet(ApiEndpoints.Users.GetAll)]
+    [Authorize(Roles = ApplicationRoles.TenantAdmin + "," + ApplicationRoles.DeploymentManagerAdmin)]
     [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]
@@ -133,6 +139,12 @@ public class UserController : BaseController
 
         UserEntity? user = await _userRepository.GetByIdAsync(id);
         if (user is null) return NotFound(new { Message = $"User with ID {id} not found." });
+
+        string? callerExternalAuthId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        bool isAdmin = User.IsInRole(ApplicationRoles.TenantAdmin) || User.IsInRole(ApplicationRoles.DeploymentManagerAdmin);
+        bool isOwner = !string.IsNullOrEmpty(callerExternalAuthId) && callerExternalAuthId == user.ExternalAuthId;
+
+        if (!isOwner && !isAdmin) return Forbid();
 
         var response = new UserResponse
         {

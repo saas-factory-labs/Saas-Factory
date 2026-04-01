@@ -1013,6 +1013,8 @@ public static class WebAuthenticationExtensions
         IConfiguration configuration,
         IHostEnvironment environment)
     {
+        if (!environment.IsDevelopment()) return app;
+
         app.MapGet("/test-logto-connection", async () =>
         {
             List<object> results = [];
