@@ -1,7 +1,7 @@
 # 🔍 Azimutt Database Analysis Report
 
 > **Database:** `appblueprintdb`
-> **Report Date:** 2026-02-23
+> **Report Date:** 2026-04-13
 > **Azimutt CLI Version:** 0.1.38
 > **Tool:** [Azimutt](https://azimutt.app/) — Next-Gen ERD & Database Linter
 > **Workflow:** [View latest run](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/azimutt-database-analysis.yml)
@@ -13,10 +13,10 @@
 | Severity | Count |
 |----------|------:|
 | 🔴 High   | 53 |
-| 🟠 Medium | 30 |
+| 🟠 Medium | 32 |
 | 🔵 Low    | 1 |
 | 💡 Hint   | 21 |
-| **Total** | **105** |
+| **Total** | **107** |
 
 > Scanned **49 entities**, **55 relations**, **0 queries**, **0 types**.
 
@@ -40,14 +40,19 @@
 
 ---
 
-## 🟠 Medium Severity (30 violations)
+## 🟠 Medium Severity (32 violations)
 
-### Entity With Too Heavy Indexes — 4 violations
+### Unused Entity — 4 violations
+
+- Entity public.Accounts is unused since 2026-04-01 (check all instances to be sure!).
+- Entity public.Countries is unused since 2026-04-01 (check all instances to be sure!).
+- Entity public.Webhooks is unused since 2026-04-01 (check all instances to be sure!).
+- _+ 1 more_
+
+### Entity With Too Heavy Indexes — 2 violations
 
 - Entity public.Tenants has too heavy indexes (11x data size, 12 indexes).
-- Entity public.FileMetadata has too heavy indexes (6x data size, 6 indexes).
-- Entity public.WebhookEvents has too heavy indexes (6x data size, 6 indexes).
-- _+ 1 more_
+- Entity public.Users has too heavy indexes (7x data size, 7 indexes).
 
 ### Missing Relation — 26 violations
 
