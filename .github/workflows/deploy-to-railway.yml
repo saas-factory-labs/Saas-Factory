@@ -35,7 +35,7 @@ on:
           - web
 
 env:
-  DOTNET_VERSION: '9.0'
+  DOTNET_VERSION: '10.0'
 
 jobs:
   build-and-test:
@@ -183,7 +183,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install EF Core Tools
-        run: dotnet tool install --global dotnet-ef --version 9.*
+        run: dotnet tool install --global dotnet-ef --version 10.*
 
       - name: Restore Dependencies
         working-directory: Code/AppBlueprint
@@ -329,7 +329,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install EF Core Tools
-        run: dotnet tool install --global dotnet-ef --version 9.*
+        run: dotnet tool install --global dotnet-ef --version 10.*
 
       - name: Restore Dependencies
         working-directory: Code/AppBlueprint

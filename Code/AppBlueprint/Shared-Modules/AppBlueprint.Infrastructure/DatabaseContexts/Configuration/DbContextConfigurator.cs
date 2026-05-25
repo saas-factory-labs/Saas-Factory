@@ -130,7 +130,7 @@ public static class DbContextConfigurator
     {
         services.AddDbContext<Baseline.BaselineDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options, MigrationTableNames.Baseline);
         });
 
         Console.WriteLine("[DbContextConfigurator] Registered: BaselineDbContext");
@@ -144,13 +144,13 @@ public static class DbContextConfigurator
         // Register B2CDbContext (includes Baseline entities)
         services.AddDbContext<B2C.B2CdbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options, MigrationTableNames.B2C);
         });
 
         // Register ApplicationDbContext as scoped (required by repositories and services)
         services.AddDbContext<ApplicationDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options, MigrationTableNames.Application);
         });
 
         // Register ApplicationDbContext factory (required by SignupService for non-scoped scenarios)
@@ -159,7 +159,7 @@ public static class DbContextConfigurator
         services.AddSingleton<IDbContextFactory<ApplicationDbContext>>(serviceProvider =>
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            ConfigureNpgsqlOptions(serviceProvider, optionsBuilder, connectionString, options, isFactory: true);
+            ConfigureNpgsqlOptions(serviceProvider, optionsBuilder, connectionString, options, MigrationTableNames.Application, isFactory: true);
             var dbContextOptions = optionsBuilder.Options;
             
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
@@ -180,7 +180,7 @@ public static class DbContextConfigurator
         // Register B2BDbContext (includes Baseline entities)
         services.AddDbContext<B2B.B2BDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options, MigrationTableNames.B2B);
         });
 
         Console.WriteLine("[DbContextConfigurator] Registered: B2BDbContext");
@@ -194,19 +194,19 @@ public static class DbContextConfigurator
         // Register Baseline
         services.AddDbContext<Baseline.BaselineDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options, MigrationTableNames.Baseline);
         });
 
         // Register B2C
         services.AddDbContext<B2C.B2CdbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options, MigrationTableNames.B2C);
         });
 
         // Register ApplicationDbContext as scoped (required by repositories and services)
         services.AddDbContext<ApplicationDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options, MigrationTableNames.Application);
         });
 
         // Register ApplicationDbContext factory (required by SignupService for non-scoped scenarios)
@@ -216,20 +216,20 @@ public static class DbContextConfigurator
         services.AddSingleton<IDbContextFactory<ApplicationDbContext>>(serviceProvider =>
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            ConfigureNpgsqlOptions(serviceProvider, optionsBuilder, connectionString, options, isFactory: true);
+            ConfigureNpgsqlOptions(serviceProvider, optionsBuilder, connectionString, options, MigrationTableNames.Application, isFactory: true);
             var dbContextOptions = optionsBuilder.Options;
-            
+
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<ApplicationDbContext>();
-            
+
             return new ApplicationDbContextFactory(dbContextOptions, configuration, logger);
         });
 
         // Register B2B
         services.AddDbContext<B2B.B2BDbContext>((serviceProvider, dbOptions) =>
         {
-            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options);
+            ConfigureNpgsqlOptions(serviceProvider, dbOptions, connectionString, options, MigrationTableNames.B2B);
         });
 
         Console.WriteLine("[DbContextConfigurator] Hybrid Mode: All contexts registered");
@@ -240,6 +240,7 @@ public static class DbContextConfigurator
         DbContextOptionsBuilder dbOptions,
         string connectionString,
         DatabaseContextOptions options,
+        string migrationsHistoryTable,
         bool isFactory = false)
     {
         dbOptions.UseNpgsql(connectionString, npgsqlOptions =>
@@ -249,6 +250,7 @@ public static class DbContextConfigurator
                 maxRetryCount: options.MaxRetryCount,
                 maxRetryDelay: TimeSpan.FromSeconds(options.MaxRetryDelaySeconds),
                 errorCodesToAdd: null);
+            npgsqlOptions.MigrationsHistoryTable(migrationsHistoryTable);
         });
 
         // Register TenantConnectionInterceptor for RLS session variable configuration

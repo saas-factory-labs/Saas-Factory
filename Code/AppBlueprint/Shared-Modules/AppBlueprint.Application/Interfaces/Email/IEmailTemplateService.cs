@@ -11,7 +11,7 @@ public interface IEmailTemplateService
     /// Renders an email template with the provided model.
     /// </summary>
     /// <typeparam name="TModel">The type of the template model.</typeparam>
-    /// <param name="templateName">The name of the template (without .cshtml extension).</param>
+    /// <param name="templateName">The name of the template (without .razor extension).</param>
     /// <param name="model">The data model to pass to the template.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The rendered HTML string.</returns>

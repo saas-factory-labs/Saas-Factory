@@ -1,5 +1,6 @@
 using AppBlueprint.Infrastructure;
 using AppBlueprint.Infrastructure.Extensions;
+using AppBlueprint.Infrastructure.Hubs;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.Presentation.ApiModule.Middleware;
 using AppBlueprint.TodoAppKernel.Infrastructure;
@@ -53,6 +54,16 @@ internal static class Program // Make class static
         // Add JWT authentication
         builder.Services.AddJwtAuthentication(builder.Configuration);
 
+        // Add SignalR for real-time notifications
+        builder.Services.AddSignalR(options =>
+        {
+            options.EnableDetailedErrors = builder.Environment.IsDevelopment();
+            options.MaximumReceiveMessageSize = 102400; // 100 KB max message size
+            options.StreamBufferCapacity = 10;
+            options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
+            options.KeepAliveInterval = TimeSpan.FromSeconds(30);
+        });
+
         // Add NSwag OpenAPI document generation
         builder.Services.AddOpenApiDocument(config =>
         {
@@ -96,6 +107,9 @@ internal static class Program // Make class static
 
         app.MapDefaultEndpoints();
         app.MapControllers();
+
+        // Map SignalR hub endpoints
+        app.MapHub<NotificationHub>("/hubs/notifications");
 
         await app.RunAsync();
     }

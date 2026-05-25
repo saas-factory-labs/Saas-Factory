@@ -36,7 +36,7 @@ public partial class B2BDbContext : BaselineDbContext
 
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseNpgsql(_connectionString);
+            optionsBuilder.UseNpgsql(_connectionString, o => o.MigrationsHistoryTable(MigrationTableNames.B2B));
             _logger.LogInformation("B2B DbContext configured with connection string");
         }
     }

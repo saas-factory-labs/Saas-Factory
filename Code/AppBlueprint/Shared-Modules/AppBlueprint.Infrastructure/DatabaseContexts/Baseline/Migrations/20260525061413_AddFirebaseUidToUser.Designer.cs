@@ -4,17 +4,20 @@ using AppBlueprint.Application.Enums;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations
+namespace AppBlueprint.Infrastructure.Migrations.BaselineDb
 {
     [DbContext(typeof(BaselineDbContext))]
-    partial class BaselineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260525061413_AddFirebaseUidToUser")]
+    partial class AddFirebaseUidToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

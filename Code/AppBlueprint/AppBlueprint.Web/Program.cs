@@ -208,6 +208,9 @@ builder.Services.AddScoped<AppBlueprint.Web.Services.AuthenticationDelegatingHan
 // Register menu configuration service for customizing sidebar visibility
 builder.Services.AddScoped<AppBlueprint.UiKit.Services.IMenuConfigurationService, AppBlueprint.Web.Services.MenuConfigurationService>();
 
+// Register Firebase JS interop service (gracefully skips when unconfigured)
+builder.Services.AddScoped<AppBlueprint.Web.Services.FirebaseJsInterop>();
+
 // Add TodoService with HttpClient configured for direct API access
 builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
 {
@@ -316,11 +319,11 @@ app.Use(async (context, next) =>
     // Note: Adjust this policy based on your application's requirements
     context.Response.Headers.Append("Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://cdn.jsdelivr.net https://www.gstatic.com; " +
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' https://32nkyp.logto.app wss: ws: https://cdn.jsdelivr.net;");
+        "connect-src 'self' https://32nkyp.logto.app wss: ws: https://cdn.jsdelivr.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com;");
 
     // Permissions Policy - control browser features
     context.Response.Headers.Append("Permissions-Policy",

@@ -96,7 +96,7 @@ internal static class SecretManagerHelper
                 MinSpecial = 3
             };
             password = passwordGenerator.GetDefaultValue();
-            SaveSecrectToDotNetUserSecrets(secretName, password);
+            SaveSecretToDotNetUserSecrets(secretName, password);
         }
 
         return builder.CreateResourceBuilder(new ParameterResource(secretName, _ => password, true));
@@ -111,11 +111,11 @@ internal static class SecretManagerHelper
             var key = new byte[64]; // 512-bit key
             RandomNumberGenerator.Fill(key);
             var base64Key = Convert.ToBase64String(key);
-            SaveSecrectToDotNetUserSecrets(secretName, base64Key);
+            SaveSecretToDotNetUserSecrets(secretName, base64Key);
         }
     }
 
-    private static void SaveSecrectToDotNetUserSecrets(string key, string value)
+    private static void SaveSecretToDotNetUserSecrets(string key, string value)
     {
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
         ArgumentException.ThrowIfNullOrEmpty(value, nameof(value));

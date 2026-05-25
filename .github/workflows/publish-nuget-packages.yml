@@ -25,6 +25,10 @@ jobs:
 
           # Infrastructure layer
           - "AppBlueprint.Infrastructure"
+          - "AppBlueprint.Infrastructure.Auth"
+          - "AppBlueprint.Infrastructure.Payments"
+          - "AppBlueprint.Infrastructure.Storage"
+          - "AppBlueprint.Infrastructure.Email"
 
           # Presentation layers
           - "AppBlueprint.Presentation.ApiModule"

@@ -15,7 +15,7 @@ public class UserServiceInfrastructure
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
     private readonly ApplicationDbContext _dbContext;
-    private readonly TransactionEmailService _emailService;
+    private readonly ITransactionEmailService _emailService;
     private readonly ILogger<UserServiceInfrastructure> _logger;
 
     private const string UserNotFoundMessage = "User not found";
@@ -36,7 +36,7 @@ public class UserServiceInfrastructure
         IUnitOfWork unitOfWork,
         IUserRepository userRepository,
         ApplicationDbContext dbContext,
-        TransactionEmailService emailService,
+        ITransactionEmailService emailService,
         ILogger<UserServiceInfrastructure> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -153,14 +153,7 @@ public class UserServiceInfrastructure
         // Send welcome email with verification link
         try
         {
-            await _emailService.SendSignUpWelcomeEmail(
-                EmailFromAddress,
-                user.Email!,
-                user.FirstName ?? "User",
-                EmailSiteName,
-                "https://app.example.com/login",
-                EmailFromAddress
-            );
+            await _emailService.SendSignUpWelcomeEmail(EmailFromAddress, user.Email!, EmailSiteName);
         }
         catch (InvalidOperationException ex)
         {
@@ -236,14 +229,7 @@ public class UserServiceInfrastructure
         // Send password reset email
         try
         {
-            await _emailService.SendSignUpWelcomeEmail(
-                EmailFromAddress,
-                user.Email!,
-                user.FirstName ?? "User",
-                EmailSiteName,
-                "https://app.example.com/login",
-                EmailFromAddress
-            );
+            await _emailService.SendSignUpWelcomeEmail(EmailFromAddress, user.Email!, EmailSiteName);
         }
         catch (InvalidOperationException ex)
         {

@@ -34,9 +34,7 @@ public partial class B2CdbContext : BaselineDbContext
         // 2. We have a valid connection string
         if (!optionsBuilder.IsConfigured && !string.IsNullOrEmpty(_connectionString))
         {
-            optionsBuilder.UseNpgsql(_connectionString);
-            
-            // Simple logging pattern - warning suppressed in .editorconfig
+            optionsBuilder.UseNpgsql(_connectionString, o => o.MigrationsHistoryTable(MigrationTableNames.B2C));
             _logger.LogInformation("B2C DbContext configured with connection string");
         }
         // If options are already configured or we don't have a connection string,

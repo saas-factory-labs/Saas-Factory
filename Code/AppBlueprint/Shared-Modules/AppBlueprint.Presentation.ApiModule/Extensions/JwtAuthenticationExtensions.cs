@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
 
@@ -10,10 +13,13 @@ namespace AppBlueprint.Presentation.ApiModule.Extensions;
 public static class JwtAuthenticationExtensions
 {
     private const string AuthenticationProviderConfigKey = "Authentication:Provider";
+    private const string FirebaseSchemeName = "Firebase";
+    private const string MultiSchemeName = "MultiScheme";
+    private const string FirebaseIssuerPrefix = "https://securetoken.google.com/";
 
     /// <summary>
     /// Adds JWT Bearer authentication to the service collection.
-    /// Supports multiple authentication providers (Auth0, Logto, or custom JWT).
+    /// Supports Logto (primary) and Firebase (additional) as bearer schemes.
     /// </summary>
     public static IServiceCollection AddJwtAuthentication(
         this IServiceCollection services,
@@ -23,16 +29,57 @@ public static class JwtAuthenticationExtensions
         ArgumentNullException.ThrowIfNull(configuration);
 
         string authProvider = configuration[AuthenticationProviderConfigKey] ?? "JWT";
+        string? firebaseProjectId = configuration["Authentication:Firebase:ProjectId"];
+        bool hasFirebaseConfig = !string.IsNullOrEmpty(firebaseProjectId);
 
-        services.AddAuthentication(options =>
+        if (hasFirebaseConfig)
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = MultiSchemeName;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddPolicyScheme(MultiSchemeName, "JWT (Logto or Firebase)", options =>
+            {
+                options.ForwardDefaultSelector = context =>
+                {
+                    string? authorization = context.Request.Headers[HeaderNames.Authorization];
+                    if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var token = authorization["Bearer ".Length..].Trim();
+                        if (TryGetIssuer(token, out string? iss) &&
+                            iss is not null &&
+                            iss.StartsWith(FirebaseIssuerPrefix, StringComparison.Ordinal))
+                        {
+                            return FirebaseSchemeName;
+                        }
+                    }
+                    return JwtBearerDefaults.AuthenticationScheme;
+                };
+            })
+            .AddJwtBearer(options =>
+            {
+                ConfigureJwtBearerOptions(options, configuration, authProvider);
+            })
+            .AddJwtBearer(FirebaseSchemeName, options =>
+            {
+                ConfigureFirebaseBearerOptions(options, firebaseProjectId!);
+            });
+
+            Console.WriteLine($"[API] Firebase JWT bearer scheme registered for project: {firebaseProjectId}");
+        }
+        else
         {
-            ConfigureJwtBearerOptions(options, configuration, authProvider);
-        });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                ConfigureJwtBearerOptions(options, configuration, authProvider);
+            });
+        }
 
         return services;
     }
@@ -244,5 +291,56 @@ public static class JwtAuthenticationExtensions
             RequireExpirationTime = true,
             RequireSignedTokens = true
         };
+    }
+
+    private static void ConfigureFirebaseBearerOptions(JwtBearerOptions options, string projectId)
+    {
+        options.Authority = $"{FirebaseIssuerPrefix}{projectId}";
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = true;
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = $"{FirebaseIssuerPrefix}{projectId}",
+            ValidateAudience = true,
+            ValidAudience = projectId,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ClockSkew = TimeSpan.FromMinutes(5),
+            RequireSignedTokens = true,
+            RequireExpirationTime = true,
+            NameClaimType = "name",
+            RoleClaimType = "role"
+        };
+    }
+
+    private static bool TryGetIssuer(string jwtToken, out string? issuer)
+    {
+        issuer = null;
+        try
+        {
+            var parts = jwtToken.Split('.');
+            if (parts.Length != 3)
+                return false;
+
+            int padLength = (4 - parts[1].Length % 4) % 4;
+            var paddedPayload = parts[1] + new string('=', padLength);
+            var payloadBytes = Convert.FromBase64String(paddedPayload.Replace('-', '+').Replace('_', '/'));
+            var payload = JsonSerializer.Deserialize<JsonElement>(payloadBytes);
+
+            if (payload.TryGetProperty("iss", out var issClaim))
+            {
+                issuer = issClaim.GetString();
+                return issuer is not null;
+            }
+        }
+#pragma warning disable CA1031
+        catch
+        {
+            // Malformed token - fall through to primary scheme
+        }
+#pragma warning restore CA1031
+        return false;
     }
 }

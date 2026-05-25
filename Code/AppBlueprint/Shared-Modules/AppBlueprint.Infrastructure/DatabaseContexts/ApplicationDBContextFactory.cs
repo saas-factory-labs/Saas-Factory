@@ -33,8 +33,11 @@ public sealed class ApplicationDbContextFactory(
         // Specify the overload explicitly
         optionsBuilder.UseNpgsql(
             connectionString,
-            npgsqlOptions => npgsqlOptions.CommandTimeout(60)
-        );
+            npgsqlOptions =>
+            {
+                npgsqlOptions.CommandTimeout(60);
+                npgsqlOptions.MigrationsHistoryTable(MigrationTableNames.Application);
+            });
 
         // Create a logger factory for design-time
         using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());

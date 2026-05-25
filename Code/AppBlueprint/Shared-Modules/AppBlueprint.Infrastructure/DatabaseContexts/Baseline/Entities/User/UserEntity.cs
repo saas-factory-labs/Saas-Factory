@@ -47,6 +47,11 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
     /// </summary>
     public string? ExternalAuthId { get; set; }
 
+    /// <summary>
+    /// Firebase Authentication UID. Set when the user signs in via Firebase.
+    /// </summary>
+    public string? FirebaseUid { get; set; }
+
     public DateTimeOffset LastLogin { get; set; } = DateTimeOffset.Now;
 
     // ITenantScoped implementation

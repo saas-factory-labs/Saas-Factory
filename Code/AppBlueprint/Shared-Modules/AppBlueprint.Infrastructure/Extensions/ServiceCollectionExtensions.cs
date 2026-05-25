@@ -1,9 +1,5 @@
-using Amazon.Runtime;
-using Amazon.S3;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
-using AppBlueprint.Application.Options;
 using AppBlueprint.Application.Services.DataExport;
-using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
@@ -20,9 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Resend;
-using Stripe;
 
 namespace AppBlueprint.Infrastructure.Extensions;
 
@@ -31,8 +24,6 @@ namespace AppBlueprint.Infrastructure.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    private const string DefaultResendApiBaseUrl = "https://api.resend.com";
-    
     // Static readonly arrays for health check tags (CA1861)
     private static readonly string[] PostgreSqlHealthCheckTags = new[] { "db", "postgresql" };
     private static readonly string[] RlsHealthCheckTags = new[] { "db", "security", "rls", "critical" };
@@ -69,7 +60,7 @@ public static class ServiceCollectionExtensions
         // services.AddWebAuthentication(configuration, environment); // Commented out - add explicitly in Web project
         
         services.AddUnitOfWork();
-        services.AddExternalServices(configuration);
+        services.AddSignalRNotificationService();
         services.AddHealthChecksServices(configuration);
 
         return services;
@@ -98,7 +89,7 @@ public static class ServiceCollectionExtensions
         services.AddRepositories();
         services.AddTenantServices();
         services.AddUnitOfWork();
-        services.AddExternalServices(configuration);
+        services.AddSignalRNotificationService();
         services.AddHealthChecksServices(configuration);
 
         return services;
@@ -149,6 +140,7 @@ public static class ServiceCollectionExtensions
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(10),
                     errorCodesToAdd: null);
+                npgsqlOptions.MigrationsHistoryTable(MigrationTableNames.Application);
             });
 
             options.ConfigureWarnings(warnings =>
@@ -169,6 +161,7 @@ public static class ServiceCollectionExtensions
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(10),
                     errorCodesToAdd: null);
+                npgsqlOptions.MigrationsHistoryTable(MigrationTableNames.Baseline);
             });
 
             options.ConfigureWarnings(warnings =>
@@ -189,6 +182,7 @@ public static class ServiceCollectionExtensions
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(10),
                     errorCodesToAdd: null);
+                npgsqlOptions.MigrationsHistoryTable(MigrationTableNames.B2B);
             });
 
             options.ConfigureWarnings(warnings =>
@@ -245,125 +239,6 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Registers external service integrations (Stripe, Cloudflare R2, Resend).
-    /// Services are only registered if their configuration is present.
-    /// </summary>
-    private static IServiceCollection AddExternalServices(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        services.AddStripeService(configuration);
-        services.AddCloudflareR2Service(configuration);
-        services.AddResendEmailService(configuration);
-
-        return services;
-    }
-
-    /// <summary>
-    /// Registers Stripe payment service if API key is configured.
-    /// Uses StripeOptions from IOptions pattern.
-    /// </summary>
-    private static IServiceCollection AddStripeService(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        // Get Stripe options to check if configured
-        IServiceProvider tempProvider = services.BuildServiceProvider();
-        StripeOptions? stripeOptions = tempProvider.GetService<IOptions<StripeOptions>>()?.Value;
-        
-        if (stripeOptions is not null && !string.IsNullOrWhiteSpace(stripeOptions.ApiKey))
-        {
-            services.AddScoped<StripeSubscriptionService>();
-            Console.WriteLine("[AppBlueprint.Infrastructure] Stripe service registered");
-        }
-        else
-        {
-            Console.WriteLine("[AppBlueprint.Infrastructure] Stripe not configured (optional)");
-        }
-
-        return services;
-    }
-
-    /// <summary>
-    /// Registers Cloudflare R2 object storage service if credentials are configured.
-    /// Uses CloudflareR2Options from IOptions pattern.
-    /// Based on official Cloudflare R2 documentation: https://developers.cloudflare.com/r2/examples/aws/aws-sdk-net/
-    /// </summary>
-    private static IServiceCollection AddCloudflareR2Service(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        // Get R2 options to check if configured
-        IServiceProvider tempProvider = services.BuildServiceProvider();
-        CloudflareR2Options? r2Options = tempProvider.GetService<IOptions<CloudflareR2Options>>()?.Value;
-        
-        if (r2Options is not null && 
-            !string.IsNullOrWhiteSpace(r2Options.AccessKeyId) &&
-            !string.IsNullOrWhiteSpace(r2Options.SecretAccessKey) &&
-            !string.IsNullOrWhiteSpace(r2Options.EndpointUrl) &&
-            !string.IsNullOrWhiteSpace(r2Options.BucketName))
-        {
-            // Register IFileStorageService with CloudflareR2Service implementation
-            services.AddSingleton<AppBlueprint.Application.Interfaces.Storage.IFileStorageService, CloudflareR2Service>();
-            
-            Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 storage service registered");
-            Console.WriteLine($"[AppBlueprint.Infrastructure] R2 Endpoint: {r2Options.EndpointUrl}");
-            Console.WriteLine($"[AppBlueprint.Infrastructure] R2 Bucket: {r2Options.BucketName}");
-        }
-        else
-        {
-            Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 not configured (optional)");
-        }
-
-        return services;
-    }
-
-    /// <summary>
-    /// Registers Resend email service if API key is configured.
-    /// Uses ResendEmailOptions from IOptions pattern.
-    /// </summary>
-    private static IServiceCollection AddResendEmailService(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        // Get Resend options to check if configured
-        IServiceProvider tempProvider = services.BuildServiceProvider();
-        ResendEmailOptions? resendOptions = tempProvider.GetService<IOptions<ResendEmailOptions>>()?.Value;
-        
-        // Register email template service for Razor templates (always available for preview)
-        // Configure Razor view engine to find templates in Infrastructure assembly
-        services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(options =>
-        {
-            // Add custom view location for email templates
-            options.ViewLocationFormats.Add("/EmailTemplates/{0}.cshtml");
-            options.ViewLocationFormats.Add("/Views/EmailTemplates/{0}.cshtml");
-        });
-        
-        services.AddScoped<AppBlueprint.Application.Interfaces.Email.IEmailTemplateService, 
-            AppBlueprint.Infrastructure.Services.Email.RazorEmailTemplateService>();
-        
-        if (resendOptions is not null && !string.IsNullOrWhiteSpace(resendOptions.ApiKey))
-        {
-            services.AddHttpClient<IResend, ResendClient>()
-                .ConfigureHttpClient(client =>
-                {
-                    client.BaseAddress = new Uri(resendOptions.BaseUrl, UriKind.Absolute);
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {resendOptions.ApiKey}");
-                    client.Timeout = TimeSpan.FromSeconds(resendOptions.TimeoutSeconds);
-                });
-            
-            services.AddScoped<TransactionEmailService>();
-            Console.WriteLine("[AppBlueprint.Infrastructure] Resend email service with Razor templates registered");
-        }
-        else
-        {
-            Console.WriteLine("[AppBlueprint.Infrastructure] Resend not configured (optional) - Email template service still available for preview");
-        }
-
-        return services;
-    }
-
-    /// <summary>
     /// Registers health check services for database, Redis, and external endpoints.
     /// Uses environment variables or configuration for connection strings.
     /// CRITICAL: Includes Row-Level Security validation to prevent application startup without RLS.
@@ -409,6 +284,17 @@ public static class ServiceCollectionExtensions
                 tags: RedisHealthCheckTags);
         }
 
+        return services;
+    }
+
+    /// <summary>
+    /// Registers SignalR notification service for real-time communication.
+    /// </summary>
+    private static IServiceCollection AddSignalRNotificationService(this IServiceCollection services)
+    {
+        services.AddScoped<AppBlueprint.Application.Interfaces.INotificationService, SignalRNotificationService>();
+        Console.WriteLine("[AppBlueprint.Infrastructure] SignalR notification service registered");
+        
         return services;
     }
 }

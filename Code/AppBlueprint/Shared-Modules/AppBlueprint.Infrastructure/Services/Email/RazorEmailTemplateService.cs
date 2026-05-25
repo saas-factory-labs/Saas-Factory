@@ -17,7 +17,7 @@ namespace AppBlueprint.Infrastructure.Services.Email;
 
 /// <summary>
 /// Razor-based email template rendering service.
-/// Templates should be located in ~/EmailTemplates/{TemplateName}.cshtml
+/// Templates should be located in ~/EmailTemplates/{TemplateName}.razor
 /// </summary>
 public sealed class RazorEmailTemplateService(
     IRazorViewEngine razorViewEngine,
@@ -42,7 +42,7 @@ public sealed class RazorEmailTemplateService(
             var httpContext = new DefaultHttpContext { RequestServices = serviceProvider };
             var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
-            string viewPath = $"{TemplateBasePath}/{templateName}.cshtml";
+            string viewPath = $"{TemplateBasePath}/{templateName}.razor";
             ViewEngineResult? viewResult = razorViewEngine.GetView(executingFilePath: null, viewPath, isMainPage: false);
 
             if (!viewResult.Success)
@@ -112,10 +112,10 @@ public sealed class RazorEmailTemplateService(
             Assembly assembly = typeof(RazorEmailTemplateService).Assembly;
             string[] resourceNames = assembly.GetManifestResourceNames();
             
-            // Filter for .cshtml files in EmailTemplates directory (excluding _Layout)
+            // Filter for .razor files in EmailTemplates directory (excluding _Layout)
             templates.AddRange(resourceNames
                 .Where(name => name.Contains("EmailTemplates", StringComparison.Ordinal) && 
-                              name.EndsWith(".cshtml", StringComparison.Ordinal) &&
+                              name.EndsWith(".razor", StringComparison.Ordinal) &&
                               !name.Contains("_Layout", StringComparison.Ordinal))
                 .Select(name =>
                 {

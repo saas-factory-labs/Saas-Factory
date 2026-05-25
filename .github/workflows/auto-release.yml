@@ -52,6 +52,14 @@ jobs:
           GIT_COMMITTER_NAME: github-actions[bot]
           GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
 
+      - name: Trigger NuGet Publish
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          gh workflow run publish-nuget-packages.yml \
+            --ref "v${{ steps.semantic.outputs.new_release_version }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Release Summary
         if: steps.semantic.outputs.new_release_published == 'true'
         run: |
@@ -59,7 +67,7 @@ jobs:
           echo "Version: v${{ steps.semantic.outputs.new_release_version }}"
           echo "Release notes have been published to GitHub Releases"
           echo ""
-          echo "The NuGet publishing workflow will be triggered automatically by the new tag."
+          echo "NuGet publish workflow dispatched for v${{ steps.semantic.outputs.new_release_version }}."
 
       - name: No Release Summary
         if: steps.semantic.outputs.new_release_published != 'true'

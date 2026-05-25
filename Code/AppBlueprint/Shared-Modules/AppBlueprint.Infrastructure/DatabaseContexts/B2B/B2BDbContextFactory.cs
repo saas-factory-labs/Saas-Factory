@@ -30,8 +30,11 @@ public class B2BDbContextFactory : IDesignTimeDbContextFactory<B2BDbContext>
 
         optionsBuilder.UseNpgsql(
             connectionString,
-            npgsqlOptions => npgsqlOptions.CommandTimeout(60)
-        );
+            npgsqlOptions =>
+            {
+                npgsqlOptions.CommandTimeout(60);
+                npgsqlOptions.MigrationsHistoryTable(MigrationTableNames.B2B);
+            });
 
         // Create logger factory for design-time
         using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());

@@ -30,8 +30,11 @@ public sealed class BaselineDbContextFactory : IDesignTimeDbContextFactory<Basel
 
         optionsBuilder.UseNpgsql(
             connectionString,
-            npgsqlOptions => npgsqlOptions.CommandTimeout(60)
-        );
+            npgsqlOptions =>
+            {
+                npgsqlOptions.CommandTimeout(60);
+                npgsqlOptions.MigrationsHistoryTable(MigrationTableNames.Baseline);
+            });
 
         // Create logger factory for design-time
         using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());

@@ -12,6 +12,7 @@ using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace AppBlueprint.Infrastructure.Authentication;
 
@@ -25,17 +26,6 @@ internal sealed record UserTenantLookup(string Id, string TenantId);
 /// </summary>
 public static class WebAuthenticationExtensions
 {
-    // Static readonly arrays for test endpoint configuration (CA1861)
-    private static readonly string[] RequiredRedirectUris = new[]
-    {
-        "https://appblueprint-web-staging.up.railway.app/callback",
-        "https://appblueprint-web-staging.up.railway.app/signout-callback-logto"
-    };
-    
-    private static readonly string[] RequiredPostLogoutRedirectUris = new[]
-    {
-        "https://appblueprint-web-staging.up.railway.app/"
-    };
     // Constants for authentication schemes
     private const string LogtoCookieScheme = "Logto.Cookie";
     private const string LogtoScheme = "Logto";
@@ -802,13 +792,13 @@ public static class WebAuthenticationExtensions
             Console.WriteLine(LogSeparator);
             Console.WriteLine("[Web] Local sign-out endpoint called (bypassing Logto end session)");
             Console.WriteLine($"[Web] User was: {context.User?.Identity?.Name ?? "unknown"}");
-            
+
             try
             {
                 // Clear local authentication cookies
                 await context.SignOutAsync(LogtoCookieScheme);
                 Console.WriteLine($"[Web] ✅ Cleared {LogtoCookieScheme}");
-                
+
                 // Return HTML that forces a complete page reload to /login
                 // This ensures Blazor circuit is completely reset
                 context.Response.ContentType = "text/html";
@@ -823,6 +813,115 @@ public static class WebAuthenticationExtensions
                 context.Response.Redirect("/login");
             }
         }).AllowAnonymous();
+
+        // Firebase authentication callback endpoint
+        // Receives a Firebase ID token from the client (obtained via Firebase JS SDK),
+        // verifies it server-side, and establishes a session using the shared cookie scheme.
+        app.MapPost("/auth/firebase/callback", async (HttpContext context) =>
+        {
+            Console.WriteLine(LogSeparator);
+            Console.WriteLine("[Web] Firebase callback endpoint called");
+
+            string? idToken;
+            try
+            {
+                using var body = await JsonDocument.ParseAsync(context.Request.Body);
+                idToken = body.RootElement.GetProperty("idToken").GetString();
+            }
+            catch
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsJsonAsync(new { error = "Request body must be JSON with an 'idToken' field" });
+                return;
+            }
+
+            if (string.IsNullOrEmpty(idToken))
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsJsonAsync(new { error = "idToken is required" });
+                return;
+            }
+
+            try
+            {
+                var firebaseAuth = FirebaseAdmin.Auth.FirebaseAuth.DefaultInstance;
+                if (firebaseAuth is null)
+                {
+                    Console.WriteLine("[Web] Firebase not initialized - cannot verify token");
+                    context.Response.StatusCode = 503;
+                    await context.Response.WriteAsJsonAsync(new { error = "Firebase authentication is not configured on this server" });
+                    return;
+                }
+
+                var decodedToken = await firebaseAuth.VerifyIdTokenAsync(idToken);
+                string uid = decodedToken.Uid;
+                string? email = decodedToken.Claims.GetValueOrDefault("email") as string;
+                string? name = decodedToken.Claims.GetValueOrDefault("name") as string;
+                string? picture = decodedToken.Claims.GetValueOrDefault("picture") as string;
+
+                Console.WriteLine($"[Web] Firebase token verified for UID: {uid}, email: {email}");
+
+                var claims = new List<Claim>
+                {
+                    new(ClaimTypes.NameIdentifier, uid),
+                    new("firebase_uid", uid),
+                    new("auth_provider", "firebase")
+                };
+
+                if (!string.IsNullOrEmpty(email))
+                {
+                    claims.Add(new Claim(ClaimTypes.Email, email));
+                    claims.Add(new Claim("email", email));
+                }
+                if (!string.IsNullOrEmpty(name))
+                {
+                    claims.Add(new Claim(ClaimTypes.Name, name));
+                    claims.Add(new Claim("name", name));
+                }
+                if (!string.IsNullOrEmpty(picture))
+                    claims.Add(new Claim("picture", picture));
+
+                // Look up tenant from DB to add tenant_id claim
+                var contextFactory = context.RequestServices.GetService<IDbContextFactory<ApplicationDbContext>>();
+                if (contextFactory is not null && !string.IsNullOrEmpty(email))
+                {
+                    await using var dbContext = await contextFactory.CreateDbContextAsync();
+                    FormattableString query = $"SELECT \"Id\", \"TenantId\" FROM \"Users\" WHERE \"Email\" = {email} LIMIT 1";
+                    var userRecord = await dbContext.Database.SqlQuery<UserTenantLookup>(query).FirstOrDefaultAsync();
+                    if (userRecord is not null && !string.IsNullOrEmpty(userRecord.TenantId))
+                    {
+                        claims.Add(new Claim("tenant_id", userRecord.TenantId));
+                        Console.WriteLine($"[Web] ✅ Added tenant_id claim for Firebase user: {userRecord.TenantId}");
+                    }
+                }
+
+                var identity = new ClaimsIdentity(claims, LogtoCookieScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await context.SignInAsync(LogtoCookieScheme, principal, new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+                });
+
+                Console.WriteLine("[Web] ✅ Firebase user signed in via cookie session");
+                Console.WriteLine(LogSeparator);
+
+                var hasExistingTenant = principal.FindFirst("tenant_id") is not null;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    success = true,
+                    redirectTo = hasExistingTenant ? "/dashboard" : "/onboarding"
+                });
+            }
+            catch (FirebaseAdmin.Auth.FirebaseAuthException ex)
+            {
+                Console.WriteLine($"[Web] Firebase token verification failed: {ex.Message}");
+                Console.WriteLine(LogSeparator);
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsJsonAsync(new { error = "Invalid or expired Firebase ID token" });
+            }
+        }).AllowAnonymous().DisableAntiforgery();
 
         return app;
     }
@@ -839,91 +938,115 @@ public static class WebAuthenticationExtensions
         IConfiguration configuration,
         IHostEnvironment environment)
     {
-        app.MapGet("/test-logto-connection", async () =>
+        app.MapGet("/test-logto-connection", async (HttpContext httpContext) =>
         {
             var results = new List<object>();
-            
+
+            string? logtoEndpoint = configuration[LogtoEndpointKey];
+            string? logtoHost = null;
+            string? oidcDiscoveryUrl = null;
+            if (!string.IsNullOrEmpty(logtoEndpoint) &&
+                Uri.TryCreate(logtoEndpoint, UriKind.Absolute, out var logtoUri))
+            {
+                logtoHost = logtoUri.Host;
+                oidcDiscoveryUrl = $"{logtoUri.Scheme}://{logtoUri.Host}/.well-known/openid-configuration";
+            }
+
             // Test 1: DNS Resolution
-            try
+            if (!string.IsNullOrEmpty(logtoHost))
             {
-                var host = "32nkyp.logto.app";
-                var addresses = await System.Net.Dns.GetHostAddressesAsync(host);
-                results.Add(new 
-                { 
-                    test = "DNS Resolution",
-                    success = true,
-                    host = host,
-                    addresses = addresses.Select(a => a.ToString()).ToArray()
-                });
+                try
+                {
+                    var addresses = await System.Net.Dns.GetHostAddressesAsync(logtoHost);
+                    results.Add(new
+                    {
+                        test = "DNS Resolution",
+                        success = true,
+                        host = logtoHost,
+                        addresses = addresses.Select(a => a.ToString()).ToArray()
+                    });
+                }
+                catch (Exception ex)
+                {
+                    results.Add(new
+                    {
+                        test = "DNS Resolution",
+                        success = false,
+                        host = logtoHost,
+                        error = ex.Message,
+                        type = ex.GetType().Name
+                    });
+                }
             }
-            catch (Exception ex)
+            else
             {
-                results.Add(new 
-                { 
-                    test = "DNS Resolution",
-                    success = false,
-                    error = ex.Message,
-                    type = ex.GetType().Name
-                });
+                results.Add(new { test = "DNS Resolution", success = false, error = "Logto:Endpoint not configured" });
             }
-            
+
             // Test 2: HTTPS Connectivity (with longer timeout for Railway)
-            try
+            if (!string.IsNullOrEmpty(oidcDiscoveryUrl))
             {
-                using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-                var url = "https://32nkyp.logto.app/oidc/.well-known/openid-configuration";
-                var sw = System.Diagnostics.Stopwatch.StartNew();
-                var response = await client.GetAsync(new Uri(url, UriKind.Absolute));
-                sw.Stop();
-                var content = await response.Content.ReadAsStringAsync();
-                
-                results.Add(new 
-                { 
-                    test = "HTTPS Connectivity",
-                    success = response.IsSuccessStatusCode,
-                    url = url,
-                    statusCode = (int)response.StatusCode,
-                    statusDescription = response.ReasonPhrase,
-                    contentLength = content.Length,
-                    elapsedMs = sw.ElapsedMilliseconds,
-                    warning = sw.ElapsedMilliseconds > 5000 ? "⚠️ Slow connection - took over 5 seconds" : null
-                });
+                try
+                {
+                    using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    var response = await client.GetAsync(new Uri(oidcDiscoveryUrl, UriKind.Absolute));
+                    sw.Stop();
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    results.Add(new
+                    {
+                        test = "HTTPS Connectivity",
+                        success = response.IsSuccessStatusCode,
+                        url = oidcDiscoveryUrl,
+                        statusCode = (int)response.StatusCode,
+                        statusDescription = response.ReasonPhrase,
+                        contentLength = content.Length,
+                        elapsedMs = sw.ElapsedMilliseconds,
+                        warning = sw.ElapsedMilliseconds > 5000 ? "Slow connection - took over 5 seconds" : null
+                    });
+                }
+                catch (Exception ex)
+                {
+                    results.Add(new
+                    {
+                        test = "HTTPS Connectivity",
+                        success = false,
+                        url = oidcDiscoveryUrl,
+                        error = ex.Message,
+                        type = ex.GetType().Name
+                    });
+                }
             }
-            catch (Exception ex)
+            else
             {
-                results.Add(new 
-                { 
-                    test = "HTTPS Connectivity",
-                    success = false,
-                    error = ex.Message,
-                    type = ex.GetType().Name
-                });
+                results.Add(new { test = "HTTPS Connectivity", success = false, error = "Logto:Endpoint not configured" });
             }
-            
+
             // Test 3: Current Logto Configuration
+            var baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
+            var expectedRedirectUris = new[] { $"{baseUrl}/callback", $"{baseUrl}/signout-callback-logto" };
+            var expectedPostLogoutRedirectUris = new[] { $"{baseUrl}/" };
+
             var logtoConfig = new
             {
                 test = "Logto Configuration",
-                endpoint = configuration["Logto:Endpoint"],
-                appId = configuration["Logto:AppId"],
-                hasAppSecret = !string.IsNullOrEmpty(configuration["Logto:AppSecret"]),
+                endpoint = logtoEndpoint,
+                appId = configuration[LogtoAppIdKey],
+                hasAppSecret = !string.IsNullOrEmpty(configuration[LogtoAppSecretKey]),
                 environment = environment.EnvironmentName,
-                requiredRedirectUris = RequiredRedirectUris,
-                requiredPostLogoutRedirectUris = RequiredPostLogoutRedirectUris,
+                requiredRedirectUris = expectedRedirectUris,
+                requiredPostLogoutRedirectUris = expectedPostLogoutRedirectUris,
                 configurationInstructions = "Add these URIs to your Logto application configuration under 'Redirect URIs' and 'Post sign-out redirect URIs'"
             };
             results.Add(logtoConfig);
-            
-            return Results.Json(new 
-            { 
+
+            return Results.Json(new
+            {
                 timestamp = DateTime.UtcNow,
                 railway = !environment.IsDevelopment(),
-                tests = results,
-                networkIssue = "⚠️ CRITICAL: Railway cannot reach Logto (30s+ timeout). This is a Railway network/firewall issue.",
-                action = "Authentication will likely fail until Railway can establish connection to Logto servers.",
-                workaround = "Increased backchannel timeout to 60s - authentication may work but will be very slow",
-                redirectUrisConfigured = "Make sure these URIs are in Logto: https://appblueprint-web-staging.up.railway.app/callback"
-            }, 
+                tests = results
+            },
             new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
         });
 
