@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Storage</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Object storage infrastructure for AppBlueprint using Cloudflare R2 (S3-compatible).</Description>
+        <PackageTags>storage s3 cloudflare r2 object-storage</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AWSSDK.S3" />
+        <PackageReference Include="AWSSDK.Core" />
+        <PackageReference Include="AWSSDK.SecurityToken" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

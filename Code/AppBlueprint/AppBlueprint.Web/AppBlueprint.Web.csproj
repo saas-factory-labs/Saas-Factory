@@ -32,6 +32,7 @@
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure.Auth\AppBlueprint.Infrastructure.Auth.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
         <!-- TodoAppKernel module for Todo DTOs and domain models -->

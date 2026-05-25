@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <!-- Basic Project Properties -->
@@ -26,54 +26,46 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- Authentication and Security -->
-        <PackageReference Include="Logto.AspNetCore.Authentication"/>
-        
         <!-- Entity Framework and Database -->
         <PackageReference Include="Microsoft.EntityFrameworkCore"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
-        
+
         <!-- Configuration and Hosting -->
         <PackageReference Include="Microsoft.Extensions.Compliance.Redaction"/>
         <PackageReference Include="Microsoft.Extensions.Compliance.Abstractions"/>
-        
+
         <!-- Health Checks -->
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql"/>
         <PackageReference Include="AspNetCore.HealthChecks.Redis"/>
         <PackageReference Include="AspNetCore.HealthChecks.Uris"/>
-        
-        <!-- GraphQL and API Clients -->
-        <PackageReference Include="Microsoft.Kiota.Abstractions"/>
-        
-        <!-- Serialization and Data Handling -->
-        <PackageReference Include="Newtonsoft.Json"/>
-        
-        <!-- External Services -->
-        <PackageReference Include="Resend"/>
-        <PackageReference Include="Stripe.net"/>
-        <PackageReference Include="AWSSDK.S3"/>
 
-        <!-- Reverse Proxy -->
-        <PackageReference Include="Yarp.ReverseProxy"/>
-        
+        <!-- Regex / PII detection -->
+        <PackageReference Include="Fluent-Regex"/>
+
         <!-- MSBuild (explicit override for vulnerable transitive dependencies) -->
         <PackageReference Include="Microsoft.Build.Tasks.Core"/>
         <PackageReference Include="Microsoft.Build.Utilities.Core"/>
     </ItemGroup>
 
+    <!-- Files moved to focused packages — excluded from Core compilation -->
     <ItemGroup>
-        <Content Update="appsettings.Development.json">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        </Content>
-    </ItemGroup>
+        <!-- Moved to AppBlueprint.Infrastructure.Auth -->
+        <Compile Remove="Authentication\**\*.cs" />
+        <Compile Remove="Authorization\**\*.cs" />
+        <Compile Remove="Extensions\AuthenticationServiceExtensions.cs" />
 
-    <ItemGroup>
-        <!-- Email templates as embedded resources -->
-        <EmbeddedResource Include="EmailTemplates\**\*.cshtml" />
+        <!-- Moved to AppBlueprint.Infrastructure.Payments -->
+        <Compile Remove="Services\StripeSubscriptionService.cs" />
+        <Compile Remove="Services\StripeWebhookService.cs" />
+
+        <!-- Moved to AppBlueprint.Infrastructure.Storage -->
+        <Compile Remove="Services\ObjectStorageService.cs" />
+
+        <!-- Moved to AppBlueprint.Infrastructure.Email -->
+        <Compile Remove="Services\Email\**\*.cs" />
+        <Compile Remove="Services\TransactionEmailService.cs" />
     </ItemGroup>
 
     <ItemGroup>

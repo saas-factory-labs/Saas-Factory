@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Auth</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Authentication and authorization infrastructure for AppBlueprint (Logto, Firebase, JWT, cookie auth).</Description>
+        <PackageTags>auth authentication authorization logto firebase jwt</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Logto.AspNetCore.Authentication" />
+        <PackageReference Include="FirebaseAdmin" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Microsoft.AspNetCore.Authorization" />
+        <PackageReference Include="Microsoft.Kiota.Abstractions" />
+    </ItemGroup>
+
+    <!-- Excluded: requires Domain types not yet defined (IPushNotificationService, PushNotificationTokenEntity) -->
+    <!-- Excluded: ApiKeyEntity has no KeyHash column; handler needs entity redesign before enabling -->
+    <ItemGroup>
+        <Compile Remove="Services\Notifications\FirebasePushNotificationService.cs" />
+        <Compile Remove="Authentication\ApiKeyAuthenticationHandler.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

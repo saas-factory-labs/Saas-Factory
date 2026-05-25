@@ -15,6 +15,7 @@
     <ItemGroup>
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
         <PackageReference Include="MSTest.TestAdapter" />
         <PackageReference Include="MSTest.TestFramework" />
         <PackageReference Include="Testcontainers.Redis" />
@@ -24,7 +25,9 @@
         <PackageReference Include="Testcontainers.PostgreSql" />
         <PackageReference Include="Aspire.Hosting.Testing" />
         <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
         <PackageReference Include="Moq" />
+        <PackageReference Include="NSubstitute" />
         <PackageReference Include="System.Text.Json" />
         <PackageReference Include="TUnit" />
         <PackageReference Include="TUnit.Assertions" />
@@ -34,6 +37,7 @@
         <ProjectReference Include="..\AppBlueprint.AppHost\AppBlueprint.AppHost.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure.Auth\AppBlueprint.Infrastructure.Auth.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Presentation.ApiModule\AppBlueprint.Presentation.ApiModule.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />

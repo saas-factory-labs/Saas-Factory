@@ -15,14 +15,12 @@ namespace AppBlueprint.Tests.Application.Services;
 /// </summary>
 public sealed class SignupServiceTests : IAsyncDisposable
 {
-    private readonly IDbContextFactory<DbContext> _contextFactory;
+    private readonly ISignupDbContextProvider _contextFactory;
     private readonly ILogger<SignupService> _logger;
     private SignupService? _signupService;
 
     public SignupServiceTests()
     {
-        // Setup in-memory or test database context factory
-        // For real integration tests, use PostgreSQL test container
         _contextFactory = null!; // TODO: Create test context factory
         _logger = null!; // TODO: Create test logger
     }
@@ -75,7 +73,7 @@ public sealed class SignupServiceTests : IAsyncDisposable
         await Assert.That(result.ProfileId).IsNotNull();
         
         // Verify tenant was created in database
-        await using DbContext context = await _contextFactory.CreateDbContextAsync();
+        DbContext context = await _contextFactory.GetDbContextAsync();
         NpgsqlConnection? connection = context.Database.GetDbConnection() as NpgsqlConnection;
         await connection!.OpenAsync();
         
@@ -116,7 +114,8 @@ public sealed class SignupServiceTests : IAsyncDisposable
             FirstName = "First",
             LastName = "User",
             Email = "duplicate@example.com",
-            ExternalAuthId = "logto-first"
+            ExternalAuthId = "logto-first",
+            TenantType = 0
         };
         
         await _signupService!.CreateTenantAndUserAsync(firstRequest);
@@ -129,8 +128,9 @@ public sealed class SignupServiceTests : IAsyncDisposable
             UserId = PrefixedUlid.Generate("user"),
             FirstName = "Second",
             LastName = "User",
-            Email = "duplicate@example.com", // Same email
-            ExternalAuthId = "logto-second"
+            Email = "duplicate@example.com",
+            ExternalAuthId = "logto-second",
+            TenantType = 0
         };
 
         // Act & Assert
@@ -138,7 +138,7 @@ public sealed class SignupServiceTests : IAsyncDisposable
             async () => await _signupService.CreateTenantAndUserAsync(duplicateRequest));
         
         // Verify audit log shows failure
-        await using DbContext context = await _contextFactory.CreateDbContextAsync();
+        DbContext context = await _contextFactory.GetDbContextAsync();
         NpgsqlConnection? connection = context.Database.GetDbConnection() as NpgsqlConnection;
         await connection!.OpenAsync();
         
@@ -225,7 +225,8 @@ public sealed class SignupServiceTests : IAsyncDisposable
                     FirstName = "Test",
                     LastName = "User",
                     Email = testEmail,
-                    ExternalAuthId = $"logto-{i}"
+                    ExternalAuthId = $"logto-{i}",
+                    TenantType = 0
                 });
             }
             catch
@@ -243,7 +244,8 @@ public sealed class SignupServiceTests : IAsyncDisposable
             FirstName = "Test",
             LastName = "User",
             Email = testEmail,
-            ExternalAuthId = "logto-sixth"
+            ExternalAuthId = "logto-sixth",
+            TenantType = 0
         };
 
         // Assert
@@ -274,7 +276,7 @@ public sealed class SignupServiceTests : IAsyncDisposable
         await _signupService!.CreateTenantAndUserAsync(request);
 
         // Assert - Verify user is linked to correct tenant
-        await using DbContext context = await _contextFactory.CreateDbContextAsync();
+        DbContext context = await _contextFactory.GetDbContextAsync();
         NpgsqlConnection? connection = context.Database.GetDbConnection() as NpgsqlConnection;
         await connection!.OpenAsync();
         
@@ -309,7 +311,7 @@ public sealed class SignupServiceTests : IAsyncDisposable
         await _signupService!.CreateTenantAndUserAsync(request);
 
         // Assert - Verify audit log contains IP and user agent
-        await using DbContext context = await _contextFactory.CreateDbContextAsync();
+        DbContext context = await _contextFactory.GetDbContextAsync();
         NpgsqlConnection? connection = context.Database.GetDbConnection() as NpgsqlConnection;
         await connection!.OpenAsync();
         

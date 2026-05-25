@@ -4,6 +4,7 @@ using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TUnit.Assertions;
@@ -25,7 +26,7 @@ public class AdminTenantAccessTests : IAsyncDisposable
     private AdminTenantAccessService? _adminService;
     private Mock<ICurrentUserService>? _mockCurrentUserService;
     private Mock<ILogger<AdminTenantAccessService>>? _mockLogger;
-    
+
     private const string TenantA = "tenant-aaa";
     private const string TenantB = "tenant-bbb";
     private const string AdminUserId = "admin-user-123";
@@ -33,32 +34,29 @@ public class AdminTenantAccessTests : IAsyncDisposable
     [Before(Test)]
     public async Task Setup()
     {
-        // Create in-memory database for testing
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: $"AdminAccessTest_{Guid.NewGuid()}")
             .Options;
 
-        // Mock ITenantContextAccessor (not used during admin access, but required by DbContext)
-        var mockTenantAccessor = new Mock<Infrastructure.Services.ITenantContextAccessor>();
+        var mockConfig = new Mock<IConfiguration>();
+        mockConfig.Setup(c => c.GetSection(It.IsAny<string>())).Returns(Mock.Of<IConfigurationSection>());
+        var mockDbLogger = new Mock<ILogger<ApplicationDbContext>>();
+        var mockTenantAccessor = new Mock<ITenantContextAccessor>();
         mockTenantAccessor.Setup(x => x.TenantId).Returns((string?)null);
 
-        _dbContext = new ApplicationDbContext(options, mockTenantAccessor.Object);
+        _dbContext = new ApplicationDbContext(options, mockConfig.Object, mockDbLogger.Object, mockTenantAccessor.Object);
 
-        // Mock ICurrentUserService for admin role verification
         _mockCurrentUserService = new Mock<ICurrentUserService>();
         _mockCurrentUserService.Setup(x => x.UserId).Returns(AdminUserId);
         _mockCurrentUserService.Setup(x => x.IsInRole(Roles.DeploymentManagerAdmin)).Returns(true);
 
-        // Mock logger to verify audit logging
         _mockLogger = new Mock<ILogger<AdminTenantAccessService>>();
 
-        // Create service under test
         _adminService = new AdminTenantAccessService(
             _dbContext,
             _mockLogger.Object,
             _mockCurrentUserService.Object);
 
-        // Seed test data
         await SeedTenantData();
     }
 
@@ -67,22 +65,30 @@ public class AdminTenantAccessTests : IAsyncDisposable
         if (_dbContext is null)
             throw new InvalidOperationException("DbContext not initialized");
 
-        // Seed tenant A users
         for (int i = 1; i <= 5; i++)
         {
-            _dbContext.Users.Add(UserEntity.Create(
-                TenantA,
-                $"userA{i}@example.com",
-                UserRole.User));
+            _dbContext.Users.Add(new UserEntity
+            {
+                TenantId = TenantA,
+                Email = $"userA{i}@example.com",
+                FirstName = "User",
+                LastName = $"A{i}",
+                UserName = $"userA{i}",
+                Profile = new ProfileEntity()
+            });
         }
 
-        // Seed tenant B users
         for (int i = 1; i <= 3; i++)
         {
-            _dbContext.Users.Add(UserEntity.Create(
-                TenantB,
-                $"userB{i}@example.com",
-                UserRole.User));
+            _dbContext.Users.Add(new UserEntity
+            {
+                TenantId = TenantB,
+                Email = $"userB{i}@example.com",
+                FirstName = "User",
+                LastName = $"B{i}",
+                UserName = $"userB{i}",
+                Profile = new ProfileEntity()
+            });
         }
 
         await _dbContext.SaveChangesAsync();
@@ -94,30 +100,26 @@ public class AdminTenantAccessTests : IAsyncDisposable
     [Test]
     public async Task AdminCanAccessOtherTenant()
     {
-        // Arrange
         if (_adminService is null || _dbContext is null)
             throw new InvalidOperationException("Test not properly initialized");
 
-        // Act - Admin accesses tenant B's data
         var users = await _adminService.ExecuteReadOnlyAsAdminAsync(
             TenantB,
             "Test: Verify admin can access other tenant",
             async () => await _dbContext.Users
-                .AsNoTracking() // ✅ Read-only
+                .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Where(u => u.TenantId == TenantB)
                 .ToListAsync());
 
-        // Assert - Should retrieve all tenant B users
         await Assert.That(users).HasCount().EqualTo(3);
-        await Assert.That(users).IsAllSatisfy(u => u.TenantId == TenantB);
-        
-        // Verify audit log created
+        await Assert.That(users.All(u => u.TenantId == TenantB)).IsTrue();
+
         _mockLogger!.Verify(
             x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("ADMIN_TENANT_ACCESS") 
+                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("ADMIN_TENANT_ACCESS")
                     && v.ToString()!.Contains(TenantB)
                     && v.ToString()!.Contains("Status=Success")),
                 It.IsAny<Exception>(),
@@ -131,23 +133,20 @@ public class AdminTenantAccessTests : IAsyncDisposable
     [Test]
     public async Task NonAdminCannotAccessOtherTenant()
     {
-        // Arrange - User is NOT a SaaSProviderAdmin
         if (_mockCurrentUserService is null || _adminService is null || _dbContext is null)
             throw new InvalidOperationException("Test not properly initialized");
 
-        _mockCurrentUserService.Setup(x => x.IsInRole(Roles.SaaSProviderAdmin)).Returns(false);
+        _mockCurrentUserService.Setup(x => x.IsInRole(Roles.DeploymentManagerAdmin)).Returns(false);
 
-        // Act & Assert - Should throw UnauthorizedAccessException
-        await Assert.That(async () => await _adminService.ExecuteReadOnlyAsAdminAsync(
-            TenantB,
-            "Should fail",
-            async () => await _dbContext.Users
-                .AsNoTracking()
-                .IgnoreQueryFilters()
-                .ToListAsync()
-        )).ThrowsExactly<UnauthorizedAccessException>();
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
+            await _adminService.ExecuteReadOnlyAsAdminAsync(
+                TenantB,
+                "Should fail",
+                async () => await _dbContext.Users
+                    .AsNoTracking()
+                    .IgnoreQueryFilters()
+                    .ToListAsync()));
 
-        // Verify access denied was logged
         _mockLogger!.Verify(
             x => x.Log(
                 LogLevel.Warning,
@@ -164,13 +163,11 @@ public class AdminTenantAccessTests : IAsyncDisposable
     [Test]
     public async Task AdminAccessCreatesAuditLog()
     {
-        // Arrange
         if (_adminService is null || _dbContext is null)
             throw new InvalidOperationException("Test not properly initialized");
 
         string reason = "Support ticket #12345 - User login issue";
 
-        // Act - Admin accesses tenant data
         await _adminService.ExecuteReadOnlyAsAdminAsync(
             TenantB,
             reason,
@@ -179,16 +176,11 @@ public class AdminTenantAccessTests : IAsyncDisposable
                 .IgnoreQueryFilters()
                 .ToListAsync());
 
-        // Assert - Verify audit log contains:
-        // 1. Admin user ID
-        // 2. Target tenant ID
-        // 3. Reason for access
-        // 4. Status (Attempting, Success)
         _mockLogger!.Verify(
             x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => 
+                It.Is<It.IsAnyType>((v, t) =>
                     v.ToString()!.Contains("ADMIN_TENANT_ACCESS") &&
                     v.ToString()!.Contains($"AdminUserId={AdminUserId}") &&
                     v.ToString()!.Contains($"TenantId={TenantB}") &&
@@ -202,7 +194,7 @@ public class AdminTenantAccessTests : IAsyncDisposable
             x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => 
+                It.Is<It.IsAnyType>((v, t) =>
                     v.ToString()!.Contains("ADMIN_TENANT_ACCESS") &&
                     v.ToString()!.Contains($"AdminUserId={AdminUserId}") &&
                     v.ToString()!.Contains($"TenantId={TenantB}") &&
@@ -216,36 +208,29 @@ public class AdminTenantAccessTests : IAsyncDisposable
     /// <summary>
     /// Test 4: Verifies that admins CANNOT modify tenant data (read-only enforcement).
     /// This tests defense-in-depth: .AsNoTracking() prevents EF Core change tracking.
-    /// In production, RLS write policies would also block at database level.
     /// </summary>
     [Test]
     public async Task AdminCannotModifyTenantData()
     {
-        // Arrange
         if (_adminService is null || _dbContext is null)
             throw new InvalidOperationException("Test not properly initialized");
 
-        // Act - Admin retrieves user with AsNoTracking (read-only)
         UserEntity? user = await _adminService.ExecuteReadOnlyAsAdminAsync(
             TenantA,
             "Test: Verify admin cannot modify data",
             async () => await _dbContext.Users
-                .AsNoTracking() // ✅ This prevents change tracking
+                .AsNoTracking()
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(u => u.TenantId == TenantA));
 
-        // Assert - User retrieved successfully
         await Assert.That(user).IsNotNull();
-        
-        string originalEmail = user!.Email;
 
-        // Attempt to modify the entity
-        user.UpdateEmail("hacked@example.com");
+        string originalEmail = user!.Email!;
 
-        // Try to save changes (should have no effect because entity is not tracked)
+        user.Email = "hacked@example.com";
+
         await _dbContext.SaveChangesAsync();
 
-        // Verify data was NOT modified in database
         var verifyUser = await _dbContext.Users
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(u => u.Id == user.Id);
@@ -261,27 +246,24 @@ public class AdminTenantAccessTests : IAsyncDisposable
     [Test]
     public async Task AdminAccessRequiresReason()
     {
-        // Arrange
         if (_adminService is null || _dbContext is null)
             throw new InvalidOperationException("Test not properly initialized");
 
-        // Act & Assert - Empty reason should throw ArgumentException
-        await Assert.That(async () => await _adminService.ExecuteReadOnlyAsAdminAsync(
-            TenantB,
-            "", // ❌ Empty reason
-            async () => await _dbContext.Users
-                .AsNoTracking()
-                .ToListAsync()
-        )).ThrowsExactly<ArgumentException>();
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _adminService.ExecuteReadOnlyAsAdminAsync(
+                TenantB,
+                "",
+                async () => await _dbContext.Users
+                    .AsNoTracking()
+                    .ToListAsync()));
 
-        // Null reason should throw ArgumentNullException
-        await Assert.That(async () => await _adminService.ExecuteReadOnlyAsAdminAsync(
-            TenantB,
-            null!, // ❌ Null reason
-            async () => await _dbContext.Users
-                .AsNoTracking()
-                .ToListAsync()
-        )).ThrowsExactly<ArgumentNullException>();
+        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            await _adminService.ExecuteReadOnlyAsAdminAsync(
+                TenantB,
+                null!,
+                async () => await _dbContext.Users
+                    .AsNoTracking()
+                    .ToListAsync()));
     }
 
     public async ValueTask DisposeAsync()
