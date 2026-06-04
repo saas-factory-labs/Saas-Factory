@@ -1,4 +1,4 @@
-=> Read Cloudcostify/platform/src/Platform.Shared/Telemetry/README.md
+=> Read https://github.com/Cloudcostify/platform/blob/main/src/Platform.Shared/Telemetry/README.md
 
 Instance id can be found at => https://grafana.com/auth/sign-in/ => Manage your Grafana Cloud stack on the homepage => Details button => Opentelemetry configure button <img width="603" height="205" alt="image" src="https://github.com/user-attachments/assets/befdbedc-8727-4f4d-b2a1-ac0a7a114aa5" /> For example open telemetry region endpoint: https://otlp-gateway-prod-us-central-0.grafana.net/otlp
 
