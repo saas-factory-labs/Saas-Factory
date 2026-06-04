@@ -7,6 +7,19 @@ Instance id can be found at => https://grafana.com/auth/sign-in/ => Manage your 
 
 => Open telemetry data can be seen in the grafana stack instance for example: https://<stack-name>.grafana.net/ > Explore
 
+=> Environment variables that need to be set in production service: 
+
+```powershell
+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("<instance-id>:<grafana-opentelemetry-token>"))
+```
+
+```bash
+OTEL_EXPORTER_OTLP_ENDPOINT="https://otlp-gateway-prod-us-central-0.grafana.net/otlp"
+OTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic <instance id and granana-opentelemetry-token base64 encoded>"
+OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
+OTEL_SERVICE_NAME="<service-name for example: cloudcostify-cost-estimation-api>"
+```
+
 
 
 
