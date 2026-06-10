@@ -1,0 +1,72 @@
+Code/DeploymentManager/DeploymentManager.ApiService/Domain/Interfaces/IUnitOfWork.cs
+  s_7fb74cc5cf2886::t_8e54ed0b8cb6ae 5-7
+  s_7fb74cc5cf2886::t_e81a19ccf42065 10
+Code/DeploymentManager/DeploymentManager.ApiService/Domain/Interfaces/IProjectRepository.cs
+  s_7fb74cc5cf2886::t_88715d651b36f2 7-11
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/Authentication/AuthenticationController.cs
+  h_aa722e8ed10195 1-55
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Persistence/Data/Repositories/AppRepository.cs
+  s_7fb74cc5cf2886::t_dafe2d2f667b27 1-43
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/Pulumi/ProjectController.cs
+  s_7fb74cc5cf2886::t_624eeb6e4cc2c4 15,20,22-23,29,31,35,37,43,47,52-53,55,59,61,63-64,70,72-73
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Persistence/Data/Repositories/ProjectRepository.cs
+  s_7fb74cc5cf2886::t_ba6cca6eecfefa 3-4,10,12,14-15,18,20,23,25,28,30-31,34,36-38,41-47
+Code/DeploymentManager/DeploymentManager.ApiService/Domain/Interfaces/IAppRepository.cs
+  s_7fb74cc5cf2886::t_2dbcdc402a3af9 1-12
+Code/DeploymentManager/DeploymentManager.ApiService/Program.cs
+  s_7fb74cc5cf2886::t_5a8c039860b33f 2
+  s_7fb74cc5cf2886::t_22219ecaaf50f3 16-17,21
+  s_7fb74cc5cf2886::t_f9cdf50f6926f2 4-5,7,20,23
+  s_7fb74cc5cf2886::t_e0325a44925053 24-25
+  s_7fb74cc5cf2886::t_359222e1903b4c 8
+  s_7fb74cc5cf2886::t_df14ac3f7da7b3 15,18
+  s_7fb74cc5cf2886::t_e392ce63ae5261 31-36
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Persistence/Data/Repositories/DeploymentRepository.cs
+  s_7fb74cc5cf2886::t_c59187b6564899 1-43
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Services/NullInfrastructureCodeProvider.cs
+  s_7fb74cc5cf2886::t_a3f11ec5358c10 1-25
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Persistence/Data/Context/DeploymentManagerContext.cs
+  s_7fb74cc5cf2886::t_86cb5f41c5a21a 1-35
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Persistence/Data/UnitOfWork/UnitOfWork.cs
+  s_7fb74cc5cf2886::t_b7add1b59dda60 17,21,26,28-32,35-44,46-50,52-57
+  s_7fb74cc5cf2886::t_332a86a84217d1 1-16,18-20,22-25,27,33-34,45,51,58
+Code/DeploymentManager/DeploymentManager.ApiService/Domain/Interfaces/IDeploymentRepository.cs
+  s_7fb74cc5cf2886::t_4a1c828ce627b5 1-12
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Persistence/Data/Context/PostgresConnectionStringHelper.cs
+  s_7fb74cc5cf2886::t_eaefb5102451e6 1-38,51,53-59
+  s_7fb74cc5cf2886::t_36528029c2ba79 39-50,52
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Persistence/Data/Context/DeploymentManagerDbContextFactory.cs
+  s_7fb74cc5cf2886::t_60db738f9b4001 1-19,21-23,25-36
+  s_7fb74cc5cf2886::t_0371143afd941b 20,24
+Code/DeploymentManager/DeploymentManager.ApiService/Application/Services/ProjectService.cs
+  s_7fb74cc5cf2886::t_271abe11dd22b2 12,16,18-20,24,26,29,31,34,36-38,41,43-44
+Code/DeploymentManager/DeploymentManager.ApiService/Domain/Interfaces/ICustomerRepository.cs
+  s_7fb74cc5cf2886::t_0ead6cfb80cad3 1-12
+Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj
+  s_7fb74cc5cf2886::t_78ff4cceca1ce8 7
+  s_7fb74cc5cf2886::t_5f25c4edde5cab 36
+  s_7fb74cc5cf2886::t_7a2b13d9707da4 24
+Code/DeploymentManager/DeploymentManager.ApiService/Domain/Interfaces/IProjectService.cs
+  s_7fb74cc5cf2886::t_dc58e42b862d5b 7-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "4116d06c18ca1f56fe4df634337f811ec4fa4f77",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_7fb74cc5cf2886": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1d578788-1ffe-46fb-8691-6a15b4367acb",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
