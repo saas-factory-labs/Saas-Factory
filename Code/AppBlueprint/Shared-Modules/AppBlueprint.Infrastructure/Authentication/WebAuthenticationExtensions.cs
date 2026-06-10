@@ -362,20 +362,16 @@ public static class WebAuthenticationExtensions
                 options.RequireHttpsMetadata = false;
             }
 
-            // Configure correlation cookie for development (HTTP localhost)
-            options.CorrelationCookie.SecurePolicy = environment.IsDevelopment()
-                ? CookieSecurePolicy.None
-                : CookieSecurePolicy.Always;
-            options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+            // SameSite=None + Secure=Always required for form_post cross-site callback.
+            // See ConfigureCookieSettings for the full explanation.
+            options.CorrelationCookie.SameSite = SameSiteMode.None;
+            options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
             options.CorrelationCookie.HttpOnly = true;
             options.CorrelationCookie.IsEssential = true;
             options.CorrelationCookie.Path = "/";
 
-            // Configure nonce cookie for development (HTTP localhost)
-            options.NonceCookie.SecurePolicy = environment.IsDevelopment()
-                ? CookieSecurePolicy.None
-                : CookieSecurePolicy.Always;
-            options.NonceCookie.SameSite = SameSiteMode.Lax;
+            options.NonceCookie.SameSite = SameSiteMode.None;
+            options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
             options.NonceCookie.HttpOnly = true;
             options.NonceCookie.IsEssential = true;
             options.NonceCookie.Path = "/";
@@ -517,39 +513,26 @@ public static class WebAuthenticationExtensions
         OpenIdConnectOptions options,
         IHostEnvironment environment)
     {
-        // In development (HTTP localhost), use Lax + None for cookies
-        // In production (HTTPS), use None + Always (required for OAuth cross-site redirects)
-        SameSiteMode sameSiteMode;
-        CookieSecurePolicy securePolicy;
-
-        if (environment.IsDevelopment())
-        {
-            // Development: HTTP localhost
-            sameSiteMode = SameSiteMode.Lax;
-            securePolicy = CookieSecurePolicy.None; // Allow HTTP
-        }
-        else
-        {
-            // Production: HTTPS required
-            sameSiteMode = SameSiteMode.None;
-            securePolicy = CookieSecurePolicy.Always;
-        }
-
-        options.CorrelationCookie.SameSite = sameSiteMode;
-        options.CorrelationCookie.SecurePolicy = securePolicy;
+        // Correlation and nonce cookies MUST use SameSite=None because response_mode=form_post
+        // causes Logto to POST back to /callback cross-origin. Modern browsers block SameSite=Lax
+        // cookies in cross-site POST requests, breaking the OIDC correlation check and causing
+        // an infinite redirect loop (CorrelationException → /signup → /auth/signin → Logto → loop).
+        // SameSite=None requires Secure=true — both dev (HTTPS localhost) and prod satisfy this.
+        options.CorrelationCookie.SameSite = SameSiteMode.None;
+        options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
         options.CorrelationCookie.HttpOnly = true;
         options.CorrelationCookie.Path = "/";
         options.CorrelationCookie.IsEssential = true;
-        options.CorrelationCookie.Domain = null; // Don't set domain - use current host
+        options.CorrelationCookie.Domain = null;
 
-        options.NonceCookie.SameSite = sameSiteMode;
-        options.NonceCookie.SecurePolicy = securePolicy;
+        options.NonceCookie.SameSite = SameSiteMode.None;
+        options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
         options.NonceCookie.HttpOnly = true;
         options.NonceCookie.Path = "/";
         options.NonceCookie.IsEssential = true;
-        options.NonceCookie.Domain = null; // Don't set domain - use current host
+        options.NonceCookie.Domain = null;
 
-        Console.WriteLine($"[Web] Configured correlation/nonce cookies: Path=/, IsEssential=true, SameSite={sameSiteMode}, Secure={securePolicy}, Domain=null");
+        Console.WriteLine("[Web] Configured correlation/nonce cookies: SameSite=None, Secure=Always, Path=/, IsEssential=true, Domain=null");
     }
 
     /// <summary>
@@ -822,16 +805,14 @@ public static class WebAuthenticationExtensions
             }
             else
             {
-                Console.WriteLine("[Web] ⚠️ DbContextFactory not available in DI container");
-                // Fallback to onboarding if we can't check database
-                context.Properties?.RedirectUri = "/onboarding";
+                Console.WriteLine("[Web] ⚠️ DbContextFactory not available in DI container - keeping original redirect");
+                // No DB context: don't override the redirect — keep the originally requested URL.
+                // Overriding with /onboarding would break apps that don't have that page.
             }
         }
         else
         {
-            Console.WriteLine("[Web] ⚠️ No email claim found in JWT");
-            // Fallback to onboarding if we can't identify user
-            context.Properties?.RedirectUri = "/onboarding";
+            Console.WriteLine("[Web] ⚠️ No email claim found in JWT - keeping original redirect");
         }
 
         Console.WriteLine("[Web] Tokens should now be available via HttpContext.GetTokenAsync()");

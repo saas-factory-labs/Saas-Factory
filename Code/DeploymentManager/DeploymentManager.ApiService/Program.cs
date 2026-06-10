@@ -1,3 +1,4 @@
+using AppBlueprint.ServiceDefaults;
 using DeploymentManager.ApiService;
 using DeploymentManager.ApiService.Application.Services;
 using DeploymentManager.ApiService.Domain.Interfaces;
@@ -8,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using static DeploymentManager.ApiService.Infrastructure.Persistence.Data.Context.PostgresConnectionStringHelper;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
@@ -24,7 +27,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IInfrastructureCodeProvider, NullInfrastructureCodeProvider>();
 
-builder.Services.AddScoped<IEmailService, MailGunEmailService>();
+builder.Services.AddHttpClient<IEmailService, MailGunEmailService>();
 
 WebApplication? app = builder.Build();
 
@@ -35,6 +38,7 @@ using (IServiceScope scope = app.Services.CreateScope())
 }
 
 app.UseExceptionHandler();
+app.MapDefaultEndpoints();
 
 string[]? summaries = new[]
 {
@@ -54,7 +58,7 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 });
 
-app.Run();
+await app.RunAsync();
 
 namespace DeploymentManager.ApiService
 {

@@ -5,17 +5,6 @@
     <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
 
-  <!-- Appblueprint project references - paths anchored to this file's directory -->
-  <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Presentation.ApiModule\AppBlueprint.Presentation.ApiModule.csproj" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
-  </ItemGroup>
-
   <!-- Consolidated and cleaned package versions -->
   <ItemGroup>
     <PackageVersion Include="OpenAI" Version="2.1.0" />
@@ -28,8 +17,8 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.1.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.1.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.0" />

@@ -1,21 +1,20 @@
-﻿@using DeploymentManager.Web.Components.Layout
+﻿@page "/"
 @using MudBlazor
-@inherits LayoutComponentBase
-
-@page "/"
-@layout MainLayout
-
 
 <PageTitle>Dashboard</PageTitle>
 
-<h1 class="">Dashboard </h1>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
-<MudCard class="py-4">
-    <MudCardContent>
-        <MudText>File Discovery App</MudText>
-        <MudText Typo="Typo.body2">Search across every file in an instant.</MudText>
-    </MudCardContent>
-    <MudCardActions>
-        <MudButton Variant="Variant.Text" Color="Color.Primary">Change configuration</MudButton>
-    </MudCardActions>
-</MudCard>
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Dashboard</h1>
+
+    <MudCard Class="mb-4">
+        <MudCardContent>
+            <MudText Typo="Typo.h6">File Discovery App</MudText>
+            <MudText Typo="Typo.body2">Search across every file in an instant.</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Text" Color="Color.Primary">Change configuration</MudButton>
+        </MudCardActions>
+    </MudCard>
+
+</div>
