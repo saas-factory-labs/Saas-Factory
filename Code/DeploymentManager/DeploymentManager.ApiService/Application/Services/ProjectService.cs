@@ -9,35 +9,38 @@ public class ProjectService : IProjectService
 
     public ProjectService(IUnitOfWork unitOfWork)
     {
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ProjectEntity> CreateProjectAsync(ProjectEntity project)
+    public async Task<ProjectEntity> CreateProjectAsync(ProjectEntity project, CancellationToken cancellationToken = default)
     {
-        _unitOfWork.ProjectRepository.Add(project);
-        _unitOfWork.SaveChanges();
+        ArgumentNullException.ThrowIfNull(project);
+        await _unitOfWork.ProjectRepository.AddAsync(project, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return project;
     }
 
-    public IEnumerable<ProjectEntity> GetAllProjects()
+    public async Task<IEnumerable<ProjectEntity>> GetAllProjectsAsync(CancellationToken cancellationToken = default)
     {
-        return _unitOfWork.ProjectRepository.GetAll();
+        return await _unitOfWork.ProjectRepository.GetAllAsync(cancellationToken);
     }
 
-    public ProjectEntity? GetProjectById(int id)
+    public async Task<ProjectEntity?> GetProjectByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        return _unitOfWork.ProjectRepository.GetById(id);
+        return await _unitOfWork.ProjectRepository.GetByIdAsync(id, cancellationToken);
     }
 
-    public void UpdateProject(ProjectEntity project)
+    public async Task UpdateProjectAsync(ProjectEntity project, CancellationToken cancellationToken = default)
     {
-        _unitOfWork.ProjectRepository.Update(project);
-        _unitOfWork.SaveChanges();
+        ArgumentNullException.ThrowIfNull(project);
+        await _unitOfWork.ProjectRepository.UpdateAsync(project, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public void DeleteProject(int id)
+    public async Task DeleteProjectAsync(int id, CancellationToken cancellationToken = default)
     {
-        _unitOfWork.ProjectRepository.Delete(id);
-        _unitOfWork.SaveChanges();
+        await _unitOfWork.ProjectRepository.DeleteAsync(id, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

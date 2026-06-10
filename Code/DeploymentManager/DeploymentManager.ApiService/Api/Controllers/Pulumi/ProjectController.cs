@@ -12,104 +12,66 @@ public class ResponseDto
 
 [ApiController]
 [Route("[controller]")]
-public class
-    ProjectController : Controller // inherit base class with injected services (ILogger, pulumi automation api service)
+public class ProjectController : Controller
 {
     private readonly IInfrastructureCodeProvider _infrastructureCodeProvider;
-    private readonly IProjectRepository _projectRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ProjectController(IProjectRepository projectRepository, IUnitOfWork unitOfWork,
-        IInfrastructureCodeProvider infrastructureCodeProvider)
+    public ProjectController(IUnitOfWork unitOfWork, IInfrastructureCodeProvider infrastructureCodeProvider)
     {
-        _projectRepository = projectRepository;
+        ArgumentNullException.ThrowIfNull(unitOfWork);
+        ArgumentNullException.ThrowIfNull(infrastructureCodeProvider);
         _unitOfWork = unitOfWork;
         _infrastructureCodeProvider = infrastructureCodeProvider;
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ProjectEntity>> Get()
+    public async Task<IEnumerable<ProjectEntity>> Get(CancellationToken cancellationToken)
     {
-        IEnumerable<ProjectEntity>? projects = _projectRepository.GetAll();
-
-        // mapster (best) or automapper
-        IEnumerable<ResponseDto>? dto = projects.Select(p => new ResponseDto
-        {
-            Name = p.Name
-        });
-
-        // project entity => response dto (sanitized) - explicit mapping
-        return projects;
+        return await _unitOfWork.ProjectRepository.GetAllAsync(cancellationToken);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult> Get(int id)
+    public async Task<ActionResult> Get(int id, CancellationToken cancellationToken)
     {
-        ProjectEntity? project = _projectRepository.GetById(id);
+        ProjectEntity? project = await _unitOfWork.ProjectRepository.GetByIdAsync(id, cancellationToken);
         if (project is null) return NotFound();
         return Ok(project);
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] ProjectEntity project)
+    public async Task<IActionResult> Post([FromBody] ProjectEntity project, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        ProjectRequestDto projectDto = new()
-        {
-            Name = project.Name
-        };
+        ProjectRequestDto projectDto = new() { Name = project.Name };
 
         Task<bool>? result = _infrastructureCodeProvider.CreateOrUpdateProject(projectDto);
         if (result is null) return new ObjectResult("Error creating project") { StatusCode = 500 };
 
-        _unitOfWork.ProjectRepository.Add(project);
-        _unitOfWork.SaveChanges();
+        await _unitOfWork.ProjectRepository.AddAsync(project, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return CreatedAtAction("Get", new { id = project.Id }, project);
+        return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<ProjectEntity>> Put(int id, [FromBody] ProjectEntity project)
+    public async Task<ActionResult> Put(int id, [FromBody] ProjectEntity project, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-        {
-            _projectRepository.Update(project);
-            _unitOfWork.SaveChanges();
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-
-            _unitOfWork.ProjectRepository.Update(project);
-            _unitOfWork.SaveChanges();
-        }
+        await _unitOfWork.ProjectRepository.UpdateAsync(project, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid) _unitOfWork.ProjectRepository.Delete(id);
+        await _unitOfWork.ProjectRepository.DeleteAsync(id, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
 }
-
-//using DeploymentPortal.ApiService.Controllers.Base;
-
-//using DeploymentPortal.ApiService.Models;
-/*
-
-- get pulumi automation api service
-- create or update project
-- create or update stack
-- create or update stack config
-- create or update stack secrets
-- create or update stack tags
-- create or update stack policy
-- create azure infrastructure using stack
-- create postgresql database
-- deploy application to project infrastructure
-
-*/
-// CustomerBaseController
-//  /api/deployment

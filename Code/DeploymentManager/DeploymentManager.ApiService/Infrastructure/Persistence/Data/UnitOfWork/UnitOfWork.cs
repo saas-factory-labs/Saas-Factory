@@ -1,43 +1,58 @@
-// using Domain.Interfaces;
-// using Infrastructure.Persistence.Data.Context;
-// using Infrastructure.Persistence.Data.Repositories;
-// using Infrastructure.Persistence.Data.UnitOfWork;
+using DeploymentManager.ApiService.Domain.Interfaces;
+using DeploymentManager.ApiService.Infrastructure.Persistence.Data.Context;
+using DeploymentManager.ApiService.Infrastructure.Persistence.Data.Repositories;
 
-// public class UnitOfWork : IUnitOfWork
-// {
-//     private readonly DeploymentManagerContext _context;
-//     private ProjectRepository _projectRepository;
-//     // Add other repository fields here as needed
+namespace DeploymentManager.ApiService.Infrastructure.Persistence.Data.UnitOfWork;
 
-//     public UnitOfWork(DeploymentManagerContext context)
-//     {
-//         _context = context;
-//     }
+public sealed class UnitOfWork : IUnitOfWork
+{
+    private readonly DeploymentManagerDbContext _context;
 
-//     public IProjectRepository ProjectRepository
-//     {
-//         get
-//         {
-//             if (_projectRepository is null)
-//             {
-//                 _projectRepository = new ProjectRepository();
-//             }
-//             return _projectRepository;
-//         }
-//     }
+    public UnitOfWork(DeploymentManagerDbContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        _context = context;
+    }
 
-//     // Implement the same pattern for other repositories here
+    public IAppRepository AppRepository
+    {
+        get
+        {
+            field ??= new AppRepository(_context);
+            return field;
+        }
+    }
 
-//     public void SaveChanges()
-//     {
-//         _context.SaveChanges();
-//     }
+    public ICustomerRepository CustomerRepository
+    {
+        get
+        {
+            field ??= new CustomerRepository(_context);
+            return field;
+        }
+    }
 
-//     public void Dispose()
-//     {
-//         _context.Dispose();
-//     }
-// }
+    public IDeploymentRepository DeploymentRepository
+    {
+        get
+        {
+            field ??= new DeploymentRepository(_context);
+            return field;
+        }
+    }
 
+    public IProjectRepository ProjectRepository
+    {
+        get
+        {
+            field ??= new ProjectRepository(_context);
+            return field;
+        }
+    }
 
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        => _context.SaveChangesAsync(cancellationToken);
 
+    public void Dispose()
+        => _context.Dispose();
+}

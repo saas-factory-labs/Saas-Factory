@@ -1,38 +1,39 @@
 using DeploymentManager.ApiService;
+using DeploymentManager.ApiService.Application.Services;
 using DeploymentManager.ApiService.Domain.Interfaces;
-using DeploymentManager.ApiService.Infrastructure.Persistence.Data.Repositories;
+using DeploymentManager.ApiService.Infrastructure.Persistence.Data.Context;
+using DeploymentManager.ApiService.Infrastructure.Persistence.Data.UnitOfWork;
 using DeploymentManager.ApiService.Infrastructure.Services;
-
-// using Infrastructure.Persistence.Data.Context;
-
+using Microsoft.EntityFrameworkCore;
+using static DeploymentManager.ApiService.Infrastructure.Persistence.Data.Context.PostgresConnectionStringHelper;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
-// Add service defaults & Aspire components.
-// builder.AddServiceDefaults();
-
-// Add services to the container.
 builder.Services.AddProblemDetails();
-
 builder.Services.AddControllers();
 
-// builder.Services.AddDbContext<DeploymentManagerContext>(options =>
-// {
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-// });
+string connectionString = Normalize(
+    builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? builder.Configuration["DATABASE_URL"]
+    ?? throw new InvalidOperationException("No database connection string configured."));
 
-// builder.Services.AddScoped<IUnitOfWork, Infrastructure.Persistence.Data.UnitOfWork>();
-builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddDbContext<DeploymentManagerDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
-// builder.Services.AddScoped<PulumiAzureService, PulumiAzureService>();
-
-// builder.Services.AddScoped<IInfrastructureCodeProvider, PulumiAutomationApiService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IInfrastructureCodeProvider, NullInfrastructureCodeProvider>();
 
 builder.Services.AddScoped<IEmailService, MailGunEmailService>();
 
 WebApplication? app = builder.Build();
 
-// Configure the HTTP request pipeline.
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    DeploymentManagerDbContext db = scope.ServiceProvider.GetRequiredService<DeploymentManagerDbContext>();
+    await db.Database.MigrateAsync();
+}
+
 app.UseExceptionHandler();
 
 string[]? summaries = new[]
@@ -52,8 +53,6 @@ app.MapGet("/weatherforecast", () =>
         .ToArray();
     return forecast;
 });
-
-// app.MapDefaultEndpoints();
 
 app.Run();
 
