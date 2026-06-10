@@ -12,7 +12,7 @@
 
 ![Database Schema Diagram](docs/images/image.png)
 
-<a href="https://demo.saasfactorylabs.com"> View live demo site </a>
+<a href="https://demo.saasfactorylabs.com">Visit the live demo site </a>
 
 </h5>
 
