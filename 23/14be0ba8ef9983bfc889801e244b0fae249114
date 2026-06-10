@@ -1,0 +1,30 @@
+Code/DeploymentManager/DeploymentManager.Web/DeploymentManager.Web.csproj
+  s_8638e526b8da37::t_3a5b5b1392d664 22
+Code/DeploymentManager/Directory.Packages.props
+  s_8638e526b8da37::t_e86ce587cb7049 8-16
+  s_8638e526b8da37::t_429eeea089561a 43
+  s_8638e526b8da37::t_600e48ae3ab0c3 44
+SaaS-Factory.slnx
+  h_aa722e8ed10195 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "2314be0ba8ef9983bfc889801e244b0fae249114",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_8638e526b8da37": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23555500-9ae9-49ed-a61b-40f0a8be7cf0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
