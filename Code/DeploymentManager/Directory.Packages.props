@@ -5,6 +5,17 @@
     <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
 
+  <!-- Appblueprint project references - paths anchored to this file's directory -->
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Contracts\AppBlueprint.Contracts.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.Presentation.ApiModule\AppBlueprint.Presentation.ApiModule.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\AppBlueprint\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
+  </ItemGroup>
+
   <!-- Consolidated and cleaned package versions -->
   <ItemGroup>
     <PackageVersion Include="OpenAI" Version="2.1.0" />
@@ -29,8 +40,8 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>

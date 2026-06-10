@@ -3,7 +3,7 @@
     <Platform Name="Any CPU" />
     <Platform Name="x64" />
     <Platform Name="x86" />
-  </Configurations>
+  </Configurations>  
   <Folder Name="/AppBlueprint/">
     <Project Path="Code/AppBlueprint/AppBlueprint.ApiService/AppBlueprint.ApiService.csproj" />
     <Project Path="Code/AppBlueprint/AppBlueprint.AppGateway/AppBlueprint.AppGateway.csproj" />
