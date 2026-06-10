@@ -1,0 +1,94 @@
+Code/DeploymentManager/Directory.Packages.props
+  s_d895b7111c5015::t_91e25267571d44 20
+  s_d895b7111c5015::t_eed034f2a1f49b 21
+Code/DeploymentManager/DeploymentManager.Web/DeploymentManager.Web.csproj
+  s_d895b7111c5015::t_5e2d53c527976b 12,18-26
+Code/DeploymentManager/DeploymentManager.Web/Services/MenuConfigurationService.cs
+  s_d895b7111c5015::t_a41398d98943b2 1-8
+Code/DeploymentManager/DeploymentManager.Web/Services/NullCurrentTenantService.cs
+  s_d895b7111c5015::t_96913a8f03c28b 1-11
+Code/DeploymentManager/DeploymentManager.Web/Components/Layout/EmptyLayout.razor
+  s_d895b7111c5015::t_65970bbd382717 1-3
+Code/DeploymentManager/MIGRATING-DEPLOYMENTMANAGER-TO-APPBLUEPRINT-FRAMEWORK.md
+  s_d895b7111c5015::t_1854989171aa57 1-5
+Code/DeploymentManager/DeploymentManager.Web/Components/_Imports.razor
+  s_d895b7111c5015::t_91709958a88a56 14
+  s_d895b7111c5015::t_575536c0ef10f8 12
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Apps.Environments.razor
+  s_d895b7111c5015::t_9ed364ba3814a1 3,5-9
+Code/DeploymentManager/DeploymentManager.Web/Components/App.razor
+  s_d895b7111c5015::t_43f0ccc161cf7f 2,7,9-14,18,25,29-32,35,38
+  s_d895b7111c5015::t_87d1c884da6acf 26
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Authentication/WebAuthenticationExtensions.cs
+  s_d895b7111c5015::t_4952aabf74bfc3 815
+  s_d895b7111c5015::t_a5f1a59813f5ac 808-810
+  s_d895b7111c5015::t_723cd9a275e816 516-522,526,528-529,533,535
+  s_d895b7111c5015::t_7744c0b2c6503c 365-368,373-374
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/DeploymentManager.Settings.razor
+  s_d895b7111c5015::t_2c23aa730ca92e 2,6,8
+  s_d895b7111c5015::t_32c1247e854030 17-18
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Apps.Environments.Deployments.razor
+  s_d895b7111c5015::t_32f2d7a03a2a3e 3,5-9
+Code/DeploymentManager/DeploymentManager.Web/wwwroot/js/app-init.js
+  s_d895b7111c5015::t_fabcdd6d24518b 1-30
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Apps.Documentation.razor
+  s_d895b7111c5015::t_35e33b29d5e0dc 3,5,7-11
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/CostManagement.razor
+  s_d895b7111c5015::t_158da9809b918f 4,6-8,27
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Signup.razor
+  s_d895b7111c5015::t_0caa8c2a200ee3 1-10
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Apps.Settings.razor
+  s_d895b7111c5015::t_d8836330cfa311 3,5-9
+Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj
+  s_d895b7111c5015::t_44952b0d828842 11-15,18,20,22,32
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Customers.razor
+  s_d895b7111c5015::t_bafb4b94dc7d42 2,6,8,33
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Apps.Infrastructure.razor
+  s_d895b7111c5015::t_1e689bd6b4c0ef 3,5-9
+Code/DeploymentManager/DeploymentManager.Web/Components/Layout/MainLayout.razor.css
+  s_d895b7111c5015::t_c11d3b83edfb7b 1
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Dashboard.razor
+  s_d895b7111c5015::t_bb482e63a820b0 1,4,6,8,10-18,20
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Apps.Manage.razor
+  s_d895b7111c5015::t_13695f1054e6d7 29-30
+  s_d895b7111c5015::t_5f1ba0a2c28a81 1,8-10
+Code/DeploymentManager/DeploymentManager.Web/Components/Layout/MainLayout.razor
+  s_d895b7111c5015::t_4acced50a77eb0 3,5-7
+  s_d895b7111c5015::t_9f782e59b78b5a 108
+  s_d895b7111c5015::t_1449d5ff35d6a1 4
+  s_d895b7111c5015::t_09f757bf90f124 2,8-107,109-110,112-113,117-120,123-124,128-130,132,134-135,145
+  s_d895b7111c5015::t_f74771f9876f27 125-126,137-144
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Apps.Configuration.razor
+  s_d895b7111c5015::t_7d4950800bf4ff 3,5,7,9
+Code/DeploymentManager/DeploymentManager.Web/Program.cs
+  s_d895b7111c5015::t_e0fe6dde10a3a6 45-48
+  s_d895b7111c5015::t_e0fc88e8434db8 61
+  s_d895b7111c5015::t_ccb6cf2cfd508d 2-3,5-6,10,12,14-19,21-26,28,30-36,39-41,43-44,49-51,54-60,62-64,68-78,80-82,85-88,90,93-94,96,98
+  s_d895b7111c5015::t_9c6c19bc1e1fd4 66-67
+  s_d895b7111c5015::t_ef78650209d2bd 1
+  s_d895b7111c5015::t_985fd11ed95cc0 7-9
+  s_d895b7111c5015::t_14ff87a7381115 37
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/DependencyMap.razor
+  s_d895b7111c5015::t_290c25ae1c858e 4,6,8,10,15,17
+Code/DeploymentManager/DeploymentManager.ApiService/Program.cs
+  s_d895b7111c5015::t_4a372259c03e80 1,13
+  s_d895b7111c5015::t_ec72a4accb7296 30
+  s_d895b7111c5015::t_a0c8ec5930e474 41
+  s_d895b7111c5015::t_5a0bae19a2158d 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "51f40324d6a4db68227adc4890afbce09733bd7c",
+  "prompts": {},
+  "sessions": {
+    "s_d895b7111c5015": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b1f2129c-23dd-451b-b6f7-7533b0d9fbbe",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
