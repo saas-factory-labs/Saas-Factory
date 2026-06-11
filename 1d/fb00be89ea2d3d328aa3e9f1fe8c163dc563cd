@@ -1,0 +1,27 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Email/Services/TransactionEmailService.cs
+  s_ceba46b6ae6772::t_64347fbe93752a 29
+.github/workflows/publish-nuget-packages.yml
+  s_ceba46b6ae6772::t_a9de1b14bc1146 28
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Email/AppBlueprint.Infrastructure.Email.csproj
+  s_ceba46b6ae6772::t_0b569c614ecf09 1-52
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Email/Extensions/ResendEmailServiceCollectionExtensions.cs
+  s_ceba46b6ae6772::t_9505f57e4341e7 1-78
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj
+  s_ceba46b6ae6772::t_9499a958ba2527 86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "1dfb00be89ea2d3d328aa3e9f1fe8c163dc563cd",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
