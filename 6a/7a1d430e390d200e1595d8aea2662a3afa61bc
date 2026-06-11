@@ -1,0 +1,32 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/ServiceCollectionExtensions.cs
+  s_ceba46b6ae6772::t_6a6a7df4425179 636-637,641
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Search/AppBlueprint.Infrastructure.Search.csproj
+  s_ceba46b6ae6772::t_40c54c5db07a25 1-40
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.PII/Extensions/PIIServiceCollectionExtensions.cs
+  s_ceba46b6ae6772::t_35d8ba14af90d9 1-30
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Search/Extensions/SearchServiceCollectionExtensions.cs
+  s_ceba46b6ae6772::t_8b8b0e78ae5f18 1-38
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.PII/AppBlueprint.Infrastructure.PII.csproj
+  s_ceba46b6ae6772::t_5d3a15525df752 1-38
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj
+  s_ceba46b6ae6772::t_6735d9a39c5d79 64-66
+  s_ceba46b6ae6772::t_822e7148ae9920 92-94
+.github/workflows/publish-nuget-packages.yml
+  s_ceba46b6ae6772::t_0822f9580a8544 26,28-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "6a7a1d430e390d200e1595d8aea2662a3afa61bc",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
