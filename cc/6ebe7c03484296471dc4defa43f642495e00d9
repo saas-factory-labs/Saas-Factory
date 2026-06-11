@@ -1,0 +1,29 @@
+.github/workflows/publish-nuget-packages.yml
+  s_ceba46b6ae6772::t_584e0c57efbf22 29
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Notifications/Extensions/PushNotificationServiceCollectionExtensions.cs
+  s_ceba46b6ae6772::t_c086726643f69b 1-33
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DependencyInjection/NotificationServiceRegistration.cs
+  s_ceba46b6ae6772::t_f1048d73702b21 3,25-27
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Notifications/AppBlueprint.Infrastructure.Notifications.csproj
+  s_ceba46b6ae6772::t_ab98c61b9e6923 1-43
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/NotificationServiceExtensions.cs
+  s_ceba46b6ae6772::t_f01dd01bdce202 15,21
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj
+  s_ceba46b6ae6772::t_04ecc8572810f0 85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "cc6ebe7c03484296471dc4defa43f642495e00d9",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
