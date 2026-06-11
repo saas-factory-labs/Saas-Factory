@@ -44,9 +44,6 @@
         <!-- Serialization and Data Handling -->
         <PackageReference Include="Newtonsoft.Json" />
         
-        <!-- External Services -->
-        <PackageReference Include="AWSSDK.S3" />
-
         <!-- SignalR -->
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" />
     </ItemGroup>
@@ -66,6 +63,7 @@
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Persistence\AppBlueprint.Infrastructure.Persistence.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.PII\AppBlueprint.Infrastructure.PII.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Search\AppBlueprint.Infrastructure.Search.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Storage\AppBlueprint.Infrastructure.Storage.csproj" />
     </ItemGroup>
 
 </Project>

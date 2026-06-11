@@ -31,6 +31,7 @@ jobs:
           - "AppBlueprint.Infrastructure.Persistence"
           - "AppBlueprint.Infrastructure.PII"
           - "AppBlueprint.Infrastructure.Search"
+          - "AppBlueprint.Infrastructure.Storage"
 
           # Presentation layers
           - "AppBlueprint.Presentation.ApiModule"

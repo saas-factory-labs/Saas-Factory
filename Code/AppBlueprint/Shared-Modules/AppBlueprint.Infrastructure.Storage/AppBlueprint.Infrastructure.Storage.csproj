@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- Basic Project Properties -->
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- Namespace is frozen to keep moved types source-compatible for consumers -->
+        <RootNamespace>AppBlueprint.Infrastructure</RootNamespace>
+
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Storage</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Cloudflare R2 (S3-compatible) file storage with tenant isolation for AppBlueprint</Description>
+        <PackageTags>infrastructure storage cloudflare-r2 s3 file-storage</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>infrastructure-icon.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Framework reference for DI, options and logging abstractions -->
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AWSSDK.S3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <!-- File metadata lives in the Baseline schema (FileMetadataEntity + BaselineDbContext),
+             so this storage implementation is persistence-coupled by design. Decoupling via an
+             Application-level abstraction is future work. -->
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Persistence\AppBlueprint.Infrastructure.Persistence.csproj" />
+    </ItemGroup>
+
+</Project>
