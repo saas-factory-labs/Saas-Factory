@@ -25,6 +25,7 @@ jobs:
 
           # Infrastructure layer (facade + extracted modules, all published in lockstep)
           - "AppBlueprint.Infrastructure"
+          - "AppBlueprint.Infrastructure.Authentication"
           - "AppBlueprint.Infrastructure.Email"
           - "AppBlueprint.Infrastructure.Notifications"
           - "AppBlueprint.Infrastructure.Payments.Stripe"

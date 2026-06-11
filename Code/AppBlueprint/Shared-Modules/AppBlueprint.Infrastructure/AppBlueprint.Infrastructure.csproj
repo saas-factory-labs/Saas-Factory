@@ -26,9 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- Authentication and Security -->
-        <PackageReference Include="Logto.AspNetCore.Authentication" />
-
         <!-- Configuration and Hosting -->
         <PackageReference Include="Microsoft.Extensions.Compliance.Redaction" />
         <PackageReference Include="Microsoft.Extensions.Compliance.Abstractions" />
@@ -37,12 +34,6 @@
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
         <PackageReference Include="AspNetCore.HealthChecks.Redis" />
         <PackageReference Include="AspNetCore.HealthChecks.Uris" />
-        
-        <!-- GraphQL and API Clients -->
-        <PackageReference Include="Microsoft.Kiota.Abstractions" />
-        
-        <!-- Serialization and Data Handling -->
-        <PackageReference Include="Newtonsoft.Json" />
         
         <!-- SignalR -->
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" />
@@ -57,6 +48,7 @@
         <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
         <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
         <!-- Extracted infrastructure modules (facade re-exposes these transitively to consumers) -->
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Authentication\AppBlueprint.Infrastructure.Authentication.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Email\AppBlueprint.Infrastructure.Email.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Notifications\AppBlueprint.Infrastructure.Notifications.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Payments.Stripe\AppBlueprint.Infrastructure.Payments.Stripe.csproj" />
