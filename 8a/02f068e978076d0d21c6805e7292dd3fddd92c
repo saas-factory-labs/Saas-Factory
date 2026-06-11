@@ -1,0 +1,25 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/ServiceCollectionExtensions.cs
+  s_ceba46b6ae6772::t_666aa96e65a7f1 242,246,250,254,258,262
+CLAUDE.md
+  s_ceba46b6ae6772::t_7a73386032ad26 71-72
+  s_ceba46b6ae6772::t_5b57bcffa91865 84
+  s_ceba46b6ae6772::t_cb437f293d5ec6 195-196
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Persistence/Extensions/PersistenceServiceCollectionExtensions.cs
+  s_ceba46b6ae6772::t_9724b148428ae9 1-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "8a02f068e978076d0d21c6805e7292dd3fddd92c",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
