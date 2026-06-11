@@ -64,7 +64,6 @@ This package includes the following key dependencies:
 - **Stripe.net** - Stripe payment integration
 - **AWSSDK.S3** - AWS S3 storage integration
 - **Resend** - Email service integration
-- **Yarp.ReverseProxy** - Reverse proxy functionality
 
 ## Usage
 

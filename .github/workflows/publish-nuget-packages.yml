@@ -23,8 +23,10 @@ jobs:
           - "AppBlueprint.Domain"
           - "AppBlueprint.Application"
 
-          # Infrastructure layer
+          # Infrastructure layer (facade + extracted modules, all published in lockstep)
           - "AppBlueprint.Infrastructure"
+          - "AppBlueprint.Infrastructure.PII"
+          - "AppBlueprint.Infrastructure.Search"
 
           # Presentation layers
           - "AppBlueprint.Presentation.ApiModule"

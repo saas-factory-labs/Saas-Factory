@@ -1,7 +1,6 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Application.Interfaces.PII;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Options;
 using AppBlueprint.Application.Services;
@@ -13,8 +12,6 @@ using AppBlueprint.Infrastructure.DependencyInjection;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
-using AppBlueprint.Infrastructure.Services.PII;
-using AppBlueprint.Infrastructure.Services.Search;
 using AppBlueprint.Infrastructure.Services.Webhooks;
 using AppBlueprint.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
@@ -636,46 +633,15 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds PostgreSQL full-text search service for a specific entity type.
-    /// Automatically respects tenant isolation for ITenantScoped entities.
-    /// </summary>
-    /// <typeparam name="TEntity">The entity type to enable search for (must have SearchVector column)</typeparam>
-    /// <typeparam name="TDbContext">The DbContext containing the entity</typeparam>
-    /// <param name="services">The service collection.</param>
-    /// <returns>The service collection for chaining.</returns>
-    /// <example>
-    /// // Register search for Users (using B2BDbContext)
-    /// services.AddPostgreSqlFullTextSearch&lt;UserEntity, B2BDbContext&gt;();
-    /// 
-    /// // Register search for Tenants (using BaselineDbContext)
-    /// services.AddPostgreSqlFullTextSearch&lt;TenantEntity, BaselineDbContext&gt;();
-    /// </example>
-    public static IServiceCollection AddPostgreSqlFullTextSearch<TEntity, TDbContext>(this IServiceCollection services)
-        where TEntity : class
-        where TDbContext : DbContext
-    {
-        services.AddScoped<ISearchService<TEntity>, PostgreSqlSearchService<TEntity, TDbContext>>();
-
-        Console.WriteLine($"[AppBlueprint.Infrastructure] PostgreSQL full-text search registered for {typeof(TEntity).Name}");
-
-        return services;
-    }
-
-    /// <summary>
-    /// Registers PII detection engine and scanners.
+    /// Registers PII detection engine and scanners (delegates to AppBlueprint.Infrastructure.PII)
+    /// plus the EF Core PII interceptor owned by this project.
     /// </summary>
     private static IServiceCollection AddPIIServices(this IServiceCollection services)
     {
-        services.AddScoped<IPIIScanner, RegexPIIScanner>();
-        services.AddScoped<IPIIScanner, NerPIIScannerPlaceholder>();
-        services.AddScoped<IPIIScanner, LlmPIIScannerPlaceholder>();
-        services.AddScoped<IPIIEngine, PIIEngine>();
-        services.AddScoped<PIITaggingService>();
+        services.AddPIIDetection();
 
         // Register the EF Core interceptor
         services.AddScoped<PiiSaveChangesInterceptor>();
-
-        Console.WriteLine("[AppBlueprint.Infrastructure] PII services registered (Regex, NER/LLM Placeholders, Interceptor)");
 
         return services;
     }

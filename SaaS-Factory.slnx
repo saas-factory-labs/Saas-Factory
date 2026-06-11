@@ -90,6 +90,10 @@
     <File Path="Code/AppBlueprint/WHY_LOGTO_FAILED_ANALYSIS.md" />
     <Project Path="Code/AppBlueprint/AppBlueprint.TodoAppKernel/AppBlueprint.TodoAppKernel.csproj" />
   </Folder>
+  <Folder Name="/Code/AppBlueprint/Shared-Modules/">
+    <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.PII/AppBlueprint.Infrastructure.PII.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Search/AppBlueprint.Infrastructure.Search.csproj" />
+  </Folder>
   <Folder Name="/DeploymentManager/">
     <Project Path="Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj" />
     <Project Path="Code/DeploymentManager/DeploymentManager.AppHost/DeploymentManager.AppHost.csproj" />

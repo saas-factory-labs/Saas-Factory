@@ -61,10 +61,9 @@
         <!-- SignalR -->
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" />
 
-        <!-- Reverse Proxy -->
-        <PackageReference Include="Yarp.ReverseProxy" />
-        
-        <!-- MSBuild (explicit override for vulnerable transitive dependencies) -->
+        <!-- MSBuild (explicit override for vulnerable transitive dependencies;
+             pulled in via Microsoft.EntityFrameworkCore.Design -> Microsoft.CodeAnalysis.Workspaces.MSBuild,
+             so these overrides must stay with whichever project owns the EF Design reference) -->
         <PackageReference Include="Microsoft.Build.Tasks.Core" />
         <PackageReference Include="Microsoft.Build.Utilities.Core" />
     </ItemGroup>
@@ -90,6 +89,9 @@
     <ItemGroup>
         <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
         <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+        <!-- Extracted infrastructure modules (facade re-exposes these transitively to consumers) -->
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.PII\AppBlueprint.Infrastructure.PII.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Search\AppBlueprint.Infrastructure.Search.csproj" />
     </ItemGroup>
 
 </Project>

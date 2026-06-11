@@ -1,6 +1,7 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.2.11415.280 d18.0
+VisualStudioVersion = 18.2.11415.280
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppBlueprint", "AppBlueprint", "{06B52097-DC31-478E-67E5-099B9F601761}"
 EndProject
@@ -122,6 +123,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeploymentManager.Tests", "Code\DeploymentManager\DeploymentManager.Tests\DeploymentManager.Tests.csproj", "{4E432923-B92A-3787-3C24-CC960C493E4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeploymentManager.Web", "Code\DeploymentManager\DeploymentManager.Web\DeploymentManager.Web.csproj", "{96877C3F-525C-78ED-4006-AEE80C7F0F99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared-Modules", "Shared-Modules", "{48E49109-5630-1E84-579B-647E0B51669A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBlueprint.Infrastructure.Search", "Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure.Search\AppBlueprint.Infrastructure.Search.csproj", "{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBlueprint.Infrastructure.PII", "Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure.PII\AppBlueprint.Infrastructure.PII.csproj", "{D1561518-7E2A-4E61-BA2E-4921FFB80A86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -409,6 +416,30 @@ Global
 		{96877C3F-525C-78ED-4006-AEE80C7F0F99}.Release|x64.Build.0 = Release|Any CPU
 		{96877C3F-525C-78ED-4006-AEE80C7F0F99}.Release|x86.ActiveCfg = Release|Any CPU
 		{96877C3F-525C-78ED-4006-AEE80C7F0F99}.Release|x86.Build.0 = Release|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Debug|x64.Build.0 = Debug|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Debug|x86.Build.0 = Debug|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Release|x64.ActiveCfg = Release|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Release|x64.Build.0 = Release|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Release|x86.ActiveCfg = Release|Any CPU
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1}.Release|x86.Build.0 = Release|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Debug|x64.Build.0 = Debug|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Debug|x86.Build.0 = Debug|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Release|x64.ActiveCfg = Release|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Release|x64.Build.0 = Release|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Release|x86.ActiveCfg = Release|Any CPU
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -438,5 +469,8 @@ Global
 		{733E14CA-38E1-2EFC-9A7D-77AED38AD39C} = {D5C8D19D-7411-5AE4-AF25-C89AC904FA0E}
 		{4E432923-B92A-3787-3C24-CC960C493E4A} = {D5C8D19D-7411-5AE4-AF25-C89AC904FA0E}
 		{96877C3F-525C-78ED-4006-AEE80C7F0F99} = {D5C8D19D-7411-5AE4-AF25-C89AC904FA0E}
+		{48E49109-5630-1E84-579B-647E0B51669A} = {C8D098D9-42D3-9B82-1233-22636F3EF8F1}
+		{55B9020A-CF41-4993-8AFE-B64CA2FB89A1} = {48E49109-5630-1E84-579B-647E0B51669A}
+		{D1561518-7E2A-4E61-BA2E-4921FFB80A86} = {48E49109-5630-1E84-579B-647E0B51669A}
 	EndGlobalSection
 EndGlobal
