@@ -1,0 +1,24 @@
+.github/workflows/publish-nuget-packages.yml
+  s_ceba46b6ae6772::t_6d4ecc85f3d44a 31
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj
+  s_ceba46b6ae6772::t_5b6dd1a90e83a8 31
+  s_ceba46b6ae6772::t_7260d160ec6dbe 66
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Persistence/AppBlueprint.Infrastructure.Persistence.csproj
+  s_ceba46b6ae6772::t_4dc3396de066b4 1-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "6d6f1c32f6c32bdf93380c459812fb631aad3006",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
