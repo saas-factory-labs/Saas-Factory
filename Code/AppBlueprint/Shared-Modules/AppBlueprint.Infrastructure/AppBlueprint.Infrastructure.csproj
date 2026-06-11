@@ -52,8 +52,6 @@
         <PackageReference Include="Newtonsoft.Json" />
         
         <!-- External Services -->
-        <PackageReference Include="RazorLight" />
-        <PackageReference Include="Resend" />
         <PackageReference Include="Stripe.net" />
         <PackageReference Include="AWSSDK.S3" />
         <PackageReference Include="FirebaseAdmin" />
@@ -76,11 +74,6 @@
         </Content>
     </ItemGroup>
 
-    <!-- Email Templates as Embedded Resources -->
-    <ItemGroup>
-        <EmbeddedResource Include="Services\Email\Templates\**\*.cshtml" />
-    </ItemGroup>
-
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
         <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
@@ -90,6 +83,7 @@
         <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
         <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
         <!-- Extracted infrastructure modules (facade re-exposes these transitively to consumers) -->
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Email\AppBlueprint.Infrastructure.Email.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.PII\AppBlueprint.Infrastructure.PII.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Search\AppBlueprint.Infrastructure.Search.csproj" />
     </ItemGroup>

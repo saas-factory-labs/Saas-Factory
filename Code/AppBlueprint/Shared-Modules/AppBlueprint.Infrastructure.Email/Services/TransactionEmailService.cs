@@ -1,4 +1,3 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using Microsoft.Extensions.Logging;
 using Resend;
 
@@ -27,12 +26,11 @@ public class TransactionEmailService(ILogger<TransactionEmailService> logger, IR
         logger.LogInformation("Sent email, with Id = {EmailId}", resp.Content);
     }
 
-    public async Task SendOrderConfirmationEmail(string from, string to, string orderId, CustomerEntity customerEntity)
+    public async Task SendOrderConfirmationEmail(string from, string to, string orderId)
     {
         ArgumentNullException.ThrowIfNull(from);
         ArgumentNullException.ThrowIfNull(to);
         ArgumentNullException.ThrowIfNull(orderId);
-        ArgumentNullException.ThrowIfNull(customerEntity);
 
         var message = new EmailMessage
         {
