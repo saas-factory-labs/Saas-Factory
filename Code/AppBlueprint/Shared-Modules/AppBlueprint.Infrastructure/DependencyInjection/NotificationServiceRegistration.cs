@@ -1,5 +1,6 @@
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Domain.Interfaces.Repositories;
+using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Services.Notifications;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,10 +22,10 @@ public static class NotificationServiceRegistration
         services.AddScoped<INotificationPreferencesRepository, UserNotificationPreferencesRepository>();
         services.AddScoped<IPushNotificationTokenRepository, UserPushNotificationTokenRepository>();
 
-        // Register notification services
-        services.AddScoped<INotificationService, NotificationService>();
+        // Register notification services (delegates to AppBlueprint.Infrastructure.Notifications)
+        services.AddCoreNotificationService();
+        services.AddFirebasePushNotifications();
         services.AddScoped<IInAppNotificationService, InAppNotificationService>();
-        services.AddScoped<IPushNotificationService, FirebasePushNotificationService>();
 
         // Register SignalR hub (if not already registered)
         services.AddSignalR();

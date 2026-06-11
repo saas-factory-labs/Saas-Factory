@@ -12,12 +12,13 @@ public static class NotificationServiceExtensions
 {
     /// <summary>
     /// Adds Firebase Cloud Messaging notification services to the DI container.
+    /// Delegates to AppBlueprint.Infrastructure.Notifications.
     /// </summary>
     public static IServiceCollection AddFirebaseNotifications(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddScoped<IPushNotificationService, FirebasePushNotificationService>();
+        services.AddFirebasePushNotifications();
         return services;
     }
 

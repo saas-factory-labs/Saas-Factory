@@ -53,7 +53,6 @@
         
         <!-- External Services -->
         <PackageReference Include="AWSSDK.S3" />
-        <PackageReference Include="FirebaseAdmin" />
 
         <!-- SignalR -->
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" />
@@ -83,6 +82,7 @@
         <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
         <!-- Extracted infrastructure modules (facade re-exposes these transitively to consumers) -->
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Email\AppBlueprint.Infrastructure.Email.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Notifications\AppBlueprint.Infrastructure.Notifications.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Payments.Stripe\AppBlueprint.Infrastructure.Payments.Stripe.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.PII\AppBlueprint.Infrastructure.PII.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Search\AppBlueprint.Infrastructure.Search.csproj" />
