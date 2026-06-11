@@ -191,6 +191,8 @@ A monorepo is a powerful way to organize a codebase, used by Google, Facebook, U
 ├─ scripts                            # Utility scripts
 │  ├─ powershell                      # PowerShell scripts for Windows development
 ```
+
+<!--
 ## 👥 Maintainers
 
 SaaS Factory is actively developed and maintained by:
@@ -213,3 +215,4 @@ SaaS Factory is actively developed and maintained by:
     </td>
   </tr>
 </table>
+-->
