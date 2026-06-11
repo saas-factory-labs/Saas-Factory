@@ -1,0 +1,23 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj
+  s_ceba46b6ae6772::t_cd42b415647273 51
+.github/workflows/publish-nuget-packages.yml
+  s_ceba46b6ae6772::t_30082ba39688d0 28
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Authentication/AppBlueprint.Infrastructure.Authentication.csproj
+  s_ceba46b6ae6772::t_4f0b044bab6c7d 1-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "b5500f23dbc7b99cf5329547fa41ce5dc6d305fc",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
