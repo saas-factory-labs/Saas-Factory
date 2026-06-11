@@ -1,6 +1,5 @@
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Domain.Interfaces.Repositories;
-using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Services.Webhooks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +13,8 @@ public static class StripeWebhookServiceExtensions
 {
     /// <summary>
     /// Registers the Stripe webhook service and its dependencies.
+    /// Requires an <see cref="IWebhookEventRepository"/> implementation to be registered by the host
+    /// (AppBlueprint.Infrastructure's AddAppBlueprintInfrastructure registers one).
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration instance.</param>
@@ -24,9 +25,6 @@ public static class StripeWebhookServiceExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
-
-        // Register repository
-        services.AddScoped<IWebhookEventRepository, WebhookEventRepository>();
 
         // Get webhook secret from configuration
         // Supports multiple naming conventions:
@@ -57,6 +55,8 @@ public static class StripeWebhookServiceExtensions
 
     /// <summary>
     /// Registers the Stripe webhook service with an explicitly provided webhook secret.
+    /// Requires an <see cref="IWebhookEventRepository"/> implementation to be registered by the host
+    /// (AppBlueprint.Infrastructure's AddAppBlueprintInfrastructure registers one).
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="webhookSecret">The Stripe webhook endpoint secret.</param>
@@ -67,9 +67,6 @@ public static class StripeWebhookServiceExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(webhookSecret);
-
-        // Register repository
-        services.AddScoped<IWebhookEventRepository, WebhookEventRepository>();
 
         // Register webhook service with the provided secret
         services.AddScoped<IStripeWebhookService>(sp =>

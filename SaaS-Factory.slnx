@@ -92,6 +92,7 @@
   </Folder>
   <Folder Name="/Code/AppBlueprint/Shared-Modules/">
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Email/AppBlueprint.Infrastructure.Email.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Payments.Stripe/AppBlueprint.Infrastructure.Payments.Stripe.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.PII/AppBlueprint.Infrastructure.PII.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Search/AppBlueprint.Infrastructure.Search.csproj" />
   </Folder>

@@ -1,5 +1,4 @@
 using AppBlueprint.Application.Options;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
 using Microsoft.Extensions.Options;
 using Stripe;
 
@@ -17,7 +16,7 @@ public class StripeSubscriptionService
         StripeConfiguration.ApiKey = _options.ApiKey;
     }
 
-    public CustomerEntity? CreateCustomer(string email, string paymentMethodId)
+    public Customer? CreateCustomer(string email, string paymentMethodId)
     {
         var customerOptions = new CustomerCreateOptions
         {

@@ -52,7 +52,6 @@
         <PackageReference Include="Newtonsoft.Json" />
         
         <!-- External Services -->
-        <PackageReference Include="Stripe.net" />
         <PackageReference Include="AWSSDK.S3" />
         <PackageReference Include="FirebaseAdmin" />
 
@@ -84,6 +83,7 @@
         <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
         <!-- Extracted infrastructure modules (facade re-exposes these transitively to consumers) -->
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Email\AppBlueprint.Infrastructure.Email.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Payments.Stripe\AppBlueprint.Infrastructure.Payments.Stripe.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.PII\AppBlueprint.Infrastructure.PII.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Search\AppBlueprint.Infrastructure.Search.csproj" />
     </ItemGroup>

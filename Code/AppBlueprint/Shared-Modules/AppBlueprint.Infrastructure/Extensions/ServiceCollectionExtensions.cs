@@ -4,6 +4,7 @@ using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Options;
 using AppBlueprint.Application.Services;
+using AppBlueprint.Domain.Interfaces.Repositories;
 using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
@@ -252,6 +253,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<IWebhookRepository, WebhookRepository>();
+        services.AddScoped<IWebhookEventRepository, WebhookEventRepository>();
         services.AddScoped<IWebhookDeliveryService, WebhookDeliveryService>();
         services.AddHttpClient("WebhookDelivery");
 
@@ -300,30 +302,6 @@ public static class ServiceCollectionExtensions
         services.AddStripeService();
         services.AddCloudflareR2Service();
         services.AddResendEmailService(configuration);
-
-        return services;
-    }
-
-    /// <summary>
-    /// Registers Stripe payment service if API key is configured.
-    /// Uses StripeOptions from IOptions pattern.
-    /// </summary>
-    private static IServiceCollection AddStripeService(
-        this IServiceCollection services)
-    {
-        // Get Stripe options to check if configured
-        IServiceProvider tempProvider = services.BuildServiceProvider();
-        StripeOptions? stripeOptions = tempProvider.GetService<IOptions<StripeOptions>>()?.Value;
-
-        if (stripeOptions is not null && !string.IsNullOrWhiteSpace(stripeOptions.ApiKey))
-        {
-            services.AddScoped<StripeSubscriptionService>();
-            Console.WriteLine("[AppBlueprint.Infrastructure] Stripe service registered");
-        }
-        else
-        {
-            Console.WriteLine("[AppBlueprint.Infrastructure] Stripe not configured (optional)");
-        }
 
         return services;
     }
