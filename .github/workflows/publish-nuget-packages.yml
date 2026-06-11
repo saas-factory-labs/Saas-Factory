@@ -28,6 +28,7 @@ jobs:
           - "AppBlueprint.Infrastructure.Email"
           - "AppBlueprint.Infrastructure.Notifications"
           - "AppBlueprint.Infrastructure.Payments.Stripe"
+          - "AppBlueprint.Infrastructure.Persistence"
           - "AppBlueprint.Infrastructure.PII"
           - "AppBlueprint.Infrastructure.Search"
 
