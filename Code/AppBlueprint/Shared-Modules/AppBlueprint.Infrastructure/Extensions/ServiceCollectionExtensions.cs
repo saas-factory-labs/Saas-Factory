@@ -1,10 +1,8 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Options;
 using AppBlueprint.Application.Services;
-using AppBlueprint.Domain.Interfaces.Repositories;
 using AppBlueprint.Infrastructure.Configuration;
 using AppBlueprint.Infrastructure.DatabaseContexts;
 using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
@@ -13,8 +11,6 @@ using AppBlueprint.Infrastructure.DependencyInjection;
 using AppBlueprint.Infrastructure.Repositories;
 using AppBlueprint.Infrastructure.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
-using AppBlueprint.Infrastructure.Services.Webhooks;
-using AppBlueprint.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -243,52 +239,27 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Registers repository implementations from AppBlueprint.Infrastructure.
+    /// Registers repository implementations (delegates to AppBlueprint.Infrastructure.Persistence).
     /// </summary>
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<ITeamRepository, TeamRepository>();
-        services.AddScoped<IDataExportRepository, DataExportRepository>();
-        services.AddScoped<ITenantRepository, TenantRepository>();
-        services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
-        services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
-        services.AddScoped<IWebhookRepository, WebhookRepository>();
-        services.AddScoped<IWebhookEventRepository, WebhookEventRepository>();
-        services.AddScoped<IWebhookDeliveryService, WebhookDeliveryService>();
-        services.AddHttpClient("WebhookDelivery");
-
-        return services;
+        return services.AddAppBlueprintRepositories();
     }
 
     /// <summary>
-    /// Registers tenant-scoped services for multi-tenant isolation and admin access.
+    /// Registers tenant-scoped services (delegates to AppBlueprint.Infrastructure.Persistence).
     /// </summary>
     private static IServiceCollection AddTenantServices(this IServiceCollection services)
     {
-        // Multi-tenant isolation
-        services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
-        services.AddScoped<TenantConnectionInterceptor>();
-        services.AddScoped<TenantSecurityInterceptor>();
-        services.AddScoped<TenantRlsInterceptor>();
-
-        // User context and admin access
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddScoped<ICurrentTenantService, CurrentTenantService>();
-        services.AddScoped<IAdminTenantAccessService, AdminTenantAccessService>();
-
-        // Signup database context provider (EF Core)
-        services.AddScoped<Application.Interfaces.ISignupDbContextProvider, SignupDbContextProvider>();
-
-        return services;
+        return services.AddAppBlueprintTenantServices();
     }
 
     /// <summary>
-    /// Registers Unit of Work pattern implementation from AppBlueprint.Infrastructure.
+    /// Registers Unit of Work pattern implementation (delegates to AppBlueprint.Infrastructure.Persistence).
     /// </summary>
     private static IServiceCollection AddUnitOfWork(this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWorkImplementation>();
-        return services;
+        return services.AddAppBlueprintUnitOfWork();
     }
 
     /// <summary>

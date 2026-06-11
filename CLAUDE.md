@@ -68,8 +68,8 @@ dotnet test --filter "FullyQualifiedName~TokenStorageServiceTests"
 ### Database Migrations
 
 ```powershell
-# Navigate to Infrastructure project
-cd Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure
+# Navigate to Persistence project (contains DbContexts and migrations)
+cd Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure.Persistence
 
 # Add new migration
 dotnet ef migrations add MigrationName --context AppBlueprintDbContext
@@ -81,7 +81,7 @@ dotnet ef database update --context AppBlueprintDbContext
 dotnet ef migrations remove --context AppBlueprintDbContext
 ```
 
-**Database Context Location:** `Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts/`
+**Database Context Location:** `Shared-Modules/AppBlueprint.Infrastructure.Persistence/DatabaseContexts/`
 
 ### Code Formatting
 
@@ -192,8 +192,8 @@ Code/AppBlueprint/
 **Key Points:**
 - Connection strings configured via `appsettings.json`
 - Railway cloud database used by default (not local PostgreSQL via Aspire)
-- Migrations in `Infrastructure/Migrations/`
-- DbContext: `AppBlueprintDbContext` in `Infrastructure/DatabaseContexts/`
+- Migrations in `Infrastructure.Persistence/Migrations/`
+- DbContext: `AppBlueprintDbContext` in `Infrastructure.Persistence/DatabaseContexts/`
 - Data seeding via `DataSeeder.cs`
 
 ## Important Development Rules
