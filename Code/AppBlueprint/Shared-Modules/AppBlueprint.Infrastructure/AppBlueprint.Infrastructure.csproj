@@ -49,7 +49,7 @@
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Authentication\AppBlueprint.Infrastructure.Authentication.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Email\AppBlueprint.Infrastructure.Email.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Notifications\AppBlueprint.Infrastructure.Notifications.csproj" />
-        <ProjectReference Include="..\AppBlueprint.Infrastructure.Payments.Stripe\AppBlueprint.Infrastructure.Payments.Stripe.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Payments\AppBlueprint.Infrastructure.Payments.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Persistence\AppBlueprint.Infrastructure.Persistence.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Compliance\AppBlueprint.Infrastructure.Compliance.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Realtime\AppBlueprint.Infrastructure.Realtime.csproj" />

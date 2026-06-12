@@ -11,9 +11,9 @@
 
         <!-- NuGet Package Configuration -->
         <Version>$(GITVERSION_SemVer)</Version>
-        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Payments.Stripe</PackageId>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Payments</PackageId>
         <Authors>Casper Rubæk</Authors>
-        <Description>Stripe payments and webhook processing for AppBlueprint</Description>
+        <Description>Payment processing for AppBlueprint (Stripe subscriptions and webhooks; designed for additional providers)</Description>
         <PackageTags>infrastructure payments stripe webhooks subscriptions</PackageTags>
         <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
