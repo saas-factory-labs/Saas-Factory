@@ -11,10 +11,10 @@
 
         <!-- NuGet Package Configuration -->
         <Version>$(GITVERSION_SemVer)</Version>
-        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.PII</PackageId>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Compliance</PackageId>
         <Authors>Casper Rubæk</Authors>
-        <Description>PII detection engine and scanners for AppBlueprint</Description>
-        <PackageTags>infrastructure pii compliance gdpr data-protection</PackageTags>
+        <Description>Compliance services for AppBlueprint: PII detection engine and scanners, GDPR data protection</Description>
+        <PackageTags>infrastructure compliance gdpr pii data-protection scrubbing</PackageTags>
         <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
