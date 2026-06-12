@@ -1,4 +1,4 @@
-namespace AppBlueprint.Infrastructure.Resources;
+namespace AppBlueprint.Infrastructure.Storage.Resources;
 
 /// <summary>
 /// Contains constant messages for object storage operations.

@@ -4,7 +4,7 @@ using AppBlueprint.SharedKernel.SharedModels.PII;
 using AppBlueprint.SharedKernel.Utilities;
 using FluentRegex;
 
-namespace AppBlueprint.Infrastructure.Services.PII;
+namespace AppBlueprint.Infrastructure.Compliance.PII;
 
 public partial class RegexPIIScanner : IPIIScanner
 {

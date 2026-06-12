@@ -1,8 +1,8 @@
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Infrastructure.Services.Notifications;
+using AppBlueprint.Infrastructure.Notifications;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Notifications.Extensions;
 
 /// <summary>
 /// Extension methods for registering AppBlueprint notification services.

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Authorization.Providers.Mock;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Mock;
 
 public class MockProvider : BaseAuthenticationProvider
 {

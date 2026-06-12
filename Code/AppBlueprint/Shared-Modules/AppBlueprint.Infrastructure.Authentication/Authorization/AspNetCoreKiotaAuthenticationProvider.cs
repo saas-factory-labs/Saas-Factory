@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 
-namespace AppBlueprint.Infrastructure.Authorization;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 /// <summary>
 /// Kiota IAuthenticationProvider implementation for ASP.NET Core cookie-based authentication.

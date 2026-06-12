@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
 
 /// <summary>
 /// Entity configuration for PaymentProviderEntity managing payment service providers.

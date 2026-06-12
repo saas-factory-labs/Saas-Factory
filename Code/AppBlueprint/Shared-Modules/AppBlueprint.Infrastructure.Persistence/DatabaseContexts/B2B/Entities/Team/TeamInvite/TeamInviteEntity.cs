@@ -1,8 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 
 // Represents an invitation to join a team
 public class TeamInviteEntity : BaseEntity, ITenantScoped

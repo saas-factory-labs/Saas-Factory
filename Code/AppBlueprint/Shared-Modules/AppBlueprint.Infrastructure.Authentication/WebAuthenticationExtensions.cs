@@ -1,6 +1,6 @@
 using System.Security.Claims;
-using AppBlueprint.Infrastructure.Configuration;
-using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.Configuration;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;

@@ -2,11 +2,11 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
 using AppBlueprint.Application.Options;
-using AppBlueprint.Infrastructure.Resources;
+using AppBlueprint.Infrastructure.Storage.Resources;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Storage;
 
 // Cloudflare R2 Object Storage
 internal sealed class ObjectStorageService : IDisposable

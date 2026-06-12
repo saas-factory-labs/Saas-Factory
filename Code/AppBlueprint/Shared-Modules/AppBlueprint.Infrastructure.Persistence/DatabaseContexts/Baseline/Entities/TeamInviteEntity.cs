@@ -1,13 +1,13 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Attributes;
 using AppBlueprint.SharedKernel.Enums;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
 
 // NOTE: This is an old version of TeamInviteEntity - renamed to avoid conflicts
-// The correct version is in AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite
+// The correct version is in AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamInvite
 // Represents an invitation to join a team
 public class OldTeamInviteEntity : BaseEntity
 {

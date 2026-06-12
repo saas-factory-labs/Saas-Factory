@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription;
-using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.Subscription;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Credit;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

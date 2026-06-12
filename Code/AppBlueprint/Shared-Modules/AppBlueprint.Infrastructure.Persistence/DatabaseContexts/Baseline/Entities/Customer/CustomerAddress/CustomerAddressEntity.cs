@@ -1,7 +1,7 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Address;
-using AppBlueprint.Infrastructure.Enums;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Address;
+using AppBlueprint.Infrastructure.Persistence.Enums;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.CustomerAddress;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.CustomerAddress;
 
 public class CustomerAddressEntity
 {

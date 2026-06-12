@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 
 /// <summary>
 /// Design-time factory for creating ApplicationDbContext instances for EF Core migrations.

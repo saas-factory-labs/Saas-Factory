@@ -2,7 +2,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace AppBlueprint.Infrastructure.HealthChecks;
+namespace AppBlueprint.Infrastructure.Persistence.HealthChecks;
 
 /// <summary>
 /// Health check that verifies PostgreSQL Row-Level Security (RLS) is enabled on all tenant-scoped tables.

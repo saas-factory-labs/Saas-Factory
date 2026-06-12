@@ -2,7 +2,7 @@ using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Attributes;
 using AppBlueprint.SharedKernel.Enums;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
 
 public class FileEntity : BaseEntity
 {

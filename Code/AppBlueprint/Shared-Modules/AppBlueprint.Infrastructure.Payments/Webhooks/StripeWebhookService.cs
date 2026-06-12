@@ -5,7 +5,7 @@ using AppBlueprint.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Logging;
 using Stripe;
 
-namespace AppBlueprint.Infrastructure.Services.Webhooks;
+namespace AppBlueprint.Infrastructure.Payments.Webhooks;
 
 /// <summary>
 /// Service for processing Stripe webhook events.

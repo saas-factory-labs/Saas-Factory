@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.SharedKernel;
 using Bogus;
 

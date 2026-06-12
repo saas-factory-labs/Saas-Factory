@@ -1,4 +1,4 @@
-namespace AppBlueprint.Infrastructure.Authorization.Providers.Logto;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Logto;
 
 public class LogtoConfiguration
 {

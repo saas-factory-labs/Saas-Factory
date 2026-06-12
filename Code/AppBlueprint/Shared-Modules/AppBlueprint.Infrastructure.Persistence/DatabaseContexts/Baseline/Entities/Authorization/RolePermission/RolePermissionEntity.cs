@@ -1,8 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Permission;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Role;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.Permission;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.Role;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.RolePermission;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.RolePermission;
 
 public class RolePermissionEntity : BaseEntity
 {

@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Account;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.Account;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

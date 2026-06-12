@@ -1,7 +1,7 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Country;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.State;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.State;
 
 public class StateEntity : BaseEntity
 {

@@ -1,13 +1,13 @@
-using AppBlueprint.Infrastructure.Authorization.Providers;
-using AppBlueprint.Infrastructure.Authorization.Providers.Auth0;
-using AppBlueprint.Infrastructure.Authorization.Providers.Firebase;
-using AppBlueprint.Infrastructure.Authorization.Providers.Logto;
-using AppBlueprint.Infrastructure.Authorization.Providers.Mock;
+using AppBlueprint.Infrastructure.Authentication.Authorization.Providers;
+using AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Auth0;
+using AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Firebase;
+using AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Logto;
+using AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Mock;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Authorization;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 public interface IAuthenticationProviderFactory
 {

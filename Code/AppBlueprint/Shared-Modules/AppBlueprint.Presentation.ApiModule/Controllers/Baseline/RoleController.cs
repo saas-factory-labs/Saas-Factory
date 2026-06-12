@@ -1,7 +1,7 @@
 using AppBlueprint.Contracts.Baseline.Role.Requests;
 using AppBlueprint.Contracts.Baseline.Role.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Role;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.Role;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

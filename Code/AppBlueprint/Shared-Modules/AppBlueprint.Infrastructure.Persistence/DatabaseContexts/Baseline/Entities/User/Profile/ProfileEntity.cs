@@ -2,7 +2,7 @@ using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Attributes;
 using AppBlueprint.SharedKernel.Enums;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
 
 public sealed class ProfileEntity : BaseEntity
 {

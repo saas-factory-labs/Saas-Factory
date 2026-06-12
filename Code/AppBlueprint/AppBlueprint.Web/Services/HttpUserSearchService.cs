@@ -1,7 +1,7 @@
 using AppBlueprint.Api.Client.Sdk;
 using AppBlueprint.Api.Client.Sdk.Models;
 using AppBlueprint.Application.Interfaces;
-using UserEntity = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity;
+using UserEntity = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.UserEntity;
 
 namespace AppBlueprint.Web.Services;
 

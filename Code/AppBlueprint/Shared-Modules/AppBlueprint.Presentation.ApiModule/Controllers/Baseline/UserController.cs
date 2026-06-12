@@ -1,10 +1,10 @@
 using System.Security.Claims;
 using AppBlueprint.Contracts.Baseline.User.Requests;
 using AppBlueprint.Contracts.Baseline.User.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

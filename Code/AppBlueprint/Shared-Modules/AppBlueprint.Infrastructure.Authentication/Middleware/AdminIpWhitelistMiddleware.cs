@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Middleware;
+namespace AppBlueprint.Infrastructure.Authentication.Middleware;
 
 /// <summary>
 /// Middleware that restricts admin access to whitelisted IP addresses.

@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 public interface INotificationRepository
 {

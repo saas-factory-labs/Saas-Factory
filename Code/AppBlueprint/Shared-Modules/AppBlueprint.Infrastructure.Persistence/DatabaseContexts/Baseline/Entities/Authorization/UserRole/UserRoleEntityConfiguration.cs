@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.UserRole;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.UserRole;
 
 /// <summary>
 /// Entity configuration for UserRoleEntity defining table structure, relationships, and constraints.

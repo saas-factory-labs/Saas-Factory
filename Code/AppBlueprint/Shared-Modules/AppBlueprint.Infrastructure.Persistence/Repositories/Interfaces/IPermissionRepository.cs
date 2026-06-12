@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Permission;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.Permission;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 public interface IPermissionRepository
 {

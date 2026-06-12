@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Enums;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer;
 
 public sealed class CustomerEntity : BaseEntity
 {

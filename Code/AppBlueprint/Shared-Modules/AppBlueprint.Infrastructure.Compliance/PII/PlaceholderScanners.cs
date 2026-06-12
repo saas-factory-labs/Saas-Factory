@@ -1,7 +1,7 @@
 using AppBlueprint.Application.Interfaces.PII;
 using AppBlueprint.SharedKernel.SharedModels.PII;
 
-namespace AppBlueprint.Infrastructure.Services.PII;
+namespace AppBlueprint.Infrastructure.Compliance.PII;
 
 public class NerPIIScannerPlaceholder : IPIIScanner
 {

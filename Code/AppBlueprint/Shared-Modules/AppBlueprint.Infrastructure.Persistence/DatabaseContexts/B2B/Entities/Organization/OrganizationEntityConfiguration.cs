@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Organization;
 
 /// <summary>
 /// Entity configuration for B2B OrganizationEntity defining table structure, relationships, and constraints.

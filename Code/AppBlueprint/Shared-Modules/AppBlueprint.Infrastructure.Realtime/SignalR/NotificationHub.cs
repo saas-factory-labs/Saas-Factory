@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.SignalR;
+namespace AppBlueprint.Infrastructure.Realtime.SignalR;
 
 /// <summary>
 /// SignalR hub for real-time in-app notifications.

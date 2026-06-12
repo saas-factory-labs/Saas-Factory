@@ -1,16 +1,16 @@
 using AppBlueprint.Domain.Entities.Notifications;
 using AppBlueprint.Domain.Entities.Webhooks;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.EntityConfigurations;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.DataExport;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext : DbContext
 {

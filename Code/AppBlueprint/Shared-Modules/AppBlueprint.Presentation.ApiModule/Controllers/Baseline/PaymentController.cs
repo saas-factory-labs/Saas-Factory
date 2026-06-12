@@ -1,6 +1,6 @@
 using AppBlueprint.Contracts.Baseline.Payment.Requests;
 using AppBlueprint.Contracts.Baseline.Payment.Responses;
-using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Payments;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

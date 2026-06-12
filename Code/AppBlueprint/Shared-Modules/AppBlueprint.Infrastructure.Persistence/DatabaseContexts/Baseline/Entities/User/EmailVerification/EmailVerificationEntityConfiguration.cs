@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.EmailVerification;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.EmailVerification;
 
 /// <summary>
 /// Entity configuration for EmailVerificationEntity defining table structure, relationships, and constraints.

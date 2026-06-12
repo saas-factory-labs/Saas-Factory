@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.Kiota.Abstractions;
 
-namespace AppBlueprint.Infrastructure.Authorization;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 public sealed class UserAuthenticationProvider : IUserAuthenticationProvider, IDisposable
 {

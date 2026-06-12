@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppBlueprint.Infrastructure.Authorization;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 /// <summary>
 /// Extension methods for registering authentication services

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Authorization;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 /// <summary>
 /// Interface for retrieving authentication tokens from the current HTTP context

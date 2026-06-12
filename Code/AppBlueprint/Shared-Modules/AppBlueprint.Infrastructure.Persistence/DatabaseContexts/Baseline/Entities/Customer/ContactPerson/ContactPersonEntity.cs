@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Address;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Address;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
 
 public sealed class ContactPersonEntity : BaseEntity, ITenantScoped
 {

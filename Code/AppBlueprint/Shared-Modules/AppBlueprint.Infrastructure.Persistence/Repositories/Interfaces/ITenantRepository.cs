@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 /// <summary>
 /// Repository interface for tenant entities.

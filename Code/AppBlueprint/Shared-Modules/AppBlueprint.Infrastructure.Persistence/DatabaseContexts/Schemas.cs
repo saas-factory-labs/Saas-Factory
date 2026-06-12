@@ -1,4 +1,4 @@
-namespace AppBlueprint.Infrastructure.DatabaseContexts;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 
 internal static class Schemas
 {

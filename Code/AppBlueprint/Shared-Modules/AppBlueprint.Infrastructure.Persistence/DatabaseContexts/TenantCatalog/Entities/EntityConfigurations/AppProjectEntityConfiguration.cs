@@ -1,8 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.TenantCatalog.Entities.EntityConfigurations;
 
 public sealed class AppProjectEntityConfiguration : IEntityTypeConfiguration<AppProjectEntity>
 {

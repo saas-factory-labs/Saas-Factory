@@ -1,13 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Attributes;
 using AppBlueprint.SharedKernel.Enums;
 using AppBlueprint.SharedKernel.SharedModels;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
 
 public class AuditLogEntity : BaseEntity, ITenantScoped
 {

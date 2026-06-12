@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AppBlueprint.Infrastructure.Migrations;
+namespace AppBlueprint.Infrastructure.Persistence.Migrations;
 
 /// <inheritdoc />
 public partial class InitialULIDSchema : Migration

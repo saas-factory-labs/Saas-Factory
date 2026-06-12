@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.Repositories;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories;
 
 public class IntegrationRepository : IIntegrationRepository
 {

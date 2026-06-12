@@ -1,6 +1,6 @@
 using Microsoft.Kiota.Abstractions.Authentication;
 
-namespace AppBlueprint.Infrastructure.Authorization;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 /// <summary>
 ///     Defines an authentication provider that supports logging in, logging out,

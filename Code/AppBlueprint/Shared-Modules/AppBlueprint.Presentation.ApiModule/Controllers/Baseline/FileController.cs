@@ -1,7 +1,7 @@
 using AppBlueprint.Contracts.Baseline.File.Requests;
 using AppBlueprint.Contracts.Baseline.File.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using AppBlueprint.SharedKernel;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;

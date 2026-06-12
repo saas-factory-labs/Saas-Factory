@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Chat;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Chat;
 
 public partial class ChatModuleDbContext : ApplicationDbContext
 {

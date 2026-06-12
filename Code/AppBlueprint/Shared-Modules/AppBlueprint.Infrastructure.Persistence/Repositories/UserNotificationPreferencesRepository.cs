@@ -1,9 +1,9 @@
 using AppBlueprint.Domain.Entities.Notifications;
 using AppBlueprint.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
-using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.BaselineDbContext;
+using BaselineDbContext = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.BaselineDbContext;
 
-namespace AppBlueprint.Infrastructure.Repositories;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories;
 
 public sealed class UserNotificationPreferencesRepository(BaselineDbContext context) : INotificationPreferencesRepository
 {

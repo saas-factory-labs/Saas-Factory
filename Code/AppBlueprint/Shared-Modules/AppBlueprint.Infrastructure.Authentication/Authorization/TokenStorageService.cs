@@ -1,6 +1,6 @@
 using Microsoft.JSInterop;
 
-namespace AppBlueprint.Infrastructure.Authorization;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 /// <summary>
 /// Interface for token storage service that handles persisting authentication tokens

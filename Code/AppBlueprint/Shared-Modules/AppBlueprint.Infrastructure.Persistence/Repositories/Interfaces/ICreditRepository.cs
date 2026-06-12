@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Credit;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 public interface ICreditRepository
 {

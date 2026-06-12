@@ -2,7 +2,7 @@ using System.Security.Claims;
 using AppBlueprint.Application.Services;
 using Microsoft.AspNetCore.Http;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Persistence.Services;
 
 /// <summary>
 /// Implementation of ICurrentUserService that extracts user information from HttpContext JWT claims.

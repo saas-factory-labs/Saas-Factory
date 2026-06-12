@@ -1,8 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyInvite;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2C.Entities.Family.FamilyInvite;
 
 // Represents an invitation to join a family
 public class FamilyInviteEntity : BaseEntity

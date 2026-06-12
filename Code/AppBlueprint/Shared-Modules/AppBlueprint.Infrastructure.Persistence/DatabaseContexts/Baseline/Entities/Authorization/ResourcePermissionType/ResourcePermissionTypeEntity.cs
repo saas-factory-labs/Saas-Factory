@@ -1,7 +1,7 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermission;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermission;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermissionType;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermissionType;
 
 public class ResourcePermissionTypeEntity : BaseEntity
 {

@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
-using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2C;
+using AppBlueprint.Infrastructure.Persistence.Services;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Attributes;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 
 public class ApplicationDbContext : B2CdbContext
 {

@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Admin;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Admin;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 public interface IAdminRepository
 {

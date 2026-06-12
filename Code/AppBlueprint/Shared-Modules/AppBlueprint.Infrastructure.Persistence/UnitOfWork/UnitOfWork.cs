@@ -1,12 +1,12 @@
 using AppBlueprint.Application.Interfaces.UnitOfWork;
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
-using AppBlueprint.Infrastructure.Repositories;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.Persistence.Repositories;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using DomainNotificationRepository = AppBlueprint.Domain.Interfaces.Repositories.INotificationRepository;
 
-namespace AppBlueprint.Infrastructure.UnitOfWork;
+namespace AppBlueprint.Infrastructure.Persistence.UnitOfWork;
 
 public sealed class UnitOfWorkImplementation : IUnitOfWork
 {

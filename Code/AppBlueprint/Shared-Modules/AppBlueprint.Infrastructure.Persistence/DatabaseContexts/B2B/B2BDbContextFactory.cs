@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B;
 
 public sealed class B2BDbContextFactory : IDesignTimeDbContextFactory<B2BDbContext>
 {

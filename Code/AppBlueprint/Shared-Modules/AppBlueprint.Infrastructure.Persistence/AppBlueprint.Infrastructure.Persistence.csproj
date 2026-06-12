@@ -6,11 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
-        <!-- Namespace is frozen to keep moved types source-compatible for consumers.
-             MANDATORY for this project: entity CLR full names are baked into EF model
-             snapshots (including Boligportal's) — changing them would corrupt model diffs. -->
-        <RootNamespace>AppBlueprint.Infrastructure</RootNamespace>
-
         <!-- NuGet Package Configuration -->
         <Version>$(GITVERSION_SemVer)</Version>
         <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Persistence</PackageId>

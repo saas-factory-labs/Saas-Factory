@@ -1,4 +1,4 @@
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.CustomerOnboarding;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.CustomerOnboarding;
 
 public class CustomerOnboardingEntity
 {

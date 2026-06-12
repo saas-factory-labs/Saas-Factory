@@ -1,11 +1,11 @@
 using AppBlueprint.Application.Options;
-using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Email;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Resend;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Email.Extensions;
 
 /// <summary>
 /// Extension methods for registering the Resend transactional email service.

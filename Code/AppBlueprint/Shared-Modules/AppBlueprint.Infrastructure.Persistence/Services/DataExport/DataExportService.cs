@@ -2,10 +2,10 @@ using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Services.DataExport;
 using AppBlueprint.Contracts.Baseline.DataExport.Requests;
 using AppBlueprint.Contracts.Baseline.DataExport.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.DataExport;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
-namespace AppBlueprint.Infrastructure.Services.DataExport;
+namespace AppBlueprint.Infrastructure.Persistence.Services.DataExport;
 
 /// <summary>
 /// Infrastructure implementation of the DataExport application service.

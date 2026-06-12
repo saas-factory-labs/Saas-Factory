@@ -1,7 +1,7 @@
 using AppBlueprint.Contracts.Baseline.Subscription.Requests;
 using AppBlueprint.Contracts.Baseline.Subscription.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.Subscription;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

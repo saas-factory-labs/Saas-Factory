@@ -1,8 +1,8 @@
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Infrastructure.Services.Notifications;
+using AppBlueprint.Infrastructure.Realtime.Notifications;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Realtime.Extensions;
 
 /// <summary>
 /// Extension methods for registering AppBlueprint real-time services.

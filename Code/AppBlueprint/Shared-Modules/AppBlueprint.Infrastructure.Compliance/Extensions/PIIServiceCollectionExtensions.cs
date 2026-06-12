@@ -1,8 +1,8 @@
 using AppBlueprint.Application.Interfaces.PII;
-using AppBlueprint.Infrastructure.Services.PII;
+using AppBlueprint.Infrastructure.Compliance.PII;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Compliance.Extensions;
 
 /// <summary>
 /// Extension methods for registering AppBlueprint PII detection services.

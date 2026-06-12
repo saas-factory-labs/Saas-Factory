@@ -1,8 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.City;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.City;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Region;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Country;
 
 public enum IsoCode
 {

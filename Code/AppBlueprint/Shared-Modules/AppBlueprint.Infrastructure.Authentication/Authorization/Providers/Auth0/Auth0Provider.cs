@@ -2,7 +2,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Authorization.Providers.Auth0;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Auth0;
 
 public class Auth0Provider : BaseAuthenticationProvider
 {

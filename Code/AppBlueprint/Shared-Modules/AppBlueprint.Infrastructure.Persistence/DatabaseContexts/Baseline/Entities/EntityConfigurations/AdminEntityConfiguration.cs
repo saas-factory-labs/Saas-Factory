@@ -1,8 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Admin;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Admin;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
 public sealed class AdminEntityConfiguration : IEntityTypeConfiguration<AdminEntity>
 {

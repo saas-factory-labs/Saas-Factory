@@ -1,10 +1,10 @@
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Domain.Entities.Notifications;
 using AppBlueprint.Domain.Interfaces.Repositories;
-using AppBlueprint.Infrastructure.SignalR;
+using AppBlueprint.Infrastructure.Realtime.SignalR;
 using Microsoft.AspNetCore.SignalR;
 
-namespace AppBlueprint.Infrastructure.Services.Notifications;
+namespace AppBlueprint.Infrastructure.Realtime.Notifications;
 
 /// <summary>
 /// Service for sending real-time in-app notifications via SignalR.

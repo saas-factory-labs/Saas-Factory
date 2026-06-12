@@ -1,5 +1,5 @@
 using System.Text.Json;
-using AppBlueprint.Infrastructure.Authorization;
+using AppBlueprint.Infrastructure.Authentication.Authorization;
 using AppBlueprint.TodoAppKernel.Controllers.Dto;
 using AppBlueprint.TodoAppKernel.Domain;
 using Microsoft.JSInterop;

@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
 using AppBlueprint.SharedKernel.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Email;
 
 /// <summary>
 /// Entity configuration for EmailAddressEntity defining email addresses and their relationships to users, customers, and tenants.

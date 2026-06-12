@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyMember;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2C.Entities.Family.FamilyMember;
 
 /// <summary>
 /// Entity configuration for FamilyMemberEntity defining table structure, relationships, and constraints.

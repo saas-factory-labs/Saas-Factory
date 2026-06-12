@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace AppBlueprint.Infrastructure.Services.Search;
+namespace AppBlueprint.Infrastructure.Search;
 
 /// <summary>
 /// PostgreSQL full-text search implementation using tsvector and tsquery.

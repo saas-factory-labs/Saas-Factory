@@ -1,7 +1,7 @@
 using System.Reflection;
 using AppBlueprint.Application.Services;
 using AppBlueprint.Domain.Entities.User;
-using AppBlueprint.Infrastructure.Repositories;
+using AppBlueprint.Infrastructure.Persistence.Repositories;
 using AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;

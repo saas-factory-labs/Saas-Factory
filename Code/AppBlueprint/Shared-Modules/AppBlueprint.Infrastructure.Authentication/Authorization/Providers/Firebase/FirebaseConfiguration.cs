@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace AppBlueprint.Infrastructure.Authorization.Providers.Firebase;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Firebase;
 
 public class FirebaseConfiguration
 {

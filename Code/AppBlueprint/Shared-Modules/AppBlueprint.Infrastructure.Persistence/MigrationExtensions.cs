@@ -1,14 +1,14 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 using FluentRegex;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.B2BDbContext;
-using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.BaselineDbContext;
+using B2BDbContext = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.B2BDbContext;
+using BaselineDbContext = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.BaselineDbContext;
 
-namespace AppBlueprint.Infrastructure;
+namespace AppBlueprint.Infrastructure.Persistence;
 
 public static class MigrationExtensions
 {

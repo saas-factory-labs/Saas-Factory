@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
-namespace AppBlueprint.Infrastructure.Database;
+namespace AppBlueprint.Infrastructure.Persistence.Database;
 
 /// <summary>
 /// Manages PostgreSQL session variables safely without raw SQL.

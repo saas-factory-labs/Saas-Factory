@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Migrations;
 
 /// <inheritdoc />
 public partial class AddRolePermissionRelationship : Migration

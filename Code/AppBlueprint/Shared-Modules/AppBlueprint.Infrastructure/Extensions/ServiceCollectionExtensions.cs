@@ -1,22 +1,27 @@
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Application.Options;
 using AppBlueprint.Application.Services;
-using AppBlueprint.Infrastructure.Configuration;
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
-using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
+using AppBlueprint.Infrastructure.Compliance.Extensions;
 using AppBlueprint.Infrastructure.DependencyInjection;
-using AppBlueprint.Infrastructure.Repositories;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Email.Extensions;
+using AppBlueprint.Infrastructure.Payments.Extensions;
+using AppBlueprint.Infrastructure.Persistence.Configuration;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Configuration;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Interceptors;
+using AppBlueprint.Infrastructure.Persistence.Extensions;
+using AppBlueprint.Infrastructure.Persistence.Repositories;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Storage.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.B2BDbContext;
-using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.BaselineDbContext;
+using B2BDbContext = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.B2BDbContext;
+using BaselineDbContext = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.BaselineDbContext;
 
 namespace AppBlueprint.Infrastructure.Extensions;
 

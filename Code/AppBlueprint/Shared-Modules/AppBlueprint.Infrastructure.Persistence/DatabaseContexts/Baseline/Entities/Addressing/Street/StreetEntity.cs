@@ -1,8 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.City;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.City;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Country;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Street;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Street;
 
 public class StreetEntity : BaseEntity
 {

@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.TenantCatalog.Entities;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 public interface IAppProjectRepository
 {

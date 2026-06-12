@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamInvite;
 
 /// <summary>
 /// Entity configuration for TeamInviteEntity defining table structure, relationships, and constraints.

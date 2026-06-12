@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.PasswordReset;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.PasswordReset;
 
 /// <summary>
 /// Entity configuration for PasswordResetEntity defining table structure, relationships, and constraints.

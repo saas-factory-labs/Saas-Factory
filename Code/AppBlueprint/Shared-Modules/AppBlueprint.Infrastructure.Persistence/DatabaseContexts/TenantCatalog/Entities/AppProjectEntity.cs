@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.TenantCatalog.Entities;
 
 public class AppProjectEntity
 {

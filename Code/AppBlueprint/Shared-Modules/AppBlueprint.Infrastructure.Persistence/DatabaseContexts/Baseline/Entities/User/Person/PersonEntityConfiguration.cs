@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Person;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Person;
 
 /// <summary>
 /// Entity configuration for PersonEntity defining table structure, relationships, and constraints.

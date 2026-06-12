@@ -1,8 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
 /// <summary>
 /// Entity configuration for TenantEntity supporting both B2C and B2B scenarios.

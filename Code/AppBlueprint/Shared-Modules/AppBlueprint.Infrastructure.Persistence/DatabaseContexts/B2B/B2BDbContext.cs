@@ -1,13 +1,13 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.EntityConfigurations;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.EntityConfigurations;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using OrganizationEntity = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity;
-using OrganizationEntityConfiguration = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntityConfiguration;
+using OrganizationEntity = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity;
+using OrganizationEntityConfiguration = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Organization.OrganizationEntityConfiguration;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B;
 
 public partial class B2BDbContext : BaselineDbContext
 {

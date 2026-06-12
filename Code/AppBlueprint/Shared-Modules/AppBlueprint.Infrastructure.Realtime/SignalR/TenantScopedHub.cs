@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.SignalR;
+namespace AppBlueprint.Infrastructure.Realtime.SignalR;
 
 /// <summary>
 /// Base class for SignalR hubs that require tenant and user context.

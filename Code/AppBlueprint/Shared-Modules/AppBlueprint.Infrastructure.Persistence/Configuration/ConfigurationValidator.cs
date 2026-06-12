@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace AppBlueprint.Infrastructure.Configuration;
+namespace AppBlueprint.Infrastructure.Persistence.Configuration;
 
 /// <summary>
 /// Helper class for validating configuration values with helpful error messages

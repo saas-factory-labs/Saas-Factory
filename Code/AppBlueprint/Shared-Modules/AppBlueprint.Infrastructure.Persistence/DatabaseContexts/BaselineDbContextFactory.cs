@@ -1,11 +1,11 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 
 /// <summary>
 /// Factory for creating BaselineDbContext instances at design time (for migrations).

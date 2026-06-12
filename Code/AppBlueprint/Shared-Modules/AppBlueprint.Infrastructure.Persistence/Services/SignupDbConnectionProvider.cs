@@ -1,8 +1,8 @@
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Persistence.Services;
 
 /// <summary>
 /// Infrastructure implementation of ISignupDbContextProvider.

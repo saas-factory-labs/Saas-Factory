@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 using DeploymentManager.ApiService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

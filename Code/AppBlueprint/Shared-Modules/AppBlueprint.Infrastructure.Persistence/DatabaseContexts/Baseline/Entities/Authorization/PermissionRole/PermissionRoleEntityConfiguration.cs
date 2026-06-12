@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.PermissionRole;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.PermissionRole;
 
 public sealed class PermissionRoleEntityConfiguration : IEntityTypeConfiguration<PermissionRoleEntity>
 {

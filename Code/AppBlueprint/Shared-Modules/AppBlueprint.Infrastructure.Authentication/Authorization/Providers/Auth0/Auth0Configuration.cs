@@ -1,4 +1,4 @@
-namespace AppBlueprint.Infrastructure.Authorization.Providers.Auth0;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Auth0;
 
 public class Auth0Configuration
 {

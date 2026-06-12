@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 public interface ITeamRepository
 {

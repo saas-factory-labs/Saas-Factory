@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Credit;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.Repositories;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories;
 
 public class CreditRepository : ICreditRepository
 {

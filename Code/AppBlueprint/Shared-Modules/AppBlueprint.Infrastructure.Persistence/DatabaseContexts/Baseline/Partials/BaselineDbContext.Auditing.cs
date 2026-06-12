@@ -1,10 +1,10 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.ApiLog;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Auditing.ApiLog;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

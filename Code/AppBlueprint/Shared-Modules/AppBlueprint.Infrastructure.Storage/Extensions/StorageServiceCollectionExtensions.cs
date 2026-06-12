@@ -3,13 +3,13 @@ using Amazon.S3;
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Application.Options;
 using AppBlueprint.Application.Services;
-using AppBlueprint.Infrastructure.Repositories;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Persistence.Repositories;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Storage.Extensions;
 
 /// <summary>
 /// Extension methods for registering AppBlueprint file storage services.

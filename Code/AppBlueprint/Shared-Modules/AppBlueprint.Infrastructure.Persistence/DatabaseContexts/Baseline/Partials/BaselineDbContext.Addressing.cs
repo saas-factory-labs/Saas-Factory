@@ -1,13 +1,13 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Address;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.City;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.CountryRegion;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.GlobalRegion;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Street;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Address;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.City;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Country;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.CountryRegion;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.GlobalRegion;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Region;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Street;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

@@ -1,9 +1,9 @@
 using AppBlueprint.Application.Options;
-using AppBlueprint.Infrastructure.Authorization;
+using AppBlueprint.Infrastructure.Authentication.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Authentication.Extensions;
 
 /// <summary>
 /// Extension methods for setting up authentication services in an <see cref="IServiceCollection" />.

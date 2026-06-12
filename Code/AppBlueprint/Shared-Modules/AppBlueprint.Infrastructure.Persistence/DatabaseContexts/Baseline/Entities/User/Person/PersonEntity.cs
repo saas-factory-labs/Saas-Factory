@@ -1,7 +1,7 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Address;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Address;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Person;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Person;
 
 public class PersonEntity
 {

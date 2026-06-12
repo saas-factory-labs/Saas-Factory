@@ -1,10 +1,10 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Attributes;
 using AppBlueprint.SharedKernel.Enums;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyMember;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2C.Entities.Family.FamilyMember;
 
 public class FamilyMemberEntity : BaseEntity
 {

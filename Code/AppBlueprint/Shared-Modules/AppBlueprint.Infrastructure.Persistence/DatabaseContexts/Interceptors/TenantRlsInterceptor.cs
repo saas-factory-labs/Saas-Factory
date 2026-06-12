@@ -1,8 +1,8 @@
 using System.Data.Common;
-using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Persistence.Services;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Interceptors;
 
 /// <summary>
 /// Postgres RLS Interceptor (Defense-in-Depth Layer 2).

@@ -1,5 +1,5 @@
 using System.Net.Http.Headers;
-using AppBlueprint.Infrastructure.Authorization;
+using AppBlueprint.Infrastructure.Authentication.Authorization;
 using Microsoft.AspNetCore.Authentication;
 
 namespace AppBlueprint.Web.Services;

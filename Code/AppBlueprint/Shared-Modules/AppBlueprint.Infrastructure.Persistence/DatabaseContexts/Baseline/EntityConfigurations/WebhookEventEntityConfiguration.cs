@@ -2,7 +2,7 @@ using AppBlueprint.Domain.Entities.Webhooks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.EntityConfigurations;
 
 /// <summary>
 /// Entity configuration for WebhookEventEntity.

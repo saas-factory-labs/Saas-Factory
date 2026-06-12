@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using DomainProfileEntity = AppBlueprint.Domain.Entities.User.ProfileEntity;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
 
 /// <summary>
 /// Entity configuration for ProfileEntity defining table structure, relationships, and constraints.

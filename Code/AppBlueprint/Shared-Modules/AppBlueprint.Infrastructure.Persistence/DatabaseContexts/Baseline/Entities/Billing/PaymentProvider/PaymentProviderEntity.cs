@@ -1,6 +1,6 @@
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
 
 /// <summary>
 /// Represents a payment service provider (e.g., Stripe, PayPal, Square).

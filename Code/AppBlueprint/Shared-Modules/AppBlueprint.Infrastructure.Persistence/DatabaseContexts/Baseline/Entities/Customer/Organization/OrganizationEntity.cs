@@ -1,7 +1,7 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Organization;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.Organization;
 
 public class OrganizationEntity
 {

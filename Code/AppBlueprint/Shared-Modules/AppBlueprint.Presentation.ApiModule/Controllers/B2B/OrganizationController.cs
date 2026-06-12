@@ -1,13 +1,13 @@
 using AppBlueprint.Application.Constants;
 using AppBlueprint.Contracts.B2B.Contracts.Organization.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.Organization.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrganizationEntity = AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity;
+using OrganizationEntity = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 

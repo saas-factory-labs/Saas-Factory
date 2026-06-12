@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AppBlueprint.Infrastructure.Migrations;
+namespace AppBlueprint.Infrastructure.Persistence.Migrations;
 
 /// <inheritdoc />
 public partial class AddSignupStoredProcedure : Migration

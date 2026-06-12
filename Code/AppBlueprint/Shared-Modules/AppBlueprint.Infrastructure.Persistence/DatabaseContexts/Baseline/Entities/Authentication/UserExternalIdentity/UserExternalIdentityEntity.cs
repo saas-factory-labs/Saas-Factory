@@ -1,7 +1,7 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authentication.AuthenticationProvider;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authentication.AuthenticationProvider;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authentication.UserExternalIdentity;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authentication.UserExternalIdentity;
 
 /// <summary>
 /// Links a user to an external authentication provider identity.

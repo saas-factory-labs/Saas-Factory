@@ -7,4 +7,4 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly:
     SuppressMessage("Design", "CA1008:Enums should have zero value", Justification = "<Pending>", Scope = "type",
-        Target = "~T:AppBlueprint.Infrastructure.Enums.GDPRType")]
+        Target = "~T:AppBlueprint.Infrastructure.Persistence.Enums.GDPRType")]

@@ -1,10 +1,10 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamInvite;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamMember;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
 
 public sealed class TeamEntity : BaseEntity, ITenantScoped
 {

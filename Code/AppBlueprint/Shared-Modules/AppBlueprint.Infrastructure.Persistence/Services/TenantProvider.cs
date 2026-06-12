@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Persistence.Services;
 
 public class TenantProvider
 {

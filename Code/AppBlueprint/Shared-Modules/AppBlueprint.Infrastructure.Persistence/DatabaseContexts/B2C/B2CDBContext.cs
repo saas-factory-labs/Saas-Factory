@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2C;
 
 public partial class B2CdbContext : BaselineDbContext
 {

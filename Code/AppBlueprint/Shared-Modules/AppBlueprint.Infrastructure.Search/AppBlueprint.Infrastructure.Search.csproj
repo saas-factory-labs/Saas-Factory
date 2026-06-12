@@ -6,9 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
-        <!-- Namespace is frozen to keep moved types source-compatible for consumers -->
-        <RootNamespace>AppBlueprint.Infrastructure</RootNamespace>
-
         <!-- NuGet Package Configuration -->
         <Version>$(GITVERSION_SemVer)</Version>
         <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Search</PackageId>

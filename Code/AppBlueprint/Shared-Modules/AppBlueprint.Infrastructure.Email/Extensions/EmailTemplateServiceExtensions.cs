@@ -1,11 +1,11 @@
 using System.Reflection;
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Infrastructure.Services.Email;
+using AppBlueprint.Infrastructure.Email;
 using Microsoft.Extensions.DependencyInjection;
 using RazorLight;
 using Resend;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Email.Extensions;
 
 /// <summary>
 /// Extension methods for registering email template services.
@@ -56,7 +56,7 @@ public static class EmailTemplateServiceExtensions
             // Use embedded resources from framework (fallback)
             // Templates are embedded in AppBlueprint.Infrastructure assembly
             Assembly infrastructureAssembly = typeof(RazorEmailTemplateService).Assembly;
-            const string templateNamespace = "AppBlueprint.Infrastructure.Services.Email.Templates";
+            const string templateNamespace = "AppBlueprint.Infrastructure.Email.Templates";
 
             builder.UseEmbeddedResourcesProject(infrastructureAssembly, templateNamespace);
         }

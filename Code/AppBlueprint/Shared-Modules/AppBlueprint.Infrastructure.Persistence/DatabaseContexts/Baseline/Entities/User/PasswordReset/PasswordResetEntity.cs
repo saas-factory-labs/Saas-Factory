@@ -1,6 +1,6 @@
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.PasswordReset;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.PasswordReset;
 
 public sealed class PasswordResetEntity : BaseEntity, ITenantScoped
 {

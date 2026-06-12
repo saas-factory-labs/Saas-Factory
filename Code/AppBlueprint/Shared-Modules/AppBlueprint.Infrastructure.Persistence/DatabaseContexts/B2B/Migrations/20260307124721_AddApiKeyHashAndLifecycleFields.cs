@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Migrations
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Migrations
 {
     /// <inheritdoc />
     public partial class AddApiKeyHashAndLifecycleFields : Migration

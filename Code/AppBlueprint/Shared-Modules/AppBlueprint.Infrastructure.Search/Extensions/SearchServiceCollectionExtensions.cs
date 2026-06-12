@@ -1,9 +1,9 @@
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Infrastructure.Services.Search;
+using AppBlueprint.Infrastructure.Search;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Search.Extensions;
 
 /// <summary>
 /// Extension methods for registering AppBlueprint search services.

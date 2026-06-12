@@ -2,7 +2,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Authorization.Providers.Logto;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Logto;
 
 public class LogtoProvider : BaseAuthenticationProvider
 {

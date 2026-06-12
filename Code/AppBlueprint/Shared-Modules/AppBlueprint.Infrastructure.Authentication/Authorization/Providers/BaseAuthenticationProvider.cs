@@ -1,6 +1,6 @@
 using Microsoft.Kiota.Abstractions;
 
-namespace AppBlueprint.Infrastructure.Authorization.Providers;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers;
 
 public abstract class BaseAuthenticationProvider : IAuthenticationProvider
 {

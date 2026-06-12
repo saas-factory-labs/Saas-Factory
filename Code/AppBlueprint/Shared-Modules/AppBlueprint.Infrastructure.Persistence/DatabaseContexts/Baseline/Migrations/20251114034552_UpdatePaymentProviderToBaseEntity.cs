@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Migrations;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Migrations;
 
 /// <inheritdoc />
 public partial class UpdatePaymentProviderToBaseEntity : Migration

@@ -1,8 +1,8 @@
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Contracts.Baseline.Webhook.Requests;
 using AppBlueprint.Contracts.Baseline.Webhook.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

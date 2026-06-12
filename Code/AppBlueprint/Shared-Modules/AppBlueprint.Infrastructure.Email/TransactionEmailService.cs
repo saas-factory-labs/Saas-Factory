@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Resend;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Email;
 
 public class TransactionEmailService(ILogger<TransactionEmailService> logger, IResend resend)
 {

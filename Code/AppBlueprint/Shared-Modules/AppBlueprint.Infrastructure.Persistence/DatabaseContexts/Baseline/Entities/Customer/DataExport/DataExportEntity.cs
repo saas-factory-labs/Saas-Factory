@@ -1,6 +1,6 @@
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.DataExport;
 
 public class DataExportEntity : BaseEntity, ITenantScoped
 {

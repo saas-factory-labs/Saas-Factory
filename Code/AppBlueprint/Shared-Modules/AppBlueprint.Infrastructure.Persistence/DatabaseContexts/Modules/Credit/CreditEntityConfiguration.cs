@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Credit;
 
 /// <summary>
 /// Entity configuration for CreditEntity defining table structure, relationships, and constraints.

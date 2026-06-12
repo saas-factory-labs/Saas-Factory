@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using B2BDbContext = AppBlueprint.Infrastructure.DatabaseContexts.B2B.B2BDbContext;
+using B2BDbContext = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.B2BDbContext;
 
-namespace AppBlueprint.Infrastructure.Repositories;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories;
 
 public class TeamRepository : ITeamRepository
 {

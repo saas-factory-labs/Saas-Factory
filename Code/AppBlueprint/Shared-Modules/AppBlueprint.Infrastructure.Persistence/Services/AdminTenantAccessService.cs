@@ -1,12 +1,12 @@
 using AppBlueprint.Application.Constants;
 using AppBlueprint.Application.Services;
-using AppBlueprint.Infrastructure.Database;
-using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.Database;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Persistence.Services;
 
 /// <summary>
 /// Implementation of IAdminTenantAccessService for read-only admin access to tenant data.

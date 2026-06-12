@@ -2,10 +2,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Services.Webhooks;
+namespace AppBlueprint.Infrastructure.Persistence.Services.Webhooks;
 
 public class WebhookDeliveryService : IWebhookDeliveryService
 {

@@ -1,10 +1,10 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
-using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities.EntityConfigurations;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.TenantCatalog.Entities.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.TenantCatalog;
 
 public class CatalogDbContext : DbContext
 {

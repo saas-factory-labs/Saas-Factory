@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Interceptors;
 
 /// <summary>
 /// Interceptor that automatically scans entity properties marked with [PIIRisk] 

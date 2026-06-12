@@ -1,6 +1,6 @@
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Affiliate.Entities.Affiliate;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Affiliate.Entities.Affiliate;
 
 public class PayoutRequestEntity : BaseEntity
 {

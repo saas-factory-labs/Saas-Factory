@@ -1,10 +1,10 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.DataExport;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.DataExport;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using AppBlueprint.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.Repositories;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories;
 
 public class DataExportRepository : IDataExportRepository
 {

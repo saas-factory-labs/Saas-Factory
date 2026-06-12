@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 public interface IAuditLogRepository
 {

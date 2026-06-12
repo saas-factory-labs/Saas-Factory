@@ -1,4 +1,4 @@
-namespace AppBlueprint.Infrastructure.Authorization;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 internal static class Permissions
 {

@@ -1,9 +1,9 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamInvite;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamMember;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B;
 
 public partial class B2BDbContext
 {

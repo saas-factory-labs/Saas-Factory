@@ -1,7 +1,7 @@
 using AppBlueprint.Application.Services;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Persistence.Services;
 
 /// <summary>
 /// Implementation of ICurrentTenantService that retrieves tenant information from the database.

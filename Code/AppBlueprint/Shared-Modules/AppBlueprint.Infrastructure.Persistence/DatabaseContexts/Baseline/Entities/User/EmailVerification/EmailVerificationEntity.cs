@@ -1,4 +1,4 @@
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.EmailVerification;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.EmailVerification;
 
 public sealed class EmailVerificationEntity
 {

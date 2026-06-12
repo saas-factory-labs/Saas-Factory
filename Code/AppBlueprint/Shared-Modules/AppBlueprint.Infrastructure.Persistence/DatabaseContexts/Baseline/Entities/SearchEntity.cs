@@ -1,6 +1,6 @@
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
 
 public class SearchEntity : BaseEntity
 {

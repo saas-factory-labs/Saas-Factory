@@ -4,9 +4,9 @@ using AppBlueprint.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using NotificationHub = AppBlueprint.Infrastructure.SignalR.NotificationHub; // Use the correct NotificationHub
+using NotificationHub = AppBlueprint.Infrastructure.Realtime.SignalR.NotificationHub; // Use the correct NotificationHub
 
-namespace AppBlueprint.Infrastructure.Services.Notifications;
+namespace AppBlueprint.Infrastructure.Realtime.Notifications;
 
 /// <summary>
 /// Multi-channel notification service that orchestrates sending notifications across various channels.

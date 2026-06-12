@@ -1,9 +1,9 @@
 using AppBlueprint.Application.Options;
-using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Payments;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Payments.Extensions;
 
 /// <summary>
 /// Extension methods for registering Stripe payment services.

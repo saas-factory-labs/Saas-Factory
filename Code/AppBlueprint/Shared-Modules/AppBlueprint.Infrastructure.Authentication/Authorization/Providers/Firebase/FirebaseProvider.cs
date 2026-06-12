@@ -2,7 +2,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Authorization.Providers.Firebase;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Firebase;
 
 public class FirebaseProvider : BaseAuthenticationProvider
 {

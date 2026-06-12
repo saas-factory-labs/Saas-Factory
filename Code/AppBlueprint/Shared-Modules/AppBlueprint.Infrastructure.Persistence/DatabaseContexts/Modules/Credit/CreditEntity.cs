@@ -1,6 +1,6 @@
 using AppBlueprint.SharedKernel;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Credit;
 
 public class CreditEntity : BaseEntity, ITenantScoped
 {

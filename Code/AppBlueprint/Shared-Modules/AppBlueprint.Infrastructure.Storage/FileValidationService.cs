@@ -3,7 +3,7 @@ using AppBlueprint.Application.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Storage;
 
 /// <summary>
 /// Implementation of file validation service with security checks.

@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable LocalizableElement

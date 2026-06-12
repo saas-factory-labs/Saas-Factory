@@ -1,9 +1,9 @@
-// using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog;
-// using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities;
-// using AppBlueprint.Infrastructure.Repositories.Interfaces;
+// using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.TenantCatalog;
+// using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.TenantCatalog.Entities;
+// using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 // using Microsoft.EntityFrameworkCore;
 //
-// namespace AppBlueprint.Infrastructure.Repositories
+// namespace AppBlueprint.Infrastructure.Persistence.Repositories
 // {
 //         public class AppProjectRepository : IAppProjectRepository
 //         {

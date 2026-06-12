@@ -3,7 +3,7 @@ using AppBlueprint.Application.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.SignalR;
+namespace AppBlueprint.Infrastructure.Realtime.SignalR;
 
 /// <summary>
 /// Demo chat hub for testing tenant-scoped real-time communication.

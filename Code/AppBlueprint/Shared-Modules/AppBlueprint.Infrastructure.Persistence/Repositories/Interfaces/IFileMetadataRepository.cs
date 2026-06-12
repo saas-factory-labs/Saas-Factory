@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.FileManagement;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 /// <summary>
 /// Repository interface for file metadata entities.

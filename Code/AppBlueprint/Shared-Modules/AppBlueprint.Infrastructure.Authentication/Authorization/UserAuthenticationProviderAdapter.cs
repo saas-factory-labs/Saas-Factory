@@ -1,7 +1,7 @@
-using AppBlueprint.Infrastructure.Authorization.Providers;
+using AppBlueprint.Infrastructure.Authentication.Authorization.Providers;
 using Microsoft.Kiota.Abstractions;
 
-namespace AppBlueprint.Infrastructure.Authorization;
+namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, IDisposable
 {

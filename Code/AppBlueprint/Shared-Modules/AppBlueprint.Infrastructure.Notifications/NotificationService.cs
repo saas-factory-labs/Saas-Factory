@@ -2,7 +2,7 @@ using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Domain.Entities.Notifications;
 using AppBlueprint.Domain.Interfaces.Repositories;
 
-namespace AppBlueprint.Infrastructure.Services.Notifications;
+namespace AppBlueprint.Infrastructure.Notifications;
 
 /// <summary>
 /// Main notification service that coordinates multi-channel delivery.

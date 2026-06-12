@@ -2,7 +2,7 @@ using AppBlueprint.Domain.Entities.Notifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
 public sealed class NotificationPreferencesEntityConfiguration : IEntityTypeConfiguration<NotificationPreferencesEntity>
 {

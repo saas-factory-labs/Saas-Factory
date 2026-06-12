@@ -1,8 +1,8 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authentication.AuthenticationProvider;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authentication.UserExternalIdentity;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authentication.AuthenticationProvider;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authentication.UserExternalIdentity;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 
 public partial class BaselineDbContext
 {

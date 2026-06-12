@@ -2,15 +2,15 @@ using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Application.Interfaces.UnitOfWork;
 using AppBlueprint.Application.Services;
 using AppBlueprint.Domain.Interfaces.Repositories;
-using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
-using AppBlueprint.Infrastructure.Repositories;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
-using AppBlueprint.Infrastructure.Services;
-using AppBlueprint.Infrastructure.Services.Webhooks;
-using AppBlueprint.Infrastructure.UnitOfWork;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Interceptors;
+using AppBlueprint.Infrastructure.Persistence.Repositories;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.Services;
+using AppBlueprint.Infrastructure.Persistence.Services.Webhooks;
+using AppBlueprint.Infrastructure.Persistence.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Persistence.Extensions;
 
 /// <summary>
 /// Extension methods for registering AppBlueprint persistence services

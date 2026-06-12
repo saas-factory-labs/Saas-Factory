@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.EntityConfigurations;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.EntityConfigurations;
 
 // NOTE: This is an old configuration - renamed to match the renamed entity
 public sealed class OldTeamInviteEntityConfiguration : IEntityTypeConfiguration<OldTeamInviteEntity>

@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
 using AppBlueprint.SharedKernel;
 using Bogus;
 

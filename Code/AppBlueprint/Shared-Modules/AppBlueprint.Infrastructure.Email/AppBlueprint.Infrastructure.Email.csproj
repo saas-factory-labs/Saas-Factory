@@ -6,11 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
-        <!-- Namespace is frozen to keep moved types source-compatible for consumers,
-             and to keep embedded template manifest names stable
-             (AppBlueprint.Infrastructure.Services.Email.Templates.*) -->
-        <RootNamespace>AppBlueprint.Infrastructure</RootNamespace>
-
         <!-- NuGet Package Configuration -->
         <Version>$(GITVERSION_SemVer)</Version>
         <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Email</PackageId>
@@ -37,7 +32,7 @@
 
     <!-- Email Templates as Embedded Resources -->
     <ItemGroup>
-        <EmbeddedResource Include="Services\Email\Templates\**\*.cshtml" />
+        <EmbeddedResource Include="Templates\**\*.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

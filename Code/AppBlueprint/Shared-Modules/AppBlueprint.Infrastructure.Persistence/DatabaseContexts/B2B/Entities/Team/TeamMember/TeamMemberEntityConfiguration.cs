@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamMember;
 
 public sealed class TeamMemberEntityConfiguration : IEntityTypeConfiguration<TeamMemberEntity>
 {

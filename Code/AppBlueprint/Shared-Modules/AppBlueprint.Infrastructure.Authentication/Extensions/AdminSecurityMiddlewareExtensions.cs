@@ -1,7 +1,7 @@
-using AppBlueprint.Infrastructure.Middleware;
+using AppBlueprint.Infrastructure.Authentication.Middleware;
 using Microsoft.AspNetCore.Builder;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Authentication.Extensions;
 
 /// <summary>
 /// Extension methods for registering admin security middleware.

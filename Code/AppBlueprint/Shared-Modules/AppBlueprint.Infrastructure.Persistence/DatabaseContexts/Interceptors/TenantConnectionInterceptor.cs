@@ -1,10 +1,10 @@
 using System.Data.Common;
-using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Persistence.Services;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Interceptors;
 
 /// <summary>
 /// Database connection interceptor that sets the PostgreSQL RLS session variable 

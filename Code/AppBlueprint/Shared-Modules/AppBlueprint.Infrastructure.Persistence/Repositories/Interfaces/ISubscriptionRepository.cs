@@ -1,6 +1,6 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.Subscription;
 
-namespace AppBlueprint.Infrastructure.Repositories.Interfaces;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 
 public interface ISubscriptionRepository
 {

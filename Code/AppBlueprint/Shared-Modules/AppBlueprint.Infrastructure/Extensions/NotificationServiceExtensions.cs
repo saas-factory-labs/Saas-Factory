@@ -1,5 +1,6 @@
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Infrastructure.Services.Notifications;
+using AppBlueprint.Infrastructure.Notifications.Extensions;
+using AppBlueprint.Infrastructure.Realtime.Notifications;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

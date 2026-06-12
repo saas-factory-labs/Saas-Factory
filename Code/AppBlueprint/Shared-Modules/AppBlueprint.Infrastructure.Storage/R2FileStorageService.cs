@@ -3,13 +3,14 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Application.Options;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
+using AppBlueprint.Infrastructure.Persistence.Services;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.FileManagement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using BaselineDbContext = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.BaselineDbContext;
+using BaselineDbContext = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.BaselineDbContext;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Storage;
 
 /// <summary>
 /// Cloudflare R2 file storage implementation with tenant isolation.

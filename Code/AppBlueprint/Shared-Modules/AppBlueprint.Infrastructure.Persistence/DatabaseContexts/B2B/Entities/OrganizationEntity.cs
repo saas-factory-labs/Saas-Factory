@@ -1,10 +1,10 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 
 // namespace AppBlueprint.SharedKernel.Models.B2B
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities;
 
 public class OrganizationEntity
 {

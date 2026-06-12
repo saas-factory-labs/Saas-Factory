@@ -1,10 +1,10 @@
 using System.Security;
-using AppBlueprint.Infrastructure.Services;
+using AppBlueprint.Infrastructure.Persistence.Services;
 using AppBlueprint.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Interceptors;
 
 /// <summary>
 /// Tenant Security Interceptor (Defense-in-Depth Layer 1b).

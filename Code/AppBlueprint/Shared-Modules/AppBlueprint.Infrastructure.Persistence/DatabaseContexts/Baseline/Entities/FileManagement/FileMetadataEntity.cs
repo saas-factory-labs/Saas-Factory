@@ -3,7 +3,7 @@ using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Attributes;
 using AppBlueprint.SharedKernel.Enums;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.FileManagement;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.FileManagement;
 
 /// <summary>
 /// Stores file metadata in PostgreSQL with custom fields as JSONB.

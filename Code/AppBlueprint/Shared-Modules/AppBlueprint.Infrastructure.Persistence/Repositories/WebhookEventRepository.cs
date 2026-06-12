@@ -1,9 +1,9 @@
 using AppBlueprint.Domain.Entities.Webhooks;
 using AppBlueprint.Domain.Interfaces.Repositories;
-using AppBlueprint.Infrastructure.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppBlueprint.Infrastructure.Repositories;
+namespace AppBlueprint.Infrastructure.Persistence.Repositories;
 
 /// <summary>
 /// Repository for webhook event entities.

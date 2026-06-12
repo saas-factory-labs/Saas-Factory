@@ -1,4 +1,4 @@
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authentication.AuthenticationProvider;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authentication.AuthenticationProvider;
 
 public class AuthenticationProviderEntity
 {

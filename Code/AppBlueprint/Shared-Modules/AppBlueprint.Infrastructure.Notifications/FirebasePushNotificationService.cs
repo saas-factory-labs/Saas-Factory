@@ -7,7 +7,7 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AppBlueprint.Infrastructure.Services.Notifications;
+namespace AppBlueprint.Infrastructure.Notifications;
 
 /// <summary>
 /// Service for sending push notifications via Firebase Cloud Messaging (FCM).

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using AppBlueprint.Application.Interfaces.PII;
 
-namespace AppBlueprint.Infrastructure.Services.PII;
+namespace AppBlueprint.Infrastructure.Compliance.PII;
 
 public interface IPIITaggingService
 {

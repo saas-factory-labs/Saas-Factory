@@ -1,10 +1,10 @@
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Domain.Interfaces.Repositories;
-using AppBlueprint.Infrastructure.Services.Webhooks;
+using AppBlueprint.Infrastructure.Payments.Webhooks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppBlueprint.Infrastructure.Extensions;
+namespace AppBlueprint.Infrastructure.Payments.Extensions;
 
 /// <summary>
 /// Extension methods for registering Stripe webhook services.

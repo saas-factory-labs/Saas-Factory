@@ -2,7 +2,7 @@ using AppBlueprint.Application.Options;
 using Microsoft.Extensions.Options;
 using Stripe;
 
-namespace AppBlueprint.Infrastructure.Services;
+namespace AppBlueprint.Infrastructure.Payments;
 
 public class StripeSubscriptionService
 {

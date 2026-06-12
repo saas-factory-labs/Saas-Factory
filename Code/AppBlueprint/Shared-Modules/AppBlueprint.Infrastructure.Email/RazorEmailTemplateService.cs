@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using RazorLight;
 using Resend;
 
-namespace AppBlueprint.Infrastructure.Services.Email;
+namespace AppBlueprint.Infrastructure.Email;
 
 /// <summary>
 /// Email template service using RazorLight for rendering Razor templates.

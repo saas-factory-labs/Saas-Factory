@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.B2C.Entities.Family.FamilyInvite;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2C.Entities.Family.FamilyInvite;
 
 /// <summary>
 /// Entity configuration for FamilyInviteEntity defining table structure, relationships, and constraints.

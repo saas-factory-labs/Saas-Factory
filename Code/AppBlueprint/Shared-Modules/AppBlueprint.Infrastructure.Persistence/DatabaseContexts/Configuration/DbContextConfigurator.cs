@@ -1,9 +1,9 @@
 using AppBlueprint.Application.Options;
-using AppBlueprint.Infrastructure.Configuration;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2C;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline;
-using AppBlueprint.Infrastructure.DatabaseContexts.Interceptors;
+using AppBlueprint.Infrastructure.Persistence.Configuration;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2C;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace AppBlueprint.Infrastructure.DatabaseContexts.Configuration;
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Configuration;
 
 /// <summary>
 /// Provides methods for configuring and registering DbContext instances based on application requirements.
