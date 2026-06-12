@@ -1,0 +1,19 @@
+Code/AppBlueprint/AppBlueprint.TodoAppKernel/AppBlueprint.TodoAppKernel.csproj
+  s_ceba46b6ae6772::t_b36f0fcb3248ef 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "0894b3a481e04de1ecc2d874463e679d3d32890c",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
