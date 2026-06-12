@@ -12,7 +12,6 @@
     <ProjectReference Include="..\\AppBlueprint.ApiService\\AppBlueprint.ApiService.csproj" />
     <ProjectReference Include="..\\AppBlueprint.AppGateway\\AppBlueprint.AppGateway.csproj" />
     <ProjectReference Include="..\\AppBlueprint.Web\\AppBlueprint.Web.csproj" />
-    <ProjectReference Include="..\\Shared-Modules\\AppBlueprint.Infrastructure\\AppBlueprint.Infrastructure.csproj" IsAspireProjectResource="false" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />

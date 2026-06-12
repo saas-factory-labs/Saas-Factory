@@ -69,7 +69,7 @@ dotnet test --filter "FullyQualifiedName~TokenStorageServiceTests"
 
 ```powershell
 # Navigate to Persistence project (contains DbContexts and migrations)
-cd Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure.Persistence
+cd Code\AppBlueprint\Shared-Modules\Infrastructure\AppBlueprint.Infrastructure.Persistence
 
 # Add new migration
 dotnet ef migrations add MigrationName --context AppBlueprintDbContext
@@ -81,7 +81,7 @@ dotnet ef database update --context AppBlueprintDbContext
 dotnet ef migrations remove --context AppBlueprintDbContext
 ```
 
-**Database Context Location:** `Shared-Modules/AppBlueprint.Infrastructure.Persistence/DatabaseContexts/`
+**Database Context Location:** `Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/DatabaseContexts/`
 
 ### Code Formatting
 

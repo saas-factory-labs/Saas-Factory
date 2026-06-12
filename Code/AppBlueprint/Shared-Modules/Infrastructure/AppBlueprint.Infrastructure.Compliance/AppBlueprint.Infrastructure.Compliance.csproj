@@ -8,10 +8,10 @@
 
         <!-- NuGet Package Configuration -->
         <Version>$(GITVERSION_SemVer)</Version>
-        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Payments</PackageId>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Compliance</PackageId>
         <Authors>Casper Rubæk</Authors>
-        <Description>Payment processing for AppBlueprint (Stripe subscriptions and webhooks; designed for additional providers)</Description>
-        <PackageTags>infrastructure payments stripe webhooks subscriptions</PackageTags>
+        <Description>Compliance services for AppBlueprint: PII detection engine and scanners, GDPR data protection</Description>
+        <PackageTags>infrastructure compliance gdpr pii data-protection scrubbing</PackageTags>
         <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -20,21 +20,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <!-- Framework reference for DI, configuration and logging abstractions -->
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Fluent-Regex" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Stripe.net" />
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
-        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
     </ItemGroup>
 
 </Project>

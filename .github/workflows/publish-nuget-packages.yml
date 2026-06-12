@@ -24,16 +24,16 @@ jobs:
           - "AppBlueprint.Application"
 
           # Infrastructure layer (facade + extracted modules, all published in lockstep)
-          - "AppBlueprint.Infrastructure"
-          - "AppBlueprint.Infrastructure.Authentication"
-          - "AppBlueprint.Infrastructure.Compliance"
-          - "AppBlueprint.Infrastructure.Email"
-          - "AppBlueprint.Infrastructure.Notifications"
-          - "AppBlueprint.Infrastructure.Payments"
-          - "AppBlueprint.Infrastructure.Persistence"
-          - "AppBlueprint.Infrastructure.Realtime"
-          - "AppBlueprint.Infrastructure.Search"
-          - "AppBlueprint.Infrastructure.Storage"
+          - "Infrastructure/AppBlueprint.Infrastructure"
+          - "Infrastructure/AppBlueprint.Infrastructure.Authentication"
+          - "Infrastructure/AppBlueprint.Infrastructure.Compliance"
+          - "Infrastructure/AppBlueprint.Infrastructure.Email"
+          - "Infrastructure/AppBlueprint.Infrastructure.Notifications"
+          - "Infrastructure/AppBlueprint.Infrastructure.Payments"
+          - "Infrastructure/AppBlueprint.Infrastructure.Persistence"
+          - "Infrastructure/AppBlueprint.Infrastructure.Realtime"
+          - "Infrastructure/AppBlueprint.Infrastructure.Search"
+          - "Infrastructure/AppBlueprint.Infrastructure.Storage"
 
           # Presentation layers
           - "AppBlueprint.Presentation.ApiModule"

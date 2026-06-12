@@ -8,10 +8,10 @@
 
         <!-- NuGet Package Configuration -->
         <Version>$(GITVERSION_SemVer)</Version>
-        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Compliance</PackageId>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Notifications</PackageId>
         <Authors>Casper Rubæk</Authors>
-        <Description>Compliance services for AppBlueprint: PII detection engine and scanners, GDPR data protection</Description>
-        <PackageTags>infrastructure compliance gdpr pii data-protection scrubbing</PackageTags>
+        <Description>Notification orchestration and Firebase push notifications for AppBlueprint</Description>
+        <PackageTags>infrastructure notifications firebase push-notifications fcm</PackageTags>
         <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -20,16 +20,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Fluent-Regex" />
+        <!-- Framework reference for DI, configuration and logging abstractions -->
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+        <PackageReference Include="FirebaseAdmin" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
-        <ProjectReference Include="..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
     </ItemGroup>
 
 </Project>

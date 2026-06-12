@@ -8,10 +8,10 @@
 
         <!-- NuGet Package Configuration -->
         <Version>$(GITVERSION_SemVer)</Version>
-        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Storage</PackageId>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Authentication</PackageId>
         <Authors>Casper Rubæk</Authors>
-        <Description>Cloudflare R2 (S3-compatible) file storage with tenant isolation for AppBlueprint</Description>
-        <PackageTags>infrastructure storage cloudflare-r2 s3 file-storage</PackageTags>
+        <Description>Authentication and authorization (Logto OIDC, API keys, provider abstraction) for AppBlueprint</Description>
+        <PackageTags>infrastructure authentication authorization logto oidc api-keys</PackageTags>
         <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
         <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -20,23 +20,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <!-- Framework reference for DI, options and logging abstractions -->
+        <!-- Framework reference for ASP.NET Core authentication/authorization types -->
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.S3" />
+        <PackageReference Include="Logto.AspNetCore.Authentication" />
+        <PackageReference Include="Microsoft.Kiota.Abstractions" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
-        <!-- File metadata lives in the Baseline schema (FileMetadataEntity + BaselineDbContext),
-             so this storage implementation is persistence-coupled by design. Decoupling via an
-             Application-level abstraction is future work. -->
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <!-- WebAuthenticationExtensions and ApiKeyAuthenticationHandler use ApplicationDbContext,
+             B2B entities and IApiKeyRepository from the Persistence module -->
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Persistence\AppBlueprint.Infrastructure.Persistence.csproj" />
     </ItemGroup>
 

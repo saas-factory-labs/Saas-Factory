@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
@@ -10,20 +10,20 @@
     </PropertyGroup>
     <ItemGroup>
         <!-- DM-specific packages not provided by AppBlueprint modules -->
-        <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching"/>
-        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"/>
-        <PackageReference Include="MudBlazor"/>
-        <PackageReference Include="MudBlazor.ThemeManager"/>
-        <PackageReference Include="Z.Blazor.Diagrams"/>
+        <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" />
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+        <PackageReference Include="MudBlazor" />
+        <PackageReference Include="MudBlazor.ThemeManager" />
+        <PackageReference Include="Z.Blazor.Diagrams" />
     </ItemGroup>
 
     <ItemGroup>
         <!-- AppBlueprint shared modules (Option A: tight coupling, no versioning) -->
         <ProjectReference Include="..\..\AppBlueprint\AppBlueprint.ServiceDefaults\AppBlueprint.ServiceDefaults.csproj" />
-        <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
         <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
         <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
-        <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\Infrastructure\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
     </ItemGroup>
 
 </Project>

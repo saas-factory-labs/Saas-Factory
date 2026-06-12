@@ -39,12 +39,12 @@
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
-        <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
-        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
         <!-- Extracted infrastructure modules (facade re-exposes these transitively to consumers) -->
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Authentication\AppBlueprint.Infrastructure.Authentication.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Email\AppBlueprint.Infrastructure.Email.csproj" />

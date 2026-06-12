@@ -50,13 +50,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
-        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
-        <ProjectReference Include="..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
     </ItemGroup>
 
 </Project>
