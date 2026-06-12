@@ -1,0 +1,27 @@
+.github/workflows/publish-nuget-packages.yml
+  s_ceba46b6ae6772::t_b824248de2c467 34
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Realtime/AppBlueprint.Infrastructure.Realtime.csproj
+  s_ceba46b6ae6772::t_a7f7203d4d7c18 1-45
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DependencyInjection/NotificationServiceRegistration.cs
+  s_ceba46b6ae6772::t_b6f46f85448ee5 25,28
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Realtime/Extensions/RealtimeServiceCollectionExtensions.cs
+  s_ceba46b6ae6772::t_5ad35ca3991042 1-50
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj
+  s_ceba46b6ae6772::t_73da86fc5c56f7 55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "b04867e2e4c8ca8f8a7b9b570368fc183a0dac4d",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
