@@ -1,0 +1,23 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/ServiceCollectionExtensions.cs
+  s_ceba46b6ae6772::t_713ad32ce5cab3 4,6-14,16
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Extensions/NotificationServiceExtensions.cs
+  s_ceba46b6ae6772::t_503315b45016dc 2-3
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DependencyInjection/NotificationServiceRegistration.cs
+  s_ceba46b6ae6772::t_51e4e673ec4487 3-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "a1327d1cb32121bc8b2ca7d9079b19326398b0d2",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
