@@ -1,6 +1,4 @@
 using System.Reflection;
-using AppBlueprint.Application.Services;
-using AppBlueprint.Domain.Entities.User;
 using FluentAssertions;
 using NetArchTest.Rules;
 
@@ -13,8 +11,8 @@ namespace AppBlueprint.Tests.Layers;
 /// </summary>
 internal sealed class FrameworkDependencyTests
 {
-    private static readonly Assembly DomainAssembly = typeof(UserEntity).Assembly;
-    private static readonly Assembly ApplicationAssembly = typeof(SignupService).Assembly;
+    private static readonly Assembly DomainAssembly = ArchitectureAssemblies.Domain;
+    private static readonly Assembly ApplicationAssembly = ArchitectureAssemblies.Application;
 
     // -------------------------------------------------------------------------
     // Entity Framework Core — only Infrastructure should reference EF Core

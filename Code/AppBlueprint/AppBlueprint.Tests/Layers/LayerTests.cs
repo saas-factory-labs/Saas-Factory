@@ -1,9 +1,4 @@
 using System.Reflection;
-using AppBlueprint.Application.Services;
-using AppBlueprint.Domain.Entities.User;
-using AppBlueprint.Infrastructure.Persistence.Repositories;
-using AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
-using AppBlueprint.SharedKernel;
 using FluentAssertions;
 using NetArchTest.Rules;
 
@@ -18,11 +13,10 @@ namespace AppBlueprint.Tests.Layers;
 /// </summary>
 internal sealed class LayerTests
 {
-    private static readonly Assembly DomainAssembly = typeof(UserEntity).Assembly;
-    private static readonly Assembly ApplicationAssembly = typeof(SignupService).Assembly;
-    private static readonly Assembly InfrastructureAssembly = typeof(UserRepository).Assembly;
-    private static readonly Assembly PresentationAssembly = typeof(AuthenticationController).Assembly;
-    private static readonly Assembly SharedKernelAssembly = typeof(PrefixedUlid).Assembly;
+    private static readonly Assembly DomainAssembly = ArchitectureAssemblies.Domain;
+    private static readonly Assembly ApplicationAssembly = ArchitectureAssemblies.Application;
+    private static readonly Assembly PresentationAssembly = ArchitectureAssemblies.Presentation;
+    private static readonly Assembly SharedKernelAssembly = ArchitectureAssemblies.SharedKernel;
 
     [Test]
     public void DomainLayer_ShouldNotHaveDependencyOn_ApplicationLayer()
@@ -41,11 +35,11 @@ internal sealed class LayerTests
     {
         var result = Types.InAssembly(DomainAssembly)
             .Should()
-            .NotHaveDependencyOn(InfrastructureAssembly.GetName().Name)
+            .NotHaveDependencyOnAny(ArchitectureAssemblies.InfrastructureNames)
             .GetResult();
 
         result.IsSuccessful.Should().BeTrue(
-            because: $"Domain must not depend on Infrastructure, but violations found: {FormatViolations(result)}");
+            because: $"Domain must not depend on any Infrastructure assembly, but violations found: {FormatViolations(result)}");
     }
 
     [Test]
@@ -65,11 +59,11 @@ internal sealed class LayerTests
     {
         var result = Types.InAssembly(ApplicationAssembly)
             .Should()
-            .NotHaveDependencyOn(InfrastructureAssembly.GetName().Name)
+            .NotHaveDependencyOnAny(ArchitectureAssemblies.InfrastructureNames)
             .GetResult();
 
         result.IsSuccessful.Should().BeTrue(
-            because: $"Application must not depend on Infrastructure, but violations found: {FormatViolations(result)}");
+            because: $"Application must not depend on any Infrastructure assembly, but violations found: {FormatViolations(result)}");
     }
 
     [Test]
@@ -87,7 +81,7 @@ internal sealed class LayerTests
     [Test]
     public void InfrastructureLayer_ShouldNotHaveDependencyOn_PresentationLayer()
     {
-        var result = Types.InAssembly(InfrastructureAssembly)
+        var result = Types.InAssemblies(ArchitectureAssemblies.Infrastructure)
             .Should()
             .NotHaveDependencyOn(PresentationAssembly.GetName().Name)
             .GetResult();
@@ -129,11 +123,11 @@ internal sealed class LayerTests
     {
         var result = Types.InAssembly(SharedKernelAssembly)
             .Should()
-            .NotHaveDependencyOn(InfrastructureAssembly.GetName().Name)
+            .NotHaveDependencyOnAny(ArchitectureAssemblies.InfrastructureNames)
             .GetResult();
 
         result.IsSuccessful.Should().BeTrue(
-            because: $"SharedKernel must not depend on Infrastructure, but violations found: {FormatViolations(result)}");
+            because: $"SharedKernel must not depend on any Infrastructure assembly, but violations found: {FormatViolations(result)}");
     }
 
     [Test]

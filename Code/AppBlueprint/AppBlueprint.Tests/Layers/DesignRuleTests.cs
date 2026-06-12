@@ -1,8 +1,4 @@
 using System.Reflection;
-using AppBlueprint.Application.Services;
-using AppBlueprint.Domain.Entities.User;
-using AppBlueprint.Infrastructure.Persistence.Repositories;
-using AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NetArchTest.Rules;
@@ -17,10 +13,9 @@ namespace AppBlueprint.Tests.Layers;
 /// </summary>
 internal sealed class DesignRuleTests
 {
-    private static readonly Assembly DomainAssembly = typeof(UserEntity).Assembly;
-    private static readonly Assembly ApplicationAssembly = typeof(SignupService).Assembly;
-    private static readonly Assembly InfrastructureAssembly = typeof(UserRepository).Assembly;
-    private static readonly Assembly PresentationAssembly = typeof(AuthenticationController).Assembly;
+    private static readonly Assembly DomainAssembly = ArchitectureAssemblies.Domain;
+    private static readonly Assembly ApplicationAssembly = ArchitectureAssemblies.Application;
+    private static readonly Assembly PresentationAssembly = ArchitectureAssemblies.Presentation;
 
     // -------------------------------------------------------------------------
     // Validator placement — validators belong exclusively in Application
@@ -30,7 +25,7 @@ internal sealed class DesignRuleTests
     public void Validators_ShouldOnlyResideIn_ApplicationLayer()
     {
         IEnumerable<Type> outsideValidators = Types
-            .InAssemblies([DomainAssembly, InfrastructureAssembly, PresentationAssembly])
+            .InAssemblies([DomainAssembly, PresentationAssembly, .. ArchitectureAssemblies.Infrastructure])
             .That()
             .HaveNameEndingWith("Validator", StringComparison.Ordinal)
             .GetTypes();
@@ -63,7 +58,7 @@ internal sealed class DesignRuleTests
     public void Middleware_ShouldOnlyResideIn_PresentationLayer()
     {
         IEnumerable<Type> outsideMiddleware = Types
-            .InAssemblies([DomainAssembly, ApplicationAssembly, InfrastructureAssembly])
+            .InAssemblies([DomainAssembly, ApplicationAssembly, .. ArchitectureAssemblies.Infrastructure])
             .That()
             .HaveNameEndingWith("Middleware", StringComparison.Ordinal)
             .GetTypes();
@@ -108,7 +103,7 @@ internal sealed class DesignRuleTests
     public void Controllers_ShouldOnlyResideIn_PresentationLayer()
     {
         IEnumerable<Type> outsideControllers = Types
-            .InAssemblies([DomainAssembly, ApplicationAssembly, InfrastructureAssembly])
+            .InAssemblies([DomainAssembly, ApplicationAssembly, .. ArchitectureAssemblies.Infrastructure])
             .That()
             .HaveNameEndingWith("Controller", StringComparison.Ordinal)
             .GetTypes();
@@ -125,7 +120,7 @@ internal sealed class DesignRuleTests
     public void ExceptionHandlers_ShouldOnlyResideIn_PresentationLayer()
     {
         IEnumerable<Type> outsideHandlers = Types
-            .InAssemblies([DomainAssembly, ApplicationAssembly, InfrastructureAssembly])
+            .InAssemblies([DomainAssembly, ApplicationAssembly, .. ArchitectureAssemblies.Infrastructure])
             .That()
             .HaveNameEndingWith("ExceptionHandler", StringComparison.Ordinal)
             .GetTypes();
