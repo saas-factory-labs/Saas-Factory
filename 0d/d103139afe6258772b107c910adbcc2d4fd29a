@@ -1,0 +1,66 @@
+Code/AppBlueprint/AppBlueprint.Web/Program.cs
+  s_2d369ea8e42f94::t_16a5656d7ccc3a 14-15
+  s_2d369ea8e42f94::t_3f601f224ebdbf 148-167
+  s_2d369ea8e42f94::t_b4bdf30626b19f 389-391
+Code/DeploymentManager/DeploymentManager.Tests/DeploymentManager.Tests.csproj
+  s_2d369ea8e42f94::t_fc6f3bac88de5f 9-10,15-16,21
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Error.razor
+  s_2d369ea8e42f94::t_2ba815c2237310 3-4
+Code/DeploymentManager/DeploymentManager.Tests/WebTests.cs
+  s_2d369ea8e42f94::t_1cfbefb38a8cec 7,9,20,23
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/Azure/AzureBlobStorageController.cs
+  s_2d369ea8e42f94::t_77900262f409f2 1-2,7
+Code/DeploymentManager/DeploymentManager.ApiService/Program.cs
+  s_2d369ea8e42f94::t_ca83171c1e2bad 1,9,18-35
+  s_2d369ea8e42f94::t_3ae532b1f7a245 60-67
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/Azure/AzureSubscriptionController.cs
+  s_2d369ea8e42f94::t_e8048d1b1956e8 1-2,7
+Code/DeploymentManager/DeploymentManager.Tests/ControllerAuthorizationTests.cs
+  s_2d369ea8e42f94::t_17533c1f16ad72 1-12,14,16-20,23-24,27,29,31-45,48-49,52-70,73-74
+  s_2d369ea8e42f94::t_6b30a118a25e82 13,15,21-22,25-26,28,30,46-47,50-51,71-72
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/Deployment/CustomerEnvironmentController.cs
+  s_2d369ea8e42f94::t_3439492d3fcf8a 1-2,7
+Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj
+  s_2d369ea8e42f94::t_611723d4fccca1 16-18
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/_Imports.razor
+  s_2d369ea8e42f94::t_6a712239f7ba9f 1-9
+Code/DeploymentManager/DeploymentManager.Web/Components/Routes.razor
+  s_2d369ea8e42f94::t_aca280f1eaed6c 1-3,6-22,31-39
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/Customer/CustomerController.cs
+  s_2d369ea8e42f94::t_7a3b0c8b76745e 1-2,7
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/Azure/AzureRegionController.cs
+  s_2d369ea8e42f94::t_3021d33de59db9 1-2,7
+Code/DeploymentManager/DeploymentManager.Web/Program.cs
+  s_2d369ea8e42f94::t_63d997286a5cfb 92-94,96
+Code/AppBlueprint/AppBlueprint.Web/Controllers/FirebaseAuthController.cs
+  s_2d369ea8e42f94::t_9f8dba1c56a51f 6,63
+  s_2d369ea8e42f94::t_ba93e86df7fe59 23-27
+  s_2d369ea8e42f94::t_9f9769a4887ab2 48,53-62
+Code/AppBlueprint/AppBlueprint.Tests/AppBlueprint.Tests.csproj
+  s_2d369ea8e42f94::t_d0a4c038280a4c 41
+  s_2d369ea8e42f94::t_27a295f3d706ff 28
+Code/AppBlueprint/AppBlueprint.Tests/Web/FirebaseAuthControllerTests.cs
+  s_2d369ea8e42f94::t_70cdc974966469 1-92
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/AppController/AppController.cs
+  s_2d369ea8e42f94::t_86644a64cfa687 1-2,7
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/Pulumi/ProjectController.cs
+  s_2d369ea8e42f94::t_335df06be8c8f9 1,5,15
+Code/DeploymentManager/DeploymentManager.ApiService/Api/Controllers/Deployment/DeploymentController.cs
+  s_2d369ea8e42f94::t_c67bb947bd3059 1-2,8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "0dd103139afe6258772b107c910adbcc2d4fd29a",
+  "prompts": {},
+  "sessions": {
+    "s_2d369ea8e42f94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c053edc4-765e-4993-8af8-0a3a8495595c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
