@@ -1,7 +1,10 @@
+using AppBlueprint.Application.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeploymentManager.ApiService.Api.Controllers.Azure;
 
+[Authorize(Roles = Roles.DeploymentManagerAdmin)]
 [Route("api/[controller]")]
 [ApiController]
 public class AzureRegionController : ControllerBase

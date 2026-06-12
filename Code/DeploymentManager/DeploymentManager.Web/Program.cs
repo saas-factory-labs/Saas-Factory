@@ -89,9 +89,11 @@ app.UseOutputCache();
 
 app.MapAuthenticationEndpoints(builder.Configuration);
 
+// SECURITY (OWASP A01): no .AllowAnonymous() here - pages carry
+// [Authorize(Roles = Roles.DeploymentManagerAdmin)] via Components/Pages/_Imports.razor,
+// and AuthorizeRouteView in Routes.razor enforces it during interactive navigation.
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AllowAnonymous();
+    .AddInteractiveServerRenderMode();
 
 app.MapDefaultEndpoints();
 

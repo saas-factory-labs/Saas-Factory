@@ -1,6 +1,8 @@
+using AppBlueprint.Application.Constants;
 using DeploymentManager.ApiService.Domain.DTOs.Project;
 using DeploymentManager.ApiService.Domain.Entities;
 using DeploymentManager.ApiService.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeploymentManager.ApiService.Api.Controllers.Pulumi;
@@ -10,6 +12,7 @@ public class ResponseDto
     public string Name { get; set; }
 }
 
+[Authorize(Roles = Roles.DeploymentManagerAdmin)]
 [ApiController]
 [Route("[controller]")]
 public class ProjectController : Controller

@@ -1,7 +1,10 @@
+using AppBlueprint.Application.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeploymentManager.ApiService.Api.Controllers.Customer;
 
+[Authorize(Roles = Roles.DeploymentManagerAdmin)]
 [Route("api/[controller]")]
 [ApiController]
 public class CustomerController : ControllerBase

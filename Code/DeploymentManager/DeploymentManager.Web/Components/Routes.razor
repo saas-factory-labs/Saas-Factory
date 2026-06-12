@@ -1,7 +1,25 @@
-﻿@using DeploymentManager.Web.Components.Layout
+@using DeploymentManager.Web.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <NotAuthorized Context="authContext">
+                @if (authContext.User.Identity?.IsAuthenticated != true)
+                {
+                    @RedirectToSignIn()
+                }
+                else
+                {
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <p>You are not authorized to access the Deployment Manager. A DeploymentManagerAdmin role is required.</p>
+                    </LayoutView>
+                }
+            </NotAuthorized>
+            <Authorizing>
+                <p>Checking access...</p>
+            </Authorizing>
+        </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
     </Found>
     <NotFound>
@@ -10,3 +28,12 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code {
+
+    private RenderFragment RedirectToSignIn() => _ =>
+    {
+        NavigationManager.NavigateTo("/auth/signin", forceLoad: true);
+    };
+
+}

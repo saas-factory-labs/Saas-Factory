@@ -13,6 +13,9 @@
         <ProjectReference Include="..\..\AppBlueprint\AppBlueprint.ServiceDefaults\AppBlueprint.ServiceDefaults.csproj" />
         <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\Infrastructure\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
     <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+        <!-- Referenced for AddJwtAuthentication only; its controllers are removed from
+             application part discovery in Program.cs so they are not exposed by this API. -->
+        <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.Presentation.ApiModule\AppBlueprint.Presentation.ApiModule.csproj" />
     </ItemGroup>
 
     <ItemGroup>
