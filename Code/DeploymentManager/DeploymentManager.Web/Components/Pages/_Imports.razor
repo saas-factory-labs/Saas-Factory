@@ -1,0 +1,9 @@
+@using Microsoft.AspNetCore.Authorization
+@using AppBlueprint.Application.Constants
+@*
+    SECURITY (OWASP A01): the Deployment Manager portal manages deployed SaaS apps across
+    all customers, so every page requires the DeploymentManagerAdmin role by default.
+    Pages that must be reachable without it (e.g. the error page) opt out explicitly
+    with [AllowAnonymous].
+*@
+@attribute [Authorize(Roles = Roles.DeploymentManagerAdmin)]

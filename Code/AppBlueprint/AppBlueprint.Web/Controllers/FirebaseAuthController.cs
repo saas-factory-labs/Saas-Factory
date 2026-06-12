@@ -3,6 +3,7 @@ using AppBlueprint.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AppBlueprint.Web.Controllers;
 
@@ -18,6 +19,11 @@ namespace AppBlueprint.Web.Controllers;
 public sealed class FirebaseAuthController : ControllerBase
 {
     private const string FirebaseCookieScheme = "Firebase.Cookie";
+
+    // SECURITY (OWASP A03): bound credential input before it reaches the Firebase HTTP call.
+    // RFC 5321 caps e-mail addresses at 254 characters; Firebase rejects passwords over 128.
+    private const int MaxEmailLength = 254;
+    private const int MaxPasswordLength = 128;
 
     private readonly IFirebaseSignInService _firebaseSignIn;
     private readonly ILogger<FirebaseAuthController> _logger;
@@ -39,9 +45,21 @@ public sealed class FirebaseAuthController : ControllerBase
     /// </summary>
     [HttpPost("firebase-signin")]
     [Consumes("application/x-www-form-urlencoded")]
+    [EnableRateLimiting("auth-signin")]
     public async Task<IActionResult> SignIn([FromForm] FirebaseSignInFormRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
+
+        // SECURITY (OWASP A03/A07): validate input manually (not via DataAnnotations) so the
+        // browser form flow keeps its redirect-with-error UX instead of an automatic JSON 400.
+        // Use a generic error message to avoid disclosing which field was rejected.
+        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password)
+            || request.Email.Length > MaxEmailLength || request.Password.Length > MaxPasswordLength)
+        {
+            _logger.LogWarning("Firebase sign-in rejected: invalid form input");
+            string encodedValidationError = Uri.EscapeDataString("Login failed. Please check your credentials.");
+            return Redirect($"/signin/firebase?error={encodedValidationError}");
+        }
 
         FirebaseSignInResult result = await _firebaseSignIn.SignInAsync(request.Email, request.Password);
 

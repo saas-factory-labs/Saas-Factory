@@ -4,9 +4,9 @@ using Projects;
 
 namespace DeploymentManager.Tests;
 
-public class WebTests
+internal sealed class WebTests
 {
-    [Fact]
+    [Test]
     public async Task GetWebResourceRootReturnsOkStatusCode()
     {
         // Arrange
@@ -17,9 +17,9 @@ public class WebTests
 
         // Act
         HttpClient? httpClient = app.CreateHttpClient("webfrontend");
-        HttpResponseMessage? response = await httpClient.GetAsync("/");
+        HttpResponseMessage? response = await httpClient.GetAsync(new Uri("/", UriKind.Relative));
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
     }
 }

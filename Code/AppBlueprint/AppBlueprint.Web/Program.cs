@@ -11,6 +11,8 @@ using AppBlueprint.UiKit.Models;
 using AppBlueprint.Web.Components;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
@@ -142,6 +144,26 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 // Add API controllers for Web-specific endpoints (e.g., FirebaseConfigController)
 builder.Services.AddControllers();
+
+// Rate limiting (OWASP A07 - Identification and Authentication Failures).
+// The Firebase sign-in endpoint accepts credentials and must be protected against
+// brute-force/credential-stuffing. Partition per client IP (forwarded headers are
+// configured above, so RemoteIpAddress reflects the real client behind Railway).
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("auth-signin", httpContext =>
+    {
+        string partitionKey = httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
+
+        return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 5,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+});
 
 // Add minimal API versioning to register the 'apiVersion' route constraint
 // This allows controllers from referenced assemblies to use versioned routes without errors
@@ -363,6 +385,9 @@ app.UseCookiePolicy();
 // Add authentication and authorization middleware for Logto
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Rate limiting - enforces the "auth-signin" policy on credential endpoints
+app.UseRateLimiter();
 
 // ✅ Add admin IP whitelist (blocks non-whitelisted IPs from admin routes)
 // Only enabled in production - disabled in development to avoid local access issues

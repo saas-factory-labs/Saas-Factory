@@ -6,23 +6,23 @@
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <!-- TUnit runs on Microsoft.Testing.Platform, which requires an executable test project -->
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Aspire.Hosting.Testing"/>
-        <PackageReference Include="coverlet.collector"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="xunit"/>
-        <PackageReference Include="xunit.runner.visualstudio"/>
+        <PackageReference Include="TUnit"/>
+        <PackageReference Include="TUnit.Assertions"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\DeploymentManager.AppHost\DeploymentManager.AppHost.csproj"/>
+        <ProjectReference Include="..\DeploymentManager.ApiService\DeploymentManager.ApiService.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <Using Include="Aspire.Hosting.Testing"/>
-        <Using Include="Xunit"/>
     </ItemGroup>
 
 </Project>

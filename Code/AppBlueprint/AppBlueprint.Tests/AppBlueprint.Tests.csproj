@@ -25,6 +25,7 @@
         <PackageReference Include="Aspire.Hosting.Testing" />
         <PackageReference Include="coverlet.collector" />
         <PackageReference Include="Moq" />
+        <PackageReference Include="NSubstitute" />
         <PackageReference Include="TUnit" />
         <PackageReference Include="TUnit.Assertions" />
         <PackageReference Include="NetArchTest.Rules" />
@@ -37,6 +38,7 @@
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
         <ProjectReference Include="..\AppBlueprint.ApiService\AppBlueprint.ApiService.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Web\AppBlueprint.Web.csproj" />
     </ItemGroup>
 
     <ItemGroup>
