@@ -1,0 +1,39 @@
+Code/AppBlueprint/AppBlueprint.Tests/Layers/LayerTests.cs
+  s_ceba46b6ae6772::t_4dd36d6ee334ee 38,42
+  s_ceba46b6ae6772::t_c50bcb69b716e3 16-19
+  s_ceba46b6ae6772::t_82ef2103040ce7 84
+  s_ceba46b6ae6772::t_7a6ca8bb224b46 126,130
+  s_ceba46b6ae6772::t_99a5d2df2b6822 62,66
+Code/AppBlueprint/AppBlueprint.Tests/Layers/NamingConventionTests.cs
+  s_ceba46b6ae6772::t_a908e345dc3908 197
+  s_ceba46b6ae6772::t_d392c425723349 221
+  s_ceba46b6ae6772::t_6b65c09535b121 83
+  s_ceba46b6ae6772::t_b4a10f8ab3b888 12-14
+  s_ceba46b6ae6772::t_a3e45902c0c70c 51
+Code/AppBlueprint/AppBlueprint.Tests/Layers/ArchitectureAssemblies.cs
+  s_ceba46b6ae6772::t_756704ab053e37 1-45
+Code/AppBlueprint/AppBlueprint.Tests/Layers/DesignRuleTests.cs
+  s_ceba46b6ae6772::t_37951ae8c80654 106
+  s_ceba46b6ae6772::t_fe6dfd53d36f99 16-18
+  s_ceba46b6ae6772::t_09bbe24539039a 123
+  s_ceba46b6ae6772::t_365d97854cb38a 61
+  s_ceba46b6ae6772::t_ef5d818a61abbe 28
+Code/AppBlueprint/AppBlueprint.Tests/Layers/FrameworkDependencyTests.cs
+  s_ceba46b6ae6772::t_8471b1149cfc29 14-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "1af185f99e8372b19e0b2e6595fbe34c48b0f3df",
+  "prompts": {},
+  "sessions": {
+    "s_ceba46b6ae6772": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1feaf53-1aba-4e9c-a024-57cec3ba49b7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
