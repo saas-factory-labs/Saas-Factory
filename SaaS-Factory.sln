@@ -142,6 +142,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBlueprint.Infrastructure
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBlueprint.Infrastructure.Authentication", "Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure.Authentication\AppBlueprint.Infrastructure.Authentication.csproj", "{EFE6EE3E-B47A-47A3-88CF-DDCA19F23EFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBlueprint.Infrastructure.Realtime", "Code\AppBlueprint\Shared-Modules\AppBlueprint.Infrastructure.Realtime\AppBlueprint.Infrastructure.Realtime.csproj", "{37787E5C-23AF-4A06-849F-49CF07E33B09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -524,6 +526,18 @@ Global
 		{EFE6EE3E-B47A-47A3-88CF-DDCA19F23EFB}.Release|x64.Build.0 = Release|Any CPU
 		{EFE6EE3E-B47A-47A3-88CF-DDCA19F23EFB}.Release|x86.ActiveCfg = Release|Any CPU
 		{EFE6EE3E-B47A-47A3-88CF-DDCA19F23EFB}.Release|x86.Build.0 = Release|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Debug|x64.Build.0 = Debug|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Debug|x86.Build.0 = Debug|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Release|x64.ActiveCfg = Release|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Release|x64.Build.0 = Release|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Release|x86.ActiveCfg = Release|Any CPU
+		{37787E5C-23AF-4A06-849F-49CF07E33B09}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -562,5 +576,6 @@ Global
 		{731A5047-5BA5-45BF-A411-2E919E51AB0E} = {48E49109-5630-1E84-579B-647E0B51669A}
 		{56598DA2-8BAE-4635-B930-FB93796C3BBD} = {48E49109-5630-1E84-579B-647E0B51669A}
 		{EFE6EE3E-B47A-47A3-88CF-DDCA19F23EFB} = {48E49109-5630-1E84-579B-647E0B51669A}
+		{37787E5C-23AF-4A06-849F-49CF07E33B09} = {48E49109-5630-1E84-579B-647E0B51669A}
 	EndGlobalSection
 EndGlobal

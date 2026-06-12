@@ -31,6 +31,7 @@ jobs:
           - "AppBlueprint.Infrastructure.Payments.Stripe"
           - "AppBlueprint.Infrastructure.Persistence"
           - "AppBlueprint.Infrastructure.PII"
+          - "AppBlueprint.Infrastructure.Realtime"
           - "AppBlueprint.Infrastructure.Search"
           - "AppBlueprint.Infrastructure.Storage"
 

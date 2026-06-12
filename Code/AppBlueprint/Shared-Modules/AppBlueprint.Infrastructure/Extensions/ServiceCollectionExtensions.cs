@@ -445,34 +445,6 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds SignalR with tenant-aware authentication and authorization.
-    /// Configures MessagePack protocol for efficient binary serialization.
-    /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <returns>The service collection for chaining.</returns>
-    public static IServiceCollection AddAppBlueprintSignalR(this IServiceCollection services)
-    {
-        services.AddSignalR(options =>
-        {
-            // Enable detailed errors in development only
-            options.EnableDetailedErrors = false; // Set to true via environment variable in dev
-
-            // Configure client timeouts
-            options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
-            options.HandshakeTimeout = TimeSpan.FromSeconds(15);
-            options.KeepAliveInterval = TimeSpan.FromSeconds(15);
-
-            // Maximum message size (1 MB default)
-            options.MaximumReceiveMessageSize = 1024 * 1024;
-        })
-        .AddMessagePackProtocol(); // Binary protocol for better performance
-
-        Console.WriteLine("[AppBlueprint.Infrastructure] SignalR registered with tenant-aware authentication");
-
-        return services;
-    }
-
-    /// <summary>
     /// Registers PII detection engine and scanners (delegates to AppBlueprint.Infrastructure.PII)
     /// plus the EF Core PII interceptor owned by this project.
     /// </summary>

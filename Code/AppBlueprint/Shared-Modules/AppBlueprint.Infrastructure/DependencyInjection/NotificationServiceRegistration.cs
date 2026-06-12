@@ -22,10 +22,10 @@ public static class NotificationServiceRegistration
         services.AddScoped<INotificationPreferencesRepository, UserNotificationPreferencesRepository>();
         services.AddScoped<IPushNotificationTokenRepository, UserPushNotificationTokenRepository>();
 
-        // Register notification services (delegates to AppBlueprint.Infrastructure.Notifications)
+        // Register notification services (delegates to the Notifications and Realtime modules)
         services.AddCoreNotificationService();
         services.AddFirebasePushNotifications();
-        services.AddScoped<IInAppNotificationService, InAppNotificationService>();
+        services.AddInAppNotificationService();
 
         // Register SignalR hub (if not already registered)
         services.AddSignalR();

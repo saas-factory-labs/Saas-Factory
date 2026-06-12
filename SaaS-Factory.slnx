@@ -97,6 +97,7 @@
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Payments.Stripe/AppBlueprint.Infrastructure.Payments.Stripe.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Persistence/AppBlueprint.Infrastructure.Persistence.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.PII/AppBlueprint.Infrastructure.PII.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Realtime/AppBlueprint.Infrastructure.Realtime.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Search/AppBlueprint.Infrastructure.Search.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Storage/AppBlueprint.Infrastructure.Storage.csproj" />
   </Folder>

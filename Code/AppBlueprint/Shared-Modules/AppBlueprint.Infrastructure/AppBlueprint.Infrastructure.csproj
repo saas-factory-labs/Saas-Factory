@@ -35,8 +35,6 @@
         <PackageReference Include="AspNetCore.HealthChecks.Redis" />
         <PackageReference Include="AspNetCore.HealthChecks.Uris" />
         
-        <!-- SignalR -->
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" />
     </ItemGroup>
 
     <ItemGroup>
@@ -54,6 +52,7 @@
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Payments.Stripe\AppBlueprint.Infrastructure.Payments.Stripe.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Persistence\AppBlueprint.Infrastructure.Persistence.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.PII\AppBlueprint.Infrastructure.PII.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Realtime\AppBlueprint.Infrastructure.Realtime.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Search\AppBlueprint.Infrastructure.Search.csproj" />
         <ProjectReference Include="..\AppBlueprint.Infrastructure.Storage\AppBlueprint.Infrastructure.Storage.csproj" />
     </ItemGroup>
