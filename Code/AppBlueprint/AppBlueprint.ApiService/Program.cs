@@ -1,9 +1,11 @@
-using AppBlueprint.Infrastructure;
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
+using System.Threading.RateLimiting;
+using AppBlueprint.Infrastructure.Persistence;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Extensions;
-using AppBlueprint.Infrastructure.Services.Search;
+using AppBlueprint.Infrastructure.Payments.Extensions;
+using AppBlueprint.Infrastructure.Search;
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.Presentation.ApiModule.Middleware;
@@ -86,6 +88,27 @@ internal static class Program // Make class static
         // Add JWT authentication
         builder.Services.AddJwtAuthentication(builder.Configuration, builder.Environment);
 
+        // Rate limiting (OWASP API4 - Unrestricted Resource Consumption).
+        // The gateway also rate-limits, but the API must protect itself against direct access.
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+            {
+                // Partition per authenticated user; fall back to client IP for anonymous traffic
+                string partitionKey = httpContext.User.Identity?.IsAuthenticated == true
+                    ? httpContext.User.FindFirst("sub")?.Value ?? httpContext.User.Identity.Name ?? "authenticated"
+                    : httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
+
+                return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 100,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueLimit = 0
+                });
+            });
+        });
+
         // Add NSwag OpenAPI document generation
         builder.Services.AddOpenApiDocument(config =>
         {
@@ -108,6 +131,9 @@ internal static class Program // Make class static
         var app = builder.Build();
 
         app.UseCustomMiddlewares();
+
+        // Rate limiting after authentication so the partition key can use the user identity
+        app.UseRateLimiter();
 
         if (app.Environment.IsDevelopment())
         {

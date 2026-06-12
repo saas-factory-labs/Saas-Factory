@@ -17,7 +17,16 @@
       "Bash(Select-String -Pattern \"error|warning\" -Context 0,2)",
       "Bash(Select-String -Pattern \"error\")",
       "Bash(Out-String)",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(grep -v \"\\\\\\\\bin\\\\|\\\\\\\\obj\")",
+      "Bash(dotnet user-secrets *)",
+      "Bash(Test-Path \"d:\\\\Development\\\\Development-Projects\\\\Saas-Factory\\\\Code\\\\DeploymentManager\\\\DeploymentManager.ApiService\\\\Infrastructure\\\\Persistence\\\\Migrations\" -PathType Container)",
+      "Bash(cd /d \"d:\\\\Development\\\\Development-Projects\\\\Saas-Factory\")",
+      "Bash(Get-ChildItem -Path . -Directory)",
+      "Bash(Select-Object -ExpandProperty Name)",
+      "Bash(Get-ChildItem -Path \"Code\\\\DeploymentManager\\\\DeploymentManager.Web\\\\Components\\\\Pages\" -File -Recurse)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(Format-Table -AutoSize)"
     ],
     "deny": [],
     "ask": []

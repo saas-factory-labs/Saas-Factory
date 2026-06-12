@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- Basic Project Properties -->
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Infrastructure library with database repositories and external services</Description>
+        <PackageTags>infrastructure database-repositories external-services</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>infrastructure-icon.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Framework references for ASP.NET Core types -->
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Configuration and Hosting -->
+        <PackageReference Include="Microsoft.Extensions.Compliance.Redaction" />
+        <PackageReference Include="Microsoft.Extensions.Compliance.Abstractions" />
+        
+        <!-- Health Checks -->
+        <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
+        <PackageReference Include="AspNetCore.HealthChecks.Redis" />
+        <PackageReference Include="AspNetCore.HealthChecks.Uris" />
+        
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+        <!-- Extracted infrastructure modules (facade re-exposes these transitively to consumers) -->
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Authentication\AppBlueprint.Infrastructure.Authentication.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Email\AppBlueprint.Infrastructure.Email.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Notifications\AppBlueprint.Infrastructure.Notifications.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Payments\AppBlueprint.Infrastructure.Payments.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Persistence\AppBlueprint.Infrastructure.Persistence.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Compliance\AppBlueprint.Infrastructure.Compliance.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Realtime\AppBlueprint.Infrastructure.Realtime.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Search\AppBlueprint.Infrastructure.Search.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Infrastructure.Storage\AppBlueprint.Infrastructure.Storage.csproj" />
+    </ItemGroup>
+
+</Project>

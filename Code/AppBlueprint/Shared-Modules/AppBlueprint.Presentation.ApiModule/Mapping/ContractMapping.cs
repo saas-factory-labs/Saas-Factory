@@ -18,9 +18,9 @@ using AppBlueprint.Contracts.Baseline.Profile.Responses;
 using AppBlueprint.Contracts.Baseline.Role.Requests;
 using AppBlueprint.Contracts.Baseline.Role.Responses;
 using AppBlueprint.Contracts.Baseline.User.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Account;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.Account;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
 using AppBlueprint.SharedKernel;
 
 namespace AppBlueprint.Presentation.ApiModule.Mapping;

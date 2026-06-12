@@ -1,7 +1,7 @@
 using AppBlueprint.Api.Client.Sdk;
 using AppBlueprint.Api.Client.Sdk.Models;
 using AppBlueprint.Application.Interfaces;
-using TenantEntity = AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity;
+using TenantEntity = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity;
 
 namespace AppBlueprint.Web.Services;
 

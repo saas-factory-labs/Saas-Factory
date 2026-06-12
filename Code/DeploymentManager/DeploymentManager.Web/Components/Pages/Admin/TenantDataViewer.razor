@@ -1,7 +1,7 @@
 @page "/admin/tenant-viewer"
 @using AppBlueprint.Application.Services
-@using AppBlueprint.Infrastructure.DatabaseContexts
-@using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User
+@using AppBlueprint.Infrastructure.Persistence.DatabaseContexts
+@using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User
 @using Microsoft.EntityFrameworkCore
 @inject IAdminTenantAccessService AdminService
 @inject ILogger<TenantDataViewer> Logger

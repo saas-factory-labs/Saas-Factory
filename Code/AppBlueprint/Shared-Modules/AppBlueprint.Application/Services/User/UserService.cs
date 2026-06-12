@@ -1,7 +1,7 @@
 // using AppBlueprint.Application.DTOs;
 // using AppBlueprint.Application.DTOs.Baseline.Contracts.User.Requests;
 // using AppBlueprint.Application.DTOs.Baseline.Contracts.User.Responses;
-// using AppBlueprint.Infrastructure.Repositories.Interfaces;
+// using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 //
 // namespace AppBlueprint.Application.Services.User;
 //

@@ -1,45 +1,47 @@
 using DeploymentManager.ApiService.Domain.Entities;
 using DeploymentManager.ApiService.Domain.Interfaces;
+using DeploymentManager.ApiService.Infrastructure.Persistence.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeploymentManager.ApiService.Infrastructure.Persistence.Data.Repositories;
 
 public class ProjectRepository : IProjectRepository
 {
-    private readonly List<ProjectEntity> _projects = new();
+    private readonly DeploymentManagerDbContext _context;
 
-    public ProjectEntity? GetById(int id)
+    public ProjectRepository(DeploymentManagerDbContext context)
     {
-        return _projects.FirstOrDefault(p => p.Id == id);
+        ArgumentNullException.ThrowIfNull(context);
+        _context = context;
     }
 
-    public IEnumerable<ProjectEntity> GetAll()
+    public async Task<ProjectEntity?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        return _projects;
+        return await _context.DmProjects.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
-    public void Add(ProjectEntity project)
+    public async Task<IEnumerable<ProjectEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        _projects.Add(project);
+        return await _context.DmProjects.ToListAsync(cancellationToken);
     }
 
-    public void Update(ProjectEntity project)
+    public async Task AddAsync(ProjectEntity project, CancellationToken cancellationToken = default)
     {
-        int index = _projects.FindIndex(p => p.Id == project.Id);
-        if (index != -1) _projects[index] = project;
+        ArgumentNullException.ThrowIfNull(project);
+        await _context.DmProjects.AddAsync(project, cancellationToken);
     }
 
-    public void Delete(int id)
+    public Task UpdateAsync(ProjectEntity project, CancellationToken cancellationToken = default)
     {
-        ProjectEntity? product = GetById(id);
-        if (product is not null) _projects.Remove(product);
+        ArgumentNullException.ThrowIfNull(project);
+        _context.DmProjects.Update(project);
+        return Task.CompletedTask;
+    }
+
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+    {
+        ProjectEntity? project = await GetByIdAsync(id, cancellationToken);
+        if (project is not null)
+            _context.DmProjects.Remove(project);
     }
 }
-
-//ProjectEntity project = new()
-//{
-//    //Id = _projects.Count + 1,
-//    //Name = project.Name,
-//    //Description = projectDTO.Description,
-//    //CreatedAt = DateTime.Now,
-//    //UpdatedAt = DateTime.Now
-//};

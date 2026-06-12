@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace AppBlueprint.Contracts.Baseline.File.Requests;
 
 /// <summary>
@@ -41,11 +43,15 @@ public sealed class GetPreSignedUrlRequest
     /// <summary>
     /// Unique file key in storage.
     /// </summary>
+    [Required]
+    [StringLength(1024, MinimumLength = 1)]
     public required string FileKey { get; set; }
 
     /// <summary>
     /// URL expiration time in seconds (default: 3600 = 1 hour).
+    /// Bounded between 1 minute and 7 days (S3/R2 pre-signed URL maximum).
     /// </summary>
+    [Range(60, 604800)]
     public int ExpirySeconds { get; set; } = 3600;
 }
 
@@ -57,15 +63,18 @@ public sealed class ListFilesRequest
     /// <summary>
     /// Filter by folder.
     /// </summary>
+    [StringLength(256)]
     public string? Folder { get; set; }
 
     /// <summary>
     /// Filter by file name prefix.
     /// </summary>
+    [StringLength(256)]
     public string? FileNamePrefix { get; set; }
 
     /// <summary>
     /// Maximum number of results to return.
     /// </summary>
+    [Range(1, 1000)]
     public int? MaxResults { get; set; }
 }

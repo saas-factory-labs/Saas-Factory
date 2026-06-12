@@ -1,0 +1,35 @@
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+
+// namespace AppBlueprint.SharedKernel.Models.B2B
+
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities;
+
+public class OrganizationEntity
+{
+    public OrganizationEntity()
+    {
+        Customers = [];
+        Teams = [];
+    }
+
+    public OrganizationEntity(List<CustomerEntity> customers)
+    {
+        Customers = customers;
+    }
+
+    public int Id { get; set; }
+
+    public required UserEntity Owner { get; set; }
+
+    public required string? Name { get; set; }
+
+    public required string Description { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime? LastUpdatedAt { get; set; }
+    public required List<CustomerEntity> Customers { get; set; }
+    public required List<TeamEntity> Teams { get; set; }
+}

@@ -1,6 +1,6 @@
-// using AppBlueprint.Infrastructure.DatabaseContexts.TenantCatalog.Entities;
-// using AppBlueprint.Infrastructure.Repositories.Interfaces;
-// using AppBlueprint.Infrastructure.UnitOfWork;
+// using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.TenantCatalog.Entities;
+// using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
+// using AppBlueprint.Infrastructure.Persistence.UnitOfWork;
 // using Microsoft.AspNetCore.Authorization;
 // using Microsoft.AspNetCore.Http;
 // using Microsoft.AspNetCore.Mvc;

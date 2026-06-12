@@ -1,8 +1,9 @@
 using AppBlueprint.Application.Interfaces;
+using AppBlueprint.Application.Validations;
 using AppBlueprint.Contracts.Baseline.Webhook.Requests;
 using AppBlueprint.Contracts.Baseline.Webhook.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -69,6 +70,11 @@ public class WebhookController : BaseController
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
+        // SECURITY (OWASP A10/SSRF): reject internal, loopback, metadata and non-http(s) targets
+        // before persisting, so the delivery service can never be pointed at internal resources.
+        if (!WebhookUrlValidator.TryValidate(request.Url, out string? urlError))
+            return BadRequest(new { Message = urlError });
+
         string tenantId = GetCurrentTenantId();
 
         var webhook = new WebhookEntity
@@ -96,6 +102,9 @@ public class WebhookController : BaseController
     public async Task<IActionResult> Update(string id, [FromBody] UpdateWebhookRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        if (!WebhookUrlValidator.TryValidate(request.Url, out string? urlError))
+            return BadRequest(new { Message = urlError });
 
         WebhookEntity? webhook = await _webhookRepository.GetByIdAsync(id, cancellationToken);
         if (webhook is null) return NotFound();

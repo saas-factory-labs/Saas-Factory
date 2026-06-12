@@ -1,12 +1,11 @@
-@using MudBlazor
-@inherits LayoutComponentBase
-
 @page "/customers"
+@using MudBlazor
 
 <PageTitle>Customers</PageTitle>
 
-<h1 class="py-8">Customers </h1>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
+<h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Customers</h1>
 
 <MudTable T="Customer" Items="@_customers" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
           LoadingProgressColor="Color.Info">
@@ -30,6 +29,8 @@
         }
     </RowTemplate>
 </MudTable>
+
+</div>
 
 @code {
 

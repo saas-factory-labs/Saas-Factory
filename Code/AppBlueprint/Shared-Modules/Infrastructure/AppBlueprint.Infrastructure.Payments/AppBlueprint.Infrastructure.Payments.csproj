@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- Basic Project Properties -->
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Payments</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Payment processing for AppBlueprint (Stripe subscriptions and webhooks; designed for additional providers)</Description>
+        <PackageTags>infrastructure payments stripe webhooks subscriptions</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>infrastructure-icon.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Framework reference for DI, configuration and logging abstractions -->
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Stripe.net" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

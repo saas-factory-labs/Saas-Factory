@@ -6,6 +6,13 @@ namespace AppBlueprint.Web.Controllers;
 /// Provides Firebase client configuration from server environment variables.
 /// This allows the service worker to access Firebase config without hardcoding values.
 /// </summary>
+/// <remarks>
+/// SECURITY: this endpoint is intentionally anonymous. It returns ONLY Firebase web client
+/// configuration (apiKey/projectId/appId/VAPID), which is public by design and meant to be
+/// embedded in browser JavaScript - it is NOT a secret. The service worker must fetch it
+/// unauthenticated during bootstrap, so requiring authentication would break push notifications.
+/// Server-only service-account credentials are never exposed here.
+/// </remarks>
 [ApiController]
 [Route("api/firebase-config")]
 [Microsoft.AspNetCore.Authorization.AllowAnonymous]

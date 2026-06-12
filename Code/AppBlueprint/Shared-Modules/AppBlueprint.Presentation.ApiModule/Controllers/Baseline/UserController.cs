@@ -1,10 +1,10 @@
 using System.Security.Claims;
 using AppBlueprint.Contracts.Baseline.User.Requests;
 using AppBlueprint.Contracts.Baseline.User.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.Profile;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -140,11 +140,7 @@ public class UserController : BaseController
         UserEntity? user = await _userRepository.GetByIdAsync(id);
         if (user is null) return NotFound(new { Message = $"User with ID {id} not found." });
 
-        string? callerExternalAuthId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        bool isAdmin = User.IsInRole(ApplicationRoles.TenantAdmin) || User.IsInRole(ApplicationRoles.DeploymentManagerAdmin);
-        bool isOwner = !string.IsNullOrEmpty(callerExternalAuthId) && callerExternalAuthId == user.ExternalAuthId;
-
-        if (!isOwner && !isAdmin) return Forbid();
+        if (!IsOwnerOrAdmin(user)) return Forbid();
 
         var response = new UserResponse
         {
@@ -180,6 +176,7 @@ public class UserController : BaseController
     /// <response code="400">Invalid request data or validation failed.</response>
     /// <response code="401">User is not authenticated.</response>
     [HttpPost(ApiEndpoints.Users.Create)]
+    [Authorize(Roles = ApplicationRoles.TenantAdmin + "," + ApplicationRoles.DeploymentManagerAdmin)]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status201Created)]
     [MapToApiVersion(ApiVersions.V1)]
     [MapToApiVersion(ApiVersions.V2)]
@@ -252,6 +249,9 @@ public class UserController : BaseController
         UserEntity? existingUser = await _userRepository.GetByIdAsync(id);
         if (existingUser is null) return NotFound(new { Message = $"User with ID {id} not found." });
 
+        // SECURITY (OWASP A01): only the owner or an admin may update a user profile (anti-IDOR)
+        if (!IsOwnerOrAdmin(existingUser)) return Forbid();
+
         existingUser.FirstName = createUser.FirstName;
         existingUser.LastName = createUser.LastName;
         existingUser.UserName = createUser.UserName;
@@ -263,6 +263,18 @@ public class UserController : BaseController
         // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
+    }
+
+    /// <summary>
+    ///     Returns true when the caller is the owner of the given user record or holds an admin role.
+    /// </summary>
+    private bool IsOwnerOrAdmin(UserEntity user)
+    {
+        string? callerExternalAuthId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        bool isAdmin = User.IsInRole(ApplicationRoles.TenantAdmin) || User.IsInRole(ApplicationRoles.DeploymentManagerAdmin);
+        bool isOwner = !string.IsNullOrEmpty(callerExternalAuthId) && callerExternalAuthId == user.ExternalAuthId;
+
+        return isOwner || isAdmin;
     }
 
     /// <summary>
@@ -291,6 +303,9 @@ public class UserController : BaseController
 
         UserEntity? existingUser = await _userRepository.GetByIdAsync(id);
         if (existingUser is null) return NotFound(new { Message = $"User with ID {id} not found." });
+
+        // SECURITY (OWASP A01): only the owner or an admin may delete a user account (anti-IDOR)
+        if (!IsOwnerOrAdmin(existingUser)) return Forbid();
 
         _userRepository.Delete(existingUser.Id);
         // If SaveChangesAsync is required, inject a service for it or handle in repository.

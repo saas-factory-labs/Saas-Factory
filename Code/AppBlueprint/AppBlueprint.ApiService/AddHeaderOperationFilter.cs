@@ -1,4 +1,4 @@
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AppBlueprint.ApiService;
@@ -7,7 +7,10 @@ internal class AddHeaderOperationFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        operation.Parameters ??= [];
+        ArgumentNullException.ThrowIfNull(operation);
+
+        if (operation.Parameters is null)
+            operation.Parameters = [];
 
         operation.Parameters.Add(new OpenApiParameter
         {
@@ -17,8 +20,7 @@ internal class AddHeaderOperationFilter : IOperationFilter
             Required = false,
             Schema = new OpenApiSchema
             {
-                // Type = "string"
-                Type = "bearer"
+                Type = JsonSchemaType.String
             }
         });
     }

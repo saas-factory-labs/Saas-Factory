@@ -1,14 +1,13 @@
+@page "/apps/manage"
 @using DeploymentManager.Web.Models
 @using MudBlazor
-@inherits LayoutComponentBase
-<MudDialogProvider/>
 @inject IDialogService DialogService
-
-@page "/apps/manage"
 
 <PageTitle>Manage Apps</PageTitle>
 
-<h1 class="py-8">Manage Apps </h1>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+<h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Manage Apps</h1>
 
 <MudTable T="AppModel" Items="@_apps" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
           LoadingProgressColor="Color.Info">
@@ -26,6 +25,8 @@
 </MudTable>
 
 <MudFab @onclick="OpenDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small"/>
+
+</div>
 
 @code {
 

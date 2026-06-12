@@ -3,7 +3,7 @@
     <Platform Name="Any CPU" />
     <Platform Name="x64" />
     <Platform Name="x86" />
-  </Configurations>
+  </Configurations>  
   <Folder Name="/AppBlueprint/">
     <Project Path="Code/AppBlueprint/AppBlueprint.ApiService/AppBlueprint.ApiService.csproj" />
     <Project Path="Code/AppBlueprint/AppBlueprint.AppGateway/AppBlueprint.AppGateway.csproj" />
@@ -16,7 +16,6 @@
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/AppBlueprint.Contracts.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/AppBlueprint.Domain.csproj" />
-    <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/AppBlueprint.Presentation.ApiModule.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj" />
@@ -89,6 +88,19 @@
     <File Path="Code/AppBlueprint/WEB_PORTS_CHANGED_8083_8082.md" />
     <File Path="Code/AppBlueprint/WHY_LOGTO_FAILED_ANALYSIS.md" />
     <Project Path="Code/AppBlueprint/AppBlueprint.TodoAppKernel/AppBlueprint.TodoAppKernel.csproj" />
+  </Folder>
+  <Folder Name="/Code/AppBlueprint/Shared-Modules/" />
+  <Folder Name="/Code/AppBlueprint/Shared-Modules/Infrastructure/">
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/AppBlueprint.Infrastructure.Authentication.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Compliance/AppBlueprint.Infrastructure.Compliance.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Email/AppBlueprint.Infrastructure.Email.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Notifications/AppBlueprint.Infrastructure.Notifications.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Payments/AppBlueprint.Infrastructure.Payments.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/AppBlueprint.Infrastructure.Persistence.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Realtime/AppBlueprint.Infrastructure.Realtime.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Search/AppBlueprint.Infrastructure.Search.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/AppBlueprint.Infrastructure.Storage.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/DeploymentManager/">
     <Project Path="Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj" />

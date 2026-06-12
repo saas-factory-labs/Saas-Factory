@@ -4,7 +4,9 @@ namespace DeploymentManager.ApiService.Domain.Interfaces;
 
 public interface IProjectService
 {
-    //  ProjectDTO projectDto
-    Task<ProjectEntity> CreateProjectAsync(ProjectEntity project);
-    // Other operations related to projects
+    Task<ProjectEntity> CreateProjectAsync(ProjectEntity project, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ProjectEntity>> GetAllProjectsAsync(CancellationToken cancellationToken = default);
+    Task<ProjectEntity?> GetProjectByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task UpdateProjectAsync(ProjectEntity project, CancellationToken cancellationToken = default);
+    Task DeleteProjectAsync(int id, CancellationToken cancellationToken = default);
 }

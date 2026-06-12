@@ -1,0 +1,14 @@
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+
+namespace AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
+
+public interface IUserRepository
+{
+    Task<IEnumerable<UserEntity>> GetAllAsync();
+    Task<UserEntity?> GetByIdAsync(string id);
+    Task<UserEntity?> GetByEmailAsync(string? email);
+    Task<UserEntity?> GetByExternalAuthIdAsync(string externalAuthId);
+    Task AddAsync(UserEntity user);
+    void Update(UserEntity user);
+    void Delete(string id);
+}

@@ -1,0 +1,21 @@
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermissionType;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.SharedKernel;
+
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.ResourcePermission;
+
+public class ResourcePermissionEntity : BaseEntity
+{
+    public ResourcePermissionEntity()
+    {
+        Id = PrefixedUlid.Generate("resource_permission");
+        PermissionTypes = [];
+        ResourceId = string.Empty;
+        UserId = string.Empty;
+    }
+
+    public string UserId { get; set; }
+    public required UserEntity User { get; set; }
+    public string ResourceId { get; set; }
+    public ICollection<ResourcePermissionTypeEntity> PermissionTypes { get; set; }
+}

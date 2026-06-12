@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- Basic Project Properties -->
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Compliance</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Compliance services for AppBlueprint: PII detection engine and scanners, GDPR data protection</Description>
+        <PackageTags>infrastructure compliance gdpr pii data-protection scrubbing</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>infrastructure-icon.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Fluent-Regex" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+    </ItemGroup>
+
+</Project>

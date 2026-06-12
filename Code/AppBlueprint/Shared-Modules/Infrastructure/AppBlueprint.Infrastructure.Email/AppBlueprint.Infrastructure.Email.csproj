@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- Basic Project Properties -->
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Email</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Transactional email services (Resend) and Razor email templating for AppBlueprint</Description>
+        <PackageTags>infrastructure email resend razorlight templates</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory/blob/main/Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Email/README.md</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>infrastructure-icon.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Framework reference for HttpClient factory, options and logging -->
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="RazorLight" />
+        <PackageReference Include="Resend" />
+    </ItemGroup>
+
+    <!-- Email Templates as Embedded Resources -->
+    <ItemGroup>
+        <EmbeddedResource Include="Templates\**\*.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+    </ItemGroup>
+
+</Project>

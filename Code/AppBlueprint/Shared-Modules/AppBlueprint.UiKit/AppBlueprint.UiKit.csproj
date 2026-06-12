@@ -33,8 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
-    <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\AppBlueprint.Infrastructure.Persistence\AppBlueprint.Infrastructure.Persistence.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,15 +66,10 @@
     <Message Text="Building Tailwind CSS..." Importance="high" />
 
     <!-- Run npm install if node_modules doesn't exist -->
-    <Exec Command="$(NpmCommand) install"
-          WorkingDirectory="CruipBlazor"
-          Condition="!Exists('CruipBlazor\node_modules')"
-          ContinueOnError="false" />
+    <Exec Command="$(NpmCommand) install" WorkingDirectory="CruipBlazor" Condition="!Exists('CruipBlazor\node_modules')" ContinueOnError="false" />
 
     <!-- Build Tailwind CSS -->
-    <Exec Command="$(NpmCommand) run build:css"
-          WorkingDirectory="CruipBlazor"
-          ContinueOnError="true" />
+    <Exec Command="$(NpmCommand) run build:css" WorkingDirectory="CruipBlazor" ContinueOnError="true" />
   </Target>
 
 </Project>

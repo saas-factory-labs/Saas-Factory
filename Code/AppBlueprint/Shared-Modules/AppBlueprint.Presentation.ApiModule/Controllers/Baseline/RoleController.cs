@@ -1,7 +1,7 @@
 using AppBlueprint.Contracts.Baseline.Role.Requests;
 using AppBlueprint.Contracts.Baseline.Role.Responses;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Role;
-using AppBlueprint.Infrastructure.Repositories.Interfaces;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.Role;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -120,7 +120,7 @@ public class RoleController : BaseController
         };
 
         await _roleRepository.AddAsync(newRole);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _roleRepository.SaveChangesAsync(cancellationToken);
 
         return CreatedAtAction(nameof(Get), new { id = newRole.Id }, newRole);
     }
@@ -159,7 +159,7 @@ public class RoleController : BaseController
         existingRole.Name = request.Name;
 
         _roleRepository.Update(existingRole);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _roleRepository.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
@@ -188,6 +188,9 @@ public class RoleController : BaseController
 
         RoleEntity? existingRole = await _roleRepository.GetByIdAsync(id);
         if (existingRole is null) return NotFound(new { Message = $"Role with ID {id} not found." });
+
+        _roleRepository.Delete(existingRole.Id);
+        await _roleRepository.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }

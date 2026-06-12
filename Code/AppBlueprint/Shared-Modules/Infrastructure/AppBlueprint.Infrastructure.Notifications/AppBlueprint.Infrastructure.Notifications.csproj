@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- Basic Project Properties -->
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- NuGet Package Configuration -->
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.Infrastructure.Notifications</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Notification orchestration and Firebase push notifications for AppBlueprint</Description>
+        <PackageTags>infrastructure notifications firebase push-notifications fcm</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>infrastructure-icon.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Framework reference for DI, configuration and logging abstractions -->
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FirebaseAdmin" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\assets\icons\infrastructure-icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

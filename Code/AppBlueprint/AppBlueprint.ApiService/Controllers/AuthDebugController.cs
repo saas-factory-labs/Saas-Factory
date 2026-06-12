@@ -1,3 +1,6 @@
+// SECURITY (OWASP A05): this diagnostic controller exposes auth state and is compiled only in
+// DEBUG builds. Release/production builds (e.g. Railway) exclude it entirely so it can never be hit.
+#if DEBUG
 using AppBlueprint.Application.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -87,4 +90,5 @@ internal sealed class AuthDebugController(ILogger<AuthDebugController> logger) :
         });
     }
 }
+#endif
 

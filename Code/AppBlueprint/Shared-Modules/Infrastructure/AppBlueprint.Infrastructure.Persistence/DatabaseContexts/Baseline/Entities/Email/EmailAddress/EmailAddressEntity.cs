@@ -1,0 +1,43 @@
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
+using AppBlueprint.SharedKernel;
+using AppBlueprint.SharedKernel.Attributes;
+using AppBlueprint.SharedKernel.Enums;
+
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
+
+public class EmailAddressEntity : BaseEntity, ITenantScoped
+{
+    public EmailAddressEntity()
+    {
+        Id = PrefixedUlid.Generate("email_addr");
+        User = new UserEntity
+        {
+            FirstName = "FirstName",
+            LastName = "LastName",
+            UserName = "UserName",
+            Email = "Email",
+            Profile = new ProfileEntity()
+        };
+        Address = string.Empty;
+        UserId = string.Empty;
+        TenantId = string.Empty;
+    }
+
+    [DataClassification(GDPRType.DirectlyIdentifiable)]
+    public string Address { get; set; }
+
+    public string UserId { get; set; }
+    public UserEntity User { get; set; }
+
+    public string? CustomerId { get; set; }
+    public CustomerEntity? Customer { get; set; }
+
+    public ContactPersonEntity? ContactPerson { get; set; }
+
+    public string TenantId { get; set; }
+    public TenantEntity? Tenant { get; set; }
+}

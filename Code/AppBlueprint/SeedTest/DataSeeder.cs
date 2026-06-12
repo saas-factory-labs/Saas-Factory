@@ -1,30 +1,30 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.Team;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamInvite;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Team.TeamMember;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Address;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.City;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Country;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.CountryRegion;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Region;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Addressing.Street;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Permission;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.Role;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.RolePermission;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Authorization.UserRole;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Billing.Subscription;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.Account;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant;
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.Team;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamInvite;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Team.TeamMember;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Address;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.City;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Country;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.CountryRegion;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Region;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Addressing.Street;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Auditing.AuditLog;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.Permission;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.Role;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.RolePermission;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Authorization.UserRole;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.Subscription;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.Account;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.ContactPerson;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Email.EmailAddress;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Credit;
 using AppBlueprint.Infrastructure.Resources;
 using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Enums;
@@ -1090,7 +1090,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
                 throw new InvalidOperationException("Cannot seed Organizations - Users not found. Ensure SeedUsersAsync is called first.");
             }
 
-            var faker = new Faker<AppBlueprint.Infrastructure.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity>()
+            var faker = new Faker<AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity>()
                 .RuleFor(o => o.Name, f => f.Company.CompanyName())
                 .RuleFor(o => o.Description, f => f.Company.CatchPhrase())
                 .RuleFor(o => o.CreatedAt, f => f.Date.Past(2));

@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.Services.PII;
+using AppBlueprint.Infrastructure.Compliance.PII;
 using AppBlueprint.SharedKernel.Enums;
 using FluentAssertions;
 

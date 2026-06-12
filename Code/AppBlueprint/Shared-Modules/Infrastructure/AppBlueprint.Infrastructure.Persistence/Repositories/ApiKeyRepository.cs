@@ -1,0 +1,53 @@
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities;
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using B2BDbContext = AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.B2BDbContext;
+
+namespace AppBlueprint.Infrastructure.Persistence.Repositories;
+
+public class ApiKeyRepository : IApiKeyRepository
+{
+    private readonly B2BDbContext _context;
+
+    public ApiKeyRepository(B2BDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<ApiKeyEntity>> GetAllAsync()
+    {
+        return await _context.ApiKeys.ToListAsync();
+    }
+
+    public async Task<ApiKeyEntity?> GetByIdAsync(string id)
+    {
+        return await _context.ApiKeys.FindAsync(id);
+    }
+
+    public async Task<ApiKeyEntity?> GetByKeyHashAsync(string keyHash)
+    {
+        ArgumentNullException.ThrowIfNull(keyHash);
+        return await _context.ApiKeys
+            .FirstOrDefaultAsync(k => k.KeyHash == keyHash && !k.IsRevoked);
+    }
+
+    public async Task AddAsync(ApiKeyEntity apiKey)
+    {
+        await _context.ApiKeys.AddAsync(apiKey);
+    }
+    public void Update(ApiKeyEntity apiKey)
+    {
+        _context.ApiKeys.Update(apiKey);
+    }
+
+    public void Delete(string id)
+    {
+        ApiKeyEntity? apiKey = _context.ApiKeys.Find(id);
+        if (apiKey is not null) _context.ApiKeys.Remove(apiKey);
+    }
+
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
+}

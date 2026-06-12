@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Admin;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Admin;
 
 namespace AppBlueprint.Presentation.ApiModule.Repositories;
 

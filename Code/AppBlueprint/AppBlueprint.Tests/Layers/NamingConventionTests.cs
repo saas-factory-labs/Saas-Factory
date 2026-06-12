@@ -1,8 +1,4 @@
 using System.Reflection;
-using AppBlueprint.Application.Services;
-using AppBlueprint.Domain.Entities.User;
-using AppBlueprint.Infrastructure.Repositories;
-using AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 using FluentAssertions;
 using NetArchTest.Rules;
 
@@ -13,10 +9,9 @@ namespace AppBlueprint.Tests.Layers;
 /// </summary>
 internal sealed class NamingConventionTests
 {
-    private static readonly Assembly DomainAssembly = typeof(UserEntity).Assembly;
-    private static readonly Assembly ApplicationAssembly = typeof(SignupService).Assembly;
-    private static readonly Assembly InfrastructureAssembly = typeof(UserRepository).Assembly;
-    private static readonly Assembly PresentationAssembly = typeof(AuthenticationController).Assembly;
+    private static readonly Assembly DomainAssembly = ArchitectureAssemblies.Domain;
+    private static readonly Assembly ApplicationAssembly = ArchitectureAssemblies.Application;
+    private static readonly Assembly PresentationAssembly = ArchitectureAssemblies.Presentation;
 
     // -------------------------------------------------------------------------
     // Interfaces
@@ -53,7 +48,7 @@ internal sealed class NamingConventionTests
     [Test]
     public void Interfaces_InInfrastructureAssembly_ShouldStartWithI()
     {
-        var result = Types.InAssembly(InfrastructureAssembly)
+        var result = Types.InAssemblies(ArchitectureAssemblies.Infrastructure)
             .That()
             .AreInterfaces()
             .Should()
@@ -85,7 +80,7 @@ internal sealed class NamingConventionTests
     [Test]
     public void Classes_InRepositoriesNamespace_ShouldEndWithRepository()
     {
-        var result = Types.InAssembly(InfrastructureAssembly)
+        var result = Types.InAssemblies(ArchitectureAssemblies.Infrastructure)
             .That()
             .ResideInNamespaceContaining("Repositories")
             .And()
@@ -199,7 +194,7 @@ internal sealed class NamingConventionTests
     [Test]
     public void Classes_InInfrastructureEntitiesNamespace_ShouldEndWithEntity()
     {
-        var result = Types.InAssembly(InfrastructureAssembly)
+        var result = Types.InAssemblies(ArchitectureAssemblies.Infrastructure)
             .That()
             .ResideInNamespaceContaining("Entities")
             .And()
@@ -223,7 +218,7 @@ internal sealed class NamingConventionTests
     [Test]
     public void EntityConfigurations_ShouldEndWithEntityConfiguration()
     {
-        var result = Types.InAssembly(InfrastructureAssembly)
+        var result = Types.InAssemblies(ArchitectureAssemblies.Infrastructure)
             .That()
             .ImplementInterface(typeof(Microsoft.EntityFrameworkCore.IEntityTypeConfiguration<>))
             .Should()

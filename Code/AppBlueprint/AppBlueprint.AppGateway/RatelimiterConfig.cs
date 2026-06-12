@@ -12,9 +12,12 @@ internal static class RateLimiterConfig
         // Set a global rate limiter based on Fixed Window Rate Limiting.
         options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
         {
-            // Partition by Host header.
+            // SECURITY: partition by client IP, not the Host header. The Host header is fully
+            // client-controlled, so partitioning on it lets an attacker reset their quota at will.
+            string partitionKey = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
             return RateLimitPartition.GetFixedWindowLimiter(
-                httpContext.Request.Headers.Host.ToString(),
+                partitionKey,
                 partition => new FixedWindowRateLimiterOptions
                 {
                     PermitLimit = 5, // Maximum 5 requests allowed.

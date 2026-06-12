@@ -1,7 +1,10 @@
 using AppBlueprint.Api.Client.Sdk;
 using AppBlueprint.Application.Extensions;
 using AppBlueprint.Infrastructure.Authentication;
+using AppBlueprint.Infrastructure.Authentication.Extensions;
+using AppBlueprint.Infrastructure.Email.Extensions;
 using AppBlueprint.Infrastructure.Extensions;
+using AppBlueprint.Infrastructure.Realtime.Extensions;
 using AppBlueprint.ServiceDefaults;
 using AppBlueprint.UiKit;
 using AppBlueprint.UiKit.Models;
@@ -176,7 +179,7 @@ builder.Services.AddWebAuthentication(builder.Configuration, builder.Environment
 // This provider works with ASP.NET Core's cookie-based authentication (Logto SDK)
 // and optionally uses JWT tokens from storage for API calls
 builder.Services.AddScoped<IAuthenticationProvider,
-    AppBlueprint.Infrastructure.Authorization.AspNetCoreKiotaAuthenticationProvider>();
+    AppBlueprint.Infrastructure.Authentication.Authorization.AspNetCoreKiotaAuthenticationProvider>();
 
 // Get API base URL from environment variable or configuration
 // Priority: Environment variable > Configuration > Default localhost
@@ -204,9 +207,9 @@ builder.Services.AddAppBlueprintSignalR();
 builder.Services.AddScoped<AppBlueprint.UiKit.Services.IMenuConfigurationService, AppBlueprint.Web.Services.MenuConfigurationService>();
 
 // Register search services backed by the API service via the Kiota HTTP client
-builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity>,
+builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant.TenantEntity>,
     AppBlueprint.Web.Services.HttpTenantSearchService>();
-builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.DatabaseContexts.Baseline.Entities.User.UserEntity>,
+builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.UserEntity>,
     AppBlueprint.Web.Services.HttpUserSearchService>();
 
 // Add TodoService with HttpClient configured for direct API access
@@ -387,8 +390,8 @@ app.MapAuthenticationEndpoints(builder.Configuration);
 // Map SignalR hubs - authentication validated in hub's OnConnectedAsync
 // Note: Do NOT use .RequireAuthorization() here as it causes OIDC redirect (302)
 // instead of allowing cookie auth to flow through. Hub validates auth manually.
-app.MapHub<AppBlueprint.Infrastructure.SignalR.DemoChatHub>("/hubs/demochat").AllowAnonymous();
-app.MapHub<AppBlueprint.Infrastructure.SignalR.NotificationHub>("/hubs/notifications").AllowAnonymous();
+app.MapHub<AppBlueprint.Infrastructure.Realtime.SignalR.DemoChatHub>("/hubs/demochat").AllowAnonymous();
+app.MapHub<AppBlueprint.Infrastructure.Realtime.SignalR.NotificationHub>("/hubs/notifications").AllowAnonymous();
 Console.WriteLine("[Web] SignalR hub mapped: /hubs/demochat (auth validated in hub)");
 Console.WriteLine("[Web] SignalR hub mapped: /hubs/notifications (auth validated in hub)");
 

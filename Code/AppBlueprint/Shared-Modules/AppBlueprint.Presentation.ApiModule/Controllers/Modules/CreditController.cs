@@ -1,6 +1,6 @@
-// using AppBlueprint.Infrastructure.DatabaseContexts.Modules.Credit;
-// using AppBlueprint.Infrastructure.Repositories.Interfaces;
-// using AppBlueprint.Infrastructure.UnitOfWork;
+// using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Credit;
+// using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
+// using AppBlueprint.Infrastructure.Persistence.UnitOfWork;
 // using Microsoft.AspNetCore.Authorization;
 // using Microsoft.AspNetCore.Http;
 // using Microsoft.AspNetCore.Mvc;

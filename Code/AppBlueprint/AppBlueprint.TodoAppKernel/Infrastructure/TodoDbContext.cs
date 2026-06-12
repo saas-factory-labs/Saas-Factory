@@ -1,4 +1,4 @@
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B;
 using AppBlueprint.TodoAppKernel.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

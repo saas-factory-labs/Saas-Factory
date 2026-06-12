@@ -1,0 +1,21 @@
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.PaymentProvider;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Billing.Subscription;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Modules.Credit;
+using Microsoft.EntityFrameworkCore;
+
+namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
+
+public partial class BaselineDbContext
+{
+    public DbSet<CreditEntity> Credits { get; set; }
+    public DbSet<SubscriptionEntity> Subscriptions { get; set; }
+    public DbSet<PaymentProviderEntity> PaymentProviders { get; set; }
+
+    // Implementation of the partial method declared in the main class
+    partial void OnModelCreating_Payment(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new CreditEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new SubscriptionEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new PaymentProviderEntityConfiguration());
+    }
+}

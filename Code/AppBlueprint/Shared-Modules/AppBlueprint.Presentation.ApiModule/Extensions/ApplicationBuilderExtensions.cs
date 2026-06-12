@@ -179,7 +179,7 @@ public static class ApplicationBuilderExtensions
         ArgumentNullException.ThrowIfNull(app);
 
         // Apply AppBlueprint's own context migrations (ApplicationDbContext, B2BDbContext, BaselineDbContext)
-        await AppBlueprint.Infrastructure.MigrationExtensions.ApplyMigrationsAsync(app);
+        await AppBlueprint.Infrastructure.Persistence.MigrationExtensions.ApplyMigrationsAsync(app);
 
         // Apply the consuming app's DbContext migrations
         using (IServiceScope scope = app.Services.CreateScope())
@@ -207,7 +207,7 @@ public static class ApplicationBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        await AppBlueprint.Infrastructure.MigrationExtensions.ApplyMigrationsAsync(app);
+        await AppBlueprint.Infrastructure.Persistence.MigrationExtensions.ApplyMigrationsAsync(app);
         app.ConfigureAppBlueprintMiddleware();
 
         return app;

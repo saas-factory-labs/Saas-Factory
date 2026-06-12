@@ -1,5 +1,5 @@
-using AppBlueprint.Infrastructure.DatabaseContexts;
-using AppBlueprint.Infrastructure.DatabaseContexts.B2B;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B;
 using AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
