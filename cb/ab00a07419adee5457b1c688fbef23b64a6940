@@ -1,0 +1,180 @@
+Code/AppBlueprint/AppBlueprint.Web/tsconfig.json
+  s_8e273c821d9f83::t_8a2d63d1f86d49 3
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Middleware/TenantMiddleware.cs
+  s_580f421e46587c::t_b9e58b80bb446c 108,112,117
+  s_580f421e46587c::t_f91b56a682e434 86-90
+  s_580f421e46587c::t_996ab563e8e459 13
+Code/AppBlueprint/AppBlueprint.ApiService/Program.cs
+  s_580f421e46587c::t_650850ba079cd2 1
+  s_580f421e46587c::t_e12ba32e46df40 91-111
+  s_580f421e46587c::t_a4a1ae6898ff8b 135-137
+Code/AppBlueprint/AppBlueprint.Web/Controllers/FirebaseAuthController.cs
+  s_580f421e46587c::t_25c2f79eebe453 72-73
+  s_580f421e46587c::t_1c3f0453086412 50-51
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/Authorization/MinimumAgeHandler.cs
+  s_580f421e46587c::t_00b3a30f6bfdca 18,24-35
+Code/AppBlueprint/AppBlueprint.ApiService/Controllers/AuthDebugController.cs
+  s_580f421e46587c::t_9ba515eb376264 1-3
+  s_580f421e46587c::t_e6400f373bcdf3 93
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Repositories/Interfaces/IApiKeyRepository.cs
+  s_580f421e46587c::t_b1f2009949628d 14
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/AccountController.cs
+  s_580f421e46587c::t_d141edcb7f04d1 163,166,169-181
+  s_580f421e46587c::t_66bf891ef39bcd 1-2,5-6,146,228
+  s_580f421e46587c::t_e764f24d9e116a 200-204,209-227
+  s_580f421e46587c::t_583a57d73cac82 115,117,119,122-138,141-145,147
+  s_580f421e46587c::t_bf4c66fa49f5f8 3
+Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj
+  s_580f421e46587c::t_7adcedfe3e69e7 44-47
+  s_580f421e46587c::t_a212f9f8a8a207 54
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/ApiKeyHasher.cs
+  s_580f421e46587c::t_a62aedfa717ca0 1-44
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/tsconfig.json
+  s_8e273c821d9f83::t_f106d97fd65c6b 3
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Webhooks/StripeWebhookController.cs
+  s_580f421e46587c::t_ad954a3dfd9557 2
+  s_580f421e46587c::t_eacc163d0c97f7 138,141
+  s_580f421e46587c::t_8306eeb5160cb2 125,128
+  s_580f421e46587c::t_e7e10b80393579 43
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/ApiKeyAuthenticationFilter.cs
+  s_580f421e46587c::t_8f2e35caad7e2b 2,10-13,29,33,37-38,42,46-48,50,55-60
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/WebhookController.cs
+  s_580f421e46587c::t_b242897390ebaf 73-77
+  s_580f421e46587c::t_60fe71df1651f7 106-108
+  s_580f421e46587c::t_ef854c942bb073 2
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Repositories/Interfaces/IRoleRepository.cs
+  s_580f421e46587c::t_44f098fde3e270 12
+Code/AppBlueprint/AppBlueprint.Web/Controllers/FirebaseConfigController.cs
+  s_580f421e46587c::t_569902cbcebcfa 9-15
+Code/AppBlueprint/AppBlueprint.ApiService/AddHeaderOperationFilter.cs
+  s_8e273c821d9f83::t_6dbe84a1007e16 1,10-13,23
+Code/DeploymentManager/DeploymentManager.CloudInfrastructure/Pulumi/Program.cs
+  s_8e273c821d9f83::t_d0d296fc0fdda9 15
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/ApiKeyAuthenticationHandler.cs
+  s_580f421e46587c::t_1f185995df8e33 46
+Code/AppBlueprint/AppBlueprint.Tests/Infrastructure/MinimumAgeHandlerTests.cs
+  s_580f421e46587c::t_1c398366917c20 1-54
+Code/AppBlueprint/AppBlueprint.ApiService/Controllers/AuthTestController.cs
+  s_580f421e46587c::t_6dd596d16bc9f4 1-3
+  s_580f421e46587c::t_8b536b3602aa72 184
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/B2B/ApiKeyController.cs
+  s_580f421e46587c::t_c6fbc0c9db1120 179
+  s_580f421e46587c::t_cc82d7b88c8da8 158
+  s_580f421e46587c::t_206d7f6b87d321 100-104,108-111,113,125-132,134
+  s_580f421e46587c::t_b202654c3c4d57 4
+Code/AppBlueprint/AppBlueprint.Tests/Application/WebhookUrlValidatorTests.cs
+  s_580f421e46587c::t_37cf4040d7db3c 1-74
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Validations/WebhookUrlValidator.cs
+  s_580f421e46587c::t_7337bd98166d10 1-124
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Payments/Webhooks/StripeWebhookService.cs
+  s_580f421e46587c::t_37b505ab763682 243-244,247-248,251-252
+Code/AppBlueprint/AppBlueprint.Tests/Infrastructure/ApiKeyHasherTests.cs
+  s_580f421e46587c::t_b64153fc83622d 1-76
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/Search/Requests/SearchRequest.cs
+  s_580f421e46587c::t_43bf7f121a65a0 1-2,7-8,11,14,17,20,23-24
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/TypeScript/tsconfig.json
+  s_8e273c821d9f83::t_4ec9c859da7f17 3
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/B2B/TenantController.cs
+  s_580f421e46587c::t_399afa19edd6be 56,58-68,82-90
+  s_580f421e46587c::t_eaa612365e9ac6 214-215
+  s_580f421e46587c::t_fd6078f4d4b8b9 247
+  s_580f421e46587c::t_1ad0978002399c 9,57,91
+  s_580f421e46587c::t_919c12f63441ae 112-113
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/JwtAuthenticationExtensions.cs
+  s_580f421e46587c::t_caae1543a78e2c 232
+  s_580f421e46587c::t_5e28909f1b8685 186-196,207-208,220-221
+  s_580f421e46587c::t_ecfd7164bbd61e 95-97,100-101
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/OpenApi/SchemaFilter.cs
+  s_8e273c821d9f83::t_232acea01565c2 1,8,14-19
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/RoleController.cs
+  s_580f421e46587c::t_5b202985eb840f 162
+  s_580f421e46587c::t_af2bfa4f78c13d 192-194
+  s_580f421e46587c::t_cf2aeeeb789874 123
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Repositories/ApiKeyRepository.cs
+  s_580f421e46587c::t_299b414e0e2d18 48-52
+Code/AppBlueprint/AppBlueprint.Tests/Blazor/SearchHighlighterTests.cs
+  s_580f421e46587c::t_bc53d3b2a2d5e0 15-17
+  s_580f421e46587c::t_eae7321344175b 1-14,18-19,21-61
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/GlobalSearch.razor
+  s_580f421e46587c::t_02b0a583544f69 296
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Repositories/TeamRepository.cs
+  s_580f421e46587c::t_7713497a5b4f47 41-45
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/OpenApi/OpenApiVersionFilter.cs
+  s_8e273c821d9f83::t_6414702cda3655 1,13-15,17,20-21,27
+Code/AppBlueprint/AppBlueprint.AppGateway/RatelimiterConfig.cs
+  s_580f421e46587c::t_3f32f5a69326d3 15-18,20
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/FileStorageController.cs
+  s_580f421e46587c::t_ddebab22cc1520 80
+  s_580f421e46587c::t_f338836cf8935e 73,78
+  s_580f421e46587c::t_43a8fc866977dc 1
+  s_580f421e46587c::t_8fa9dea10d5de3 269-271
+  s_580f421e46587c::t_edfb8b0f119d46 349-359
+  s_580f421e46587c::t_67a9b851341097 24-26
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/User/Requests/CreateUserRequest.cs
+  s_580f421e46587c::t_4765310b534a51 8,12,16,21,25,31
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/B2B/TeamController.cs
+  s_580f421e46587c::t_411df6a8434b58 59-65
+  s_580f421e46587c::t_b770293ce31a79 249-250,253,257-263
+  s_580f421e46587c::t_e393ff1e7f6871 164-166,170-171,175
+  s_580f421e46587c::t_97c9d94f746fa4 115-117
+  s_580f421e46587c::t_0bc1efe01945db 215-216,224
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/R2FileStorageService.cs
+  s_580f421e46587c::t_3ef83b335834d2 458,460,462,468-491
+Code/AppBlueprint/AppBlueprint.Tests/Infrastructure/FileValidationServiceTests.cs
+  s_580f421e46587c::t_f96c037152b0a7 1-34
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/FileValidationService.cs
+  s_580f421e46587c::t_997355e24143c9 130-136
+  s_580f421e46587c::t_4e1a07e8c24d33 56-89
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Middleware/GlobalExceptionHandler.cs
+  s_580f421e46587c::t_e3bc96a3f13e63 66-68,71
+  s_580f421e46587c::t_20dd5707b136ca 49-50,53
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/GlobalSearchComponents/SearchHighlighter.cs
+  s_580f421e46587c::t_0804fa0a0bed01 1-41
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Repositories/RoleRepository.cs
+  s_580f421e46587c::t_573d50d3514ed7 41-45
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Repositories/Interfaces/ITeamRepository.cs
+  s_580f421e46587c::t_4da51a500cb6a7 12
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/Baseline/UserController.cs
+  s_580f421e46587c::t_ec0f4c4d6db4db 269-279
+  s_580f421e46587c::t_de5769a3b7770b 143
+  s_580f421e46587c::t_3cdd1eb64f65a9 307-309
+  s_580f421e46587c::t_c8da56e4ad3d9c 252-254
+  s_580f421e46587c::t_b26aa109ee039a 179,268
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers/B2B/DemoController.cs
+  s_580f421e46587c::t_51a254bff419e7 2,7
+Code/AppBlueprint/Directory.Packages.props
+  s_580f421e46587c::t_d027abded5be13 114-116
+  s_580f421e46587c::t_fdccac9d590da7 117-118
+Code/AppBlueprint/AppBlueprint.AppHost/AppBlueprint.AppHost.csproj
+  s_8e273c821d9f83::t_dba1807eb32179 1
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Shared/InboxComponents/MailMessageItem.razor
+  s_580f421e46587c::t_956f23581cfcf7 17-20
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/Baseline/File/Requests/FileStorageRequests.cs
+  s_580f421e46587c::t_c97b4d1d728fcf 46-47,52,54
+  s_580f421e46587c::t_a93bfc5dca0005 1-2
+  s_580f421e46587c::t_4e3c76c3a0419b 66,72,78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "cbab00a07419adee5457b1c688fbef23b64a6940",
+  "prompts": {},
+  "sessions": {
+    "s_580f421e46587c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bd8282f4-8215-4e08-9892-c462fd859d2e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_8e273c821d9f83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e5900fab-2444-4dff-8e7f-95a994142152",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
