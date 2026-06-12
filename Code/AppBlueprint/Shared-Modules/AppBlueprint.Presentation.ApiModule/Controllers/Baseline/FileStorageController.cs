@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Application.Services;
 using AppBlueprint.Contracts.Baseline.File.Requests;
@@ -20,6 +21,9 @@ namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 [Produces("application/json")]
 public sealed class FileStorageController : BaseController
 {
+    private const int MaxBulkDeleteKeys = 100;
+    private const long MaxUploadSizeBytes = 50 * 1024 * 1024; // 50 MB
+
     private readonly IFileStorageService _fileStorageService;
     private readonly IFileValidationService _fileValidationService;
     private readonly ILogger<FileStorageController> _logger;
@@ -66,13 +70,14 @@ public sealed class FileStorageController : BaseController
     /// <response code="401">User is not authenticated.</response>
     [HttpPost("upload")]
     [RequireScope("write:files")]
+    [RequestSizeLimit(MaxUploadSizeBytes)]
     [ProducesResponseType(typeof(FileStorageResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<FileStorageResponse>> UploadFile(
         IFormFile file,
-        [FromForm] string? folder = null,
+        [FromForm][StringLength(256)] string? folder = null,
         [FromForm] bool isPublic = false,
-        [FromForm] string? customMetadata = null,
+        [FromForm][StringLength(4096)] string? customMetadata = null,
         CancellationToken cancellationToken = default)
     {
         // Guard clause: File validation
@@ -261,9 +266,9 @@ public sealed class FileStorageController : BaseController
     [HttpGet("list")]
     [ProducesResponseType(typeof(IEnumerable<FileStorageResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<FileStorageResponse>>> ListFiles(
-        [FromQuery] string? folder = null,
-        [FromQuery] string? fileNamePrefix = null,
-        [FromQuery] int? maxResults = null,
+        [FromQuery][StringLength(256)] string? folder = null,
+        [FromQuery][StringLength(256)] string? fileNamePrefix = null,
+        [FromQuery][Range(1, 1000)] int? maxResults = null,
         CancellationToken cancellationToken = default)
     {
         var query = new FileListQuery(folder, fileNamePrefix, maxResults);
@@ -339,6 +344,17 @@ public sealed class FileStorageController : BaseController
         if (fileKeys is null || fileKeys.Count == 0)
         {
             return BadRequest(new { Message = "No file keys provided" });
+        }
+
+        // Bound the batch size to prevent resource-exhaustion via oversized delete requests
+        if (fileKeys.Count > MaxBulkDeleteKeys)
+        {
+            return BadRequest(new { Message = $"A maximum of {MaxBulkDeleteKeys} file keys can be deleted per request" });
+        }
+
+        if (fileKeys.Any(string.IsNullOrWhiteSpace))
+        {
+            return BadRequest(new { Message = "File keys must not be empty" });
         }
 
         try

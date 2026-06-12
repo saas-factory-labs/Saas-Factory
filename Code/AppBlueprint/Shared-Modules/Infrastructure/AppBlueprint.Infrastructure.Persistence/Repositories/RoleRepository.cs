@@ -38,4 +38,9 @@ public class RoleRepository : IRoleRepository
         RoleEntity? role = _context.Roles.Find(id);
         if (role is not null) _context.Roles.Remove(role);
     }
+
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
 }

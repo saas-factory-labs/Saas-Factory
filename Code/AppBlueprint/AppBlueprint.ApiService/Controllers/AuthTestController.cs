@@ -1,3 +1,6 @@
+// SECURITY (OWASP A05): this controller can echo JWT tokens/claims and is compiled only in DEBUG
+// builds. Release/production builds exclude it entirely so tokens can never be exposed this way.
+#if DEBUG
 using System.Security.Claims;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
@@ -178,3 +181,4 @@ internal sealed class AuthTestController(ILogger<AuthTestController> logger) : C
         });
     }
 }
+#endif

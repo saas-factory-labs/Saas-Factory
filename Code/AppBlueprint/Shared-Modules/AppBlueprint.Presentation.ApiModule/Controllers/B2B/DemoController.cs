@@ -1,9 +1,10 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 
-// [Authorize (Roles = Roles)]
+[Authorize]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/demo")]

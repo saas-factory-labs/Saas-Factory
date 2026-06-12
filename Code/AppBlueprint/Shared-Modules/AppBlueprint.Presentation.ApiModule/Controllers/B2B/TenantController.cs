@@ -6,6 +6,7 @@ using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ApplicationRoles = AppBlueprint.Application.Constants.Roles;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.B2B;
 
@@ -52,7 +53,19 @@ public class TenantController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult<IEnumerable<TenantResponse>>> GetTenants(CancellationToken cancellationToken)
     {
-        IEnumerable<TenantEntity> tenants = await _tenantRepository.GetAllAsync(); if (!tenants.Any()) return NotFound(new { Message = "No tenants found." });
+        IEnumerable<TenantEntity> tenants = await _tenantRepository.GetAllAsync();
+
+        // SECURITY (OWASP A01/BOLA): TenantEntity is not ITenantScoped, so the global tenant
+        // query filter does NOT apply here. Platform admins may list all tenants; everyone else
+        // is restricted to their own tenant context.
+        if (!IsPlatformAdmin())
+        {
+            string? callerTenantId = GetCallerTenantId();
+            if (string.IsNullOrEmpty(callerTenantId)) return Forbid();
+            tenants = tenants.Where(t => t.Id == callerTenantId);
+        }
+
+        if (!tenants.Any()) return NotFound(new { Message = "No tenants found." });
 
         IEnumerable<TenantResponse> response = tenants.Select(tenant => new TenantResponse
         {
@@ -65,6 +78,16 @@ public class TenantController : BaseController
 
         return Ok(response);
     }
+
+    /// <summary>Returns true when the caller holds the platform-wide admin role.</summary>
+    private bool IsPlatformAdmin() => User.IsInRole(ApplicationRoles.DeploymentManagerAdmin);
+
+    /// <summary>The tenant id resolved for the current request by TenantMiddleware.</summary>
+    private string? GetCallerTenantId() => HttpContext.Items["TenantId"]?.ToString();
+
+    /// <summary>True when the caller is a platform admin or the tenant id matches their own tenant.</summary>
+    private bool CanAccessTenant(string tenantId)
+        => IsPlatformAdmin() || string.Equals(GetCallerTenantId(), tenantId, StringComparison.Ordinal);
 
     /// <summary>
     ///     Retrieves a specific tenant by its unique identifier.
@@ -86,6 +109,8 @@ public class TenantController : BaseController
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult<TenantResponse>> GetTenant(string id, CancellationToken cancellationToken)
     {
+        if (!CanAccessTenant(id)) return Forbid();
+
         TenantEntity? tenant = await _tenantRepository.GetByIdAsync(id);
         if (tenant is null) return NotFound(new { Message = $"Tenant with ID {id} not found." });
 
@@ -123,6 +148,7 @@ public class TenantController : BaseController
     /// <response code="400">Invalid request data or validation failed.</response>
     /// <response code="401">User is not authenticated.</response>
     [HttpPost(ApiEndpoints.Tenants.Create)]
+    [Authorize(Roles = ApplicationRoles.DeploymentManagerAdmin)]
     [ProducesResponseType(typeof(TenantResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [MapToApiVersion(ApiVersions.V1)]
@@ -185,6 +211,8 @@ public class TenantController : BaseController
     {
         ArgumentNullException.ThrowIfNull(tenantDto);
 
+        if (!CanAccessTenant(id)) return Forbid();
+
         TenantEntity? existingTenant = await _tenantRepository.GetByIdAsync(id);
         if (existingTenant is null) return NotFound(new { Message = $"Tenant with ID {id} not found." });
 
@@ -216,6 +244,7 @@ public class TenantController : BaseController
     /// <response code="404">Tenant with the specified ID was not found.</response>
     /// <response code="401">User is not authenticated.</response>
     [HttpDelete(ApiEndpoints.Tenants.DeleteById)]
+    [Authorize(Roles = ApplicationRoles.DeploymentManagerAdmin)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [MapToApiVersion(ApiVersions.V1)]

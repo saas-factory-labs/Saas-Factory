@@ -56,6 +56,13 @@ public class TeamController : BaseController
         {
             IEnumerable<TeamEntity> teams = await _teamRepository.GetAllAsync();
 
+            // SECURITY (OWASP A01/BOLA): TeamRepository uses B2BDbContext, which does NOT apply the
+            // global tenant query filter (that filter lives on ApplicationDbContext). Scope results
+            // to the caller's tenant explicitly so teams never leak across tenants.
+            string? callerTenantId = GetCallerTenantId();
+            if (string.IsNullOrEmpty(callerTenantId)) return Forbid();
+            teams = teams.Where(t => t.TenantId == callerTenantId);
+
             // Return empty list instead of 404 - more RESTful
             if (!teams.Any())
             {
@@ -105,7 +112,9 @@ public class TeamController : BaseController
     public async Task<ActionResult<TeamResponse>> GetTeam(string id, CancellationToken cancellationToken)
     {
         TeamEntity? team = await _teamRepository.GetByIdAsync(id);
-        if (team is null) return NotFound(new { Message = $"Team with ID {id} not found." });
+        // Treat cross-tenant access as not-found to avoid leaking team existence (anti-IDOR).
+        if (team is null || !IsCallerTenant(team.TenantId))
+            return NotFound(new { Message = $"Team with ID {id} not found." });
 
         var response = new TeamResponse(team.TeamMembers?.Select(m => new TeamMemberResponse
         {
@@ -152,14 +161,18 @@ public class TeamController : BaseController
 
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
+        string? callerTenantId = GetCallerTenantId();
+        if (string.IsNullOrEmpty(callerTenantId)) return Forbid();
+
         var newTeam = new TeamEntity
         {
             Name = teamDto.Name,
-            Description = teamDto.Description
+            Description = teamDto.Description,
+            TenantId = callerTenantId
         };
 
         await _teamRepository.AddAsync(newTeam);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _teamRepository.SaveChangesAsync(cancellationToken);
 
         return CreatedAtAction(nameof(GetTeam), new { id = newTeam.Id }, new TeamResponse([])
         {
@@ -199,7 +212,8 @@ public class TeamController : BaseController
         ArgumentNullException.ThrowIfNull(teamDto);
 
         TeamEntity? existingTeam = await _teamRepository.GetByIdAsync(id);
-        if (existingTeam is null) return NotFound(new { Message = $"Team with ID {id} not found." });
+        if (existingTeam is null || !IsCallerTenant(existingTeam.TenantId))
+            return NotFound(new { Message = $"Team with ID {id} not found." });
 
         if (teamDto.Name != null)
             existingTeam.Name = teamDto.Name;
@@ -207,7 +221,7 @@ public class TeamController : BaseController
             existingTeam.Description = teamDto.Description;
 
         _teamRepository.Update(existingTeam);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _teamRepository.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
@@ -232,10 +246,19 @@ public class TeamController : BaseController
     public async Task<ActionResult> DeleteTeam(string id, CancellationToken cancellationToken)
     {
         TeamEntity? existingTeam = await _teamRepository.GetByIdAsync(id);
-        if (existingTeam is null) return NotFound(new { Message = $"Team with ID {id} not found." });
+        if (existingTeam is null || !IsCallerTenant(existingTeam.TenantId))
+            return NotFound(new { Message = $"Team with ID {id} not found." });
 
         _teamRepository.Delete(existingTeam.Id);
+        await _teamRepository.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
+
+    /// <summary>The tenant id resolved for the current request by TenantMiddleware.</summary>
+    private string? GetCallerTenantId() => HttpContext.Items["TenantId"]?.ToString();
+
+    /// <summary>True when <paramref name="tenantId"/> matches the caller's tenant.</summary>
+    private bool IsCallerTenant(string tenantId)
+        => string.Equals(GetCallerTenantId(), tenantId, StringComparison.Ordinal);
 }

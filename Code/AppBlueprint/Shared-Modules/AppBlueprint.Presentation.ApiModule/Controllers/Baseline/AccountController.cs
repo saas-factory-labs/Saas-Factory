@@ -1,4 +1,9 @@
+using System.Security.Claims;
+using AppBlueprint.Contracts.Baseline.Account.Requests;
+using AppBlueprint.Contracts.Baseline.Account.Responses;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.Account;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
+using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
 using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
@@ -107,17 +112,39 @@ public class AccountController : BaseController
     /// <returns>Created account.</returns>
     /// POST: /account
     [HttpPost(ApiEndpoints.Accounts.Create)]
-    [ProducesResponseType(typeof(AccountEntity), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> CreateAccount([FromBody] AccountEntity account, CancellationToken cancellationToken)
+    public async Task<ActionResult> CreateAccount([FromBody] CreateAccountRequest request, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(account);
+        ArgumentNullException.ThrowIfNull(request);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _accountRepository.AddAsync(account, cancellationToken);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        // SECURITY (OWASP A03/mass assignment): bind to a DTO, never the EF entity. Tenant and
+        // owner identity are taken from the authenticated principal, not from the request body.
+        string? callerTenantId = GetCallerTenantId();
+        string callerUserId = User.FindFirst("sub")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+        if (string.IsNullOrEmpty(callerTenantId) || string.IsNullOrEmpty(callerUserId)) return Forbid();
 
-        return CreatedAtAction(nameof(GetAccountByIdV1), new { id = account.Id }, account);
+        var account = new AccountEntity
+        {
+            Name = request.Name,
+            Email = request.Email,
+            CustomerType = request.CustomerType,
+            IsActive = true,
+            TenantId = callerTenantId,
+            UserId = callerUserId,
+            Owner = BuildOwnerFromClaims(callerUserId)
+        };
+
+        await _accountRepository.AddAsync(account, cancellationToken);
+
+        var response = new AccountResponse
+        {
+            Id = account.Id,
+            Email = account.Email
+        };
+
+        return CreatedAtAction(nameof(GetAccountByIdV1), new { idOrSlug = account.Id }, response);
     }
 
     /// <summary>
@@ -133,13 +160,25 @@ public class AccountController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> UpdateAccount(string id, [FromBody] AccountEntity account,
+    public async Task<ActionResult> UpdateAccount(string id, [FromBody] UpdateAccountRequest request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _accountRepository.UpdateAsync(account, cancellationToken);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        AccountEntity existingAccount = await _accountRepository.GetByIdAsync(id, cancellationToken);
+
+        // SECURITY (OWASP A01/anti-IDOR): only allow updates within the caller's own tenant.
+        // The repository returns a sentinel "not-found" account rather than null.
+        if (existingAccount.TenantId == "not-found" || !IsCallerTenant(existingAccount.TenantId))
+            return NotFound(new { Message = $"Account with ID {id} not found." });
+
+        // SECURITY (OWASP A03/mass assignment): only mutate the fields the DTO exposes.
+        existingAccount.Name = request.Name;
+        existingAccount.Email = request.Email;
+        existingAccount.CustomerType = request.CustomerType;
+
+        await _accountRepository.UpdateAsync(existingAccount, cancellationToken);
 
         return NoContent();
     }
@@ -158,9 +197,33 @@ public class AccountController : BaseController
     public async Task<ActionResult> DeleteAccount(string id, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        AccountEntity existingAccount = await _accountRepository.GetByIdAsync(id, cancellationToken);
+        if (existingAccount.TenantId == "not-found" || !IsCallerTenant(existingAccount.TenantId))
+            return NotFound(new { Message = $"Account with ID {id} not found." });
+
         await _accountRepository.DeleteAsync(id, cancellationToken);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
 
         return NoContent();
+    }
+
+    /// <summary>The tenant id resolved for the current request by TenantMiddleware.</summary>
+    private string? GetCallerTenantId() => HttpContext.Items["TenantId"]?.ToString();
+
+    /// <summary>True when <paramref name="tenantId"/> matches the caller's tenant.</summary>
+    private bool IsCallerTenant(string tenantId)
+        => string.Equals(GetCallerTenantId(), tenantId, StringComparison.Ordinal);
+
+    /// <summary>Builds a minimal owner entity from the authenticated principal's claims.</summary>
+    private UserEntity BuildOwnerFromClaims(string userId)
+    {
+        return new UserEntity
+        {
+            Email = User.FindFirst("email")?.Value ?? "unknown@example.com",
+            FirstName = User.FindFirst("given_name")?.Value ?? "Unknown",
+            LastName = User.FindFirst("family_name")?.Value ?? "User",
+            UserName = User.Identity?.Name ?? userId,
+            Profile = new ProfileEntity()
+        };
     }
 }

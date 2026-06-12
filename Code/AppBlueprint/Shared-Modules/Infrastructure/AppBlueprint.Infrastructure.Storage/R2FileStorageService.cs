@@ -455,13 +455,38 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         // Generate unique GUID-based key for obscurity (dating app pattern)
         string uniqueId = Guid.NewGuid().ToString("N");
         string sanitizedFileName = SanitizeFileName(fileName);
+        string? sanitizedFolder = SanitizeFolder(folder);
 
-        if (!string.IsNullOrWhiteSpace(folder))
+        if (!string.IsNullOrWhiteSpace(sanitizedFolder))
         {
-            return $"{tenantId}/{folder}/{uniqueId}-{sanitizedFileName}";
+            return $"{tenantId}/{sanitizedFolder}/{uniqueId}-{sanitizedFileName}";
         }
 
         return $"{tenantId}/{uniqueId}-{sanitizedFileName}";
+    }
+
+    /// <summary>
+    /// Sanitizes a user-supplied folder so it cannot escape the tenant prefix.
+    /// SECURITY: rejects path-traversal sequences and absolute paths; only simple nested
+    /// segments (letters, digits, '-', '_') are kept so the key always stays under "{tenantId}/".
+    /// </summary>
+    private static string? SanitizeFolder(string? folder)
+    {
+        if (string.IsNullOrWhiteSpace(folder)) return null;
+
+        // Normalise separators and split into segments.
+        string[] segments = folder.Replace('\\', '/').Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        var safeSegments = new List<string>(segments.Length);
+        foreach (string segment in segments)
+        {
+            // Drop traversal and any segment containing characters outside the safe set.
+            if (segment is "." or "..") continue;
+            if (segment.Any(c => !(char.IsLetterOrDigit(c) || c is '-' or '_'))) continue;
+            safeSegments.Add(segment);
+        }
+
+        return safeSegments.Count == 0 ? null : string.Join('/', safeSegments);
     }
 
     private static string SanitizeFileName(string fileName)

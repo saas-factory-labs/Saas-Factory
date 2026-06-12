@@ -45,4 +45,9 @@ public class ApiKeyRepository : IApiKeyRepository
         ApiKeyEntity? apiKey = _context.ApiKeys.Find(id);
         if (apiKey is not null) _context.ApiKeys.Remove(apiKey);
     }
+
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
 }

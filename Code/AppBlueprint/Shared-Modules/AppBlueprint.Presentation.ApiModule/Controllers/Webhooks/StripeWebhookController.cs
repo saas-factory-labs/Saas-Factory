@@ -1,4 +1,5 @@
 using AppBlueprint.Application.Interfaces;
+using AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,7 @@ public sealed class StripeWebhookController : ControllerBase
     /// <returns>200 OK if event was processed or is a duplicate, 400 Bad Request if signature verification fails.</returns>
     [HttpPost]
     [AllowAnonymous]
+    [RequestSizeLimit(1024 * 1024)] // Stripe events are small; cap at 1 MB since the body is buffered into memory
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -120,9 +122,10 @@ public sealed class StripeWebhookController : ControllerBase
 
     /// <summary>
     /// Gets recent webhook events (for testing/debugging).
-    /// Requires authentication.
+    /// Restricted to platform admins: webhook payloads contain payment data (OWASP A01).
     /// </summary>
     [HttpGet]
+    [Authorize(Roles = Roles.DeploymentManagerAdmin)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRecentEvents(CancellationToken cancellationToken)
     {
@@ -132,9 +135,10 @@ public sealed class StripeWebhookController : ControllerBase
 
     /// <summary>
     /// Gets a specific webhook event by ID (for testing/debugging).
-    /// Requires authentication.
+    /// Restricted to platform admins: webhook payloads contain payment data (OWASP A01).
     /// </summary>
     [HttpGet("{id}")]
+    [Authorize(Roles = Roles.DeploymentManagerAdmin)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetEventById(string id, CancellationToken cancellationToken)

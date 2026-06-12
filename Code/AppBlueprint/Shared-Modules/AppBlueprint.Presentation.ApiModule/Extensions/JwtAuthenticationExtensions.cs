@@ -92,16 +92,13 @@ public static class JwtAuthenticationExtensions
                 var logger = context.HttpContext.RequestServices
                     .GetRequiredService<ILogger<JwtBearerEvents>>();
 
-                var authHeader = context.Request.Headers.Authorization.ToString();
-                var tokenPreview = authHeader.Replace("Bearer ", string.Empty, StringComparison.OrdinalIgnoreCase);
-                if (tokenPreview.Length > 20)
-                {
-                    tokenPreview = tokenPreview[..20];
-                }
+                // SECURITY (OWASP A09): never log token material (not even a prefix) -
+                // log only whether a token was present plus the failure cause.
+                bool hadAuthHeader = !string.IsNullOrEmpty(context.Request.Headers.Authorization.ToString());
 
                 logger.LogError(context.Exception,
-                    "Authentication failed. Token preview: {TokenPreview}, Exception Type: {ExceptionType}, Message: {Message}",
-                    tokenPreview,
+                    "Authentication failed. HasAuthHeader: {HasAuthHeader}, Exception Type: {ExceptionType}, Message: {Message}",
+                    hadAuthHeader,
                     context.Exception?.GetType().Name,
                     context.Exception?.Message);
 
@@ -186,6 +183,17 @@ public static class JwtAuthenticationExtensions
         // Remove trailing slash from endpoint if present
         endpoint = endpoint.TrimEnd('/');
 
+        // SECURITY (OWASP A02/A07): audience validation must not be silently skipped in production.
+        // A missing API resource there means tokens for any audience would be accepted, so fail fast.
+        if (!environment.IsDevelopment() && string.IsNullOrEmpty(apiResource))
+        {
+            throw new InvalidOperationException(
+                "LOGTO_APIRESOURCE must be configured in non-development environments so JWT audience " +
+                "validation is enforced. Set LOGTO_APIRESOURCE (e.g. https://api.appblueprint.local).");
+        }
+
+        bool validateAudience = !string.IsNullOrEmpty(apiResource);
+
         options.Authority = $"{endpoint}/oidc";
 
         // For development: Validate JWT access tokens for API resource
@@ -196,8 +204,8 @@ public static class JwtAuthenticationExtensions
             ValidIssuer = $"{endpoint}/oidc",
             ValidIssuers = new[] { $"{endpoint}/oidc", endpoint },
 
-            // Validate audience if API resource is configured
-            ValidateAudience = !string.IsNullOrEmpty(apiResource),
+            // Validate audience whenever an API resource is configured (always true in production).
+            ValidateAudience = validateAudience,
             ValidAudience = apiResource,
 
             // Accept any valid token from Logto
@@ -209,8 +217,8 @@ public static class JwtAuthenticationExtensions
             RequireSignedTokens = true,
             RequireExpirationTime = true,
 
-            // Require audience if API resource is configured
-            RequireAudience = !string.IsNullOrEmpty(apiResource),
+            // Require audience whenever it is being validated.
+            RequireAudience = validateAudience,
 
             // Map standard OIDC claims
             NameClaimType = "name",
@@ -221,7 +229,7 @@ public static class JwtAuthenticationExtensions
         options.MetadataAddress = $"{endpoint}/oidc/.well-known/openid-configuration";
 
         // Don't require HTTPS in development
-        options.RequireHttpsMetadata = environment.IsDevelopment() ? false : true;
+        options.RequireHttpsMetadata = !environment.IsDevelopment();
     }
 
     private static void ConfigureFirebase(JwtBearerOptions options, IConfiguration configuration, IHostEnvironment environment)

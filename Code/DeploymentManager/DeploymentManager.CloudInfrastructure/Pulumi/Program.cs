@@ -12,6 +12,7 @@ using Pulumi.AzureNative.Storage;
 using Pulumi.AzureNative.Storage.Inputs;
 using AzureNative = Pulumi.AzureNative;
 using Deployment = Pulumi.Deployment;
+using Kind = Pulumi.AzureNative.Storage.Kind;
 using Queue = Pulumi.AzureNative.ServiceBus.Queue;
 using QueueArgs = Pulumi.AzureNative.ServiceBus.QueueArgs;
 using SkuName = Pulumi.AzureNative.Storage.SkuName;

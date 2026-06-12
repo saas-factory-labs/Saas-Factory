@@ -41,12 +41,17 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="MongoDB.Driver.Core" />
+    <!-- Explicit overrides for vulnerable transitive dependencies of MongoDB.Driver.Core
+         (SharpCompress 0.30.1 / Snappier 1.0.0 have known vulnerabilities) -->
+    <PackageReference Include="SharpCompress" />
+    <PackageReference Include="Snappier" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Stripe.net" />
     
     <!-- MSBuild (explicit override for vulnerable transitive dependencies) -->
     <PackageReference Include="Microsoft.Build.Tasks.Core"/>
     <PackageReference Include="Microsoft.Build.Utilities.Core"/>
+    <PackageReference Include="System.Security.Cryptography.Xml" />
   </ItemGroup>
 
 </Project>

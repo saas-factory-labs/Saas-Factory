@@ -46,9 +46,11 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
                     traceId,
                     httpContext.Request.Path);
 
+                // SECURITY (OWASP A05): do not echo raw exception messages to the client -
+                // they can leak implementation details. Full message is in the server log above.
                 await WriteValidationErrorResponse(
                     httpContext,
-                    $"Invalid parameter '{argEx.ParamName}': {argEx.Message}",
+                    $"Invalid value for parameter '{argEx.ParamName}'.",
                     traceId,
                     cancellationToken);
                 break;
@@ -61,9 +63,12 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
                     httpContext.Request.Path,
                     httpContext.User?.Identity?.Name ?? "Anonymous");
 
+                // SECURITY (OWASP A05): InvalidOperationException messages frequently contain
+                // internal state (EF Core, configuration, DI). Return a generic message; the
+                // traceId correlates the response with the detailed server-side log entry.
                 await WriteBadRequestResponse(
                     httpContext,
-                    exception.Message,
+                    "The request could not be processed in its current state.",
                     traceId,
                     cancellationToken);
                 break;

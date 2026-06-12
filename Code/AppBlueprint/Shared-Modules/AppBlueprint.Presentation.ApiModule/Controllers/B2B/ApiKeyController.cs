@@ -1,6 +1,7 @@
 using AppBlueprint.Application.Constants;
 using AppBlueprint.Contracts.B2B.Contracts.ApiKey.Requests;
 using AppBlueprint.Contracts.B2B.Contracts.ApiKey.Responses;
+using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.Profile;
@@ -96,11 +97,20 @@ public class ApiKeyController : BaseController
         string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
         string? userEmail = User.FindFirst("email")?.Value;
 
+        // SECURITY: generate a cryptographically random key and persist only its hash.
+        // The raw secret is returned to the caller exactly once and never stored in clear text.
+        string rawKey = ApiKeyHasher.GenerateRawKey();
+        string keyHash = ApiKeyHasher.ComputeSha256Hex(rawKey);
+
         var newApiKey = new ApiKeyEntity
         {
             Name = apiKeyDto.Name,
-            SecretRef = "adad",
+            // SecretRef is a non-secret display reference (key id), never the secret itself.
+            SecretRef = $"{ApiKeyHasher.KeyPrefix}{userId}",
+            KeyHash = keyHash,
+            IsRevoked = false,
             TenantId = tenantId,
+            UserId = userId,
             Owner = new UserEntity
             {
                 Email = userEmail ?? "unknown@example.com",
@@ -112,9 +122,16 @@ public class ApiKeyController : BaseController
         };
 
         await _apiKeyRepository.AddAsync(newApiKey);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _apiKeyRepository.SaveChangesAsync(cancellationToken);
 
-        return CreatedAtAction(nameof(GetApiKey), new { id = newApiKey.Id }, newApiKey);
+        var response = new ApiKeyResponse
+        {
+            Name = newApiKey.Name,
+            Description = newApiKey.Description,
+            Secret = rawKey
+        };
+
+        return CreatedAtAction(nameof(GetApiKey), new { id = newApiKey.Id }, response);
     }
 
     /// <summary>
@@ -138,7 +155,7 @@ public class ApiKeyController : BaseController
         existingApiKey.Name = apiKeyDto.Name;
 
         _apiKeyRepository.Update(existingApiKey);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _apiKeyRepository.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }
@@ -159,7 +176,7 @@ public class ApiKeyController : BaseController
         if (existingApiKey is null) return NotFound(new { Message = $"API key with ID {id} not found." });
 
         _apiKeyRepository.Delete(existingApiKey.Id);
-        // If SaveChangesAsync is required, inject a service for it or handle in repository.
+        await _apiKeyRepository.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }

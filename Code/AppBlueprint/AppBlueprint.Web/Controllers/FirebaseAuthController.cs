@@ -47,7 +47,8 @@ public sealed class FirebaseAuthController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Firebase sign-in rejected for {Email}: {Error}", request.Email, result.Error);
+            // SECURITY (GDPR/OWASP A09): do not log e-mail addresses or other PII.
+            _logger.LogWarning("Firebase sign-in rejected: {Error}", result.Error);
             string encodedError = Uri.EscapeDataString(result.Error ?? "Login failed. Please check your credentials.");
             return Redirect($"/signin/firebase?error={encodedError}");
         }
@@ -68,7 +69,8 @@ public sealed class FirebaseAuthController : ControllerBase
 
         await HttpContext.SignInAsync(FirebaseCookieScheme, principal);
 
-        _logger.LogInformation("Firebase sign-in successful for {Email} (uid: {Uid})", email, uid);
+        // SECURITY (GDPR/OWASP A09): log the opaque uid only, never the e-mail.
+        _logger.LogInformation("Firebase sign-in successful (uid: {Uid})", uid);
         return Redirect("/");
     }
 

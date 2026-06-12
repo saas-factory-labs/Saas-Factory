@@ -240,13 +240,16 @@ public sealed class StripeWebhookService : IStripeWebhookService
     /// </summary>
     private Event VerifySignature(string payload, string signatureHeader)
     {
+        // SECURITY (OWASP A08): fail closed. Without a configured secret we cannot verify the
+        // signature, so reject the event instead of trusting an unauthenticated payload.
         if (string.IsNullOrEmpty(_webhookSecret))
         {
-            _logger.LogWarning("Webhook secret not configured. Skipping signature verification (NOT RECOMMENDED FOR PRODUCTION)");
-            return EventUtility.ParseEvent(payload);
+            _logger.LogError("Stripe webhook secret is not configured; rejecting unverifiable webhook event.");
+            throw new StripeException("Webhook secret is not configured; signature cannot be verified.");
         }
 
-        // Stripe.net automatically verifies the signature and throws StripeException if invalid
+        // Stripe.net verifies the signature AND the timestamp (default 5-minute tolerance, which
+        // mitigates replay attacks) and throws StripeException if invalid.
         return EventUtility.ConstructEvent(
             payload,
             signatureHeader,

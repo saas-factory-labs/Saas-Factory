@@ -1,6 +1,4 @@
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Encodings.Web;
 using AppBlueprint.Application.Constants;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities;
@@ -45,7 +43,7 @@ public sealed class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAu
         }
 
         string rawKey = headerValues.ToString().Trim();
-        string keyHash = ComputeSha256Hex(rawKey);
+        string keyHash = ApiKeyHasher.ComputeSha256Hex(rawKey);
 
         ApiKeyEntity? apiKey = await _apiKeyRepository.GetByKeyHashAsync(keyHash);
 
@@ -87,12 +85,5 @@ public sealed class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAu
         Response.StatusCode = 401;
         Response.Headers["WWW-Authenticate"] = "ApiKey realm=\"AppBlueprint\"";
         return Task.CompletedTask;
-    }
-
-    /// <summary>Computes a lowercase hex SHA-256 hash of <paramref name="input"/>.</summary>
-    private static string ComputeSha256Hex(string input)
-    {
-        byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
-        return Convert.ToHexString(bytes).ToLowerInvariant();
     }
 }

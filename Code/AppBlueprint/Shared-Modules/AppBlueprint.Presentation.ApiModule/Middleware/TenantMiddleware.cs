@@ -10,7 +10,7 @@ namespace AppBlueprint.Presentation.ApiModule.Middleware;
 /// </summary>
 internal sealed record UserTenantLookup(string Id, string? TenantId);
 
-public class TenantMiddleware(RequestDelegate next)
+public class TenantMiddleware(RequestDelegate next, ILogger<TenantMiddleware> logger)
 {
     // Paths that should be excluded from tenant ID requirement
     private static readonly string[] ExcludedPaths = [
@@ -83,12 +83,11 @@ public class TenantMiddleware(RequestDelegate next)
             string? externalAuthId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                 ?? context.User.FindFirst("sub")?.Value;
 
-            Console.WriteLine($"[TenantMiddleware] No tenant claim in JWT. Looking up by ExternalAuthId (sub): {externalAuthId ?? "(null)"}");
-            Console.WriteLine($"[TenantMiddleware] JWT Claims ({context.User.Claims.Count()}):");
-            foreach (var claim in context.User.Claims)
-            {
-                Console.WriteLine($"[TenantMiddleware]   - {claim.Type}: {claim.Value}");
-            }
+            // SECURITY (OWASP A09): never log claim values - they contain PII and token material.
+            // Log only claim types at Debug level for troubleshooting.
+            logger.LogDebug(
+                "No tenant claim in JWT; falling back to database lookup. ClaimTypes: {ClaimTypes}",
+                string.Join(", ", context.User.Claims.Select(c => c.Type)));
 
             if (!string.IsNullOrEmpty(externalAuthId))
             {
@@ -106,16 +105,16 @@ public class TenantMiddleware(RequestDelegate next)
                     var result = await dbContext.Database.SqlQuery<UserTenantLookup>(query).FirstOrDefaultAsync();
                     tenantId = result?.TenantId;
 
-                    Console.WriteLine($"[TenantMiddleware] Database lookup result: TenantId={tenantId ?? "(null)"}");
+                    logger.LogDebug("Tenant database lookup completed. TenantResolved: {TenantResolved}", tenantId is not null);
                 }
                 else
                 {
-                    Console.WriteLine("[TenantMiddleware] ⚠️ IDbContextFactory not available in DI container");
+                    logger.LogWarning("IDbContextFactory not available in DI container - cannot resolve tenant from database");
                 }
             }
             else
             {
-                Console.WriteLine("[TenantMiddleware] ⚠️ No sub/NameIdentifier claim found in JWT - cannot look up tenant");
+                logger.LogWarning("No sub/NameIdentifier claim found in JWT - cannot look up tenant");
             }
         }
 

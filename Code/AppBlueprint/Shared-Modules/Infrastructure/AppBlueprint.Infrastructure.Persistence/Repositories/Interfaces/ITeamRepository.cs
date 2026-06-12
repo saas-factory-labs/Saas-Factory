@@ -9,4 +9,5 @@ public interface ITeamRepository
     Task AddAsync(TeamEntity team);
     void Update(TeamEntity team);
     void Delete(string id);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

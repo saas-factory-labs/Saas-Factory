@@ -11,4 +11,5 @@ public interface IApiKeyRepository
     Task AddAsync(ApiKeyEntity apiKey);
     void Update(ApiKeyEntity apiKey);
     void Delete(string id);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

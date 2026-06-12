@@ -38,4 +38,9 @@ public class TeamRepository : ITeamRepository
         TeamEntity? team = _context.Teams.Find(id);
         if (team is not null) _context.Teams.Remove(team);
     }
+
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
 }

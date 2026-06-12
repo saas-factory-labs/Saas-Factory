@@ -9,4 +9,5 @@ public interface IRoleRepository
     Task AddAsync(RoleEntity role);
     void Update(RoleEntity role);
     void Delete(string id);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

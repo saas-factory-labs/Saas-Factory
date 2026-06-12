@@ -53,6 +53,40 @@ public sealed class FileValidationService : IFileValidationService
         ".exe", ".bat", ".cmd", ".sh", ".ps1", ".vbs", ".js", ".jar", ".dll", ".so", ".dylib"
     };
 
+    // Maps a file extension to the content types it is allowed to be declared as. Prevents
+    // type-confusion uploads (e.g. an executable renamed to .png, or a .pdf served as image/jpeg).
+    private static readonly Dictionary<string, HashSet<string>> ExtensionContentTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        [".jpg"] = new(StringComparer.OrdinalIgnoreCase) { "image/jpeg", "image/jpg" },
+        [".jpeg"] = new(StringComparer.OrdinalIgnoreCase) { "image/jpeg", "image/jpg" },
+        [".png"] = new(StringComparer.OrdinalIgnoreCase) { "image/png" },
+        [".webp"] = new(StringComparer.OrdinalIgnoreCase) { "image/webp" },
+        [".gif"] = new(StringComparer.OrdinalIgnoreCase) { "image/gif" },
+        [".pdf"] = new(StringComparer.OrdinalIgnoreCase) { "application/pdf" },
+        [".doc"] = new(StringComparer.OrdinalIgnoreCase) { "application/msword" },
+        [".docx"] = new(StringComparer.OrdinalIgnoreCase) { "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
+        [".xls"] = new(StringComparer.OrdinalIgnoreCase) { "application/vnd.ms-excel" },
+        [".xlsx"] = new(StringComparer.OrdinalIgnoreCase) { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
+        [".txt"] = new(StringComparer.OrdinalIgnoreCase) { "text/plain" },
+        [".csv"] = new(StringComparer.OrdinalIgnoreCase) { "text/csv", "text/plain" },
+        [".mp4"] = new(StringComparer.OrdinalIgnoreCase) { "video/mp4" },
+        [".webm"] = new(StringComparer.OrdinalIgnoreCase) { "video/webm" },
+        [".mov"] = new(StringComparer.OrdinalIgnoreCase) { "video/quicktime" }
+    };
+
+    /// <summary>
+    /// Returns true when the declared <paramref name="contentType"/> is a valid match for the
+    /// file <paramref name="extension"/>. Unknown extensions return false (rejected by default).
+    /// </summary>
+    public static bool IsExtensionConsistentWithContentType(string extension, string contentType)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(extension);
+        ArgumentException.ThrowIfNullOrWhiteSpace(contentType);
+
+        return ExtensionContentTypes.TryGetValue(extension, out HashSet<string>? allowed)
+               && allowed.Contains(contentType);
+    }
+
     public FileValidationService(
         ILogger<FileValidationService> logger,
         IOptions<CloudflareR2Options> options)
@@ -92,6 +126,13 @@ public sealed class FileValidationService : IFileValidationService
         {
             errors.Add($"File extension '{extension}' is not allowed for security reasons.");
             _logger.LogWarning("Rejected file with dangerous extension: {Extension}, FileName: {FileName}", extension, fileName);
+        }
+        else if (!string.IsNullOrWhiteSpace(contentType) && !IsExtensionConsistentWithContentType(extension, contentType))
+        {
+            // SECURITY: declared content type must match the extension to prevent type-confusion uploads.
+            errors.Add($"File extension '{extension}' does not match the declared content type '{contentType}'.");
+            _logger.LogWarning("Rejected file with extension/content-type mismatch: {Extension} vs {ContentType}, FileName: {FileName}",
+                extension, contentType, fileName);
         }
 
         // 3. Validate file name
