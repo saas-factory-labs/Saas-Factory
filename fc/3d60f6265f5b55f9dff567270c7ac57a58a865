@@ -1,0 +1,296 @@
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/RunCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,14-18,21-25,39,47-48,56-58,63,78-83,154-156,160,172,176,181,246,264-265
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/Commands/ICliCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-8
+Code/DeploymentManager/Samples/SaaSFactory.Sample.Admin/SaaSFactory.Sample.Admin.csproj
+  s_5f4dea6a7a8262::t_c32d91c2ca2cd5 1-21
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/TenantAdminService.cs
+  s_5f4dea6a7a8262::t_860eb60ae3a5a2 1-43
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj
+  s_9eea10e9903e1b::t_f96f2651f3312f 37-38
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/EnvironmentInfoCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,113,120,127,134,141,203,407,411,415
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/AdminPortalAppDbContext.cs
+  s_5f4dea6a7a8262::t_f74bcd6ef8d60b 1-41
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/InstallCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,15-19,69,77,84,94,129-130,132-133,136-138,233,280-281
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Shared/DashboardStatCard.razor
+  s_5f4dea6a7a8262::t_3b3303a56d6121 1-11
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Options/BlogContentOptions.cs
+  s_9eea10e9903e1b::t_8d953dffe6296f 1-8
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/Commands/CliCommandApplication.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-44
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/CommandFactory.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-3,6,8-15,17-20,22-23,28-63
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Services/Blog/IBlogContentService.cs
+  s_9eea10e9903e1b::t_8d953dffe6296f 1-14
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/DatabaseCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,18,34,40,51,58,63,71,74,78,81,89,117,120
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/Runtime/DotNetSdkPreflight.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 3-42,44-45
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/AdminUserRecord.cs
+  s_5f4dea6a7a8262::t_a4e383c9cd930e 1-23
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/AppBlueprint.AdminPortalKernel.csproj
+  s_5f4dea6a7a8262::t_23d05fc3ce7411 1-40
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/Integration/AuditPipelineTests.cs
+  s_5f4dea6a7a8262::t_9993ff5d9354ad 1-151
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Configuration/AdminPortalModuleOptions.cs
+  s_5f4dea6a7a8262::t_446cdcc19858b8 1-11
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/Dtos/AuditSearchRequest.cs
+  s_5f4dea6a7a8262::t_e1a0b67f4f8836 1-11
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/Dtos/UserSearchRequest.cs
+  s_5f4dea6a7a8262::t_a49fcbb50e95fc 1-14
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Configuration/AdminPortalOptions.cs
+  s_5f4dea6a7a8262::t_55aa3e2182c4ac 1-19
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/BlazorAdminPortalUserContext.cs
+  s_5f4dea6a7a8262::t_85c5fbdf049a71 1-44
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj
+  s_9eea10e9903e1b::t_dce6cd5139d74c 48
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/EnvironmentVariableCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,36,61,85-86,111,371,428,470-472
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/Integration/PostgresFixture.cs
+  s_5f4dea6a7a8262::t_27b117b001f88a 1-51,84-183
+  s_5f4dea6a7a8262::t_369e98a389bfd5 52-83
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/IDashboardService.cs
+  s_5f4dea6a7a8262::t_144f34ff227c9c 1-9
+Code/AppBlueprint/AppBlueprint.DeveloperCli/AppBlueprint.DeveloperCli.csproj
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 14,17-26,30-33
+SaaS-Factory.slnx
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 16,93-96,109-112,123
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/Ci/GitHubActionsOutputWriter.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-38
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/AdminPortalRouteConventionTests.cs
+  s_5f4dea6a7a8262::t_ef0ab35a968163 1-39
+Code/DeploymentManager/DeploymentManager.Web/DeploymentManager.Web.csproj
+  s_5f4dea6a7a8262::t_0f725223d5e05f 27-39
+Code/DeploymentManager/DeploymentManager.Web/Components/Layout/MainLayout.razor
+  s_5f4dea6a7a8262::t_0b4f659dfd3560 68-84
+  s_5f4dea6a7a8262::t_0572dfed93a8fe 151-156
+  s_5f4dea6a7a8262::t_7ebffe0c3d4c1a 4-5
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/ProjectCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,9-10,36
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/SystemCommandLineCompatibility.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-59
+Code/DeploymentManager/Samples/SaaSFactory.Sample.Admin/Components/Pages/SampleCustomPage.razor
+  s_5f4dea6a7a8262::t_6834d180480a28 1-17
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/AppBlueprint.CliKit.csproj
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-8,13-32
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/AdminPortalKernelModelBuilderExtensions.cs
+  s_5f4dea6a7a8262::t_0543c79b48370d 1-20
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/AdminQuerySession.cs
+  s_5f4dea6a7a8262::t_5f53c99582cb3b 1-126
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/AdminTenantRecord.cs
+  s_5f4dea6a7a8262::t_4b2401ddc08b15 1-20
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Blog/BlogArticlePage.razor
+  s_9eea10e9903e1b::t_ded353aff901f3 42,56,91,321
+  s_9eea10e9903e1b::t_df9d48ad4e28be 1-4,7-41,43-55,57-90,92-132,134-228,230-320,322-426
+  s_9eea10e9903e1b::t_a05efebc5e8724 133,229
+  s_9eea10e9903e1b::t_713049fc7caccc 5-6
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Services/Blog/OptionsBlogContentService.cs
+  s_9eea10e9903e1b::t_8d953dffe6296f 1-12,21-45
+  s_9eea10e9903e1b::t_d61312b348c6f0 13-20
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/Integration/AdminPortalAppDbContextTests.cs
+  s_5f4dea6a7a8262::t_bb4d5091b3c7e9 1-96
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/RouteCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,13-17,91-92
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Modules/AdminPortalNavItem.cs
+  s_5f4dea6a7a8262::t_ad5a3a5d30d4db 1-7
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/Processes/CliProcessRunner.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-41,45-127,129-133
+Code/DeploymentManager/Dockerfile
+  s_5f4dea6a7a8262::t_f45def66e969e5 35-42
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Program.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-2,5-6,12,14-18,23,26-28,30-32
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/Fixtures/TestModules.cs
+  s_5f4dea6a7a8262::t_f736e398d7d316 1-48
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/PluginLoading/AdminPortalPluginLoader.cs
+  s_5f4dea6a7a8262::t_638e2c5a5ef385 1-121
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminAudit.razor
+  s_5f4dea6a7a8262::t_1595f4cbe9bb8d 1-146
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/AdminPortalOptionsValidationTests.cs
+  s_5f4dea6a7a8262::t_61588e634328f6 1-74
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/ServiceExtensions.cs
+  s_9eea10e9903e1b::t_efa891c1fb6709 1-2,28
+  s_9eea10e9903e1b::t_107a750b01a7a8 4,27,34-66
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Extensions/ServiceCollectionExtensions.cs
+  s_9eea10e9903e1b::t_efa891c1fb6709 2,6,37-62
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/IAdminPortalDbContextFactory.cs
+  s_5f4dea6a7a8262::t_906105a7ca48a0 1-12
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Modules/AdminPortalModuleRegistry.cs
+  s_5f4dea6a7a8262::t_b72be37e5894c5 1-85
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Models/Blog/AppBlueprintBlogOptions.cs
+  s_9eea10e9903e1b::t_d99d7363b8f708 1-19,22,24,26-32,34-40,42,44-58,60-67,69-72
+  s_9eea10e9903e1b::t_8b12dfcceb53c2 21
+  s_9eea10e9903e1b::t_a05efebc5e8724 23,25,33,41,43,59,68
+  s_9eea10e9903e1b::t_80c4933f24562b 20
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/_Imports.razor
+  s_5f4dea6a7a8262::t_26011be75da92d 1-5
+  s_5f4dea6a7a8262::t_93c9f41b231f64 6-10
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/Dtos/DashboardStats.cs
+  s_5f4dea6a7a8262::t_2cd4ad39837c77 1-9
+Code/DeploymentManager/Samples/SaaSFactory.Sample.Admin/SampleAdminModule.cs
+  s_5f4dea6a7a8262::t_adf044d8a56350 1-21
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/Console/ICliConsole.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-9,11-13
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Persistence/Data/Context/DeploymentManagerContext.cs
+  s_5f4dea6a7a8262::t_152a64158fa7cf 1
+  s_5f4dea6a7a8262::t_efd1f2d91d6e38 35-37
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/Integration/AdminServicesTests.cs
+  s_5f4dea6a7a8262::t_388b0b09ab1d96 1-220
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/PluginLoaderTests.cs
+  s_5f4dea6a7a8262::t_59938d0d496722 1-106
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/SecurityInspectorTests.cs
+  s_5f4dea6a7a8262::t_a76987114d677c 2,6-7
+  s_5f4dea6a7a8262::t_bec5f93d04a9e6 67-96
+  s_5f4dea6a7a8262::t_05cddc3d09b203 1,3-5,8-66,97
+Code/DeploymentManager/DeploymentManager.Tests/DeploymentManager.Tests.csproj
+  s_5f4dea6a7a8262::t_b433a2feaf1133 14-16,20-22,26
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/ServiceCollectionExtensionsTests.cs
+  s_5f4dea6a7a8262::t_2830b5de0ad4cd 1-83
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/ServiceCollectionExtensions.cs
+  s_5f4dea6a7a8262::t_d053dd62968678 1-2,5-34,42-43,63
+  s_5f4dea6a7a8262::t_11d5f37cf92bd2 35-37,41
+  s_5f4dea6a7a8262::t_a2cfca7c8da0b1 3
+  s_5f4dea6a7a8262::t_4493222f6ba608 44-62
+  s_5f4dea6a7a8262::t_4fe506d7468c66 38-40
+Code/DeploymentManager/Scripts/download-admin-plugins.ps1
+  s_5f4dea6a7a8262::t_d640b77571c67d 1-69
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/README.md
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-5
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Modules/IAdminPortalModule.cs
+  s_5f4dea6a7a8262::t_5a39fa5e3e0765 1-23,29-43
+  s_5f4dea6a7a8262::t_afd127fc32ecc3 24-28
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/TestCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,18-30,121-122,139,158,179,210,219,302
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/AdminAuditReader.cs
+  s_5f4dea6a7a8262::t_4f12189742f65f 1-92
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Utilities/CLIUtilities.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-2,8-11,16-28,30-31,33,35-36,38-41,43-45,48,50
+.github/workflows/publish-nuget-packages.yml
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,45-47,120-121
+Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Components/Pages/Blog/BlogIndex.razor
+  s_9eea10e9903e1b::t_a05efebc5e8724 68,71,126,212,215
+  s_9eea10e9903e1b::t_ded353aff901f3 37,47,95,169,329
+  s_9eea10e9903e1b::t_ae65ad68f7859f 1-4,7-36,38-46,48-67,69-70,72-94,96-125,127-168,170-211,213-214,216-328,330-365
+  s_9eea10e9903e1b::t_713049fc7caccc 5-6
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/AdminAuditEntryConfiguration.cs
+  s_5f4dea6a7a8262::t_d71791f694414d 1-34
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/AdminAuditEntryEntity.cs
+  s_5f4dea6a7a8262::t_f2262fa4dedb33 1-41
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/Dtos/PagedResult.cs
+  s_5f4dea6a7a8262::t_abc9cf451ab5a6 1-4
+Code/DeploymentManager/Samples/SaaSFactory.Sample.Admin/Components/Pages/_Imports.razor
+  s_5f4dea6a7a8262::t_682f45a98aabd1 1-7
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/AppBlueprint.AdminPortalKernel.Tests.csproj
+  s_5f4dea6a7a8262::t_9b6f17b8658ac3 1-27
+Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj
+  s_5f4dea6a7a8262::t_730d858c010d72 19-20
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Shared/AdminPortalPageHeader.razor
+  s_5f4dea6a7a8262::t_7ac8cee0e7d765 1-40
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Models/Blog/BlogArticle.cs
+  s_9eea10e9903e1b::t_8d953dffe6296f 1-8,10-24
+  s_9eea10e9903e1b::t_ded353aff901f3 9
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/ItemCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,9-11,40
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/SolutionCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,9-10,45
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/Configuration/LocalJsonConfigLoader.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-42,54-59
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/AdminPortalDbContextFactory.cs
+  s_5f4dea6a7a8262::t_84cf9bbc8569ff 1-67
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminTenants.razor
+  s_5f4dea6a7a8262::t_bc0845a97b517b 1-153
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Configuration/AdminPortalOptionsValidator.cs
+  s_5f4dea6a7a8262::t_ec864ebf245d20 1-43
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/Console/SpectreCliConsole.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-6,9,13-15,17-21,23-32,34-36,38-40,43-48,50-52,54-70,73,76-78
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/GitCommitPushCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,15,33
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/AdminPortalBuilder.cs
+  s_5f4dea6a7a8262::t_27e6c6c4d953d6 3
+  s_5f4dea6a7a8262::t_b81677843998c9 35-38,43-64
+  s_5f4dea6a7a8262::t_2c7f381eef69e5 1-2,4-34,39-42,65-78
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/GithubCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,9-10,36
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/ITenantAdminService.cs
+  s_5f4dea6a7a8262::t_cd09498ad8558f 1-10
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/Fixtures/InsecureFixtures.cs
+  s_5f4dea6a7a8262::t_7992ec17a69b29 1-4,6-48
+  s_5f4dea6a7a8262::t_81e51e38bec600 5
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/UpgradeNugetPackages.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,9-10,39
+Code/DeploymentManager/DeploymentManager.Web/Program.cs
+  s_5f4dea6a7a8262::t_e134b9894f0ec2 147-154,159-160
+  s_5f4dea6a7a8262::t_50bfb0b985d385 72-127
+  s_5f4dea6a7a8262::t_7588a2af109335 1-2,5,161
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/JwtTokenCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,17,88,114,121,137,146,170,386,395,406,468,471,517,540,554,564,584,634,651,656,663
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/ModuleRegistryTests.cs
+  s_5f4dea6a7a8262::t_d4242b230933a0 84-85
+  s_5f4dea6a7a8262::t_4d9c3cbea0f8f2 89
+  s_5f4dea6a7a8262::t_6d6069932c3734 1-83,86-88,90-92
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/DashboardService.cs
+  s_5f4dea6a7a8262::t_8c5ad4ab8e6490 1-32
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/PluginLoading/AdminPortalPluginLoadResult.cs
+  s_5f4dea6a7a8262::t_7c2c4e6ab7d894 1-35
+Code/DeploymentManager/DeploymentManager.Web/Components/Routes.razor
+  s_5f4dea6a7a8262::t_cb841472466345 1,5-9
+Code/DeploymentManager/DeploymentManager.Tests/AdminPortalSecurityTests.cs
+  s_5f4dea6a7a8262::t_8b732dd1452c2c 1-75
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Shared/ModuleNotFound.razor
+  s_5f4dea6a7a8262::t_d54179f55f765d 1-16
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/GithubActionWorkflowCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,9,58
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/IUserAdminService.cs
+  s_5f4dea6a7a8262::t_37cdd0989ad029 1-18
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminDashboard.razor
+  s_5f4dea6a7a8262::t_f8ca0ded29e629 1-106
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/UninstallCommand.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1,57,68,72,121,125-127,165
+Code/DeploymentManager/Samples/copy-sample-plugin.ps1
+  s_5f4dea6a7a8262::t_3d90724b7e841e 1-30
+Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/ServiceCollectionExtensions.cs
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 1-24
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/AdminQuerySessionTests.cs
+  s_5f4dea6a7a8262::t_01c0b9ae9aa9c8 1-108
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Testing/AdminPortalSecurityInspector.cs
+  s_5f4dea6a7a8262::t_41c9ee918aba35 1-4,6-54,56-92,94-126,128-173
+  s_5f4dea6a7a8262::t_ab95ba51e7c8bf 55,93,127
+  s_5f4dea6a7a8262::t_c265df301a6983 5
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/AdminPortalAuditDbContext.cs
+  s_5f4dea6a7a8262::t_04b2c65fc28781 1-26
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/_Imports.razor
+  s_5f4dea6a7a8262::t_209768b8f50b8e 1-4
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/AdminPortalDbContextFactoryTests.cs
+  s_5f4dea6a7a8262::t_d9ce873a577935 1-69
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/IAdminPortalUserContext.cs
+  s_5f4dea6a7a8262::t_022b9215d53c3a 1-18
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminUsers.razor
+  s_5f4dea6a7a8262::t_b775cd4be8f1d6 1-260
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/UserAdminService.cs
+  s_5f4dea6a7a8262::t_cbef529a9531e9 1-96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "fc3d60f6265f5b55f9dff567270c7ac57a58a865",
+  "prompts": {},
+  "sessions": {
+    "s_5f4dea6a7a8262": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "177ee84e-de9a-4058-a3a7-b5e9710805a2",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_9eea10e9903e1b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ebd00-cfc8-7040-a4dd-d0ee3625d288",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
