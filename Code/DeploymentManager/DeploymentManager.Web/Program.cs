@@ -1,5 +1,8 @@
+using AppBlueprint.AdminPortalKernel.Infrastructure;
+using AppBlueprint.AdminPortalKernel.PluginLoading;
 using AppBlueprint.Application.Services;
 using AppBlueprint.Infrastructure.Authentication;
+using AppBlueprint.Infrastructure.Authentication.Extensions;
 using AppBlueprint.Infrastructure.Extensions;
 using MudBlazor.Services;
 using AppBlueprint.ServiceDefaults;
@@ -66,6 +69,62 @@ builder.Services.AddWebAuthentication(builder.Configuration, builder.Environment
 // DeploymentManager-specific services
 builder.Services.AddScoped<IMenuConfigurationService, MenuConfigurationService>();
 
+// ── Admin portal shell ─────────────────────────────────────────────────────────
+// The shell hosts one admin portal per deployed SaaS app. Per-app modules are
+// runtime-loaded plugin dlls (e.g. SaaSFactory.Dating.Admin.dll) from the plugins
+// folder - never compile-time references, so this public repo stays free of private
+// identifiers. Every loaded assembly passes the kernel's security inspector or
+// startup is aborted.
+AdminPortalBuilder adminPortal = builder.Services.AddAdminPortalKernel(builder.Configuration);
+
+string? pluginsPath = builder.Configuration["AdminPortal:PluginsPath"];
+if (!string.IsNullOrWhiteSpace(pluginsPath))
+{
+    string resolvedPluginsPath = Path.GetFullPath(pluginsPath, builder.Environment.ContentRootPath);
+    adminPortal.AddAdminPortalPlugins(resolvedPluginsPath);
+
+    AdminPortalPluginLoadResult? loadResult = adminPortal.LastPluginLoadResult;
+    if (loadResult is not null)
+    {
+        Console.WriteLine(loadResult.FolderFound
+            ? $"[AdminPortal] Plugins folder: {resolvedPluginsPath} - loaded {loadResult.Modules.Count} module(s): {string.Join(", ", loadResult.Modules.Select(m => $"{m.Slug} ({m.RouterAssembly.GetName().Name} {m.RouterAssembly.GetName().Version})"))}"
+            : $"[AdminPortal] Plugins folder not found: {resolvedPluginsPath} - no admin portal modules loaded");
+        foreach (string skipped in loadResult.SkippedFiles)
+        {
+            Console.WriteLine($"[AdminPortal] Skipped non-assembly file: {skipped}");
+        }
+    }
+}
+else
+{
+    Console.WriteLine("[AdminPortal] AdminPortal:PluginsPath not configured - no admin portal modules loaded");
+}
+
+// The audit log (dm_admin_audit) lives in DeploymentManager's own database; the table
+// is created by DeploymentManager.ApiService's migrations. Required as soon as any
+// admin portal module is loaded - audit is a security control, not best-effort.
+string? deploymentManagerDb = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(deploymentManagerDb) && adminPortal.Registry.Modules.Count > 0)
+{
+    throw new InvalidOperationException(
+        "Admin portal modules are loaded but ConnectionStrings:DefaultConnection " +
+        "(DeploymentManager database, hosts the dm_admin_audit log) is not configured.");
+}
+builder.Services.AddAdminPortalAuditStore(
+    string.IsNullOrWhiteSpace(deploymentManagerDb) ? "Host=unconfigured" : deploymentManagerDb);
+
+// Plugin modules may ship API controllers; they are hosted here behind the same
+// role gate (enforced by the security inspector at load time).
+IMvcBuilder adminPortalMvc = builder.Services.AddControllers();
+if (adminPortal.LastPluginLoadResult is not null)
+{
+    foreach (System.Reflection.Assembly pluginAssembly in adminPortal.LastPluginLoadResult.Assemblies)
+    {
+        adminPortalMvc.AddApplicationPart(pluginAssembly);
+    }
+}
+// ───────────────────────────────────────────────────────────────────────────────
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -85,9 +144,20 @@ app.UseAntiforgery();
 app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Defense in depth for the admin shell (mirrors AppBlueprint.Web): only whitelisted
+// IPs reach admin routes in production. Configured via Security:AdminIpWhitelist.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseAdminIpWhitelist();
+}
+
 app.UseOutputCache();
 
 app.MapAuthenticationEndpoints(builder.Configuration);
+
+// API controllers contributed by admin portal plugin modules (role-gated).
+app.MapControllers();
 
 // SECURITY (OWASP A01): no .AllowAnonymous() here - pages carry
 // [Authorize(Roles = Roles.DeploymentManagerAdmin)] via Components/Pages/_Imports.razor,

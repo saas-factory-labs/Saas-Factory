@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>AppBlueprint.AdminPortalKernel</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Entity Framework and Database -->
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+        <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+        <ProjectReference Include="..\Infrastructure\AppBlueprint.Infrastructure.Persistence\AppBlueprint.Infrastructure.Persistence.csproj" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <!-- Enable packaging -->
+        <IsPackable>true</IsPackable>
+        <Version>$(GITVERSION_SemVer)</Version>
+        <PackageId>SaaS-Factory.AppBlueprint.AdminPortalKernel</PackageId>
+        <Authors>Casper Rubæk</Authors>
+        <Description>Admin Portal Kernel for AppBlueprint - generic admin portal shell machinery (module contract, plugin loading, user/tenant administration, audit log) hosted by DeploymentManager</Description>
+        <PackageTags>admin;portal;plugin;module;blazor;</PackageTags>
+        <PackageProjectUrl>https://github.com/saas-factory-labs/Saas-Factory</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/saas-factory-labs/Saas-Factory</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+</Project>

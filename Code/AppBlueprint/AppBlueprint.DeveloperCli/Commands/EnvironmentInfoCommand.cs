@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using FluentRegex;
 
 namespace AppBlueprint.DeveloperCli.Commands;
@@ -110,35 +110,35 @@ internal static class EnvironmentInfoCommand
         bool dockerRunning = CheckDockerRunning();
         table.AddRow(
             "Docker Desktop",
-            dockerRunning ? "[green]✓ Running[/]" : "[red]✗ Not running[/]"
+            dockerRunning ? "[green]âœ“ Running[/]" : "[red]âœ— Not running[/]"
         );
 
         // Check PostgreSQL (via Docker or local)
         bool postgresRunning = CheckPostgreSqlRunning();
         table.AddRow(
             "PostgreSQL",
-            postgresRunning ? "[green]✓ Running[/]" : "[yellow]⚠ Unable to verify[/]"
+            postgresRunning ? "[green]âœ“ Running[/]" : "[yellow]âš  Unable to verify[/]"
         );
 
         // Check if AppHost is running (check common ports)
         bool appHostRunning = CheckPortInUse(5001) || CheckPortInUse(15001);
         table.AddRow(
             "AppHost (Aspire)",
-            appHostRunning ? "[green]✓ Running (port 5001/15001)[/]" : "[dim]Not running[/]"
+            appHostRunning ? "[green]âœ“ Running (port 5001/15001)[/]" : "[dim]Not running[/]"
         );
 
         // Check API Service
         bool apiRunning = CheckPortInUse(9100);
         table.AddRow(
             "API Service",
-            apiRunning ? "[green]✓ Running (port 9100)[/]" : "[dim]Not running[/]"
+            apiRunning ? "[green]âœ“ Running (port 9100)[/]" : "[dim]Not running[/]"
         );
 
         // Check Web App
         bool webRunning = CheckPortInUse(8092);
         table.AddRow(
             "Web App (Blazor)",
-            webRunning ? "[green]✓ Running (port 8092)[/]" : "[dim]Not running[/]"
+            webRunning ? "[green]âœ“ Running (port 8092)[/]" : "[dim]Not running[/]"
         );
 
         AnsiConsole.Write(table);
@@ -200,7 +200,7 @@ internal static class EnvironmentInfoCommand
         }
         else
         {
-            tree.AddNode("[yellow]⚠ Not in SaaS Factory project directory[/]");
+            tree.AddNode("[yellow]âš  Not in SaaS Factory project directory[/]");
         }
 
         AnsiConsole.Write(tree);
@@ -404,11 +404,12 @@ internal static class EnvironmentInfoCommand
 
         if (Directory.Exists(fullPath))
         {
-            parentNode.AddNode($"[green]✓[/] {label}: [dim]{relativePath}[/]");
+            parentNode.AddNode($"[green]âœ“[/] {label}: [dim]{relativePath}[/]");
         }
         else
         {
-            parentNode.AddNode($"[red]✗[/] {label}: [dim]{relativePath}[/] [yellow](not found)[/]");
+            parentNode.AddNode($"[red]âœ—[/] {label}: [dim]{relativePath}[/] [yellow](not found)[/]");
         }
     }
 }
+

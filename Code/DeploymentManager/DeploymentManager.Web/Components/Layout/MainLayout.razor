@@ -1,6 +1,8 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject AdminPortalModuleRegistry AdminPortalRegistry
+@using AppBlueprint.AdminPortalKernel.Modules
 @using AppBlueprint.UiKit.Components.Layout
 @using Microsoft.JSInterop
 
@@ -62,6 +64,23 @@
                             <SidebarGroupChildItem Href="/apps/configuration" Label="Configuration" OnClick="@(() => ctx.HandleOptionClick())" />
                         </ChildMenuItems>
                     </SidebarMenuGroup>
+
+                    @if (AdminPortalRegistry.Modules.Count > 0)
+                    {
+                        <SidebarMenuGroup
+                            Label="Admin Portals"
+                            IsActive="@IsAdminPortalActive">
+                            <IconPath>
+                                <path d="M8 0a1 1 0 0 1 .447.106l6 3A1 1 0 0 1 15 4v4c0 3.71-2.385 6.48-6.684 7.949a1 1 0 0 1-.632 0C3.385 14.48 1 11.71 1 8V4a1 1 0 0 1 .553-.894l6-3A1 1 0 0 1 8 0Zm0 2.118L3 4.618V8c0 2.69 1.678 4.79 5 5.94 3.322-1.15 5-3.25 5-5.94V4.618l-5-2.5Z"/>
+                            </IconPath>
+                            <ChildMenuItems Context="ctx">
+                                @foreach (IAdminPortalModule module in AdminPortalRegistry.Modules)
+                                {
+                                    <SidebarGroupChildItem Href="@($"/apps/{module.Slug}/admin")" Label="@module.DisplayName" OnClick="@(() => ctx.HandleOptionClick())"/>
+                                }
+                            </ChildMenuItems>
+                        </SidebarMenuGroup>
+                    }
 
                     <SidebarMenuItem
                         Href="/customers"
@@ -129,7 +148,12 @@
         Navigation.Uri == Navigation.BaseUri ||
         Navigation.Uri.TrimEnd('/') == Navigation.BaseUri.TrimEnd('/');
 
-    private bool IsAppsActive => Navigation.Uri.Contains("/apps", StringComparison.Ordinal);
+    private bool IsAppsActive => Navigation.Uri.Contains("/apps", StringComparison.Ordinal)
+                                 && !IsAdminPortalActive;
+
+    private bool IsAdminPortalActive =>
+        AdminPortalRegistry.Modules.Any(module =>
+            Navigation.Uri.Contains($"/apps/{module.Slug}/admin", StringComparison.Ordinal));
 
     private bool IsActive(string path) =>
         Navigation.Uri.Contains(path, StringComparison.Ordinal);

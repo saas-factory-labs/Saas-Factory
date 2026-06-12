@@ -1,4 +1,4 @@
-using AppBlueprint.DeveloperCli.Utilities;
+﻿using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -15,7 +15,7 @@ internal static class DatabaseCommand
             string command = @"$env:PATH += "";$env:USERPROFILE\.dotnet\tools""";
             CliUtilities.RunShellCommand(command, "Success", "Error");
 
-            AnsiConsole.MarkupLine("[yellow]🟡 Entering the database migration handler...[/]");
+            AnsiConsole.MarkupLine("[yellow]ðŸŸ¡ Entering the database migration handler...[/]");
 
             // Get connection string from env variable or prompt the user
             string connectionString =
@@ -31,13 +31,13 @@ internal static class DatabaseCommand
             // List migrations with explicit context and startup project
             string listCommand =
                 $"dotnet ef migrations list --project \"{efProject}\" --startup-project \"{startupProject}\" --context ApplicationDbContext";
-            AnsiConsole.MarkupLine($"[yellow]🛠 Running command: {listCommand}[/]");
+            AnsiConsole.MarkupLine($"[yellow]ðŸ›  Running command: {listCommand}[/]");
             bool listResult = CliUtilities.RunShellCommand(listCommand,
                 "Current migrations listed.", "Failed to list migrations.", efProject);
             if (!listResult)
             {
                 AnsiConsole.MarkupLine(
-                    "[red]❌ Error listing migrations. Available DbContexts will be listed below:[/]");
+                    "[red]âŒ Error listing migrations. Available DbContexts will be listed below:[/]");
                 CliUtilities.RunShellCommand(
                     $"dotnet ef dbcontext list --project \"{efProject}\" --startup-project \"{startupProject}\"",
                     "Available DbContexts listed above.", "Failed to list DbContexts.", efProject);
@@ -48,19 +48,19 @@ internal static class DatabaseCommand
             string migrationName = AnsiConsole.Ask<string>("[green]Enter the migration name:[/]");
             if (string.IsNullOrWhiteSpace(migrationName))
             {
-                AnsiConsole.MarkupLine("[red]❌ Migration name cannot be empty. Exiting.[/]");
+                AnsiConsole.MarkupLine("[red]âŒ Migration name cannot be empty. Exiting.[/]");
                 return;
             }
 
             // Add migration with explicit context and startup project
             string addCommand =
                 $"dotnet ef migrations add {migrationName} --project \"{efProject}\" --startup-project \"{startupProject}\" --context ApplicationDbContext";
-            AnsiConsole.MarkupLine($"[yellow]🛠 Running command: {addCommand}[/]");
+            AnsiConsole.MarkupLine($"[yellow]ðŸ›  Running command: {addCommand}[/]");
             bool addResult = CliUtilities.RunShellCommand(addCommand,
                 "Database migration added.", "Failed to add migration.", efProject);
             if (!addResult)
             {
-                AnsiConsole.MarkupLine("[red]❌ Error adding migration.[/]");
+                AnsiConsole.MarkupLine("[red]âŒ Error adding migration.[/]");
                 return;
             }
 
@@ -68,17 +68,17 @@ internal static class DatabaseCommand
             {
                 string updateCommand =
                     $"dotnet ef database update --project \"{efProject}\" --startup-project \"{startupProject}\" --context ApplicationDbContext --connection \"{connectionString}\"";
-                AnsiConsole.MarkupLine($"[yellow]🛠 Running command: {updateCommand}[/]");
+                AnsiConsole.MarkupLine($"[yellow]ðŸ›  Running command: {updateCommand}[/]");
                 bool updateResult = CliUtilities.RunShellCommand(updateCommand,
                     "Database updated successfully!", "Failed to update database.", efProject);
-                if (!updateResult) AnsiConsole.MarkupLine("[red]❌ Error updating database.[/]");
+                if (!updateResult) AnsiConsole.MarkupLine("[red]âŒ Error updating database.[/]");
             }
             else
             {
-                AnsiConsole.MarkupLine("[yellow]⚠️ Migration was created but not applied.[/]");
+                AnsiConsole.MarkupLine("[yellow]âš ï¸ Migration was created but not applied.[/]");
             }
 
-            AnsiConsole.MarkupLine("[green]🎉 Migration process completed![/]");
+            AnsiConsole.MarkupLine("[green]ðŸŽ‰ Migration process completed![/]");
         });
 
         return command;
@@ -86,7 +86,7 @@ internal static class DatabaseCommand
 
     public static void ExecuteInteractive()
     {
-        AnsiConsole.MarkupLine("[yellow]🟡 Entering the database migration handler...[/]");
+        AnsiConsole.MarkupLine("[yellow]ðŸŸ¡ Entering the database migration handler...[/]");
 
         // Get connection string from env variable or prompt the user
         string connectionString =
@@ -114,6 +114,7 @@ internal static class DatabaseCommand
             "Database updated successfully!",
             "Failed to update database.");
 
-        AnsiConsole.MarkupLine("[green]🎉 Migration process completed![/]");
+        AnsiConsole.MarkupLine("[green]ðŸŽ‰ Migration process completed![/]");
     }
 }
+

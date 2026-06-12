@@ -1,0 +1,426 @@
+@page "/blog/{Slug}"
+@using System.Globalization
+@using System.Text.Encodings.Web
+@using System.Text.Json
+@using AppBlueprint.Application.Models.Blog
+@using AppBlueprint.Application.Services.Blog
+@using AppBlueprint.UiKit.Models.Blog
+@using Microsoft.Extensions.Options
+@inject IBlogContentService BlogContentService
+@inject IOptions<AppBlueprintBlogOptions> BlogOptions
+@inject NavigationManager NavigationManager
+
+<PageTitle>@(_article is null ? $"{Options.ArticleNotFoundEyebrow} | {Options.SiteName}" : $"{_article.Title} | {Options.SiteName}")</PageTitle>
+
+@if (_article is null)
+{
+    <HeadContent>
+        <meta name="robots" content="noindex, nofollow" />
+    </HeadContent>
+}
+else
+{
+    <HeadContent>
+        <meta name="description" content="@_article.Excerpt" />
+        <link rel="canonical" href="@ArticleCanonicalUrl" />
+
+        @if (ShouldIndexCurrentHost)
+        {
+            <meta name="robots" content="index, follow, max-image-preview:large" />
+        }
+        else
+        {
+            <meta name="robots" content="noindex, nofollow" />
+        }
+
+        <meta property="og:locale" content="@Options.Locale" />
+        <meta property="og:site_name" content="@Options.SiteName" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="@($"{_article.Title} | {Options.SiteName}")" />
+        <meta property="og:description" content="@_article.Excerpt" />
+        <meta property="og:url" content="@ArticleCanonicalUrl" />
+        <meta property="og:image" content="@_article.ImagePath" />
+        <meta property="og:image:alt" content="@_article.ImageAlt" />
+        <meta property="article:published_time" content="@ToIsoDate(_article.PublishedOn)" />
+        <meta property="article:modified_time" content="@ToIsoDate(_article.UpdatedOn)" />
+        <meta property="article:section" content="@_article.Category" />
+
+        @foreach (string tag in _article.Tags)
+        {
+            <meta property="article:tag" content="@tag" />
+        }
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="@($"{_article.Title} | {Options.SiteName}")" />
+        <meta name="twitter:description" content="@_article.Excerpt" />
+        <meta name="twitter:image" content="@_article.ImagePath" />
+
+        <script type="application/ld+json">@((MarkupString)BuildArticleStructuredData())</script>
+    </HeadContent>
+}
+
+<div class="space-y-8 pb-10 pt-6">
+    @if (_article is null)
+    {
+        <section class="rounded-3xl bg-white px-6 py-10 shadow-sm ring-1 ring-slate-200/70 sm:px-10">
+            <span class="inline-flex rounded-full bg-red-50 px-4 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-red-600">
+                @Options.ArticleNotFoundEyebrow
+            </span>
+            <h1 class="mt-5 text-4xl font-black tracking-tight text-slate-950">@Options.ArticleNotFoundTitle</h1>
+            <p class="mt-4 max-w-2xl text-base leading-8 text-slate-600">
+                @Options.ArticleNotFoundDescription
+            </p>
+
+            <div class="mt-8 grid gap-4 md:grid-cols-3">
+                @foreach (BlogArticle article in _fallbackArticles)
+                {
+                    <a href="@BuildBlogArticlePath(article)" class="rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white hover:shadow-lg hover:shadow-blue-950/5">
+                        <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">@FormatDate(article.PublishedOn, "d. MMMM yyyy")</div>
+                        <h2 class="mt-3 text-2xl font-black tracking-tight text-slate-950">@article.Title</h2>
+                        <p class="mt-3 text-sm leading-7 text-slate-600">@article.Excerpt</p>
+                    </a>
+                }
+            </div>
+        </section>
+    }
+    else
+    {
+        <section class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200/70">
+            <div class="grid xl:grid-cols-[minmax(0,1fr)_340px]">
+                <div class="relative min-h-[460px] overflow-hidden">
+                    <img src="@_article.ImagePath" alt="@_article.ImageAlt" class="absolute inset-0 h-full w-full object-cover" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/35 to-slate-950/10"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950/45 to-transparent"></div>
+
+                    <div class="relative z-10 flex min-h-[460px] flex-col justify-end p-6 sm:p-10 lg:p-12">
+                        <div class="flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/90">
+                            <span class="rounded-full border border-white/30 bg-white/10 px-3 py-1 backdrop-blur">@_article.Category</span>
+                            <span class="rounded-full border border-white/20 bg-slate-900/35 px-3 py-1 backdrop-blur">@FormatDate(_article.PublishedOn, "d. MMMM yyyy")</span>
+                            <span class="rounded-full border border-white/20 bg-slate-900/35 px-3 py-1 backdrop-blur">@_article.ReadMinutes @Options.ReadTimeSuffix</span>
+                        </div>
+
+                        <p class="mt-5 text-sm font-semibold uppercase tracking-[0.24em] text-blue-200">@_article.HeroLabel</p>
+                        <h1 class="mt-3 max-w-4xl text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+                            @_article.Title
+                        </h1>
+                        <p class="mt-5 max-w-3xl text-base leading-8 text-slate-200 sm:text-lg">
+                            @_article.Excerpt
+                        </p>
+                    </div>
+                </div>
+
+                <aside class="flex flex-col justify-between gap-6 bg-slate-950 p-6 text-white sm:p-8">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-blue-200">@Options.KeyPointsEyebrow</p>
+                        <h2 class="mt-3 text-3xl font-black tracking-tight">@Options.KeyPointsHeading</h2>
+                        <ul class="mt-5 space-y-4 text-sm leading-7 text-slate-200">
+                            @foreach (string point in _article.KeyPoints)
+                            {
+                                <li class="flex gap-3">
+                                    <span class="mt-2 h-2.5 w-2.5 flex-none rounded-full bg-blue-300"></span>
+                                    <span>@point</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
+                    <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-200">@Options.NextStepEyebrow</p>
+                        <h3 class="mt-2 text-2xl font-black tracking-tight">@Options.NextStepHeading</h3>
+                        <p class="mt-3 text-sm leading-7 text-slate-300">
+                            @Options.NextStepDescription
+                        </p>
+                        <a href="@Options.NextStepCtaHref" class="mt-5 inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-blue-50 hover:text-blue-700">
+                            @Options.NextStepCtaText
+                        </a>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="border-t border-slate-200 bg-white px-6 py-5 sm:px-10">
+                <div class="flex flex-wrap gap-3 text-sm text-slate-600">
+                    <span class="rounded-full bg-slate-100 px-4 py-2 font-semibold text-slate-700">@Options.AuthorName</span>
+                    <span class="rounded-full bg-slate-100 px-4 py-2 font-semibold text-slate-700">@Options.UpdatedPrefix @FormatDate(_article.UpdatedOn, "d. MMMM yyyy")</span>
+                    <span class="rounded-full bg-slate-100 px-4 py-2 font-semibold text-slate-700">@_article.Category</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <article class="rounded-3xl bg-white px-6 py-8 text-slate-700 shadow-sm ring-1 ring-slate-200/70 sm:px-10 sm:py-10">
+                <p class="m-0 text-[1.15rem] leading-[1.9] text-slate-900">@_article.Introduction</p>
+
+                <div class="mt-8 rounded-3xl border border-blue-100 bg-blue-50/80 p-6">
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700">@Options.KeyPointsHeading</p>
+                    <ul class="mt-4 space-y-3">
+                        @foreach (string point in _article.KeyPoints)
+                        {
+                            <li class="flex gap-3">
+                                <span class="mt-2 h-2.5 w-2.5 flex-none rounded-full bg-blue-600"></span>
+                                <span>@point</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                @foreach (BlogArticleSection contentSection in _article.Sections)
+                {
+                    <section class="mt-10">
+                        <h2 class="m-0 text-3xl font-black leading-tight tracking-tight text-slate-950">@contentSection.Heading</h2>
+
+                        @foreach (string paragraph in contentSection.Paragraphs)
+                        {
+                            <p class="mt-5 text-base leading-8">@paragraph</p>
+                        }
+
+                        @if (contentSection.BulletPoints is { Count: > 0 })
+                        {
+                            <ul class="mt-6 space-y-3">
+                                @foreach (string bulletPoint in contentSection.BulletPoints)
+                                {
+                                    <li class="relative pl-6 text-base leading-8 before:absolute before:left-0 before:top-3 before:h-2 before:w-2 before:rounded-full before:bg-blue-600">@bulletPoint</li>
+                                }
+                            </ul>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(contentSection.Highlight))
+                        {
+                            <div class="mt-6 rounded-2xl border-l-4 border-blue-600 bg-gradient-to-br from-blue-50 to-white px-5 py-4 font-bold leading-8 text-slate-900">
+                                @contentSection.Highlight
+                            </div>
+                        }
+                    </section>
+                }
+            </article>
+
+            <aside class="space-y-6 lg:sticky lg:top-24 lg:self-start">
+                <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70">
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-600">@Options.RelatedArticlesEyebrow</p>
+                    <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">@Options.RelatedArticlesHeading</h2>
+
+                    <div class="mt-5 space-y-4">
+                        @foreach (BlogArticle article in _relatedArticles)
+                        {
+                            <a href="@BuildBlogArticlePath(article)" class="group block rounded-3xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white hover:shadow-lg hover:shadow-blue-950/5">
+                                <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">@FormatDate(article.PublishedOn, "d. MMMM yyyy")</div>
+                                <h3 class="mt-2 text-xl font-black leading-tight tracking-tight text-slate-950 transition group-hover:text-blue-700">
+                                    @article.Title
+                                </h3>
+                                <p class="mt-2 text-sm leading-7 text-slate-600">@article.Excerpt</p>
+                            </a>
+                        }
+                    </div>
+                </section>
+
+                <section class="rounded-3xl bg-slate-950 p-6 text-white shadow-[0_24px_60px_-40px_rgba(15,23,42,0.8)]">
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-200">@Options.TagsHeading</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        @foreach (string tag in _article.Tags)
+                        {
+                            <span class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-200">@tag</span>
+                        }
+                    </div>
+                    <div class="mt-6 rounded-3xl border border-white/10 bg-white/5 p-5">
+                        <h3 class="text-2xl font-black tracking-tight">@Options.ArticleCtaHeading</h3>
+                        <p class="mt-3 text-sm leading-7 text-slate-300">
+                            @Options.ArticleCtaDescription
+                        </p>
+                        <div class="mt-5 flex flex-wrap gap-3">
+                            <a href="@Options.ArticleCtaPrimaryHref" class="inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-blue-50 hover:text-blue-700">
+                                @Options.ArticleCtaPrimaryText
+                            </a>
+                            <a href="@Options.BlogPath" class="inline-flex items-center justify-center rounded-full border border-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/30 hover:bg-white/5">
+                                @Options.BackToBlogText
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    private BlogArticle? _article;
+    private IReadOnlyList<BlogArticle> _relatedArticles = Array.Empty<BlogArticle>();
+    private IReadOnlyList<BlogArticle> _fallbackArticles = Array.Empty<BlogArticle>();
+    private static readonly JsonSerializerOptions _jsonLdOptions = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+
+    private AppBlueprintBlogOptions Options => BlogOptions.Value;
+
+    private bool ShouldIndexCurrentHost
+        => Options.ShouldIndexHost(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Host);
+
+    private string SiteUrl
+        => NavigationManager.ToAbsoluteUri("/").ToString();
+
+    private string SiteLogoUrl
+        => NavigationManager.ToAbsoluteUri(Options.LogoPath).ToString();
+
+    private string BlogUrl
+        => NavigationManager.ToAbsoluteUri(Options.BlogPath).ToString();
+
+    private string ArticleCanonicalUrl
+        => _article is null
+            ? string.Empty
+            : NavigationManager.ToAbsoluteUri(BuildBlogArticlePath(_article)).ToString();
+
+    protected override void OnParametersSet()
+    {
+        _article = BlogContentService.GetArticle(Slug);
+
+        if (_article is null)
+        {
+            NavigationManager.NotFound();
+        }
+
+        _relatedArticles = _article is null
+            ? Array.Empty<BlogArticle>()
+            : BlogContentService.GetRelatedArticles(Slug);
+        _fallbackArticles = BlogContentService.GetAllArticles().Take(3).ToArray();
+    }
+
+    private string BuildBlogArticlePath(BlogArticle article)
+        => $"{Options.BlogPath.TrimEnd('/')}/{Uri.EscapeDataString(article.Slug)}";
+
+    private string FormatDate(DateOnly date, string format)
+        => date.ToString(format, ResolveCulture());
+
+    private CultureInfo ResolveCulture()
+    {
+        try
+        {
+            return CultureInfo.GetCultureInfo(Options.CultureName);
+        }
+        catch (CultureNotFoundException)
+        {
+            return CultureInfo.InvariantCulture;
+        }
+    }
+
+    private string BuildArticleStructuredData()
+    {
+        if (_article is null)
+        {
+            return string.Empty;
+        }
+
+        var structuredData = new object[]
+        {
+            new Dictionary<string, object?>
+            {
+                ["@context"] = "https://schema.org",
+                ["@type"] = "BlogPosting",
+                ["headline"] = _article.Title,
+                ["description"] = _article.Excerpt,
+                ["image"] = _article.ImagePath,
+                ["datePublished"] = ToIsoDate(_article.PublishedOn),
+                ["dateModified"] = ToIsoDate(_article.UpdatedOn),
+                ["timeRequired"] = $"PT{_article.ReadMinutes}M",
+                ["wordCount"] = CountWords(_article),
+                ["articleSection"] = _article.Category,
+                ["keywords"] = string.Join(", ", _article.Tags),
+                ["inLanguage"] = Options.Language,
+                ["url"] = ArticleCanonicalUrl,
+                ["mainEntityOfPage"] = ArticleCanonicalUrl,
+                ["isPartOf"] = BlogUrl,
+                ["author"] = CreateAuthorSchema(),
+                ["publisher"] = CreatePublisherSchema()
+            },
+            new Dictionary<string, object?>
+            {
+                ["@context"] = "https://schema.org",
+                ["@type"] = "BreadcrumbList",
+                ["itemListElement"] = new object[]
+                {
+                    new Dictionary<string, object?>
+                    {
+                        ["@type"] = "ListItem",
+                        ["position"] = 1,
+                        ["name"] = Options.HomeBreadcrumbName,
+                        ["item"] = SiteUrl
+                    },
+                    new Dictionary<string, object?>
+                    {
+                        ["@type"] = "ListItem",
+                        ["position"] = 2,
+                        ["name"] = Options.BlogBreadcrumbName,
+                        ["item"] = BlogUrl
+                    },
+                    new Dictionary<string, object?>
+                    {
+                        ["@type"] = "ListItem",
+                        ["position"] = 3,
+                        ["name"] = _article.Title,
+                        ["item"] = ArticleCanonicalUrl
+                    }
+                }
+            }
+        };
+
+        return JsonSerializer.Serialize(structuredData, _jsonLdOptions);
+    }
+
+    private Dictionary<string, object?> CreateAuthorSchema()
+    {
+        return new Dictionary<string, object?>
+        {
+            ["@type"] = "Organization",
+            ["name"] = Options.AuthorName
+        };
+    }
+
+    private Dictionary<string, object?> CreatePublisherSchema()
+    {
+        return new Dictionary<string, object?>
+        {
+            ["@type"] = "Organization",
+            ["name"] = Options.SiteName,
+            ["url"] = SiteUrl,
+            ["logo"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "ImageObject",
+                ["url"] = SiteLogoUrl
+            }
+        };
+    }
+
+    private static int CountWords(BlogArticle article)
+    {
+        var textParts = new List<string>
+        {
+            article.Title,
+            article.Excerpt,
+            article.Introduction,
+            string.Join(' ', article.KeyPoints)
+        };
+
+        foreach (BlogArticleSection section in article.Sections)
+        {
+            textParts.Add(section.Heading);
+            textParts.Add(string.Join(' ', section.Paragraphs));
+
+            if (section.BulletPoints is { Count: > 0 })
+            {
+                textParts.Add(string.Join(' ', section.BulletPoints));
+            }
+
+            if (!string.IsNullOrWhiteSpace(section.Highlight))
+            {
+                textParts.Add(section.Highlight);
+            }
+        }
+
+        return string.Join(' ', textParts)
+            .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
+            .Length;
+    }
+
+    private static string ToIsoDate(DateOnly date)
+        => date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc).ToString("yyyy-MM-dd'T'HH:mm:ss'Z'", CultureInfo.InvariantCulture);
+}

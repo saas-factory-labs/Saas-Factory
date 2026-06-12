@@ -1,4 +1,4 @@
-using AppBlueprint.DeveloperCli.Utilities;
+﻿using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -10,10 +10,11 @@ internal static class RouteCommand
 
         var listCommand = new Command("list", "List all route endpoints from the running API");
 
-        var urlOption = new Option<string>(
-            "--url",
-            () => "https://localhost:7001",
-            "Base URL of the API to scan for routes");
+        var urlOption = new Option<string>("--url")
+        {
+            Description = "Base URL of the API to scan for routes",
+            DefaultValueFactory = _ => "https://localhost:7001"
+        };
 
         listCommand.AddOption(urlOption);
 
@@ -86,4 +87,6 @@ internal static class RouteCommand
         DisplayRoutes(endpoints);
     }
 }
+
+
 

@@ -1,0 +1,4 @@
+@* RCL pages do NOT inherit the host's _Imports.razor: this attribute is the kernel's own
+   role gate and must stay - removing it is caught by AdminPortalSecurityInspector. *@
+@using AppBlueprint.Application.Constants
+@attribute [Authorize(Roles = Roles.DeploymentManagerAdmin)]

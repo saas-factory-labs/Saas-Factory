@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -15,40 +15,19 @@ internal static class TestCommand
         var command = new Command("test", "Run tests with optional coverage and filtering");
 
         // Options
-        var watchOption = new Option<bool>(
-            "--watch",
-            description: "Run tests in watch mode (auto-rerun on file changes)",
-            getDefaultValue: () => false);
+        var watchOption = new Option<bool>("--watch") { Description = "Run tests in watch mode (auto-rerun on file changes)", DefaultValueFactory = _ => false };
 
-        var coverageOption = new Option<bool>(
-            "--coverage",
-            description: "Generate code coverage report",
-            getDefaultValue: () => false);
+        var coverageOption = new Option<bool>("--coverage") { Description = "Generate code coverage report", DefaultValueFactory = _ => false };
 
-        var filterOption = new Option<string?>(
-            "--filter",
-            description: "Filter tests by name or category (e.g., 'FullyQualifiedName~UnitTests')",
-            getDefaultValue: () => null);
+        var filterOption = new Option<string?>("--filter") { Description = "Filter tests by name or category (e.g., 'FullyQualifiedName~UnitTests')", DefaultValueFactory = _ => null };
 
-        var projectOption = new Option<string?>(
-            "--project",
-            description: "Path to specific test project (default: all test projects)",
-            getDefaultValue: () => null);
+        var projectOption = new Option<string?>("--project") { Description = "Path to specific test project (default: all test projects)", DefaultValueFactory = _ => null };
 
-        var verbosityOption = new Option<string>(
-            "--verbosity",
-            description: "Logging verbosity (quiet, minimal, normal, detailed, diagnostic)",
-            getDefaultValue: () => "normal");
+        var verbosityOption = new Option<string>("--verbosity") { Description = "Logging verbosity (quiet, minimal, normal, detailed, diagnostic)", DefaultValueFactory = _ => "normal" };
 
-        var noRestoreOption = new Option<bool>(
-            "--no-restore",
-            description: "Do not restore dependencies before running tests",
-            getDefaultValue: () => false);
+        var noRestoreOption = new Option<bool>("--no-restore") { Description = "Do not restore dependencies before running tests", DefaultValueFactory = _ => false };
 
-        var noBuildOption = new Option<bool>(
-            "--no-build",
-            description: "Do not build the project before running tests",
-            getDefaultValue: () => false);
+        var noBuildOption = new Option<bool>("--no-build") { Description = "Do not build the project before running tests", DefaultValueFactory = _ => false };
 
         command.AddOption(watchOption);
         command.AddOption(coverageOption);
@@ -139,8 +118,8 @@ internal static class TestCommand
             .AddColumn(new TableColumn("[cyan]Setting[/]"))
             .AddColumn(new TableColumn("[cyan]Value[/]"));
 
-        configTable.AddRow("Watch Mode", watch ? "[green]✓ Enabled[/]" : "[dim]Disabled[/]");
-        configTable.AddRow("Coverage", coverage ? "[green]✓ Enabled[/]" : "[dim]Disabled[/]");
+        configTable.AddRow("Watch Mode", watch ? "[green]âœ“ Enabled[/]" : "[dim]Disabled[/]");
+        configTable.AddRow("Coverage", coverage ? "[green]âœ“ Enabled[/]" : "[dim]Disabled[/]");
         configTable.AddRow("Filter", !string.IsNullOrEmpty(filter) ? $"[yellow]{filter}[/]" : "[dim]None[/]");
         configTable.AddRow("Project", project ?? "[dim]All test projects[/]");
         configTable.AddRow("Verbosity", verbosity);
@@ -157,7 +136,7 @@ internal static class TestCommand
         if (watch)
         {
             // For watch mode, show a message and run directly
-            AnsiConsole.MarkupLine("[yellow]⚡ Running tests in watch mode. Press Ctrl+C to exit.[/]");
+            AnsiConsole.MarkupLine("[yellow]âš¡ Running tests in watch mode. Press Ctrl+C to exit.[/]");
             AnsiConsole.WriteLine();
 
             await RunTestProcess(command, workingDirectory, watch: true);
@@ -176,7 +155,7 @@ internal static class TestCommand
         if (coverage && !watch)
         {
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[cyan]📊 Coverage report generated in: ./coverage/[/]");
+            AnsiConsole.MarkupLine("[cyan]ðŸ“Š Coverage report generated in: ./coverage/[/]");
         }
     }
 
@@ -197,7 +176,7 @@ internal static class TestCommand
 
         if (process is null)
         {
-            AnsiConsole.MarkupLine("[red]✗ Failed to start test process[/]");
+            AnsiConsole.MarkupLine("[red]âœ— Failed to start test process[/]");
             return;
         }
 
@@ -228,7 +207,7 @@ internal static class TestCommand
             AnsiConsole.WriteLine();
             if (process.ExitCode == 0)
             {
-                var panel = new Panel("[green]✓ All tests passed![/]")
+                var panel = new Panel("[green]âœ“ All tests passed![/]")
                 {
                     Border = BoxBorder.Rounded,
                     BorderStyle = new Style(Color.Green)
@@ -237,7 +216,7 @@ internal static class TestCommand
             }
             else
             {
-                var panel = new Panel($"[red]✗ Tests failed with exit code: {process.ExitCode}[/]")
+                var panel = new Panel($"[red]âœ— Tests failed with exit code: {process.ExitCode}[/]")
                 {
                     Border = BoxBorder.Rounded,
                     BorderStyle = new Style(Color.Red)
@@ -320,3 +299,4 @@ internal static class TestCommand
         }
     }
 }
+

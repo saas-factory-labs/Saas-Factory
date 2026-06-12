@@ -32,6 +32,14 @@ WORKDIR /app
 # Copy published app with proper ownership
 COPY --from=publish --chown=$APP_UID:$APP_UID /app/publish .
 
+# Admin portal plugin modules (Flow 2): the CI pipeline runs
+# Scripts/download-admin-plugins.ps1 first, which always creates the plugins/ folder
+# (empty when no plugins are configured) and fills it with private admin dlls
+# downloaded from the GitHub Packages feed. Private dlls only ever exist inside this
+# image - never in the public repo.
+COPY --chown=$APP_UID:$APP_UID plugins/ ./plugins/
+ENV AdminPortal__PluginsPath=/app/plugins
+
 # Security hardening environment variables
 ENV ASPNETCORE_URLS=http://+:8080 \
     DOTNET_GENERATE_ASPNET_CERTIFICATE=false \

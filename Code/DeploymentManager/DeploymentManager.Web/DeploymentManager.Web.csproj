@@ -24,6 +24,19 @@
         <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
         <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\Infrastructure\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
     <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
+        <!-- Admin portal shell: generic kernel only - per-app admin modules are NEVER
+             referenced here; they load at runtime from the plugins folder. -->
+        <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.AdminPortalKernel\AppBlueprint.AdminPortalKernel.csproj" />
+    </ItemGroup>
+
+    <!-- dotnet watch restarts when an admin plugin dll is copied into the shared
+         local-plugins folder (sibling of the repo root). Override with
+         -p:AdminPluginsWatchPath=<folder> if your folder lives elsewhere. -->
+    <PropertyGroup>
+        <AdminPluginsWatchPath Condition="'$(AdminPluginsWatchPath)' == ''">..\..\..\..\local-plugins</AdminPluginsWatchPath>
+    </PropertyGroup>
+    <ItemGroup Condition="Exists('$(AdminPluginsWatchPath)')">
+        <Watch Include="$(AdminPluginsWatchPath)\*.dll" />
     </ItemGroup>
 
 </Project>

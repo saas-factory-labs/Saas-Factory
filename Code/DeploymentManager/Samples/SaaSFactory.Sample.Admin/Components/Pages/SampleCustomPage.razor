@@ -1,0 +1,17 @@
+@page "/apps/sample/admin/custom"
+
+@* Proves that a plugin can ship its own pages beyond the kernel's generic ones.
+   Routes must stay under /apps/{slug}/ - enforced by the security inspector. *@
+
+<PageTitle>Sample App - Custom page</PageTitle>
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Sample custom admin page</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+            This page is compiled into SaaSFactory.Sample.Admin.dll and loaded into the
+            DeploymentManager shell at runtime. App-specific admin features
+            (e.g. dating profile moderation) live on pages like this one.
+        </p>
+    </div>
+</div>

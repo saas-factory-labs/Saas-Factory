@@ -1,0 +1,40 @@
+@* Shared header for all admin portal pages: app name, page title and tab navigation. *@
+
+<div class="mb-8">
+    <div class="mb-4 sm:flex sm:justify-between sm:items-center">
+        <div>
+            <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">@Title</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400">@ModuleDisplayName admin portal</p>
+        </div>
+    </div>
+
+    <div class="relative mb-2">
+        <div class="absolute bottom-0 w-full h-px bg-gray-200 dark:bg-gray-700/60" aria-hidden="true"></div>
+        <ul class="relative text-sm font-medium flex flex-nowrap -mx-4 sm:-mx-6 lg:-mx-8 overflow-x-scroll no-scrollbar">
+            @foreach ((string label, string href) in Tabs)
+            {
+                <li class="mr-6 last:mr-0 first:pl-4 sm:first:pl-6 lg:first:pl-8 last:pr-4 sm:last:pr-6 lg:last:pr-8">
+                    <NavLink href="@href" Match="NavLinkMatch.All"
+                             class="block pb-3 text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 whitespace-nowrap"
+                             ActiveClass="block pb-3 text-violet-500 border-b-2 border-violet-500 whitespace-nowrap">
+                        @label
+                    </NavLink>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string AppSlug { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string ModuleDisplayName { get; set; } = string.Empty;
+
+    private IEnumerable<(string Label, string Href)> Tabs =>
+    [
+        ("Dashboard", $"/apps/{AppSlug}/admin"),
+        ("Users", $"/apps/{AppSlug}/admin/users"),
+        ("Tenants", $"/apps/{AppSlug}/admin/tenants"),
+        ("Audit log", $"/apps/{AppSlug}/admin/audit")
+    ];
+}

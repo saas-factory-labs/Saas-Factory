@@ -1,4 +1,4 @@
-using AppBlueprint.DeveloperCli.Utilities;
+﻿using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -6,8 +6,8 @@ internal static class SolutionCommand
 {
     public static Command Create()
     {
-        var nameOption = new Option<string>("--name", "The name of the solution.") { IsRequired = true };
-        var createRepoOption = new Option<bool>("--create-repo", "Set to true to create a GitHub repository for the solution.");
+        var nameOption = new Option<string>("--name") { Description = "The name of the solution.", Required = true };
+        var createRepoOption = new Option<bool>("--create-repo") { Description = "Set to true to create a GitHub repository for the solution." };
 
         var command = new Command("create-solution",
             "Create a new SaaS app solution with an optional GitHub repository.")
@@ -42,3 +42,4 @@ internal static class SolutionCommand
                 "GitHub repository created successfully!", "Failed to create GitHub repository.");
     }
 }
+

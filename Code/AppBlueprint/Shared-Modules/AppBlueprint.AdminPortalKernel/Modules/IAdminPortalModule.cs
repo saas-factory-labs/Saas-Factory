@@ -1,0 +1,43 @@
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace AppBlueprint.AdminPortalKernel.Modules;
+
+/// <summary>
+/// Contract implemented by every per-app admin portal module (plugin).
+/// A module is shipped as a Razor Class Library dll (e.g. SaaSFactory.Dating.Admin.dll),
+/// loaded by the DeploymentManager shell either at runtime from the plugins folder or
+/// registered at compile time, and rendered inside the shell's authenticated UI.
+/// </summary>
+public interface IAdminPortalModule
+{
+    /// <summary>
+    /// URL-safe identifier for the app (lowercase letters, digits, hyphens).
+    /// All module routes live under <c>/apps/{Slug}/admin</c> and the app database
+    /// connection string is resolved from <c>AdminPortal:Modules:{Slug}:ConnectionString</c>.
+    /// </summary>
+    string Slug { get; }
+
+    /// <summary>Human-readable name shown in the shell navigation (e.g. "Dating App").</summary>
+    string DisplayName { get; }
+
+    /// <summary>
+    /// Optional inline SVG markup for the shell navigation entry (Cruip/Tailwind style,
+    /// matching the UiKit sidebar icons). Null renders the shell's default icon.
+    /// </summary>
+    string? Icon => null;
+
+    /// <summary>
+    /// Assembly containing the module's routable Blazor components.
+    /// Added to the shell Router's AdditionalAssemblies.
+    /// </summary>
+    Assembly RouterAssembly => GetType().Assembly;
+
+    /// <summary>Optional extra navigation items beyond the generic dashboard/users/tenants/audit pages.</summary>
+    IReadOnlyList<AdminPortalNavItem> ExtraNavItems => Array.Empty<AdminPortalNavItem>();
+
+    /// <summary>Optional hook for registering module-specific services in the host container.</summary>
+    void ConfigureServices(IServiceCollection services)
+    {
+    }
+}

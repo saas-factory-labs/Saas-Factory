@@ -1,4 +1,4 @@
-using AppBlueprint.DeveloperCli.Utilities;
+﻿using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -6,9 +6,9 @@ internal static class ItemCommand
 {
     public static Command Create()
     {
-        var nameOption = new Option<string>("--name", "The name of the item.") { IsRequired = true };
-        var templateOption = new Option<string>("--template", "The item template to use.") { IsRequired = true };
-        var locationOption = new Option<string>("--location", "The location to create the item.") { IsRequired = true };
+        var nameOption = new Option<string>("--name") { Description = "The name of the item.", Required = true };
+        var templateOption = new Option<string>("--template") { Description = "The item template to use.", Required = true };
+        var locationOption = new Option<string>("--location") { Description = "The location to create the item.", Required = true };
 
         var command = new Command("create-item", "Create a new item in the SaaS app solution.")
         {
@@ -36,4 +36,5 @@ internal static class ItemCommand
             "Failed to create item.");
     }
 }
+
 

@@ -1,4 +1,4 @@
-using AppBlueprint.DeveloperCli.Utilities;
+﻿using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -6,7 +6,7 @@ internal static class GithubActionWorkflowCommand
 {
     public static Command Create()
     {
-        var saasNameOption = new Option<string>("--saas-name", "Name of the SaaS App") { IsRequired = true };
+        var saasNameOption = new Option<string>("--saas-name") { Description = "Name of the SaaS App", Required = true };
 
         var command = new Command("create-github-action-workflows", "Create github action workflows for a new SaaS app")
         {
@@ -55,3 +55,4 @@ internal static class GithubActionWorkflowCommand
                 "GitHub repository created successfully!", "Failed to create GitHub repository.");
     }
 }
+

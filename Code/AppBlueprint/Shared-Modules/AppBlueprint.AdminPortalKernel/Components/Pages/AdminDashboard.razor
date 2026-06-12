@@ -1,0 +1,106 @@
+@page "/apps/{AppSlug}/admin"
+@inject AdminPortalModuleRegistry Registry
+@inject IDashboardService DashboardService
+@inject IAdminAuditReader AuditReader
+
+<PageTitle>@(_module?.DisplayName ?? AppSlug) - Admin</PageTitle>
+
+@if (_module is null)
+{
+    <ModuleNotFound Slug="@AppSlug"/>
+}
+else
+{
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+        <AdminPortalPageHeader AppSlug="@AppSlug" Title="Dashboard" ModuleDisplayName="@_module.DisplayName"/>
+
+        @if (_error is not null)
+        {
+            <div class="bg-red-500/20 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">@_error</div>
+        }
+        else if (_stats is null)
+        {
+            <p class="text-sm text-gray-500 dark:text-gray-400">Loading…</p>
+        }
+        else
+        {
+            <div class="grid grid-cols-12 gap-6 mb-8">
+                <DashboardStatCard Label="Total users" Value="@_stats.TotalUsers"/>
+                <DashboardStatCard Label="Active users" Value="@_stats.ActiveUsers"/>
+                <DashboardStatCard Label="Total tenants" Value="@_stats.TotalTenants"/>
+                <DashboardStatCard Label="Active tenants" Value="@_stats.ActiveTenants"/>
+                <DashboardStatCard Label="Signups last 30 days" Value="@_stats.SignupsLast30Days"/>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+                <div class="px-5 py-4">
+                    <h2 class="font-semibold text-gray-800 dark:text-gray-100">Latest admin activity</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table-auto w-full dark:text-gray-300">
+                        <thead class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-b border-gray-100 dark:border-gray-700/60">
+                        <tr>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">When (UTC)</th>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Admin</th>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Action</th>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Target</th>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Reason</th>
+                        </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
+                        @if (_recentAudit.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="5" class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">No admin activity yet</td>
+                            </tr>
+                        }
+                        @foreach (AdminAuditEntryEntity entry in _recentAudit)
+                        {
+                            <tr>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@entry.OccurredAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@entry.AdminEmail</td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@entry.Action</td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@entry.TargetType @entry.TargetId</td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3">@entry.Reason</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string AppSlug { get; set; } = string.Empty;
+
+    private IAdminPortalModule? _module;
+    private DashboardStats? _stats;
+    private IReadOnlyList<AdminAuditEntryEntity> _recentAudit = [];
+    private string? _error;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Registry.TryGet(AppSlug, out _module);
+        if (_module is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _error = null;
+            _stats = await DashboardService.GetStatsAsync(AppSlug);
+            _recentAudit = await AuditReader.GetRecentAsync(AppSlug, count: 10);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _error = "You are not authorized to view this admin portal.";
+        }
+        catch (InvalidOperationException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+}

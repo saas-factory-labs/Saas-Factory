@@ -16,6 +16,8 @@
         <!-- Referenced for AddJwtAuthentication only; its controllers are removed from
              application part discovery in Program.cs so they are not exposed by this API. -->
         <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.Presentation.ApiModule\AppBlueprint.Presentation.ApiModule.csproj" />
+        <!-- Owns the admin portal kernel's dm_admin_audit table via ConfigureAdminPortalKernel() -->
+        <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.AdminPortalKernel\AppBlueprint.AdminPortalKernel.csproj" />
     </ItemGroup>
 
     <ItemGroup>

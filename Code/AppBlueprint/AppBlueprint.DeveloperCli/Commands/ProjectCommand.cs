@@ -1,4 +1,4 @@
-using AppBlueprint.DeveloperCli.Utilities;
+﻿using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -6,8 +6,8 @@ internal static class ProjectCommand
 {
     public static Command Create()
     {
-        var nameOption = new Option<string>("--name", "The name of the project.") { IsRequired = true };
-        var templateOption = new Option<string>("--template", "The project template to use.") { IsRequired = true };
+        var nameOption = new Option<string>("--name") { Description = "The name of the project.", Required = true };
+        var templateOption = new Option<string>("--template") { Description = "The project template to use.", Required = true };
 
         var command = new Command("create-project", "Create a new project in the SaaS app solution.")
         {
@@ -33,3 +33,4 @@ internal static class ProjectCommand
             "Failed to create project.");
     }
 }
+

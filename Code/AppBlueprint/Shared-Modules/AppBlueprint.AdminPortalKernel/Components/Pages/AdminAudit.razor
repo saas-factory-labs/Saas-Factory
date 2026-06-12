@@ -1,0 +1,146 @@
+@page "/apps/{AppSlug}/admin/audit"
+@inject AdminPortalModuleRegistry Registry
+@inject IAdminAuditReader AuditReader
+
+<PageTitle>@(_module?.DisplayName ?? AppSlug) - Audit log</PageTitle>
+
+@if (_module is null)
+{
+    <ModuleNotFound Slug="@AppSlug"/>
+}
+else
+{
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+        <AdminPortalPageHeader AppSlug="@AppSlug" Title="Audit log" ModuleDisplayName="@_module.DisplayName"/>
+
+        @if (_error is not null)
+        {
+            <div class="bg-red-500/20 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">@_error</div>
+        }
+
+        <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+            <div class="px-5 py-4">
+                <div class="flex flex-wrap items-center gap-3">
+                    <input type="text" class="form-input" placeholder="Filter by action…"
+                           @bind="_actionFilter" @bind:event="oninput" @onkeydown="OnSearchKeyDown"/>
+                    <input type="date" class="form-input" @bind="_fromDate"/>
+                    <input type="date" class="form-input" @bind="_toDate"/>
+                    <button type="button"
+                            class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                            @onclick="() => LoadPageAsync(1)">
+                        Apply
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full dark:text-gray-300">
+                    <thead class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-b border-gray-100 dark:border-gray-700/60">
+                    <tr>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">When (UTC)</th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Admin</th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Action</th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Target</th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Tenant</th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Reason</th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
+                    @if (_page is null || _page.Items.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="6" class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
+                                @(_page is null ? "Loading…" : "No audit entries found")
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (AdminAuditEntryEntity entry in _page.Items)
+                        {
+                            <tr>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@entry.OccurredAtUtc.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@entry.AdminEmail</td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap"><code class="text-xs">@entry.Action</code></td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@entry.TargetType @entry.TargetId</td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap"><code class="text-xs">@(entry.TenantId ?? "-")</code></td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3">@entry.Reason</td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (_page is not null && TotalPages > 1)
+            {
+                <div class="px-5 py-4 border-t border-gray-100 dark:border-gray-700/60">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            Page @_page.Page of @TotalPages (@_page.TotalCount entries)
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300"
+                                    disabled="@(_page.Page <= 1)" @onclick="() => LoadPageAsync(_page.Page - 1)">
+                                Previous
+                            </button>
+                            <button type="button" class="btn bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 text-gray-800 dark:text-gray-300"
+                                    disabled="@(_page.Page >= TotalPages)" @onclick="() => LoadPageAsync(_page.Page + 1)">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string AppSlug { get; set; } = string.Empty;
+
+    private IAdminPortalModule? _module;
+    private PagedResult<AdminAuditEntryEntity>? _page;
+    private string _actionFilter = string.Empty;
+    private DateTime? _fromDate;
+    private DateTime? _toDate;
+    private string? _error;
+
+    private int TotalPages => _page is null ? 0 : (int)Math.Ceiling(_page.TotalCount / (double)_page.PageSize);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Registry.TryGet(AppSlug, out _module);
+        if (_module is not null)
+        {
+            await LoadPageAsync(1);
+        }
+    }
+
+    private async Task LoadPageAsync(int page)
+    {
+        try
+        {
+            _error = null;
+            _page = await AuditReader.SearchAsync(AppSlug, new AuditSearchRequest
+            {
+                ActionContains = _actionFilter,
+                FromUtc = _fromDate is null ? null : DateTime.SpecifyKind(_fromDate.Value.Date, DateTimeKind.Utc),
+                ToUtc = _toDate is null ? null : DateTime.SpecifyKind(_toDate.Value.Date.AddDays(1), DateTimeKind.Utc),
+                Page = page,
+                PageSize = 25
+            });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _error = "You are not authorized to view this audit log.";
+        }
+        catch (InvalidOperationException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private Task OnSearchKeyDown(KeyboardEventArgs args) =>
+        args.Key == "Enter" ? LoadPageAsync(1) : Task.CompletedTask;
+}

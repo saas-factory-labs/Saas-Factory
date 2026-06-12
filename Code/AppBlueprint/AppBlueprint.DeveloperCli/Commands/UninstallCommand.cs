@@ -1,4 +1,4 @@
-using AppBlueprint.DeveloperCli.Utilities;
+﻿using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -54,7 +54,7 @@ internal static class UninstallCommand
                     throw new Exception("Failed to unregister CLI");
                 }
 
-                AnsiConsole.MarkupLine("[green]✓ CLI unregistered[/]");
+                AnsiConsole.MarkupLine("[green]âœ“ CLI unregistered[/]");
 
                 // Step 2: Delete installation directory
                 ctx.Status("Removing installation files...");
@@ -65,11 +65,11 @@ internal static class UninstallCommand
                     try
                     {
                         Directory.Delete(installPath, true);
-                        AnsiConsole.MarkupLine($"[green]✓ Removed: {installPath}[/]");
+                        AnsiConsole.MarkupLine($"[green]âœ“ Removed: {installPath}[/]");
                     }
                     catch (Exception ex)
                     {
-                        AnsiConsole.MarkupLine($"[yellow]⚠ Could not delete directory: {ex.Message}[/]");
+                        AnsiConsole.MarkupLine($"[yellow]âš  Could not delete directory: {ex.Message}[/]");
                         AnsiConsole.MarkupLine($"[dim]You may need to manually delete: {installPath}[/]");
                     }
                 }
@@ -118,13 +118,13 @@ internal static class UninstallCommand
 
         var successPanel = new Panel(
             new Markup(
-                "[green]✅ Uninstallation complete![/]\n\n" +
+                "[green]âœ… Uninstallation complete![/]\n\n" +
                 $"The '[red]{CliConfiguration.AliasName}[/]' command has been removed.\n\n" +
                 "[yellow]Note:[/]\n" +
                 (CliConfiguration.IsWindows
-                    ? "  • Restart your terminal for changes to take effect\n"
-                    : "  • Restart your terminal or reload your shell profile\n") +
-                $"  • You can still run the CLI from the project directory:\n" +
+                    ? "  â€¢ Restart your terminal for changes to take effect\n"
+                    : "  â€¢ Restart your terminal or reload your shell profile\n") +
+                $"  â€¢ You can still run the CLI from the project directory:\n" +
                 $"    [dim]cd Code/AppBlueprint/AppBlueprint.DeveloperCli[/]\n" +
                 $"    [dim]dotnet run[/]\n\n" +
                 $"[cyan]To reinstall:[/] Run '[green]dotnet run -- install[/]' from the CLI project"
@@ -162,3 +162,4 @@ internal static class UninstallCommand
         Execute();
     }
 }
+
