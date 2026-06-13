@@ -1,0 +1,66 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/Dtos/AdminPortalDebugInfo.cs
+  s_5f4dea6a7a8262::t_797a18c362652c 1-18,20
+  s_5f4dea6a7a8262::t_7da772773c084d 19,21-33
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/AdminPortalDbContextFactory.cs
+  s_5f4dea6a7a8262::t_54c79d90627b3b 43-45
+Code/DeploymentManager/DeploymentManager.Web/Program.cs
+  s_5f4dea6a7a8262::t_d8b1f157a05ad3 159-167
+Code/DeploymentManager/DeploymentManager.ApiService/Program.cs
+  s_5f4dea6a7a8262::t_fb18bb2874dd75 38-43
+  s_5f4dea6a7a8262::t_73c861b1352f45 1
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/WebAuthenticationExtensions.cs
+  s_5f4dea6a7a8262::t_983fae34f35aef 331
+  s_5f4dea6a7a8262::t_7a54a9e045269c 330,332-336
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/ServiceCollectionExtensions.cs
+  s_5f4dea6a7a8262::t_eefa4caf8fc8e3 41
+  s_5f4dea6a7a8262::t_bb6bbac47da3a0 58-60
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/IAdminPortalDiagnostics.cs
+  s_5f4dea6a7a8262::t_9ab16e35905564 1-9
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/AdminPortalDiagnostics.cs
+  s_5f4dea6a7a8262::t_77aaae870b8220 2-13,17-19,21-24,27-30,32-34,36-58,64-69,77-87,89,122-143
+  s_5f4dea6a7a8262::t_bb41b313e91727 1,14-16,20,25-26,31,35,59-63,70-76,88,90-121
+Code/DeploymentManager/DeploymentManager.ApiService/Infrastructure/Services/NullApiKeyRepository.cs
+  s_5f4dea6a7a8262::t_ccf2613903ae6f 1-38
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminDebug.razor
+  s_5f4dea6a7a8262::t_26444c01d55923 1-44,46-64,105-124
+  s_5f4dea6a7a8262::t_5a018c2909f9a6 45,65-104
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Shared/AdminPortalPageHeader.razor
+  s_5f4dea6a7a8262::t_39494b470f147f 38-39
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/PostgresConnectionStringTests.cs
+  s_5f4dea6a7a8262::t_cfc7474e11fce9 41-42,46
+  s_5f4dea6a7a8262::t_9cfb16c652826e 56-57,61
+  s_5f4dea6a7a8262::t_f316dedabed4ea 39-40,43-45,47-55,58-60,62-75
+  s_5f4dea6a7a8262::t_2f737bf7df733d 1-38,76-87
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/PostgresConnectionString.cs
+  s_5f4dea6a7a8262::t_d2aff0ec1f692e 1,3-14,46-113
+  s_5f4dea6a7a8262::t_577330eec43e3f 15-45
+  s_5f4dea6a7a8262::t_c249db3102c3a0 2
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/AdminQuerySession.cs
+  s_5f4dea6a7a8262::t_37b6120f9801c2 1,3-4,12-20,45-46,66-70,72,74,81-84,89,94,98,105-109,111,113,118-134
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/AdminQuerySessionTests.cs
+  s_5f4dea6a7a8262::t_f3a7e50e08a67b 63
+  s_5f4dea6a7a8262::t_bd0d52893f83bf 101
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Services/UserAdminService.cs
+  s_5f4dea6a7a8262::t_835458cd3b6fcc 84-85
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/AppBlueprint.AdminPortalKernel.csproj
+  s_5f4dea6a7a8262::t_c60eb887620508 21-24
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Signup.razor
+  s_5f4dea6a7a8262::t_bef7800b1e70e1 3
+  s_5f4dea6a7a8262::t_cbaecf17d0e0c9 2,4,6-14,17-32,34-38,40-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "c2b3e9a2c090bb6cefad98b791461c0f35b42dbd",
+  "prompts": {},
+  "sessions": {
+    "s_5f4dea6a7a8262": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "177ee84e-de9a-4058-a3a7-b5e9710805a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
