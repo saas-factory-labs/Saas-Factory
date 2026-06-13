@@ -1,0 +1,23 @@
+Code/DeploymentManager/Documentation/ADMIN-PORTAL.md
+  s_5f4dea6a7a8262::t_96d45a5739a71e 1-67
+Code/DeploymentManager/DeploymentManager.Tests/DeploymentManager.Tests.csproj
+  s_5f4dea6a7a8262::t_8f332aab52ecbc 23
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/README.md
+  s_5f4dea6a7a8262::t_2b26fa6c177876 1-125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "d815b5383ccd0a5c365175f4519989cf3e018b97",
+  "prompts": {},
+  "sessions": {
+    "s_5f4dea6a7a8262": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "177ee84e-de9a-4058-a3a7-b5e9710805a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
