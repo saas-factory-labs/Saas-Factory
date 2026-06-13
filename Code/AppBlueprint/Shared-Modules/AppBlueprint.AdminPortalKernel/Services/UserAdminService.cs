@@ -81,7 +81,8 @@ public sealed class UserAdminService : IUserAdminService
             targetType: "User", targetId: userId, tenantId: user.TenantId,
             details: $"{{\"email\":\"{user.Email}\",\"isActive\":{(isActive ? "true" : "false")}}}");
 
-        int affected = await _session.ExecuteWriteAsync(slug, reason, context =>
+        // Pass the user's tenant: the RLS write policy filters by app.current_tenant_id.
+        int affected = await _session.ExecuteWriteAsync(slug, reason, user.TenantId, context =>
             context.Users
                 .Where(candidate => candidate.Id == userId)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(candidate => candidate.IsActive, isActive)));

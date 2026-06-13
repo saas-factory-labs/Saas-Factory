@@ -19,6 +19,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="AppBlueprint.AdminPortalKernel.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
         <ProjectReference Include="..\AppBlueprint.Application\AppBlueprint.Application.csproj" />
         <ProjectReference Include="..\Infrastructure\AppBlueprint.Infrastructure.Persistence\AppBlueprint.Infrastructure.Persistence.csproj" />

@@ -60,7 +60,7 @@ internal sealed class AdminQuerySessionTests
         var session = new AdminQuerySession(factory, CreateAdminUserContext(isAdmin: false), NullLogger<AdminQuerySession>.Instance);
 
         Func<Task> act = () => session.ExecuteWriteAsync(
-            "fixture-app", "deactivate user", context => Task.FromResult(0));
+            "fixture-app", "deactivate user", "tenant_1", context => Task.FromResult(0));
 
         await act.Should().ThrowAsync<UnauthorizedAccessException>();
     }
@@ -98,7 +98,7 @@ internal sealed class AdminQuerySessionTests
         var session = new AdminQuerySession(factory, CreateAdminUserContext(), NullLogger<AdminQuerySession>.Instance);
 
         int affected = await session.ExecuteWriteAsync(
-            "fixture-app", "deactivate user for test",
+            "fixture-app", "deactivate user for test", tenantId,
             context => context.Users
                 .Where(u => u.Id == userId)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(u => u.IsActive, false)));

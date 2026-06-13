@@ -1,10 +1,54 @@
 @page "/signup"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using AppBlueprint.Application.Constants
 @layout EmptyLayout
+@* Cookie auth's LoginPath AND AccessDeniedPath both point here.
+   - Unauthenticated visitor  → bounce to the Logto challenge (/auth/signin).
+   - Authenticated visitor     → they were forbidden from a page (missing the
+     DeploymentManagerAdmin role); show a stable message instead of bouncing back into
+     the auth flow, which would otherwise loop /signup → /auth/signin → /onboarding → / →
+     403 → /signup.
+   MUST be [AllowAnonymous], otherwise the blanket [Authorize] in _Imports.razor makes
+   /signup redirect to itself. *@
+@attribute [AllowAnonymous]
 @inject NavigationManager Navigation
 
+@if (_authenticatedWithoutAccess)
+{
+    <div class="flex flex-col items-center justify-center h-screen px-4 text-center">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">You don't have access</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md mb-6">
+            You are signed in, but your account is missing the
+            <code>@Roles.DeploymentManagerAdmin</code> role required to use the Deployment
+            Manager. Ask an administrator to assign it in Logto, then sign in again.
+        </p>
+        <a href="/auth/signout"
+           class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
+            Sign out
+        </a>
+    </div>
+}
+
 @code {
-    protected override void OnInitialized()
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    private bool _authenticatedWithoutAccess;
+
+    protected override async Task OnInitializedAsync()
     {
+        if (AuthenticationStateTask is not null)
+        {
+            AuthenticationState state = await AuthenticationStateTask;
+            if (state.User.Identity?.IsAuthenticated == true)
+            {
+                // Reached here via AccessDeniedPath: authenticated but lacks the role.
+                _authenticatedWithoutAccess = true;
+                return;
+            }
+        }
+
+        // Not authenticated: start the Logto sign-in challenge.
         Navigation.NavigateTo("/auth/signin", forceLoad: true);
     }
 }

@@ -40,7 +40,9 @@ public sealed class AdminPortalDbContextFactory : IAdminPortalDbContextFactory, 
                 $"Set AdminPortal:Modules:{slug}:ConnectionString.");
         }
 
-        NpgsqlDataSource dataSource = new NpgsqlDataSourceBuilder(moduleOptions.ConnectionString).Build();
+        // Accept both keyword=value and postgresql:// URI connection strings (Neon/Railway).
+        string connectionString = PostgresConnectionString.Normalize(moduleOptions.ConnectionString);
+        NpgsqlDataSource dataSource = new NpgsqlDataSourceBuilder(connectionString).Build();
 
         DbContextOptions<AdminPortalAppDbContext> contextOptions =
             new DbContextOptionsBuilder<AdminPortalAppDbContext>()

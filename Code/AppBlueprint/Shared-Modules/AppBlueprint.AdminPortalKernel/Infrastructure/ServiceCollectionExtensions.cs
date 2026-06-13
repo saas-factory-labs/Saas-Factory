@@ -38,6 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserAdminService, UserAdminService>();
         services.AddScoped<ITenantAdminService, TenantAdminService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IAdminPortalDiagnostics, AdminPortalDiagnostics>();
 
         return new AdminPortalBuilder(services, registry);
     }
@@ -54,7 +55,9 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
 
-        services.AddDbContextFactory<AdminPortalAuditDbContext>(options => options.UseNpgsql(connectionString));
+        // Accept both keyword=value and postgresql:// URI forms (Neon/Railway).
+        string normalized = PostgresConnectionString.Normalize(connectionString);
+        services.AddDbContextFactory<AdminPortalAuditDbContext>(options => options.UseNpgsql(normalized));
         services.AddScoped<IAdminAuditWriter, AdminAuditWriter>();
         services.AddScoped<IAdminAuditReader, AdminAuditReader>();
 

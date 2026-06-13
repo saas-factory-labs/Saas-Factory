@@ -327,6 +327,13 @@ public static class WebAuthenticationExtensions
             options.Scope.Add("profile");
             options.Scope.Add("email");
             options.Scope.Add("offline_access"); // Required for refresh tokens
+            options.Scope.Add("roles"); // Logto user-roles scope: emits the user's roles into the token
+
+            // Logto's roles arrive already mapped to ClaimTypes.Role, so [Authorize(Roles = ...)]
+            // and User.IsInRole(...) (e.g. DeploymentManagerAdmin, TenantAdmin) match against that
+            // type. Without requesting the "roles" scope above, assigned Logto roles never reach
+            // the principal at all and every role check fails.
+            options.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
 
             // Configure API Resource to request JWT access tokens
             // Per Logto docs: https://docs.logto.io/authorization/global-api-resources

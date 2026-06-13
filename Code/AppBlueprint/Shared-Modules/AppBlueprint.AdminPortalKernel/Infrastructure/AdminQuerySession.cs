@@ -1,5 +1,7 @@
+using System.Data.Common;
 using AppBlueprint.AdminPortalKernel.Services;
-using AppBlueprint.Infrastructure.Persistence.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.AdminPortalKernel.Infrastructure;
@@ -7,8 +9,15 @@ namespace AppBlueprint.AdminPortalKernel.Infrastructure;
 /// <summary>
 /// Gatekeeper for every query against a target app's database, mirroring the
 /// AdminTenantAccessService pattern: verified DeploymentManagerAdmin role, a mandatory
-/// human-readable reason, RLS session variables (app.is_admin / app.current_tenant_id)
-/// set for the duration of the call and cleared afterwards, and a structured access log.
+/// human-readable reason, RLS session variables and a structured access log.
+/// <para>
+/// The RLS variables (<c>app.is_admin</c> / <c>app.current_tenant_id</c>) are set
+/// transaction-locally (<c>set_config(..., is_local =&gt; true</c>)) inside an explicit
+/// transaction. This is essential with a pooled NpgsqlDataSource: a transaction pins one
+/// physical connection, so the variables are guaranteed to apply to the query that
+/// follows, and they are discarded automatically when the transaction ends (no pool
+/// leakage, no manual reset).
+/// </para>
 /// </summary>
 public sealed class AdminQuerySession
 {
@@ -33,7 +42,8 @@ public sealed class AdminQuerySession
     /// <summary>
     /// Runs a read-only query against the module's app database. When
     /// <paramref name="tenantId"/> is provided the RLS tenant variable is scoped to it;
-    /// otherwise the query runs cross-tenant with the admin flag only.
+    /// otherwise the query runs cross-tenant relying on the admin flag (the baseline
+    /// SELECT policy is <c>"TenantId" = get_current_tenant() OR is_admin_user()</c>).
     /// </summary>
     public async Task<TResult> ExecuteReadAsync<TResult>(
         string slug,
@@ -51,59 +61,76 @@ public sealed class AdminQuerySession
         AdminPortalAppDbContext context = _contextFactory.CreateForModule(slug);
         await using (context)
         {
-            var sessionManager = new PostgreSqlSessionManager(context);
             try
             {
-                if (tenantId is not null)
-                {
-                    await sessionManager.SetSessionVariablesAsync(tenantId, isAdmin: true);
-                }
-                else
-                {
-                    await sessionManager.SetAdminFlagAsync(true);
-                }
-
-                return await query(context);
+                await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
+                await ApplyAdminSessionAsync(context, tenantId);
+                TResult result = await query(context);
+                await transaction.CommitAsync();
+                return result;
             }
-            finally
+            catch (DbException ex)
             {
-                await sessionManager.ClearSessionVariablesAsync();
+                throw new InvalidOperationException(BuildDbErrorMessage(slug, ex.Message), ex);
             }
         }
     }
 
     /// <summary>
     /// Runs a targeted write (ExecuteUpdate-style) against the module's app database.
-    /// Returns the number of affected rows. Callers are responsible for writing the
-    /// matching audit entry via IAdminAuditWriter.
+    /// <paramref name="tenantId"/> is required: the baseline write policy is
+    /// <c>USING ("TenantId" = get_current_tenant())</c> and does NOT honor the admin flag,
+    /// so the affected rows' tenant must be set for the update to match. Returns the number
+    /// of affected rows. Callers write the matching audit entry via IAdminAuditWriter.
     /// </summary>
     public async Task<int> ExecuteWriteAsync(
         string slug,
         string reason,
+        string tenantId,
         Func<AdminPortalAppDbContext, Task<int>> write)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(slug);
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
         ArgumentNullException.ThrowIfNull(write);
         await EnsureDeploymentManagerAdminAsync();
 
-        await LogAccessIntentAsync("WRITE", slug, reason, tenantId: null);
+        await LogAccessIntentAsync("WRITE", slug, reason, tenantId);
 
         AdminPortalAppDbContext context = _contextFactory.CreateForModule(slug);
         await using (context)
         {
-            var sessionManager = new PostgreSqlSessionManager(context);
             try
             {
-                await sessionManager.SetAdminFlagAsync(true);
-                return await write(context);
+                await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
+                await ApplyAdminSessionAsync(context, tenantId);
+                int affected = await write(context);
+                await transaction.CommitAsync();
+                return affected;
             }
-            finally
+            catch (DbException ex)
             {
-                await sessionManager.ClearSessionVariablesAsync();
+                throw new InvalidOperationException(BuildDbErrorMessage(slug, ex.Message), ex);
             }
         }
     }
+
+    /// <summary>
+    /// Sets the RLS session variables transaction-locally on the current connection.
+    /// Must be called inside an open transaction.
+    /// </summary>
+    private static async Task ApplyAdminSessionAsync(AdminPortalAppDbContext context, string? tenantId)
+    {
+        // is_local => true: scoped to the surrounding transaction.
+        await context.Database.ExecuteSqlAsync($"SELECT set_config('app.is_admin', 'true', true)");
+        string tenant = tenantId ?? string.Empty;
+        await context.Database.ExecuteSqlAsync($"SELECT set_config('app.current_tenant_id', {tenant}, true)");
+    }
+
+    private static string BuildDbErrorMessage(string slug, string detail) =>
+        $"Could not query the app database for module '{slug}'. Verify that " +
+        $"AdminPortal:Modules:{slug}:ConnectionString points at an AppBlueprint database " +
+        $"with the baseline schema (Users/Tenants tables). Details: {detail}";
 
     private async Task EnsureDeploymentManagerAdminAsync()
     {

@@ -1,3 +1,4 @@
+using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.ServiceDefaults;
 using DeploymentManager.ApiService;
@@ -33,6 +34,12 @@ builder.Services.AddControllers()
 // customers. Reuse AppBlueprint's JWT bearer authentication (Logto); every controller is
 // additionally gated to the DeploymentManagerAdmin role via [Authorize] attributes.
 builder.Services.AddJwtAuthentication(builder.Configuration, builder.Environment);
+
+// AddJwtAuthentication always registers the shared x-api-key scheme, whose handler needs
+// an IApiKeyRepository. DeploymentManager does not support API keys (Logto JWT only), so
+// satisfy the dependency with a no-op repository rather than wiring the full persistence
+// stack. See NullApiKeyRepository.
+builder.Services.AddScoped<IApiKeyRepository, NullApiKeyRepository>();
 
 string connectionString = Normalize(
     builder.Configuration.GetConnectionString("DefaultConnection")

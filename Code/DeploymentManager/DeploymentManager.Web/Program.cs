@@ -156,6 +156,15 @@ app.UseOutputCache();
 
 app.MapAuthenticationEndpoints(builder.Configuration);
 
+// The shared AppBlueprint authentication endpoints redirect post-login/post-signout users
+// to /dashboard, /onboarding and /login — AppBlueprint.Web's page structure. DeploymentManager
+// has no onboarding, its dashboard IS "/", and it has no separate login page, so bounce those
+// shared targets to "/" (host-specific shim, like NullCurrentTenantService/NullApiKeyRepository).
+// Without this, login lands on /onboarding → 404.
+app.MapGet("/dashboard", () => Results.LocalRedirect("/")).AllowAnonymous();
+app.MapGet("/onboarding", () => Results.LocalRedirect("/")).AllowAnonymous();
+app.MapGet("/login", () => Results.LocalRedirect("/")).AllowAnonymous();
+
 // API controllers contributed by admin portal plugin modules (role-gated).
 app.MapControllers();
 
