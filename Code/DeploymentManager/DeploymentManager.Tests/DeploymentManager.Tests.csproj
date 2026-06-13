@@ -20,6 +20,7 @@
         <ProjectReference Include="..\DeploymentManager.AppHost\DeploymentManager.AppHost.csproj" />
         <ProjectReference Include="..\DeploymentManager.ApiService\DeploymentManager.ApiService.csproj" />
         <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.AdminPortalKernel\AppBlueprint.AdminPortalKernel.csproj" />
+        <ProjectReference Include="..\Samples\SaaSFactory.Sample.Admin\SaaSFactory.Sample.Admin.csproj" />
     </ItemGroup>
 
     <ItemGroup>
