@@ -1,0 +1,61 @@
+@* Reusable Cruip/Tailwind empty-state card: hero icon, heading, instructional text and an optional primary action. *@
+
+<div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <div class="px-5 py-12 flex flex-col items-center text-center max-w-lg mx-auto">
+        <div class="w-16 h-16 rounded-full bg-violet-100 dark:bg-violet-500/20 flex items-center justify-center mb-4">
+            <svg class="w-7 h-7 fill-current text-violet-500" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                @if (Icon is not null)
+                {
+                    @Icon
+                }
+                else
+                {
+                    <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm0 12a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-3.5a1 1 0 0 1-2 0V5a1 1 0 0 1 2 0v3.5Z"/>
+                }
+            </svg>
+        </div>
+
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">@Heading</h2>
+
+        @if (Description is not null)
+        {
+            <div class="text-sm text-gray-500 dark:text-gray-400 mb-5">@Description</div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(ActionLabel))
+        {
+            @if (!string.IsNullOrWhiteSpace(ActionHref))
+            {
+                <a href="@ActionHref"
+                   class="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium bg-violet-500 hover:bg-violet-600 text-white transition">
+                    @ActionLabel
+                </a>
+            }
+            else
+            {
+                <button type="button" @onclick="OnAction"
+                        class="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium bg-violet-500 hover:bg-violet-600 text-white transition">
+                    @ActionLabel
+                </button>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    /// <summary>Inline SVG <c>&lt;path&gt;</c> markup for the hero icon (16x16 viewBox). Falls back to an info glyph.</summary>
+    [Parameter] public RenderFragment? Icon { get; set; }
+
+    [Parameter, EditorRequired] public string Heading { get; set; } = string.Empty;
+
+    /// <summary>Instructional text; may contain markup (e.g. <c>&lt;code&gt;</c>).</summary>
+    [Parameter] public RenderFragment? Description { get; set; }
+
+    /// <summary>Primary action label. When null/empty no button is rendered.</summary>
+    [Parameter] public string? ActionLabel { get; set; }
+
+    /// <summary>When set the action renders as a link to this href; otherwise it invokes <see cref="OnAction"/>.</summary>
+    [Parameter] public string? ActionHref { get; set; }
+
+    [Parameter] public EventCallback OnAction { get; set; }
+}

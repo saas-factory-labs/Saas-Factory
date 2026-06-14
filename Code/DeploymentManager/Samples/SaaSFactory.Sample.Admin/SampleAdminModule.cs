@@ -12,7 +12,7 @@ public sealed class SampleAdminModule : IAdminPortalModule
 {
     public string Slug => "sample";
 
-    public string DisplayName => "Sample App";
+    public string DisplayName => "SaaS Factory Core";
 
     public IReadOnlyList<AdminPortalNavItem> ExtraNavItems { get; } =
     [

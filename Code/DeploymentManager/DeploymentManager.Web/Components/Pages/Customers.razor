@@ -1,66 +1,84 @@
 @page "/customers"
+@using System.Globalization
 @using MudBlazor
+@using AppBlueprint.AdminPortalKernel.Services
+@inject IConsolidatedCustomerService CustomerService
 
 <PageTitle>Customers</PageTitle>
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
-<h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Customers</h1>
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Customers</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        Consolidated across every loaded SaaS app's tenant database. Each read passes the admin security guard.
+    </p>
 
-<MudTable T="Customer" Items="@_customers" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
-          LoadingProgressColor="Color.Info">
-    <HeaderContent>
-        <MudTh>Firstname</MudTh>
-        <MudTh>Lastname</MudTh>
-        <MudTh>Email</MudTh>
-        <MudTh>Phone</MudTh>
-        <MudTh>AssociatedApp</MudTh>
-        <MudTh>IsPayingCustomer</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        @foreach (var customer in _customers)
-        {
-            <MudTd DataLabel="Firstname">@customer.FirstName</MudTd>
-            <MudTd DataLabel="Firstname">@customer.LastName</MudTd>
-            <MudTd DataLabel="Lastname">@customer.Email</MudTd>
-            <MudTd DataLabel="Lastname">@customer.Phone</MudTd>
-            <MudTd DataLabel="Lastname">@customer.AssociatedApp</MudTd>
-            <MudTd DataLabel="Lastname">@customer.IsPayingCustomer</MudTd>
-        }
-    </RowTemplate>
-</MudTable>
+    @if (_result is not null && !_result.BillingConfigured)
+    {
+        <div class="bg-amber-500/20 text-amber-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            No billing provider is configured, so <span class="font-semibold">Paying</span> and <span class="font-semibold">MRR</span>
+            are placeholders. Register an <code>ISaasBillingProvider</code> (e.g. Stripe) to populate them.
+        </div>
+    }
+
+    @if (_result is not null && _result.Errors.Count > 0)
+    {
+        <div class="bg-red-500/20 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            <p class="font-semibold mb-1">Some apps could not be read:</p>
+            <ul class="list-disc pl-5">
+                @foreach (string error in _result.Errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <MudTable T="ConsolidatedCustomer" Items="@Rows" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
+              LoadingProgressColor="Color.Info" Dense="true">
+        <HeaderContent>
+            <MudTh>App</MudTh>
+            <MudTh>Tenant</MudTh>
+            <MudTh>Email</MudTh>
+            <MudTh>Country</MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh>Paying</MudTh>
+            <MudTh>MRR</MudTh>
+            <MudTh>Created (UTC)</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="App">@context.AppName</MudTd>
+            <MudTd DataLabel="Tenant">@context.TenantName</MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd DataLabel="Country">@context.Country</MudTd>
+            <MudTd DataLabel="Status">@(context.IsActive ? "Active" : "Inactive")</MudTd>
+            <MudTd DataLabel="Paying">@(context.IsPaying ? "Yes" : "No")</MudTd>
+            <MudTd DataLabel="MRR">@context.MonthlyRecurringRevenue.ToString("C0", CultureInfo.InvariantCulture)</MudTd>
+            <MudTd DataLabel="Created">@context.CreatedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)</MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <span class="text-sm text-gray-500 dark:text-gray-400">No customers found across the loaded apps.</span>
+        </NoRecordsContent>
+    </MudTable>
 
 </div>
 
 @code {
+    private ConsolidatedCustomersResult? _result;
+    private bool _loading = true;
 
-    public class Customer
-    {
-        public int Id { get; set; }
-        public string FirstName { get; init; }
-        public string LastName { get; init; }
-        public string Email { get; init; }
-        public string Phone { get; init; }
-        public string AssociatedApp { get; init; }
-        public bool IsPayingCustomer { get; init; }
-    }
-
-    private List<Customer> _customers;
-
-    private bool _hidePosition;
-    private bool _loading;
+    private IReadOnlyList<ConsolidatedCustomer> Rows =>
+        _result is null ? [] : _result.Customers;
 
     protected override async Task OnInitializedAsync()
     {
-        _customers = new List<Customer>
+        try
         {
-            new()
-            {
-                Id = 1, FirstName = "John", LastName = "Doe", Email = "test@doe.com", Phone = "1234567890", AssociatedApp
-                    = "FileDiscovery",
-                IsPayingCustomer = true
-            }
-        };
+            _result = await CustomerService.GetAllAsync();
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
-
 }

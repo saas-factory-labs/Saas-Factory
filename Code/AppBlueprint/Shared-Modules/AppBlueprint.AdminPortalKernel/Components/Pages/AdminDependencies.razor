@@ -1,0 +1,186 @@
+@page "/apps/{AppSlug}/admin/dependencies"
+@using System.Globalization
+@using System.Text.Json
+@inject AdminPortalModuleRegistry Registry
+
+<PageTitle>@(_module?.DisplayName ?? AppSlug) - Dependency Map</PageTitle>
+
+@if (_module is null)
+{
+    <ModuleNotFound Slug="@AppSlug"/>
+}
+else
+{
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+        <AdminPortalPageHeader AppSlug="@AppSlug" Title="Dependency Map" ModuleDisplayName="@_module.DisplayName"/>
+
+        @if (_usedFallback)
+        {
+            <div class="bg-amber-500/20 text-amber-700 px-4 py-3 rounded-lg mb-6 text-sm">
+                Showing the generic baseline dependency graph. Provide <code>DependencyStructureJson</code> in the
+                app's admin module to render its real structure (schema: <code>{ "nodes": [{ "id", "label" }], "edges": [{ "from", "to" }] }</code>).
+            </div>
+        }
+
+        <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-4 overflow-x-auto">
+            <svg viewBox="0 0 800 640" class="w-full h-auto" role="img" aria-label="Dependency graph">
+                @foreach ((Point from, Point to) in EdgeLines())
+                {
+                    <line x1="@Coord(from.X)" y1="@Coord(from.Y)" x2="@Coord(to.X)" y2="@Coord(to.Y)"
+                          stroke="currentColor" stroke-width="1.5" class="text-violet-400/60"/>
+                }
+                @foreach (GraphNode node in _graph.Nodes)
+                {
+                    Point p = _positions[node.Id];
+                    <g>
+                        <rect x="@Coord(p.X - 75)" y="@Coord(p.Y - 22)" width="150" height="44" rx="8"
+                              class="fill-violet-50 dark:fill-gray-700 stroke-violet-300 dark:stroke-gray-600" stroke-width="1.5"/>
+                        <text x="@Coord(p.X)" y="@Coord(p.Y + 5)" text-anchor="middle"
+                              class="fill-gray-800 dark:fill-gray-100" font-size="14" font-weight="600">@node.Label</text>
+                    </g>
+                }
+            </svg>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string AppSlug { get; set; } = string.Empty;
+
+    private IAdminPortalModule? _module;
+    private DependencyGraph _graph = DependencyGraph.Empty;
+    private readonly Dictionary<string, Point> _positions = new(StringComparer.Ordinal);
+    private bool _usedFallback;
+
+    private sealed record GraphNode(string Id, string Label);
+    private sealed record GraphEdge(string From, string To);
+    private sealed record DependencyGraph(IReadOnlyList<GraphNode> Nodes, IReadOnlyList<GraphEdge> Edges)
+    {
+        public static DependencyGraph Empty { get; } = new([], []);
+    }
+
+    private readonly record struct Point(double X, double Y);
+
+    protected override void OnParametersSet()
+    {
+        Registry.TryGet(AppSlug, out _module);
+        if (_module is null)
+        {
+            return;
+        }
+
+        _graph = Parse(_module.DependencyStructureJson, out _usedFallback);
+        if (_graph.Nodes.Count == 0)
+        {
+            _graph = Fallback(_module);
+            _usedFallback = true;
+        }
+
+        Layout();
+    }
+
+    private DependencyGraph Parse(string? json, out bool fallback)
+    {
+        fallback = false;
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return DependencyGraph.Empty;
+        }
+
+        try
+        {
+            using JsonDocument doc = JsonDocument.Parse(json);
+            JsonElement root = doc.RootElement;
+
+            var nodes = new List<GraphNode>();
+            if (root.TryGetProperty("nodes", out JsonElement nodesEl) && nodesEl.ValueKind == JsonValueKind.Array)
+            {
+                foreach (JsonElement n in nodesEl.EnumerateArray())
+                {
+                    string? id = n.TryGetProperty("id", out JsonElement idEl) ? idEl.GetString() : null;
+                    if (string.IsNullOrWhiteSpace(id))
+                    {
+                        continue;
+                    }
+                    string label = n.TryGetProperty("label", out JsonElement labelEl) && labelEl.GetString() is { Length: > 0 } l ? l : id;
+                    nodes.Add(new GraphNode(id, label));
+                }
+            }
+
+            var edges = new List<GraphEdge>();
+            if (root.TryGetProperty("edges", out JsonElement edgesEl) && edgesEl.ValueKind == JsonValueKind.Array)
+            {
+                foreach (JsonElement e in edgesEl.EnumerateArray())
+                {
+                    string? from = e.TryGetProperty("from", out JsonElement fromEl) ? fromEl.GetString() : null;
+                    string? to = e.TryGetProperty("to", out JsonElement toEl) ? toEl.GetString() : null;
+                    if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to))
+                    {
+                        edges.Add(new GraphEdge(from, to));
+                    }
+                }
+            }
+
+            return new DependencyGraph(nodes, edges);
+        }
+        catch (JsonException)
+        {
+            // Malformed module JSON must never break the shell - fall back to the baseline graph.
+            fallback = true;
+            return DependencyGraph.Empty;
+        }
+    }
+
+    private DependencyGraph Fallback(IAdminPortalModule module)
+    {
+        var nodes = new List<GraphNode>
+        {
+            new(module.Slug, module.DisplayName),
+            new("postgres", "PostgreSQL"),
+            new("logto", "Logto Auth"),
+            new("stripe", "Stripe"),
+            new("storage", "Object Storage"),
+        };
+        var edges = new List<GraphEdge>
+        {
+            new(module.Slug, "postgres"),
+            new(module.Slug, "logto"),
+            new(module.Slug, "stripe"),
+            new(module.Slug, "storage"),
+        };
+        return new DependencyGraph(nodes, edges);
+    }
+
+    // Hub-and-spoke layout: the first node sits at the centre, the rest fan out on a circle.
+    private void Layout()
+    {
+        _positions.Clear();
+        const double cx = 400, cy = 320, radius = 230;
+        IReadOnlyList<GraphNode> nodes = _graph.Nodes;
+        if (nodes.Count == 0)
+        {
+            return;
+        }
+
+        _positions[nodes[0].Id] = new Point(cx, cy);
+        int spokes = nodes.Count - 1;
+        for (int i = 1; i < nodes.Count; i++)
+        {
+            double angle = (-Math.PI / 2) + (2 * Math.PI * (i - 1) / spokes);
+            _positions[nodes[i].Id] = new Point(cx + (radius * Math.Cos(angle)), cy + (radius * Math.Sin(angle)));
+        }
+    }
+
+    private IEnumerable<(Point From, Point To)> EdgeLines()
+    {
+        foreach (GraphEdge edge in _graph.Edges)
+        {
+            if (_positions.TryGetValue(edge.From, out Point from) && _positions.TryGetValue(edge.To, out Point to))
+            {
+                yield return (from, to);
+            }
+        }
+    }
+
+    private static string Coord(double value) => value.ToString("0.##", CultureInfo.InvariantCulture);
+}

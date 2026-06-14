@@ -3,9 +3,9 @@ using AppBlueprint.AdminPortalKernel.Domain;
 using AppBlueprint.AdminPortalKernel.Domain.Dtos;
 using AppBlueprint.AdminPortalKernel.Infrastructure;
 using AppBlueprint.AdminPortalKernel.Services;
+using AppBlueprint.AdminPortalKernel.Tests.Fixtures;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 
@@ -55,7 +55,7 @@ internal sealed class AdminServicesTests
         var factory = new AdminPortalDbContextFactory(Options.Create(options));
 
         IAdminPortalUserContext userContext = CreateAdminUserContext(isAdmin);
-        var session = new AdminQuerySession(factory, userContext, NullLogger<AdminQuerySession>.Instance);
+        var session = new AdminQuerySession(factory, TestSecurity.PermissiveGuard(userContext));
 
         var auditFactory = new TestAuditContextFactory(auditConnectionString);
         await using (AdminPortalAuditDbContext auditContext = auditFactory.CreateDbContext())

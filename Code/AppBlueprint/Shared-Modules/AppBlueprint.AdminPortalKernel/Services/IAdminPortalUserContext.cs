@@ -15,4 +15,16 @@ public interface IAdminPortalUserContext
 
     /// <summary>Email address of the signed-in admin for audit entries.</summary>
     Task<string?> GetEmailAsync();
+
+    /// <summary>
+    /// True when the signed-in admin completed multi-factor authentication, as asserted by the
+    /// auth provider's claim (Logto owns enrolment/verification; the portal only enforces it).
+    /// </summary>
+    Task<bool> HasCompletedMfaAsync();
+
+    /// <summary>
+    /// True when the signed-in admin is a configured primary super-admin (system owner) eligible
+    /// for the seamless, fully-audited bypass of the manual reason/ticket prompt.
+    /// </summary>
+    Task<bool> IsPrimarySuperAdminAsync();
 }

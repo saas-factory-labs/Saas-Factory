@@ -1,15 +1,15 @@
 using System.Data.Common;
-using AppBlueprint.AdminPortalKernel.Services;
+using AppBlueprint.AdminPortalKernel.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.AdminPortalKernel.Infrastructure;
 
 /// <summary>
-/// Gatekeeper for every query against a target app's database, mirroring the
-/// AdminTenantAccessService pattern: verified DeploymentManagerAdmin role, a mandatory
-/// human-readable reason, RLS session variables and a structured access log.
+/// Gatekeeper for every query against a target app's database. Authorization and the full
+/// security pipeline (role, MFA, rate limit, device fingerprint, nonce, ticket, alerting and
+/// SIEM streaming) are delegated to <see cref="IAdminAccessGuard"/>; this type owns the data
+/// concerns: RLS session variables and the transaction they live in.
 /// <para>
 /// The RLS variables (<c>app.is_admin</c> / <c>app.current_tenant_id</c>) are set
 /// transaction-locally (<c>set_config(..., is_local =&gt; true</c>)) inside an explicit
@@ -22,21 +22,15 @@ namespace AppBlueprint.AdminPortalKernel.Infrastructure;
 public sealed class AdminQuerySession
 {
     private readonly IAdminPortalDbContextFactory _contextFactory;
-    private readonly IAdminPortalUserContext _userContext;
-    private readonly ILogger<AdminQuerySession> _logger;
+    private readonly IAdminAccessGuard _guard;
 
-    public AdminQuerySession(
-        IAdminPortalDbContextFactory contextFactory,
-        IAdminPortalUserContext userContext,
-        ILogger<AdminQuerySession> logger)
+    public AdminQuerySession(IAdminPortalDbContextFactory contextFactory, IAdminAccessGuard guard)
     {
         ArgumentNullException.ThrowIfNull(contextFactory);
-        ArgumentNullException.ThrowIfNull(userContext);
-        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(guard);
 
         _contextFactory = contextFactory;
-        _userContext = userContext;
-        _logger = logger;
+        _guard = guard;
     }
 
     /// <summary>
@@ -44,19 +38,27 @@ public sealed class AdminQuerySession
     /// <paramref name="tenantId"/> is provided the RLS tenant variable is scoped to it;
     /// otherwise the query runs cross-tenant relying on the admin flag (the baseline
     /// SELECT policy is <c>"TenantId" = get_current_tenant() OR is_admin_user()</c>).
+    /// <para>
+    /// <paramref name="sensitivity"/>, <paramref name="nonce"/> and <paramref name="deviceSignals"/>
+    /// drive the security guard: High-sensitivity extractions require a justifying ticket (waived
+    /// for the super-admin) and a single-use nonce. Existing low-sensitivity callers can omit them.
+    /// </para>
     /// </summary>
     public async Task<TResult> ExecuteReadAsync<TResult>(
         string slug,
         string reason,
         Func<AdminPortalAppDbContext, Task<TResult>> query,
-        string? tenantId = null)
+        string? tenantId = null,
+        AdminAccessSensitivity sensitivity = AdminAccessSensitivity.Low,
+        string? nonce = null,
+        DeviceSignals? deviceSignals = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(slug);
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
         ArgumentNullException.ThrowIfNull(query);
-        await EnsureDeploymentManagerAdminAsync();
 
-        await LogAccessIntentAsync("READ", slug, reason, tenantId);
+        await _guard.AuthorizeAsync(new AdminAccessRequest(
+            AdminAccessOperation.Read, slug, reason, tenantId, sensitivity, nonce, deviceSignals));
 
         AdminPortalAppDbContext context = _contextFactory.CreateForModule(slug);
         await using (context)
@@ -87,15 +89,18 @@ public sealed class AdminQuerySession
         string slug,
         string reason,
         string tenantId,
-        Func<AdminPortalAppDbContext, Task<int>> write)
+        Func<AdminPortalAppDbContext, Task<int>> write,
+        AdminAccessSensitivity sensitivity = AdminAccessSensitivity.Low,
+        string? nonce = null,
+        DeviceSignals? deviceSignals = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(slug);
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
         ArgumentNullException.ThrowIfNull(write);
-        await EnsureDeploymentManagerAdminAsync();
 
-        await LogAccessIntentAsync("WRITE", slug, reason, tenantId);
+        await _guard.AuthorizeAsync(new AdminAccessRequest(
+            AdminAccessOperation.Write, slug, reason, tenantId, sensitivity, nonce, deviceSignals));
 
         AdminPortalAppDbContext context = _contextFactory.CreateForModule(slug);
         await using (context)
@@ -123,7 +128,7 @@ public sealed class AdminQuerySession
     {
         // is_local => true: scoped to the surrounding transaction.
         await context.Database.ExecuteSqlAsync($"SELECT set_config('app.is_admin', 'true', true)");
-        string tenant = tenantId ?? string.Empty;
+        string tenant = tenantId is null ? string.Empty : tenantId;
         await context.Database.ExecuteSqlAsync($"SELECT set_config('app.current_tenant_id', {tenant}, true)");
     }
 
@@ -131,23 +136,4 @@ public sealed class AdminQuerySession
         $"Could not query the app database for module '{slug}'. Verify that " +
         $"AdminPortal:Modules:{slug}:ConnectionString points at an AppBlueprint database " +
         $"with the baseline schema (Users/Tenants tables). Details: {detail}";
-
-    private async Task EnsureDeploymentManagerAdminAsync()
-    {
-        if (!await _userContext.IsDeploymentManagerAdminAsync())
-        {
-            throw new UnauthorizedAccessException(
-                "Admin portal access requires the DeploymentManagerAdmin role.");
-        }
-    }
-
-    private async Task LogAccessIntentAsync(string operation, string slug, string reason, string? tenantId)
-    {
-        string? userId = await _userContext.GetUserIdAsync();
-        string? email = await _userContext.GetEmailAsync();
-
-        _logger.LogInformation(
-            "ADMIN_PORTAL_ACCESS: {Operation} app={Slug} by={AdminEmail} ({AdminUserId}) tenant={TenantId} reason={Reason}",
-            operation, slug, email, userId, tenantId, reason);
-    }
 }

@@ -114,7 +114,7 @@ public sealed class AdminPortalDiagnostics : IAdminPortalDiagnostics
             return new AdminPortalTableInfo("dm_admin_audit", DeploymentManagerDatabaseLabel, Exists: true, count,
                 Note: "audit entries for this app");
         }
-        catch (DbException)
+        catch (Exception ex) when (ex is DbException or InvalidOperationException)
         {
             return new AdminPortalTableInfo("dm_admin_audit", DeploymentManagerDatabaseLabel, Exists: false, RowCount: 0,
                 Note: "table not found (run the DeploymentManager.ApiService migration)");

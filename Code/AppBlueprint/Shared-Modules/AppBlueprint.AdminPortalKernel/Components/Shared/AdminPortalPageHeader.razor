@@ -1,4 +1,6 @@
 @* Shared header for all admin portal pages: app name, page title and tab navigation. *@
+@using AppBlueprint.AdminPortalKernel.Modules
+@inject AdminPortalModuleRegistry Registry
 
 <div class="mb-8">
     <div class="mb-4 sm:flex sm:justify-between sm:items-center">
@@ -30,12 +32,34 @@
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
     [Parameter] public string ModuleDisplayName { get; set; } = string.Empty;
 
-    private IEnumerable<(string Label, string Href)> Tabs =>
-    [
-        ("Dashboard", $"/apps/{AppSlug}/admin"),
-        ("Users", $"/apps/{AppSlug}/admin/users"),
-        ("Tenants", $"/apps/{AppSlug}/admin/tenants"),
-        ("Audit log", $"/apps/{AppSlug}/admin/audit"),
-        ("Debug", $"/apps/{AppSlug}/admin/debug")
-    ];
+    private IEnumerable<(string Label, string Href)> Tabs
+    {
+        get
+        {
+            List<(string Label, string Href)> tabs =
+            [
+                ("Dashboard", $"/apps/{AppSlug}/admin"),
+                ("Users", $"/apps/{AppSlug}/admin/users"),
+                ("Tenants", $"/apps/{AppSlug}/admin/tenants"),
+                ("SaaS Metrics", $"/apps/{AppSlug}/admin/metrics"),
+                ("Infrastructure & Cost", $"/apps/{AppSlug}/admin/cost"),
+                ("Deployments", $"/apps/{AppSlug}/admin/deployments"),
+                ("Dependency Map", $"/apps/{AppSlug}/admin/dependencies"),
+                ("Audit log", $"/apps/{AppSlug}/admin/audit"),
+                ("Debug", $"/apps/{AppSlug}/admin/debug"),
+            ];
+
+            // Append the module's own pages (e.g. Boligportal "Properties") so a plugin's custom
+            // views are reachable from the tab strip without bloating the sidebar.
+            if (Registry.TryGet(AppSlug, out IAdminPortalModule? module) && module is not null)
+            {
+                foreach (AdminPortalNavItem item in module.ExtraNavItems)
+                {
+                    tabs.Add((item.Title, item.Href));
+                }
+            }
+
+            return tabs;
+        }
+    }
 }

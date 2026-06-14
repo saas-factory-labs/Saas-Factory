@@ -40,4 +40,19 @@ public interface IAdminPortalModule
     void ConfigureServices(IServiceCollection services)
     {
     }
+
+    /// <summary>
+    /// Live SaaS metrics (MRR, churn, signups, paying customers) for the shell's per-app
+    /// "SaaS Metrics" page. Defaults to <see cref="SaasAppMetrics.Empty"/> so a module only
+    /// implements it once it has a metrics source wired up.
+    /// </summary>
+    Task<SaasAppMetrics> GetLiveMetricsAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(SaasAppMetrics.Empty);
+
+    /// <summary>
+    /// Optional JSON describing the app's structural dependency graph (nodes + edges), rendered on
+    /// the shell's per-app Dependency Map page. Null falls back to a generic graph derived from the
+    /// app's baseline schema.
+    /// </summary>
+    string? DependencyStructureJson => null;
 }

@@ -1,9 +1,12 @@
+using AppBlueprint.AdminPortalKernel.Billing;
 using AppBlueprint.AdminPortalKernel.Configuration;
 using AppBlueprint.AdminPortalKernel.Modules;
+using AppBlueprint.AdminPortalKernel.Security;
 using AppBlueprint.AdminPortalKernel.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace AppBlueprint.AdminPortalKernel.Infrastructure;
@@ -40,7 +43,39 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IAdminPortalDiagnostics, AdminPortalDiagnostics>();
 
+        // Cross-app customer consolidation + billing. The billing provider is TryAdd so a host can
+        // register a real (e.g. Stripe) provider before calling AddAdminPortalKernel and keep it.
+        services.TryAddSingleton<ISaasBillingProvider, NotConfiguredSaasBillingProvider>();
+        services.AddScoped<IConsolidatedCustomerService, ConsolidatedCustomerService>();
+        services.AddScoped<IPlatformOverviewService, PlatformOverviewService>();
+        services.AddScoped<IInfrastructureHealthService, InfrastructureHealthService>();
+
+        AddAdminPortalSecurity(services, configuration);
+
         return new AdminPortalBuilder(services, registry);
+    }
+
+    /// <summary>
+    /// Registers the security-hardening pipeline that gates every administrative data access.
+    /// The stateful limiters (rate limit, nonce, lockout) are singletons so their in-memory state
+    /// survives across scopes; the guard is scoped because it reads the per-circuit user context.
+    /// </summary>
+    private static void AddAdminPortalSecurity(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<AdminPortalSecurityOptions>()
+            .Bind(configuration.GetSection(AdminPortalSecurityOptions.SectionName));
+
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddHttpClient();
+
+        services.AddSingleton<IAdminNonceService, AdminNonceService>();
+        services.AddSingleton<IAdminAccessRateLimiter, AdminAccessRateLimiter>();
+        services.AddSingleton<IAdminAccountLockoutService, AdminAccountLockoutService>();
+        services.AddSingleton<IDeviceFingerprintService, DeviceFingerprintService>();
+        services.AddSingleton<ITicketValidationService, TicketValidationService>();
+        services.AddSingleton<IAdminAlertingService, AdminAlertingService>();
+        services.AddSingleton<IExternalAuditLogSink, ExternalAuditLogSink>();
+        services.AddScoped<IAdminAccessGuard, AdminAccessGuard>();
     }
 
     /// <summary>

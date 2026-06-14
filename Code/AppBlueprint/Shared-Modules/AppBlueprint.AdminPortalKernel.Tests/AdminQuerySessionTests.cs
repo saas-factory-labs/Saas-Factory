@@ -2,10 +2,10 @@ using AppBlueprint.AdminPortalKernel.Configuration;
 using AppBlueprint.AdminPortalKernel.Domain;
 using AppBlueprint.AdminPortalKernel.Infrastructure;
 using AppBlueprint.AdminPortalKernel.Services;
+using AppBlueprint.AdminPortalKernel.Tests.Fixtures;
 using AppBlueprint.AdminPortalKernel.Tests.Integration;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 
@@ -33,7 +33,7 @@ internal sealed class AdminQuerySessionTests
     public async Task ExecuteReadAsync_NonAdmin_ThrowsUnauthorized()
     {
         await using AdminPortalDbContextFactory factory = CreateFactory("Host=unused;Database=unused");
-        var session = new AdminQuerySession(factory, CreateAdminUserContext(isAdmin: false), NullLogger<AdminQuerySession>.Instance);
+        var session = new AdminQuerySession(factory, TestSecurity.PermissiveGuard(CreateAdminUserContext(isAdmin: false)));
 
         Func<Task> act = () => session.ExecuteReadAsync(
             "fixture-app", "list users", context => context.Users.CountAsync());
@@ -45,7 +45,7 @@ internal sealed class AdminQuerySessionTests
     public async Task ExecuteReadAsync_EmptyReason_Throws()
     {
         await using AdminPortalDbContextFactory factory = CreateFactory("Host=unused;Database=unused");
-        var session = new AdminQuerySession(factory, CreateAdminUserContext(), NullLogger<AdminQuerySession>.Instance);
+        var session = new AdminQuerySession(factory, TestSecurity.PermissiveGuard(CreateAdminUserContext()));
 
         Func<Task> act = () => session.ExecuteReadAsync(
             "fixture-app", "   ", context => context.Users.CountAsync());
@@ -57,7 +57,7 @@ internal sealed class AdminQuerySessionTests
     public async Task ExecuteWriteAsync_NonAdmin_ThrowsUnauthorized()
     {
         await using AdminPortalDbContextFactory factory = CreateFactory("Host=unused;Database=unused");
-        var session = new AdminQuerySession(factory, CreateAdminUserContext(isAdmin: false), NullLogger<AdminQuerySession>.Instance);
+        var session = new AdminQuerySession(factory, TestSecurity.PermissiveGuard(CreateAdminUserContext(isAdmin: false)));
 
         Func<Task> act = () => session.ExecuteWriteAsync(
             "fixture-app", "deactivate user", "tenant_1", context => Task.FromResult(0));
@@ -75,7 +75,7 @@ internal sealed class AdminQuerySessionTests
         await PostgresFixture.InsertUserAsync(connectionString, userId, $"{userId}@example.com", tenantId);
 
         await using AdminPortalDbContextFactory factory = CreateFactory(connectionString);
-        var session = new AdminQuerySession(factory, CreateAdminUserContext(), NullLogger<AdminQuerySession>.Instance);
+        var session = new AdminQuerySession(factory, TestSecurity.PermissiveGuard(CreateAdminUserContext()));
 
         AdminUserRecord? user = await session.ExecuteReadAsync(
             "fixture-app", "load user for test",
@@ -95,7 +95,7 @@ internal sealed class AdminQuerySessionTests
         await PostgresFixture.InsertUserAsync(connectionString, userId, $"{userId}@example.com", tenantId, isActive: true);
 
         await using AdminPortalDbContextFactory factory = CreateFactory(connectionString);
-        var session = new AdminQuerySession(factory, CreateAdminUserContext(), NullLogger<AdminQuerySession>.Instance);
+        var session = new AdminQuerySession(factory, TestSecurity.PermissiveGuard(CreateAdminUserContext()));
 
         int affected = await session.ExecuteWriteAsync(
             "fixture-app", "deactivate user for test", tenantId,

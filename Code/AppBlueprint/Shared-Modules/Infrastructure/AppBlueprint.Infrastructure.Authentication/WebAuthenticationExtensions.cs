@@ -53,6 +53,7 @@ public static class WebAuthenticationExtensions
     private const string ApplicationName = "AppBlueprint";
     private const string SignupPath = "/signup";
     private const string SignoutPath = "/auth/signout";
+    private const string LoginPath = "/login";
     private const string NullPlaceholder = "(null)";
 
     // Constants for logging
@@ -216,7 +217,11 @@ public static class WebAuthenticationExtensions
     /// </summary>
     private static void ConfigureDataProtection(IServiceCollection services, IHostEnvironment environment)
     {
-        if (!environment.IsDevelopment())
+        bool isRailway = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("RAILWAY_ENVIRONMENT"))
+                      || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("RAILWAY_STATIC_URL"))
+                      || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("RAILWAY_PROJECT_ID"));
+
+        if (!environment.IsDevelopment() && isRailway)
         {
             Console.WriteLine("[Web] Configuring Data Protection for production (Railway)");
 
@@ -861,12 +866,10 @@ public static class WebAuthenticationExtensions
 
                 try
                 {
-                    // Explicitly challenge with the Logto scheme so the OIDC middleware
-                    // redirects the browser to the Logto authorization endpoint.
-                    // Using the explicit scheme name is more reliable than relying on
-                    // DefaultChallengeScheme resolution, which can vary by runtime context.
-                    await context.ChallengeAsync(LogtoScheme, new AuthenticationProperties { RedirectUri = "/" });
-                    Console.WriteLine("[Web] ✅ ChallengeAsync(LogtoScheme) completed - should redirect to Logto now");
+                    // Use the default challenge scheme so this works in both Logto mode and
+                    // fallback/development mode (where only Cookies is registered).
+                    await context.ChallengeAsync(new AuthenticationProperties { RedirectUri = "/" });
+                    Console.WriteLine("[Web] ✅ ChallengeAsync completed - should redirect to identity provider now");
                     Console.WriteLine("[Web] ⚠️ IMPORTANT: Make sure your Logto application has this redirect URI configured:");
                     Console.WriteLine($"[Web]    - {context.Request.Scheme}://{context.Request.Host}/callback");
                     Console.WriteLine(LogSeparator);
@@ -924,14 +927,23 @@ public static class WebAuthenticationExtensions
                 Console.WriteLine("[Web] ➡️  Will redirect to /login after sign-out completes");
                 Console.WriteLine(LogSeparator);
 
-                await context.SignOutAsync(LogtoCookieScheme);
-                await context.SignOutAsync(LogtoScheme, new AuthenticationProperties { RedirectUri = "/login" });
+                try
+                {
+                    await context.SignOutAsync(LogtoCookieScheme);
+                    await context.SignOutAsync(LogtoScheme, new AuthenticationProperties { RedirectUri = LoginPath });
+                }
+                catch (InvalidOperationException)
+                {
+                    // Logto schemes not registered (fallback/dev mode) — sign out of default scheme and redirect.
+                    await context.SignOutAsync();
+                    context.Response.Redirect(LoginPath);
+                }
             }
             else
             {
                 Console.WriteLine("[Web] User not authenticated - redirecting directly to /login");
                 Console.WriteLine(LogSeparator);
-                context.Response.Redirect("/login");
+                context.Response.Redirect(LoginPath);
             }
         }).AllowAnonymous();
     }
@@ -984,7 +996,7 @@ public static class WebAuthenticationExtensions
             {
                 Console.WriteLine($"[Web] ⚠️ ERROR during local sign-out: {ex.Message}");
                 Console.WriteLine(LogSeparator);
-                context.Response.Redirect("/login");
+                context.Response.Redirect(LoginPath);
             }
         }).AllowAnonymous();
     }

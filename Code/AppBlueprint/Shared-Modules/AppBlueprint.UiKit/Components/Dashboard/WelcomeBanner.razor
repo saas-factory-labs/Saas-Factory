@@ -1,6 +1,9 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.Extensions.Logging
 @inject ThemeService ThemeService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="relative @ThemeService.GetPrimaryClass("bg", "200") @ThemeService.GetPrimaryDarkClass("bg", "500") p-4 sm:p-6 rounded-xl overflow-hidden mb-8">
+<div class="@_divClass">
 
     <!-- Background illustration -->
     <div class="absolute right-0 top-0 -mt-4 mr-16 pointer-events-none hidden xl:block" aria-hidden="true">
@@ -45,24 +48,33 @@
     </div>
 
     <!-- Content -->
-    <div class="relative" >
+    <div class="relative">
         <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold mb-1">@_greeting, @_displayName.</h1>
-        <p class="@ThemeService.GetPrimaryDarkClass("text", "200")">Here is what's happening with your projects today:</p>
+        <p class="@_pClass">Here is what's happening with your projects today:</p>
     </div>
 
 </div>
 
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.Extensions.Logging
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject ILogger<WelcomeBanner> Logger
-
 @code {
+    [Inject]
+    private ILogger<WelcomeBanner> ComponentLogger { get; set; } = default!;
+
     private string _displayName = "there";
     private string _greeting = "Hello";
+    private string _divClass = string.Empty;
+    private string _pClass = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
+        _divClass = string.Join(" ", new[]
+        {
+            "relative",
+            ThemeService.GetPrimaryClass("bg", "200"),
+            ThemeService.GetPrimaryDarkClass("bg", "500"),
+            "p-4 sm:p-6 rounded-xl overflow-hidden mb-8"
+        });
+        _pClass = ThemeService.GetPrimaryDarkClass("text", "200");
+
         _greeting = GetTimeOfDayGreeting();
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -77,7 +89,7 @@
                 ?? NonEmpty(user.Identity.Name)
                 ?? "there";
 
-            Logger.LogInformation("[WelcomeBanner] Claims available: {Claims}",
+            ComponentLogger.LogInformation("[WelcomeBanner] Claims available: {Claims}",
                 string.Join(", ", user.Claims.Select(c => $"{c.Type}={c.Value}")));
         }
     }
@@ -86,12 +98,10 @@
 
     private static string GetTimeOfDayGreeting()
     {
-        return DateTime.Now.Hour switch
-        {
-            < 12 => "Good morning",
-            < 17 => "Good afternoon",
-            _ => "Good evening"
-        };
+        int hour = DateTime.Now.Hour;
+        if (hour < 12) return "Good morning";
+        if (hour < 17) return "Good afternoon";
+        return "Good evening";
     }
 
     protected override void OnAfterRender(bool firstRender)
