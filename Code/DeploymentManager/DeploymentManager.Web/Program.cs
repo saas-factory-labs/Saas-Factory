@@ -4,12 +4,12 @@ using AppBlueprint.Application.Services;
 using AppBlueprint.Infrastructure.Authentication;
 using AppBlueprint.Infrastructure.Authentication.Extensions;
 using AppBlueprint.Infrastructure.Extensions;
-using MudBlazor.Services;
 using AppBlueprint.ServiceDefaults;
 using AppBlueprint.UiKit;
 using AppBlueprint.UiKit.Services;
 using DeploymentManager.Web.Components;
 using DeploymentManager.Web.Services;
+// using DeploymentManager.Web.Services.Impersonation; // re-enable with the impersonation DI block below
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -61,13 +61,29 @@ builder.Services.AddServerSideBlazor(options =>
     options.DetailedErrors = builder.Environment.IsDevelopment();
 });
 builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddMudServices();
 builder.Services.AddUiKit();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddWebAuthentication(builder.Configuration, builder.Environment);
 
 // DeploymentManager-specific services
 builder.Services.AddScoped<IMenuConfigurationService, MenuConfigurationService>();
+
+// Tenant impersonation (act-as) - DISABLED / PARKED (kept for a future decision, not deleted).
+//
+// WHY DISABLED: the actual requirement is secure, read-only, rate-limited *viewing* of tenant/user
+// data (for support + an audit trail), NOT logging in as the user. That is already provided by the
+// AdminPortalKernel pipeline registered via AddAdminPortalKernel below: AdminQuerySession ->
+// IAdminAccessGuard (role, MFA, rate limit, nonce, ticket, alert, SIEM, audit) -> IAdminAccessRateLimiter
+// (caps distinct tenants per admin per rolling hour - the anti-bulk-extraction control), surfaced by the
+// kernel's read-only AdminTenants/AdminUsers pages. True impersonation would only add attack surface.
+//
+// TO RE-ENABLE: uncomment the three lines below, uncomment <ImpersonationBanner/> in MainLayout.razor,
+// make ImpersonationController public again, and restore the Impersonate UI on Customers.razor. The
+// token-exchange service (LogtoImpersonationTokenService) also needs Impersonation:* + Authentication:Logto:* config.
+// builder.Services.Configure<ImpersonationOptions>(
+//     builder.Configuration.GetSection(ImpersonationOptions.SectionName));
+// builder.Services.AddHttpClient<ILogtoImpersonationTokenService, LogtoImpersonationTokenService>();
+// builder.Services.AddScoped<ImpersonationService>();
 
 // ── Admin portal shell ─────────────────────────────────────────────────────────
 // The shell hosts one admin portal per deployed SaaS app. Per-app modules are

@@ -1,8 +1,10 @@
 @page "/customers"
 @using System.Globalization
-@using MudBlazor
 @using AppBlueprint.AdminPortalKernel.Services
 @inject IConsolidatedCustomerService CustomerService
+@* Tenant impersonation ("act-as") UI is PARKED/DISABLED - see DeploymentManager.Web/Services/Impersonation.
+   Read-only tenant/user viewing (the actual requirement) is provided by the kernel's guarded, rate-limited
+   AdminTenants/AdminUsers pages at /apps/{slug}/admin/tenants and /apps/{slug}/admin/users. *@
 
 <PageTitle>Customers</PageTitle>
 
@@ -34,32 +36,63 @@
         </div>
     }
 
-    <MudTable T="ConsolidatedCustomer" Items="@Rows" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
-              LoadingProgressColor="Color.Info" Dense="true">
-        <HeaderContent>
-            <MudTh>App</MudTh>
-            <MudTh>Tenant</MudTh>
-            <MudTh>Email</MudTh>
-            <MudTh>Country</MudTh>
-            <MudTh>Status</MudTh>
-            <MudTh>Paying</MudTh>
-            <MudTh>MRR</MudTh>
-            <MudTh>Created (UTC)</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="App">@context.AppName</MudTd>
-            <MudTd DataLabel="Tenant">@context.TenantName</MudTd>
-            <MudTd DataLabel="Email">@context.Email</MudTd>
-            <MudTd DataLabel="Country">@context.Country</MudTd>
-            <MudTd DataLabel="Status">@(context.IsActive ? "Active" : "Inactive")</MudTd>
-            <MudTd DataLabel="Paying">@(context.IsPaying ? "Yes" : "No")</MudTd>
-            <MudTd DataLabel="MRR">@context.MonthlyRecurringRevenue.ToString("C0", CultureInfo.InvariantCulture)</MudTd>
-            <MudTd DataLabel="Created">@context.CreatedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)</MudTd>
-        </RowTemplate>
-        <NoRecordsContent>
-            <span class="text-sm text-gray-500 dark:text-gray-400">No customers found across the loaded apps.</span>
-        </NoRecordsContent>
-    </MudTable>
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full dark:text-gray-300">
+                <thead class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-b border-gray-100 dark:border-gray-700/60">
+                <tr>
+                    <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">App</th>
+                    <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Tenant</th>
+                    <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Email</th>
+                    <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Country</th>
+                    <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Status</th>
+                    <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Paying</th>
+                    <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">MRR</th>
+                    <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Created (UTC)</th>
+                </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
+                @if (_loading)
+                {
+                    <tr>
+                        <td colspan="8" class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">Loading…</td>
+                    </tr>
+                }
+                else if (Rows.Count == 0)
+                {
+                    <tr>
+                        <td colspan="8" class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">No customers found across the loaded apps.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (ConsolidatedCustomer customer in Rows)
+                    {
+                        <tr>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap font-medium text-gray-800 dark:text-gray-100">@customer.AppName</td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@customer.TenantName</td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@customer.Email</td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@customer.Country</td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                @if (customer.IsActive)
+                                {
+                                    <span class="inline-flex items-center font-medium rounded-full text-center px-2.5 py-1 text-xs bg-green-500/20 text-green-700">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex items-center font-medium rounded-full text-center px-2.5 py-1 text-xs bg-red-500/20 text-red-700">Inactive</span>
+                                }
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@(customer.IsPaying ? "Yes" : "No")</td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@customer.MonthlyRecurringRevenue.ToString("C0", CultureInfo.InvariantCulture)</td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@customer.CreatedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </div>
 

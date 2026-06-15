@@ -87,6 +87,93 @@ internal sealed class ModuleRegistryTests
         module.RouterAssembly.Should().BeSameAs(typeof(FixtureAdminModule).Assembly);
         module.ExtraNavItems.Should().BeEmpty();
         module.Icon.Should().BeNull("modules without a custom icon use the shell's default");
+        module.SiteUrl.Should().BeNull("modules without a public site hide the Visit site link");
+        module.LocalSiteUrl.Should().BeNull();
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ResolveSiteUrl_InDevelopment_PrefersLocalSiteUrl()
+    {
+        IAdminPortalModule module = new SiteLinkedAdminModule();
+
+        module.ResolveSiteUrl(isDevelopment: true).Should().Be("https://localhost:7247");
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ResolveSiteUrl_InProduction_UsesPublicSiteUrl()
+    {
+        IAdminPortalModule module = new SiteLinkedAdminModule();
+
+        module.ResolveSiteUrl(isDevelopment: false).Should().Be("https://site-app.example.com");
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ResolveSiteUrl_InDevelopment_FallsBackToSiteUrl_WhenNoLocalUrl()
+    {
+        IAdminPortalModule module = new ProductionOnlyAdminModule();
+
+        module.ResolveSiteUrl(isDevelopment: true).Should().Be("https://prod-app.example.com");
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ResolveSiteUrl_ReturnsNull_WhenNoUrlsConfigured()
+    {
+        IAdminPortalModule module = new FixtureAdminModule();
+
+        module.ResolveSiteUrl(isDevelopment: true).Should().BeNull();
+        module.ResolveSiteUrl(isDevelopment: false).Should().BeNull();
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task Branding_DefaultsToNull()
+    {
+        IAdminPortalModule module = new FixtureAdminModule();
+
+        module.Branding.Should().BeNull("unbranded modules use the shell's default violet");
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ToInlineStyle_EmitsCssVariablesForSetTokens()
+    {
+        var branding = new AdminPortalBranding
+        {
+            PrimaryColor = "#016be9",
+            PrimaryHoverColor = "#015bc6",
+            OnPrimaryColor = "#ffffff",
+            ButtonRadius = "0.5rem"
+        };
+
+        branding.ToInlineStyle().Should().Be(
+            "--brand-primary:#016be9;--brand-primary-hover:#015bc6;--brand-on-primary:#ffffff;--brand-radius:0.5rem;");
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ToInlineStyle_SkipsUnsetTokens()
+    {
+        var branding = new AdminPortalBranding { PrimaryColor = "#016be9" };
+
+        branding.ToInlineStyle().Should().Be("--brand-primary:#016be9;");
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ToInlineStyle_DropsTokensThatCouldBreakOutOfTheStyleAttribute()
+    {
+        var branding = new AdminPortalBranding
+        {
+            PrimaryColor = "red; } body { display:none",
+            ButtonRadius = "0.5rem"
+        };
+
+        // The injection attempt is dropped; the safe token still renders.
+        branding.ToInlineStyle().Should().Be("--brand-radius:0.5rem;");
         await Task.CompletedTask;
     }
 }

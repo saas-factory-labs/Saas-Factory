@@ -46,3 +46,20 @@ public sealed class DuplicateSlugAdminModule : IAdminPortalModule
     public string Slug => "fixture-app";
     public string DisplayName => "Duplicate Fixture App";
 }
+
+/// <summary>Module that configures both production and local-dev site URLs.</summary>
+public sealed class SiteLinkedAdminModule : IAdminPortalModule
+{
+    public string Slug => "site-app";
+    public string DisplayName => "Site App";
+    public string? SiteUrl => "https://site-app.example.com";
+    public string? LocalSiteUrl => "https://localhost:7247";
+}
+
+/// <summary>Module with only a production site URL (no local-dev override).</summary>
+public sealed class ProductionOnlyAdminModule : IAdminPortalModule
+{
+    public string Slug => "prod-app";
+    public string DisplayName => "Production-only App";
+    public string? SiteUrl => "https://prod-app.example.com";
+}

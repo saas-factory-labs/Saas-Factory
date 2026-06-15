@@ -12,8 +12,6 @@
         <!-- DM-specific packages not provided by AppBlueprint modules -->
         <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
-        <PackageReference Include="MudBlazor" />
-        <PackageReference Include="MudBlazor.ThemeManager" />
         <PackageReference Include="Z.Blazor.Diagrams" />
     </ItemGroup>
 

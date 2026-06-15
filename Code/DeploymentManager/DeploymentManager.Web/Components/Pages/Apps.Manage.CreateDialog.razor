@@ -1,34 +1,10 @@
 @using DeploymentManager.Web.Models
-@using MudBlazor
-<MudDialog>
-    <TitleContent>
-        <MudText Typo="Typo.h6">
-            <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1"/>
-            Create new SaaS App
-        </MudText>
-    </TitleContent>
-    <DialogContent>
-        <MudTextField Value="@apps[0].Name" Label="Name" ReadOnly="false"/>
-    </DialogContent>
-    <DialogActions>
-        <MudButton>Cancel</MudButton>
-        <MudButton Color="Color.Error">Create App</MudButton>
-    </DialogActions>
-</MudDialog>
+
+<div>
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="app-name">Name</label>
+    <input id="app-name" type="text" class="form-input w-full" @bind="_name" placeholder="App name" />
+</div>
 
 @code {
-    @* [CascadingParameter] MudDialogInstance MudDialog { get; set; } *@
-
-    List<AppModel> apps;
-
-    protected override async Task OnInitializedAsync()
-    {
-        List<AppModel> apps = new List<AppModel>();
-
-
-        apps.Add(new AppModel { Name = "App1" });
-    }
-
-    @* void Submit() => MudDialog.Close(DialogResult.Ok(true));
-void Cancel() => MudDialog.Cancel(); *@
+    private string _name = string.Empty;
 }

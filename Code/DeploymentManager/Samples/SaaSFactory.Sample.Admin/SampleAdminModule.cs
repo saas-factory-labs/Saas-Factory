@@ -14,6 +14,13 @@ public sealed class SampleAdminModule : IAdminPortalModule
 
     public string DisplayName => "SaaS Factory Core";
 
+    /// <summary>
+    /// Local dev URL of AppBlueprint.Web, used when the DeploymentManager shell runs in Development.
+    /// The sample app has no public production site, so <see cref="IAdminPortalModule.SiteUrl"/> stays
+    /// null and the "Visit site" link is hidden when deployed.
+    /// </summary>
+    public string? LocalSiteUrl => "https://localhost:8083";
+
     public IReadOnlyList<AdminPortalNavItem> ExtraNavItems { get; } =
     [
         new AdminPortalNavItem("Custom page", "/apps/sample/admin/custom", Icon: string.Empty)
