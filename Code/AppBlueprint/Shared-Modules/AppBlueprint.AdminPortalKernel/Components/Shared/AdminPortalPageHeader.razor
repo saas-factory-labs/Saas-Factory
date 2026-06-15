@@ -4,9 +4,15 @@
 
 <div class="mb-8">
     <div class="mb-4 sm:flex sm:justify-between sm:items-center">
-        <div>
-            <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">@Title</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400">@ModuleDisplayName admin portal</p>
+        <div class="flex items-center gap-3">
+            @if (ModuleIcon is not null)
+            {
+                <div class="w-9 h-9 shrink-0">@((MarkupString)ModuleIcon)</div>
+            }
+            <div>
+                <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">@Title</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">@ModuleDisplayName admin portal</p>
+            </div>
         </div>
     </div>
 
@@ -31,6 +37,9 @@
     [Parameter, EditorRequired] public string AppSlug { get; set; } = string.Empty;
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
     [Parameter] public string ModuleDisplayName { get; set; } = string.Empty;
+
+    private string? ModuleIcon =>
+        Registry.TryGet(AppSlug, out IAdminPortalModule? module) && module is not null ? module.Icon : null;
 
     private IEnumerable<(string Label, string Href)> Tabs
     {

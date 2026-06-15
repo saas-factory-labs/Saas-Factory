@@ -21,7 +21,13 @@
     <a class="block transition truncate @(IsActive ? ThemeService.GetPrimaryClass("text", "500") : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")" 
        href="@Href"
        @onclick="@OnClick">
-        <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">@Label</span>
+        <span class="flex items-center">
+            @if (!string.IsNullOrWhiteSpace(IconMarkup))
+            {
+                <span class="w-5 h-5 shrink-0 mr-2 inline-flex items-center justify-center">@((MarkupString)IconMarkup)</span>
+            }
+            <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">@Label</span>
+        </span>
     </a>
 </li>
 
@@ -49,4 +55,11 @@
     /// </summary>
     [Parameter]
     public EventCallback OnClick { get; set; }
+
+    /// <summary>
+    /// Optional inline SVG/markup for a small leading icon (e.g. a loaded app's logo).
+    /// Rendered as raw markup; pass trusted content only.
+    /// </summary>
+    [Parameter]
+    public string? IconMarkup { get; set; }
 }

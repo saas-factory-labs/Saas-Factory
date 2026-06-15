@@ -61,7 +61,7 @@
                             <SidebarGroupChildItem Href="/apps/settings" Label="Global Settings" OnClick="@(() => appsCtx.HandleOptionClick())" />
                             @foreach (IAdminPortalModule module in AdminPortalRegistry.Modules)
                             {
-                                <SidebarGroupChildItem Href="@($"/apps/{module.Slug}/admin")" Label="@module.DisplayName" IsActive="@IsAppActive(module.Slug)" OnClick="@(() => appsCtx.HandleOptionClick())"/>
+                                <SidebarGroupChildItem Href="@($"/apps/{module.Slug}/admin")" Label="@module.DisplayName" IconMarkup="@module.Icon" IsActive="@IsAppActive(module.Slug)" OnClick="@(() => appsCtx.HandleOptionClick())"/>
                             }
                         </ChildMenuItems>
                     </SidebarMenuGroup>
