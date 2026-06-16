@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.20.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.19.1...v1.20.0) (2026-06-16)
+
+
+### Features
+
+* Add GitHub Actions workflows for deployment and package publishing, update Dockerfile to include plugin DLLs ([06a7881](https://github.com/saas-factory-labs/Saas-Factory/commit/06a78817f5a54854e108e9f890a0ba3849b7966d))
+
 ## [1.19.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.19.0...v1.19.1) (2026-06-16)
 
 
