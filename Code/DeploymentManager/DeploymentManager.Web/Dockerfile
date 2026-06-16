@@ -10,6 +10,14 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
+# Install Node.js for TypeScript compilation (required by AppBlueprint.UiKit → Microsoft.TypeScript.MSBuild)
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Package management
 COPY DeploymentManager/Directory.Packages.props DeploymentManager/
 COPY AppBlueprint/Directory.Packages.props AppBlueprint/
@@ -47,6 +55,12 @@ COPY AppBlueprint/ AppBlueprint/
 WORKDIR /src/DeploymentManager/DeploymentManager.Web
 RUN dotnet build "DeploymentManager.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
+# Empty plugins dir — always present so the final stage COPY never fails.
+# To inject real admin portal DLLs at build time, use BuildKit's --build-context flag:
+#   docker build --build-context plugin-src=./plugins <context>
+# and add a RUN --mount=from=plugin-src step to populate /app/plugins before publish.
+RUN mkdir -p /app/plugins
+
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "DeploymentManager.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
@@ -57,9 +71,8 @@ WORKDIR /app
 
 COPY --from=publish --chown=$APP_UID:$APP_UID /app/publish .
 
-# Admin portal plugin modules: CI pipeline (Scripts/download-admin-plugins.ps1) populates
-# this folder before docker build; it is always present (empty when no plugins configured).
-COPY --chown=$APP_UID:$APP_UID plugins/ ./plugins/
+# Copy plugins dir from build stage (empty on Railway/git builds; contains DLLs for CI builds).
+COPY --from=build --chown=$APP_UID:$APP_UID /app/plugins ./plugins/
 ENV AdminPortal__PluginsPath=/app/plugins
 
 ENV ASPNETCORE_URLS=http://+:8080 \
