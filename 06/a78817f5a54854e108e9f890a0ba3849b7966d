@@ -1,0 +1,30 @@
+Code/DeploymentManager/DeploymentManager.Web/Dockerfile
+  s_3d6f7c5b20e71f::t_7ecd64020711ab 58-59,61
+.github/workflows/deploy-deploymentmanager.yml
+  s_3d6f7c5b20e71f::t_b7aedd027fc22a 1-64
+.github/workflows/publish-adminportalkernel-github-packages.yml
+  s_3d6f7c5b20e71f::t_14e95ee0520fd5 1-65
+.dockerignore
+  s_3d6f7c5b20e71f::t_2c786f4ab94fb6 12-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "06a78817f5a54854e108e9f890a0ba3849b7966d",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_3d6f7c5b20e71f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ffc4d1b5-6bce-402c-b337-c3b768511d91",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
