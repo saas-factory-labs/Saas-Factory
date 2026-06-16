@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.23.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.22.1...v1.23.0) (2026-06-16)
+
+
+### Features
+
+* Add debug input to deployment workflow and update Railway CLI installation ([fa10cd6](https://github.com/saas-factory-labs/Saas-Factory/commit/fa10cd6935b344e07ae060f07018dff1d14d1ab7))
+
 ## [1.22.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.22.0...v1.22.1) (2026-06-16)
 
 
