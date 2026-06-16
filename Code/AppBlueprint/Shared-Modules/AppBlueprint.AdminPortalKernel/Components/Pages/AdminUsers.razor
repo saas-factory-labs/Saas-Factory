@@ -22,7 +22,7 @@ else
             <div class="bg-red-500/20 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">@_error</div>
         }
 
-        <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl mb-8">
+        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl mb-8">
             <div class="px-5 py-4">
                 <div class="flex flex-wrap justify-between items-center gap-3">
                     <div class="flex items-center gap-3">
@@ -125,7 +125,7 @@ else
 
         @if (_selectedUser is not null)
         {
-            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+            <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5">
                 <h2 class="font-semibold text-gray-800 dark:text-gray-100 mb-4">User details</h2>
                 <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm mb-6">
                     <div><dt class="inline font-medium text-gray-500 dark:text-gray-400">Id:</dt> <dd class="inline"><code class="text-xs">@_selectedUser.Id</code></dd></div>

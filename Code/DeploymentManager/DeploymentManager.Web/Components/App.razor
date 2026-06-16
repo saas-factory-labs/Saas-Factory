@@ -38,10 +38,20 @@
             color: var(--brand-on-primary, #ffffff);
             background-color: var(--brand-primary, #8b5cf6);
             border-radius: var(--brand-radius, 0.375rem);
+            border: 1px solid transparent;
             box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            transition: background-color 0.15s ease-in-out;
+            transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
         .btn-brand:hover { background-color: var(--brand-primary-hover, #7c3aed); }
+        /* In dark mode boost the button so it reads clearly on dark backgrounds */
+        @@media (prefers-color-scheme: dark) {
+            .btn-brand {
+                box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.4);
+            }
+        }
+        :is(.dark .btn-brand) {
+            box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.4);
+        }
         .brand-tab-active {
             color: var(--brand-primary, #8b5cf6) !important;
             border-color: var(--brand-primary, #8b5cf6) !important;
