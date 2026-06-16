@@ -5,6 +5,101 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.22.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.22.0...v1.22.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* Remove healthcheck configuration from railway.toml ([670d691](https://github.com/saas-factory-labs/Saas-Factory/commit/670d691a4b98f8eddc510cbcabe25fa6da71b015))
+
+# [1.22.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.21.0...v1.22.0) (2026-06-16)
+
+
+### Bug Fixes
+
+* Enclose service variable in quotes for proper command execution in deployment ([d42daf6](https://github.com/saas-factory-labs/Saas-Factory/commit/d42daf6b19b02bda3c1658fb6af653dd3bdaf869))
+
+
+### Features
+
+* Enhance deployment workflow by adding railway.toml for configuration and updating deployment command ([9d37abc](https://github.com/saas-factory-labs/Saas-Factory/commit/9d37abc34661c62240b2fd5cfbdd55f20eeb992d))
+
+# [1.21.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.20.0...v1.21.0) (2026-06-16)
+
+
+### Features
+
+* Update GitHub Actions workflow to include environment input and deploy to Railway, add railway.toml for deployment configuration ([20c6f62](https://github.com/saas-factory-labs/Saas-Factory/commit/20c6f622e9899e4655ca1e3c8994359b27dc1379))
+
+# [1.20.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.19.1...v1.20.0) (2026-06-16)
+
+
+### Features
+
+* Add GitHub Actions workflows for deployment and package publishing, update Dockerfile to include plugin DLLs ([06a7881](https://github.com/saas-factory-labs/Saas-Factory/commit/06a78817f5a54854e108e9f890a0ba3849b7966d))
+
+## [1.19.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.19.0...v1.19.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* Update OpenID Connect options to explicitly set ValidIssuer and enhance cookie management ([380ca0f](https://github.com/saas-factory-labs/Saas-Factory/commit/380ca0f094697e90deb5f54e30c716f6c490ece2))
+
+# [1.19.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.18.2...v1.19.0) (2026-06-16)
+
+
+### Features
+
+* Implement InMemoryTicketStore for OIDC authentication ticket management ([86b6e3c](https://github.com/saas-factory-labs/Saas-Factory/commit/86b6e3cea8deee818776147fe9eb4c708f2deff9))
+
+## [1.18.2](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.18.1...v1.18.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* Update Microsoft.IdentityModel and System.IdentityModel package versions for security and compatibility ([f51b0f4](https://github.com/saas-factory-labs/Saas-Factory/commit/f51b0f437e5bede035cadf85ff6ea9c75f3129e5))
+
+## [1.18.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.18.0...v1.18.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* Update Dockerfile base image tag for consistency across DeploymentManager modules ([6a25db1](https://github.com/saas-factory-labs/Saas-Factory/commit/6a25db1b8cc6a2ecb0ab216f15410b9c785d79d1))
+
+# [1.18.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.17.0...v1.18.0) (2026-06-16)
+
+
+### Features
+
+* Add .dockerignore file and update Dockerfile paths for consistency in DeploymentManager modules ([000a5e4](https://github.com/saas-factory-labs/Saas-Factory/commit/000a5e4e5d266b72b054c6f28a18358dea1613d3))
+
+# [1.17.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.16.0...v1.17.0) (2026-06-16)
+
+
+### Features
+
+* Add .dockerignore file and update package versions for consistency and security ([5f5793b](https://github.com/saas-factory-labs/Saas-Factory/commit/5f5793bc185c4c1704d2966eb111e94d3fd080d3))
+
+# [1.16.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.15.0...v1.16.0) (2026-06-16)
+
+
+### Features
+
+* Add Admin Portal Audit Log and Security Tests ([fc3d60f](https://github.com/saas-factory-labs/Saas-Factory/commit/fc3d60f6265f5b55f9dff567270c7ac57a58a865))
+* Add README and ADMIN-PORTAL documentation for Admin Portal module ([d815b53](https://github.com/saas-factory-labs/Saas-Factory/commit/d815b5383ccd0a5c365175f4519989cf3e018b97))
+* app-centric, security-hardened DeploymentManager control plane ([48ca93e](https://github.com/saas-factory-labs/Saas-Factory/commit/48ca93e2e0a25107c95f2d978e85b67b718c4653))
+* DeploymentManager web UI-kit migration and admin portal module updates ([86334d7](https://github.com/saas-factory-labs/Saas-Factory/commit/86334d7dd1ac77bbeedcec62174d30ef995a68f7))
+* Implement Admin Debug Page and Diagnostics ([c2b3e9a](https://github.com/saas-factory-labs/Saas-Factory/commit/c2b3e9a2c090bb6cefad98b791461c0f35b42dbd))
+* per-app module tabs, sidebar app icons, empty states ([57edd54](https://github.com/saas-factory-labs/Saas-Factory/commit/57edd5468bd5e6cf56c373e2fdcb4550b536ecd4))
+* Update settings for Snyk organization and auto-selection ([540dc8d](https://github.com/saas-factory-labs/Saas-Factory/commit/540dc8dcd8ad82172ff7f5894b7f0c7755853805))
+
+# [1.15.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.14.2...v1.15.0) (2026-06-12)
+
+
+### Features
+
+* enhance security and input validation for Firebase sign-in; add rate limiting and authorization checks ([0dd1031](https://github.com/saas-factory-labs/Saas-Factory/commit/0dd103139afe6258772b107c910adbcc2d4fd29a))
+
 ## [1.14.2](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.14.1...v1.14.2) (2026-06-12)
 
 ## [1.14.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.14.0...v1.14.1) (2026-04-07)
