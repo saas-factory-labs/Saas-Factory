@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.18.2](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.18.1...v1.18.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* Update Microsoft.IdentityModel and System.IdentityModel package versions for security and compatibility ([f51b0f4](https://github.com/saas-factory-labs/Saas-Factory/commit/f51b0f437e5bede035cadf85ff6ea9c75f3129e5))
+
 ## [1.18.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.18.0...v1.18.1) (2026-06-16)
 
 
