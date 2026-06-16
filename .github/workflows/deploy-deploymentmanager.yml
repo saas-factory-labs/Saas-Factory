@@ -43,12 +43,15 @@ jobs:
         run: npm install -g @railway/cli@3.12.2 --ignore-scripts
 
       # railway up sends the repo root (including the populated plugins/ folder) to
-      # Railway's builder. Railway runs the Dockerfile from railway.toml.
+      # Railway's cloud builder which runs the Dockerfile.
+      # Requires RAILWAY_TOKEN to be a project-scoped token (Railway → Project → Settings → Tokens).
+      # RAILWAY_SERVICE and RAILWAY_ENVIRONMENT tell Railway which service and environment to target.
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_DEPLOYMENTMANAGER }}
         run: |
           railway up \
-            --service deploymentmanager-web \
+            --service ${{ vars.RAILWAY_DM_SERVICE }} \
             --environment ${{ inputs.environment }} \
+            --ci \
             --detach
