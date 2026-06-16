@@ -1,0 +1,92 @@
+# Build context: repo root (used by Railway and local builds from repo root)
+# Applies to all Dockerfiles that use the repo root as build context.
+
+# Build outputs
+**/bin
+**/obj
+**/out
+**/*.dll
+**/*.exe
+**/*.pdb
+
+# Environment and secrets
+**/.env
+**/.env.*
+**/*.local
+**/appsettings.*.json
+!**/appsettings.json
+**/launchSettings.json
+**/secrets.json
+**/secrets.dev.yaml
+**/values.dev.yaml
+doppler.yaml
+
+# Certificates and keys
+**/*.pfx
+**/*.p12
+**/*.key
+**/*.pem
+**/*.cer
+**/*.crt
+**/*.cert
+
+# Version control
+**/.git
+**/.gitignore
+**/.gitattributes
+**/.github
+
+# IDE and editor files
+**/.vs
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+**/*~
+**/.DS_Store
+**/*.*proj.user
+
+# Docker files
+**/Dockerfile*
+**/docker-compose*
+**/compose*
+**/.dockerignore
+
+# Dependencies
+**/node_modules
+**/npm-debug.log
+
+# Test results
+**/TestResults
+**/coverage
+**/*.coverage
+**/*.coveragexml
+
+# Database files
+**/*.db
+**/*.sqlite
+**/*.mdf
+**/*.ldf
+
+# Logs
+**/*.log
+**/logs/
+
+# Cloud configs
+**/.azure
+**/*.publishsettings
+azure.yaml
+
+# Kubernetes
+**/charts
+**/azds.yaml
+
+# Infrastructure / IaC
+**/*.bicep
+**/Diagrams/
+
+# Temporary files
+**/tmp/
+**/temp/
+**/*.tmp
+**/*.bak
