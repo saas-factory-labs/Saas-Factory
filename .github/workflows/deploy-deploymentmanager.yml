@@ -15,6 +15,11 @@ on:
         options:
           - production
           - staging
+      debug:
+        description: 'Enable Railway debug logging'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   deploy:
@@ -40,7 +45,7 @@ jobs:
             -OutputDir Code/DeploymentManager/plugins
 
       - name: Install Railway CLI
-        run: npm install -g @railway/cli@3.12.2 --ignore-scripts
+        run: npm install -g @railway/cli
 
       # railway up sends the repo root (including the populated plugins/ folder) to
       # Railway's cloud builder which runs the Dockerfile.
@@ -49,6 +54,7 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_DEPLOYMENTMANAGER }}
+          RAILWAY_DEBUG: ${{ inputs.debug && '1' || '0' }}
         run: |
           railway up \
             --service "${{ vars.RAILWAY_DM_SERVICE }}" \
