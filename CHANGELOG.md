@@ -5,6 +5,19 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.16.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.15.0...v1.16.0) (2026-06-16)
+
+
+### Features
+
+* Add Admin Portal Audit Log and Security Tests ([fc3d60f](https://github.com/saas-factory-labs/Saas-Factory/commit/fc3d60f6265f5b55f9dff567270c7ac57a58a865))
+* Add README and ADMIN-PORTAL documentation for Admin Portal module ([d815b53](https://github.com/saas-factory-labs/Saas-Factory/commit/d815b5383ccd0a5c365175f4519989cf3e018b97))
+* app-centric, security-hardened DeploymentManager control plane ([48ca93e](https://github.com/saas-factory-labs/Saas-Factory/commit/48ca93e2e0a25107c95f2d978e85b67b718c4653))
+* DeploymentManager web UI-kit migration and admin portal module updates ([86334d7](https://github.com/saas-factory-labs/Saas-Factory/commit/86334d7dd1ac77bbeedcec62174d30ef995a68f7))
+* Implement Admin Debug Page and Diagnostics ([c2b3e9a](https://github.com/saas-factory-labs/Saas-Factory/commit/c2b3e9a2c090bb6cefad98b791461c0f35b42dbd))
+* per-app module tabs, sidebar app icons, empty states ([57edd54](https://github.com/saas-factory-labs/Saas-Factory/commit/57edd5468bd5e6cf56c373e2fdcb4550b536ecd4))
+* Update settings for Snyk organization and auto-selection ([540dc8d](https://github.com/saas-factory-labs/Saas-Factory/commit/540dc8dcd8ad82172ff7f5894b7f0c7755853805))
+
 # [1.15.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.14.2...v1.15.0) (2026-06-12)
 
 
