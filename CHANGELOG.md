@@ -5,6 +5,18 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.22.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.21.0...v1.22.0) (2026-06-16)
+
+
+### Bug Fixes
+
+* Enclose service variable in quotes for proper command execution in deployment ([d42daf6](https://github.com/saas-factory-labs/Saas-Factory/commit/d42daf6b19b02bda3c1658fb6af653dd3bdaf869))
+
+
+### Features
+
+* Enhance deployment workflow by adding railway.toml for configuration and updating deployment command ([9d37abc](https://github.com/saas-factory-labs/Saas-Factory/commit/9d37abc34661c62240b2fd5cfbdd55f20eeb992d))
+
 # [1.21.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.20.0...v1.21.0) (2026-06-16)
 
 
