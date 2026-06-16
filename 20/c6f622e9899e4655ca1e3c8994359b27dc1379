@@ -1,0 +1,27 @@
+.github/workflows/deploy-deploymentmanager.yml
+  s_3d6f7c5b20e71f::t_dc56abee35adfe 43
+  s_3d6f7c5b20e71f::t_9c5ad4a289d18e 7,10-17,20,22-23,29,35,42,45-54
+Code/DeploymentManager/DeploymentManager.Web/railway.toml
+  s_3d6f7c5b20e71f::t_4e0426d9c2cd1f 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "20c6f622e9899e4655ca1e3c8994359b27dc1379",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_3d6f7c5b20e71f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ffc4d1b5-6bce-402c-b337-c3b768511d91",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
