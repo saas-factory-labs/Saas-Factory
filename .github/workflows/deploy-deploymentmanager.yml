@@ -4,61 +4,51 @@ on:
   workflow_dispatch:
     inputs:
       plugin_packages:
-        description: 'Plugin packages (format: "PackageId:Version, ...")'
+        description: 'Plugin packages — overrides ADMIN_PLUGIN_PACKAGES variable (format: "PackageId:Version, ...")'
         required: false
         default: ''
-
-permissions:
-  contents: read
-  packages: write
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/deploymentmanager-web
+      environment:
+        description: 'Target Railway environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
 
 jobs:
-  build-and-push:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
 
-      # Download admin plugin DLLs into Code/DeploymentManager/plugins/ before docker build.
+      # Download admin plugin DLLs into Code/DeploymentManager/plugins/ before railway up.
       # Plugin names live in a GitHub Actions variable (ADMIN_PLUGIN_PACKAGES) so this
       # public repo never contains private app identifiers.
       - name: Download admin plugins
         shell: pwsh
         env:
-          ADMIN_PLUGIN_PACKAGES: ${{ vars.ADMIN_PLUGIN_PACKAGES || inputs.plugin_packages }}
+          ADMIN_PLUGIN_PACKAGES: ${{ inputs.plugin_packages || vars.ADMIN_PLUGIN_PACKAGES }}
           ADMIN_PLUGINS_FEED_OWNER: Trubador
           PLUGINS_FEED_TOKEN: ${{ secrets.PLUGINS_FEED_TOKEN }}
         run: |
           pwsh Code/DeploymentManager/Scripts/download-admin-plugins.ps1 `
             -OutputDir Code/DeploymentManager/plugins
 
-      - name: Log into GHCR
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9  # v3.7.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli@3.12.2 --ignore-scripts
 
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051  # v5.10.0
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=sha,prefix=
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: Code/DeploymentManager/DeploymentManager.Web/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: BUILD_CONFIGURATION=Release
+      # railway up sends the repo root (including the populated plugins/ folder) to
+      # Railway's builder. Railway runs the Dockerfile from railway.toml.
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_DEPLOYMENTMANAGER }}
+        run: |
+          railway up \
+            --service deploymentmanager-web \
+            --environment ${{ inputs.environment }} \
+            --detach
