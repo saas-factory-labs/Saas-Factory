@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.18.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.17.0...v1.18.0) (2026-06-16)
+
+
+### Features
+
+* Add .dockerignore file and update Dockerfile paths for consistency in DeploymentManager modules ([000a5e4](https://github.com/saas-factory-labs/Saas-Factory/commit/000a5e4e5d266b72b054c6f28a18358dea1613d3))
+
 # [1.17.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.16.0...v1.17.0) (2026-06-16)
 
 
