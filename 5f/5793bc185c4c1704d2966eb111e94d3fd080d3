@@ -1,0 +1,54 @@
+Code/.dockerignore
+  s_c6178c514557ab::t_1aac7366734e25 1-92
+Code/AppBlueprint/Directory.Packages.props
+  s_c6178c514557ab::t_99b869875e75df 161,163-164
+  s_c6178c514557ab::t_aa2df63eb26e67 169-171
+  s_c6178c514557ab::t_06b2118ea20075 200
+  s_c6178c514557ab::t_8c6c2dcd938220 156
+  s_c6178c514557ab::t_26eaffbf64f677 96-97
+  s_c6178c514557ab::t_304d102210c53e 87
+  s_c6178c514557ab::t_8f9994d9dfd2eb 6
+  s_c6178c514557ab::t_efb1b174c57d35 104-105
+  s_c6178c514557ab::t_5a208c9b6c1c82 111
+  s_c6178c514557ab::t_a1324c790d8953 148-149
+  s_c6178c514557ab::t_cd2b218d87a2c8 59-61,65-66,68-69,74-82
+Code/DeploymentManager/Directory.Packages.props
+  s_c6178c514557ab::t_f48ab7a7cee787 43-51
+  s_c6178c514557ab::t_8b045f9ec91340 139
+  s_c6178c514557ab::t_57d1f94177b459 18,22-27,29-30
+  s_c6178c514557ab::t_c0431b00ca2892 99
+  s_c6178c514557ab::t_d574dffec65fda 111,113
+  s_c6178c514557ab::t_28e5ebf21aa5e0 110
+  s_c6178c514557ab::t_7981b84327b06b 112
+  s_c6178c514557ab::t_ee645063dd740c 54-55
+  s_c6178c514557ab::t_02c399ea67cc0a 124
+  s_c6178c514557ab::t_6e30ceccd32154 16
+  s_c6178c514557ab::t_d62f469a597f38 5
+  s_c6178c514557ab::t_45d9adec31b743 37
+  s_c6178c514557ab::t_6f7054762a2cf6 156-159
+Code/DeploymentManager/DeploymentManager.Web/Dockerfile
+  s_c6178c514557ab::t_56b1e293e6b5c0 62-63,74-75
+  s_c6178c514557ab::t_053063eb2bbd62 13-20
+  s_c6178c514557ab::t_ee82b504ec9dac 58-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "5f5793bc185c4c1704d2966eb111e94d3fd080d3",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_c6178c514557ab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a69412b6-b964-4698-af9e-3f6f9f0398f4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
