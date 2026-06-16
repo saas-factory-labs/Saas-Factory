@@ -62,7 +62,11 @@ COPY Code/DeploymentManager/plugins/ /app/plugins/
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "DeploymentManager.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "DeploymentManager.Web.csproj" \
+    -c "$BUILD_CONFIGURATION" \
+    -o /app/publish \
+    /p:UseAppHost=false \
+    -p:GeneratePackageOnBuild=false
 
 FROM base AS final
 USER $APP_UID
