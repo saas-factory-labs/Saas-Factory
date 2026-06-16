@@ -10,6 +10,7 @@ using AppBlueprint.UiKit.Services;
 using DeploymentManager.Web.Components;
 using DeploymentManager.Web.Services;
 // using DeploymentManager.Web.Services.Impersonation; // re-enable with the impersonation DI block below
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,7 +40,14 @@ builder.Host.UseDefaultServiceProvider((context, options) =>
 builder.Services.AddAppBlueprintConfiguration(builder.Configuration, builder.Environment);
 builder.Services.AddScoped<ICurrentTenantService, NullCurrentTenantService>();
 
-builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+    // OIDC auth cookies (access + refresh + ID tokens + claims) exceed the 32KB default.
+    // Raising to 64KB keeps single-instance deploys working; the proper fix is the
+    // in-memory ticket store registered below which shrinks the cookie to a session ID.
+    options.Limits.MaxRequestHeadersTotalSize = 65_536;
+});
 
 if (builder.Environment.IsDevelopment())
 {
@@ -64,6 +72,13 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddUiKit();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddWebAuthentication(builder.Configuration, builder.Environment);
+
+// Store OIDC tickets server-side so the browser cookie is a small GUID instead of
+// multi-chunk JWT headers that breach Kestrel's 431 limit.
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<InMemoryTicketStore>();
+builder.Services.AddOptions<CookieAuthenticationOptions>("Logto.Cookie")
+    .PostConfigure<InMemoryTicketStore>((options, store) => options.SessionStore = store);
 
 // DeploymentManager-specific services
 builder.Services.AddScoped<IMenuConfigurationService, MenuConfigurationService>();
