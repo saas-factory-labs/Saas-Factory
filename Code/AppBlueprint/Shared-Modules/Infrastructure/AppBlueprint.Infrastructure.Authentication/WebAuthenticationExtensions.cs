@@ -340,6 +340,11 @@ public static class WebAuthenticationExtensions
             // the principal at all and every role check fails.
             options.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
 
+            // IdentityModel 8.x ValidateTokenUsingHandlerAsync no longer derives ValidIssuer
+            // from Authority automatically — set it explicitly so IDX10204 cannot occur.
+            if (!string.IsNullOrEmpty(oidcBase))
+                options.TokenValidationParameters.ValidIssuer = oidcBase;
+
             // Configure API Resource to request JWT access tokens
             // Per Logto docs: https://docs.logto.io/authorization/global-api-resources
             // 1. Set the resource indicator
@@ -536,6 +541,7 @@ public static class WebAuthenticationExtensions
         options.CorrelationCookie.Path = "/";
         options.CorrelationCookie.IsEssential = true;
         options.CorrelationCookie.Domain = null;
+        options.CorrelationCookie.MaxAge = TimeSpan.FromMinutes(15);
 
         options.NonceCookie.SameSite = SameSiteMode.None;
         options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -543,6 +549,7 @@ public static class WebAuthenticationExtensions
         options.NonceCookie.Path = "/";
         options.NonceCookie.IsEssential = true;
         options.NonceCookie.Domain = null;
+        options.NonceCookie.MaxAge = TimeSpan.FromMinutes(15);
 
         Console.WriteLine("[Web] Configured correlation/nonce cookies: SameSite=None, Secure=Always, Path=/, IsEssential=true, Domain=null");
     }
@@ -565,6 +572,19 @@ public static class WebAuthenticationExtensions
         {
             Console.WriteLine("[Web] OnRedirectToIdentityProvider - About to redirect to Logto");
             Console.WriteLine($"[Web] Redirect URL: {context.ProtocolMessage.RedirectUri}");
+
+            // Delete all orphaned nonce and correlation cookies from previous failed auth attempts.
+            // Each failed attempt (e.g. 431 at the proxy) leaves an unconsumed cookie. After several
+            // retries these accumulate until the Cookie header exceeds Railway's proxy limit.
+            var staleKeys = context.Request.Cookies.Keys
+                .Where(k => k.StartsWith(".AspNetCore.OpenIdConnect.Nonce.", StringComparison.Ordinal)
+                         || k.StartsWith(".AspNetCore.Correlation.", StringComparison.Ordinal))
+                .ToList();
+            var cleanupOptions = new CookieOptions { SameSite = SameSiteMode.None, Secure = true, Path = "/" };
+            foreach (string stale in staleKeys)
+                context.Response.Cookies.Delete(stale, cleanupOptions);
+            if (staleKeys.Count > 0)
+                Console.WriteLine($"[Web] Cleared {staleKeys.Count} stale nonce/correlation cookie(s) before new auth flow");
 
             // Remove Microsoft Identity library fingerprint parameters (x-client-SKU, x-client-ver).
             // These reveal the exact .NET identity library name and version number in every
