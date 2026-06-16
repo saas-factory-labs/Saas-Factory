@@ -53,7 +53,7 @@ COPY Code/DeploymentManager/ Code/DeploymentManager/
 COPY Code/AppBlueprint/ Code/AppBlueprint/
 
 WORKDIR /src/Code/DeploymentManager/DeploymentManager.Web
-RUN dotnet build "DeploymentManager.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
+RUN dotnet build "DeploymentManager.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/build -p:GeneratePackageOnBuild=false
 
 # Plugins dir: populated by download-admin-plugins.ps1 in CI before docker build.
 # Empty on Railway/git builds (no admin portals); contains plugin DLLs in CI builds.
