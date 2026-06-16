@@ -1,0 +1,26 @@
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/WebAuthenticationExtensions.cs
+  s_c6178c514557ab::t_fbb7ccca36c299 343-347
+  s_c6178c514557ab::t_0d71c8de98ef55 576-588
+  s_c6178c514557ab::t_017692a5a4cd1e 544,552
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "380ca0f094697e90deb5f54e30c716f6c490ece2",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_c6178c514557ab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a69412b6-b964-4698-af9e-3f6f9f0398f4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
