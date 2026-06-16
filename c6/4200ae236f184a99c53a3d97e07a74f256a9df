@@ -1,0 +1,75 @@
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/DeploymentManager.Settings.razor
+  s_4a097b999cd2f1::t_df3e5f606ad05b 11
+Code/DeploymentManager/DeploymentManager.ApiService/Dockerfile
+  s_c6178c514557ab::t_c18cc57a96af8c 1-65
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Admin/TenantDataViewer.razor
+  s_4a097b999cd2f1::t_3952b77da3ee55 11-14,17-18,20-21,23-26,28-48,53,60-90,95,135,142
+Code/DeploymentManager/DeploymentManager.Web/Components/App.razor
+  s_4a097b999cd2f1::t_eb156ebe511541 47
+  s_4a097b999cd2f1::t_208e80d060dbde 41,43,46,48-54
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminAudit.razor
+  s_4a097b999cd2f1::t_ac0c0c4f7418d4 21
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Shared/DashboardStatCard.razor
+  s_4a097b999cd2f1::t_a006ea0d2e5e45 3
+Code/DeploymentManager/DeploymentManager.Web/Components/Layout/MainLayout.razor
+  s_4a097b999cd2f1::t_a26a1beb63ab0a 105
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Customers.razor
+  s_4a097b999cd2f1::t_7bae75cc483570 39
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/CostManagement.razor
+  s_4a097b999cd2f1::t_f7279b0bdde0fe 10
+Code/DeploymentManager/Dockerfile
+  s_c6178c514557ab::t_590cedd1c600ff 7
+  s_c6178c514557ab::t_ca07573b12f6df 1-6
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminDashboard.razor
+  s_4a097b999cd2f1::t_17da1e5750e00e 35
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminDebug.razor
+  s_4a097b999cd2f1::t_b1243569fff85a 28,45,67
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Dashboard.razor
+  s_4a097b999cd2f1::t_b2c2b1730f4ca6 19,23,27,61
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Apps.Manage.razor
+  s_4a097b999cd2f1::t_55b60f380bc7aa 61
+  s_4a097b999cd2f1::t_59293c14b6c8b8 21
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Shared/ModuleNotFound.razor
+  s_4a097b999cd2f1::t_4642f9be79df3d 4
+Code/DeploymentManager/DeploymentManager.Web/Dockerfile
+  s_c6178c514557ab::t_455ebc0e617bcb 1-70
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Shared/EmptyState.razor
+  s_4a097b999cd2f1::t_dffafb12b8c02a 3
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminUsers.razor
+  s_4a097b999cd2f1::t_e21ba5526959a5 25,128
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminDependencies.razor
+  s_4a097b999cd2f1::t_6671569ad45aac 25
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/DependencyMap.razor
+  s_4a097b999cd2f1::t_e9d5e389799c28 9
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Pages/AdminTenants.razor
+  s_4a097b999cd2f1::t_b1f52df7df8b28 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "c64200ae236f184a99c53a3d97e07a74f256a9df",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_4a097b999cd2f1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a018ca18-31bc-4d4a-80bb-96ad71e20e73",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_c6178c514557ab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a69412b6-b964-4698-af9e-3f6f9f0398f4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
