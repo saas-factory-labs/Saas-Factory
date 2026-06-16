@@ -1,0 +1,64 @@
+name: "🚀 Deploy: DeploymentManager.Web"
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin_packages:
+        description: 'Plugin packages (format: "PackageId:Version, ...")'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/deploymentmanager-web
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+
+      # Download admin plugin DLLs into Code/DeploymentManager/plugins/ before docker build.
+      # Plugin names live in a GitHub Actions variable (ADMIN_PLUGIN_PACKAGES) so this
+      # public repo never contains private app identifiers.
+      - name: Download admin plugins
+        shell: pwsh
+        env:
+          ADMIN_PLUGIN_PACKAGES: ${{ vars.ADMIN_PLUGIN_PACKAGES || inputs.plugin_packages }}
+          ADMIN_PLUGINS_FEED_OWNER: Trubador
+          PLUGINS_FEED_TOKEN: ${{ secrets.PLUGINS_FEED_TOKEN }}
+        run: |
+          pwsh Code/DeploymentManager/Scripts/download-admin-plugins.ps1 `
+            -OutputDir Code/DeploymentManager/plugins
+
+      - name: Log into GHCR
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9  # v3.7.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051  # v5.10.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Code/DeploymentManager/DeploymentManager.Web/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: BUILD_CONFIGURATION=Release
