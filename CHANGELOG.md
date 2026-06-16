@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.21.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.20.0...v1.21.0) (2026-06-16)
+
+
+### Features
+
+* Update GitHub Actions workflow to include environment input and deploy to Railway, add railway.toml for deployment configuration ([20c6f62](https://github.com/saas-factory-labs/Saas-Factory/commit/20c6f622e9899e4655ca1e3c8994359b27dc1379))
+
 # [1.20.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.19.1...v1.20.0) (2026-06-16)
 
 
