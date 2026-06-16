@@ -1,0 +1,26 @@
+Code/DeploymentManager/DeploymentManager.Web/Dockerfile
+  s_c6178c514557ab::t_c649fb2610ec67 4
+Code/DeploymentManager/DeploymentManager.ApiService/Dockerfile
+  s_c6178c514557ab::t_c449306cdafcc1 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "6a25db1b8cc6a2ecb0ab216f15410b9c785d79d1",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_c6178c514557ab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a69412b6-b964-4698-af9e-3f6f9f0398f4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
