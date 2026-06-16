@@ -1,7 +1,7 @@
 # Build context: repo root (Railway default; also works locally from repo root)
 # docker build -f Code/DeploymentManager/DeploymentManager.Web/Dockerfile -t deploymentmanager-web .
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra AS base
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
