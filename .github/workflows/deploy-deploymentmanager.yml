@@ -54,10 +54,8 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_DEPLOYMENTMANAGER }}
-          RAILWAY_DEBUG: ${{ inputs.debug && '1' || '0' }}
         run: |
           railway up \
             --service "${{ vars.RAILWAY_DM_SERVICE }}" \
-            --environment ${{ inputs.environment }} \
             --ci \
-            --detach
+            ${{ inputs.debug == 'true' && '--verbose' || '' }}
