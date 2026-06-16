@@ -1,5 +1,5 @@
-# Build context: Code/ (parent of both DeploymentManager/ and AppBlueprint/)
-# docker build -f DeploymentManager/DeploymentManager.ApiService/Dockerfile -t deploymentmanager-api .
+# Build context: repo root (Railway default; also works locally from repo root)
+# docker build -f Code/DeploymentManager/DeploymentManager.ApiService/Dockerfile -t deploymentmanager-api .
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled AS base
 USER $APP_UID
@@ -11,40 +11,40 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Package management
-COPY DeploymentManager/Directory.Packages.props DeploymentManager/
-COPY AppBlueprint/Directory.Packages.props AppBlueprint/
-COPY AppBlueprint/NuGet.Config /root/.nuget/NuGet.Config
+COPY Code/DeploymentManager/Directory.Packages.props Code/DeploymentManager/
+COPY Code/AppBlueprint/Directory.Packages.props Code/AppBlueprint/
+COPY Code/AppBlueprint/NuGet.Config /root/.nuget/NuGet.Config
 
 # Project files for layer-cached restore
-COPY DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj DeploymentManager/DeploymentManager.ApiService/
+COPY Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj Code/DeploymentManager/DeploymentManager.ApiService/
 
 # AppBlueprint direct dependencies
-COPY AppBlueprint/AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj AppBlueprint/AppBlueprint.ServiceDefaults/
-COPY AppBlueprint/Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj AppBlueprint/Shared-Modules/AppBlueprint.Application/
-COPY AppBlueprint/Shared-Modules/AppBlueprint.Contracts/AppBlueprint.Contracts.csproj AppBlueprint/Shared-Modules/AppBlueprint.Contracts/
-COPY AppBlueprint/Shared-Modules/AppBlueprint.Domain/AppBlueprint.Domain.csproj AppBlueprint/Shared-Modules/AppBlueprint.Domain/
-COPY AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/
-COPY AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/AppBlueprint.AdminPortalKernel.csproj AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/
-COPY AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/AppBlueprint.Presentation.ApiModule.csproj AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/
+COPY Code/AppBlueprint/AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj Code/AppBlueprint/AppBlueprint.ServiceDefaults/
+COPY Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/
+COPY Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/AppBlueprint.Contracts.csproj Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/
+COPY Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/AppBlueprint.Domain.csproj Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/
+COPY Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/
+COPY Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/AppBlueprint.AdminPortalKernel.csproj Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/
+COPY Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/AppBlueprint.Presentation.ApiModule.csproj Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/
 
 # Infrastructure facade and all sub-modules (transitive)
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure/
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/AppBlueprint.Infrastructure.Authentication.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Compliance/AppBlueprint.Infrastructure.Compliance.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Compliance/
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Email/AppBlueprint.Infrastructure.Email.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Email/
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Notifications/AppBlueprint.Infrastructure.Notifications.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Notifications/
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Payments/AppBlueprint.Infrastructure.Payments.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Payments/
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/AppBlueprint.Infrastructure.Persistence.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Realtime/AppBlueprint.Infrastructure.Realtime.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Realtime/
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Search/AppBlueprint.Infrastructure.Search.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Search/
-COPY AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/AppBlueprint.Infrastructure.Storage.csproj AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/AppBlueprint.Infrastructure.Authentication.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Compliance/AppBlueprint.Infrastructure.Compliance.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Compliance/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Email/AppBlueprint.Infrastructure.Email.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Email/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Notifications/AppBlueprint.Infrastructure.Notifications.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Notifications/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Payments/AppBlueprint.Infrastructure.Payments.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Payments/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/AppBlueprint.Infrastructure.Persistence.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Realtime/AppBlueprint.Infrastructure.Realtime.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Realtime/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Search/AppBlueprint.Infrastructure.Search.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Search/
+COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/AppBlueprint.Infrastructure.Storage.csproj Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/
 
-RUN dotnet restore "DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj"
+RUN dotnet restore "Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj"
 
-COPY DeploymentManager/ DeploymentManager/
-COPY AppBlueprint/ AppBlueprint/
+COPY Code/DeploymentManager/ Code/DeploymentManager/
+COPY Code/AppBlueprint/ Code/AppBlueprint/
 
-WORKDIR /src/DeploymentManager/DeploymentManager.ApiService
+WORKDIR /src/Code/DeploymentManager/DeploymentManager.ApiService
 RUN dotnet build "DeploymentManager.ApiService.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
 FROM build AS publish
