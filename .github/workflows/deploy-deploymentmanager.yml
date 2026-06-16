@@ -45,7 +45,7 @@ jobs:
             -OutputDir Code/DeploymentManager/plugins
 
       - name: Install Railway CLI
-        run: npm install -g @railway/cli
+        run: npm install -g @railway/cli@5.15.0 --ignore-scripts
 
       # railway up sends the repo root (including the populated plugins/ folder) to
       # Railway's cloud builder which runs the Dockerfile.
