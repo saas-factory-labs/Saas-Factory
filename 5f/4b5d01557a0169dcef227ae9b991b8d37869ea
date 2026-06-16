@@ -1,0 +1,24 @@
+.github/workflows/deploy-deploymentmanager.yml
+  s_3d6f7c5b20e71f::t_4832788c9a4ce9 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "5f4b5d01557a0169dcef227ae9b991b8d37869ea",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_3d6f7c5b20e71f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ffc4d1b5-6bce-402c-b337-c3b768511d91",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
