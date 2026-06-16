@@ -1,0 +1,29 @@
+Code/DeploymentManager/DeploymentManager.Web/Services/InMemoryTicketStore.cs
+  s_c6178c514557ab::t_ed84404276b653 1-40
+Code/DeploymentManager/DeploymentManager.Web/Program.cs
+  s_c6178c514557ab::t_4ca5fc2e79885d 76-79,82
+  s_c6178c514557ab::t_2afd428201439b 43-50
+  s_c6178c514557ab::t_a6cba3d170e25f 80-81
+  s_c6178c514557ab::t_5381a7017374d3 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "86b6e3cea8deee818776147fe9eb4c708f2deff9",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_c6178c514557ab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a69412b6-b964-4698-af9e-3f6f9f0398f4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
