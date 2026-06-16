@@ -1,0 +1,7 @@
+@* MANDATORY in every admin portal module: RCL pages do not inherit the host's
+   _Imports.razor, so the role gate must live here. The kernel's security inspector
+   refuses to load the plugin if a routable page is missing the role requirement. *@
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Web
+@using AppBlueprint.Application.Constants
+@attribute [Authorize(Roles = Roles.DeploymentManagerAdmin)]

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <!-- Reference implementation of an admin portal plugin. Private app repos
+         (e.g. SaaSFactory.Dating.Admin) copy this exact shape: a Razor Class Library
+         referencing only the AdminPortalKernel (as a NuGet package there), with all
+         pages role-gated and routed under /apps/{slug}/. -->
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>SaaSFactory.Sample.Admin</RootNamespace>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- In external app repos this is:
+             <PackageReference Include="SaaS-Factory.AppBlueprint.AdminPortalKernel" /> -->
+        <ProjectReference Include="..\..\..\AppBlueprint\Shared-Modules\AppBlueprint.AdminPortalKernel\AppBlueprint.AdminPortalKernel.csproj" />
+    </ItemGroup>
+
+</Project>

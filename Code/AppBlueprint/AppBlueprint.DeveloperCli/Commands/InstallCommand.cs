@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
@@ -12,10 +12,11 @@ internal static class InstallCommand
     {
         var command = new Command("install", $"Install the '{CliConfiguration.AliasName}' CLI globally");
 
-        var forceOption = new Option<bool>(
-            ["--force", "-f"],
-            getDefaultValue: () => false,
-            "Force reinstall even if already installed");
+        var forceOption = new Option<bool>("--force", "-f")
+        {
+            Description = "Force reinstall even if already installed",
+            DefaultValueFactory = _ => false
+        };
         command.AddOption(forceOption);
 
         command.SetHandler((bool force) =>
@@ -65,7 +66,7 @@ internal static class InstallCommand
                     throw new Exception("Failed to build CLI");
                 }
 
-                AnsiConsole.MarkupLine("[green]✓ CLI built successfully[/]");
+                AnsiConsole.MarkupLine("[green]âœ“ CLI built successfully[/]");
 
                 // Step 2: Create installation directory
                 ctx.Status("Creating installation directory...");
@@ -73,14 +74,14 @@ internal static class InstallCommand
                 string installPath = CliConfiguration.GetGlobalInstallPath();
                 Directory.CreateDirectory(installPath);
 
-                AnsiConsole.MarkupLine($"[green]✓ Installation directory: {installPath}[/]");
+                AnsiConsole.MarkupLine($"[green]âœ“ Installation directory: {installPath}[/]");
 
                 // Step 3: Copy files to installation directory
                 ctx.Status("Copying files...");
 
                 CopyBuildOutput(installPath);
 
-                AnsiConsole.MarkupLine("[green]✓ Files copied[/]");
+                AnsiConsole.MarkupLine("[green]âœ“ Files copied[/]");
 
                 // Step 4: Register in PATH or create alias
                 ctx.Status("Registering CLI...");
@@ -90,7 +91,7 @@ internal static class InstallCommand
                     throw new Exception("Failed to register CLI");
                 }
 
-                AnsiConsole.MarkupLine("[green]✓ CLI registered successfully[/]");
+                AnsiConsole.MarkupLine("[green]âœ“ CLI registered successfully[/]");
             });
 
         // Show success message
@@ -125,16 +126,16 @@ internal static class InstallCommand
                 $"[cyan]Welcome to {CliConfiguration.DisplayName}![/]\n\n" +
                 $"This will install the '[green]{CliConfiguration.AliasName}[/]' command globally.\n\n" +
                 "[yellow]What will happen:[/]\n" +
-                "  • CLI will be built in Release mode\n" +
-                "  • Files will be copied to a permanent location\n" +
+                "  â€¢ CLI will be built in Release mode\n" +
+                "  â€¢ Files will be copied to a permanent location\n" +
                 (CliConfiguration.IsWindows
-                    ? "  • Installation directory will be added to your PATH\n"
-                    : $"  • Shell alias will be created in your shell profile\n") +
+                    ? "  â€¢ Installation directory will be added to your PATH\n"
+                    : $"  â€¢ Shell alias will be created in your shell profile\n") +
                 "\n" +
                 $"[green]After installation:[/]\n" +
-                $"  • Run '[green]{CliConfiguration.AliasName} run[/]' to start development environment\n" +
-                $"  • Run '[green]{CliConfiguration.AliasName} --help[/]' to see all commands\n" +
-                $"  • Use '[green]{CliConfiguration.AliasName}[/]' from anywhere on your machine!\n"
+                $"  â€¢ Run '[green]{CliConfiguration.AliasName} run[/]' to start development environment\n" +
+                $"  â€¢ Run '[green]{CliConfiguration.AliasName} --help[/]' to see all commands\n" +
+                $"  â€¢ Use '[green]{CliConfiguration.AliasName}[/]' from anywhere on your machine!\n"
             ))
         {
             Header = new PanelHeader("[cyan]Installation Info[/]"),
@@ -229,7 +230,7 @@ internal static class InstallCommand
 
         var successPanel = new Panel(
             new Markup(
-                $"[green]✅ Installation successful![/]\n\n" +
+                $"[green]âœ… Installation successful![/]\n\n" +
                 $"The '[green]{CliConfiguration.AliasName}[/]' command is now available globally.\n\n" +
                 "[yellow]Next steps:[/]\n" +
                 (CliConfiguration.IsWindows
@@ -276,3 +277,5 @@ internal static class InstallCommand
         Execute(force);
     }
 }
+
+

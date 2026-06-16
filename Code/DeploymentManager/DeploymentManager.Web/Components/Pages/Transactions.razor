@@ -1,0 +1,18 @@
+@page "/transactions"
+@using AppBlueprint.AdminPortalKernel.Components.Shared
+
+<PageTitle>Transactions &amp; Payment Intents</PageTitle>
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Transactions &amp; Payment Intents</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Consolidated Stripe payments across all SaaS apps.</p>
+    <EmptyState Heading="Stripe Connection Required" ActionLabel="Configure API Keys" ActionHref="/deployment-manager/settings">
+        <Icon>
+            <path d="M1 5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2H1Zm0 2h14v4a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7Zm2 2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2H3Z"/>
+        </Icon>
+        <Description>
+            No Stripe billing provider is configured. Add your Stripe API keys and webhook secret to stream live
+            payment intents, charges and subscription events across every SaaS app here.
+        </Description>
+    </EmptyState>
+</div>

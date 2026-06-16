@@ -1,3 +1,4 @@
+using AppBlueprint.AdminPortalKernel.Infrastructure;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline;
 using DeploymentManager.ApiService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -31,5 +32,8 @@ public class DeploymentManagerDbContext : BaselineDbContext
         modelBuilder.Entity<CustomerEntity>().ToTable("dm_customers");
         modelBuilder.Entity<DeploymentEntity>().ToTable("dm_deployments");
         modelBuilder.Entity<ProjectEntity>().ToTable("dm_projects");
+
+        // Admin portal kernel tables (dm_admin_audit) - this context owns their migrations.
+        modelBuilder.ConfigureAdminPortalKernel();
     }
 }

@@ -1,5 +1,5 @@
 @page "/cost-management"
-@using MudBlazor
+@using System.Globalization
 
 <PageTitle>Cost Management</PageTitle>
 
@@ -7,22 +7,38 @@
 
 <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Cost Management</h1>
 
-<MudTable T="Cost" Items="@_costs" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading"
-          LoadingProgressColor="Color.Info">
-    <HeaderContent>
-        <MudTh>App</MudTh>
-        <MudTh>Expense</MudTh>
-        <MudTh>Amount</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        @foreach (var cost in _costs)
-        {
-            <MudTd DataLabel="App">@cost.App</MudTd>
-            <MudTd DataLabel="Expense">@cost.Expense</MudTd>
-            <MudTd DataLabel="Amount">@cost.Amount</MudTd>
-        }
-    </RowTemplate>
-</MudTable>
+<div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <div class="overflow-x-auto">
+        <table class="table-auto w-full dark:text-gray-300">
+            <thead class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-b border-gray-100 dark:border-gray-700/60">
+            <tr>
+                <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">App</th>
+                <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Expense</th>
+                <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Amount</th>
+            </tr>
+            </thead>
+            <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
+            @if (_costs.Count == 0)
+            {
+                <tr>
+                    <td colspan="3" class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">No costs recorded.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (Cost cost in _costs)
+                {
+                    <tr>
+                        <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap font-medium text-gray-800 dark:text-gray-100">@cost.App</td>
+                        <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@cost.Expense</td>
+                        <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@cost.Amount.ToString("C2", CultureInfo.InvariantCulture)</td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 </div>
 
@@ -38,12 +54,9 @@
 
     private readonly List<Cost> _costs = new();
 
-    private bool _hidePosition;
-    private bool _loading;
-
     protected override async Task OnInitializedAsync()
     {
-        _costs.Add(new Cost { Id = 1, App = "File Discovery", Expense = "Azure Blob Storage GB", Amount = 108.00 });
+        _costs.Add(new Cost { Id = 1, App = "SaaS Factory Core", Expense = "Azure Blob Storage GB", Amount = 108.00 });
     }
 
 }

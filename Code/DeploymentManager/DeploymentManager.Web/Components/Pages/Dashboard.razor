@@ -1,20 +1,120 @@
-﻿@page "/"
-@using MudBlazor
+@page "/"
+@using System.Globalization
+@using AppBlueprint.AdminPortalKernel.Services
+@using AppBlueprint.AdminPortalKernel.Components.Shared
+@inject IPlatformOverviewService PlatformOverview
+@inject IInfrastructureHealthService InfrastructureHealth
 
-<PageTitle>Dashboard</PageTitle>
+<PageTitle>Control Plane</PageTitle>
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
-    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Dashboard</h1>
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Executive Control Panel</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Aggregated overview across your entire SaaS portfolio.</p>
+    </div>
 
-    <MudCard Class="mb-4">
-        <MudCardContent>
-            <MudText Typo="Typo.h6">File Discovery App</MudText>
-            <MudText Typo="Typo.body2">Search across every file in an instant.</MudText>
-        </MudCardContent>
-        <MudCardActions>
-            <MudButton Variant="Variant.Text" Color="Color.Primary">Change configuration</MudButton>
-        </MudCardActions>
-    </MudCard>
+    <!-- Aggregated metric cards -->
+    <div class="grid grid-cols-12 gap-6 mb-8">
+        <div class="col-span-12 sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+            <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Total Active Users</div>
+            <div class="text-3xl font-bold text-gray-800 dark:text-gray-100">@Metric(_overview?.ActiveUsers)</div>
+        </div>
+        <div class="col-span-12 sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+            <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Total Active Tenants</div>
+            <div class="text-3xl font-bold text-gray-800 dark:text-gray-100">@Metric(_overview?.ActiveTenants)</div>
+        </div>
+        <div class="col-span-12 sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5">
+            <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Aggregate Platform MRR</div>
+            <div class="text-3xl font-bold text-gray-800 dark:text-gray-100">@MrrDisplay</div>
+            @if (_overview is not null && !_overview.BillingConfigured)
+            {
+                <div class="text-xs text-amber-600 mt-1">Billing provider not configured</div>
+            }
+        </div>
+    </div>
+
+    @if (_overview is not null && _overview.Errors.Count > 0)
+    {
+        <div class="bg-amber-500/20 text-amber-700 px-4 py-3 rounded-lg mb-8 text-sm">
+            <p class="font-semibold mb-1">Some apps could not be aggregated:</p>
+            <ul class="list-disc pl-5">
+                @foreach (string error in _overview.Errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <!-- Core Infrastructure Status -->
+    <h2 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold mb-3">Core Infrastructure Status</h2>
+    <div class="grid grid-cols-12 gap-6 mb-8">
+        @if (_health is null)
+        {
+            <div class="col-span-12 text-sm text-gray-500 dark:text-gray-400">Checking connectivity…</div>
+        }
+        else
+        {
+            @foreach (InfrastructureComponentHealth component in _health.Components)
+            {
+                <div class="col-span-12 sm:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5 flex items-center justify-between gap-3">
+                    <div class="min-w-0">
+                        <div class="text-sm font-semibold text-gray-800 dark:text-gray-100">@component.Name</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@component.Detail</div>
+                    </div>
+                    <span class="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full @BadgeClass(component.Status)">@StatusLabel(component.Status)</span>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- AI Orchestration Monitor -->
+    <h2 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold mb-3">AI Orchestration Monitor</h2>
+    <EmptyState Heading="No orchestration agents running">
+        <Icon>
+            <path d="M8 0a1 1 0 0 1 1 1v1.06a6 6 0 0 1 4.94 4.94H15a1 1 0 1 1 0 2h-1.06A6 6 0 0 1 9 13.94V15a1 1 0 1 1-2 0v-1.06A6 6 0 0 1 2.06 9H1a1 1 0 0 1 0-2h1.06A6 6 0 0 1 7 2.06V1a1 1 0 0 1 1-1Zm0 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/>
+        </Icon>
+        <Description>
+            Running monorepo refactoring agents, task queues and recent agent actions will stream here once the
+            agent orchestrator is connected.
+        </Description>
+    </EmptyState>
 
 </div>
+
+@code {
+    private PlatformOverview? _overview;
+    private InfrastructureHealth? _health;
+
+    private string MrrDisplay => _overview is null
+        ? "…"
+        : _overview.BillingConfigured
+            ? _overview.MonthlyRecurringRevenue.ToString("C0", CultureInfo.InvariantCulture)
+            : "—";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _overview = await PlatformOverview.GetAsync();
+        _health = await InfrastructureHealth.CheckAsync();
+    }
+
+    private static string Metric(int? value) =>
+        value is null ? "…" : value.Value.ToString("N0", CultureInfo.InvariantCulture);
+
+    private static string StatusLabel(InfrastructureStatus status) => status switch
+    {
+        InfrastructureStatus.Healthy => "Connected",
+        InfrastructureStatus.Degraded => "Error",
+        InfrastructureStatus.NotConfigured => "Not configured",
+        _ => "Unknown",
+    };
+
+    private static string BadgeClass(InfrastructureStatus status) => status switch
+    {
+        InfrastructureStatus.Healthy => "bg-green-500/20 text-green-700",
+        InfrastructureStatus.Degraded => "bg-red-500/20 text-red-700",
+        InfrastructureStatus.NotConfigured => "bg-amber-500/20 text-amber-700",
+        _ => "bg-gray-500/20 text-gray-600 dark:text-gray-300",
+    };
+}

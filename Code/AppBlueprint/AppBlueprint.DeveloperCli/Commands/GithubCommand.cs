@@ -1,4 +1,4 @@
-using AppBlueprint.DeveloperCli.Utilities;
+﻿using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -6,8 +6,8 @@ internal static class GitHubCommand
 {
     public static Command Create()
     {
-        var repoUrlOption = new Option<string>("--repo-url", "The URL of the GitHub repository.") { IsRequired = true };
-        var outputDirOption = new Option<string>("--output-dir", "The directory to clone the repository into.") { IsRequired = true };
+        var repoUrlOption = new Option<string>("--repo-url") { Description = "The URL of the GitHub repository.", Required = true };
+        var outputDirOption = new Option<string>("--output-dir") { Description = "The directory to clone the repository into.", Required = true };
 
         var command = new Command("clone-repo", "Clone a GitHub repository.")
         {
@@ -33,3 +33,4 @@ internal static class GitHubCommand
             "Failed to clone repository.");
     }
 }
+

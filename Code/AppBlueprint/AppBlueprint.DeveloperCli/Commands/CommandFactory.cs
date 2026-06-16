@@ -1,30 +1,63 @@
+﻿using AppBlueprint.CliKit.Commands;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace AppBlueprint.DeveloperCli.Commands;
 
-internal static class CommandFactory
+internal sealed class CommandFactory
 {
-    public static RootCommand CreateRootCommand()
-    {
-        var rootCommand = new RootCommand
-        {
-            Description =
-                "SaaS Factory - AppBlueprint Developer Cli - A tool to streamline SaaS application development."
-        };
+    private readonly IEnumerable<ICliCommand> _commands;
 
-        rootCommand.AddCommand(RunCommand.Create());
-        rootCommand.AddCommand(InstallCommand.Create());
-        rootCommand.AddCommand(UninstallCommand.Create());
-        rootCommand.AddCommand(SolutionCommand.Create());
-        rootCommand.AddCommand(ProjectCommand.Create());
-        rootCommand.AddCommand(ItemCommand.Create());
-        rootCommand.AddCommand(DatabaseCommand.Create());
-        rootCommand.AddCommand(GitHubCommand.Create());
-        rootCommand.AddCommand(GithubActionWorkflowCommand.Create());
-        rootCommand.AddCommand(RouteCommand.Create());
-        rootCommand.AddCommand(JwtTokenCommand.Create());
-        rootCommand.AddCommand(EnvironmentVariableCommand.Create());
-        rootCommand.AddCommand(EnvironmentInfoCommand.Create());
-        rootCommand.AddCommand(TestCommand.Create());
+    public CommandFactory(IEnumerable<ICliCommand> commands)
+    {
+        _commands = commands ?? throw new ArgumentNullException(nameof(commands));
+    }
+
+    public RootCommand CreateRootCommand()
+    {
+        var rootCommand = new RootCommand(
+            "SaaS Factory - AppBlueprint Developer CLI - A tool to streamline SaaS application development.");
+
+        foreach (var command in _commands)
+        {
+            rootCommand.Add(command.Build());
+        }
 
         return rootCommand;
     }
+}
+
+internal static class DeveloperCliServiceCollectionExtensions
+{
+    public static IServiceCollection AddDeveloperCliCommands(this IServiceCollection services)
+    {
+        services.AddTransient<CommandFactory>();
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(RunCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(InstallCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(UninstallCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(SolutionCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(ProjectCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(ItemCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(DatabaseCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(GitHubCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(GithubActionWorkflowCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(RouteCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(JwtTokenCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(EnvironmentVariableCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(EnvironmentInfoCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(TestCommand.Create));
+
+        return services;
+    }
+}
+
+internal sealed class StaticCliCommand : ICliCommand
+{
+    private readonly Func<Command> _factory;
+
+    public StaticCliCommand(Func<Command> factory)
+    {
+        _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+    }
+
+    public Command Build() => _factory();
 }

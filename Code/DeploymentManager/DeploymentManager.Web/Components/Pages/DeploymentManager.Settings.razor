@@ -1,31 +1,85 @@
 @page "/deployment-manager/settings"
-@using MudBlazor
 
-<PageTitle>Deployment Manager Settings</PageTitle>
+<PageTitle>System Settings</PageTitle>
 
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto">
 
-<h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Deployment Manager Settings</h1>
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1">System Settings</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">Platform-wide defaults applied to every deployed SaaS app.</p>
 
-<MudGrid>
-    <MudItem xs="12" sm="6" md="4">
-        <MudTextField @bind-Value="TextValue" Label="Set CPU Max DTU per App Production Environment"
-                      Variant="Variant.Text"></MudTextField>
-    </MudItem>
-</MudGrid>
+    <EditForm Model="_model" OnValidSubmit="Save">
+        <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+
+            <!-- Section: Resource Limits -->
+            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700/60">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Resource Limits</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Default compute ceilings for production environments.</p>
+            </div>
+            <div class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="cpu-max-dtu">CPU Max DTU</label>
+                    <InputNumber id="cpu-max-dtu" @bind-Value="_model.CpuMaxDtu"
+                                 class="w-full rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 text-sm text-gray-800 dark:text-gray-100" />
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Maximum Database Throughput Units allotted to each app's production database.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="mem-limit">Memory limit (MB)</label>
+                    <InputNumber id="mem-limit" @bind-Value="_model.MemoryLimitMb"
+                                 class="w-full rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 text-sm text-gray-800 dark:text-gray-100" />
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Hard memory ceiling per app container before the scheduler throttles it.</p>
+                </div>
+            </div>
+
+            <!-- Section: Provisioning Defaults -->
+            <div class="px-6 py-5 border-t border-gray-200 dark:border-gray-700/60">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Provisioning Defaults</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Applied when a new platform app is created.</p>
+            </div>
+            <div class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="default-env">Default environment</label>
+                    <InputText id="default-env" @bind-Value="_model.DefaultEnvironment"
+                               class="w-full rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 text-sm text-gray-800 dark:text-gray-100" />
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Environment new apps are provisioned into by default.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="default-region">Default region</label>
+                    <InputText id="default-region" @bind-Value="_model.DefaultRegion"
+                               class="w-full rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 text-sm text-gray-800 dark:text-gray-100" />
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Cloud region used for new deployments (e.g. <code>eu-central</code>).</p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700/60">
+                @if (_saved)
+                {
+                    <span class="text-sm text-green-600">Saved</span>
+                }
+                <button type="submit"
+                        class="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium bg-violet-500 hover:bg-violet-600 text-white transition">
+                    Save changes
+                </button>
+            </div>
+
+        </div>
+    </EditForm>
 
 </div>
 
 @code {
+    private readonly SettingsModel _model = new();
+    private bool _saved;
 
-    public string TextValue { get; set; }
+    // Persistence target (DeploymentManager settings store) is not wired up yet; this captures the
+    // edited values so the form round-trips. Hook a settings repository here to persist.
+    private void Save() => _saved = true;
 
-
-    private bool _hidePosition;
-    private bool _loading;
-
-    protected override async Task OnInitializedAsync()
+    private sealed class SettingsModel
     {
+        public int CpuMaxDtu { get; set; } = 100;
+        public int MemoryLimitMb { get; set; } = 512;
+        public string DefaultEnvironment { get; set; } = "Production";
+        public string DefaultRegion { get; set; } = "eu-central";
     }
-
 }

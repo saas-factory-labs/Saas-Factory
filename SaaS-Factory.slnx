@@ -13,6 +13,7 @@
     <Project Path="Code/AppBlueprint/AppBlueprint.Tests/AppBlueprint.Tests.csproj" />
     <Project Path="Code/AppBlueprint/AppBlueprint.Web/AppBlueprint.Web.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/AppBlueprint.Api.Client.Sdk.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.CliKit/AppBlueprint.CliKit.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/AppBlueprint.Contracts.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/AppBlueprint.Domain.csproj" />
@@ -89,7 +90,10 @@
     <File Path="Code/AppBlueprint/WHY_LOGTO_FAILED_ANALYSIS.md" />
     <Project Path="Code/AppBlueprint/AppBlueprint.TodoAppKernel/AppBlueprint.TodoAppKernel.csproj" />
   </Folder>
-  <Folder Name="/Code/AppBlueprint/Shared-Modules/" />
+  <Folder Name="/Code/AppBlueprint/Shared-Modules/">
+    <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/AppBlueprint.AdminPortalKernel.Tests.csproj" />
+    <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/AppBlueprint.AdminPortalKernel.csproj" />
+  </Folder>
   <Folder Name="/Code/AppBlueprint/Shared-Modules/Infrastructure/">
     <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/AppBlueprint.Infrastructure.Authentication.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Compliance/AppBlueprint.Infrastructure.Compliance.csproj" />
@@ -102,6 +106,10 @@
     <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/AppBlueprint.Infrastructure.Storage.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/Code/DeploymentManager/" />
+  <Folder Name="/Code/DeploymentManager/Samples/">
+    <Project Path="Code/DeploymentManager/Samples/SaaSFactory.Sample.Admin/SaaSFactory.Sample.Admin.csproj" />
+  </Folder>
   <Folder Name="/DeploymentManager/">
     <Project Path="Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj" />
     <Project Path="Code/DeploymentManager/DeploymentManager.AppHost/DeploymentManager.AppHost.csproj" />
@@ -112,3 +120,4 @@
     <Project Path="Code/DeploymentManager/DeploymentManager.Web/DeploymentManager.Web.csproj" />
   </Folder>
 </Solution>
+

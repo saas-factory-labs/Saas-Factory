@@ -1,4 +1,4 @@
-namespace AppBlueprint.DeveloperCli.Commands;
+﻿namespace AppBlueprint.DeveloperCli.Commands;
 
 internal static class EnvironmentVariableCommand
 {
@@ -33,15 +33,9 @@ internal static class EnvironmentVariableCommand
     {
         var command = new Command("list", "List environment variables");
 
-        var prefixOption = new Option<string>(
-            "--prefix",
-            description: "Filter variables by prefix",
-            getDefaultValue: () => AppBlueprintPrefix);
+        var prefixOption = new Option<string>("--prefix") { Description = "Filter variables by prefix", DefaultValueFactory = _ => AppBlueprintPrefix };
 
-        var scopeOption = new Option<string>(
-            ScopeOption,
-            description: ScopeDescription,
-            getDefaultValue: () => "User");
+        var scopeOption = new Option<string>(ScopeOption) { Description = ScopeDescription, DefaultValueFactory = _ => "User" };
 
         command.AddOption(prefixOption);
         command.AddOption(scopeOption);
@@ -64,11 +58,8 @@ internal static class EnvironmentVariableCommand
     {
         var command = new Command("get", "Get an environment variable value");
 
-        var nameArgument = new Argument<string>("name", "Environment variable name");
-        var scopeOption = new Option<string>(
-            ScopeOption,
-            description: ScopeDescription,
-            getDefaultValue: () => "User");
+        var nameArgument = new Argument<string>("name") { Description = "Environment variable name" };
+        var scopeOption = new Option<string>(ScopeOption) { Description = ScopeDescription, DefaultValueFactory = _ => "User" };
 
         command.AddArgument(nameArgument);
         command.AddOption(scopeOption);
@@ -91,12 +82,9 @@ internal static class EnvironmentVariableCommand
     {
         var command = new Command("set", "Set an environment variable");
 
-        var nameArgument = new Argument<string>("name", "Environment variable name");
-        var valueArgument = new Argument<string>("value", "Environment variable value");
-        var scopeOption = new Option<string>(
-            ScopeOption,
-            description: ScopeDescription,
-            getDefaultValue: () => "User");
+        var nameArgument = new Argument<string>("name") { Description = "Environment variable name" };
+        var valueArgument = new Argument<string>("value") { Description = "Environment variable value" };
+        var scopeOption = new Option<string>(ScopeOption) { Description = ScopeDescription, DefaultValueFactory = _ => "User" };
 
         command.AddArgument(nameArgument);
         command.AddArgument(valueArgument);
@@ -120,11 +108,8 @@ internal static class EnvironmentVariableCommand
     {
         var command = new Command("delete", "Delete an environment variable");
 
-        var nameArgument = new Argument<string>("name", "Environment variable name");
-        var scopeOption = new Option<string>(
-            ScopeOption,
-            description: ScopeDescription,
-            getDefaultValue: () => "User");
+        var nameArgument = new Argument<string>("name") { Description = "Environment variable name" };
+        var scopeOption = new Option<string>(ScopeOption) { Description = ScopeDescription, DefaultValueFactory = _ => "User" };
 
         command.AddArgument(nameArgument);
         command.AddOption(scopeOption);
@@ -383,7 +368,7 @@ internal static class EnvironmentVariableCommand
             Environment.SetEnvironmentVariable(name, value, scope);
 
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine($"[green]✓ Environment variable '{name}' set successfully![/]");
+            AnsiConsole.MarkupLine($"[green]âœ“ Environment variable '{name}' set successfully![/]");
             AnsiConsole.MarkupLine($"[dim]Scope: {scope}[/]");
             AnsiConsole.MarkupLine($"[dim]Value: {value.EscapeMarkup()}[/]");
             AnsiConsole.WriteLine();
@@ -440,7 +425,7 @@ internal static class EnvironmentVariableCommand
             Environment.SetEnvironmentVariable(name, null, scope);
 
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine($"[green]✓ Environment variable '{name}' deleted successfully![/]");
+            AnsiConsole.MarkupLine($"[green]âœ“ Environment variable '{name}' deleted successfully![/]");
             AnsiConsole.MarkupLine($"[dim]Scope: {scope}[/]");
             AnsiConsole.WriteLine();
 
@@ -482,3 +467,6 @@ internal static class EnvironmentVariableCommand
 #pragma warning restore CA1031
     }
 }
+
+
+

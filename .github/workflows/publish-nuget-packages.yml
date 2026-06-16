@@ -1,4 +1,4 @@
-name: "📦 Nuget:  Publish NuGet Packages to NuGet.org"
+﻿name: "ðŸ“¦ Nuget:  Publish NuGet Packages to NuGet.org"
 
 permissions:
   contents: read
@@ -41,6 +41,9 @@ jobs:
 
           # API client SDK
           - "AppBlueprint.Api.Client.Sdk"
+
+          # CLI platform
+          - "AppBlueprint.CliKit"
 
     steps:
       - name: Checkout code
@@ -114,4 +117,5 @@ jobs:
 
       - name: Summary
         run: |
-          echo "✅ Successfully published ${{ matrix.package-name }} v${{ env.VERSION }} to NuGet.org"
+          echo "âœ… Successfully published ${{ matrix.package-name }} v${{ env.VERSION }} to NuGet.org"
+

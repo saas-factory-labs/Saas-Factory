@@ -1,0 +1,37 @@
+@page "/apps/{AppSlug}/admin/deployments"
+@inject AdminPortalModuleRegistry Registry
+
+<PageTitle>@(_module?.DisplayName ?? AppSlug) - Deployments</PageTitle>
+
+@if (_module is null)
+{
+    <ModuleNotFound Slug="@AppSlug"/>
+}
+else
+{
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+        <AdminPortalPageHeader AppSlug="@AppSlug" Title="Deployments" ModuleDisplayName="@_module.DisplayName"/>
+
+        <EmptyState Heading="Deployment Pipeline Required" ActionLabel="Connect Pipeline" ActionHref="/apps/configuration">
+            <Icon>
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm3.7 6.3-4 4a1 1 0 0 1-1.4 0l-2-2a1 1 0 1 1 1.4-1.4L7 8.2l3.3-3.3a1 1 0 0 1 1.4 1.4Z"/>
+            </Icon>
+            <Description>
+                Live deployment streams and cloud architecture for <span class="font-semibold">@_module.DisplayName</span>
+                (<code>@AppSlug</code>) are not wired up yet. Connect this app's CI/CD pipeline (Railway / GitHub Actions)
+                to stream its builds, releases, rollbacks and infrastructure details here.
+            </Description>
+        </EmptyState>
+    </div>
+}
+
+@code {
+    [Parameter] public string AppSlug { get; set; } = string.Empty;
+
+    private IAdminPortalModule? _module;
+
+    protected override void OnParametersSet()
+    {
+        Registry.TryGet(AppSlug, out _module);
+    }
+}

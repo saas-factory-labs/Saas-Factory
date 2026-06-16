@@ -1,0 +1,86 @@
+@page "/apps/{AppSlug}/admin/metrics"
+@inject AdminPortalModuleRegistry Registry
+
+<PageTitle>@(_module?.DisplayName ?? AppSlug) - SaaS Metrics</PageTitle>
+
+@if (_module is null)
+{
+    <ModuleNotFound Slug="@AppSlug"/>
+}
+else
+{
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+        <AdminPortalPageHeader AppSlug="@AppSlug" Title="SaaS Metrics" ModuleDisplayName="@_module.DisplayName"/>
+
+        @if (_error is not null)
+        {
+            <div class="bg-red-500/20 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">@_error</div>
+        }
+        else if (_metrics is null)
+        {
+            <p class="text-sm text-gray-500 dark:text-gray-400">Loading…</p>
+        }
+        else if (_metrics.IsEmpty)
+        {
+            <EmptyState Heading="Metrics Source Required">
+                <Icon>
+                    <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2Zm3 9a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v2Zm4 0a1 1 0 0 1-2 0V5a1 1 0 0 1 2 0v5Zm4 0a1 1 0 0 1-2 0V7a1 1 0 0 1 2 0v3Z"/>
+                </Icon>
+                <Description>
+                    No metrics source is wired up for <span class="font-semibold">@_module.DisplayName</span> yet.
+                    Implement <code>GetLiveMetricsAsync</code> in the app's admin module (e.g. via a Stripe billing
+                    provider) to populate MRR, churn, signups and paying-customer counts here.
+                </Description>
+            </EmptyState>
+        }
+        else
+        {
+            <div class="grid grid-cols-12 gap-6 mb-4">
+                <DashboardStatCard Label="MRR" DisplayValue="@FormatCurrency(_metrics.MonthlyRecurringRevenue)"/>
+                <DashboardStatCard Label="Churn" DisplayValue="@FormatPercent(_metrics.ChurnRatePercent)"/>
+                <DashboardStatCard Label="Signups" Value="@_metrics.Signups"/>
+                <DashboardStatCard Label="Paying customers" Value="@_metrics.PayingCustomers"/>
+            </div>
+            <p class="text-xs text-gray-400 dark:text-gray-500">
+                Generated @_metrics.GeneratedAtUtc.ToString("yyyy-MM-dd HH:mm 'UTC'", System.Globalization.CultureInfo.InvariantCulture)
+            </p>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string AppSlug { get; set; } = string.Empty;
+
+    private IAdminPortalModule? _module;
+    private SaasAppMetrics? _metrics;
+    private string? _error;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Registry.TryGet(AppSlug, out _module);
+        if (_module is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _error = null;
+            _metrics = await _module.GetLiveMetricsAsync();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _error = "You are not authorized to view this app's metrics.";
+        }
+        catch (InvalidOperationException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private static string FormatCurrency(decimal value) =>
+        value.ToString("C0", System.Globalization.CultureInfo.InvariantCulture);
+
+    private static string FormatPercent(decimal value) =>
+        value.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + "%";
+}

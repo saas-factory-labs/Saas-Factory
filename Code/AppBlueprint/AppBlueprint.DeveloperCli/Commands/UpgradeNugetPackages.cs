@@ -1,4 +1,4 @@
-using AppBlueprint.DeveloperCli.Utilities;
+﻿using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -6,8 +6,8 @@ internal static class UpgradeNugetPacckagesCommand
 {
     public static Command Create()
     {
-        // implementer et tool i min developer cli til at opdatere nuget pakker i den centrale pacakges fil hvor den så rent faktisk tjekker version numre og om pakken eksisterer og så ændrer filen først derefter
-        var connectionStringOption = new Option<string>("--connection-string", "The connection string for the database.") { IsRequired = true };
+        // implementer et tool i min developer cli til at opdatere nuget pakker i den centrale pacakges fil hvor den sÃ¥ rent faktisk tjekker version numre og om pakken eksisterer og sÃ¥ Ã¦ndrer filen fÃ¸rst derefter
+        var connectionStringOption = new Option<string>("--connection-string") { Description = "The connection string for the database.", Required = true };
 
         var command = new Command("upgrade-nuget-packages",
             "Upgrade nuget packages for the app solution in the Directory.Packages.props file..")
@@ -36,3 +36,4 @@ internal static class UpgradeNugetPacckagesCommand
             "Database migrated successfully!", "Failed to migrate database.");
     }
 }
+

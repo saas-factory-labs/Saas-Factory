@@ -22,41 +22,26 @@
 
     private async Task ToggleExpanded()
     {
-        // Always expand the sidebar when clicking a section button
         try
         {
-            // Check if sidebarManager exists before calling it
-            bool hasManager = await JS.InvokeAsync<bool>("sidebarManager.isAvailable");
-            if (hasManager)
-            {
-                await JS.InvokeVoidAsync("sidebarManager.expand");
-            }
+            await JS.InvokeVoidAsync("sidebarManager.expand");
         }
         catch (Exception ex)
         {
-            // Log error for debugging
             Console.WriteLine($"Error expanding sidebar: {ex.Message}");
         }
-        
-        // Then toggle the section's expanded state
+
         expanded = !expanded;
     }
 
     private async Task OnOptionClick()
     {
-        // When an option is clicked, collapse the sidebar on desktop
         try
         {
-            // Check if sidebarManager exists before calling it
-            bool hasManager = await JS.InvokeAsync<bool>("sidebarManager.isAvailable");
-            if (hasManager)
-            {
-                await JS.InvokeVoidAsync("sidebarManager.collapse");
-            }
+            await JS.InvokeVoidAsync("sidebarManager.collapse");
         }
         catch (Exception ex)
         {
-            // Log error for debugging
             Console.WriteLine($"Error collapsing sidebar: {ex.Message}");
         }
     }

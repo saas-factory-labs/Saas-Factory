@@ -1,0 +1,78 @@
+@page "/apps/{AppSlug}/admin/cost"
+@inject AdminPortalModuleRegistry Registry
+@inject IDashboardService DashboardService
+
+<PageTitle>@(_module?.DisplayName ?? AppSlug) - Infrastructure &amp; Cost</PageTitle>
+
+@if (_module is null)
+{
+    <ModuleNotFound Slug="@AppSlug"/>
+}
+else
+{
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+        <AdminPortalPageHeader AppSlug="@AppSlug" Title="Infrastructure &amp; Cost" ModuleDisplayName="@_module.DisplayName"/>
+
+        @if (_error is not null)
+        {
+            <div class="bg-red-500/20 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">@_error</div>
+        }
+        else if (_stats is null)
+        {
+            <p class="text-sm text-gray-500 dark:text-gray-400">Loading…</p>
+        }
+        else
+        {
+            <h2 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold mb-3">Database footprint</h2>
+            <div class="grid grid-cols-12 gap-6 mb-8">
+                <DashboardStatCard Label="User rows" Value="@_stats.TotalUsers"/>
+                <DashboardStatCard Label="Active users" Value="@_stats.ActiveUsers"/>
+                <DashboardStatCard Label="Tenant rows" Value="@_stats.TotalTenants"/>
+                <DashboardStatCard Label="Active tenants" Value="@_stats.ActiveTenants"/>
+            </div>
+
+            <h2 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold mb-3">Hosting &amp; expenses</h2>
+            <EmptyState Heading="Cost Source Required">
+                <Icon>
+                    <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm1 11.9V13H7v-1.1a2.5 2.5 0 0 1-1.6-2.3h2a.7.7 0 0 0 1.4 0c0-.3-.1-.5-1-.8-1.2-.4-2.4-.9-2.4-2.4A2.5 2.5 0 0 1 7 3.1V2h2v1.1a2.5 2.5 0 0 1 1.6 2.3h-2a.7.7 0 0 0-1.4 0c0 .3.1.5 1 .8 1.2.4 2.4.9 2.4 2.4A2.5 2.5 0 0 1 9 11.9Z"/>
+                </Icon>
+                <Description>
+                    Hosting cost reporting is not configured for <span class="font-semibold">@_module.DisplayName</span>
+                    yet. Wire up a cost source (Railway / Cloudflare billing) to surface monthly hosting expenses
+                    alongside the database footprint above.
+                </Description>
+            </EmptyState>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string AppSlug { get; set; } = string.Empty;
+
+    private IAdminPortalModule? _module;
+    private DashboardStats? _stats;
+    private string? _error;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Registry.TryGet(AppSlug, out _module);
+        if (_module is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _error = null;
+            _stats = await DashboardService.GetStatsAsync(AppSlug);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _error = "You are not authorized to view this app's infrastructure.";
+        }
+        catch (InvalidOperationException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+}

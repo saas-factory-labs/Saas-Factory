@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Net.Sockets;
 
 namespace AppBlueprint.DeveloperCli.Commands;
@@ -11,16 +11,18 @@ internal static class RunCommand
     {
         var command = new Command("run", "Start the development environment (AppHost with all services)");
 
-        var portOption = new Option<int>(
-            ["--port", "-p"],
-            getDefaultValue: () => DefaultDashboardPort,
-            "Port for the Aspire dashboard");
+        var portOption = new Option<int>("--port", "-p")
+        {
+            Description = "Port for the Aspire dashboard",
+            DefaultValueFactory = _ => DefaultDashboardPort
+        };
         command.AddOption(portOption);
 
-        var watchOption = new Option<bool>(
-            ["--watch", "-w"],
-            getDefaultValue: () => false,
-            "Enable hot reload (watch mode)");
+        var watchOption = new Option<bool>("--watch", "-w")
+        {
+            Description = "Enable hot reload (watch mode)",
+            DefaultValueFactory = _ => false
+        };
         command.AddOption(watchOption);
 
         command.SetHandler((int port, bool watch) =>
@@ -34,7 +36,7 @@ internal static class RunCommand
     private static void ExecuteServe(int port, bool watch)
     {
         AnsiConsole.Write(new FigletText("SaaS Factory").Color(Color.Cyan1));
-        AnsiConsole.MarkupLine("[green]🚀 Starting development environment...[/]\n");
+        AnsiConsole.MarkupLine("[green]ðŸš€ Starting development environment...[/]\n");
 
         // Find AppHost project
         string currentDir = Directory.GetCurrentDirectory();
@@ -42,8 +44,8 @@ internal static class RunCommand
 
         if (string.IsNullOrEmpty(appHostPath))
         {
-            AnsiConsole.MarkupLine("[red]❌ AppHost project not found![/]");
-            AnsiConsole.MarkupLine("[yellow]💡 Please run this command from the AppBlueprint directory[/]");
+            AnsiConsole.MarkupLine("[red]âŒ AppHost project not found![/]");
+            AnsiConsole.MarkupLine("[yellow]ðŸ’¡ Please run this command from the AppBlueprint directory[/]");
             AnsiConsole.MarkupLine("[dim]   or any subdirectory within the project[/]\n");
             return;
         }
@@ -51,14 +53,14 @@ internal static class RunCommand
         string appHostDir = Path.GetDirectoryName(appHostPath) ?? string.Empty;
         string appHostName = Path.GetFileNameWithoutExtension(appHostPath);
 
-        AnsiConsole.MarkupLine($"[blue]📁 AppHost:[/] {appHostName}");
-        AnsiConsole.MarkupLine($"[blue]📂 Location:[/] {appHostDir}");
-        AnsiConsole.MarkupLine($"[blue]🎛️  Dashboard:[/] http://localhost:{port}\n");
+        AnsiConsole.MarkupLine($"[blue]ðŸ“ AppHost:[/] {appHostName}");
+        AnsiConsole.MarkupLine($"[blue]ðŸ“‚ Location:[/] {appHostDir}");
+        AnsiConsole.MarkupLine($"[blue]ðŸŽ›ï¸  Dashboard:[/] http://localhost:{port}\n");
 
         // Check if dashboard port is already in use
         if (IsPortInUse(port))
         {
-            AnsiConsole.MarkupLine($"[yellow]⚠️  Port {port} is already in use![/]");
+            AnsiConsole.MarkupLine($"[yellow]âš ï¸  Port {port} is already in use![/]");
             AnsiConsole.MarkupLine("[yellow]   AppHost might already be running.[/]\n");
 
             if (!AnsiConsole.Confirm("Do you want to continue anyway?", false))
@@ -73,12 +75,12 @@ internal static class RunCommand
         // Display what will be started
         var servicesPanel = new Panel(
             new Markup(
-                "[green]✓[/] PostgreSQL Database\n" +
-                "[green]✓[/] API Service\n" +
-                "[green]✓[/] Web UI (Blazor)\n" +
-                "[green]✓[/] Background Workers\n" +
-                "[green]✓[/] Service Discovery\n" +
-                "[green]✓[/] OpenTelemetry Dashboard"
+                "[green]âœ“[/] PostgreSQL Database\n" +
+                "[green]âœ“[/] API Service\n" +
+                "[green]âœ“[/] Web UI (Blazor)\n" +
+                "[green]âœ“[/] Background Workers\n" +
+                "[green]âœ“[/] Service Discovery\n" +
+                "[green]âœ“[/] OpenTelemetry Dashboard"
             ))
         {
             Header = new PanelHeader("[cyan]Services Starting[/]"),
@@ -149,13 +151,13 @@ internal static class RunCommand
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
-            AnsiConsole.MarkupLine("[green]✅ Development environment starting...[/]");
-            AnsiConsole.MarkupLine($"[blue]🌐 Dashboard will be available at:[/] http://localhost:{port}");
-            AnsiConsole.MarkupLine($"[blue]🔌 Services will start automatically[/]\n");
+            AnsiConsole.MarkupLine("[green]âœ… Development environment starting...[/]");
+            AnsiConsole.MarkupLine($"[blue]ðŸŒ Dashboard will be available at:[/] http://localhost:{port}");
+            AnsiConsole.MarkupLine($"[blue]ðŸ”Œ Services will start automatically[/]\n");
 
             if (watch)
             {
-                AnsiConsole.MarkupLine("[yellow]🔥 Hot reload enabled - changes will be applied automatically[/]\n");
+                AnsiConsole.MarkupLine("[yellow]ðŸ”¥ Hot reload enabled - changes will be applied automatically[/]\n");
             }
 
             AnsiConsole.MarkupLine("[dim]Press Ctrl+C to stop all services[/]\n");
@@ -167,16 +169,16 @@ internal static class RunCommand
 
             if (process.ExitCode != 0)
             {
-                AnsiConsole.MarkupLine($"\n[red]❌ Process exited with code: {process.ExitCode}[/]");
+                AnsiConsole.MarkupLine($"\n[red]âŒ Process exited with code: {process.ExitCode}[/]");
             }
             else
             {
-                AnsiConsole.MarkupLine("\n[green]✅ Development environment stopped[/]");
+                AnsiConsole.MarkupLine("\n[green]âœ… Development environment stopped[/]");
             }
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"\n[red]❌ Failed to start development environment:[/]");
+            AnsiConsole.MarkupLine($"\n[red]âŒ Failed to start development environment:[/]");
             AnsiConsole.WriteException(ex);
         }
     }
@@ -241,7 +243,7 @@ internal static class RunCommand
 
     public static void ExecuteInteractive()
     {
-        AnsiConsole.MarkupLine("[yellow]🚀 Starting development environment in interactive mode...[/]\n");
+        AnsiConsole.MarkupLine("[yellow]ðŸš€ Starting development environment in interactive mode...[/]\n");
 
         bool enableWatch = AnsiConsole.Confirm("Enable [green]hot reload[/] (watch mode)?", false);
 
@@ -259,3 +261,5 @@ internal static class RunCommand
         ExecuteServe(port, enableWatch);
     }
 }
+
+

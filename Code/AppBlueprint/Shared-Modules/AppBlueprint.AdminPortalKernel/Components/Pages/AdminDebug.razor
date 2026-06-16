@@ -1,0 +1,124 @@
+@page "/apps/{AppSlug}/admin/debug"
+@inject AdminPortalModuleRegistry Registry
+@inject IAdminPortalDiagnostics Diagnostics
+
+<PageTitle>@(_module?.DisplayName ?? AppSlug) - Debug</PageTitle>
+
+@if (_module is null)
+{
+    <ModuleNotFound Slug="@AppSlug"/>
+}
+else
+{
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+        <AdminPortalPageHeader AppSlug="@AppSlug" Title="Debug" ModuleDisplayName="@_module.DisplayName"/>
+
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            Verify which app, which plugin dll and which database this portal is actually
+            connected to. The live values below are read back from the database itself, so
+            they reflect the real target — not just configuration.
+        </p>
+
+        @if (_info is null)
+        {
+            <p class="text-sm text-gray-500 dark:text-gray-400">Loading…</p>
+        }
+        else
+        {
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5 mb-6">
+                <h2 class="font-semibold text-gray-800 dark:text-gray-100 mb-4">Module</h2>
+                <dl class="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-y-2 gap-x-4 text-sm">
+                    <dt class="font-medium text-gray-500 dark:text-gray-400">App</dt>
+                    <dd class="text-gray-800 dark:text-gray-100">@_info.DisplayName <span class="text-gray-400">(@_info.Slug)</span></dd>
+
+                    <dt class="font-medium text-gray-500 dark:text-gray-400">Plugin dll</dt>
+                    <dd class="text-gray-800 dark:text-gray-100">@_info.AssemblyName <span class="text-gray-400">v@_info.AssemblyVersion</span></dd>
+
+                    <dt class="font-medium text-gray-500 dark:text-gray-400">Dll path</dt>
+                    <dd class="text-gray-800 dark:text-gray-100"><code class="text-xs break-all">@_info.AssemblyLocation</code></dd>
+
+                    <dt class="font-medium text-gray-500 dark:text-gray-400">Connection string</dt>
+                    <dd class="text-gray-800 dark:text-gray-100"><code class="text-xs break-all">@_info.MaskedConnectionString</code></dd>
+                </dl>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5 mb-6">
+                <h2 class="font-semibold text-gray-800 dark:text-gray-100 mb-4">Live database (read back from the connection)</h2>
+
+                @if (_info.Error is not null)
+                {
+                    <div class="bg-red-500/20 text-red-700 px-4 py-3 rounded-lg text-sm">@_info.Error</div>
+                }
+                else
+                {
+                    <dl class="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-y-2 gap-x-4 text-sm">
+                        <dt class="font-medium text-gray-500 dark:text-gray-400">current_database()</dt>
+                        <dd class="text-gray-800 dark:text-gray-100"><code class="text-xs">@_info.CurrentDatabase</code></dd>
+
+                        <dt class="font-medium text-gray-500 dark:text-gray-400">current_user</dt>
+                        <dd class="text-gray-800 dark:text-gray-100"><code class="text-xs">@_info.CurrentUser</code></dd>
+
+                        <dt class="font-medium text-gray-500 dark:text-gray-400">Server version</dt>
+                        <dd class="text-gray-800 dark:text-gray-100"><code class="text-xs break-all">@_info.ServerVersion</code></dd>
+                    </dl>
+                }
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+                <div class="px-5 py-4">
+                    <h2 class="font-semibold text-gray-800 dark:text-gray-100">Tables read by this portal</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table-auto w-full dark:text-gray-300">
+                        <thead class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-b border-gray-100 dark:border-gray-700/60">
+                        <tr>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Table</th>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Database</th>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Status</th>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Rows</th>
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Note</th>
+                        </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
+                        @foreach (AdminPortalTableInfo table in _info.Tables)
+                        {
+                            <tr>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap font-medium text-gray-800 dark:text-gray-100"><code class="text-xs">@table.Name</code></td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@table.Database</td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    @if (table.Exists)
+                                    {
+                                        <span class="inline-flex items-center font-medium rounded-full text-center px-2.5 py-1 text-xs bg-green-500/20 text-green-700">Found</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center font-medium rounded-full text-center px-2.5 py-1 text-xs bg-red-500/20 text-red-700">Missing</span>
+                                    }
+                                </td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap font-medium">@(table.Exists ? table.RowCount.ToString() : "-")</td>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 text-gray-500 dark:text-gray-400">@table.Note</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string AppSlug { get; set; } = string.Empty;
+
+    private IAdminPortalModule? _module;
+    private AdminPortalDebugInfo? _info;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Registry.TryGet(AppSlug, out _module);
+        if (_module is not null)
+        {
+            _info = await Diagnostics.GetAsync(AppSlug);
+        }
+    }
+}

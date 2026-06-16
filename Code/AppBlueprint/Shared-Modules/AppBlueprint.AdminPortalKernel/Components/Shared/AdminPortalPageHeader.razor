@@ -1,0 +1,95 @@
+@* Shared header for all admin portal pages: app name, page title and tab navigation. *@
+@using AppBlueprint.AdminPortalKernel.Modules
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Hosting
+@inject AdminPortalModuleRegistry Registry
+@inject IWebHostEnvironment Environment
+
+<div class="mb-8">
+    <div class="mb-4 sm:flex sm:justify-between sm:items-center">
+        <div class="flex items-center gap-3">
+            @if (ModuleIcon is not null)
+            {
+                <div class="w-9 h-9 shrink-0">@((MarkupString)ModuleIcon)</div>
+            }
+            <div>
+                <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">@Title</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">@ModuleDisplayName admin portal</p>
+            </div>
+        </div>
+        @if (SiteUrl is not null)
+        {
+            <div class="mt-3 sm:mt-0">
+                <a href="@SiteUrl" target="_blank" rel="noopener noreferrer"
+                   class="btn-brand">
+                    <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M9 1a1 1 0 0 0 0 2h2.586L6.293 8.293a1 1 0 1 0 1.414 1.414L13 4.414V7a1 1 0 1 0 2 0V2a1 1 0 0 0-1-1H9Z"/>
+                        <path d="M3 3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-3a1 1 0 1 0-2 0v3H3V5h3a1 1 0 0 0 0-2H3Z"/>
+                    </svg>
+                    <span>Visit site</span>
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="relative mb-2">
+        <div class="absolute bottom-0 w-full h-px bg-gray-200 dark:bg-gray-700/60" aria-hidden="true"></div>
+        <ul class="relative text-sm font-medium flex flex-nowrap -mx-4 sm:-mx-6 lg:-mx-8 overflow-x-scroll no-scrollbar">
+            @foreach ((string label, string href) in Tabs)
+            {
+                <li class="mr-6 last:mr-0 first:pl-4 sm:first:pl-6 lg:first:pl-8 last:pr-4 sm:last:pr-6 lg:last:pr-8">
+                    <NavLink href="@href" Match="NavLinkMatch.All"
+                             class="block pb-3 text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 whitespace-nowrap"
+                             ActiveClass="brand-tab-active block pb-3 border-b-2 whitespace-nowrap">
+                        @label
+                    </NavLink>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string AppSlug { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string ModuleDisplayName { get; set; } = string.Empty;
+
+    private string? ModuleIcon =>
+        Registry.TryGet(AppSlug, out IAdminPortalModule? module) && module is not null ? module.Icon : null;
+
+    private string? SiteUrl =>
+        Registry.TryGet(AppSlug, out IAdminPortalModule? module) && module is not null
+            ? module.ResolveSiteUrl(Environment.IsDevelopment())
+            : null;
+
+    private IEnumerable<(string Label, string Href)> Tabs
+    {
+        get
+        {
+            List<(string Label, string Href)> tabs =
+            [
+                ("Dashboard", $"/apps/{AppSlug}/admin"),
+                ("Users", $"/apps/{AppSlug}/admin/users"),
+                ("Tenants", $"/apps/{AppSlug}/admin/tenants"),
+                ("SaaS Metrics", $"/apps/{AppSlug}/admin/metrics"),
+                ("Infrastructure & Cost", $"/apps/{AppSlug}/admin/cost"),
+                ("Deployments", $"/apps/{AppSlug}/admin/deployments"),
+                ("Dependency Map", $"/apps/{AppSlug}/admin/dependencies"),
+                ("Audit log", $"/apps/{AppSlug}/admin/audit"),
+                ("Debug", $"/apps/{AppSlug}/admin/debug"),
+            ];
+
+            // Append the module's own pages (e.g. Boligportal "Properties") so a plugin's custom
+            // views are reachable from the tab strip without bloating the sidebar.
+            if (Registry.TryGet(AppSlug, out IAdminPortalModule? module) && module is not null)
+            {
+                foreach (AdminPortalNavItem item in module.ExtraNavItems)
+                {
+                    tabs.Add((item.Title, item.Href));
+                }
+            }
+
+            return tabs;
+        }
+    }
+}

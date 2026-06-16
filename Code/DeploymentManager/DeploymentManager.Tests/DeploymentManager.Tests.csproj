@@ -11,18 +11,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.Testing"/>
-        <PackageReference Include="TUnit"/>
-        <PackageReference Include="TUnit.Assertions"/>
+        <PackageReference Include="Aspire.Hosting.Testing" />
+        <PackageReference Include="TUnit" />
+        <PackageReference Include="TUnit.Assertions" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DeploymentManager.AppHost\DeploymentManager.AppHost.csproj"/>
-        <ProjectReference Include="..\DeploymentManager.ApiService\DeploymentManager.ApiService.csproj"/>
+        <ProjectReference Include="..\DeploymentManager.AppHost\DeploymentManager.AppHost.csproj" />
+        <ProjectReference Include="..\DeploymentManager.ApiService\DeploymentManager.ApiService.csproj" />
+        <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.AdminPortalKernel\AppBlueprint.AdminPortalKernel.csproj" />
+        <ProjectReference Include="..\Samples\SaaSFactory.Sample.Admin\SaaSFactory.Sample.Admin.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="Aspire.Hosting.Testing"/>
+        <Using Include="Aspire.Hosting.Testing" />
     </ItemGroup>
 
 </Project>

@@ -11,22 +11,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.CommandLine"/>
-        <PackageReference Include="System.CommandLine.NamingConventionBinder"/>
-        <PackageReference Include="System.CommandLine.Hosting"/>
+        <PackageReference Include="System.CommandLine" />
         <PackageReference Include="RazorConsole.Core" />
         <PackageReference Include="Spectre.Console" />
-        <PackageReference Include="Spectre.Console.Cli"/>
-        <PackageReference Include="Npgsql"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
-        <PackageReference Include="Microsoft.Extensions.Logging"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
-        <PackageReference Include="Microsoft.Playwright"/>
+        <PackageReference Include="Spectre.Console.Cli" />
+        <PackageReference Include="Npgsql" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
+        <PackageReference Include="Microsoft.Extensions.Logging" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+        <PackageReference Include="Microsoft.Playwright" />
         <PackageReference Include="Fluent-Regex" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.CliKit\AppBlueprint.CliKit.csproj" />
+    </ItemGroup>
+
 </Project>
+

@@ -1,12 +1,10 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject AdminPortalModuleRegistry AdminPortalRegistry
+@using AppBlueprint.AdminPortalKernel.Modules
 @using AppBlueprint.UiKit.Components.Layout
 @using Microsoft.JSInterop
-
-<MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="_isDarkMode"/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
 
 <div class="flex h-[100dvh] overflow-hidden bg-gray-100 dark:bg-gray-900">
 
@@ -18,23 +16,37 @@
 
     <!-- Sidebar -->
     <div id="sidebar"
-         class="flex lg:flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-white dark:bg-gray-800 p-4 transition-all duration-200 ease-in-out @(sidebarOpen ? "translate-x-0" : "-translate-x-64")">
+         class="flex lg:flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 shrink-0 bg-white dark:bg-gray-800 p-4 transition-all duration-200 ease-in-out @(sidebarOpen ? "translate-x-0" : "-translate-x-64")">
 
-        <!-- Logo -->
-        <div class="flex justify-between mb-10 pr-3 sm:px-2">
+        <!-- Logo + collapse toggle -->
+        <div class="flex justify-between items-center lg:flex-col lg:items-center lg:sidebar-expanded:flex-row lg:sidebar-expanded:justify-between lg:sidebar-expanded:items-center mb-10 pr-3 sm:px-2">
             <a class="block" href="/">
                 <svg class="fill-violet-500" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
                     <path d="M31.956 14.8C31.372 6.92 25.08.628 17.2.044V5.76a9.04 9.04 0 0 0 9.04 9.04h5.716ZM14.8 26.24v5.716C6.92 31.372.63 25.08.044 17.2H5.76a9.04 9.04 0 0 1 9.04 9.04Zm11.44-9.04h5.716c-.584 7.88-6.876 14.172-14.756 14.756V26.24a9.04 9.04 0 0 1 9.04-9.04ZM.044 14.8C.63 6.92 6.92.628 14.8.044V5.76a9.04 9.04 0 0 1-9.04 9.04H.044Z"/>
                 </svg>
             </a>
-            <span class="hidden lg:sidebar-expanded:block 2xl:block text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mt-2">Deployment Manager</span>
+            <div class="flex items-center gap-2 lg:mt-3 lg:sidebar-expanded:mt-0">
+                <span class="hidden lg:sidebar-expanded:block text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase">Deployment Manager</span>
+                <!-- Expand / collapse button (desktop only) -->
+                <button type="button"
+                        class="hidden lg:block text-gray-500 hover:text-gray-400"
+                        @onclick="ToggleSidebarExpandedAsync"
+                        aria-label="Toggle navigation">
+                    <svg class="w-6 h-6 fill-current lg:sidebar-expanded:hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M13.3 5.3l-1.4 1.4 4.3 4.3H4v2h12.2l-4.3 4.3 1.4 1.4L20 12z"/>
+                    </svg>
+                    <svg class="w-6 h-6 fill-current hidden lg:sidebar-expanded:block" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z"/>
+                    </svg>
+                </button>
+            </div>
         </div>
 
         <!-- Navigation -->
         <div class="space-y-8">
             <div>
                 <h3 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold pl-3">
-                    <span class="hidden lg:sidebar-expanded:block 2xl:block">Navigation</span>
+                    <span class="hidden lg:sidebar-expanded:block">Navigation</span>
                 </h3>
                 <ul class="mt-3">
 
@@ -49,50 +61,35 @@
                     </SidebarMenuItem>
 
                     <SidebarMenuGroup
-                        Label="Apps"
-                        IsActive="@IsAppsActive">
+                        Label="SaaS Apps"
+                        IsActive="@IsActive("/apps")">
                         <IconPath>
                             <path d="M0 1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1Zm6 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V1Zm6 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V1ZM0 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7Zm6 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Zm6 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7ZM0 13a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1v-2Zm6 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2Zm6 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2Z"/>
                         </IconPath>
+                        <ChildMenuItems Context="appsCtx">
+                            <SidebarGroupChildItem Href="/apps/manage" Label="Manage Platform Apps" OnClick="@(() => appsCtx.HandleOptionClick())" />
+                            <SidebarGroupChildItem Href="/apps/settings" Label="Global Settings" OnClick="@(() => appsCtx.HandleOptionClick())" />
+                            @foreach (IAdminPortalModule module in AdminPortalRegistry.Modules)
+                            {
+                                <SidebarGroupChildItem Href="@($"/apps/{module.Slug}/admin")" Label="@module.DisplayName" IconMarkup="@module.Icon" IsActive="@IsAppActive(module.Slug)" OnClick="@(() => appsCtx.HandleOptionClick())"/>
+                            }
+                        </ChildMenuItems>
+                    </SidebarMenuGroup>
+
+                    <SidebarMenuGroup Label="Global Admin Management" IsActive="@IsGlobalAdminActive">
+                        <IconPath>
+                            <path d="M14.14 9.585a2.5 2.5 0 0 0-3.522 3.194c-.845.63-1.87.97-2.924.971a4.979 4.979 0 0 1-1.113-.135 4.436 4.436 0 0 1-1.343 1.682 6.91 6.91 0 0 0 6.9-1.165 2.5 2.5 0 0 0 2.002-4.547ZM10.125 2.188a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5ZM5.683 8.27a2.5 2.5 0 1 0-2.5-2.5 2.5 2.5 0 0 0 2.5 2.5ZM.125 11.875a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5Z"/>
+                        </IconPath>
                         <ChildMenuItems Context="ctx">
-                            <SidebarGroupChildItem Href="/apps/manage" Label="Manage Apps" OnClick="@(() => ctx.HandleOptionClick())" />
-                            <SidebarGroupChildItem Href="/apps/settings" Label="Global Settings" OnClick="@(() => ctx.HandleOptionClick())" />
-                            <SidebarGroupChildItem Href="/apps/infrastructure" Label="Infrastructure" OnClick="@(() => ctx.HandleOptionClick())" />
-                            <SidebarGroupChildItem Href="/apps/environments/deployments" Label="Deployments" OnClick="@(() => ctx.HandleOptionClick())" />
-                            <SidebarGroupChildItem Href="/apps/configuration" Label="Configuration" OnClick="@(() => ctx.HandleOptionClick())" />
+                            <SidebarGroupChildItem Href="/customers" Label="@("Customers & Subscriptions")" OnClick="@(() => ctx.HandleOptionClick())"/>
+                            <SidebarGroupChildItem Href="/transactions" Label="@("Transactions & Payment Intents")" OnClick="@(() => ctx.HandleOptionClick())"/>
+                            <SidebarGroupChildItem Href="/roles" Label="@("Global Roles & Permissions")" OnClick="@(() => ctx.HandleOptionClick())"/>
                         </ChildMenuItems>
                     </SidebarMenuGroup>
 
                     <SidebarMenuItem
-                        Href="/customers"
-                        Label="Customers"
-                        IsActive="@IsActive("/customers")">
-                        <IconPath>
-                            <path d="M14.14 9.585a2.5 2.5 0 0 0-3.522 3.194c-.845.63-1.87.97-2.924.971a4.979 4.979 0 0 1-1.113-.135 4.436 4.436 0 0 1-1.343 1.682 6.91 6.91 0 0 0 6.9-1.165 2.5 2.5 0 0 0 2.002-4.547ZM10.125 2.188a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5ZM5.683 8.27a2.5 2.5 0 1 0-2.5-2.5 2.5 2.5 0 0 0 2.5 2.5ZM.125 11.875a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5Z"/>
-                        </IconPath>
-                    </SidebarMenuItem>
-
-                    <SidebarMenuItem
-                        Href="/dependency-map"
-                        Label="Dependency Map"
-                        IsActive="@IsActive("/dependency-map")">
-                        <IconPath>
-                            <path d="M8 0a8 8 0 1 0 8 8A8 8 0 0 0 8 0Zm0 14.5A6.5 6.5 0 1 1 14.5 8 6.508 6.508 0 0 1 8 14.5ZM8 3a5 5 0 1 0 5 5 5 5 0 0 0-5-5Zm0 8.5A3.5 3.5 0 1 1 11.5 8 3.5 3.5 0 0 1 8 11.5ZM8 5.5A2.5 2.5 0 1 0 10.5 8 2.5 2.5 0 0 0 8 5.5Zm0 3.5A1 1 0 1 1 9 8a1 1 0 0 1-1 1Z"/>
-                        </IconPath>
-                    </SidebarMenuItem>
-
-                    <SidebarMenuItem
-                        Href="/cost-management"
-                        Label="Cost Management"
-                        IsActive="@IsActive("/cost-management")">
-                        <IconPath>
-                            <path d="M14.936 6.007H8.358l1.594-4.685c.3-.997-.897-1.794-1.694-.997L.284 8.3c-.598.598-.199 1.694.698 1.694H7.56l-1.594 4.685c-.3.997.897 1.794 1.694.997L15.633 7.7c.598-.598.2-1.694-.697-1.694Z"/>
-                        </IconPath>
-                    </SidebarMenuItem>
-
-                    <SidebarMenuItem
                         Href="/deployment-manager/settings"
-                        Label="DM Settings"
+                        Label="System Settings"
                         IsActive="@IsActive("/deployment-manager/settings")">
                         <IconPath>
                             <path d="M10.5 1a3.502 3.502 0 0 1 3.355 2.5H15a1 1 0 1 1 0 2h-1.145a3.502 3.502 0 0 1-6.71 0H1a1 1 0 0 1 0-2h6.145A3.502 3.502 0 0 1 10.5 1ZM9 4.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM5.5 9a3.502 3.502 0 0 1 3.355 2.5H15a1 1 0 1 1 0 2H8.855a3.502 3.502 0 0 1-6.71 0H1a1 1 0 1 1 0-2h1.145A3.502 3.502 0 0 1 5.5 9ZM4 12.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Z"/>
@@ -106,9 +103,19 @@
 
     <!-- Content area -->
     <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-gray-100 dark:bg-gray-800">
+        @* DISABLED: tenant impersonation ("act-as") is parked pending a product decision. The actual
+           need - secure, read-only, rate-limited viewing of tenant/user data - is already met by the
+           kernel's guarded AdminTenants/AdminUsers pages, so no impersonation session is established and
+           this banner is not shown. Re-enable here + the DI block in Program.cs to revive the feature.
+           See DeploymentManager.Web/Services/Impersonation/ImpersonationService.cs. *@
+        @* <ImpersonationBanner/> *@
         <Header SidebarOpen="@sidebarOpen" OnToggleSidebar="@(() => sidebarOpen = !sidebarOpen)"/>
         <main class="grow">
-            @Body
+            @* Per-app brand tokens cascade to the whole page via CSS custom properties; absent on
+               non-app pages so shared components fall back to the shell's default violet. *@
+            <div class="contents" style="@CurrentAppBrandStyle">
+                @Body
+            </div>
         </main>
     </div>
 
@@ -122,24 +129,66 @@
 
 @code {
     private bool sidebarOpen;
-    private bool _isDarkMode;
-    private MudThemeProvider _mudThemeProvider = default!;
 
     private bool IsDashboardActive =>
         Navigation.Uri == Navigation.BaseUri ||
         Navigation.Uri.TrimEnd('/') == Navigation.BaseUri.TrimEnd('/');
 
-    private bool IsAppsActive => Navigation.Uri.Contains("/apps", StringComparison.Ordinal);
-
     private bool IsActive(string path) =>
         Navigation.Uri.Contains(path, StringComparison.Ordinal);
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private bool IsAppActive(string slug) =>
+        Navigation.Uri.Contains($"/apps/{slug}/admin", StringComparison.Ordinal);
+
+    // Brand tokens for the app whose page is currently shown (style attribute value), or empty on
+    // non-app pages. Recomputed on every navigation because RouteView reassigns Body, re-rendering
+    // this layout.
+    private string CurrentAppBrandStyle
     {
-        if (firstRender)
+        get
         {
-            _isDarkMode = await JS.InvokeAsync<bool>("themeManager.isDarkMode");
-            StateHasChanged();
+            string? slug = CurrentAppSlug;
+            if (slug is not null
+                && AdminPortalRegistry.TryGet(slug, out IAdminPortalModule? module)
+                && module?.Branding is not null)
+            {
+                return module.Branding.ToInlineStyle();
+            }
+
+            return string.Empty;
+        }
+    }
+
+    private string? CurrentAppSlug
+    {
+        get
+        {
+            string path = new Uri(Navigation.Uri).AbsolutePath;
+            const string prefix = "/apps/";
+            if (!path.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            string rest = path[prefix.Length..];
+            int slash = rest.IndexOf('/', StringComparison.Ordinal);
+            string slug = slash >= 0 ? rest[..slash] : rest;
+            return slug.Length > 0 ? slug : null;
+        }
+    }
+
+    private bool IsGlobalAdminActive =>
+        IsActive("/customers") || IsActive("/transactions") || IsActive("/roles");
+
+    private async Task ToggleSidebarExpandedAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("sidebarManager.toggleExpanded");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error toggling sidebar: {ex.Message}");
         }
     }
 }

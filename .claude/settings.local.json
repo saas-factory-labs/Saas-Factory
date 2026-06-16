@@ -26,9 +26,43 @@
       "Bash(Select-Object -ExpandProperty Name)",
       "Bash(Get-ChildItem -Path \"Code\\\\DeploymentManager\\\\DeploymentManager.Web\\\\Components\\\\Pages\" -File -Recurse)",
       "Bash(Select-Object Name, FullName)",
-      "Bash(Format-Table -AutoSize)"
+      "Bash(Format-Table -AutoSize)",
+      "Read(//Users/casper/.microsoft/usersecrets/c5bbe413-4aa6-4190-944c-bf90912749a1/**)",
+      "Read(//Users/casper/.microsoft/usersecrets/4795e1a8-9612-431c-841f-ebdca516a9b3/**)",
+      "Read(//Users/casper/.microsoft/usersecrets/06469e0b-8bdc-4100-b9ec-ade06cf7b8bd/**)",
+      "Read(//Users/casper/.microsoft/usersecrets/b643575d-b458-404e-a015-5118d4172ad4/**)",
+      "Read(//Users/casper/.microsoft/usersecrets/deploymentmanager-apiservice/**)",
+      "Bash(xargs ls -la)",
+      "Bash(find /Users/casper/Development/Business-Projects -name \"*boligportal*\" -o -name \"*Boligportal*\" -o -name \"*BoligPortal*\" 2>/dev/null | grep -v \"/bin/\" | grep -v \"/obj/\" | head -30)",
+      "Read(//Users/casper/Development/Business-Projects/**)",
+      "Read(//Users/casper/.microsoft/usersecrets/a1f2b3c4-d5e6-7890-abcd-ef1234567890/**)",
+      "Read(//Users/casper/.microsoft/usersecrets/370d3e10-ef0c-4f35-8e94-4daead4aeadd/**)",
+      "Read(//Users/casper/.microsoft/usersecrets/fe1aab93-fed6-4571-a688-641d53913352/**)",
+      "Bash(mkdir -p /Users/casper/Development/saas-factory-plugins)",
+      "Bash(cp /Users/casper/Development/Development-Projects/Saas-Factory/Code/DeploymentManager/Samples/SaaSFactory.Sample.Admin/bin/Debug/net10.0/SaaSFactory.Sample.Admin.dll /Users/casper/Development/saas-factory-plugins/)",
+      "Read(//Users/casper/Development/**)",
+      "Bash(rg -n \"DeploymentManagerAdmin|class Roles|const string\" Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Constants/*.cs)",
+      "Bash(rg -rn \"new AdminQuerySession|AdminQuerySession\\\\\\(\" Code/AppBlueprint Code/DeploymentManager --glob '!**/obj/**' --glob '!**/bin/**')",
+      "Bash(rg -rn \"new BlazorAdminPortalUserContext\" Code/AppBlueprint Code/DeploymentManager --glob '!**/obj/**' --glob '!**/bin/**')",
+      "Bash(rg -rln \"ADMIN_PORTAL_ACCESS|IAdminPortalUserContext\" Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests Code/DeploymentManager/DeploymentManager.Tests --glob '!**/obj/**' --glob '!**/bin/**')",
+      "Bash(rg -rn \"ExecuteReadAsync|ExecuteWriteAsync\" Code/AppBlueprint Code/DeploymentManager --glob '!**/obj/**' --glob '!**/bin/**' -g '*.cs')",
+      "Bash(git fsck *)",
+      "Bash(dotnet run *)",
+      "Bash(rg -n \"record PagedResult|class PagedResult\" -A6 Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/Dtos/*.cs)",
+      "Bash(rg -rn \"AdminPortal|PluginsPath\" --glob '*.json' . --glob '!**/bin/**' --glob '!**/obj/**')",
+      "Bash(rg -n \"AddJsonFile|AddUserSecrets|AddEnvironmentVariables|appsettings|PluginsPath|UserSecrets\" Program.cs ../*.csproj DeploymentManager.Web.csproj)",
+      "Bash(rg -rn \"File Discovery|FileDiscovery|Sample App\" --glob '!**/obj/**' --glob '!**/bin/**' Code)",
+      "Bash(rg -n \"record DashboardStats\" Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Domain/Dtos/*.cs)",
+      "Bash(dotnet sln *)",
+      "Bash(rg -n \"ConnectionString|Npgsql|postgres|Host=\" appsettings*.json)",
+      "Bash(rg -n \"public sealed class AdminQuerySession|public \\(sealed \\)?class AdminPortalAppDbContext\" Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Infrastructure/*.cs)",
+      "Bash(cd /Users/casper/Development/Business-Projects/Boligportal *)",
+      "Bash(git remote *)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "/Users/casper/Development/saas-factory-plugins"
+    ]
   }
 }

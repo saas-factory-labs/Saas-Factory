@@ -1,7 +1,12 @@
+@using AppBlueprint.AdminPortalKernel.Modules
 @using DeploymentManager.Web.Components.Layout
 @using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
-<Router AppAssembly="@typeof(Program).Assembly">
+@inject AdminPortalModuleRegistry AdminPortalRegistry
+@* AdditionalAssemblies: the admin portal kernel's generic pages (/apps/{slug}/admin...)
+   plus every runtime-loaded plugin module's pages. *@
+<Router AppAssembly="@typeof(Program).Assembly"
+        AdditionalAssemblies="@AdminPortalRegistry.RouterAssemblies">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <NotAuthorized Context="authContext">
