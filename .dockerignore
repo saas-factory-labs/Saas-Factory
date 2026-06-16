@@ -9,6 +9,10 @@
 **/*.exe
 **/*.pdb
 
+# Exception: pre-downloaded admin plugin DLLs (populated by download-admin-plugins.ps1 in CI)
+!Code/DeploymentManager/plugins/*.dll
+!Code/DeploymentManager/plugins/*.pdb
+
 # Environment and secrets
 **/.env
 **/.env.*
