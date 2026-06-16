@@ -8,100 +8,91 @@
 
 <PageTitle>Tenant Data Viewer (Admin)</PageTitle>
 
-<div class="admin-tenant-viewer">
-    <div class="alert alert-warning admin-banner" role="alert">
-        <strong>⚠️ READ-ONLY ADMIN ACCESS</strong> - All access is logged for audit purposes
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
+
+    <div class="mb-6 border-l-4 border-amber-500 bg-amber-500/10 px-4 py-3 rounded-lg">
+        <p class="text-sm font-semibold text-amber-700 dark:text-amber-400">⚠️ READ-ONLY ADMIN ACCESS — All access is logged for audit purposes</p>
     </div>
 
-    <h1>Tenant Data Viewer</h1>
-    <p class="text-muted">View tenant data for support and troubleshooting purposes</p>
+    <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">Tenant Data Viewer</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">View tenant data for support and troubleshooting purposes</p>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Access Tenant Data</h5>
-            
-            <div class="mb-3">
-                <label for="tenantId" class="form-label">Tenant ID</label>
-                <input type="text" class="form-control" id="tenantId" @bind="TenantId" 
-                       placeholder="e.g., tenant-abc-123">
-            </div>
+    <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6 mb-6">
+        <h2 class="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4">Access Tenant Data</h2>
 
-            <div class="mb-3">
-                <label for="reason" class="form-label">Reason for Access (Required for Audit)</label>
-                <textarea class="form-control" id="reason" rows="3" @bind="Reason"
-                          placeholder="e.g., Support ticket #12345 - User unable to login"></textarea>
-            </div>
-
-            <button class="btn btn-primary" @onclick="LoadTenantData" disabled="@IsLoading">
-                @if (IsLoading)
-                {
-                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                    <span>Loading...</span>
-                }
-                else
-                {
-                    <span>Load Tenant Data</span>
-                }
-            </button>
+        <div class="mb-4">
+            <label for="tenantId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tenant ID</label>
+            <input type="text" id="tenantId" class="form-input w-full max-w-md dark:text-gray-300 dark:border-gray-700/60" @bind="TenantId"
+                   placeholder="e.g., tenant-abc-123">
         </div>
+
+        <div class="mb-4">
+            <label for="reason" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Reason for Access (Required for Audit)</label>
+            <textarea id="reason" rows="3" class="form-textarea w-full max-w-md dark:text-gray-300 dark:border-gray-700/60" @bind="Reason"
+                      placeholder="e.g., Support ticket #12345 – User unable to login"></textarea>
+        </div>
+
+        <button class="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                @onclick="LoadTenantData" disabled="@IsLoading">
+            @if (IsLoading)
+            {
+                <svg class="animate-spin fill-current shrink-0 mr-2" width="16" height="16" viewBox="0 0 16 16">
+                    <path d="M8 16a7.928 7.928 0 01-3.428-.77l.857-1.807A6.006 6.006 0 0014 8c0-3.309-2.691-6-6-6a6.006 6.006 0 00-5.422 8.572l-1.806.859A7.929 7.929 0 010 8c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
+                </svg>
+                <span>Loading…</span>
+            }
+            else
+            {
+                <span>Load Tenant Data</span>
+            }
+        </button>
     </div>
 
     @if (!string.IsNullOrEmpty(ErrorMessage))
     {
-        <div class="alert alert-danger" role="alert">
+        <div class="bg-red-500/10 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
             <strong>Error:</strong> @ErrorMessage
         </div>
     }
 
     @if (Users is not null && Users.Any())
     {
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Users in Tenant: @TenantId</h5>
-                <p class="text-muted">Total users: @Users.Count</p>
-
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Created At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var user in Users)
-                            {
-                                <tr>
-                                    <td><code>@user.Id</code></td>
-                                    <td>@user.Email</td>
-                                    @* <td><span class="badge bg-primary">@user.Role</span></td> *@
-                                    <td><span class="badge bg-primary">@(user.UserRoles.FirstOrDefault()?.Role?.Name ?? "N/A")</span></td>
-                                    <td>@user.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+        <div class="bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+            <div class="px-5 py-4">
+                <h2 class="font-semibold text-gray-800 dark:text-gray-100">Users in Tenant: @TenantId</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Total users: @Users.Count</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full dark:text-gray-300">
+                    <thead class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20 border-t border-b border-gray-100 dark:border-gray-700/60">
+                    <tr>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">User ID</th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Email</th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Role</th>
+                        <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-left">Created At</th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700/60">
+                    @foreach (var user in Users)
+                    {
+                        <tr>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap font-mono text-xs">@user.Id</td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@user.Email</td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-700 dark:text-violet-400">
+                                    @(user.UserRoles.FirstOrDefault()?.Role?.Name ?? "N/A")
+                                </span>
+                            </td>
+                            <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">@user.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
             </div>
         </div>
     }
+
 </div>
-
-<style>
-    .admin-banner {
-        border-left: 5px solid #ff6b6b;
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-    }
-
-    .admin-tenant-viewer {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-    }
-</style>
 
 @code {
     private string TenantId { get; set; } = string.Empty;
@@ -141,14 +132,14 @@
             // ✅ This bypasses Named Query Filters
             // ✅ RLS still enforces based on app.current_tenant_id session variable
             // ✅ All access is logged with admin user, tenant, reason, timestamp
-            
+
             // NOTE: ApplicationDbContext must be injected for this to work
             // See AdminTenantAccessTests.cs for working examples.
             throw new NotImplementedException(
                 "ApplicationDbContext must be injected. " +
                 "This is a demonstration of the admin access pattern. " +
                 "See AdminTenantAccessTests.cs for working examples.");
-            
+
             /* Commented out - requires ApplicationDbContext injection:
             Users = await AdminService.ExecuteReadOnlyAsAdminAsync<List<UserEntity>>(
                 TenantId,
