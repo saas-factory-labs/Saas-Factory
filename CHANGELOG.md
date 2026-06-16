@@ -5,6 +5,13 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.24.2](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.24.1...v1.24.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* Disable package generation during Docker publish in Dockerfile ([e3aa833](https://github.com/saas-factory-labs/Saas-Factory/commit/e3aa833d0a19415492f0bfc64b64257048b2fffb))
+
 ## [1.24.1](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.24.0...v1.24.1) (2026-06-16)
 
 
