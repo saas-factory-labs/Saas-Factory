@@ -43,36 +43,6 @@
 
 https://www.pulumi.com/blog/automatically-enforcing-aws-resource-tagging-policies/#automatically-applying-tags
 
-    // setup budget
+   
 
-    //     azure b2c 
-    // api : https://docs.microsoft.com/da-dk/azure/active-directory-b2c/microsoft-graph-operations)
-    // custom policies: https://docs.microsoft.com/da-dk/azure/active-directory-b2c/deploy-custom-policies-devops
-    // should user profile data be stored with b2c or in seperate database?
-    // follow all this https://docs.microsoft.com/da-dk/azure/active-directory-b2c/overview
-    // demo app by microsoft to test out b2c: https://woodgrovedemo.com/
-    // https://www.youtube.com/watch?v=U2Temcn-hes
-    // https://www.youtube.com/watch?v=9P10hgPDRZg
-
-    private void DeleteSoftDeletedApiManagement(string name, string location)
-    {
-        // because api management is soft deleted, we need to delete it manually
-
-        // call api management api to delete it
-
-        // DELETE https://management.azure.com/subscriptions/a3b46b3d-75ea-4c0c-be0c-b23d48415034/providers/Microsoft.ApiManagement/locations/west us/deletedservices/apim-evfeeder-dev-esu?api-version=2021-08-01
-
-        System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
-        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + "token");
-        client.DefaultRequestHeaders.Add("Accept", "application/json");
-        var response = client.DeleteAsync("https://management.azure.com/subscriptions/" + azureSubscriptionId + "/providers/Microsoft.ApiManagement/locations/" + location + "/deletedservices/" + name + "?api-version=2021-08-01");
-
-        if (response.Result.StatusCode == System.Net.HttpStatusCode.Accepted)
-        {
-            System.Console.WriteLine("Deleted api management " + name);
-        }
-        else
-        {
-            System.Console.WriteLine("Failed to delete api management");
-        }
-    }
+   

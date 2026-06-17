@@ -1,9 +1,9 @@
 # Sync Documentation to RazorPress and Writerside
 # This script copies documentation files from content/ to RazorPress/_pages/ and Writerside/topics/
 
-$contentPath = "C:\Development\Development-Projects\saas-factory-labs\docs\content"
-$razorPressPath = "C:\Development\Development-Projects\saas-factory-labs\docs\RazorPress\RazorPress\_pages"
-$writersidePath = "C:\Development\Development-Projects\saas-factory-labs\Writerside\topics"
+$contentPath = "D:\Development\Development-Projects\Saas-Factory\docs\content"
+$razorPressPath = "D:\Development\Development-Projects\Saas-Factory\docs\RazorPress\RazorPress\_pages"
+$writersidePath = "D:\Development\Development-Projects\Saas-Factory\docs\Writerside\topics"
 
 # List of documentation files to sync (relative to content/ directory)
 $filesToSync = @(
