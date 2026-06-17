@@ -1,0 +1,16 @@
+docs/sync-documentation.ps1
+  h_aa722e8ed10195 4-6
+Code/DeploymentManager/DeploymentManager.CloudInfrastructure/Pulumi/Todo.txt
+  h_aa722e8ed10195 46-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "20ea20b712e31cc20fee710f9da9596555c8244c",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
