@@ -1,0 +1,25 @@
+CLEANUP-PLAN.md
+  s_bdde02ed277d1d::t_ab06100b66a5bb 1-31,33-84
+  h_aa722e8ed10195 32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "4d4b8b5c70182e53676d147a9622095cc2d91edc",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_bdde02ed277d1d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4abf14f1-8e05-4d8a-b863-34a06cd63ad4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
