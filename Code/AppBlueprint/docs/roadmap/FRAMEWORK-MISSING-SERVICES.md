@@ -43,7 +43,7 @@ This document tracks the remaining infrastructure services needed to make AppBlu
 - `AppBlueprint.Infrastructure/SignalR/TenantScopedHub.cs`
 - `AppBlueprint.Infrastructure/SignalR/DemoChatHub.cs`
 - `AppBlueprint.UiKit/Components/Pages/RealtimeChat.razor`
-- `SIGNALR-IMPLEMENTATION.md`
+- `../../Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Realtime/SIGNALR-IMPLEMENTATION.md`
 
 **Usage Examples:**
 ```csharp

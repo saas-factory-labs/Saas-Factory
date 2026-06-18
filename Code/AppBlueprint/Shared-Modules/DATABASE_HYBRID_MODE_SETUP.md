@@ -324,10 +324,10 @@ private HttpClient GetAuthenticatedHttpClient()
 
 ## Related Documentation
 
-- [📖 Complete Database Context Flexibility Guide](./Shared-Modules/DATABASE_CONTEXT_FLEXIBILITY_GUIDE.md) - Comprehensive guide with all scenarios
-- [📋 Configuration Examples](./Shared-Modules/DatabaseContexts/Examples/README.md) - B2C, B2B, Hybrid, Baseline examples
-- [🏗️ Clean Architecture Dependencies](./.github/.ai-rules/baseline/clean-architecture-dependencies.md) - Dependency injection patterns
-- [🔐 Multi-Tenancy Guide](./Shared-Modules/MULTI_TENANCY_GUIDE.md) - Tenant isolation with RLS
+- [📖 Complete Database Context Flexibility Guide](./DATABASE_CONTEXT_FLEXIBILITY_GUIDE.md) - Comprehensive guide with all scenarios
+- [📋 Configuration Examples](./DatabaseContexts/Examples/README.md) - B2C, B2B, Hybrid, Baseline examples
+- [🏗️ Clean Architecture Dependencies](../../../.github/.ai-rules/baseline/clean-architecture-dependencies.md) - Dependency injection patterns
+- [🔐 Multi-Tenancy Guide](./MULTI_TENANCY_GUIDE.md) - Tenant isolation with RLS
 
 ## Summary
 

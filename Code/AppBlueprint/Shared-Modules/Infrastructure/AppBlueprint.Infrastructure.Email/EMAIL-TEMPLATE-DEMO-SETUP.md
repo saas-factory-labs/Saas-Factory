@@ -155,4 +155,4 @@ Each template has strongly-typed models with IntelliSense support.
 - **Template Override** - Deployed apps can customize framework templates
 - **Embedded Resources** - Framework templates compiled into assembly
 
-See [README.md](Shared-Modules/AppBlueprint.Infrastructure/Services/Email/README.md) for full documentation.
+See [README.md](./README.md) for full documentation.

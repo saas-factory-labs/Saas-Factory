@@ -269,3 +269,4 @@ The project structure is in the Writerside documentation at `/Writerside/topic/R
 - Based on the changes you made - formulate a git commit message that describes the changes you made.
 - When running a project do not use "&&" in the command for example "PS C:\Development\Development-Projects\saas-factory-labs> cd C:\Development\Development-Projects\saas-factory-labs\Code\AppBlueprint\AppBlueprint.Web && dotnet build
   " as this does not work - instead run the commands separately in sequence.
+Remember that this repo is open sourced so make sure no secrets or sensitive information or non generic code or data is added to the codebase. If you are unsure, please ask the user for clarification.

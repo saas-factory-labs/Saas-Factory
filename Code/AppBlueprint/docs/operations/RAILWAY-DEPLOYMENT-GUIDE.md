@@ -407,10 +407,10 @@ Before deploying to production:
 ## 📚 Additional Resources
 
 - [API Environment Variables Reference](API-ENVIRONMENT-VARIABLES-REFERENCE.md) - **Complete guide based on code analysis**
+- [Logto Environment Variables](../../Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/LOGTO-ENVIRONMENT-VARIABLES.md)
+- [Firebase Setup Guide](../../Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Notifications/FIREBASE-ENV-SETUP.md)
+- [Database Context Documentation](../../Shared-Modules/DATABASE_CONTEXT_DOCUMENTATION_INDEX.md)
 - [Railway Documentation](https://docs.railway.app/)
-- [Logto Environment Variables](Code/AppBlueprint/LOGTO-ENVIRONMENT-VARIABLES.md)
-- [Firebase Setup Guide](Code/AppBlueprint/FIREBASE-ENV-SETUP.md)
-- [Database Context Documentation](Code/AppBlueprint/DATABASE_CONTEXT_DOCUMENTATION_INDEX.md)
 
 ## 🆘 Support
 

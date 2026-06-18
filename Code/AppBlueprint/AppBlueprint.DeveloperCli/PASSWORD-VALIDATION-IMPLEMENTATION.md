@@ -171,7 +171,7 @@ Features:
 Closes: TODO MainMenu.cs:217
 Files changed:
 - AppBlueprint.DeveloperCli/Menus/MainMenu.cs
-- TODO-ANALYSIS.md (marked as completed)
+- [TODO-ANALYSIS.md](../docs/roadmap/TODO-ANALYSIS.md) (marked as completed)
 
 Verified: Builds successfully with no errors
 ```

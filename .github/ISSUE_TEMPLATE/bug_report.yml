@@ -7,6 +7,7 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
+
   - type: input
     id: contact
     attributes:
@@ -15,22 +16,52 @@ body:
       placeholder: ex. email@example.com
     validations:
       required: false
+
   - type: textarea
     id: detailed-description
     attributes:
-      label: Detailed description?
-      description: Also tell us more about the bug, and what you were expecting.
-      value: |
+      label: Detailed description
+      description: Tell us what happened and what you expected to happen instead.
+      placeholder: |
         **Describe the bug**
         A clear and concise description of the bug.
 
         **Expected behavior**
         A clear and concise description of what you expected to happen.
-
-        **Additional context**
-        Add any other context about the problem here.
     validations:
       required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: Please list the steps required to reproduce the issue.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment & Device Details
+      description: Please complete the relevant information below.
+      value: |
+        **Desktop / Laptop:**
+        - OS: [e.g. Windows, macOS, Linux]
+        - Browser: [e.g. Chrome, Safari, Firefox]
+        - Version: [e.g. 124]
+
+        **Smartphone / Tablet (if applicable):**
+        - Device: [e.g. iPhone 15, Galaxy S24]
+        - OS: [e.g. iOS 17, Android 14]
+        - Browser: [e.g. Stock browser, Safari]
+    validations:
+      required: false
+
   - type: dropdown
     id: severity
     attributes:
@@ -43,14 +74,24 @@ body:
         - Low
     validations:
       required: true
+
   - type: checkboxes
     id: security-related
     attributes:
       label: Is this bug security related?
-      description: Please let us know if this bug is security related. If so please consider using our [Report a security vulnerability](../security/advisories/new) form instead.
+      description: Please let us know if this bug is security related. If so, please consider using our [Report a security vulnerability](../security/advisories/new) form instead.
       options:
         - label: This bug is related to security
           required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context, logs, or drag-and-drop screenshots about the problem here.
+    validations:
+      required: false
+
   - type: checkboxes
     id: terms
     attributes:

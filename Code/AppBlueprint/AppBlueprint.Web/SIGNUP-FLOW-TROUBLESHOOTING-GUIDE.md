@@ -681,8 +681,8 @@ Logto__Resource=http://localhost:8091
 
 - **Multi-Tenancy:** `.github/.ai-rules/backend/multi-tenancy.md`
 - **Tenant Isolation:** `.github/.ai-rules/backend/tenant-isolation-defense-in-depth.md`
-- **Database Setup:** `AppBlueprint/DATABASE_HYBRID_MODE_SETUP.md`
-- **Logto Setup:** `AppBlueprint/LOGTO-AUTHENTICATION-SETUP.md`
+- **Database Setup:** `../Shared-Modules/DATABASE_HYBRID_MODE_SETUP.md`
+- **Logto Setup:** `../Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/LOGTO-AUTHENTICATION-SETUP.md`
 - **Row-Level Security:** `AppBlueprint/SetupRowLevelSecurity.sql`
 
 ---
