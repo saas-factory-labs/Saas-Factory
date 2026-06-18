@@ -1,4 +1,14 @@
 repos:
+  - repo: local
+    hooks:
+      - id: validate-workflow-sha-pins
+        name: Validate GitHub Actions use pinned SHAs
+        language: system
+        entry: powershell -ExecutionPolicy Bypass -File .github/scripts/validate-workflow-sha-pins.ps1
+        files: \.github/workflows/.*\.(yml|yaml)$
+        pass_filenames: false
+        stages: [pre-commit, pre-push]
+
   - repo: https://github.com/gitguardian/ggshield
     rev: v1.47.0
     hooks:

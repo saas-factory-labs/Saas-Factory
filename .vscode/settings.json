@@ -1,11 +1,6 @@
 {
-    "dotnet.defaultSolution": "SaaS-Factory.sln",
-    "dotnet.preferCSharpExtension": false,
     "sonarlint.connectedMode.project": {
         "connectionId": "saas-factory-labs",
-        "projectKey": "saas-factory-labs_Saas-Factory"
-    },
-    "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
-    "snyk.advanced.organization": "bffeace8-186a-4f32-b538-38fd5931d210",
-    "snyk.advanced.autoSelectOrganization": true
+        "projectKey": "labs_saas-factory"
+    } 
 }
