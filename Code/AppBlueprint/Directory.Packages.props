@@ -86,7 +86,7 @@
     <!-- Cloud / infrastructure SDKs -->
     <PackageVersion Include="AWSSDK.Core" Version="4.0.9" />
     <PackageVersion Include="AWSSDK.S3" Version="4.0.24.3" />
-    <PackageVersion Include="AWSSDK.SecurityToken" Version="3.7.401.25" />
+    <PackageVersion Include="AWSSDK.SecurityToken" Version="4.0.7.3" />
     <PackageVersion Include="Azure.Security.KeyVault.Secrets" Version="4.8.0" />
     <PackageVersion Include="Azure.Storage.Blobs" Version="12.24.0" />
     <PackageVersion Include="Pulumi" Version="3.145.0" />
@@ -128,7 +128,7 @@
   <!-- ═══════════ WEB API • DOCUMENTATION ═════════════════════════════ -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.OpenApi" Version="3.7.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.10" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.7.1" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.16.3" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.2.1" />
@@ -152,6 +152,8 @@
   </ItemGroup>
   <!-- ═══════════ SERIALISATION & DATA ════════════════════════════════ -->
   <ItemGroup>
+    <PackageVersion Include="MessagePack" Version="2.5.301" />
+    <PackageVersion Include="MessagePack.Annotations" Version="2.5.301" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="System.Text.Json" Version="10.0.9" />
   </ItemGroup>

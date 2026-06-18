@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using AppBlueprint.Application.Constants;
 using AppBlueprint.Contracts.Baseline.Account.Requests;
 using AppBlueprint.Contracts.Baseline.Account.Responses;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Customer.Account;
@@ -11,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
-[Authorize(AuthorizationPolicies.Over18)]
+[Authorize(AuthorizationPolicyNames.Over18)]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [ApiVersion(ApiVersions.V2)]

@@ -3,6 +3,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
     <!-- Enable latest language version -->
     <LangVersion>latest</LangVersion>
     <!-- Do not treat warnings as errors -->

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Domain entities for multi-tenant B2B applications
 - User aggregate with strongly-typed UserId
 - Team and Organization entities with membership management

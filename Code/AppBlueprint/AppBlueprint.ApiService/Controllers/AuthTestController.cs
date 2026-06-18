@@ -2,6 +2,7 @@
 // builds. Release/production builds exclude it entirely so tokens can never be exposed this way.
 #if DEBUG
 using System.Security.Claims;
+using AppBlueprint.Application.Constants;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -67,7 +68,7 @@ internal sealed class AuthTestController(ILogger<AuthTestController> logger) : C
     /// Admin-only endpoint - requires Admin role
     /// </summary>
     [HttpGet("admin")]
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = AuthorizationPolicyNames.AdminOnly)]
     public IActionResult GetAdmin()
     {
         _logger.LogInformation("Admin endpoint accessed by user: {User}", User.Identity?.Name);
@@ -84,7 +85,7 @@ internal sealed class AuthTestController(ILogger<AuthTestController> logger) : C
     /// User or Admin endpoint - requires User or Admin role
     /// </summary>
     [HttpGet("user")]
-    [Authorize(Policy = "UserOrAdmin")]
+    [Authorize(Policy = AuthorizationPolicyNames.UserOrAdmin)]
     public IActionResult GetUserEndpoint()
     {
         _logger.LogInformation("User endpoint accessed by user: {User}", User.Identity?.Name);
