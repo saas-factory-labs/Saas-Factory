@@ -1,0 +1,27 @@
+.gitignore
+  h_aa722e8ed10195 428-438
+.pre-commit-config.yaml
+  s_bdde02ed277d1d::t_ef4abed0816be2 2-6,8-11
+  s_bdde02ed277d1d::t_f58a8c6a5c832a 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "2ae4c4150624ecb98735d2d7e5354dcb5b1baaf6",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_bdde02ed277d1d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4abf14f1-8e05-4d8a-b863-34a06cd63ad4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
