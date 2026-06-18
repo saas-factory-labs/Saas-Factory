@@ -434,5 +434,5 @@ firebase-service-account.json
 codeql-saas-factory-db/
 
 # Graphify (Ignore cache, but output graph is preserved)
-graphify-out\cache
+graphify-out/cache
 
