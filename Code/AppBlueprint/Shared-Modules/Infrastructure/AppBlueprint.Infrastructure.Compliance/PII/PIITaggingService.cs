@@ -33,14 +33,11 @@ public class PIITaggingService : IPIITaggingService
         var root = doc.RootElement.Clone();
 
         // Check for non-canonical tags to potentially notify the Worker
-        foreach (var tag in piiMetadata.PiiTags)
+        foreach (var tag in piiMetadata.PiiTags.Where(tag => !tag.IsCanonical))
         {
-            if (!tag.IsCanonical)
-            {
-                // TODO: In a real scenario, we would push to a Queue/Worker here
-                // For now, we'll just log or mark it
-                Console.WriteLine($"[PII Discovery] Found non-canonical label: {tag.Type}");
-            }
+            // TODO: In a real scenario, we would push to a Queue/Worker here
+            // For now, we'll just log or mark it
+            Console.WriteLine($"[PII Discovery] Found non-canonical label: {tag.Type}");
         }
 
         // Use a dictionary to merge properties

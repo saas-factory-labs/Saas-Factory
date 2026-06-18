@@ -24,7 +24,7 @@ public class TodoRepository : ITodoRepository
     {
         ArgumentException.ThrowIfNullOrEmpty(tenantId);
 
-        _logger.LogInformation("Getting all todos for tenant {TenantId}", tenantId);
+        _logger.LogInformation("Getting all todos for current tenant context");
 
         return await _dbContext.Todos
             .Where(t => t.TenantId == tenantId && !t.IsSoftDeleted)
@@ -37,7 +37,7 @@ public class TodoRepository : ITodoRepository
         ArgumentException.ThrowIfNullOrEmpty(id);
         ArgumentException.ThrowIfNullOrEmpty(tenantId);
 
-        _logger.LogInformation("Getting todo {TodoId} for tenant {TenantId}", id, tenantId);
+        _logger.LogInformation("Getting todo for current tenant context");
 
         return await _dbContext.Todos
             .FirstOrDefaultAsync(t => t.Id == id && t.TenantId == tenantId && !t.IsSoftDeleted, cancellationToken);
@@ -47,7 +47,7 @@ public class TodoRepository : ITodoRepository
     {
         ArgumentNullException.ThrowIfNull(todo);
 
-        _logger.LogInformation("Creating todo {TodoTitle} for tenant {TenantId}", todo.Title, todo.TenantId);
+        _logger.LogInformation("Creating todo for current tenant context");
 
         _dbContext.Todos.Add(todo);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -61,7 +61,7 @@ public class TodoRepository : ITodoRepository
     {
         ArgumentNullException.ThrowIfNull(todo);
 
-        _logger.LogInformation("Updating todo {TodoId} for tenant {TenantId}", todo.Id, todo.TenantId);
+        _logger.LogInformation("Updating todo for current tenant context");
 
         _dbContext.Todos.Update(todo);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -76,7 +76,7 @@ public class TodoRepository : ITodoRepository
         ArgumentException.ThrowIfNullOrEmpty(id);
         ArgumentException.ThrowIfNullOrEmpty(tenantId);
 
-        _logger.LogInformation("Deleting todo {TodoId} for tenant {TenantId}", id, tenantId);
+        _logger.LogInformation("Deleting todo for current tenant context");
 
         var todo = await GetByIdAsync(id, tenantId, cancellationToken);
 
@@ -85,11 +85,11 @@ public class TodoRepository : ITodoRepository
             todo.IsSoftDeleted = true;
             todo.LastUpdatedAt = DateTime.UtcNow;
             await _dbContext.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Todo {TodoId} soft-deleted successfully", id);
+            _logger.LogInformation("Todo soft-deleted successfully");
         }
         else
         {
-            _logger.LogWarning("Todo {TodoId} not found for deletion", id);
+            _logger.LogWarning("Todo not found for deletion");
         }
     }
 }

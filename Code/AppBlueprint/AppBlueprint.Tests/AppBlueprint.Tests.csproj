@@ -17,6 +17,7 @@
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+        <PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" />
         <PackageReference Include="Testcontainers.Redis" />
         <PackageReference Include="bunit" />
         <PackageReference Include="Testcontainers" />
@@ -39,6 +40,7 @@
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
         <ProjectReference Include="..\AppBlueprint.ApiService\AppBlueprint.ApiService.csproj" />
         <ProjectReference Include="..\AppBlueprint.Web\AppBlueprint.Web.csproj" />
+        <ProjectReference Include="..\..\SaaSFactory.SharedTestKernel\SaaSFactory.SharedTestKernel.csproj" />
     </ItemGroup>
 
     <ItemGroup>

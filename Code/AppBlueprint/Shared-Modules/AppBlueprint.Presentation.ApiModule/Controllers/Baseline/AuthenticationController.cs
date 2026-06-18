@@ -167,7 +167,7 @@ public class AuthenticationController : BaseController
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "Error during profile deactivation for user {UserId}", userId);
+            _logger.LogError(ex, "Error during profile deactivation");
             return NotFound(new { Message = "User not found or unable to deactivate." });
         }
     }

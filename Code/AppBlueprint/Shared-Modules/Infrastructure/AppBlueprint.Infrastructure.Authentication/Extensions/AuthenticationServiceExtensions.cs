@@ -35,8 +35,8 @@ public static class AuthenticationServiceExtensions
         // Register the authentication provider factory
         services.AddScoped<IAuthenticationProviderFactory, AuthenticationProviderFactory>();
 
-        // Register IAuthenticationProvider using the factory
-        services.AddScoped<Authorization.Providers.IAuthenticationProvider>(sp =>
+        // Register the app authentication provider using the factory
+        services.AddScoped<Authorization.Providers.IAppAuthenticationProvider>(sp =>
         {
             var factory = sp.GetRequiredService<IAuthenticationProviderFactory>();
             return factory.CreateProvider();

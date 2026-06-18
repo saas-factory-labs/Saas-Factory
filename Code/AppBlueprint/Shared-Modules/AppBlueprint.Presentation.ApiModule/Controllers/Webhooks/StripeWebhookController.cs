@@ -3,6 +3,7 @@ using AppBlueprint.Application.Constants;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Webhooks;
 
@@ -106,7 +107,31 @@ public sealed class StripeWebhookController : ControllerBase
                 result.WasDuplicate
             });
         }
-        catch (Exception ex)
+        catch (IOException ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unexpected error processing webhook"
+            );
+
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                new { Error = "Internal server error" }
+            );
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unexpected error processing webhook"
+            );
+
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                new { Error = "Internal server error" }
+            );
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(
                 ex,

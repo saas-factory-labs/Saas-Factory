@@ -45,11 +45,20 @@ public class MockProvider : BaseAuthenticationProvider
 
             await StoreTokens(result);
 
-            _logger.LogInformation("Mock login successful for user: {Email}", request.Email);
+            _logger.LogInformation("Mock login successful");
             return result;
         }
 #pragma warning disable CA1031 // Mock provider - returns error result instead of throwing for test scenarios
-        catch (Exception ex)
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogError(ex, "Error during mock login");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "An error occurred during login. Please try again."
+            };
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error during mock login");
             return new AuthenticationResult
@@ -95,7 +104,16 @@ public class MockProvider : BaseAuthenticationProvider
             return result;
         }
 #pragma warning disable CA1031 // Mock provider - returns error result instead of throwing for test scenarios
-        catch (Exception ex)
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogError(ex, "Error during mock token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error during mock token refresh");
             return new AuthenticationResult
@@ -140,7 +158,17 @@ public class MockProvider : BaseAuthenticationProvider
             await TokenStorage.RemoveTokenAsync();
         }
 #pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional in mock provider
-        catch (Exception ex)
+        catch (FormatException ex)
+        {
+            _logger.LogError(ex, "Error restoring mock token from storage");
+            await TokenStorage.RemoveTokenAsync();
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "Error restoring mock token from storage");
+            await TokenStorage.RemoveTokenAsync();
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error restoring mock token from storage");
             await TokenStorage.RemoveTokenAsync();
@@ -188,7 +216,15 @@ public class MockProvider : BaseAuthenticationProvider
                 return payload?.email;
             }
         }
-        catch
+        catch (FormatException)
+        {
+            // Ignore parsing errors
+        }
+        catch (JsonException)
+        {
+            // Ignore parsing errors
+        }
+        catch (InvalidOperationException)
         {
             // Ignore parsing errors
         }

@@ -436,3 +436,8 @@ codeql-saas-factory-db/
 # Graphify (Ignore cache, but output graph is preserved)
 graphify-out/cache
 
+# Ignore nul windows system file
+nul
+
+# Deployment Manager Admin Portal plugins (class libraries)
+DeploymentManager/plugins/

@@ -267,16 +267,12 @@ public sealed class StripeWebhookService : IStripeWebhookService
         try
         {
             // Try to extract tenant_id from metadata
-            if (stripeEvent.Data?.Object is StripeEntity stripeEntity)
+            if (stripeEvent.Data?.Object is StripeEntity stripeEntity
+                && stripeEntity is IHasMetadata metadataEntity
+                && metadataEntity.Metadata is not null
+                && metadataEntity.Metadata.TryGetValue("tenant_id", out string? tenantId))
             {
-                // Most Stripe objects have a Metadata property
-                if (stripeEntity is IHasMetadata metadataEntity && metadataEntity.Metadata is not null)
-                {
-                    if (metadataEntity.Metadata.TryGetValue("tenant_id", out string? tenantId))
-                    {
-                        return tenantId;
-                    }
-                }
+                return tenantId;
             }
 
             return null;

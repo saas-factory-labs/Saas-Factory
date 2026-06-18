@@ -1,6 +1,6 @@
 namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers;
 
-public interface IAuthenticationProvider : Microsoft.Kiota.Abstractions.Authentication.IAuthenticationProvider
+public interface IAppAuthenticationProvider : Microsoft.Kiota.Abstractions.Authentication.IAuthenticationProvider
 {
     bool IsAuthenticated();
     Task<AuthenticationResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);

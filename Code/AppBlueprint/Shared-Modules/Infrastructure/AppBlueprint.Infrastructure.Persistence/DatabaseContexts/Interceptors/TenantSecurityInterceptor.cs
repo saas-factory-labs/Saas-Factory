@@ -52,25 +52,21 @@ public sealed class TenantSecurityInterceptor : SaveChangesInterceptor
             return;
         }
 
-        foreach (var entry in context.ChangeTracker.Entries<ITenantScoped>())
+        foreach (var entry in context.ChangeTracker.Entries<ITenantScoped>()
+                     .Where(entry => entry.State == EntityState.Modified || entry.State == EntityState.Deleted))
         {
-            // Only validate modifications and deletions
-            // Additions are usually safe (assigned current tenant), but could be validated too if needed
-            if (entry.State == EntityState.Modified || entry.State == EntityState.Deleted)
-            {
-                var entityTenantId = entry.Entity.TenantId;
+            var entityTenantId = entry.Entity.TenantId;
 
-                // CRITICAL SECURITY CHECK
-                if (!string.Equals(entityTenantId, currentTenantId, StringComparison.Ordinal))
-                {
-                    throw new SecurityException(
-                        $"Cross-tenant modification detected! " +
-                        $"Attempted to {entry.State} entity {entry.Entity.GetType().Name} " +
-                        $"belonging to tenant '{entityTenantId}' " +
-                        $"while in context of tenant '{currentTenantId}'. " +
-                        $"Operation aborted."
-                    );
-                }
+            // CRITICAL SECURITY CHECK
+            if (!string.Equals(entityTenantId, currentTenantId, StringComparison.Ordinal))
+            {
+                throw new SecurityException(
+                    $"Cross-tenant modification detected! " +
+                    $"Attempted to {entry.State} entity {entry.Entity.GetType().Name} " +
+                    $"belonging to tenant '{entityTenantId}' " +
+                    $"while in context of tenant '{currentTenantId}'. " +
+                    $"Operation aborted."
+                );
             }
         }
     }

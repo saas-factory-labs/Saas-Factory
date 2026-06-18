@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Hosting.Testing" />
+        <PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" />
         <PackageReference Include="TUnit" />
         <PackageReference Include="TUnit.Assertions" />
     </ItemGroup>
@@ -21,6 +22,7 @@
         <ProjectReference Include="..\DeploymentManager.ApiService\DeploymentManager.ApiService.csproj" />
         <ProjectReference Include="..\..\AppBlueprint\Shared-Modules\AppBlueprint.AdminPortalKernel\AppBlueprint.AdminPortalKernel.csproj" />
         <ProjectReference Include="..\Samples\SaaSFactory.Sample.Admin\SaaSFactory.Sample.Admin.csproj" />
+        <ProjectReference Include="..\..\SaaSFactory.SharedTestKernel\SaaSFactory.SharedTestKernel.csproj" />
     </ItemGroup>
 
     <ItemGroup>

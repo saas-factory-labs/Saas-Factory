@@ -145,11 +145,10 @@ public static class JwtAuthenticationExtensions
                 var hasToken = !string.IsNullOrEmpty(authHeader);
 
                 logger.LogWarning(
-                    "Authorization challenge. Error: {Error}, ErrorDescription: {ErrorDescription}, HasAuthHeader: {HasToken}, Path: {Path}",
+                    "Authorization challenge. Error: {Error}, ErrorDescription: {ErrorDescription}, HasAuthHeader: {HasToken}",
                     context.Error,
                     context.ErrorDescription,
-                    hasToken,
-                    context.Request.Path);
+                    hasToken);
 
                 return Task.CompletedTask;
             },
@@ -162,9 +161,8 @@ public static class JwtAuthenticationExtensions
                 var hasToken = !string.IsNullOrEmpty(authHeader);
 
                 logger.LogDebug(
-                    "Message received. HasAuthHeader: {HasToken}, Path: {Path}",
-                    hasToken,
-                    context.Request.Path);
+                    "Message received. HasAuthHeader: {HasToken}",
+                    hasToken);
 
                 return Task.CompletedTask;
             }

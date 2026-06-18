@@ -21,7 +21,9 @@
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj" />
   </Folder>
-  <Folder Name="/Code/" />
+  <Folder Name="/Code/">
+    <Project Path="Code/SaaSFactory.SharedTestKernel/SaaSFactory.SharedTestKernel.csproj" />
+  </Folder>
   <Folder Name="/Code/AppBlueprint/">
     <File Path="Code/AppBlueprint/.railwayignore" />
     <File Path="Code/AppBlueprint/API_PORT_FIX_CRITICAL.md" />

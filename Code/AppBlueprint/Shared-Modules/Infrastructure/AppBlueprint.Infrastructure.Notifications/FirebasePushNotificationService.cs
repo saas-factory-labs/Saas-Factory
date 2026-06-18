@@ -62,7 +62,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
 
                 _firebaseApp = FirebaseApp.Create(new AppOptions
                 {
-                    Credential = GoogleCredential.FromJson(credentialsJson),
+                    Credential = CredentialFactory.FromJson<GoogleCredential>(credentialsJson),
                     ProjectId = projectId
                 });
 

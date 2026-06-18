@@ -120,13 +120,8 @@ public sealed class NotificationPreferencesEntity : BaseEntity, ITenantScoped
 
         TimeSpan currentTime = DateTime.Now.TimeOfDay;
 
-        if (QuietHoursStart < QuietHoursEnd)
-        {
-            return currentTime >= QuietHoursStart && currentTime <= QuietHoursEnd;
-        }
-        else
-        {
-            return currentTime >= QuietHoursStart || currentTime <= QuietHoursEnd;
-        }
+        return QuietHoursStart < QuietHoursEnd
+            ? currentTime >= QuietHoursStart && currentTime <= QuietHoursEnd
+            : currentTime >= QuietHoursStart || currentTime <= QuietHoursEnd;
     }
 }

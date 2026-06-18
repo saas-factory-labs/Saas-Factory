@@ -5,7 +5,6 @@ using AppBlueprint.SharedKernel;
 using AppBlueprint.SharedKernel.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -13,6 +12,8 @@ namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 
 public class ApplicationDbContext : B2CdbContext
 {
+    private const string SoftDeleteFilterName = "SoftDelete";
+    private const string TenantFilterName = "TenantIsolation";
     private readonly ITenantContextAccessor? _tenantContextAccessor;
 
     public string? CurrentTenantId => _tenantContextAccessor?.TenantId;
@@ -89,7 +90,7 @@ public class ApplicationDbContext : B2CdbContext
             .ForEach(entityType =>
             {
                 var queryFilter = CreateIsNotSoftDeletedFilter(entityType.ClrType);
-                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(queryFilter);
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(SoftDeleteFilterName, queryFilter);
             });
     }
 
@@ -116,53 +117,24 @@ public class ApplicationDbContext : B2CdbContext
             return;
         }
 
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        var setTenantFilterMethod = typeof(ApplicationDbContext)
+            .GetMethod(nameof(SetTenantFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?? throw new InvalidOperationException($"Unable to locate {nameof(SetTenantFilter)}.");
+
+        foreach (var method in modelBuilder.Model.GetEntityTypes()
+                     .Where(entityType => typeof(ITenantScoped).IsAssignableFrom(entityType.ClrType))
+                     .Select(entityType => setTenantFilterMethod.MakeGenericMethod(entityType.ClrType)))
         {
-            if (typeof(ITenantScoped).IsAssignableFrom(entityType.ClrType))
-            {
-                var method = typeof(ApplicationDbContext)
-                    .GetMethod(nameof(SetTenantFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                    ?.MakeGenericMethod(entityType.ClrType);
-                method?.Invoke(this, [modelBuilder]);
-            }
+            method.Invoke(this, [modelBuilder]);
         }
     }
 
     private void SetTenantFilter<TEntity>(ModelBuilder modelBuilder) where TEntity : class, ITenantScoped
     {
-        // 1. Build Tenant ID Filter Expression (e => e.TenantId == CurrentTenantId)
+        // EF Core 10 named query filters allow soft delete and tenant isolation
+        // to coexist without composing expressions via obsolete metadata APIs.
         Expression<Func<TEntity, bool>> tenantFilter = e => e.TenantId == CurrentTenantId;
-
-        // 2. Get existing Query Filter (e.g. Soft Delete)
-#pragma warning disable CS0618 // Type or member is obsolete
-        var existingFilter = modelBuilder.Entity<TEntity>().Metadata.GetQueryFilter();
-#pragma warning restore CS0618 // Type or member is obsolete
-
-        if (existingFilter != null)
-        {
-            // 3. Combine Filters: ExistingFilter AND TenantFilter
-            var parameter = Expression.Parameter(typeof(TEntity), "entity");
-
-            var replacedExistingBody = ReplacingExpressionVisitor.Replace(
-                existingFilter.Parameters[0],
-                parameter,
-                existingFilter.Body);
-
-            var replacedTenantBody = ReplacingExpressionVisitor.Replace(
-                tenantFilter.Parameters[0],
-                parameter,
-                tenantFilter.Body);
-
-            var combinedBody = Expression.AndAlso(replacedExistingBody, replacedTenantBody);
-            var combinedLambda = Expression.Lambda<Func<TEntity, bool>>(combinedBody, parameter);
-
-            modelBuilder.Entity<TEntity>().HasQueryFilter(combinedLambda);
-        }
-        else
-        {
-            // No existing filter, just apply tenant filter
-            modelBuilder.Entity<TEntity>().HasQueryFilter(tenantFilter);
-        }
+        modelBuilder.Entity<TEntity>().HasQueryFilter(TenantFilterName, tenantFilter);
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

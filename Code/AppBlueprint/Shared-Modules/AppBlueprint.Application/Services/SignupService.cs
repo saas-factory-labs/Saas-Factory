@@ -126,7 +126,25 @@ public sealed class SignupService : ISignupService
 
             throw new InvalidOperationException($"Signup failed: {pgEx.MessageText}", pgEx);
         }
-        catch (Exception ex)
+        catch (NpgsqlException ex)
+        {
+            _logger.LogError(
+                ex,
+                "Database error during signup for email {Email}",
+                request.Email);
+
+            throw new InvalidOperationException("Signup failed due to a database error.", ex);
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(
+                ex,
+                "Failed to parse signup result for email {Email}",
+                request.Email);
+
+            throw new InvalidOperationException("Signup failed due to an invalid response format.", ex);
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(
                 ex,

@@ -31,10 +31,12 @@ public class OpenApiVersionMiddleware
             }
 
             // Check if this is a Swagger JSON response
-            if (context.Response.ContentType?.Contains("application/json", StringComparison.OrdinalIgnoreCase) == true)
+            if (context.Response.ContentType?.Contains("application/json", StringComparison.OrdinalIgnoreCase) == true
+                && !responseBody.Contains("\"openapi\"", StringComparison.OrdinalIgnoreCase))
+            {
                 // Add OpenAPI version if not present
-                if (!responseBody.Contains("\"openapi\"", StringComparison.OrdinalIgnoreCase))
-                    responseBody = responseBody.Insert(1, "\"openapi\":\"3.0.0\",");
+                responseBody = responseBody.Insert(1, "\"openapi\":\"3.0.0\",");
+            }
 
             byte[] modifiedBody = Encoding.UTF8.GetBytes(responseBody);
             context.Response.ContentLength = modifiedBody.Length;

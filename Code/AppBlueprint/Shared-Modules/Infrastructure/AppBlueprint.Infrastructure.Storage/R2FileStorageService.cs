@@ -87,7 +87,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
             }
 
             PutObjectResponse? response = await _s3Client.PutObjectAsync(putRequest, cancellationToken);
-            _logger.LogInformation("File uploaded to R2: {FileKey}, ETag: {ETag}", fileKey, response.ETag);
+            _logger.LogInformation("File uploaded to R2 successfully. ETag present: {HasETag}", !string.IsNullOrWhiteSpace(response.ETag));
 
             // Get file size
             long fileSize = request.FileStream.Length;
@@ -113,7 +113,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
             await _dbContext.Set<FileMetadataEntity>().AddAsync(metadata, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("File metadata saved to database: {FileKey}, Size: {Size} bytes", fileKey, fileSize);
+            _logger.LogInformation("File metadata saved to database. Size: {Size} bytes", fileSize);
 
             return new StoredFile(
                 fileKey,
@@ -131,7 +131,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         }
         catch (AmazonS3Exception ex)
         {
-            _logger.LogError(ex, "Failed to upload file to R2: {FileKey}", fileKey);
+            _logger.LogError(ex, "Failed to upload file to R2");
             throw new InvalidOperationException($"Failed to upload file: {ex.Message}", ex);
         }
     }
@@ -148,8 +148,8 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
 
         if (metadata is null)
         {
-            _logger.LogWarning("File not found or access denied: {FileKey}, Tenant: {TenantId}", fileKey, tenantId);
-            throw new UnauthorizedAccessException($"File not found or access denied: {fileKey}");
+            _logger.LogWarning("File not found or access denied during tenant-scoped download");
+            throw new UnauthorizedAccessException("File not found or access denied.");
         }
 
         string bucketName = metadata.IsPublic ? _options.PublicBucketName : _options.PrivateBucketName;
@@ -164,7 +164,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
 
             GetObjectResponse? response = await _s3Client.GetObjectAsync(getRequest, cancellationToken);
 
-            _logger.LogInformation("File downloaded from R2: {FileKey}", fileKey);
+            _logger.LogInformation("File downloaded from R2");
 
             return new FileDownloadResult(
                 response.ResponseStream,
@@ -175,7 +175,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         }
         catch (AmazonS3Exception ex)
         {
-            _logger.LogError(ex, "Failed to download file from R2: {FileKey}", fileKey);
+            _logger.LogError(ex, "Failed to download file from R2");
             throw new InvalidOperationException($"Failed to download file: {ex.Message}", ex);
         }
     }
@@ -187,12 +187,12 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         // Verify file is public (requires tenant context via RLS)
         FileMetadataEntity? metadata = await _dbContext.Set<FileMetadataEntity>()
             .AsNoTracking()
-            .FirstOrDefaultAsync(f => f.FileKey == fileKey && f.IsPublic == true, cancellationToken);
+            .FirstOrDefaultAsync(f => f.FileKey == fileKey && f.IsPublic, cancellationToken);
 
         if (metadata is null)
         {
-            _logger.LogWarning("Public file not found: {FileKey}", fileKey);
-            throw new UnauthorizedAccessException($"Public file not found: {fileKey}");
+            _logger.LogWarning("Public file not found");
+            throw new UnauthorizedAccessException("Public file not found.");
         }
 
         try
@@ -205,7 +205,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
 
             GetObjectResponse? response = await _s3Client.GetObjectAsync(getRequest, cancellationToken);
 
-            _logger.LogInformation("Public file downloaded from R2: {FileKey}", fileKey);
+            _logger.LogInformation("Public file downloaded from R2");
 
             return new FileDownloadResult(
                 response.ResponseStream,
@@ -216,7 +216,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         }
         catch (AmazonS3Exception ex)
         {
-            _logger.LogError(ex, "Failed to download public file from R2: {FileKey}", fileKey);
+            _logger.LogError(ex, "Failed to download public file from R2");
             throw new InvalidOperationException($"Failed to download public file: {ex.Message}", ex);
         }
     }
@@ -233,7 +233,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
 
         if (!exists)
         {
-            _logger.LogWarning("File not found or access denied for pre-signed URL: {FileKey}, Tenant: {TenantId}", fileKey, tenantId);
+            _logger.LogWarning("File not found or access denied for pre-signed URL generation");
             throw new UnauthorizedAccessException($"File not found or access denied: {fileKey}");
         }
 
@@ -249,13 +249,13 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
 
             string url = await _s3Client.GetPreSignedURLAsync(request);
 
-            _logger.LogInformation("Pre-signed URL generated for file: {FileKey}, Expiry: {Expiry}", fileKey, expiry);
+            _logger.LogInformation("Pre-signed URL generated. Expiry: {Expiry}", expiry);
 
             return url;
         }
         catch (AmazonS3Exception ex)
         {
-            _logger.LogError(ex, "Failed to generate pre-signed URL: {FileKey}", fileKey);
+            _logger.LogError(ex, "Failed to generate pre-signed URL");
             throw new InvalidOperationException($"Failed to generate pre-signed URL: {ex.Message}", ex);
         }
     }
@@ -335,27 +335,26 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
 
         string? tenantId = _tenantContextAccessor.TenantId;
 
-        _logger.LogInformation("DeleteAsync called - FileKey: {FileKey}, TenantId: {TenantId}, HasTenantContext: {HasContext}",
-            fileKey, tenantId ?? "NULL", tenantId is not null);
+        _logger.LogInformation("DeleteAsync called. HasTenantContext: {HasContext}", tenantId is not null);
 
         if (tenantId is null)
         {
-            _logger.LogError("Tenant context not available for delete operation. FileKey: {FileKey}", fileKey);
+            _logger.LogError("Tenant context not available for delete operation");
             throw new InvalidOperationException("Tenant context not available");
         }
 
-        _logger.LogInformation("Proceeding with delete - TenantId: {TenantId}", tenantId);
+        _logger.LogInformation("Proceeding with delete operation");
 
         // Verify tenant ownership
         FileMetadataEntity? metadata = await _dbContext.Set<FileMetadataEntity>()
             .FirstOrDefaultAsync(f => f.FileKey == fileKey && f.TenantId == tenantId, cancellationToken);
 
-        _logger.LogInformation("Metadata query result - Found: {Found}, FileKey: {FileKey}", metadata is not null, fileKey);
+        _logger.LogInformation("Metadata query result. Found: {Found}", metadata is not null);
 
         if (metadata is null)
         {
-            _logger.LogWarning("File not found or access denied for deletion: {FileKey}, Tenant: {TenantId}", fileKey, tenantId);
-            throw new UnauthorizedAccessException($"File not found or access denied: {fileKey}");
+            _logger.LogWarning("File not found or access denied for deletion");
+            throw new UnauthorizedAccessException("File not found or access denied.");
         }
 
         string bucketName = metadata.IsPublic ? _options.PublicBucketName : _options.PrivateBucketName;
@@ -370,17 +369,17 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
             };
 
             await _s3Client.DeleteObjectAsync(deleteRequest, cancellationToken);
-            _logger.LogInformation("File deleted from R2: {FileKey}", fileKey);
+            _logger.LogInformation("File deleted from R2");
 
             // Delete metadata from database
             _dbContext.Set<FileMetadataEntity>().Remove(metadata);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("File metadata deleted from database: {FileKey}", fileKey);
+            _logger.LogInformation("File metadata deleted from database");
         }
         catch (AmazonS3Exception ex)
         {
-            _logger.LogError(ex, "Failed to delete file from R2: {FileKey}", fileKey);
+            _logger.LogError(ex, "Failed to delete file from R2");
             throw new InvalidOperationException($"Failed to delete file: {ex.Message}", ex);
         }
     }
@@ -478,15 +477,18 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         string[] segments = folder.Replace('\\', '/').Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         var safeSegments = new List<string>(segments.Length);
-        foreach (string segment in segments)
+        foreach (string segment in segments.Where(IsSafeFolderSegment))
         {
-            // Drop traversal and any segment containing characters outside the safe set.
-            if (segment is "." or "..") continue;
-            if (segment.Any(c => !(char.IsLetterOrDigit(c) || c is '-' or '_'))) continue;
             safeSegments.Add(segment);
         }
 
         return safeSegments.Count == 0 ? null : string.Join('/', safeSegments);
+    }
+
+    private static bool IsSafeFolderSegment(string segment)
+    {
+        return segment is not "." and not ".."
+               && !segment.Any(c => !(char.IsLetterOrDigit(c) || c is '-' or '_'));
     }
 
     private static string SanitizeFileName(string fileName)

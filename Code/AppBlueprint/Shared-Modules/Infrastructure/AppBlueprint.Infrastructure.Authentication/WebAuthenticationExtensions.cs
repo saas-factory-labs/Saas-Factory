@@ -193,15 +193,7 @@ public static class WebAuthenticationExtensions
             options.LogoutPath = SignoutPath;
             options.AccessDeniedPath = FirebaseLoginPath;
 
-            if (environment.IsDevelopment())
-            {
-                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-            }
-
-            options.Cookie.HttpOnly = true;
-            options.Cookie.Path = "/";
-            options.Cookie.IsEssential = true;
+            ConfigureAuthenticationCookie(options.Cookie, environment);
 
             Console.WriteLine($"[Web] Configured Firebase.Cookie scheme: LoginPath={options.LoginPath}");
         });
@@ -225,7 +217,7 @@ public static class WebAuthenticationExtensions
         {
             Console.WriteLine("[Web] Configuring Data Protection for production (Railway)");
 
-            var keysPath = Path.Combine(DataProtectionKeysPath, DataProtectionKeysFolderName);
+            string keysPath = Path.Join(DataProtectionKeysPath, DataProtectionKeysFolderName);
             Directory.CreateDirectory(keysPath);
 
             services.AddDataProtection()
@@ -291,14 +283,7 @@ public static class WebAuthenticationExtensions
             options.LogoutPath = SignoutPath;
             options.AccessDeniedPath = SignupPath;
 
-            if (environment.IsDevelopment())
-            {
-                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-            }
-            options.Cookie.HttpOnly = true;
-            options.Cookie.Path = "/";
-            options.Cookie.IsEssential = true;
+            ConfigureAuthenticationCookie(options.Cookie, environment);
 
             Console.WriteLine($"[Web] Configured Cookie scheme: LoginPath={options.LoginPath}");
         })
@@ -405,15 +390,7 @@ public static class WebAuthenticationExtensions
             options.LogoutPath = SignoutPath;
             options.AccessDeniedPath = SignupPath;
 
-            // Configure authentication cookie for development
-            if (environment.IsDevelopment())
-            {
-                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-            }
-            options.Cookie.HttpOnly = true;
-            options.Cookie.Path = "/";
-            options.Cookie.IsEssential = true;
+            ConfigureAuthenticationCookie(options.Cookie, environment);
 
             Console.WriteLine($"[Web] Configured Logto.Cookie scheme: LoginPath={options.LoginPath}, Path=/, IsEssential=true, SameSite={options.Cookie.SameSite}");
         });
@@ -426,15 +403,7 @@ public static class WebAuthenticationExtensions
             options.LogoutPath = SignoutPath;
             options.AccessDeniedPath = SignupPath;
 
-            // Configure authentication cookie for development
-            if (environment.IsDevelopment())
-            {
-                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-            }
-            options.Cookie.HttpOnly = true;
-            options.Cookie.Path = "/";
-            options.Cookie.IsEssential = true;
+            ConfigureAuthenticationCookie(options.Cookie, environment);
 
             Console.WriteLine($"[Web] Configured authentication cookie: LoginPath={options.LoginPath}, Path=/, IsEssential=true, SameSite={options.Cookie.SameSite}");
         });
@@ -612,15 +581,12 @@ public static class WebAuthenticationExtensions
             if (context.Response.Headers.TryGetValue("Set-Cookie", out var cookies))
             {
                 Console.WriteLine($"[Web] Set-Cookie headers count: {cookies.Count}");
-                foreach (var cookie in cookies)
+                foreach (string cookieName in cookies
+                    .Where(static cookie => !string.IsNullOrEmpty(cookie))
+                    .Select(static cookie => cookie!.Split('=', 2)[0]))
                 {
                     // Only log cookie names, not values
-                    string? cookieStr = cookie;
-                    if (!string.IsNullOrEmpty(cookieStr))
-                    {
-                        string cookieName = cookieStr.Split('=')[0];
-                        Console.WriteLine($"[Web]   - Setting cookie: {cookieName}");
-                    }
+                    Console.WriteLine($"[Web]   - Setting cookie: {cookieName}");
                 }
             }
 
@@ -895,7 +861,7 @@ public static class WebAuthenticationExtensions
                     Console.WriteLine(LogSeparator);
                     return;
                 }
-                catch (Exception ex)
+                catch (InvalidOperationException ex)
                 {
                     // Log full details server-side only — never expose exception details to the client
                     Console.WriteLine($"[Web] ❌ ERROR in ChallengeAsync: {ex.GetType().Name}");
@@ -931,6 +897,22 @@ public static class WebAuthenticationExtensions
                 context.Response.Redirect("/onboarding");
             }
         }).AllowAnonymous();
+    }
+
+    private static void ConfigureAuthenticationCookie(CookieBuilder cookie, IHostEnvironment environment)
+    {
+        ArgumentNullException.ThrowIfNull(cookie);
+        ArgumentNullException.ThrowIfNull(environment);
+
+        cookie.SecurePolicy = CookieSecurePolicy.Always;
+        cookie.HttpOnly = true;
+        cookie.Path = "/";
+        cookie.IsEssential = true;
+
+        if (environment.IsDevelopment())
+        {
+            cookie.SameSite = SameSiteMode.Lax;
+        }
     }
 
     private static void MapSignOutEndpoint(WebApplication app)

@@ -51,26 +51,15 @@ public sealed class RequireScopeAttribute : Attribute, IAuthorizationFilter
         // Note: Logto/Auth0 typically use "scope" claim with space-separated values
         // or multiple "scope" claims
         IEnumerable<string>? scopeClaims = user.FindAll("scope").Select(c => c.Value);
-        var grantedScopes = new HashSet<string>(StringComparer.Ordinal);
+        var grantedScopes = new HashSet<string>(
+            scopeClaims.SelectMany(scopeClaim =>
+                scopeClaim.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)),
+            StringComparer.Ordinal
+        );
 
-        foreach (string scopeClaim in scopeClaims)
+        if (_requiredScopes.Any(requiredScope => !grantedScopes.Contains(requiredScope)))
         {
-            // Split space-separated scopes
-            string[] scopes = scopeClaim.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            foreach (string scope in scopes)
-            {
-                grantedScopes.Add(scope);
-            }
-        }
-
-        // Check if all required scopes are present
-        foreach (string requiredScope in _requiredScopes)
-        {
-            if (!grantedScopes.Contains(requiredScope))
-            {
-                context.Result = new ForbidResult();
-                return;
-            }
+            context.Result = new ForbidResult();
         }
     }
 

@@ -41,12 +41,8 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
         // Guard clause: Tenant ID not found
         if (string.IsNullOrEmpty(tenantId))
         {
-            // Log all available claims for debugging
-            if (Context.User?.Claims != null)
-            {
-                string availableClaims = string.Join(", ", Context.User.Claims.Select(c => $"{c.Type}={c.Value}"));
-                Logger?.LogError("Tenant ID not found. Available claims: {Claims}", availableClaims);
-            }
+            int claimCount = Context.User?.Claims.Count() ?? 0;
+            Logger?.LogError("Tenant ID not found in authenticated context. ClaimCount: {ClaimCount}", claimCount);
 
             throw new HubException("Tenant ID not found in user claims. User might not have completed onboarding.");
         }
@@ -116,7 +112,7 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
             // Add connection to user-specific group for direct messages
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user:{userId}");
 
-            Logger?.LogInformation("User {UserId} from tenant {TenantId} connected", userId, tenantId);
+            Logger?.LogInformation("Tenant-scoped hub connection established");
 
             await base.OnConnectedAsync();
         }
@@ -164,7 +160,7 @@ public abstract class TenantScopedHub<THub> : Hub where THub : Hub
             // Remove from user group
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"user:{userId}");
 
-            Logger?.LogInformation("User {UserId} from tenant {TenantId} disconnected", userId, tenantId);
+            Logger?.LogInformation("Tenant-scoped hub connection closed");
         }
         catch (HubException ex)
         {

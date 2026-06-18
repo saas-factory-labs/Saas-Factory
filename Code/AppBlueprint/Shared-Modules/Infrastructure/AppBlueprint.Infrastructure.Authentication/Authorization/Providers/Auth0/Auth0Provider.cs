@@ -149,7 +149,34 @@ public class Auth0Provider : BaseAuthenticationProvider
             };
         }
 #pragma warning disable CA1031 // Generic catch returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException
-        catch (Exception ex)
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "Error during token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogError(ex, "Error during token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "Error during token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error during token refresh");
             return new AuthenticationResult
@@ -168,19 +195,12 @@ public class Auth0Provider : BaseAuthenticationProvider
             AccessToken = storedToken;
             
             DateTime? extractedExpiration = ExtractExpirationFromJwt(storedToken);
-            if (extractedExpiration is null)
-            {
-                TokenExpiration = DateTime.UtcNow.AddHours(1);
-            }
-            else
-            {
-                TokenExpiration = extractedExpiration.Value;
-            }
+            TokenExpiration = extractedExpiration ?? DateTime.UtcNow.AddHours(1);
 
             NotifyAuthenticationStateChanged();
         }
 #pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional, use re-login on any error
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error restoring Auth0 token from storage");
             await TokenStorage.RemoveTokenAsync();
@@ -214,7 +234,15 @@ public class Auth0Provider : BaseAuthenticationProvider
             }
         }
 #pragma warning disable CA1031
-        catch
+        catch (FormatException)
+        {
+            // Could not decode JWT, caller will use fallback
+        }
+        catch (JsonException)
+        {
+            // Could not decode JWT, caller will use fallback
+        }
+        catch (InvalidOperationException)
         {
             // Could not decode JWT, caller will use fallback
         }

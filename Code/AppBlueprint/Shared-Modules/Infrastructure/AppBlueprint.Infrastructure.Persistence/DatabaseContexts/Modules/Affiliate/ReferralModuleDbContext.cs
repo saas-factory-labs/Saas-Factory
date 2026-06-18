@@ -12,7 +12,7 @@ public partial class ReferralModuleDbContext : ApplicationDbContext
         IConfiguration configuration,
         ILogger<ReferralModuleDbContext> logger,
         ITenantContextAccessor? tenantContextAccessor = null) :
-        base((DbContextOptions)(DbContextOptions<ReferralModuleDbContext>)options, configuration, logger, tenantContextAccessor)
+        base(options, configuration, logger, tenantContextAccessor)
     {
     }
 

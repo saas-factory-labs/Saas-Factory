@@ -49,16 +49,14 @@ public class CatalogDbContext : DbContext
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            foreach (var property in entityType.GetProperties())
+            foreach (var property in entityType.GetProperties()
+                         .Where(property => property.ClrType.IsEnum || (Nullable.GetUnderlyingType(property.ClrType)?.IsEnum ?? false)))
             {
-                if (property.ClrType.IsEnum || (Nullable.GetUnderlyingType(property.ClrType)?.IsEnum ?? false))
-                {
-                    var type = typeof(Microsoft.EntityFrameworkCore.Storage.ValueConversion.EnumToStringConverter<>)
-                        .MakeGenericType(Nullable.GetUnderlyingType(property.ClrType) ?? property.ClrType);
+                var type = typeof(Microsoft.EntityFrameworkCore.Storage.ValueConversion.EnumToStringConverter<>)
+                    .MakeGenericType(Nullable.GetUnderlyingType(property.ClrType) ?? property.ClrType);
 
-                    var converter = Activator.CreateInstance(type) as Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter;
-                    property.SetValueConverter(converter);
-                }
+                var converter = Activator.CreateInstance(type) as Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter;
+                property.SetValueConverter(converter);
             }
         }
     }

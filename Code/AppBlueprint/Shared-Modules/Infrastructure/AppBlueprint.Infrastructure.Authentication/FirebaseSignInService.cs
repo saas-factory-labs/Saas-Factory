@@ -75,16 +75,33 @@ public sealed class FirebaseSignInService : IFirebaseSignInService
 
             if (!response.IsSuccessStatusCode)
             {
-                string? errorMessage = TryParseFirebaseError(responseBody);
-                _logger.LogWarning("Firebase sign-in failed for {Email}: {Error}", email, errorMessage);
-                return new FirebaseSignInResult { IsSuccess = false, Error = errorMessage ?? "Invalid email or password." };
+                string errorMessage = "Invalid email or password.";
+
+                if (TryParseFirebaseError(responseBody, out FirebaseErrorDetails errorDetails))
+                {
+                    _logger.LogWarning(
+                        "Firebase sign-in failed with status: {StatusCode}. Error: {Error}. ErrorDescription: {ErrorDescription}",
+                        response.StatusCode,
+                        errorDetails.Error,
+                        errorDetails.ErrorDescription);
+
+                    errorMessage = errorDetails.UserMessage ?? errorMessage;
+                }
+                else
+                {
+                    _logger.LogWarning(
+                        "Firebase sign-in failed with status: {StatusCode}. Unable to parse error response body.",
+                        response.StatusCode);
+                }
+
+                return new FirebaseSignInResult { IsSuccess = false, Error = errorMessage };
             }
 
             var body = JsonSerializer.Deserialize<FirebaseIdentityResponse>(responseBody, JsonOptions);
 
             if (body is null || string.IsNullOrEmpty(body.IdToken))
             {
-                _logger.LogError("Firebase returned unexpected response for {Email}", email);
+                _logger.LogError("Firebase returned unexpected response from authentication service");
                 return new FirebaseSignInResult { IsSuccess = false, Error = "Unexpected response from authentication service." };
             }
 
@@ -98,40 +115,97 @@ public sealed class FirebaseSignInService : IFirebaseSignInService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Network error during Firebase sign-in for {Email}", email);
+            _logger.LogError(ex, "Network error during Firebase sign-in");
             return new FirebaseSignInResult { IsSuccess = false, Error = "A network error occurred. Please check your connection." };
         }
         catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
         {
-            _logger.LogError(ex, "Firebase sign-in request timed out for {Email}", email);
+            _logger.LogError(ex, "Firebase sign-in request timed out");
             return new FirebaseSignInResult { IsSuccess = false, Error = "The request timed out. Please try again." };
         }
     }
 
-    private static string? TryParseFirebaseError(string json)
+    private static bool TryParseFirebaseError(string json, out FirebaseErrorDetails errorDetails)
     {
+        errorDetails = new FirebaseErrorDetails(null, null, null);
+
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return false;
+        }
+
+#pragma warning disable CA1031 // Generic catch for error parsing - use default message if JSON parsing fails
         try
         {
             using var doc = JsonDocument.Parse(json);
-            string? message = doc.RootElement
-                .GetProperty("error")
-                .GetProperty("message")
-                .GetString();
 
-            return message switch
+            if (!doc.RootElement.TryGetProperty("error", out JsonElement errorElement))
             {
-                "EMAIL_NOT_FOUND" => "No account found with this email address.",
-                "INVALID_PASSWORD" => "Incorrect password.",
-                "INVALID_EMAIL" => "The email address is not valid.",
-                "USER_DISABLED" => "This account has been disabled.",
-                "TOO_MANY_ATTEMPTS_TRY_LATER" => "Too many failed attempts. Please try again later.",
-                _ => message
-            };
+                return false;
+            }
+
+            string? error = null;
+            string? errorDescription = null;
+
+            if (errorElement.ValueKind == JsonValueKind.Object)
+            {
+                error = errorElement.TryGetProperty("message", out JsonElement messageElement) && messageElement.ValueKind == JsonValueKind.String
+                    ? messageElement.GetString()
+                    : null;
+
+                if (errorElement.TryGetProperty("errors", out JsonElement errorsElement) && errorsElement.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (JsonElement item in errorsElement.EnumerateArray())
+                    {
+                        if (item.ValueKind != JsonValueKind.Object)
+                        {
+                            continue;
+                        }
+
+                        if (item.TryGetProperty("reason", out JsonElement reasonElement) && reasonElement.ValueKind == JsonValueKind.String)
+                        {
+                            errorDescription = reasonElement.GetString();
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (errorElement.ValueKind == JsonValueKind.String)
+            {
+                error = errorElement.GetString();
+            }
+
+            if (string.IsNullOrEmpty(error) && string.IsNullOrEmpty(errorDescription))
+            {
+                return false;
+            }
+
+            errorDetails = new FirebaseErrorDetails(error, errorDescription, MapFirebaseErrorMessage(error));
+            return true;
         }
-        catch
+        catch (JsonException)
         {
-            return null;
+            return false;
         }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+#pragma warning restore CA1031
+    }
+
+    private static string? MapFirebaseErrorMessage(string? error)
+    {
+        return error switch
+        {
+            "EMAIL_NOT_FOUND" => "No account found with this email address.",
+            "INVALID_PASSWORD" => "Incorrect password.",
+            "INVALID_EMAIL" => "The email address is not valid.",
+            "USER_DISABLED" => "This account has been disabled.",
+            "TOO_MANY_ATTEMPTS_TRY_LATER" => "Too many failed attempts. Please try again later.",
+            { Length: > 0 } => error,
+            _ => null
+        };
     }
 }
 
@@ -146,3 +220,5 @@ internal sealed class FirebaseIdentityResponse
     [JsonPropertyName("email")]
     public string Email { get; init; } = string.Empty;
 }
+
+internal sealed record FirebaseErrorDetails(string? Error, string? ErrorDescription, string? UserMessage);

@@ -365,7 +365,15 @@ public static class ServiceCollectionExtensions
                 connection.Close();
                 return HealthCheckResult.Healthy($"Connected successfully");
             }
-            catch (Exception ex)
+            catch (Npgsql.NpgsqlException ex)
+            {
+                return HealthCheckResult.Unhealthy($"PostgreSQL connection failed: {ex.Message}", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return HealthCheckResult.Unhealthy($"PostgreSQL connection failed: {ex.Message}", ex);
+            }
+            catch (ArgumentException ex)
             {
                 return HealthCheckResult.Unhealthy($"PostgreSQL connection failed: {ex.Message}", ex);
             }
@@ -428,7 +436,15 @@ public static class ServiceCollectionExtensions
 
                 return HealthCheckResult.Healthy("RLS enabled on all tenant-scoped tables");
             }
-            catch (Exception ex)
+            catch (Npgsql.NpgsqlException ex)
+            {
+                return HealthCheckResult.Unhealthy($"RLS validation failed: {ex.Message}", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return HealthCheckResult.Unhealthy($"RLS validation failed: {ex.Message}", ex);
+            }
+            catch (ArgumentException ex)
             {
                 return HealthCheckResult.Unhealthy($"RLS validation failed: {ex.Message}", ex);
             }

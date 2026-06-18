@@ -222,8 +222,8 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
                 _logger.LogError("Token response did not contain access token");
             }
 
-            _logger.LogError("Token exchange failed with status: {StatusCode}, Response: {Response}",
-                response.StatusCode, responseContent);
+            _logger.LogError("Token exchange failed with status: {StatusCode}",
+                response.StatusCode);
 
             return new AuthenticationResult
             {
@@ -232,7 +232,34 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             };
         }
 #pragma warning disable CA1031 // Returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException/JsonException
-        catch (Exception ex)
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "Error exchanging authorization code for tokens");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "An error occurred during authentication"
+            };
+        }
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogError(ex, "Error exchanging authorization code for tokens");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "An error occurred during authentication"
+            };
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "Error exchanging authorization code for tokens");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "An error occurred during authentication"
+            };
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error exchanging authorization code for tokens");
             return new AuthenticationResult
@@ -317,7 +344,34 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             };
         }
 #pragma warning disable CA1031 // Returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException
-        catch (Exception ex)
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "Error during token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogError(ex, "Error during token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "Error during token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error during token refresh");
             return new AuthenticationResult
@@ -338,7 +392,7 @@ public class LogtoAuthorizationCodeProvider : BaseAuthenticationProvider
             NotifyAuthenticationStateChanged();
         }
 #pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional, use re-login on any error
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error restoring token from storage");
             await TokenStorage.RemoveTokenAsync();

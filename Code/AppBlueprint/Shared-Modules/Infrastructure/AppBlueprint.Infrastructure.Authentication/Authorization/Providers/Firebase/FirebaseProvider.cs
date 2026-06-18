@@ -161,7 +161,34 @@ public class FirebaseProvider : BaseAuthenticationProvider
             };
         }
 #pragma warning disable CA1031 // Generic catch returns error result instead of throwing
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "Error during Firebase token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogError(ex, "Error during Firebase token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "Error during Firebase token refresh");
+            return new AuthenticationResult
+            {
+                IsSuccess = false,
+                Error = "Token refresh failed"
+            };
+        }
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error during Firebase token refresh");
             return new AuthenticationResult
@@ -190,7 +217,7 @@ public class FirebaseProvider : BaseAuthenticationProvider
             NotifyAuthenticationStateChanged();
         }
 #pragma warning disable CA1031 // Generic catch for graceful degradation
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Error restoring Firebase token from storage");
             await TokenStorage.RemoveTokenAsync();
@@ -223,7 +250,15 @@ public class FirebaseProvider : BaseAuthenticationProvider
             }
         }
 #pragma warning disable CA1031
-        catch
+        catch (FormatException)
+        {
+            // Could not decode JWT, caller will use fallback
+        }
+        catch (JsonException)
+        {
+            // Could not decode JWT, caller will use fallback
+        }
+        catch (InvalidOperationException)
         {
             // Could not decode JWT, caller will use fallback
         }
@@ -265,7 +300,11 @@ public class FirebaseProvider : BaseAuthenticationProvider
                 };
             }
         }
-        catch
+        catch (JsonException)
+        {
+            // Ignorer parse fejl og returner null for default besked
+        }
+        catch (NotSupportedException)
         {
             // Ignorer parse fejl og returner null for default besked
         }

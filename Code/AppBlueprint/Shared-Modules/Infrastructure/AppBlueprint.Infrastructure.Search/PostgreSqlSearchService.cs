@@ -52,9 +52,6 @@ public sealed class PostgreSqlSearchService<TEntity, TDbContext> : ISearchServic
             // If search text is provided, apply full-text search
             if (!string.IsNullOrWhiteSpace(query.QueryText))
             {
-                // Convert search text to tsquery format
-                string tsQuery = ConvertToTsQuery(query.QueryText);
-
                 // For PostgreSQL full-text search, we'll use a different approach without dynamic
                 // We'll project to an anonymous type with rank, then materialize
                 int totalCount = await queryable.CountAsync(cancellationToken);
