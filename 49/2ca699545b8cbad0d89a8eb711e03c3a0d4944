@@ -1,0 +1,51 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Services/SignupService.cs
+  s_cd10a83f1c9af5::t_7e6ebe6a86a77e 4
+  s_cd10a83f1c9af5::t_e2671929fdd803 3,196,201,208,286
+  s_cd10a83f1c9af5::t_a7120468568fab 5,23,45,49-51,55,66-75,102,132,142,151,160,167,169-195,197-200,202-207,209-224,227,229-235,237-285
+Code/AppBlueprint/AppBlueprint.Tests/Application/SignupServiceTests.cs
+  s_cd10a83f1c9af5::t_68f332d28aa80a 1,3-119
+  s_cd10a83f1c9af5::t_5126ec1bfa6969 2
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Signup/SignupModels.cs
+  s_cd10a83f1c9af5::t_6ee2004a3512bd 1,4,6,8-9,12-14,17,19-20,22-50
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/Signup/Internal/SignupServiceInternalModels.cs
+  s_cd10a83f1c9af5::t_ca87fd2e531a4d 1-31
+Code/AppBlueprint/AppBlueprint.Web/Components/Pages/Auth/Onboarding.razor
+  s_cd10a83f1c9af5::t_54032e360b6a09 477,479,488,491-492,526,529,538-540,543-544,574-588
+  s_cd10a83f1c9af5::t_4d26577c850356 8
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Program.cs
+  s_547de75fd51527::t_f67595a9b76207 31-37,195
+  s_cd10a83f1c9af5::t_96dd13668aeec4 1-6,9,12,16,19-30,61-104,107-109,113,117,121-123,127-183,185-191,215-910
+  h_aa722e8ed10195 184
+  s_547de75fd51527::t_c727769d97f437 39,41-46,48-57,194,196-201
+  s_547de75fd51527::t_95501c66349f18 38,58-60,192-193,202-214
+  s_547de75fd51527::t_f2de74d907cd9b 40,47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "492ca699545b8cbad0d89a8eb711e03c3a0d4944",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_547de75fd51527": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019edeb3-8607-7302-8831-8ff3e950d20f",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_cd10a83f1c9af5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019edf0b-f6dc-7382-bd29-d4b84b967151",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
