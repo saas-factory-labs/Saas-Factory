@@ -1,5 +1,8 @@
 using System.Text.Json;
 using AppBlueprint.Application.Interfaces;
+using AppBlueprint.Application.Signup;
+using AppBlueprint.Application.Signup.Internal;
+using AppBlueprint.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
@@ -17,6 +20,7 @@ public interface ISignupService
     /// </summary>
     Task<SignupResult> CreateTenantAndUserAsync(
         SignupRequest request,
+        AuthenticatedSignupIdentity authenticatedIdentity,
         CancellationToken cancellationToken = default);
 }
 
@@ -38,13 +42,17 @@ public sealed class SignupService : ISignupService
 
     public async Task<SignupResult> CreateTenantAndUserAsync(
         SignupRequest request,
+        AuthenticatedSignupIdentity authenticatedIdentity,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(authenticatedIdentity);
+
+        ValidatedSignupRequest validatedRequest = ValidateAndNormalizeRequest(request, authenticatedIdentity);
 
         _logger.LogInformation(
             "Calling secure signup stored procedure for email: {Email}",
-            request.Email);
+            validatedRequest.Email);
 
         try
         {
@@ -55,16 +63,16 @@ public sealed class SignupService : ISignupService
             // The stored procedure returns JSON, which we'll query using FromSqlRaw
             FormattableString sql = $@"
                 SELECT create_tenant_and_user(
-                    {request.TenantId},
-                    {request.TenantName},
-                    {request.TenantType},
-                    {request.UserId},
-                    {request.FirstName},
-                    {request.LastName},
-                    {request.Email},
-                    {request.ExternalAuthId},
-                    {request.IpAddress},
-                    {request.UserAgent}
+                    {validatedRequest.TenantId},
+                    {validatedRequest.TenantName},
+                    {(int)validatedRequest.TenantType},
+                    {validatedRequest.UserId},
+                    {validatedRequest.FirstName},
+                    {validatedRequest.LastName},
+                    {validatedRequest.Email},
+                    {validatedRequest.ExternalAuthId},
+                    {validatedRequest.IpAddress},
+                    {validatedRequest.UserAgent}
                 ) AS ""JsonResult""";
 
             // Execute the stored procedure and get the JSON result
@@ -91,7 +99,7 @@ public sealed class SignupService : ISignupService
 
                 _logger.LogError(
                     "Signup stored procedure failed for email {Email}: {Error}",
-                    request.Email,
+                    validatedRequest.Email,
                     errorMessage);
 
                 throw new InvalidOperationException($"Signup failed: {errorMessage}");
@@ -121,7 +129,7 @@ public sealed class SignupService : ISignupService
             _logger.LogError(
                 pgEx,
                 "PostgreSQL error during signup for email {Email}: {Message}",
-                request.Email,
+                validatedRequest.Email,
                 pgEx.MessageText);
 
             throw new InvalidOperationException($"Signup failed: {pgEx.MessageText}", pgEx);
@@ -131,7 +139,7 @@ public sealed class SignupService : ISignupService
             _logger.LogError(
                 ex,
                 "Database error during signup for email {Email}",
-                request.Email);
+                validatedRequest.Email);
 
             throw new InvalidOperationException("Signup failed due to a database error.", ex);
         }
@@ -140,7 +148,7 @@ public sealed class SignupService : ISignupService
             _logger.LogError(
                 ex,
                 "Failed to parse signup result for email {Email}",
-                request.Email);
+                validatedRequest.Email);
 
             throw new InvalidOperationException("Signup failed due to an invalid response format.", ex);
         }
@@ -149,55 +157,131 @@ public sealed class SignupService : ISignupService
             _logger.LogError(
                 ex,
                 "Unexpected error during signup for email {Email}",
-                request.Email);
+                validatedRequest.Email);
 
             throw;
         }
     }
-}
 
-/// <summary>
-/// Internal result type for mapping stored procedure JSON output.
-/// The stored procedure returns a single JSON column.
-/// </summary>
-internal sealed class SignupStoredProcedureResult
-{
     /// <summary>
-    /// The JSON result returned by create_tenant_and_user stored procedure.
-    /// Maps to the single column returned by the function.
+    /// Validates untrusted signup input and combines it with trusted authenticated identity.
     /// </summary>
-    public string JsonResult { get; init; } = string.Empty;
-}
+    private static ValidatedSignupRequest ValidateAndNormalizeRequest(
+        SignupRequest request,
+        AuthenticatedSignupIdentity authenticatedIdentity)
+    {
+        string firstName = NormalizeRequiredValue(
+            request.FirstName,
+            maxLength: 50,
+            errorMessage: "First name is required.",
+            parameterName: nameof(request.FirstName));
+        string lastName = NormalizeRequiredValue(
+            request.LastName,
+            maxLength: 50,
+            errorMessage: "Last name is required.",
+            parameterName: nameof(request.LastName));
+        string email = NormalizeRequiredValue(
+            authenticatedIdentity.Email,
+            maxLength: 320,
+            errorMessage: "Email is required.",
+            parameterName: nameof(authenticatedIdentity.Email));
+        string externalAuthId = NormalizeRequiredValue(
+            authenticatedIdentity.ExternalAuthId,
+            maxLength: 200,
+            errorMessage: "External auth ID is required.",
+            parameterName: nameof(authenticatedIdentity.ExternalAuthId));
 
-/// <summary>
-/// Request model for secure signup operation.
-/// </summary>
-public sealed record SignupRequest
-{
-    public required string TenantId { get; init; }
-    public required string TenantName { get; init; }
-    public required string UserId { get; init; }
-    public required string FirstName { get; init; }
-    public required string LastName { get; init; }
-    public required string Email { get; init; }
-    public string? ExternalAuthId { get; init; }
-    public string? IpAddress { get; init; }
-    public string? UserAgent { get; init; }
+        if (!request.AcceptTerms)
+        {
+            throw new ArgumentException("Terms and conditions must be accepted.", nameof(request));
+        }
+
+        if (!Enum.IsDefined(request.TenantType))
+        {
+            throw new ArgumentException("Tenant type is invalid.", nameof(request));
+        }
+
+        string tenantName = request.TenantType switch
+        {
+            SignupTenantType.Personal => $"{firstName} {lastName}",
+            SignupTenantType.Organization => NormalizeOrganizationTenantName(request.CompanyName, request.Country),
+            _ => throw new ArgumentException("Tenant type is invalid.", nameof(request))
+        };
+
+        return new ValidatedSignupRequest
+        {
+            TenantId = PrefixedUlid.Generate("tenant"),
+            TenantName = tenantName,
+            UserId = PrefixedUlid.Generate("user"),
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            ExternalAuthId = externalAuthId,
+            IpAddress = NormalizeOptionalValue(request.IpAddress, maxLength: 128),
+            UserAgent = NormalizeOptionalValue(request.UserAgent, maxLength: 1024),
+            TenantType = request.TenantType
+        };
+    }
+
     /// <summary>
-    /// Tenant type: 0 = Personal (B2C), 1 = Organization (B2B).
+    /// Validates the organization-specific fields required for a business signup.
     /// </summary>
-    public required int TenantType { get; init; }
-}
+    private static string NormalizeOrganizationTenantName(string? companyName, string? country)
+    {
+        _ = NormalizeRequiredValue(
+            country,
+            maxLength: 100,
+            errorMessage: "Country is required for organization signups.",
+            parameterName: nameof(SignupRequest.Country));
 
-/// <summary>
-/// Result model for signup operation.
-/// </summary>
-public sealed record SignupResult
-{
-    public required bool Success { get; init; }
-    public required string TenantId { get; init; }
-    public required string UserId { get; init; }
-    public required string ProfileId { get; init; }
-    public required string Email { get; init; }
-    public required DateTime CreatedAt { get; init; }
+        return NormalizeRequiredValue(
+            companyName,
+            maxLength: 200,
+            errorMessage: "Company name is required for organization signups.",
+            parameterName: nameof(SignupRequest.CompanyName));
+    }
+
+    /// <summary>
+    /// Normalizes a required input value and enforces a maximum length.
+    /// </summary>
+    private static string NormalizeRequiredValue(
+        string? value,
+        int maxLength,
+        string errorMessage,
+        string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException(errorMessage, parameterName);
+        }
+
+        string normalizedValue = value.Trim();
+
+        if (normalizedValue.Length > maxLength)
+        {
+            throw new ArgumentException($"{parameterName} cannot exceed {maxLength} characters.", parameterName);
+        }
+
+        return normalizedValue;
+    }
+
+    /// <summary>
+    /// Normalizes an optional value and enforces a maximum length when present.
+    /// </summary>
+    private static string? NormalizeOptionalValue(string? value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        string normalizedValue = value.Trim();
+
+        if (normalizedValue.Length > maxLength)
+        {
+            throw new ArgumentException($"Optional value cannot exceed {maxLength} characters.");
+        }
+
+        return normalizedValue;
+    }
 }

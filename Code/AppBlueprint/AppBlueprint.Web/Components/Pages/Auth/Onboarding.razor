@@ -5,14 +5,12 @@
 @using AppBlueprint.Web.Models.Auth
 @using AppBlueprint.Infrastructure.Authentication.Authorization
 @using AppBlueprint.Application.Services
-@using AppBlueprint.SharedKernel
+@using AppBlueprint.Application.Signup
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Http
 @inject NavigationManager Navigation
-@inject IJSRuntime JSRuntime
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IAuthenticationTokenService AuthenticationTokenService
 @inject ISignupService SignupService
 @inject IHttpContextAccessor HttpContextAccessor
 @inject ILogger<Onboarding> Logger
@@ -476,33 +474,22 @@
 
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
+            AuthenticatedSignupIdentity authenticatedIdentity = GetAuthenticatedSignupIdentity(user);
 
-            string logtoUserId = user.FindFirst("sub")?.Value 
-                                ?? user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
-                                ?? throw new InvalidOperationException("No user ID found in claims");
-            
-            string email = user.FindFirst("email")?.Value 
-                          ?? user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value 
-                          ?? throw new InvalidOperationException("No email found in claims");
-
-            Logger.LogInformation("[Onboarding] Creating Personal tenant for {Email}", email);
+            Logger.LogInformation("[Onboarding] Creating Personal tenant for {Email}", authenticatedIdentity.Email);
 
             string? ipAddress = HttpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
             string? userAgent = HttpContextAccessor.HttpContext?.Request.Headers["User-Agent"].ToString();
 
             SignupResult result = await SignupService.CreateTenantAndUserAsync(new SignupRequest
             {
-                TenantId = PrefixedUlid.Generate("tenant"),
-                TenantName = $"{personalModel.FirstName} {personalModel.LastName}",
-                UserId = PrefixedUlid.Generate("user"),
                 FirstName = personalModel.FirstName,
                 LastName = personalModel.LastName,
-                Email = email,
-                ExternalAuthId = logtoUserId,
+                AcceptTerms = personalModel.AcceptTerms,
                 IpAddress = ipAddress,
                 UserAgent = userAgent,
-                TenantType = 0 // Personal (B2C)
-            });
+                TenantType = SignupTenantType.Personal
+            }, authenticatedIdentity);
 
             Logger.LogInformation(
                 "[Onboarding] Personal account created - TenantId: {TenantId}, UserId: {UserId}",
@@ -536,34 +523,25 @@
 
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
-
-            string logtoUserId = user.FindFirst("sub")?.Value 
-                                ?? user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
-                                ?? throw new InvalidOperationException("No user ID found in claims");
-            
-            string email = user.FindFirst("email")?.Value 
-                          ?? user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value 
-                          ?? throw new InvalidOperationException("No email found in claims");
+            AuthenticatedSignupIdentity authenticatedIdentity = GetAuthenticatedSignupIdentity(user);
 
             Logger.LogInformation("[Onboarding] Creating Business tenant for {Email}, Company: {CompanyName}", 
-                email, businessModel.CompanyName);
+                authenticatedIdentity.Email, businessModel.CompanyName);
 
             string? ipAddress = HttpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
             string? userAgent = HttpContextAccessor.HttpContext?.Request.Headers["User-Agent"].ToString();
 
             SignupResult result = await SignupService.CreateTenantAndUserAsync(new SignupRequest
             {
-                TenantId = PrefixedUlid.Generate("tenant"),
-                TenantName = businessModel.CompanyName,
-                UserId = PrefixedUlid.Generate("user"),
                 FirstName = businessModel.FirstName,
                 LastName = businessModel.LastName,
-                Email = email,
-                ExternalAuthId = logtoUserId,
+                CompanyName = businessModel.CompanyName,
+                Country = businessModel.Country,
+                AcceptTerms = businessModel.AcceptTerms,
                 IpAddress = ipAddress,
                 UserAgent = userAgent,
-                TenantType = 1 // Organization (B2B)
-            });
+                TenantType = SignupTenantType.Organization
+            }, authenticatedIdentity);
 
             Logger.LogInformation(
                 "[Onboarding] Business account created - Company: {CompanyName}, TenantId: {TenantId}, UserId: {UserId}",
@@ -592,5 +570,21 @@
         errorMessage = string.Empty;
         isProcessing = false;
         BackToAccountTypeSelection();
+    }
+
+    private static AuthenticatedSignupIdentity GetAuthenticatedSignupIdentity(System.Security.Claims.ClaimsPrincipal user)
+    {
+        string externalAuthId = user.FindFirst("sub")?.Value
+            ?? user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            ?? throw new InvalidOperationException("No user ID found in claims");
+        string email = user.FindFirst("email")?.Value
+            ?? user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value
+            ?? throw new InvalidOperationException("No email found in claims");
+
+        return new AuthenticatedSignupIdentity
+        {
+            Email = email,
+            ExternalAuthId = externalAuthId
+        };
     }
 }
