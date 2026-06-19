@@ -1,0 +1,55 @@
+Code/AppBlueprint/AppBlueprint.Web/SIGNUP-FLOW-IMPLEMENTATION.md
+  s_03c6077b794311::t_ea556901117d0d 9
+  s_cd10a83f1c9af5::t_1c835bfbe53fe0 89-90
+  s_cd10a83f1c9af5::t_55a0b29722b5ff 25-26,38,46,52-56,97
+  s_cd10a83f1c9af5::t_f16e6553ea1def 108-109
+  s_cd10a83f1c9af5::t_7292f46e44f92d 6-8,110-111,176-177
+Code/AppBlueprint/AppBlueprint.Web/SIGNUP-FLOW-AUTHENTICATION-FIX.md
+  s_cd10a83f1c9af5::t_5fc8149bea7a2a 76,140
+  s_03c6077b794311::t_ea556901117d0d 43,141
+  s_cd10a83f1c9af5::t_341e0ff65d238e 114-115
+  s_cd10a83f1c9af5::t_c539eee7d93125 261-262
+  s_cd10a83f1c9af5::t_7f00a20c093026 40-42,372
+  s_cd10a83f1c9af5::t_802be2c47e7bf0 128
+Code/AppBlueprint/AppBlueprint.Web/SIGNUP-FLOW-TROUBLESHOOTING-GUIDE.md
+  s_cd10a83f1c9af5::t_8c9f4fea47e514 425-426,690-691,711-714
+  s_cd10a83f1c9af5::t_c16ecd82b51630 32-34
+  s_cd10a83f1c9af5::t_d96feba1c84a30 617-618
+  s_cd10a83f1c9af5::t_ebfd7eb6d11a67 285,516
+  s_cd10a83f1c9af5::t_0fdc89204849fe 659-661
+  s_cd10a83f1c9af5::t_7e330dfccfb2a8 493,495,598
+  s_cd10a83f1c9af5::t_2203532ff878b1 577
+  s_03c6077b794311::t_ea556901117d0d 35
+  s_cd10a83f1c9af5::t_3fb9d9abf79a00 65-66,70
+  s_cd10a83f1c9af5::t_6e74ce5fcba855 671
+  s_cd10a83f1c9af5::t_2d03f874e896c8 631,633
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "55d46462b761051b8b73b483cfb4fe340b8e4fab",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_03c6077b794311": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019edbff-827d-73e3-bbbe-f01c64f57d6d",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_cd10a83f1c9af5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019edf0b-f6dc-7382-bd29-d4b84b967151",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
