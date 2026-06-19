@@ -1,0 +1,134 @@
+.gitignore
+  s_1634c69a996189::t_7ee12174c1b192 61-64,447
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/UpgradeNugetPackages.cs
+  s_547de75fd51527::t_251c1b593a1472 1
+  s_547de75fd51527::t_36c41e687ba626 9
+.coderabbit.yaml
+  h_aa722e8ed10195 1-31
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/CommandFactory.cs
+  s_547de75fd51527::t_36c41e687ba626 12-13,60-61
+  s_547de75fd51527::t_251c1b593a1472 1
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/JwtTokenCommand.cs
+  s_547de75fd51527::t_251c1b593a1472 1
+  s_547de75fd51527::t_36c41e687ba626 88,114,121,137,146,170,386,395,406,468,471,517,540,554,564,584,634,651,656
+Code/AppBlueprint/AppBlueprint.AppGateway/Program.cs
+  s_7f1e1a33dbb086::t_821f667e434cf2 154
+  s_7f1e1a33dbb086::t_45db73e1ea3f3e 109-116,118-119,122,125,128,131,147,150,153,159
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Dashboard.razor
+  h_aa722e8ed10195 8
+  s_1634c69a996189::t_1445cb2783121e 61-62,64,66
+  s_1634c69a996189::t_1a1a77a758342a 55,91,94,103
+  s_1634c69a996189::t_4f615d13711b18 52
+  s_1634c69a996189::t_18d67e480dca08 18-19,23,27
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/DashboardStatCardResponsiveLayoutTests.cs
+  s_1634c69a996189::t_13fd4798ba7b54 1-68
+Directory.Build.props
+  s_1634c69a996189::t_41e6c363789f51 6-7
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Shared/DashboardStatCard.razor
+  s_1634c69a996189::t_130964af7c85d2 3
+Code/AppBlueprint/AppBlueprint.Tests/Application/SystemCommandLineCompatibilityTests.cs
+  s_547de75fd51527::t_85138e599f7015 12,22
+  s_547de75fd51527::t_36c41e687ba626 2-9,11,13-20,23-24,26,28,30,35-36
+  s_547de75fd51527::t_5638783b8b442e 1,10,21,25,27
+  s_547de75fd51527::t_d738e246077cb3 29,31-34
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Extensions/MiddlewareExtensions.cs
+  s_7f1e1a33dbb086::t_45db73e1ea3f3e 14-15,18-23,25-26,29,32,35,38,41,45,50,53
+  s_7f1e1a33dbb086::t_821f667e434cf2 42
+Code/DeploymentManager/DeploymentManager.Web/Components/Pages/Dashboard.razor.css
+  s_1634c69a996189::t_33cb390e28ded7 1-51
+Code/AppBlueprint/AppBlueprint.Tests/AppBlueprint.Tests.csproj
+  s_547de75fd51527::t_36c41e687ba626 36-37
+Code/AppBlueprint/AppBlueprint.Tests/Web/TodoControllerTests.cs
+  s_547de75fd51527::t_36c41e687ba626 1-66
+Code/AppBlueprint/AppBlueprint.Tests/Infrastructure/ApiResponseHeaderHardeningTests.cs
+  s_7f1e1a33dbb086::t_7191e610afb399 5,7,24
+  s_7f1e1a33dbb086::t_e245060b8255e1 1,8,21-23,25-31,34,36-64
+  s_7f1e1a33dbb086::t_0666bcb7df5259 2-4,6,9-20,32-33,35,65-82
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/EnvironmentInfoCommand.cs
+  s_547de75fd51527::t_36c41e687ba626 113,120,127,134,141,203,407,411
+  s_547de75fd51527::t_251c1b593a1472 1
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/CHANGELOG.md
+  s_752e2dcf0a00eb::t_002a05bd176547 12
+Code/AppBlueprint/AppBlueprint.Web/Program.cs
+  s_7f1e1a33dbb086::t_821f667e434cf2 368,375
+  s_7f1e1a33dbb086::t_45db73e1ea3f3e 327-337,340,343,346,349,359,371,374,380
+Directory.Build.targets
+  s_1634c69a996189::t_0aa41735437ae9 1-2,7-8
+  s_1634c69a996189::t_f59226afb5c963 3-6
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/RunCommand.cs
+  s_547de75fd51527::t_36c41e687ba626 39,47-48,56-58,63,78-83,154-156,160,172,176,181,246
+  s_547de75fd51527::t_251c1b593a1472 1
+Code/DeploymentManager/DeploymentManager.Tests/CodeQlSecurityTests.cs
+  s_1634c69a996189::t_d2fda1f1900528 3,18
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/UninstallCommand.cs
+  s_547de75fd51527::t_36c41e687ba626 57,68,72,121,125-127
+  s_547de75fd51527::t_251c1b593a1472 1
+.github/workflows/sonarcloud-analysis.yaml
+  s_752e2dcf0a00eb::t_b32fb770161280 74
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/TestCommand.cs
+  s_547de75fd51527::t_251c1b593a1472 1
+  s_547de75fd51527::t_36c41e687ba626 121-122,139,158,179,210,219
+Code/AppBlueprint/Directory.Packages.props
+  s_752e2dcf0a00eb::t_99fbf759168b22 242
+Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel/Components/Shared/DashboardStatCard.razor.css
+  s_1634c69a996189::t_fc94942c769967 1-20
+Code/AppBlueprint/AppBlueprint.ApiService/Program.cs
+  s_7f1e1a33dbb086::t_45db73e1ea3f3e 155-160
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/SystemCommandLineCompatibility.cs
+  s_547de75fd51527::t_36c41e687ba626 62-63,65-68,87
+  s_547de75fd51527::t_d738e246077cb3 69
+  s_547de75fd51527::t_5638783b8b442e 1-2,16,22,25,28,31,34,37,40,53-61,64,70-86
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/InstallCommand.cs
+  s_547de75fd51527::t_251c1b593a1472 1
+  s_547de75fd51527::t_36c41e687ba626 69,77,84,94,129-130,132-133,136-138,233
+Code/DeploymentManager/DeploymentManager.Tests/DashboardResponsiveLayoutTests.cs
+  s_1634c69a996189::t_43d44f33b720b2 1-57
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/DatabaseCommand.cs
+  s_547de75fd51527::t_251c1b593a1472 1
+  s_547de75fd51527::t_36c41e687ba626 18,34,40,51,58,63,71,74,78,81,89,117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "33265a631a3f0103a39335486505ec58cba4273f",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_1634c69a996189": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ede61-11c5-7b43-80c9-eaf6a3db99d8",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_547de75fd51527": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019edeb3-8607-7302-8831-8ff3e950d20f",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_752e2dcf0a00eb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ede48-138a-7ca3-8fee-197669542580",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_7f1e1a33dbb086": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ede98-c294-76d2-9ab4-5c7f80719d50",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
