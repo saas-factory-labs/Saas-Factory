@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
@@ -85,7 +85,7 @@ internal static class JwtTokenCommand
                     builder.AddJsonFile(fileName, optional: false);
                     configuration = builder.Build();
 
-                    AnsiConsole.MarkupLine($"[green]âœ“[/] Loaded configuration from: {configPath}");
+                    AnsiConsole.MarkupLine($"[green]✓[/] Loaded configuration from: {configPath}");
 
                     string provider = configuration["Authentication:Provider"] ?? "JWT";
                     AnsiConsole.MarkupLine($"[cyan]Using Provider:[/] {provider}");
@@ -111,14 +111,14 @@ internal static class JwtTokenCommand
                 }
                 catch (Exception ex)
                 {
-                    AnsiConsole.MarkupLine($"[red]âœ—[/] Error loading configuration: {ex.Message}");
+                    AnsiConsole.MarkupLine($"[red]✗[/] Error loading configuration: {ex.Message}");
                     AnsiConsole.MarkupLine("[yellow]Using default configuration...[/]");
                     configuration = null;
                 }
             }
             else
             {
-                AnsiConsole.MarkupLine($"[red]âœ—[/] File not found: {configPath}");
+                AnsiConsole.MarkupLine($"[red]✗[/] File not found: {configPath}");
                 AnsiConsole.MarkupLine("[yellow]Using default configuration...[/]");
                 configuration = null;
             }
@@ -134,7 +134,7 @@ internal static class JwtTokenCommand
             return;
         }
 
-        AnsiConsole.MarkupLine($"[red]âœ—[/] Provider '{finalProvider}' is not supported.");
+        AnsiConsole.MarkupLine($"[red]✗[/] Provider '{finalProvider}' is not supported.");
         AnsiConsole.MarkupLine("[yellow]This tool only supports Logto authentication via browser automation.[/]");
     }
 
@@ -143,7 +143,7 @@ internal static class JwtTokenCommand
         var endpoint = configuration?["Authentication:Logto:Endpoint"]?.TrimEnd('/');
 
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[yellow]âš  Logto uses browser-based user authentication.[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Logto uses browser-based user authentication.[/]");
         AnsiConsole.WriteLine();
 
         // Ask user if they want automated extraction or manual paste
@@ -167,7 +167,7 @@ internal static class JwtTokenCommand
         try
         {
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[cyan]ðŸŒ Automated Token Extraction[/]");
+            AnsiConsole.MarkupLine("[cyan]🌐 Automated Token Extraction[/]");
             AnsiConsole.MarkupLine("[dim]A browser window will open. Please log in with your credentials.[/]");
             AnsiConsole.WriteLine();
 
@@ -383,7 +383,7 @@ internal static class JwtTokenCommand
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]âœ— No JWT token found in localStorage, sessionStorage, or cookies[/]");
+                AnsiConsole.MarkupLine("[red]✗ No JWT token found in localStorage, sessionStorage, or cookies[/]");
                 AnsiConsole.MarkupLine("[yellow]The token might be stored in memory or available through an API call.[/]");
                 AnsiConsole.WriteLine();
                 AnsiConsole.MarkupLine("[yellow]Falling back to manual token paste...[/]");
@@ -392,7 +392,7 @@ internal static class JwtTokenCommand
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("Playwright browsers", StringComparison.Ordinal))
         {
-            AnsiConsole.MarkupLine($"[red]âœ— {ex.Message}[/]");
+            AnsiConsole.MarkupLine($"[red]✗ {ex.Message}[/]");
             AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine("[yellow]To install Playwright browsers, run:[/]");
             AnsiConsole.MarkupLine("[green]playwright install chromium[/]");
@@ -403,7 +403,7 @@ internal static class JwtTokenCommand
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]âœ— Browser automation failed:[/] {ex.Message}");
+            AnsiConsole.MarkupLine($"[red]✗ Browser automation failed:[/] {ex.Message}");
             if (ex.InnerException is not null)
             {
                 AnsiConsole.MarkupLine($"[dim]Inner exception: {ex.InnerException.Message}[/]");
@@ -465,10 +465,10 @@ internal static class JwtTokenCommand
 
     private static async Task GetTokenFromLogtoManual(string? endpoint)
     {
-        AnsiConsole.MarkupLine("[cyan]ðŸ“‹ Manual Token Extraction[/]");
+        AnsiConsole.MarkupLine("[cyan]📋 Manual Token Extraction[/]");
         AnsiConsole.WriteLine();
 
-        AnsiConsole.MarkupLine("[yellow]âš  Your app uses server-side authentication (Blazor Server)[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Your app uses server-side authentication (Blazor Server)[/]");
         AnsiConsole.MarkupLine("[dim]JWT tokens are NOT sent in HTTP headers for Blazor Server SignalR connections.[/]");
         AnsiConsole.MarkupLine("[dim]The authentication happens server-side using cookies.[/]");
         AnsiConsole.WriteLine();
@@ -514,7 +514,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
 
         AnsiConsole.MarkupLine("[green]Option 3: Get Token from Logto Directly[/]");
         AnsiConsole.MarkupLine("[yellow]1.[/] Go to Logto admin console");
-        AnsiConsole.MarkupLine("[yellow]2.[/] Navigate to: Applications â†’ Your App â†’ Interact");
+        AnsiConsole.MarkupLine("[yellow]2.[/] Navigate to: Applications → Your App → Interact");
         AnsiConsole.MarkupLine("[yellow]3.[/] Use the 'Authorization Code' flow to get a token");
         AnsiConsole.MarkupLine("[yellow]4.[/] Or use Logto's API to generate a token for testing");
         AnsiConsole.WriteLine();
@@ -537,7 +537,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
 
         if (string.IsNullOrWhiteSpace(token))
         {
-            AnsiConsole.MarkupLine("[red]âœ— No token provided[/]");
+            AnsiConsole.MarkupLine("[red]✗ No token provided[/]");
             return;
         }
 
@@ -551,7 +551,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
         // Validate it's actually a JWT
         if (token.Split('.').Length != 3)
         {
-            AnsiConsole.MarkupLine("[red]âœ— Invalid JWT format[/]");
+            AnsiConsole.MarkupLine("[red]✗ Invalid JWT format[/]");
             AnsiConsole.MarkupLine("[yellow]JWT tokens must have exactly 3 parts separated by dots (e.g., eyJhbGc...)[/]");
             AnsiConsole.MarkupLine($"[dim]You provided: {token[..Math.Min(50, token.Length)]}...[/]");
             AnsiConsole.WriteLine();
@@ -561,7 +561,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
 
         if (!token.StartsWith("eyJ", StringComparison.Ordinal))
         {
-            AnsiConsole.MarkupLine("[yellow]âš  Warning: JWT tokens typically start with 'eyJ'[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠ Warning: JWT tokens typically start with 'eyJ'[/]");
             AnsiConsole.MarkupLine($"[dim]Your token starts with: {token[..Math.Min(10, token.Length)]}[/]");
 
             if (!await AnsiConsole.ConfirmAsync("Do you want to continue anyway?", false))
@@ -581,7 +581,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(token);
 
-            var panel = new Panel(new Markup($"[green]âœ“ User token validated successfully![/]"))
+            var panel = new Panel(new Markup($"[green]✓ User token validated successfully![/]"))
             {
                 Header = new PanelHeader("Success"),
                 Border = BoxBorder.Rounded
@@ -631,7 +631,7 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
                 new Markup(
                     "[yellow]Swagger UI:[/]\n" +
                     "[dim]1. Go to https://localhost:9100/swagger\n" +
-                    "2. Click 'Authorize' button (ðŸ”’ lock icon)\n" +
+                    "2. Click 'Authorize' button (🔒 lock icon)\n" +
                     $"3. Enter: Bearer {token[..Math.Min(30, token.Length)]}...\n" +
                     "4. Click 'Authorize'\n" +
                     "5. Try protected endpoints[/]\n\n" +
@@ -648,12 +648,12 @@ Invoke-RestMethod -Uri 'https://localhost:9100/api/v1/authtest/echo' `
             };
             AnsiConsole.Write(examplesPanel);
 
-            AnsiConsole.MarkupLine("\n[green]âœ“ Token ready to use. Press any key to continue...[/]");
+            AnsiConsole.MarkupLine("\n[green]✓ Token ready to use. Press any key to continue...[/]");
             Console.ReadKey(true);
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]âœ— Invalid token:[/] {ex.Message}");
+            AnsiConsole.MarkupLine($"[red]✗ Invalid token:[/] {ex.Message}");
             AnsiConsole.WriteException(ex);
         }
 

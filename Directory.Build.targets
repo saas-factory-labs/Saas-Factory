@@ -1,0 +1,8 @@
+<Project>
+  <ItemGroup>
+    <Compile Remove="obj/**/*.cs;bin/**/*.cs;obj_verify/**/*.cs;bin_verify/**/*.cs;obj\\**\\*.cs;bin\\**\\*.cs;obj_verify\\**\\*.cs;bin_verify\\**\\*.cs" />
+    <Content Remove="obj/**;bin/**;obj_verify/**;bin_verify/**;obj\\**;bin\\**;obj_verify\\**;bin_verify\\**" />
+    <EmbeddedResource Remove="obj/**;bin/**;obj_verify/**;bin_verify/**;obj\\**;bin\\**;obj_verify\\**;bin_verify\\**" />
+    <None Remove="obj/**;bin/**;obj_verify/**;bin_verify/**;obj\\**;bin\\**;obj_verify\\**;bin_verify\\**" />
+  </ItemGroup>
+</Project>

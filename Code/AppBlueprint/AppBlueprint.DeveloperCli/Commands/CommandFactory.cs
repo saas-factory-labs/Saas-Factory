@@ -1,4 +1,4 @@
-﻿using AppBlueprint.CliKit.Commands;
+using AppBlueprint.CliKit.Commands;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AppBlueprint.DeveloperCli.Commands;
@@ -9,7 +9,8 @@ internal sealed class CommandFactory
 
     public CommandFactory(IEnumerable<ICliCommand> commands)
     {
-        _commands = commands ?? throw new ArgumentNullException(nameof(commands));
+        ArgumentNullException.ThrowIfNull(commands);
+        _commands = commands;
     }
 
     public RootCommand CreateRootCommand()
@@ -56,7 +57,8 @@ internal sealed class StaticCliCommand : ICliCommand
 
     public StaticCliCommand(Func<Command> factory)
     {
-        _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+        _factory = factory;
     }
 
     public Command Build() => _factory();

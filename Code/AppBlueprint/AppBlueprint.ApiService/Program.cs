@@ -150,8 +150,15 @@ internal static class Program // Make class static
         // Configure the HTTP request pipeline.
         app.UseExceptionHandler();
 
-        // Redirect root path to Swagger UI for easier access from Aspire dashboard
-        app.MapGet("/", () => Results.Redirect("/swagger"));
+        if (app.Environment.IsDevelopment())
+        {
+            // Redirect root path to Swagger UI for easier access from Aspire dashboard.
+            app.MapGet("/", () => Results.Redirect("/swagger"));
+        }
+        else
+        {
+            app.MapGet("/", () => Results.NotFound());
+        }
 
         app.MapDefaultEndpoints();
         app.MapControllers();

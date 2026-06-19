@@ -1,6 +1,6 @@
 using System.IO;
 using TUnit.Core;
-using SaaSFactory.TestKernel;
+using SaaSFactory.SharedTestKernel;
 
 namespace DeploymentManager.Tests;
 

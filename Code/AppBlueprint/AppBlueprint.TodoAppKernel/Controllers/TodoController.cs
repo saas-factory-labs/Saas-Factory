@@ -132,6 +132,12 @@ public class TodoController(
 
         _logger.LogInformation("Deleting todo for current request context");
 
+        var todo = await _todoRepository.GetByIdAsync(id, tenantId, cancellationToken);
+        if (todo is null)
+        {
+            return NotFound($"Todo with ID {id} not found");
+        }
+
         await _todoRepository.DeleteAsync(id, tenantId, cancellationToken);
 
         _logger.LogInformation("Todo soft-deleted successfully");

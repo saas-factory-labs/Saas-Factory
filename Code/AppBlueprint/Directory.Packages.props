@@ -224,7 +224,6 @@
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
-    <PackageVersion Include="Mapster" Version="7.4.0" />
     <!-- MSBuild packages - pinned to override vulnerable transitive dependencies -->
     <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="18.7.1" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="18.7.1" />

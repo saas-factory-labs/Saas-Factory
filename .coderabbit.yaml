@@ -1,0 +1,31 @@
+reviews:
+  path_filters:
+    # Dine specifikke tunge mapper (Sikret så de fanges i alle undermapper)
+    - "!**/graphify-out/**"
+    - "!**/.understand-anything/**"
+    - "!**/codeql-saas-factory-db/**"
+    - "!**/codeql-queries/**"
+
+    # Tunge web- og build-afhængigheder
+    - "!**/node_modules/**"
+    - "!**/.next/**"
+    - "!**/dist/**"
+    - "!**/build/**"
+
+    # De helt store .NET & Visual Studio syndere (Nu rettet med '!' foran)
+    - "!**/.vs/**"
+    - "!**/bin/**"
+    - "!**/obj/**"
+    - "!**/[Bb]in/**"
+    - "!**/[Oo]bj/**"
+
+    # AI, venv og test-caches
+    - "!**/.venv/**"
+    - "!**/.claude/**"
+    - "!**/.workspace/**"
+    - "!**/.playwright-mcp/**"
+    - "!**/.cache_ggshield/**"
+    - "!**/.history/**"
+
+    # Husk at inkludere alt det reelle kode til sidst!
+    - "**"

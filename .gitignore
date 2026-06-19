@@ -58,6 +58,10 @@ bld/
 bin/
 [Oo]bj/
 obj/
+[Bb]in_verify/
+bin_verify/
+[Oo]bj_verify/
+obj_verify/
 [Ll]og/
 [Ll]ogs/
 

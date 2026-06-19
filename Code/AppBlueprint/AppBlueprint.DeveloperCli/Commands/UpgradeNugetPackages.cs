@@ -1,4 +1,4 @@
-﻿using AppBlueprint.DeveloperCli.Utilities;
+using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -6,7 +6,7 @@ internal static class UpgradeNugetPacckagesCommand
 {
     public static Command Create()
     {
-        // implementer et tool i min developer cli til at opdatere nuget pakker i den centrale pacakges fil hvor den sÃ¥ rent faktisk tjekker version numre og om pakken eksisterer og sÃ¥ Ã¦ndrer filen fÃ¸rst derefter
+        // Implement a developer CLI tool that upgrades NuGet packages in the central packages file, validating package versions and existence before modifying the file.
         var connectionStringOption = new Option<string>("--connection-string") { Description = "The connection string for the database.", Required = true };
 
         var command = new Command("upgrade-nuget-packages",
