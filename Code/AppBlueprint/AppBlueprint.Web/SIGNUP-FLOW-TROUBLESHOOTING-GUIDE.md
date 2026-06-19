@@ -29,6 +29,10 @@ Users attempting to sign up encountered multiple progressive errors:
 
 **Design Decision:** The signup flow intentionally bypasses the API service and uses a direct database connection with a `SECURITY DEFINER` stored procedure.
 
+> [!WARNING]
+> Any signup payload that originates from the browser, including onboarding state or browser-stored session data, must be treated as untrusted client input.
+> Before invoking `create_tenant_and_user`, the server-side flow must strictly revalidate email, subject identifier, tenant intent, and other provisioning fields against authoritative OIDC claims and trusted server-side rules. The stored procedure should receive only server-validated data.
+
 **Rationale:**
 - **Row-Level Security (RLS):** Database enforces tenant isolation via RLS policies requiring `current_setting('app.current_tenant_id')`
 - **Chicken-and-Egg Problem:** Cannot set tenant context before tenant exists
@@ -58,25 +62,12 @@ Users attempting to sign up encountered multiple progressive errors:
 The stored procedure is now included in EF Core migration `20260107120000_AddSignupStoredProcedure.cs`.
 
 **Automatic deployment via migrations:**
-```bash
-cd /Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure
+```powershell
+Set-Location Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence
 dotnet ef database update --context ApplicationDbContext
 ```
 
-**Manual deployment (legacy - if needed):**
-```bash
-cd /Code/AppBlueprint
-docker run --rm -i \
-  -e PGPASSWORD="<password>" \
-  postgres:17 psql \
-  -h switchyard.proxy.rlwy.net \
-  -p 58225 \
-  -U postgres \
-  -d appblueprintdb \
-  < CreateSignupStoredProcedure.sql
-```
-
-**File:** `CreateSignupStoredProcedure.sql`  
+**Migration source:** `Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Migrations/20260107120000_AddSignupStoredProcedure.cs`  
 **Key Components:**
 - `validate_email_format()` - Email validation
 - `validate_id_format()` - ID format validation
@@ -291,7 +282,7 @@ INSERT INTO "ProfileEntity" (
 
 **Solution Implemented:**
 
-**1. CreateSignupStoredProcedure.sql:**
+**1. Embedded signup stored procedure SQL (`20260107120000_AddSignupStoredProcedure.cs`):**
 ```sql
 -- Line 99: Parameter accepts tenant type
 CREATE OR REPLACE FUNCTION create_tenant_and_user(
@@ -431,10 +422,8 @@ CREATE TABLE "SignupAuditLog" (
 ## Testing & Verification
 
 ### Verify Stored Procedure Installation
-```bash
-docker run --rm -i -e PGPASSWORD="<password>" postgres:17 psql \
-  -h switchyard.proxy.rlwy.net -p 58225 -U postgres -d appblueprintdb \
-  -c "SELECT routine_name, security_type FROM information_schema.routines WHERE routine_name = 'create_tenant_and_user';"
+```powershell
+docker run --rm -i -e PGPASSWORD="<password>" postgres:17 psql -h switchyard.proxy.rlwy.net -p 58225 -U postgres -d appblueprintdb -c "SELECT routine_name, security_type FROM information_schema.routines WHERE routine_name = 'create_tenant_and_user';"
 ```
 
 **Expected Output:**
@@ -501,9 +490,9 @@ LIMIT 5;
 
 ---
 
-## Outstanding Issues
+## Follow-up Status
 
-### 1. TenantType Not Set for Business Accounts
+### 1. Resolved: TenantType for Business Accounts
 
 **Status:** ✅ **RESOLVED** - Implementation complete  
 **Priority:** ~~HIGH~~ COMPLETED  
@@ -524,7 +513,7 @@ public sealed record SignupRequest
 ```
 
 #### ✅ Step 2: Stored Procedure
-**File:** `CreateSignupStoredProcedure.sql`
+**File:** `Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Migrations/20260107120000_AddSignupStoredProcedure.cs`
 
 ```sql
 -- Line 99: Parameter exists
@@ -585,6 +574,7 @@ FROM "Tenants"
 WHERE "CreatedAt" > NOW() - INTERVAL '1 day'
 ORDER BY "CreatedAt" DESC;
 -- Expected: TenantType = 0 for personal, 1 for business
+```
 
 **Business Account (Line ~260):**
 ```csharp
@@ -603,15 +593,9 @@ SignupResult result = await SignupService.CreateTenantAndUserAsync(new SignupReq
 });
 ```
 
-#### Step 5: Redeploy Stored Procedure
-```bash
-cd /Code/AppBlueprint
-docker run --rm -i -e PGPASSWORD="<password>" postgres:17 psql \
-```
-
 ---
 
-### 2. Missing tenant_id Claim in JWT
+### 2. Remaining Configuration: Missing tenant_id Claim in JWT
 
 **Status:** ⚠️ REQUIRES CONFIGURATION  
 **Priority:** MEDIUM  
@@ -630,7 +614,8 @@ docker run --rm -i -e PGPASSWORD="<password>" postgres:17 psql \
 const getUserTenantId = async (userId) => {
   // Query your database to get tenant_id for user
   const user = await fetch(`http://localhost:8091/api/users/${userId}`);
-  return user.tenantId;
+  const userData = await user.json();
+  return userData.tenantId;
 };
 
 const getCustomJwtClaims = async ({ token, context, environmentVariables }) => {
@@ -643,9 +628,9 @@ const getCustomJwtClaims = async ({ token, context, environmentVariables }) => {
 ```
 
 5. Update Environment Variables in Web project:
-```bash
+```dotenv
 # .env or launchSettings.json
-Logto__Resource=http://localhost:8091
+LOGTO_RESOURCE=http://localhost:8091
 ```
 
 6. Test by decoding JWT at jwt.io - should see `tenant_id` claim
@@ -671,9 +656,9 @@ Logto__Resource=http://localhost:8091
 - **Trade-off:** Stored procedures provide performance and security benefits, now deployed automatically
 
 ### 4. Trust Boundaries Require Runtime Validation
-- **Issue:** Assumed column existence without verification
-- **Lesson:** Even with nullable reference types, validate external data sources (DB schema) at runtime
-- **Best Practice:** Add guard clauses for critical operations
+- **Issue:** Signup flows combine browser-originated data, OIDC claims, and privileged provisioning operations
+- **Lesson:** Treat browser/session data as untrusted and revalidate it server-side against authoritative OIDC claims before provisioning
+- **Best Practice:** Pass only server-validated data into `create_tenant_and_user`
 
 ---
 
@@ -683,7 +668,7 @@ Logto__Resource=http://localhost:8091
 - **Tenant Isolation:** `.github/.ai-rules/backend/tenant-isolation-defense-in-depth.md`
 - **Database Setup:** `../Shared-Modules/DATABASE_HYBRID_MODE_SETUP.md`
 - **Logto Setup:** `../Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/LOGTO-AUTHENTICATION-SETUP.md`
-- **Row-Level Security:** `AppBlueprint/SetupRowLevelSecurity.sql`
+- **Row-Level Security:** `../SetupRowLevelSecurity.sql`
 
 ---
 
@@ -702,9 +687,8 @@ Logto__Resource=http://localhost:8091
 ## Quick Reference Commands
 
 ### Connect to Database
-```bash
-docker run --rm -it -e PGPASSWORD="<password>" postgres:17 psql \
-  -h switchyard.proxy.rlwy.net -p 58225 -U postgres -d appblueprintdb
+```powershell
+docker run --rm -it -e PGPASSWORD="<password>" postgres:17 psql -h switchyard.proxy.rlwy.net -p 58225 -U postgres -d appblueprintdb
 ```
 
 ### List All Tables
@@ -724,11 +708,10 @@ FROM information_schema.routines
 WHERE routine_schema = 'public';
 ```
 
-### Drop and Recreate Stored Procedure
-```bash
-docker run --rm -i -e PGPASSWORD="<password>" postgres:17 psql \
-  -h switchyard.proxy.rlwy.net -p 58225 -U postgres -d appblueprintdb \
-  < CreateSignupStoredProcedure.sql
+### Reapply Signup Migration
+```powershell
+Set-Location Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence
+dotnet ef database update --context ApplicationDbContext
 ```
 
 ---

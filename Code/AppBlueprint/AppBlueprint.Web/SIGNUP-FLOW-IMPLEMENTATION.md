@@ -3,6 +3,10 @@
 ## Overview
 This implementation adds complete B2C (Personal) and B2B (Business) account signup flows to AppBlueprint.Web, using the existing Cruip template styling and Logto authentication provider.
 
+> [!WARNING]
+> `SignupSessionData` and any values loaded from `localStorage` must be treated as untrusted client input. They can be modified, replayed, or fabricated in the browser and must never be used as authoritative provisioning data on their own.
+> The backend or other server-side provisioning flow must strictly revalidate all claims and submitted data against authoritative OIDC claims and trusted server-side sources before creating or linking users, tenants, memberships, or any other entities.
+
 ## Files Created
 
 ### Model Classes (`Code/AppBlueprint/AppBlueprint.Web/Models/Auth/`)
@@ -18,8 +22,8 @@ This implementation adds complete B2C (Personal) and B2B (Business) account sign
    - AcceptTerms (required boolean)
 
 3. **SignupSessionData.cs** - Session persistence model
-   - Stores all signup data temporarily in browser local storage
-   - Used to persist data across OAuth redirect flow
+   - Stores temporary, non-authoritative signup context in browser local storage
+   - Used only to preserve UX context across the OAuth redirect flow
 
 ### Razor Pages (`Code/AppBlueprint/AppBlueprint.Web/Components/Pages/Auth/`)
 1. **Signup.razor** (`/signup`) - Account type selection page
@@ -31,7 +35,7 @@ This implementation adds complete B2C (Personal) and B2B (Business) account sign
 2. **SignupPersonal.razor** (`/signup/personal`) - Personal account signup form
    - Form fields: First Name, Last Name, Accept Terms
    - Info box explaining Logto secure authentication
-   - Stores data to local storage
+   - Stores temporary, non-authoritative form context in local storage
    - Redirects to Logto sign-up with state="personal"
    - Blue theme (#2563EB)
 
@@ -39,16 +43,17 @@ This implementation adds complete B2C (Personal) and B2B (Business) account sign
    - Form fields: Company Name, VAT Number, Country, First Name, Last Name, Accept Terms
    - Country dropdown with 20 European + major countries
    - Info box explaining Logto secure authentication
-   - Stores data to local storage
+   - Stores temporary, non-authoritative form context in local storage
    - Redirects to Logto sign-up with state="business"
    - Purple theme (#9333EA)
 
 4. **AuthCallback.razor** (`/signup/callback`) - OAuth callback handler
    - Receives callback from Logto after authentication
-   - Loads signup session data from local storage
-   - Extracts user info from authentication claims (email, sub)
-   - Creates UserEntity with FirstName, LastName, Email
-   - Creates TenantEntity using TenantFactory:
+   - Loads signup session hints from local storage as untrusted input
+   - Extracts authoritative user claims from the validated OIDC identity (email, sub)
+   - Revalidates permitted provisioning inputs server-side before entity creation
+   - Creates UserEntity with authoritative claim data plus validated server-approved fields
+   - Creates TenantEntity using TenantFactory only after server-side validation succeeds:
      - Personal: `TenantFactory.CreatePersonalTenant(user)`
      - Business: `TenantFactory.CreateOrganizationTenant(company, email, vat, country)`
    - Saves entities to BaselineDbContext
@@ -81,15 +86,15 @@ Add the following redirect URI to your Logto application:
 ### Environment Variables
 Logto configuration uses existing environment variables (no changes needed):
 - `LOGTO_APP_SECRET` - Set via environment variable
-- `Logto__Endpoint` - Logto tenant OIDC endpoint
-- `Logto__AppId` - Logto application ID
+- `LOGTO_ENDPOINT` - Logto tenant OIDC endpoint
+- `LOGTO_APPID` - Logto application ID
 
 ## Technical Architecture
 
 ### Signup Flow
 1. User visits `/signup` and chooses account type
 2. User fills form at `/signup/personal` or `/signup/business`
-3. Form data stored in browser local storage as `SignupSessionData`
+3. Form data stored in browser local storage as temporary, non-authoritative `SignupSessionData`
 4. User redirected to Logto sign-up page with:
    - `client_id` = Logto App ID
    - `redirect_uri` = http://localhost:5000/signup/callback
@@ -100,9 +105,10 @@ Logto configuration uses existing environment variables (no changes needed):
 6. Logto redirects back to `/signup/callback` with auth code
 7. Callback handler:
    - Authenticates user via OpenID Connect
-   - Loads signup session from local storage
-   - Extracts user claims (email, sub)
-   - Creates UserEntity + TenantEntity
+   - Loads signup session hints from local storage as untrusted input
+   - Extracts authoritative user claims from the validated OIDC identity (email, sub)
+   - Revalidates all client-provided data against authoritative OIDC claims and trusted server-side rules
+   - Creates UserEntity + TenantEntity only after server-side validation succeeds
    - Saves to BaselineDbContext
    - Clears session storage
    - Redirects to `/` (dashboard)
@@ -167,7 +173,8 @@ Minor improvements suggested (non-blocking):
 ### Security Considerations
 ✅ Uses Logto OAuth/OpenID Connect for secure authentication
 ✅ No passwords stored in application
-✅ Session data stored client-side only
+⚠️ `SignupSessionData` and `localStorage` are untrusted and must be revalidated server-side before provisioning
+✅ Session data stored client-side only for temporary UX continuity, not as an authoritative source of truth
 ✅ Validation on all form inputs
 ✅ HTTPS enforced in production
 

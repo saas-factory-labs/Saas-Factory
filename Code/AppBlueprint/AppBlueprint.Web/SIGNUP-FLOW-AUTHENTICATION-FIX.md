@@ -37,6 +37,10 @@ The fix involved three main changes:
 2. **Add comprehensive form validation** - Validate user input with clear error messages
 3. **Create signup completion page** - Handle post-authentication tenant/user creation
 
+> [!WARNING]
+> `SignupSessionData` and any values read from `localStorage` are untrusted client input. They can be tampered with, replayed, or fabricated and must never be treated as authoritative data for account or tenant provisioning.
+> The backend or other server-side provisioning flow must strictly revalidate every claim and field against authoritative OIDC claims and trusted server-side validation before creating users, tenants, memberships, roles, or related entities.
+
 ---
 
 ## Detailed Changes
@@ -69,7 +73,7 @@ Navigation.NavigateTo("/auth/signin", forceLoad: true);
 - Added form validation with `DataAnnotationsValidator`
 - Added error handling and user-friendly error messages
 - Added loading states with informative messages
-- Store signup data in localStorage before redirecting
+- Store temporary, non-authoritative signup context in localStorage before redirecting
 
 ### 2. Created Validation Models
 
@@ -107,8 +111,8 @@ public class PersonalSignupModel
 
 **Responsibilities:**
 1. Verify user is authenticated (redirect to `/signup` if not)
-2. Retrieve signup session data from localStorage
-3. Create tenant/user based on account type
+2. Retrieve signup session data from localStorage as untrusted client input
+3. Call a server-side provisioning flow that revalidates all claims and permitted fields before creating tenant/user records
 4. Display loading, success, or error states
 5. Auto-redirect to dashboard after successful creation
 6. Provide retry functionality on errors
@@ -121,7 +125,7 @@ Check Authentication
   ↓
 Get localStorage["signupSession"]
   ↓
-Parse SignupSessionData
+Parse SignupSessionData as untrusted client input
   ↓
 if (business) → CreateBusinessAccountAsync()
 if (personal) → CreatePersonalAccountAsync()
@@ -132,6 +136,8 @@ Show Success + 3-second Countdown
   ↓
 Navigate to "/" (Dashboard)
 ```
+
+**Important:** The local storage payload is only a UX continuity mechanism. Any provisioning API called by `CreateBusinessAccountAsync()` or `CreatePersonalAccountAsync()` must derive authoritative identity from validated OIDC claims and must revalidate any client-supplied account type or profile fields before creating records.
 
 ### 4. Updated Program.cs
 
@@ -252,6 +258,8 @@ Navigate to "/" (Dashboard)
 └─────────────────────────────────────────────────────────────┘
 ```
 
+**Security note:** Steps 12-13 should be read as loading client-side context and then invoking a server-side provisioning flow that trusts validated OIDC claims, not browser-controlled `SignupSessionData`, for authoritative identity and entitlement decisions.
+
 ---
 
 ## File Structure
@@ -361,6 +369,7 @@ This ensures users are sent to the completion page to finalize their signup.
 1. **Implement tenant creation API** - Replace placeholder methods in `SignupComplete.razor`:
    - `CreatePersonalAccountAsync()` should call tenant provisioning API
    - `CreateBusinessAccountAsync()` should call tenant provisioning API with company details
+   - The API must treat `SignupSessionData` and `localStorage` as untrusted and revalidate every provisioning input against authoritative OIDC claims
 
 2. **Add email verification** - Optional step after signup:
    - Send verification email via Logto
