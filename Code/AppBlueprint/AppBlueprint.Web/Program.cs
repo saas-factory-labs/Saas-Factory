@@ -233,16 +233,6 @@ builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<Ap
 builder.Services.AddScoped<AppBlueprint.Application.Interfaces.ISearchService<AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User.UserEntity>,
     AppBlueprint.Web.Services.HttpUserSearchService>();
 
-// Add TodoService with HttpClient configured for direct API access
-builder.Services.AddHttpClient<AppBlueprint.Web.Services.TodoService>(client =>
-{
-    // Use API base URL from environment/configuration
-    // Supports Railway deployment with API_BASE_URL environment variable
-    client.BaseAddress = new Uri(apiBaseUrl);
-    client.Timeout = TimeSpan.FromSeconds(30);
-})
-.AddHttpMessageHandler<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
-
 // Add TeamService with HttpClient configured for direct API access
 builder.Services.AddHttpClient<AppBlueprint.Web.Services.TeamService>(client =>
 {
