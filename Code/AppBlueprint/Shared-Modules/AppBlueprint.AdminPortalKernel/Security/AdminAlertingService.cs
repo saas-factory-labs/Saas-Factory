@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.AdminPortalKernel.Security;
@@ -39,17 +40,33 @@ public sealed class AdminAlertingService : IAdminAlertingService
     {
         ArgumentNullException.ThrowIfNull(alert);
 
+        string adminUserId = SanitizeForLog(alert.AdminUserId);
+        string adminEmail = SanitizeForLog(alert.AdminEmail);
+        string appSlug = SanitizeForLog(alert.AppSlug);
+        string tenantId = SanitizeForLog(alert.TenantId);
+        string reason = SanitizeForLog(alert.Reason);
+
         _logger.LogWarning(
             "ADMIN_ACCESS_ALERT | admin={AdminUserId} ({AdminEmail}) app={AppSlug} tenant={TenantId} " +
             "bypass={IsAutomatedBypass} reason={Reason} at={OccurredAtUtc:O}",
-            alert.AdminUserId,
-            alert.AdminEmail,
-            alert.AppSlug,
-            alert.TenantId,
+            adminUserId,
+            adminEmail,
+            appSlug,
+            tenantId,
             alert.IsAutomatedBypass,
-            alert.Reason,
+            reason,
             alert.OccurredAtUtc);
 
         return Task.CompletedTask;
+    }
+
+    private static string SanitizeForLog(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        return new string(value.Where(c => !char.IsControl(c)).ToArray());
     }
 }
