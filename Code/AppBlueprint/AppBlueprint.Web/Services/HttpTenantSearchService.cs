@@ -40,7 +40,10 @@ internal sealed class HttpTenantSearchService : ISearchService<TenantEntity>
 
         if (response is null)
         {
-            _logger.LogWarning("Tenant search API returned null response for query: {QueryText}", query.QueryText);
+            string sanitizedQueryTextForLog = (query.QueryText ?? string.Empty)
+                .Replace("\r", " ")
+                .Replace("\n", " ");
+            _logger.LogWarning("Tenant search API returned null response for query: {QueryText}", sanitizedQueryTextForLog);
             return new SearchResult<TenantEntity>
             {
                 Items = [],
