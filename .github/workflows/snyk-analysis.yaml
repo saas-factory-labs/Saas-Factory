@@ -35,7 +35,7 @@ jobs:
         run: dotnet restore SaaS-Factory.sln
 
       - name: Install Cloudflare worker dependencies
-        working-directory: Code/AppBlueprint/cloudflare-worker
+        working-directory: Code/Cloudflare-Workers
         run: npm ci
 
       - name: Install Snyk CLI
@@ -64,7 +64,7 @@ jobs:
 
       - name: Run Snyk - Cloudflare Worker
         continue-on-error: true
-        working-directory: Code/AppBlueprint/cloudflare-worker
+        working-directory: Code/Cloudflare-Workers
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk test --file=package.json --severity-threshold=high --sarif-file-output=${{ github.workspace }}/snyk-cloudflare-worker.sarif
