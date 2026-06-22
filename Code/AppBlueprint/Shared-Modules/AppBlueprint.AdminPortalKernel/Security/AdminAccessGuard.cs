@@ -92,6 +92,7 @@ public sealed class AdminAccessGuard : IAdminAccessGuard
         string? rawUserId = await _userContext.GetUserIdAsync();
         string userId = string.IsNullOrWhiteSpace(rawUserId) ? "unknown" : rawUserId;
         string? email = await _userContext.GetEmailAsync();
+        string emailForExternalUse = MaskEmailForExternalUse(email);
 
         // 2. Lockout (defense in depth - a session locked out mid-flight cannot keep extracting).
         if (_lockout.IsLockedOut(userId, out DateTimeOffset lockoutUntil))
@@ -159,21 +160,40 @@ public sealed class AdminAccessGuard : IAdminAccessGuard
         if (isAutomatedBypass || request.Sensitivity == AdminAccessSensitivity.High)
         {
             await _alerting.RaiseAccessAlertAsync(
-                new AdminAccessAlert(userId, email, request.AppSlug, request.TenantId, effectiveReason, isAutomatedBypass, now),
+                new AdminAccessAlert(userId, emailForExternalUse, request.AppSlug, request.TenantId, effectiveReason, isAutomatedBypass, now),
                 cancellationToken);
         }
 
         // 9. Stream the complete record to the external SIEM on every authorized access.
         await _siem.EmitAsync(
             new AdminAccessAuditPayload(
-                userId, email, request.Operation.ToString(), request.AppSlug, request.TenantId,
+                userId, emailForExternalUse, request.Operation.ToString(), request.AppSlug, request.TenantId,
                 effectiveReason, isAutomatedBypass, fingerprint?.Value, now),
             cancellationToken);
 
         _logger.LogInformation(
             "ADMIN_PORTAL_ACCESS: {Operation} app={Slug} by={AdminEmail} ({AdminUserId}) tenant={TenantId} bypass={Bypass} reason={Reason}",
-            request.Operation, request.AppSlug, email, userId, request.TenantId, isAutomatedBypass, effectiveReason);
+            request.Operation, request.AppSlug, emailForExternalUse, userId, request.TenantId, isAutomatedBypass, effectiveReason);
 
         return new AdminAccessDecision(effectiveReason, isAutomatedBypass, fingerprint);
+    }
+
+    private static string MaskEmailForExternalUse(string? email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return "unknown";
+        }
+
+        int atIndex = email.IndexOf('@');
+        if (atIndex <= 0 || atIndex == email.Length - 1)
+        {
+            return "redacted";
+        }
+
+        string local = email[..atIndex];
+        string domain = email[(atIndex + 1)..];
+        string maskedLocal = local.Length <= 1 ? "*" : $"{local[0]}***";
+        return $"{maskedLocal}@{domain}";
     }
 }
