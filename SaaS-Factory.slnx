@@ -88,7 +88,6 @@
     <File Path="Code/AppBlueprint/test-jwt-auth.ps1" />
     <File Path="Code/AppBlueprint/WEB_PORTS_CHANGED_8083_8082.md" />
     <File Path="Code/AppBlueprint/WHY_LOGTO_FAILED_ANALYSIS.md" />
-    <Project Path="Code/AppBlueprint/AppBlueprint.TodoAppKernel/AppBlueprint.TodoAppKernel.csproj" />
   </Folder>
   <Folder Name="/Code/AppBlueprint/Shared-Modules/">
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.AdminPortalKernel.Tests/AppBlueprint.AdminPortalKernel.Tests.csproj" />

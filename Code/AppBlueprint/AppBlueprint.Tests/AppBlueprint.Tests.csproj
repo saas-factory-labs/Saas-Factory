@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AppBlueprint.DeveloperCli\AppBlueprint.DeveloperCli.csproj" />
-    <ProjectReference Include="..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj" />
     <ProjectReference Include="..\AppBlueprint.AppHost\AppBlueprint.AppHost.csproj" />
     <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
     <ProjectReference Include="..\Shared-Modules\AppBlueprint.Presentation.ApiModule\AppBlueprint.Presentation.ApiModule.csproj" />

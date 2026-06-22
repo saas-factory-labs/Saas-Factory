@@ -1,19 +1,23 @@
 # Build context: repo root (Railway default; also works locally from repo root)
 # docker build -f Code/DeploymentManager/DeploymentManager.Web/Dockerfile -t deploymentmanager-web .
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra@sha256:de3e2d510c3b30dd10a3ababad927725839aacd0bbd6a3e8aef9a5a4408ccc12 AS base
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:548d93f8a18a1acbe6cc127bc4f47281430d34a9e35c18afa80a8d6741c2adc3 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Install Node.js for TypeScript compilation (required by AppBlueprint.UiKit → Microsoft.TypeScript.MSBuild)
+# SECURITY: Using NodeSource official GPG key verification instead of piping curl directly to bash
 RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y curl gnupg && \
+    mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
+    apt-get update && \
     apt-get install -y nodejs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

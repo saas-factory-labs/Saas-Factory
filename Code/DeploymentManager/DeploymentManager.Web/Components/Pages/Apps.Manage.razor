@@ -1,8 +1,11 @@
 @page "/apps/manage"
 @using DeploymentManager.Web.Models
 @using AppBlueprint.UiKit.Components.Shared
+@using Microsoft.AspNetCore.Components.Web
 
-<PageTitle>Manage Apps</PageTitle>
+<head>
+    <title>Manage Apps</title>
+</head>
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
@@ -78,9 +81,6 @@
 
     protected override void OnInitialized()
     {
-        _apps = new List<AppModel>
-        {
-            new() { Id = 1, Name = "SaaS Factory Core" }
-        };
+
     }
 }

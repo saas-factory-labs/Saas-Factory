@@ -1,0 +1,128 @@
+# SBOM Generation Configuration
+# Used by enhanced SBOM workflow
+
+# ==================================
+# SBOM Formats
+# ==================================
+formats:
+  - spdx-2.3
+  - cyclonedx-1.6
+
+# ==================================
+# Ecosystems to Scan
+# ==================================
+ecosystems:
+  dotnet:
+    enabled: true
+    paths:
+      - Code/AppBlueprint
+      - Code/DeploymentManager
+    package_manager: nuget
+
+  npm:
+    enabled: true
+    paths:
+      - Code/AppBlueprint
+      - Code/Cloudflare-Workers
+      - Code/Landingpage
+    package_manager: npm
+
+  docker:
+    enabled: true
+    images:
+      - name: appblueprint-web
+        dockerfile: Code/AppBlueprint/AppBlueprint.Web/Dockerfile
+        context: Code/AppBlueprint
+      - name: appblueprint-api
+        dockerfile: Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile
+        context: Code/AppBlueprint
+      - name: deploymentmanager-web
+        dockerfile: Code/DeploymentManager/DeploymentManager.Web/Dockerfile
+        context: .
+
+# ==================================
+# Vulnerability Scanning
+# ==================================
+vulnerability_scanning:
+  enabled: true
+  scanners:
+    grype:
+      enabled: true
+      fail_on: critical
+      severities:
+        - critical
+        - high
+        - medium
+
+    trivy:
+      enabled: true
+      severities:
+        - CRITICAL
+        - HIGH
+        - MEDIUM
+      upload_to_github_security: true
+
+    osv:
+      enabled: true
+      lockfiles:
+        - Code/AppBlueprint/package-lock.json
+        - Code/Cloudflare-Workers/package-lock.json
+
+# ==================================
+# License Compliance
+# ==================================
+license_compliance:
+  enabled: true
+  approved_licenses:
+    - MIT
+    - Apache-2.0
+    - BSD-2-Clause
+    - BSD-3-Clause
+    - ISC
+    - 0BSD
+    - CC0-1.0
+    - Unlicense
+
+  restricted_licenses:
+    - GPL-2.0
+    - GPL-3.0
+    - AGPL-3.0
+    - LGPL-2.1
+    - LGPL-3.0
+
+  fail_on_restricted: false  # Set to true to block restricted licenses
+
+# ==================================
+# SBOM Attestation
+# ==================================
+attestation:
+  enabled: true
+  method: cosign  # Options: cosign, in-toto
+  keyless: true   # Use GitHub OIDC for keyless signing
+  upload_to_registry: false
+
+# ==================================
+# Artifact Retention
+# ==================================
+artifacts:
+  retention_days: 90
+  archive_releases: true
+
+# ==================================
+# PR Integration
+# ==================================
+pull_request:
+  comment_enabled: true
+  show_vulnerability_summary: true
+  show_license_changes: true
+  show_dependency_diff: true
+
+# ==================================
+# Notifications
+# ==================================
+notifications:
+  critical_vulnerabilities:
+    enabled: false  # Set to true to enable Slack/email notifications
+    channels:
+      - slack  # Configure SLACK_WEBHOOK_URL secret
+      - email  # Configure EMAIL_RECIPIENTS secret
