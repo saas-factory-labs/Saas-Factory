@@ -34,7 +34,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  REGISTRY_IMAGE: ${{ secrets.DOCKER_USER }}/saas-factory
+  REGISTRY_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/saas-factory
   SHA: ${{ github.event.pull_request.head.sha || github.event.after }}
   SCOUT_OUTPUT_DIR: scout-reports
 
@@ -86,8 +86,8 @@ jobs:
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9  # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract Docker metadata
         id: meta
@@ -148,8 +148,8 @@ jobs:
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9  # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull built image
         run: |
@@ -215,8 +215,8 @@ jobs:
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9  # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull built image
         run: |
@@ -259,8 +259,8 @@ jobs:
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9  # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull built image
         run: |
@@ -303,8 +303,8 @@ jobs:
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9  # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull built image
         run: |
@@ -356,8 +356,8 @@ jobs:
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9  # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull built image
         run: |
@@ -403,8 +403,8 @@ jobs:
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9  # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull current and base images
         run: |
