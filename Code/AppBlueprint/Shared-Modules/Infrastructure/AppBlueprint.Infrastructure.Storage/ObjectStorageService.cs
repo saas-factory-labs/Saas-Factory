@@ -37,6 +37,11 @@ internal sealed class ObjectStorageService : IDisposable
         ArgumentNullException.ThrowIfNull(filePath);
         ArgumentNullException.ThrowIfNull(key);
 
+        if (filePath.Contains(".."))
+        {
+            throw new ArgumentException("Invalid file path");
+        }
+
         try
         {
             var request = new GetObjectRequest
