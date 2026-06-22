@@ -8,6 +8,7 @@
     <LangVersion>12.0</LangVersion>
 
     <!-- NuGet Package Configuration -->
+    <PackageId>SaaS-Factory.AppBlueprint.UiKit</PackageId>
     <Version>$(GITVERSION_SemVer)</Version>
 
     <Authors>Casper Rubæk</Authors>
