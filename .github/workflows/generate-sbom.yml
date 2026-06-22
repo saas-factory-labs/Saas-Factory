@@ -1,15 +1,52 @@
-name: "🛡️ Security: Generate SBOM"
+name: "🛡️ Security: Generate SBOM (DEPRECATED - Use Enhanced)"
+
+# ⚠️ DEPRECATED: This workflow is deprecated
+# Use generate-sbom-enhanced.yml instead for:
+# - Multi-format SBOMs (SPDX + CycloneDX)
+# - Multi-ecosystem coverage (.NET, npm, Docker)
+# - Vulnerability scanning (Grype, Trivy, OSV)
+# - License compliance checking
+# - SBOM attestation and signing
 
 on:
-#  push:
-#    branches:
-#      - main
-#  pull_request:
   workflow_dispatch:
+    inputs:
+      legacy_mode:
+        description: 'Run legacy SBOM (not recommended)'
+        required: true
+        default: false
+        type: boolean
 
 jobs:
+  deprecation-notice:
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    steps:
+      - name: Deprecation Warning
+        run: |
+          cat << 'EOF'
+          ⚠️  WARNING: DEPRECATED WORKFLOW
+          =====================================
+
+          This workflow is deprecated and will be removed in a future release.
+
+          Please use: .github/workflows/generate-sbom-enhanced.yml
+
+          Enhanced features include:
+          ✅ Multi-format SBOMs (SPDX 2.3 + CycloneDX 1.6)
+          ✅ Multi-ecosystem (.NET, npm, Docker)
+          ✅ Vulnerability scanning (Grype, Trivy, OSV)
+          ✅ License compliance checking
+          ✅ SBOM attestation and signing
+          ✅ PR integration with automatic comments
+
+          See: docs/SBOM-GUIDE.md for migration guide
+          =====================================
+          EOF
+          exit 1
+
   generate-sbom:
     runs-on: blacksmith-2vcpu-ubuntu-2404
+    if: github.event.inputs.legacy_mode == 'true'
 
     steps:
       - name: Checkout repository
