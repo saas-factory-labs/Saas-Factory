@@ -1,4 +1,4 @@
-﻿name: "ðŸ“¦ Nuget:  Publish NuGet Packages to NuGet.org"
+﻿name: "📦 Nuget: Publish NuGet Packages to NuGet.org"
 
 permissions:
   contents: read
@@ -11,7 +11,7 @@ on:
 
 jobs:
   publish-packages:
-    runs-on: blacksmith-2vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         package-name:
@@ -117,5 +117,5 @@ jobs:
 
       - name: Summary
         run: |
-          echo "âœ… Successfully published ${{ matrix.package-name }} v${{ env.VERSION }} to NuGet.org"
+          echo "✅ Successfully published ${{ matrix.package-name }} v${{ env.VERSION }} to NuGet.org"
 

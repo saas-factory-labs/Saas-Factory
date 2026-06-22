@@ -1,3 +1,0 @@
-## 1.7.15
-
-No user-facing changes.

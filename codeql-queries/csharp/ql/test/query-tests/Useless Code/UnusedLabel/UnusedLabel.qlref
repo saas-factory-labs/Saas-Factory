@@ -1,2 +1,0 @@
-query: Useless code/UnusedLabel.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

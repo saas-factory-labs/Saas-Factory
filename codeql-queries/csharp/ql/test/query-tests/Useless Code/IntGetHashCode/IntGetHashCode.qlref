@@ -1,2 +1,0 @@
-query: Useless code/IntGetHashCode.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

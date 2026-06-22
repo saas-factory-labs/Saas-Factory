@@ -1,7 +1,0 @@
-name: codeql/actions-examples
-groups:
-  - actions
-  - examples
-dependencies:
-  codeql/actions-all: ${workspace}
-warnOnImplicitThis: true

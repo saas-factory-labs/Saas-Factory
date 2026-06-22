@@ -1,26 +1,35 @@
 using System.IO;
-using TUnit.Core;
 using SaaSFactory.SharedTestKernel;
+using TUnit.Core;
 
 namespace AppBlueprint.Tests;
 
-public class SecurityScanningTests
+public sealed class SecurityScanningTests
 {
+    private const string CodeQlQueriesPath = @"D:\Tools\codeql-queries";
+    private const string CsharpQuerySuiteRelativePath = @"csharp\ql\src\codeql-suites\csharp-security-and-quality.qls";
+
     [Test]
     [Category("Security")]
     public void Run_CodeQL_Csharp_Analysis_On_AppBlueprint()
     {
-        // ATTENTION: Ret "AppBlueprint.ApiService" til navnet på din rigtige kildekods-mappe/csproj hvis den hedder noget andet
         string targetProject = Path.Combine("Code", "AppBlueprint", "AppBlueprint.ApiService", "AppBlueprint.ApiService.csproj");
-        
-        CodeQlTestRunner.AssertNoCodeQlViolations("csharp", targetProject);
+
+        CodeQlTestRunner.AssertNoCodeQlViolations(
+            language: "csharp",
+            targetProjectOrFolder: targetProject,
+            querySuite: CsharpQuerySuiteRelativePath,
+            externalQueryPath: CodeQlQueriesPath);
     }
 
     // [Test]
     // [Category("Security")]
     // public void Run_CodeQL_JavaScript_Analysis_On_Scripts()
     // {
-    //     // RET HER: Sørg for at den peger direkte på din web-app eller script-mappe, IKKE på løsningens rod!
-    //     CodeQlTestRunner.AssertNoCodeQlViolations("javascript", "Code\\AppBlueprint");
+    //     CodeQlTestRunner.AssertNoCodeQlViolations(
+    //         language: "javascript",
+    //         targetProjectOrFolder: "Code\\AppBlueprint",
+    //         querySuite: @"javascript\ql\src\codeql-suites\javascript-security-and-quality.qls",
+    //         externalQueryPath: CodeQlQueriesPath);
     // }
 }

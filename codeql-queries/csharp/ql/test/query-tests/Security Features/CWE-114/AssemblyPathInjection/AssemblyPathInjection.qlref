@@ -1,2 +1,0 @@
-query: Security Features/CWE-114/AssemblyPathInjection.ql
-postprocess: utils/test/PrettyPrintModels.ql

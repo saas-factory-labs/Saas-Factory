@@ -1,7 +1,0 @@
-name: 'Test'
-description: 'Test'
-runs:
-  using: 'composite'
-  steps:
-    - shell: bash
-      run: echo '${{ github.event.pull_request.body }}'

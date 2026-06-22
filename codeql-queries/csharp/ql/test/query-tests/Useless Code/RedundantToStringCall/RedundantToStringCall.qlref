@@ -1,3 +1,0 @@
-query: Useless code/RedundantToStringCall.ql
-postprocess:
-  - utils/test/InlineExpectationsTestQuery.ql

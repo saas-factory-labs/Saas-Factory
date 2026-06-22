@@ -1,2 +1,0 @@
-query: Security Features/CWE-201/ExposureInTransmittedData.ql
-postprocess: utils/test/PrettyPrintModels.ql

@@ -1,3 +1,0 @@
-query: Likely Bugs/HashedButNoHash.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql
-

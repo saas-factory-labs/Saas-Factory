@@ -1,4 +1,0 @@
-- description: Security-and-quality queries for GitHub Actions
-- queries: .
-- apply: security-and-quality-selectors.yml
-  from: codeql/suite-helpers

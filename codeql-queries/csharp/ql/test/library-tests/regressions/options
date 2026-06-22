@@ -1,2 +1,0 @@
-semmle-extractor-options: /langversion:8.0
-semmle-extractor-options: /r:System.Dynamic.Runtime.dll

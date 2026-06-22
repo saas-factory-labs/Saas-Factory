@@ -1,9 +1,0 @@
-{
-    "recommendations": [
-        "gaoshan0621.csharp-format-usings",
-        "github.vscode-codeql",
-        "ms-dotnettools.csharp",
-        "ms-dotnettools.csdevkit"
-    ],
-    "unwantedRecommendations": []
-}
