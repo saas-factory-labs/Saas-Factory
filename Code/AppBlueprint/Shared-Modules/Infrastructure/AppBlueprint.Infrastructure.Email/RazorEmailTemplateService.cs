@@ -2,6 +2,8 @@ using AppBlueprint.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using RazorLight;
 using Resend;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AppBlueprint.Infrastructure.Email;
 
@@ -108,9 +110,9 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
             if (response.Content != Guid.Empty)
             {
                 _logger.LogInformation(
-                    "Sent templated email {TemplateName} to {Recipient} with ID {EmailId}",
+                    "Sent templated email {TemplateName} to recipient fingerprint {RecipientFingerprint} with ID {EmailId}",
                     templateName,
-                    to,
+                    CreateRecipientFingerprint(to),
                     response.Content);
 
                 return response.Content;
@@ -123,18 +125,18 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
         {
             _logger.LogError(
                 ex,
-                "Network error sending templated email {TemplateName} to {Recipient}",
+                "Network error sending templated email {TemplateName} to recipient fingerprint {RecipientFingerprint}",
                 templateName,
-                to);
+                CreateRecipientFingerprint(to));
             throw;
         }
         catch (TaskCanceledException ex)
         {
             _logger.LogError(
                 ex,
-                "Timeout sending templated email {TemplateName} to {Recipient}",
+                "Timeout sending templated email {TemplateName} to recipient fingerprint {RecipientFingerprint}",
                 templateName,
-                to);
+                CreateRecipientFingerprint(to));
             throw;
         }
         catch (RazorLightException ex)
@@ -145,5 +147,11 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
                 templateName);
             throw;
         }
+    }
+
+    private static string CreateRecipientFingerprint(string recipient)
+    {
+        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(recipient));
+        return Convert.ToHexString(hash.AsSpan(0, 8));
     }
 }
