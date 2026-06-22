@@ -1,8 +1,10 @@
-FROM mcr.microsoft.com/dotnet/runtime:9.0 AS base
+# SECURITY: SHA256 hash pinning prevents supply chain attacks via compromised base images
+FROM mcr.microsoft.com/dotnet/runtime:10.0@sha256:58318ab0733b63d3ac0d7609c46f2718244e623a176f45991ee01fad46fbf880 AS base
 USER $APP_UID
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# SECURITY: SHA256 hash pinning
+FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:548d93f8a18a1acbe6cc127bc4f47281430d34a9e35c18afa80a8d6741c2adc3 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Code/AppBlueprint/AppBlueprint.Tests/AppBlueprint.Tests.csproj", "Code/AppBlueprint/AppBlueprint.Tests/"]

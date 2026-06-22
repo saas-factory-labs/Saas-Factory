@@ -87,7 +87,7 @@ jobs:
 
       - name: Install Railway CLI
         run: |
-          npm install -g @railway/cli
+          npm install -g @railway/cli@5.15.0
           railway --version
 
       - name: Deploy API Service to Railway
@@ -138,7 +138,7 @@ jobs:
 
       - name: Install Railway CLI
         run: |
-          npm install -g @railway/cli
+          npm install -g @railway/cli@5.15.0
           railway --version
 
       - name: Deploy Web Service to Railway
@@ -183,7 +183,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install EF Core Tools
-        run: dotnet tool install --global dotnet-ef --version 9.*
+        run: dotnet tool install --global dotnet-ef --version 10.0.9
 
       - name: Restore Dependencies
         working-directory: Code/AppBlueprint
@@ -233,7 +233,7 @@ jobs:
 
       - name: Install Railway CLI
         run: |
-          npm install -g @railway/cli
+          npm install -g @railway/cli@5.15.0
           railway --version
 
       - name: Deploy API Service to Railway
@@ -284,7 +284,7 @@ jobs:
 
       - name: Install Railway CLI
         run: |
-          npm install -g @railway/cli
+          npm install -g @railway/cli@5.15.0
           railway --version
 
       - name: Deploy Web Service to Railway
@@ -329,7 +329,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install EF Core Tools
-        run: dotnet tool install --global dotnet-ef --version 9.*
+        run: dotnet tool install --global dotnet-ef --version 10.0.9
 
       - name: Restore Dependencies
         working-directory: Code/AppBlueprint
