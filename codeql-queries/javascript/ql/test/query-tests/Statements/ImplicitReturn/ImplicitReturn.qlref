@@ -1,2 +1,0 @@
-query: Statements/ImplicitReturn.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

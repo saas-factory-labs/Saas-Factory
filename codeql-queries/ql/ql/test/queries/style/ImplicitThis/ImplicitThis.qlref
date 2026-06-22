@@ -1,2 +1,0 @@
-query: queries/style/ImplicitThis.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

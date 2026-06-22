@@ -1,2 +1,0 @@
-query: Performance/ReassignParameterAndUseArguments.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

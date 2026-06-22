@@ -1,2 +1,0 @@
-query: Expressions/MisspelledIdentifier.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

@@ -1,2 +1,0 @@
-query: Security/CWE-079/UnsafeJQueryPlugin.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

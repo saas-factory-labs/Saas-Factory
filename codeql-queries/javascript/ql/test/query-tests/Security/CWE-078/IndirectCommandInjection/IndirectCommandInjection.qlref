@@ -1,2 +1,0 @@
-query: Security/CWE-078/IndirectCommandInjection.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

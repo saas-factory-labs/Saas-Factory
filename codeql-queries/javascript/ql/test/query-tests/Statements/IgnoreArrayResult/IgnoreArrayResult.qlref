@@ -1,2 +1,0 @@
-query: Statements/IgnoreArrayResult.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

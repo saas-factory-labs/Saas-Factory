@@ -1,2 +1,0 @@
-query: DOM/Alert.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

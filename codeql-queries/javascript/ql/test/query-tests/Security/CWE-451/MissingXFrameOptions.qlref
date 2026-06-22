@@ -1,2 +1,0 @@
-query: Security/CWE-451/MissingXFrameOptions.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

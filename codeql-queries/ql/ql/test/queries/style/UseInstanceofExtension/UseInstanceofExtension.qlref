@@ -1,2 +1,0 @@
-query: queries/style/UseInstanceofExtension.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

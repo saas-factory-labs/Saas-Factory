@@ -1,2 +1,0 @@
-query: Security/CWE-020/MissingOriginCheck.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

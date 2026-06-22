@@ -1,2 +1,0 @@
-query: queries/bugs/SumWithoutDomain.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

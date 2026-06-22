@@ -1,2 +1,0 @@
-query: AngularJS/InsecureUrlWhitelist.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

@@ -1,1 +1,0 @@
-import semmle.javascript.dataflow.internal.VariableCapture::VariableCaptureOutput::ConsistencyChecks

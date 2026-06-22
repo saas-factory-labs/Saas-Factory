@@ -1,2 +1,0 @@
-query: Declarations/MixedStaticInstanceThisAccess.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

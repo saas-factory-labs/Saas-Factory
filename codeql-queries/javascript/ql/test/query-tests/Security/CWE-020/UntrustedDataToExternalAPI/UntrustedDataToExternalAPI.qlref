@@ -1,2 +1,0 @@
-query: Security/CWE-020/UntrustedDataToExternalAPI.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

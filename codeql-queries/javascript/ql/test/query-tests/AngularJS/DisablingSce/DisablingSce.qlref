@@ -1,2 +1,0 @@
-query: AngularJS/DisablingSce.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

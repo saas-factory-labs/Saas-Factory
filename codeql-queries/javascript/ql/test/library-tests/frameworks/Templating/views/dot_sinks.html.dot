@@ -1,6 +1,0 @@
-<html>
-    <body>
-        {{! tainted }}
-        {{= tainted }}
-    </body>
-</html>

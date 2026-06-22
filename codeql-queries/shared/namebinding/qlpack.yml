@@ -1,7 +1,0 @@
-name: codeql/namebinding
-version: 0.0.1-dev
-groups: shared
-library: true
-dependencies:
-  codeql/util: ${workspace}
-warnOnImplicitThis: true

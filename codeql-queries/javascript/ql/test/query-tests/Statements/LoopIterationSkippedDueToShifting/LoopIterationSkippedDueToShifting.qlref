@@ -1,2 +1,0 @@
-query: Statements/LoopIterationSkippedDueToShifting.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

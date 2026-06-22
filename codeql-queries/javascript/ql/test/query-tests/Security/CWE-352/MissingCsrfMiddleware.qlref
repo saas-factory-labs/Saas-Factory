@@ -1,2 +1,0 @@
-query: Security/CWE-352/MissingCsrfMiddleware.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

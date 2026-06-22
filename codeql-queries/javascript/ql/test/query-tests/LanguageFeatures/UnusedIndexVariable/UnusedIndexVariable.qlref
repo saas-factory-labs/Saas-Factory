@@ -1,2 +1,0 @@
-query: LanguageFeatures/UnusedIndexVariable.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

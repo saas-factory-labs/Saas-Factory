@@ -1,9 +1,0 @@
-name: codeql/javascript-tests
-groups: [javascript, test]
-dependencies:
-  codeql/javascript-all: ${workspace}
-  codeql/javascript-queries: ${workspace}
-  codeql/util: ${workspace}
-extractor: javascript
-tests: .
-warnOnImplicitThis: true

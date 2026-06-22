@@ -1,3 +1,0 @@
-## 2.0.8
-
-No user-facing changes.

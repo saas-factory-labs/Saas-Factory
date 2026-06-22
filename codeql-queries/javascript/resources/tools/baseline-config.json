@@ -1,8 +1,0 @@
-{
-    "paths-ignore": [
-        "**/node_modules/**",
-        "**/bower_components/**",
-        "**/*.min.js",
-        "**/*-min.js"
-    ]
-}

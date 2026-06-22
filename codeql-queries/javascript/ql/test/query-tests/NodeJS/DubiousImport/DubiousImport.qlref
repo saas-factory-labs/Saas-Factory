@@ -1,2 +1,0 @@
-query: NodeJS/DubiousImport.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

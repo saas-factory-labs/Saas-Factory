@@ -1,2 +1,0 @@
-query: Expressions/DuplicateCondition.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

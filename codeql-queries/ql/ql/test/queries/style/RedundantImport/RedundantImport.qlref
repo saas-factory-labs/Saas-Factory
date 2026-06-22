@@ -1,2 +1,0 @@
-query: queries/style/RedundantImport.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

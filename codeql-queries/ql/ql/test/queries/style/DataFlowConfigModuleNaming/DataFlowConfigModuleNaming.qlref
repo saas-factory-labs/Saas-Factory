@@ -1,2 +1,0 @@
-query: queries/style/DataFlowConfigModuleNaming.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

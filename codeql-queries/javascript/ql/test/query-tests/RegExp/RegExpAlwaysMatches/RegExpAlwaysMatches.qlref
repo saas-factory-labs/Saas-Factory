@@ -1,2 +1,0 @@
-query: RegExp/RegExpAlwaysMatches.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql
