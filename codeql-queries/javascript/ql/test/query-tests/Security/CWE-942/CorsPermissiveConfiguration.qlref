@@ -1,2 +1,0 @@
-query: Security/CWE-942/CorsPermissiveConfiguration.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

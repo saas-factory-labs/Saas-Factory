@@ -1,2 +1,0 @@
-query: React/DirectStateMutation.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

@@ -1,2 +1,0 @@
-query: Security/CWE-022/ZipSlip.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

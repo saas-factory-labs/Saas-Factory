@@ -1,2 +1,0 @@
-query: Declarations/UniquePropertyNames.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

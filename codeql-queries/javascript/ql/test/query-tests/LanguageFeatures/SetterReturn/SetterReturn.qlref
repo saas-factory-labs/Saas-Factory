@@ -1,2 +1,0 @@
-query: LanguageFeatures/SetterReturn.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

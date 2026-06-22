@@ -1,6 +1,0 @@
-name: codeql/ql-consistency-queries
-groups: [ql, test, consistency-queries]
-dependencies:
-  codeql/ql: ${workspace}
-extractor: ql
-warnOnImplicitThis: true

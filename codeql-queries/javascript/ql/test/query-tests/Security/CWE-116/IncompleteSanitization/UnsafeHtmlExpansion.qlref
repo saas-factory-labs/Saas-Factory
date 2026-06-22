@@ -1,2 +1,0 @@
-query: Security/CWE-116/UnsafeHtmlExpansion.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

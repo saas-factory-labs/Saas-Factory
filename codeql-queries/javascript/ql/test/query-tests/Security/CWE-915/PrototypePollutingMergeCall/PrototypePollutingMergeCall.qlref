@@ -1,2 +1,0 @@
-query: Security/CWE-915/PrototypePollutingMergeCall.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

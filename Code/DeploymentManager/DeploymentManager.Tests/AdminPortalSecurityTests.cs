@@ -1,6 +1,7 @@
 using System.Reflection;
 using AppBlueprint.AdminPortalKernel.Infrastructure;
 using AppBlueprint.AdminPortalKernel.Testing;
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SaaSFactory.Sample.Admin;
@@ -20,28 +21,28 @@ internal sealed class AdminPortalSecurityTests
     private static readonly Assembly SampleModuleAssembly = typeof(SampleAdminModule).Assembly;
 
     [Test]
-    public async Task KernelPages_MustRequireDeploymentManagerAdminRole()
+    public void KernelPages_MustRequireDeploymentManagerAdminRole()
     {
         string violations = string.Join(", ", AdminPortalSecurityInspector.FindUnprotectedRoutableComponents(KernelAssembly));
-        await Assert.That(violations).IsEmpty();
+        violations.Should().BeEmpty();
     }
 
     [Test]
-    public async Task KernelAssembly_MustNotContainAllowAnonymous()
+    public void KernelAssembly_MustNotContainAllowAnonymous()
     {
         string violations = string.Join(", ", AdminPortalSecurityInspector.FindAllowAnonymousUsages(KernelAssembly));
-        await Assert.That(violations).IsEmpty();
+        violations.Should().BeEmpty();
     }
 
     [Test]
-    public async Task SampleModule_MustPassFullSecurityInspection()
+    public void SampleModule_MustPassFullSecurityInspection()
     {
         string violations = string.Join(", ", AdminPortalSecurityInspector.InspectModuleAssembly(SampleModuleAssembly, ["sample"]));
-        await Assert.That(violations).IsEmpty();
+        violations.Should().BeEmpty();
     }
 
     [Test]
-    public async Task SampleModule_LoadsThroughRealPluginPipeline()
+    public void SampleModule_LoadsThroughRealPluginPipeline()
     {
         // Flow 1 end-to-end: drop the dll in a folder, point the loader at it and the
         // module must come up registered, with its pages available to the router.
@@ -63,9 +64,9 @@ internal sealed class AdminPortalSecurityTests
             AdminPortalBuilder builder = services.AddAdminPortalKernel(configuration)
                 .AddAdminPortalPlugins(pluginsFolder);
 
-            await Assert.That(builder.Registry.TryGet("sample", out _)).IsTrue();
-            await Assert.That(builder.Registry.RouterAssemblies.Contains(SampleModuleAssembly)).IsTrue();
-            await Assert.That(builder.Registry.RouterAssemblies.Contains(KernelAssembly)).IsTrue();
+            builder.Registry.TryGet("sample", out _).Should().BeTrue();
+            builder.Registry.RouterAssemblies.Should().Contain(SampleModuleAssembly);
+            builder.Registry.RouterAssemblies.Should().Contain(KernelAssembly);
         }
         finally
         {

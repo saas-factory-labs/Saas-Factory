@@ -1,7 +1,0 @@
-name: codeql/threat-models
-version: 1.0.52-dev
-library: true
-groups: shared
-dataExtensions:
-  - ext/*.model.yml
-warnOnImplicitThis: true

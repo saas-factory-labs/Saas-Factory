@@ -1,2 +1,0 @@
-query: queries/performance/AbstractClassImport.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

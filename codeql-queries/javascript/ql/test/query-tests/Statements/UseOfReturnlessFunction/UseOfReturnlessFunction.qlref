@@ -1,2 +1,0 @@
-query: Statements/UseOfReturnlessFunction.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

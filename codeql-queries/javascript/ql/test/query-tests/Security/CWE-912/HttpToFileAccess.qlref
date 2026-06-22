@@ -1,2 +1,0 @@
-query: Security/CWE-912/HttpToFileAccess.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

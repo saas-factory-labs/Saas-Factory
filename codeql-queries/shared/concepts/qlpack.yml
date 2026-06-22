@@ -1,8 +1,0 @@
-name: codeql/concepts
-version: 0.0.26-dev
-groups: shared
-library: true
-dependencies:
-  codeql/dataflow: ${workspace}
-  codeql/util: ${workspace}
-warnOnImplicitThis: true

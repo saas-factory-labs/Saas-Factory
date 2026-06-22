@@ -1,2 +1,0 @@
-query: queries/style/MissingParameterInQlDoc.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

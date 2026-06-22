@@ -1,2 +1,0 @@
-query: Expressions/RedundantExpression.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

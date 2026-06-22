@@ -1,2 +1,0 @@
-query: Security/CWE-693/InsecureHelmet.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

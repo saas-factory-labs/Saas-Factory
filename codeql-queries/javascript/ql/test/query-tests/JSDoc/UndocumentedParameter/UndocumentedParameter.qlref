@@ -1,2 +1,0 @@
-query: JSDoc/UndocumentedParameter.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

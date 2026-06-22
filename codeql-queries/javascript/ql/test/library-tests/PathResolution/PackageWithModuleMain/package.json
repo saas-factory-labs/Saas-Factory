@@ -1,4 +1,0 @@
-{
-    "name": "@example/package-with-module-main",
-    "module": "./main.js"
-}

@@ -1,1 +1,0 @@
-predicate p() { any() }
