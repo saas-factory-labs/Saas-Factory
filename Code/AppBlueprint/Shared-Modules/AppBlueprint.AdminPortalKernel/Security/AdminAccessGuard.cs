@@ -170,10 +170,22 @@ public sealed class AdminAccessGuard : IAdminAccessGuard
                 effectiveReason, isAutomatedBypass, fingerprint?.Value, now),
             cancellationToken);
 
+        string safeAppSlug = SanitizeForLog(request.AppSlug);
+
         _logger.LogInformation(
             "ADMIN_PORTAL_ACCESS: {Operation} app={Slug} by={AdminEmail} ({AdminUserId}) tenant={TenantId} bypass={Bypass} reason={Reason}",
-            request.Operation, request.AppSlug, email, userId, request.TenantId, isAutomatedBypass, effectiveReason);
+            request.Operation, safeAppSlug, email, userId, request.TenantId, isAutomatedBypass, effectiveReason);
 
         return new AdminAccessDecision(effectiveReason, isAutomatedBypass, fingerprint);
+    }
+
+    private static string SanitizeForLog(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        return value.Replace("\r", string.Empty).Replace("\n", string.Empty);
     }
 }
