@@ -22,6 +22,16 @@ internal sealed class HttpUserSearchService : ISearchService<UserEntity>
         _logger = logger;
     }
 
+    private static string SanitizeForLog(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        return value.Replace("\r", string.Empty).Replace("\n", string.Empty);
+    }
+
     public async Task<SearchResult<UserEntity>> SearchAsync(SearchQuery query, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(query);
@@ -40,7 +50,7 @@ internal sealed class HttpUserSearchService : ISearchService<UserEntity>
 
         if (response is null)
         {
-            _logger.LogWarning("User search API returned null response for query: {QueryText}", query.QueryText);
+            _logger.LogWarning("User search API returned null response for query: {QueryText}", SanitizeForLog(query.QueryText));
             return new SearchResult<UserEntity>
             {
                 Items = [],
