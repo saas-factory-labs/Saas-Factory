@@ -1,0 +1,263 @@
+# Docker Scout Enhanced Configuration
+# Configuration for the enhanced Docker Scout vulnerability scanning workflow
+
+# ============================================================================
+# Service Configuration
+# ============================================================================
+services:
+  web:
+    enabled: true
+    dockerfile: Code/AppBlueprint/AppBlueprint.Web/Dockerfile
+    context: .
+    name: saas-factory-web
+
+  api:
+    enabled: true
+    dockerfile: Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile
+    context: .
+    name: saas-factory-api
+
+  gateway:
+    enabled: true
+    dockerfile: Code/AppBlueprint/AppBlueprint.AppGateway/Dockerfile
+    context: .
+    name: saas-factory-gateway
+
+# ============================================================================
+# Scanning Configuration
+# ============================================================================
+scanning:
+  # Scan depth: quick, standard, deep
+  default_depth: standard
+
+  # Severity levels to scan
+  severities:
+    - critical
+    - high
+    - medium
+    - low
+
+  # Fail build on these severities
+  fail_on:
+    - critical
+    # - high  # Uncomment to fail on high severity
+
+  # Exit code behavior
+  exit_code_enabled: false  # Set true to fail builds on vulnerabilities
+
+  # Scan schedule (cron format)
+  schedule:
+    enabled: true
+    cron: '0 2 * * 0'  # Weekly on Sundays at 2 AM UTC
+
+# ============================================================================
+# CVE Scanning
+# ============================================================================
+cve_scanning:
+  enabled: true
+
+  # Export formats
+  formats:
+    - json      # Machine-readable
+    - sarif     # GitHub Security integration
+    - markdown  # Human-readable
+
+  # Only scan for specific severities
+  filter_severities:
+    all: true              # Full scan
+    critical_high: true    # Focused scan
+
+  # Ignore specific CVEs (temporary exceptions)
+  ignore_cves: []
+    # - CVE-2024-12345  # Example: Known false positive
+
+# ============================================================================
+# Recommendations
+# ============================================================================
+recommendations:
+  enabled: true
+
+  # Types of recommendations
+  types:
+    - base-image-updates    # Suggest newer base images
+    - security-best-practices  # Security hardening tips
+    - dependency-updates    # Package updates
+
+  # Minimum severity for recommendations
+  min_severity: medium
+
+# ============================================================================
+# SBOM Generation
+# ============================================================================
+sbom:
+  enabled: true
+
+  # SBOM formats to generate
+  formats:
+    - spdx        # ISO/IEC 5962:2021 standard
+    - cyclonedx   # OWASP standard
+
+  # Include dependencies
+  include_dependencies: true
+
+  # Attestation (requires Docker Scout organization)
+  attestation:
+    enabled: false  # Set true when Docker Scout org configured
+    sign: false     # Cryptographic signing
+
+# ============================================================================
+# Policy Evaluation
+# ============================================================================
+policy:
+  enabled: true  # Requires Docker Scout organization
+
+  # Policy enforcement
+  enforce: false  # Set true to block on policy violations
+
+  # Custom policies (requires Docker Scout)
+  policies:
+    - no-critical-cves
+    - base-image-up-to-date
+    - no-high-risk-packages
+
+# ============================================================================
+# Image Comparison
+# ============================================================================
+comparison:
+  enabled: true
+
+  # Only run on pull requests
+  pr_only: true
+
+  # Base branch for comparison
+  base_branch: main
+
+  # Show only new vulnerabilities
+  show_new_only: true
+
+# ============================================================================
+# Reporting
+# ============================================================================
+reporting:
+  # Artifact retention
+  retention_days: 90
+
+  # PR comments
+  pr_comments:
+    enabled: true
+    include_recommendations: true
+    include_comparison: true
+    max_length: 65536  # GitHub comment size limit
+
+  # GitHub Security integration
+  github_security:
+    enabled: true
+    upload_sarif: true
+    category_prefix: docker-scout
+
+  # Notifications (optional)
+  notifications:
+    critical_vulnerabilities:
+      enabled: false
+      # channels:
+      #   - slack
+      #   - email
+
+    # Webhook URLs (configure in GitHub secrets)
+    # SLACK_WEBHOOK_URL
+    # EMAIL_RECIPIENTS
+
+# ============================================================================
+# Performance
+# ============================================================================
+performance:
+  # Parallel job execution
+  parallel_services: true
+
+  # Runner size
+  runner: blacksmith-4vcpu-ubuntu-2404
+
+  # Cache configuration
+  cache:
+    enabled: true
+    type: gha  # GitHub Actions cache
+
+  # Timeout (minutes)
+  timeout: 30
+
+# ============================================================================
+# Advanced Options
+# ============================================================================
+advanced:
+  # Skip on paths (no Dockerfile changes)
+  skip_on_no_changes: true
+
+  # Allowed paths to trigger scans
+  trigger_paths:
+    - 'Code/**/Dockerfile*'
+    - '.github/workflows/docker-scout-enhanced.yml'
+    - '.github/docker-scout-config.yml'
+
+  # Docker registry
+  registry:
+    url: docker.io
+    # For private registries:
+    # url: ghcr.io
+    # username: ${{ secrets.GHCR_USER }}
+    # password: ${{ secrets.GHCR_TOKEN }}
+
+  # Image naming
+  image_prefix: saas-factory
+  image_suffix: ""
+
+  # Debug mode
+  debug: false
+
+# ============================================================================
+# Integration
+# ============================================================================
+integration:
+  # Dependency-Track
+  dependency_track:
+    enabled: false
+    # url: https://dependency-track.example.com
+    # api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
+
+  # GUAC (Graph for Understanding Artifact Composition)
+  guac:
+    enabled: false
+    # endpoint: https://guac.example.com
+
+  # Slack
+  slack:
+    enabled: false
+    # webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+    # channel: #security-alerts
+
+  # Email
+  email:
+    enabled: false
+    # recipients: security@example.com
+
+# ============================================================================
+# Compliance
+# ============================================================================
+compliance:
+  # Regulatory frameworks
+  frameworks:
+    - CIS_Docker_Benchmark
+    # - NIST_800-190
+    # - PCI_DSS
+
+  # Audit logging
+  audit:
+    enabled: true
+    retention_days: 365
+
+# ============================================================================
+# Documentation
+# ============================================================================
+# For detailed information, see:
+# - docs/DOCKER-SCOUT-GUIDE.md
+# - SECURITY-ENHANCEMENTS-INDEX.md
+# - .github/workflows/docker-scout-enhanced.yml

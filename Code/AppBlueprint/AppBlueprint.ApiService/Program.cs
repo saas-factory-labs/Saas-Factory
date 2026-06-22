@@ -10,7 +10,6 @@ using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.Presentation.ApiModule.Middleware;
 using AppBlueprint.ServiceDefaults;
-using AppBlueprint.TodoAppKernel.Infrastructure;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
@@ -78,9 +77,6 @@ internal static class Program // Make class static
 
         // Add Stripe webhook service
         builder.Services.AddStripeWebhookService(builder.Configuration);
-
-        // Add TodoAppKernel module (includes TodoDbContext and TodoRepository)
-        builder.Services.AddTodoAppKernel(builder.Configuration);
 
         // Add Presentation layer (includes Controllers, API Versioning, CORS, etc.)
         builder.Services.AddAppBlueprintPresentation(builder.Environment, builder.Configuration);

@@ -2,6 +2,8 @@ using AppBlueprint.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using RazorLight;
 using Resend;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AppBlueprint.Infrastructure.Email;
 
@@ -81,7 +83,6 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
         ArgumentNullException.ThrowIfNull(subject);
         ArgumentNullException.ThrowIfNull(templateName);
         ArgumentNullException.ThrowIfNull(model);
-        string maskedRecipient = MaskEmailForLogging(to);
 
         if (_resend is null)
         {
@@ -109,9 +110,9 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
             if (response.Content != Guid.Empty)
             {
                 _logger.LogInformation(
-                    "Sent templated email {TemplateName} to {Recipient} with ID {EmailId}",
+                    "Sent templated email {TemplateName} to recipient fingerprint {RecipientFingerprint} with ID {EmailId}",
                     templateName,
-                    maskedRecipient,
+                    CreateRecipientFingerprint(to),
                     response.Content);
 
                 return response.Content;
@@ -124,18 +125,18 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
         {
             _logger.LogError(
                 ex,
-                "Network error sending templated email {TemplateName} to {Recipient}",
+                "Network error sending templated email {TemplateName} to recipient fingerprint {RecipientFingerprint}",
                 templateName,
-                maskedRecipient);
+                CreateRecipientFingerprint(to));
             throw;
         }
         catch (TaskCanceledException ex)
         {
             _logger.LogError(
                 ex,
-                "Timeout sending templated email {TemplateName} to {Recipient}",
+                "Timeout sending templated email {TemplateName} to recipient fingerprint {RecipientFingerprint}",
                 templateName,
-                maskedRecipient);
+                CreateRecipientFingerprint(to));
             throw;
         }
         catch (RazorLightException ex)
@@ -148,26 +149,9 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
         }
     }
 
-    private static string MaskEmailForLogging(string email)
+    private static string CreateRecipientFingerprint(string recipient)
     {
-        if (string.IsNullOrWhiteSpace(email))
-        {
-            return "[redacted]";
-        }
-
-        int atIndex = email.IndexOf('@');
-        if (atIndex <= 0 || atIndex == email.Length - 1)
-        {
-            return "[redacted]";
-        }
-
-        string localPart = email[..atIndex];
-        string domainPart = email[(atIndex + 1)..];
-
-        string maskedLocalPart = localPart.Length <= 2
-            ? new string('*', localPart.Length)
-            : $"{localPart[0]}***{localPart[^1]}";
-
-        return $"{maskedLocalPart}@{domainPart}";
+        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(recipient));
+        return Convert.ToHexString(hash.AsSpan(0, 8));
     }
 }

@@ -1,5 +1,5 @@
 # Start from the official .NET image
-FROM mcr.microsoft.com/devcontainers/dotnet:9.0 AS base
+FROM mcr.microsoft.com/devcontainers/dotnet:9.0@sha256:50e256fb12dabcd1f89dc65b1d917b7a0242aacf1b1733fa3652150179a63ebd AS base
 
 # RUN chmod +x setup-dev-env.sh
 
