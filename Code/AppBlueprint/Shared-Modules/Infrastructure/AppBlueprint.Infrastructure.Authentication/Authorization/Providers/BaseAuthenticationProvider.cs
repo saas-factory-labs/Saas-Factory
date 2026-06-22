@@ -2,7 +2,7 @@ using Microsoft.Kiota.Abstractions;
 
 namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers;
 
-public abstract class BaseAuthenticationProvider : IAuthenticationProvider
+public abstract class BaseAuthenticationProvider : IAppAuthenticationProvider
 {
     protected ITokenStorageService TokenStorage { get; }
     protected string? AccessToken { get; set; }

@@ -113,8 +113,10 @@ public sealed class FileStorageController : BaseController
         // Guard clause: Validation failure
         if (!validationResult.IsValid)
         {
-            _logger.LogWarning("File validation failed: {FileName}, Errors: {Errors}",
-                file.FileName, string.Join(", ", validationResult.Errors));
+            _logger.LogWarning(
+                "File validation failed. ErrorCount: {ErrorCount}",
+                validationResult.Errors.Count
+            );
             return BadRequest(new { Message = "File validation failed", validationResult.Errors });
         }
 
@@ -147,8 +149,10 @@ public sealed class FileStorageController : BaseController
             CustomMetadata = storedFile.CustomMetadata
         };
 
-        _logger.LogInformation("File uploaded successfully: {FileKey}, Size: {Size} bytes",
-            storedFile.FileKey, storedFile.SizeInBytes);
+        _logger.LogInformation(
+            "File uploaded successfully. Size: {Size} bytes",
+            storedFile.SizeInBytes
+        );
 
         return Ok(response);
     }
@@ -177,7 +181,7 @@ public sealed class FileStorageController : BaseController
         }
         catch (UnauthorizedAccessException ex)
         {
-            _logger.LogWarning(ex, "Unauthorized file access attempt: {FileKey}", fileKey);
+            _logger.LogWarning(ex, "Unauthorized file access attempt");
             return NotFound(new { Message = "File not found or access denied" });
         }
     }
@@ -206,7 +210,7 @@ public sealed class FileStorageController : BaseController
         }
         catch (UnauthorizedAccessException ex)
         {
-            _logger.LogWarning(ex, "Public file not found: {FileKey}", fileKey);
+            _logger.LogWarning(ex, "Public file not found");
             return NotFound(new { Message = "Public file not found" });
         }
     }
@@ -247,7 +251,7 @@ public sealed class FileStorageController : BaseController
         }
         catch (UnauthorizedAccessException ex)
         {
-            _logger.LogWarning(ex, "Unauthorized pre-signed URL request: {FileKey}", request.FileKey);
+            _logger.LogWarning(ex, "Unauthorized pre-signed URL request");
             return NotFound(new { Message = "File not found or access denied" });
         }
     }
@@ -314,12 +318,12 @@ public sealed class FileStorageController : BaseController
         try
         {
             await _fileStorageService.DeleteAsync(decodedFileKey, cancellationToken);
-            _logger.LogInformation("File deleted successfully: {FileKey}", decodedFileKey);
+            _logger.LogInformation("File deleted successfully");
             return NoContent();
         }
         catch (UnauthorizedAccessException ex)
         {
-            _logger.LogWarning(ex, "Unauthorized file deletion attempt: {FileKey}", decodedFileKey);
+            _logger.LogWarning(ex, "Unauthorized file deletion attempt");
             return NotFound(new { Message = "File not found or access denied" });
         }
     }

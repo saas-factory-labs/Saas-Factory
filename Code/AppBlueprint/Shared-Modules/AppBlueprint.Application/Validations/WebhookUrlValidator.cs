@@ -62,13 +62,10 @@ public static class WebhookUrlValidator
             return false;
         }
 
-        foreach (IPAddress address in addresses)
+        if (addresses.Any(IsBlockedIpAddress))
         {
-            if (IsBlockedIpAddress(address))
-            {
-                error = "Webhook URL must not target an internal, loopback, or metadata address.";
-                return false;
-            }
+            error = "Webhook URL must not target an internal, loopback, or metadata address.";
+            return false;
         }
 
         error = null;

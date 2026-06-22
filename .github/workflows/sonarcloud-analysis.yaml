@@ -71,7 +71,7 @@ jobs:
             /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.inclusions="Code/AppBlueprint/**" \
-            /d:sonar.exclusions="**/wwwroot/lib/**/*,**/bin/**/*,**/obj/**/*,**/Migrations/**/*,**/*.g.cs,**/docs/**/*,**/*.mjs,**/GeneratedSQLScripts/**/*,**/*.d.ts,**/*.d.ts.map" \
+            /d:sonar.exclusions="**/wwwroot/lib/**/*,**/bin/**/*,**/obj/**/*,**/Migrations/**/*,**/*.g.cs,**/docs/**/*,**/*.mjs,**/GeneratedSQLScripts/**/*,**/*.d.ts,**/*.d.ts.map,**/codeql-queries/**/*,**/graphify-out/**/*,**/.understand-anything/**/*" \
             /d:sonar.javascript.exclusions="**/wwwroot/js/*.js,**/docs/**/*.js,**/*.mjs,**/scripts/**/*.js" \
             /d:sonar.css.exclusions="**/wwwroot/css/*.css"
 

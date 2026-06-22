@@ -18,21 +18,9 @@ public class StripeSubscriptionService
 
     public Customer? CreateCustomer(string email, string paymentMethodId)
     {
-        var customerOptions = new CustomerCreateOptions
-        {
-            Email = email,
-            PaymentMethod = paymentMethodId,
-            InvoiceSettings = new CustomerInvoiceSettingsOptions
-            {
-                DefaultPaymentMethod = paymentMethodId
-            }
-        };
-        var customerService = new CustomerService();
-
         // TODO: Implement actual customer creation logic
         // For now, returning null is acceptable since return type is nullable
         return null;
-        //return customerService.Create(customerOptions);
     }
 
     public Subscription CreateSubscription(string customerId, string priceId)

@@ -1,0 +1,51 @@
+.dashboard-metrics-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.dashboard-health-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.dashboard-metric-card,
+.dashboard-health-card {
+    min-width: 0;
+}
+
+.dashboard-health-loading {
+    grid-column: 1 / -1;
+}
+
+.dashboard-health-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.dashboard-health-summary {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.dashboard-health-summary > :last-child {
+    overflow-wrap: anywhere;
+}
+
+.dashboard-health-badge {
+    flex-shrink: 0;
+}
+
+@media (max-width: 39.99875rem) {
+    .dashboard-health-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dashboard-health-badge {
+        align-self: flex-start;
+    }
+}

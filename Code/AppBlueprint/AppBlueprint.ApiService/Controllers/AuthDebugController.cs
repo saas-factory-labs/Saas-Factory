@@ -74,18 +74,17 @@ internal sealed class AuthDebugController(ILogger<AuthDebugController> logger) :
         var hasTenantId = !string.IsNullOrEmpty(tenantIdHeader);
 
         // Log using logger for debugging, don't return sensitive data
-        _logger.LogInformation("Headers endpoint called. HasAuth: {HasAuth}, HasTenantId: {HasTenantId}", hasAuth, hasTenantId);
-        _logger.LogDebug("Authorization header: {AuthHeader}", authHeader);
-        _logger.LogDebug("Tenant ID: {TenantId}", tenantIdHeader);
-
-        foreach (var header in Request.Headers)
-        {
-            _logger.LogDebug("Header {HeaderKey}: {HeaderValue}", header.Key, header.Value);
-        }
+        _logger.LogInformation(
+            "Headers endpoint called. HasAuth: {HasAuth}, HasTenantId: {HasTenantId}, HeaderCount: {HeaderCount}",
+            hasAuth,
+            hasTenantId,
+            Request.Headers.Count
+        );
+        _logger.LogDebug("Header diagnostics captured without logging raw header values");
 
         return Ok(new
         {
-            message = "Headers logged to application logs. Check application logs for details.",
+            message = "Header diagnostics captured without raw header values. Check application logs for summary.",
             timestamp = DateTime.UtcNow
         });
     }

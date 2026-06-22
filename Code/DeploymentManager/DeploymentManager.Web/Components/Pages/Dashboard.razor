@@ -5,7 +5,7 @@
 @inject IPlatformOverviewService PlatformOverview
 @inject IInfrastructureHealthService InfrastructureHealth
 
-<PageTitle>Control Plane</PageTitle>
+<PageTitle>Deployment Manager</PageTitle>
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-[96rem] mx-auto">
 
@@ -15,16 +15,16 @@
     </div>
 
     <!-- Aggregated metric cards -->
-    <div class="grid grid-cols-12 gap-6 mb-8">
-        <div class="col-span-12 sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5">
+    <div class="dashboard-metrics-grid mb-8">
+        <div class="dashboard-metric-card bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5">
             <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Total Active Users</div>
             <div class="text-3xl font-bold text-gray-800 dark:text-gray-100">@Metric(_overview?.ActiveUsers)</div>
         </div>
-        <div class="col-span-12 sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5">
+        <div class="dashboard-metric-card bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5">
             <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Total Active Tenants</div>
             <div class="text-3xl font-bold text-gray-800 dark:text-gray-100">@Metric(_overview?.ActiveTenants)</div>
         </div>
-        <div class="col-span-12 sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5">
+        <div class="dashboard-metric-card bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5">
             <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Aggregate Platform MRR</div>
             <div class="text-3xl font-bold text-gray-800 dark:text-gray-100">@MrrDisplay</div>
             @if (_overview is not null && !_overview.BillingConfigured)
@@ -49,21 +49,21 @@
 
     <!-- Core Infrastructure Status -->
     <h2 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold mb-3">Core Infrastructure Status</h2>
-    <div class="grid grid-cols-12 gap-6 mb-8">
+    <div class="dashboard-health-grid mb-8">
         @if (_health is null)
         {
-            <div class="col-span-12 text-sm text-gray-500 dark:text-gray-400">Checking connectivity…</div>
+            <div class="dashboard-health-loading text-sm text-gray-500 dark:text-gray-400">Checking connectivity...</div>
         }
         else
         {
             @foreach (InfrastructureComponentHealth component in _health.Components)
             {
-                <div class="col-span-12 sm:col-span-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5 flex items-center justify-between gap-3">
-                    <div class="min-w-0">
+                <div class="dashboard-health-card bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5">
+                    <div class="dashboard-health-summary min-w-0">
                         <div class="text-sm font-semibold text-gray-800 dark:text-gray-100">@component.Name</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@component.Detail</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">@component.Detail</div>
                     </div>
-                    <span class="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full @BadgeClass(component.Status)">@StatusLabel(component.Status)</span>
+                    <span class="dashboard-health-badge text-xs font-medium px-2.5 py-1 rounded-full @BadgeClass(component.Status)">@StatusLabel(component.Status)</span>
                 </div>
             }
         }
@@ -88,10 +88,10 @@
     private InfrastructureHealth? _health;
 
     private string MrrDisplay => _overview is null
-        ? "…"
+        ? "..."
         : _overview.BillingConfigured
             ? _overview.MonthlyRecurringRevenue.ToString("C0", CultureInfo.InvariantCulture)
-            : "—";
+            : "--";
 
     protected override async Task OnInitializedAsync()
     {
@@ -100,7 +100,7 @@
     }
 
     private static string Metric(int? value) =>
-        value is null ? "…" : value.Value.ToString("N0", CultureInfo.InvariantCulture);
+        value is null ? "..." : value.Value.ToString("N0", CultureInfo.InvariantCulture);
 
     private static string StatusLabel(InfrastructureStatus status) => status switch
     {

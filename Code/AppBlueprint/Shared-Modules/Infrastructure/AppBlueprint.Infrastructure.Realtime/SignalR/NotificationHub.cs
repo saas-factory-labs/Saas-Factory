@@ -30,7 +30,7 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
         };
 
         await SendToUserAsync(userId, "ReceiveNotification", notification);
-        Logger?.LogInformation("Sent notification to user {UserId} in tenant {TenantId}", userId, GetCurrentTenantId());
+        Logger?.LogInformation("Sent tenant-scoped notification to a user");
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
         };
 
         await SendToTenantAsync("ReceiveNotification", notification);
-        Logger?.LogInformation("Sent broadcast notification to tenant {TenantId}", GetCurrentTenantId());
+        Logger?.LogInformation("Sent tenant-scoped broadcast notification");
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
     /// </summary>
     public async Task MarkNotificationAsRead(string notificationId)
     {
-        Logger?.LogDebug("User {UserId} marked notification {NotificationId} as read", GetCurrentUserId(), notificationId);
+        Logger?.LogDebug("Notification marked as read");
         await Task.CompletedTask;
     }
 
@@ -67,7 +67,7 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
     public override async Task OnConnectedAsync()
     {
         await base.OnConnectedAsync();
-        Logger?.LogInformation("User {UserId} connected to notifications hub (Tenant: {TenantId})", GetCurrentUserId(), GetCurrentTenantId());
+        Logger?.LogInformation("Notifications hub connection established");
     }
 
     /// <summary>
@@ -78,11 +78,11 @@ public sealed class NotificationHub : TenantScopedHub<NotificationHub>
         await base.OnDisconnectedAsync(exception);
         if (exception != null)
         {
-            Logger?.LogWarning(exception, "User {UserId} disconnected from notifications hub with error", GetCurrentUserId());
+            Logger?.LogWarning(exception, "Notifications hub disconnected with error");
         }
         else
         {
-            Logger?.LogInformation("User {UserId} disconnected from notifications hub", GetCurrentUserId());
+            Logger?.LogInformation("Notifications hub connection closed");
         }
     }
 }

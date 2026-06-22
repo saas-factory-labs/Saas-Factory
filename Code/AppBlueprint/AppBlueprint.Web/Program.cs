@@ -11,7 +11,6 @@ using AppBlueprint.UiKit.Models;
 using AppBlueprint.Web.Components;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
@@ -325,22 +324,29 @@ app.UseStaticFiles();
 // Security Headers Middleware - Add security headers to all responses
 app.Use(async (context, next) =>
 {
-    // Remove headers that leak server technology details
-    context.Response.Headers.Remove("Server");
-    context.Response.Headers.Remove("X-Powered-By");
-    context.Response.Headers.Remove("X-AspNet-Version");
+    // Strip technology-disclosure headers as late as possible so downstream middleware
+    // can't reintroduce them before the response is flushed.
+    context.Response.OnStarting(static state =>
+    {
+        HttpResponse response = (HttpResponse)state;
+        response.Headers.Remove("Server");
+        response.Headers.Remove("X-Powered-By");
+        response.Headers.Remove("X-AspNet-Version");
+
+        return Task.CompletedTask;
+    }, context.Response);
 
     // Prevent MIME-sniffing attacks
-    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
 
     // Prevent clickjacking attacks by disallowing embedding in iframes
-    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers["X-Frame-Options"] = "DENY";
 
     // Enable XSS protection in older browsers
-    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
 
     // Control referrer information sent with requests
-    context.Response.Headers.Append("Referrer-Policy", "no-referrer");
+    context.Response.Headers["Referrer-Policy"] = "no-referrer";
 
     // Content Security Policy - restrict resource loading to prevent XSS.
     // 'unsafe-inline' is absent from script-src: the only init script has been moved
@@ -350,7 +356,7 @@ app.Use(async (context, next) =>
     // .razor.css files (compiled to {Assembly}.styles.css). Dynamic Blazor component
     // style= attributes are re-applied via CSSOM in app-init.js DOMContentLoaded before
     // the Blazor circuit connects — JS-applied CSSOM updates are CSP-exempt per CSP3 spec.
-    context.Response.Headers.Append("Content-Security-Policy",
+    context.Response.Headers["Content-Security-Policy"] =
         "default-src 'self'; " +
         "script-src 'self' https://www.gstatic.com https://cdn.jsdelivr.net; " +
         "style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
@@ -359,19 +365,19 @@ app.Use(async (context, next) =>
         "connect-src 'self' https://32nkyp.logto.app wss: ws: " +
         "https://www.gstatic.com https://*.firebaseio.com https://*.googleapis.com https://cdn.jsdelivr.net; " +
         "worker-src 'self' blob:; " +
-        "frame-ancestors 'none';");
+        "frame-ancestors 'none';";
 
     // Restrict cross-domain policy files (Flash, PDF, etc.)
-    context.Response.Headers.Append("X-Permitted-Cross-Domain-Policies", "none");
+    context.Response.Headers["X-Permitted-Cross-Domain-Policies"] = "none";
 
     // Permissions Policy - control browser features
-    context.Response.Headers.Append("Permissions-Policy",
-        "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
+    context.Response.Headers["Permissions-Policy"] =
+        "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()";
 
     // HSTS - only in production (Railway terminates SSL at the proxy level, browser enforces HTTPS)
     if (!app.Environment.IsDevelopment())
     {
-        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
     }
 
     await next();

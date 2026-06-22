@@ -90,8 +90,6 @@ public sealed class PropertyRentalConversationAuthorizationService : IConversati
 
         if (conversationId.StartsWith("property-", StringComparison.Ordinal))
         {
-            string propertyId = conversationId.Replace("property-", "", StringComparison.Ordinal);
-
             // TODO: Query database
             // 1. Check if user owns the property
             // var property = await _dbContext.Properties.FindAsync(propertyId);

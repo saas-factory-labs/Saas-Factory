@@ -41,12 +41,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         string userId = GetCurrentUserId();
         string? userName = GetCurrentUserName() ?? "Anonymous";
 
-        _logger.LogInformation(
-            "User {UserId} from tenant {TenantId} sending message: {MessagePreview}",
-            userId,
-            tenantId,
-            message.Length > 50 ? message[..50] + "..." : message
-        );
+        _logger.LogInformation("Tenant chat message received");
 
         var chatMessage = new ChatMessage
         {
@@ -80,12 +75,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         // In a production system, you'd verify recipientUserId is in the same tenant
         // For this demo, we trust the tenant isolation provided by the base class
 
-        _logger.LogInformation(
-            "User {SenderId} sending direct message to {RecipientId} in tenant {TenantId}",
-            senderUserId,
-            recipientUserId,
-            senderTenantId
-        );
+        _logger.LogInformation("Tenant direct message received");
 
         var directMessage = new ChatMessage
         {
@@ -123,8 +113,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         if (_authorizationService is null)
         {
             _logger.LogWarning(
-                "No authorization service configured - allowing unrestricted access to conversation {ConversationId}. This is NOT recommended for production.",
-                conversationId
+                "No authorization service configured - allowing unrestricted conversation access. This is NOT recommended for production."
             );
         }
         else
@@ -134,12 +123,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
             // Guard clause: Authorization check
             if (!isAuthorized)
             {
-                _logger.LogWarning(
-                    "User {UserId} from tenant {TenantId} denied access to conversation {ConversationId} - not authorized",
-                    userId,
-                    tenantId,
-                    conversationId
-                );
+                _logger.LogWarning("Conversation access denied - not authorized");
 
                 throw new HubException($"You do not have permission to join conversation '{conversationId}'.");
             }
@@ -155,12 +139,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         // Join the SignalR group for this conversation
         await Groups.AddToGroupAsync(Context.ConnectionId, $"conversation:{conversationId}");
 
-        _logger.LogInformation(
-            "User {UserId} from tenant {TenantId} joined conversation {ConversationId}",
-            userId,
-            tenantId,
-            conversationId
-        );
+        _logger.LogInformation("Conversation joined");
 
         // Notify others in conversation
         await Clients.OthersInGroup($"conversation:{conversationId}")
@@ -190,24 +169,13 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
             // Guard clause: Authorization check
             if (!isAuthorized)
             {
-                _logger.LogWarning(
-                    "User {UserId} from tenant {TenantId} denied sending message to conversation {ConversationId} - not authorized",
-                    userId,
-                    tenantId,
-                    conversationId
-                );
+                _logger.LogWarning("Conversation message denied - not authorized");
 
                 throw new HubException($"You do not have permission to send messages in conversation '{conversationId}'.");
             }
         }
 
-        _logger.LogInformation(
-            "User {UserId} from tenant {TenantId} sending message to conversation {ConversationId}: {MessagePreview}",
-            userId,
-            tenantId,
-            conversationId,
-            message.Length > 50 ? message[..50] + "..." : message
-        );
+        _logger.LogInformation("Conversation message received");
 
         var chatMessage = new ChatMessage
         {
@@ -240,12 +208,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
 
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"conversation:{conversationId}");
 
-        _logger.LogInformation(
-            "User {UserId} from tenant {TenantId} left conversation {ConversationId}",
-            userId,
-            tenantId,
-            conversationId
-        );
+        _logger.LogInformation("Conversation left");
 
         // Notify others
         await Clients.Group($"conversation:{conversationId}")
@@ -284,12 +247,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         string userId = GetCurrentUserId();
         string? userName = GetCurrentUserName() ?? "Anonymous";
 
-        _logger.LogInformation(
-            "User {UserId} ({UserName}) connected to DemoChatHub for tenant {TenantId}",
-            userId,
-            userName,
-            tenantId
-        );
+        _logger.LogInformation("DemoChatHub connection established");
 
         // Add user to online tracking
         ConcurrentDictionary<string, string> tenantUsers = _onlineUsersByTenant.GetOrAdd(tenantId, _ => new ConcurrentDictionary<string, string>());
@@ -312,12 +270,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         string userId = GetCurrentUserId();
         string? userName = GetCurrentUserName() ?? "Anonymous";
 
-        _logger.LogInformation(
-            "User {UserId} ({UserName}) disconnected from DemoChatHub for tenant {TenantId}",
-            userId,
-            userName,
-            tenantId
-        );
+        _logger.LogInformation("DemoChatHub connection closed");
 
         // Remove user from online tracking
         if (_onlineUsersByTenant.TryGetValue(tenantId, out ConcurrentDictionary<string, string>? tenantUsers))

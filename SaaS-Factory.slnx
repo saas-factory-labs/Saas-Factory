@@ -21,7 +21,9 @@
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj" />
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj" />
   </Folder>
-  <Folder Name="/Code/" />
+  <Folder Name="/Code/">
+    <Project Path="Code/SaaSFactory.SharedTestKernel/SaaSFactory.SharedTestKernel.csproj" />
+  </Folder>
   <Folder Name="/Code/AppBlueprint/">
     <File Path="Code/AppBlueprint/.railwayignore" />
     <File Path="Code/AppBlueprint/API_PORT_FIX_CRITICAL.md" />
@@ -78,13 +80,11 @@
     <File Path="Code/AppBlueprint/RAILWAY_README.md" />
     <File Path="Code/AppBlueprint/RAILWAY_REPO_ROOT_CONFIG.md" />
     <File Path="Code/AppBlueprint/RAILWAY_ROOT_DIRECTORY_FIX.md" />
-    <File Path="Code/AppBlueprint/setup-railway.ps1" />
     <File Path="Code/AppBlueprint/SIGNIN_DIAGNOSTIC_TEST.md" />
     <File Path="Code/AppBlueprint/SIGNOUT_COMPLETE_READY_TO_TEST.md" />
     <File Path="Code/AppBlueprint/SIGNOUT_FINAL_FIX.md" />
     <File Path="Code/AppBlueprint/SIGNOUT_FIX_APPLIED.md" />
     <File Path="Code/AppBlueprint/SIGNOUT_TROUBLESHOOTING.md" />
-    <File Path="Code/AppBlueprint/test-docker-build.ps1" />
     <File Path="Code/AppBlueprint/test-jwt-auth.ps1" />
     <File Path="Code/AppBlueprint/WEB_PORTS_CHANGED_8083_8082.md" />
     <File Path="Code/AppBlueprint/WHY_LOGTO_FAILED_ANALYSIS.md" />

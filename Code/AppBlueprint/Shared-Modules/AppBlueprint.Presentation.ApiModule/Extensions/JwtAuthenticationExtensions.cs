@@ -1,5 +1,8 @@
+using AppBlueprint.Application.Constants;
 using AppBlueprint.Infrastructure.Authentication;
+using AppBlueprint.Infrastructure.Authentication.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AppBlueprint.Presentation.ApiModule.Extensions;
@@ -45,14 +48,28 @@ public static class JwtAuthenticationExtensions
             ApiKeyAuthenticationHandler.SchemeName,
             _ => { });
 
+        services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();
+
         services.AddAuthorization(options =>
         {
             // Policy that accepts either a valid JWT or a valid API key.
-            options.AddPolicy(Controllers.Baseline.AuthorizationPolicies.ApiKey, policy =>
+            options.AddPolicy(AuthorizationPolicyNames.ApiKey, policy =>
                 policy.AddAuthenticationSchemes(
                         JwtBearerDefaults.AuthenticationScheme,
                         ApiKeyAuthenticationHandler.SchemeName)
                     .RequireAuthenticatedUser());
+
+            options.AddPolicy(AuthorizationPolicyNames.Over18, policy =>
+                policy.Requirements.Add(new MinimumAgeRequirement(18)));
+
+            options.AddPolicy(AuthorizationPolicyNames.AdminOnly, policy =>
+                policy.RequireRole(Roles.DeploymentManagerAdmin));
+
+            options.AddPolicy(AuthorizationPolicyNames.UserOrAdmin, policy =>
+                policy.RequireRole(
+                    Roles.User,
+                    Roles.TenantAdmin,
+                    Roles.DeploymentManagerAdmin));
         });
 
         return services;
@@ -128,11 +145,10 @@ public static class JwtAuthenticationExtensions
                 var hasToken = !string.IsNullOrEmpty(authHeader);
 
                 logger.LogWarning(
-                    "Authorization challenge. Error: {Error}, ErrorDescription: {ErrorDescription}, HasAuthHeader: {HasToken}, Path: {Path}",
+                    "Authorization challenge. Error: {Error}, ErrorDescription: {ErrorDescription}, HasAuthHeader: {HasToken}",
                     context.Error,
                     context.ErrorDescription,
-                    hasToken,
-                    context.Request.Path);
+                    hasToken);
 
                 return Task.CompletedTask;
             },
@@ -145,9 +161,8 @@ public static class JwtAuthenticationExtensions
                 var hasToken = !string.IsNullOrEmpty(authHeader);
 
                 logger.LogDebug(
-                    "Message received. HasAuthHeader: {HasToken}, Path: {Path}",
-                    hasToken,
-                    context.Request.Path);
+                    "Message received. HasAuthHeader: {HasToken}",
+                    hasToken);
 
                 return Task.CompletedTask;
             }

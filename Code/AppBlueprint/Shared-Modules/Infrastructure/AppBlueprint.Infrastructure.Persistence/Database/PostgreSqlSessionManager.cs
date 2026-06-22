@@ -79,7 +79,11 @@ public sealed class PostgreSqlSessionManager
 
             await command.ExecuteNonQueryAsync();
         }
-        catch
+        catch (NpgsqlException)
+        {
+            // Ignore errors during cleanup
+        }
+        catch (InvalidOperationException)
         {
             // Ignore errors during cleanup
         }

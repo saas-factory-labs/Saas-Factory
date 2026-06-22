@@ -86,7 +86,12 @@ public class TeamController : BaseController
 
             return Ok(response);
         }
-        catch (Exception)
+        catch (InvalidOperationException)
+        {
+            // Log the error and return 500 with generic message
+            return StatusCode(500, new { Message = "Error retrieving teams. Please try again or contact support." });
+        }
+        catch (System.Security.SecurityException)
         {
             // Log the error and return 500 with generic message
             return StatusCode(500, new { Message = "Error retrieving teams. Please try again or contact support." });

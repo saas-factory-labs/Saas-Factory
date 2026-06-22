@@ -191,22 +191,9 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
             tablesWithPolicies.Add(reader.GetString(0));
         }
 
-        // Find tables that should have policies but don't
-        List<string> missingPolicies = [];
         var rlsStatus = await GetRlsStatusAsync(connection, cancellationToken);
-
-        foreach (string table in requiredTables)
-        {
-            // Only check if table exists and has RLS enabled
-            if (rlsStatus.TryGetValue(table, out bool hasRls) && hasRls)
-            {
-                if (!tablesWithPolicies.Contains(table))
-                {
-                    missingPolicies.Add(table);
-                }
-            }
-        }
-
-        return missingPolicies;
+        return requiredTables
+            .Where(table => rlsStatus.TryGetValue(table, out bool hasRls) && hasRls && !tablesWithPolicies.Contains(table))
+            .ToList();
     }
 }

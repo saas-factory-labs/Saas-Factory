@@ -1,0 +1,20 @@
+.admin-dashboard-stat-card {
+    grid-column: 1 / -1;
+    min-width: 0;
+}
+
+.admin-dashboard-stat-card > :first-child {
+    overflow-wrap: anywhere;
+}
+
+@media (min-width: 40rem) {
+    .admin-dashboard-stat-card {
+        grid-column: span 6 / span 6;
+    }
+}
+
+@media (min-width: 80rem) {
+    .admin-dashboard-stat-card {
+        grid-column: span 2 / span 2;
+    }
+}

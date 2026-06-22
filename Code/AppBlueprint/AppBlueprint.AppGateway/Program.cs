@@ -106,26 +106,29 @@ app.UseMiddleware<CloudflareIpFilterMiddleware>();
 // Security Headers Middleware - Add security headers to all responses
 app.Use(async (context, next) =>
 {
-    // Remove real headers and replace with deceptive ones to mislead attackers
-    context.Response.Headers.Remove("Server");
-    context.Response.Headers.Remove("X-Powered-By");
-    context.Response.Headers.Remove("X-AspNet-Version");
+    // Strip technology-disclosure headers as late as possible so downstream middleware
+    // and the proxy response pipeline don't reintroduce them before the response is sent.
+    context.Response.OnStarting(static state =>
+    {
+        HttpResponse response = (HttpResponse)state;
+        response.Headers.Remove("Server");
+        response.Headers.Remove("X-Powered-By");
+        response.Headers.Remove("X-AspNet-Version");
 
-    // Deception headers - mislead attackers with false server technology information
-    context.Response.Headers.Append("Server", "Apache/2.4.62 (Ubuntu)");
-    context.Response.Headers.Append("X-Powered-By", "PHP/8.2.28");
+        return Task.CompletedTask;
+    }, context.Response);
 
     // Prevent MIME-sniffing attacks
-    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
 
     // Prevent clickjacking attacks by disallowing embedding in iframes
-    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers["X-Frame-Options"] = "DENY";
 
     // Enable XSS protection in older browsers
-    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
 
     // Control referrer information sent with requests
-    context.Response.Headers.Append("Referrer-Policy", "no-referrer");
+    context.Response.Headers["Referrer-Policy"] = "no-referrer";
 
     // Content Security Policy.
     // In development the gateway serves Swagger UI which needs 'unsafe-inline' for its bundled scripts.
@@ -141,19 +144,19 @@ app.Use(async (context, next) =>
           "frame-ancestors 'none';"
         : "default-src 'none'; frame-ancestors 'none';";
 
-    context.Response.Headers.Append("Content-Security-Policy", csp);
+    context.Response.Headers["Content-Security-Policy"] = csp;
 
     // Restrict cross-domain policy files (Flash, PDF, etc.)
-    context.Response.Headers.Append("X-Permitted-Cross-Domain-Policies", "none");
+    context.Response.Headers["X-Permitted-Cross-Domain-Policies"] = "none";
 
     // Permissions Policy - control browser features
-    context.Response.Headers.Append("Permissions-Policy",
-        "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
+    context.Response.Headers["Permissions-Policy"] =
+        "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()";
 
     // HSTS - only in production (Railway terminates SSL at the proxy level, browser enforces HTTPS)
     if (!app.Environment.IsDevelopment())
     {
-        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
     }
 
     await next();

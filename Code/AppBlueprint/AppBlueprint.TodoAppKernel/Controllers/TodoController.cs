@@ -34,9 +34,8 @@ public class TodoController(
         CancellationToken cancellationToken)
     {
         string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
-        string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
 
-        _logger.LogInformation("Getting todos for tenant {TenantId} and user {UserId}", tenantId, userId);
+        _logger.LogInformation("Getting todos for current request context");
 
         var todos = await _todoRepository.GetAllAsync(tenantId, cancellationToken);
 
@@ -58,8 +57,7 @@ public class TodoController(
         string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
         string userId = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value ?? "unknown-user";
 
-        _logger.LogInformation("Creating new todo: {Title} for tenant {TenantId} and user {UserId}",
-            request.Title, tenantId, userId);
+        _logger.LogInformation("Creating todo for current request context");
 
         var todo = new TodoEntity(request.Title, request.Description, tenantId, userId);
         var createdTodo = await _todoRepository.CreateAsync(todo, cancellationToken);
@@ -78,7 +76,7 @@ public class TodoController(
     {
         string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
 
-        _logger.LogInformation("Getting todo by ID: {Id} for tenant {TenantId}", id, tenantId);
+        _logger.LogInformation("Getting todo by ID for current request context");
 
         var todo = await _todoRepository.GetByIdAsync(id, tenantId, cancellationToken);
 
@@ -106,7 +104,7 @@ public class TodoController(
 
         string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
 
-        _logger.LogInformation("Updating todo: {Id} for tenant {TenantId}", id, tenantId);
+        _logger.LogInformation("Updating todo for current request context");
 
         var todo = await _todoRepository.GetByIdAsync(id, tenantId, cancellationToken);
 
@@ -132,11 +130,17 @@ public class TodoController(
     {
         string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
 
-        _logger.LogInformation("Deleting todo: {Id} for tenant {TenantId}", id, tenantId);
+        _logger.LogInformation("Deleting todo for current request context");
+
+        var todo = await _todoRepository.GetByIdAsync(id, tenantId, cancellationToken);
+        if (todo is null)
+        {
+            return NotFound($"Todo with ID {id} not found");
+        }
 
         await _todoRepository.DeleteAsync(id, tenantId, cancellationToken);
 
-        _logger.LogInformation("Todo soft-deleted successfully: {TodoId}", id);
+        _logger.LogInformation("Todo soft-deleted successfully");
 
         return NoContent();
     }
@@ -150,7 +154,7 @@ public class TodoController(
     {
         string tenantId = HttpContext.Items[TenantIdKey]?.ToString() ?? DefaultTenantId;
 
-        _logger.LogInformation("Completing todo: {Id} for tenant {TenantId}", id, tenantId);
+        _logger.LogInformation("Completing todo for current request context");
 
         var todo = await _todoRepository.GetByIdAsync(id, tenantId, cancellationToken);
 

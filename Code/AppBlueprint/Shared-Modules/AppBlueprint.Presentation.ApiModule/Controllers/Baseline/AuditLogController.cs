@@ -1,3 +1,4 @@
+using ApplicationRoles = AppBlueprint.Application.Constants.Roles;
 using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
 using AppBlueprint.Contracts.Baseline.AuditLog.Requests;
 using AppBlueprint.Contracts.Baseline.AuditLog.Responses;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
-[Authorize(Roles = Roles.DeploymentManagerAdmin)]
+[Authorize(Roles = ApplicationRoles.DeploymentManagerAdmin)]
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/audit-log")]

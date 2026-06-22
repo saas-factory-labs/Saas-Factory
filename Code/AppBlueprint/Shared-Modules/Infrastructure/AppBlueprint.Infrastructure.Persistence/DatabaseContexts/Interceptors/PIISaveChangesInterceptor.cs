@@ -50,11 +50,10 @@ public class PiiSaveChangesInterceptor : SaveChangesInterceptor
         if (propertiesToScan.Count == 0) return;
 
         List<PIITag> allTags = [];
-        foreach (var prop in propertiesToScan)
+        foreach (string value in propertiesToScan
+                     .Select(prop => prop.GetValue(entry.Entity)?.ToString())
+                     .Where(value => !string.IsNullOrWhiteSpace(value))!)
         {
-            var value = prop.GetValue(entry.Entity)?.ToString();
-            if (string.IsNullOrWhiteSpace(value)) continue;
-
             var scanResult = await _piiEngine.ScanAndTagAsync(value, cancellationToken);
             if (scanResult.PiiDetected)
             {

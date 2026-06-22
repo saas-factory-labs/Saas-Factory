@@ -38,7 +38,7 @@ public class LogtoProvider : BaseAuthenticationProvider
 
         try
         {
-            _logger.LogInformation("Attempting Logto login for user: {Email}", request.Email);
+            _logger.LogInformation("Attempting Logto login");
 
             // Logto uses OAuth2 Resource Owner Password Credentials Grant
             using var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -59,7 +59,7 @@ public class LogtoProvider : BaseAuthenticationProvider
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Logto login successful for user: {Email}", request.Email);
+                _logger.LogInformation("Logto login successful");
 
                 var tokenResponse = JsonSerializer.Deserialize<LogtoTokenResponse>(responseContent, JsonOptions);
 
@@ -78,37 +78,24 @@ public class LogtoProvider : BaseAuthenticationProvider
                 }
             }
 
-            // Log the full error response for debugging
-            _logger.LogError("Logto login failed with status: {StatusCode}, Response: {Response}",
-                response.StatusCode, responseContent);
-
-            // Try to parse error for better user feedback
             string errorMessage = "Login failed. Please check your credentials.";
-            try
+
+            if (TryParseErrorDetails(responseContent, out OAuthErrorDetails errorDetails))
             {
-                var errorResponse = JsonSerializer.Deserialize<JsonElement>(responseContent);
-                if (errorResponse.TryGetProperty("error_description", out var errorDesc))
-                {
-                    errorMessage = errorDesc.GetString() ?? errorMessage;
-                }
-                else if (errorResponse.TryGetProperty("error", out var error))
-                {
-                    var errorType = error.GetString();
-                    errorMessage = errorType switch
-                    {
-                        "invalid_grant" => "Invalid email or password. Please check your credentials.",
-                        "unsupported_grant_type" => "Password login is not enabled. Please enable ROPC grant type in Logto Console.",
-                        "invalid_client" => "Application configuration error. Please check your Logto credentials.",
-                        _ => $"Login failed: {errorType}"
-                    };
-                }
+                _logger.LogError(
+                    "Logto login failed with status: {StatusCode}. Error: {Error}. ErrorDescription: {ErrorDescription}",
+                    response.StatusCode,
+                    errorDetails.Error,
+                    errorDetails.ErrorDescription);
+
+                errorMessage = BuildUserErrorMessage(errorDetails, errorMessage);
             }
-#pragma warning disable CA1031 // Generic catch for error parsing - use default message if JSON parsing fails
-            catch
+            else
             {
-                // If we can't parse the error, use the default message
+                _logger.LogError(
+                    "Logto login failed with status: {StatusCode}. Unable to parse error response body.",
+                    response.StatusCode);
             }
-#pragma warning restore CA1031
 
             return new AuthenticationResult
             {
@@ -118,7 +105,7 @@ public class LogtoProvider : BaseAuthenticationProvider
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Network error during Logto login for user: {Email}", request.Email);
+            _logger.LogError(ex, "Network error during Logto login");
             return new AuthenticationResult
             {
                 IsSuccess = false,
@@ -127,7 +114,7 @@ public class LogtoProvider : BaseAuthenticationProvider
         }
         catch (TaskCanceledException ex)
         {
-            _logger.LogWarning(ex, "Logto login request timed out for user: {Email}", request.Email);
+            _logger.LogWarning(ex, "Logto login request timed out");
             return new AuthenticationResult
             {
                 IsSuccess = false,
@@ -217,7 +204,7 @@ public class LogtoProvider : BaseAuthenticationProvider
             NotifyAuthenticationStateChanged();
         }
 #pragma warning disable CA1031 // Generic catch for graceful degradation - token restoration is optional, use re-login on any error
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
             // Keep generic catch here for graceful degradation - token restoration is optional
             _logger.LogWarning(ex, "Failed to restore Logto token from storage, will require re-login");
@@ -237,4 +224,70 @@ public class LogtoProvider : BaseAuthenticationProvider
         if (string.IsNullOrEmpty(_configuration.ClientSecret))
             throw new InvalidOperationException("Logto ClientSecret is required in configuration");
     }
+
+    private static string BuildUserErrorMessage(OAuthErrorDetails errorDetails, string defaultMessage)
+    {
+        if (!string.IsNullOrEmpty(errorDetails.ErrorDescription))
+        {
+            return errorDetails.ErrorDescription;
+        }
+
+        return errorDetails.Error switch
+        {
+            "invalid_grant" => "Invalid email or password. Please check your credentials.",
+            "unsupported_grant_type" => "Password login is not enabled. Please enable ROPC grant type in Logto Console.",
+            "invalid_client" => "Application configuration error. Please check your Logto credentials.",
+            { Length: > 0 } errorType => $"Login failed: {errorType}",
+            _ => defaultMessage
+        };
+    }
+
+    private static bool TryParseErrorDetails(string responseContent, out OAuthErrorDetails errorDetails)
+    {
+        errorDetails = new OAuthErrorDetails(null, null);
+
+        if (string.IsNullOrWhiteSpace(responseContent))
+        {
+            return false;
+        }
+
+#pragma warning disable CA1031 // Generic catch for error parsing - use default message if JSON parsing fails
+        try
+        {
+            using var document = JsonDocument.Parse(responseContent);
+            JsonElement root = document.RootElement;
+
+            if (root.ValueKind != JsonValueKind.Object)
+            {
+                return false;
+            }
+
+            string? error = root.TryGetProperty("error", out JsonElement errorElement) && errorElement.ValueKind == JsonValueKind.String
+                ? errorElement.GetString()
+                : null;
+
+            string? errorDescription = root.TryGetProperty("error_description", out JsonElement errorDescriptionElement) && errorDescriptionElement.ValueKind == JsonValueKind.String
+                ? errorDescriptionElement.GetString()
+                : null;
+
+            if (string.IsNullOrEmpty(error) && string.IsNullOrEmpty(errorDescription))
+            {
+                return false;
+            }
+
+            errorDetails = new OAuthErrorDetails(error, errorDescription);
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+#pragma warning restore CA1031
+    }
+
+    private sealed record OAuthErrorDetails(string? Error, string? ErrorDescription);
 }

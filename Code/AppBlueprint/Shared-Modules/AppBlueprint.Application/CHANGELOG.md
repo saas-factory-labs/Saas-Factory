@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - CQRS command and query interfaces
-- MediatR pipeline for command/query handling
+- Command/query handling pipeline
 - Application service interfaces
 - Use case implementations for B2B operations
 - User management commands and queries

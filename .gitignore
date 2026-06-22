@@ -58,6 +58,10 @@ bld/
 bin/
 [Oo]bj/
 obj/
+[Bb]in_verify/
+bin_verify/
+[Oo]bj_verify/
+obj_verify/
 [Ll]og/
 [Ll]ogs/
 
@@ -426,3 +430,18 @@ Code/AppBlueprint/AppBlueprint.ApiService/appsettings.Development.json
 
 # Firebase
 firebase-service-account.json
+
+# Understand anything
+.understand-anything/
+
+# Codeql (Generated locally by developers manually)
+codeql-saas-factory-db/
+
+# Graphify (Ignore cache, but output graph is preserved)
+graphify-out/cache
+
+# Ignore nul windows system file
+nul
+
+# Deployment Manager Admin Portal plugins (class libraries)
+DeploymentManager/plugins/

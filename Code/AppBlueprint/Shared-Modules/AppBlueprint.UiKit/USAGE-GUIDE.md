@@ -1,519 +1,484 @@
-# AppBlueprint UiKit - Usage Guide for Consuming Applications
+# AppBlueprint UiKit Usage Guide
 
-A flexible, customizable Blazor UI component library for building SaaS applications with role-based menu visibility and authorization.
+This is the canonical usage guide for `AppBlueprint.UiKit`.
 
-## Architecture Overview
+It replaces the older split documentation that previously lived in:
 
-The UiKit is designed to be **application-agnostic** while providing powerful UI components and layout management. Business logic for menu visibility and authorization is **implemented by the consuming application**, not hardcoded in the library.
+- `USAGE.md`
+- `THEME-USAGE-GUIDE.md`
 
-### Key Principles
+## Overview
 
-- **Dependency Inversion**: UiKit depends on abstractions (`IMenuConfigurationService`), consuming apps provide implementations
-- **Separation of Concerns**: UI components in UiKit, business rules in your application
-- **Flexibility**: Different apps can have completely different authorization models (B2C/B2B, roles, subscriptions, etc.)
-- **Maintainability**: Upgrade UiKit without breaking your business logic
+`AppBlueprint.UiKit` is a Razor class library for AppBlueprint-style layouts, pages, and reusable UI components built around:
+
+- Tailwind-based styling
+- a singleton `ThemeService` for dynamic theme classes
+- reusable layout components such as `Sidebar`, `Header`, and `MainLayout`
+- application-owned menu visibility through `IMenuConfigurationService`
+- tenant-aware route protection through `TenantTypeAuthorize`
+
+Important architectural boundary:
+
+- UiKit owns reusable UI and theme primitives.
+- The consuming application still owns business rules, authorization rules, and menu visibility.
+
+## Current Public Integration Surface
+
+The main entry points currently exposed by the library are:
+
+- `AddUiKit(this IServiceCollection services)`
+- `AddUiKitWithTheme(this IServiceCollection services, IConfiguration configuration, string sectionName = "Theme")`
+- `AddUiKitWithTheme(this IServiceCollection services, Action<ThemeConfiguration> configureTheme)`
+- `AddUiKitBlog(...)`
+- `IMenuConfigurationService`
+- `ThemeService`
+- `TenantTypeAuthorize`
+
+Do not rely on older docs that reference `AddUiKitWithPreset`, `ThemePreset`, or `ThemeBuilder` as if they are part of the current public registration API. Those references do not reflect the current `ServiceExtensions.cs` surface.
 
 ## Getting Started
 
-### 1. Add Package Reference
+### 1. Reference the library
+
+Inside this repository, use a project reference:
 
 ```xml
-<!-- YourApp.csproj -->
 <ItemGroup>
   <ProjectReference Include="..\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
-  <ProjectReference Include="..\AppBlueprint.SharedKernel\AppBlueprint.SharedKernel.csproj" />
 </ItemGroup>
 ```
 
-### 2. Implement IMenuConfigurationService
+If you consume the packaged library externally, use the published NuGet package version that matches your target release.
 
-The `IMenuConfigurationService` interface controls which menu items are visible to the current user. This is where you implement **your application's business logic**.
+### 2. Register UiKit services
+
+At minimum:
 
 ```csharp
-namespace AppBlueprint.UiKit.Services;
+using AppBlueprint.UiKit;
 
+builder.Services.AddUiKit();
+```
+
+If your app uses the built-in `Sidebar`, you also need to register an `IMenuConfigurationService` implementation:
+
+```csharp
+using AppBlueprint.UiKit.Services;
+
+builder.Services.AddScoped<IMenuConfigurationService, YourMenuConfigurationService>();
+builder.Services.AddUiKit();
+```
+
+### 3. Import the namespaces you use
+
+For layout components:
+
+```razor
+@using AppBlueprint.UiKit.Components.Layout
+@using AppBlueprint.UiKit.Components.Shared
+```
+
+Add additional namespaces only for the component areas you actually consume, for example:
+
+- `AppBlueprint.UiKit.Components.Charts`
+- `AppBlueprint.UiKit.Components.Dashboard`
+- `AppBlueprint.UiKit.Components.Settings`
+
+### 4. Use the layout components
+
+The built-in UiKit main layout currently follows this pattern:
+
+```razor
+@inherits LayoutComponentBase
+
+<div class="flex h-[100dvh] overflow-hidden bg-gray-100 dark:bg-gray-900">
+    <Sidebar SidebarOpen="@sidebarOpen" OnCloseSidebar="@(() => sidebarOpen = false)" />
+
+    <div class="content-area-bg relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+        <Header SidebarOpen="@sidebarOpen" OnToggleSidebar="@(() => sidebarOpen = !sidebarOpen)" />
+
+        <main class="grow">
+            @Body
+        </main>
+    </div>
+</div>
+
+@code {
+    private bool sidebarOpen;
+}
+```
+
+You can either reuse that structure directly or adapt it inside your host app's own layout.
+
+## Menu Visibility and Navigation
+
+`Sidebar.razor` injects `IMenuConfigurationService` and preloads visibility for a fixed set of menu item ids.
+
+Current ids preloaded by the built-in sidebar are:
+
+- `dashboard`
+- `orders`
+- `invoices`
+- `shop2`
+- `single-product`
+- `cart`
+- `cart2`
+- `cart3`
+- `pay`
+- `shop`
+- `customers`
+- `community-users`
+- `account`
+- `notifications`
+- `billing`
+- `tasks`
+- `job-board`
+- `finance`
+
+### Implement `IMenuConfigurationService`
+
+Current interface:
+
+```csharp
 public interface IMenuConfigurationService
 {
-    /// <summary>
-    /// Determines if a menu item should be visible to the current user.
-    /// </summary>
-    /// <param name="menuItemId">Unique identifier for the menu item (e.g., "dashboard", "reports", "settings")</param>
-    /// <returns>True if the menu item should be visible, false otherwise</returns>
     Task<bool> ShouldShowMenuItemAsync(string menuItemId);
 }
 ```
 
-### 3. Register Your Service
+Minimal example:
 
 ```csharp
-// Program.cs
 using AppBlueprint.UiKit.Services;
-using YourApp.Services;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Register your custom menu configuration service
-builder.Services.AddScoped<IMenuConfigurationService, YourMenuService>();
-
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+public sealed class YourMenuConfigurationService : IMenuConfigurationService
+{
+    public Task<bool> ShouldShowMenuItemAsync(string menuItemId)
+    {
+        return Task.FromResult(menuItemId switch
+        {
+            "dashboard" => true,
+            "notifications" => true,
+            "billing" => false,
+            _ => false
+        });
+    }
+}
 ```
 
-### 4. Use UiKit Components
+### Recommended pattern
+
+Keep the business rule in your app, not in UiKit components. Typical checks include:
+
+- authenticated vs unauthenticated user
+- tenant type
+- product plan or subscription tier
+- role membership
+- feature flags
+
+If your `ShouldShowMenuItemAsync(...)` implementation hits the database or external services, cache or preload the current user's permissions because the sidebar evaluates multiple ids during initialization.
+
+## Route Protection with `TenantTypeAuthorize`
+
+`TenantTypeAuthorize.razor` currently depends on:
+
+- `AuthenticationStateProvider`
+- `ICurrentTenantService`
+- `NavigationManager`
+- `ThemeService`
+
+Parameters:
+
+- `AllowedTenantTypes`
+- `AllowUnauthenticated`
+- `ChildContent`
+
+### Basic usage
+
+Allow authenticated users from any tenant type:
 
 ```razor
-@* YourApp.Web/Components/Layout/MainLayout.razor *@
-@using AppBlueprint.UiKit.Components.Layout
-@inherits LayoutComponentBase
+<TenantTypeAuthorize>
+    <h1>Protected page</h1>
+</TenantTypeAuthorize>
+```
 
-<Sidebar SidebarOpen="@sidebarOpen" OnCloseSidebar="@(() => sidebarOpen = false)" />
+B2B-only page:
 
-<div class="flex flex-col flex-1">
-    <Header OnToggleSidebar="@(() => sidebarOpen = !sidebarOpen)" />
-    
-    <main class="grow">
-        @Body
-    </main>
+```razor
+@using AppBlueprint.SharedKernel.Enums
+
+<TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Organization })">
+    <h1>Organization-only page</h1>
+</TenantTypeAuthorize>
+```
+
+Demo-only page for unauthenticated users:
+
+```razor
+<TenantTypeAuthorize AllowUnauthenticated="true">
+    <h1>Public demo page</h1>
+</TenantTypeAuthorize>
+```
+
+### Current behavior
+
+The component currently behaves like this:
+
+- unauthenticated user + `AllowUnauthenticated=true` => content renders
+- unauthenticated user + `AllowUnauthenticated=false` => redirects to `/signup`
+- authenticated user + allowed tenant type => content renders
+- authenticated user + disallowed tenant type => redirects to `/`
+- authenticated user + `AllowUnauthenticated=true` with no allowed tenant types => redirects to `/`
+
+Use both route protection and menu hiding together. Hiding a menu item is not a substitute for protecting the page itself.
+
+## Theme System
+
+### Register a theme from configuration
+
+```csharp
+using AppBlueprint.UiKit;
+
+builder.Services.AddUiKitWithTheme(builder.Configuration);
+```
+
+Default section name:
+
+```json
+{
+  "Theme": {
+    "ApplicationType": "crm",
+    "PrimaryColor": "blue",
+    "AccentColor": "emerald",
+    "DefaultPrimaryShade": "600",
+    "DefaultAccentShade": "500",
+    "BrandName": "SalesPro",
+    "CustomLabels": {
+      "analytics.topProducts": "Top Deals"
+    }
+  }
+}
+```
+
+### Register a theme programmatically
+
+```csharp
+builder.Services.AddUiKitWithTheme(theme =>
+{
+    theme.ApplicationType = "dating";
+    theme.PrimaryColor = "rose";
+    theme.AccentColor = "pink";
+    theme.DefaultPrimaryShade = "400";
+    theme.DefaultAccentShade = "300";
+    theme.BrandName = "LoveConnect";
+    theme.CustomLabels["analytics.topProducts"] = "Top Matches";
+});
+```
+
+### `ThemeConfiguration`
+
+The current configuration model includes:
+
+- `PrimaryColor`
+- `AccentColor`
+- `DefaultPrimaryShade`
+- `DefaultAccentShade`
+- `ApplicationType`
+- `CustomLabels`
+- `BrandName`
+- `LogoUrl`
+- `IconPack`
+- `CustomClassOverrides`
+
+Supported `ApplicationType` values documented in code are:
+
+- `saas`
+- `dating`
+- `crm`
+- `ecommerce`
+
+### `ThemeService`
+
+`ThemeService` is registered as a singleton and exposes:
+
+- `CurrentTheme`
+- `SetTheme(...)`
+- `OnThemeChanged`
+- `GetPrimaryClass(...)`
+- `GetAccentClass(...)`
+- `GetPrimaryHoverClass(...)`
+- `GetPrimaryFocusClass(...)`
+- `GetPrimaryDarkClass(...)`
+- `GetLabel(...)`
+- `GetLabelByType(...)`
+- `GetClassesOrOverride(...)`
+- `GetPrimaryButtonClasses()`
+- `GetOutlineButtonClasses()`
+- `GetBadgeClasses(...)`
+- `GetLinkClasses()`
+- `GetCardAccentClasses(...)`
+- `GetPrimaryGradient(...)`
+- `GetPrimaryGradientWithDark(...)`
+- `GetPrimarySolidGradient(...)`
+- `GetAccentGradient(...)`
+- `GetRgbColor(...)`
+
+### Theme usage in components
+
+Inject `ThemeService`:
+
+```razor
+@inject ThemeService ThemeService
+```
+
+Generate Tailwind classes dynamically:
+
+```razor
+<button class="@ThemeService.GetPrimaryButtonClasses()">
+    Save
+</button>
+
+<div class="@ThemeService.GetPrimaryClass("bg") @ThemeService.GetPrimaryClass("text", "50")">
+    Themed panel
 </div>
 
-@code {
-    private bool sidebarOpen = false;
-}
+<a class="@ThemeService.GetLinkClasses()">
+    Themed link
+</a>
 ```
 
-## Implementation Examples
-
-### Example 1: B2C/B2B Multi-Tenant SaaS
-
-```csharp
-// YourApp.Web/Services/MultiTenantMenuService.cs
-using AppBlueprint.Application.Services;
-using AppBlueprint.SharedKernel.Enums;
-using AppBlueprint.UiKit.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-
-namespace YourApp.Web.Services;
-
-public sealed class MultiTenantMenuService(
-    AuthenticationStateProvider authenticationStateProvider,
-    ICurrentTenantService currentTenantService) : IMenuConfigurationService
-{
-    // Menu items visible only to unauthenticated users (demo/marketing)
-    private static readonly HashSet<string> DemoOnlyMenuItems = new()
-    {
-        "features",
-        "pricing",
-        "about"
-    };
-
-    // Menu items visible only to B2B (Organization) tenants
-    private static readonly HashSet<string> B2BOnlyMenuItems = new()
-    {
-        "team-management",
-        "admin-settings",
-        "billing"
-    };
-
-    // Menu items visible to all authenticated users (B2C and B2B)
-    private static readonly HashSet<string> AuthenticatedMenuItems = new()
-    {
-        "dashboard",
-        "profile",
-        "settings"
-    };
-
-    public async Task<bool> ShouldShowMenuItemAsync(string menuItemId)
-    {
-        AuthenticationState authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        bool isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
-
-        // Unauthenticated users - show demo/marketing items only
-        if (!isAuthenticated)
-        {
-            return DemoOnlyMenuItems.Contains(menuItemId);
-        }
-
-        // Authenticated users - hide demo items
-        if (DemoOnlyMenuItems.Contains(menuItemId))
-        {
-            return false;
-        }
-
-        // Check tenant type for B2B-specific items
-        if (B2BOnlyMenuItems.Contains(menuItemId))
-        {
-            TenantType? tenantType = await currentTenantService.GetTenantTypeAsync();
-            return tenantType == TenantType.Organization;
-        }
-
-        // Show authenticated items to all authenticated users
-        return AuthenticatedMenuItems.Contains(menuItemId);
-    }
-}
-```
-
-### Example 2: Dating App with Free/Premium Tiers
-
-```csharp
-// DatingApp.Web/Services/DatingAppMenuService.cs
-using AppBlueprint.UiKit.Services;
-using DatingApp.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-
-namespace DatingApp.Web.Services;
-
-public sealed class DatingAppMenuService(
-    AuthenticationStateProvider authStateProvider,
-    IUserProfileService profileService) : IMenuConfigurationService
-{
-    // Features available only to premium subscribers
-    private static readonly HashSet<string> PremiumOnlyItems = new()
-    {
-        "advanced-search",
-        "unlimited-likes",
-        "see-who-liked-you",
-        "boost-profile",
-        "read-receipts"
-    };
-
-    // Features available to all authenticated users
-    private static readonly HashSet<string> FreeUserItems = new()
-    {
-        "matches",
-        "messages",
-        "profile",
-        "discover",
-        "settings"
-    };
-
-    // Public pages for unauthenticated users
-    private static readonly HashSet<string> PublicItems = new()
-    {
-        "home",
-        "how-it-works",
-        "success-stories",
-        "pricing"
-    };
-
-    public async Task<bool> ShouldShowMenuItemAsync(string menuItemId)
-    {
-        var authState = await authStateProvider.GetAuthenticationStateAsync();
-        bool isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
-
-        // Unauthenticated users - show public pages only
-        if (!isAuthenticated)
-        {
-            return PublicItems.Contains(menuItemId);
-        }
-
-        // Check premium features
-        if (PremiumOnlyItems.Contains(menuItemId))
-        {
-            var userProfile = await profileService.GetCurrentUserProfileAsync();
-            return userProfile.IsPremium;
-        }
-
-        // All authenticated users can see free features
-        return FreeUserItems.Contains(menuItemId);
-    }
-}
-```
-
-### Example 3: CRM with Role-Based Access
-
-```csharp
-// CrmApp.Web/Services/CrmMenuService.cs
-using AppBlueprint.UiKit.Services;
-using CrmApp.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-
-namespace CrmApp.Web.Services;
-
-public sealed class CrmMenuService(
-    AuthenticationStateProvider authStateProvider,
-    IRoleService roleService) : IMenuConfigurationService
-{
-    // Define which roles can access each menu item
-    private static readonly Dictionary<string, string[]> MenuItemRoles = new()
-    {
-        ["dashboard"] = ["Admin", "Manager", "SalesRep"],
-        ["contacts"] = ["Admin", "Manager", "SalesRep"],
-        ["leads"] = ["Admin", "Manager", "SalesRep"],
-        ["deals"] = ["Admin", "Manager", "SalesRep"],
-        ["reports"] = ["Admin", "Manager"],
-        ["analytics"] = ["Admin", "Manager"],
-        ["team-performance"] = ["Admin", "Manager"],
-        ["settings"] = ["Admin"],
-        ["user-management"] = ["Admin"],
-        ["billing"] = ["Admin"],
-        ["integrations"] = ["Admin"]
-    };
-
-    public async Task<bool> ShouldShowMenuItemAsync(string menuItemId)
-    {
-        var authState = await authStateProvider.GetAuthenticationStateAsync();
-        
-        // Must be authenticated to see any CRM features
-        if (!authState.User.Identity?.IsAuthenticated ?? true)
-        {
-            return false;
-        }
-
-        // Get user's roles
-        var userRoles = await roleService.GetUserRolesAsync();
-        
-        // Check if menu item has role restrictions
-        if (!MenuItemRoles.TryGetValue(menuItemId, out var allowedRoles))
-        {
-            // If not configured, allow by default (or return false to deny by default)
-            return true;
-        }
-
-        // Check if user has any of the required roles
-        return userRoles.Any(role => allowedRoles.Contains(role));
-    }
-}
-```
-
-## Using TenantTypeAuthorize Component
-
-The `TenantTypeAuthorize` component provides route-level protection based on tenant types. It's **generic and reusable** - you can use it as-is or create your own authorization components.
-
-### TenantTypeAuthorize Usage
+Use app-specific labels:
 
 ```razor
-@page "/admin/settings"
-@using AppBlueprint.SharedKernel.Enums
-
-<TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Organization })">
-    <h1>Admin Settings</h1>
-    <!-- B2B Organization-only content -->
-</TenantTypeAuthorize>
+<h2>@ThemeService.GetLabelByType(
+    saasLabel: "Top Products",
+    datingLabel: "Top Matches",
+    crmLabel: "Top Deals",
+    ecommerceLabel: "Bestsellers")</h2>
 ```
 
-### TenantTypeAuthorize Parameters
+### Runtime theme switching
 
-| Parameter                | Type                      | Description |
-|--------------------------|---------------------------|-------------|
-| `AllowedTenantTypes`     | `List<TenantType>?`       | List of tenant types allowed to access this page (e.g., `TenantType.Personal`, `TenantType.Organization`) |
-| `AllowUnauthenticated`   | `bool`                    | If `true`, only unauthenticated users can access (useful for demo pages) |
-| `ChildContent`           | `RenderFragment?`         | Content to render if authorized |
-
-
-### TenantTypeAuthorize Behavior
-
-- If **unauthenticated** and `AllowUnauthenticated=true` → Shows content
-- If **unauthenticated** and `AllowUnauthenticated=false` → Redirects to `/signup`
-- If **authenticated** and tenant type matches `AllowedTenantTypes` → Shows content
-- If **authenticated** and tenant type doesn't match → Redirects to `/`
-- If **authenticated** and `AllowUnauthenticated=true` with no `AllowedTenantTypes` → Redirects to `/` (demo-only page)
-
-### Examples
-
-**Demo-only page (unauthenticated users only):**
-```razor
-@page "/demo/features"
-
-<TenantTypeAuthorize AllowUnauthenticated="true">
-    <h1>Try Our Features</h1>
-    <!-- Marketing demo content -->
-</TenantTypeAuthorize>
-```
-
-**B2B-only page:**
-```razor
-@page "/team/members"
-@using AppBlueprint.SharedKernel.Enums
-
-<TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Organization })">
-    <h1>Team Members</h1>
-    <!-- Organization team management -->
-</TenantTypeAuthorize>
-```
-
-**Multiple tenant types:**
-```razor
-@page "/reports/analytics"
-@using AppBlueprint.SharedKernel.Enums
-
-<TenantTypeAuthorize AllowedTenantTypes="@(new List<TenantType> { TenantType.Personal, TenantType.Organization })">
-    <h1>Analytics Dashboard</h1>
-    <!-- Available to both B2C and B2B users -->
-</TenantTypeAuthorize>
-```
-
-## Creating Custom Authorization Components
-
-If `TenantTypeAuthorize` doesn't fit your needs, create your own:
+If your component must react to runtime theme changes, subscribe to `OnThemeChanged`:
 
 ```razor
-@* YourApp.Web/Components/Shared/PremiumOnly.razor *@
-@inject ISubscriptionService SubscriptionService
-@inject NavigationManager Navigation
-
-@if (_isLoading)
-{
-    <div class="flex items-center justify-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500"></div>
-    </div>
-}
-else if (_hasAccess)
-{
-    @ChildContent
-}
-else
-{
-    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-        <h3 class="text-xl font-bold text-yellow-800">Premium Feature</h3>
-        <p class="text-yellow-700 mt-2">Upgrade to Premium to access this feature!</p>
-        <button @onclick="NavigateToUpgrade" class="mt-4 btn btn-primary">
-            Upgrade Now
-        </button>
-    </div>
-}
+@inject ThemeService ThemeService
+@implements IDisposable
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
-    private bool _isLoading = true;
-    private bool _hasAccess;
-    
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        var subscription = await SubscriptionService.GetCurrentSubscriptionAsync();
-        _hasAccess = subscription?.IsPremium ?? false;
-        _isLoading = false;
+        ThemeService.OnThemeChanged += StateHasChanged;
     }
-    
-    private void NavigateToUpgrade()
+
+    public void Dispose()
     {
-        Navigation.NavigateTo("/upgrade");
+        ThemeService.OnThemeChanged -= StateHasChanged;
     }
 }
 ```
 
-**Usage:**
-```razor
-@page "/advanced-search"
+If your app never switches themes at runtime, this subscription is optional.
 
-<PremiumOnly>
-    <h1>Advanced Search</h1>
-    <!-- Premium feature content -->
-</PremiumOnly>
-```
+### Tailwind safelist note
 
-## Available Components
+`ThemeService` builds classes dynamically, for example `bg-violet-500` or `text-rose-400`.
 
-### Layout Components
-- `Sidebar` - Responsive sidebar with menu management
-- `Header` - Top navigation bar
-- `Footer` - Application footer
+If your consuming application compiles Tailwind itself, you need a safelist pattern that keeps those classes from being purged.
 
-### UI Components
-- Buttons, Cards, Modals, Tooltips
-- Forms and Input Components
-- Tables and Data Grids
-- Loading States and Skeletons
+## Available Component Areas
 
-### Authorization Components
-- `TenantTypeAuthorize` - Tenant-based route protection
+The library currently includes components under these main areas:
 
-## What to Use vs. What to Ignore
+- `Components/Layout`
+- `Components/Shared`
+- `Components/Charts`
+- `Components/Dashboard`
+- `Components/Settings`
+- `Components/Pages`
 
-### ✅ Reusable Components (Use in Your App)
-- All UI components (buttons, cards, modals, etc.)
-- Layout components (Sidebar, Header, Footer)
-- `IMenuConfigurationService` interface
-- `TenantTypeAuthorize` component
+Important distinction:
 
-### 🔧 Implement in Your App
-- **Custom `IMenuConfigurationService`** - Your business logic for menu visibility
-- **Your application pages** - Don't reuse template pages
-- **Custom authorization components** - If TenantTypeAuthorize doesn't fit
+- Layout and shared primitives are the most reusable starting point.
+- Many components under `Components/Pages` are fuller page examples and templates. Treat them as integration reference or starter material, not as business-complete production pages.
 
-### 🗑️ Template Examples (Reference Only)
-The following pages are **Cruip template examples** for styling reference only:
-- Shop, Shop2, Customers, Single Product, Cart, Pay
-- Tasks, Job Board, Finance
-- Community Users
-- Messages, Campaigns, Inbox
+## Blog Module
 
-**Don't use these in production** - Create your own pages with your business logic.
+UiKit also exposes blog registration helpers:
+
+- `AddUiKitBlog(Action<AppBlueprintBlogOptions>? configureBlog = null)`
+- `AddUiKitBlog<TContentService>(...) where TContentService : class, IBlogContentService`
+
+Use those when you want the reusable blog module in addition to the core UiKit services.
 
 ## Best Practices
 
-### 1. Keep Business Logic in Your App
-```csharp
-// ✅ GOOD - Business logic in your MenuConfigurationService
-public async Task<bool> ShouldShowMenuItemAsync(string menuItemId)
-{
-    var user = await GetCurrentUserAsync();
-    return user.CanAccessFeature(menuItemId);
-}
-```
+- Register `IMenuConfigurationService` explicitly if you use the built-in sidebar.
+- Keep menu rules and authorization rules in your host app, not in UiKit component code.
+- Protect routes as well as menus.
+- Prefer `GetPrimaryClass(...)` and related helpers over hardcoded Tailwind brand colors in reusable components.
+- Use `CustomLabels` and `GetLabelByType(...)` for app-specific wording instead of cloning components.
+- Subscribe to `OnThemeChanged` only where runtime theme switching matters.
+- Treat `Components/Pages` as reference implementations unless they match your product semantics directly.
+
+## Troubleshooting
+
+### Sidebar fails to render because of DI
+
+Typical cause:
+
+- `IMenuConfigurationService` was not registered
+
+Fix:
 
 ```csharp
-// ❌ BAD - Don't modify UiKit components directly
-// UiKit/Components/Layout/Sidebar.razor
-@if (user.IsPremium) // Don't hardcode business logic here!
-{
-    <li>Premium Feature</li>
-}
+builder.Services.AddScoped<IMenuConfigurationService, YourMenuConfigurationService>();
+builder.Services.AddUiKit();
 ```
 
-### 2. Use Meaningful Menu Item IDs
-```csharp
-// ✅ GOOD - Clear, descriptive IDs
-"dashboard", "user-profile", "admin-settings", "billing-reports"
+### Theme classes do not apply
 
-// ❌ BAD - Generic or unclear IDs
-"page1", "menu-item", "feature"
-```
+Typical causes:
 
-### 3. Pre-load Menu Visibility
-The Sidebar component pre-loads all menu item visibility on initialization for performance. Make sure your `ShouldShowMenuItemAsync` is efficient.
+- dynamic Tailwind classes were purged by the host app build
+- configured color names do not match supported Tailwind palette names
 
-```csharp
-// ✅ GOOD - Cache user permissions
-private UserPermissions? _cachedPermissions;
+Fix:
 
-public async Task<bool> ShouldShowMenuItemAsync(string menuItemId)
-{
-    _cachedPermissions ??= await LoadUserPermissionsAsync();
-    return _cachedPermissions.HasAccess(menuItemId);
-}
-```
+- add a Tailwind safelist for dynamic `bg-*`, `text-*`, `border-*`, and related classes
+- use valid Tailwind colors such as `violet`, `blue`, `emerald`, `pink`, or `rose`
 
-### 4. Handle Authorization Consistently
-Use both UI hiding (menu visibility) and route protection (TenantTypeAuthorize or custom components):
+### Theme changes do not update visible components
 
-```razor
-<!-- Hide from menu -->
-@* Menu service returns false for "admin-settings" *@
+Typical cause:
 
-<!-- AND protect the route -->
-@page "/admin/settings"
+- the component never subscribed to `ThemeService.OnThemeChanged`
 
-<TenantTypeAuthorize AllowedTenantTypes="@AdminOnly">
-    <!-- Protected content -->
-</TenantTypeAuthorize>
-```
+Fix:
 
-## Upgrading the Library
+- subscribe in `OnInitialized()`
+- unsubscribe in `Dispose()`
 
-When UiKit is updated:
+### Route access does not match menu visibility
 
-1. **Your `IMenuConfigurationService` implementation is safe** - It's in your app, not the library
-2. **Your business logic is preserved** - Menu visibility rules won't break
-3. **UI improvements automatically apply** - Get new components and styling updates
-4. **Breaking changes are isolated** - Only affects component APIs, not your business rules
+Typical cause:
 
-## Support
+- menu hiding was implemented, but the page itself is not protected
 
-For issues, questions, or contributions, please visit:
-- GitHub: [saas-factory-labs/Saas-Factory](https://github.com/saas-factory-labs/Saas-Factory)
-- Documentation: [docs/README.md](../../../../docs/README.md)
+Fix:
 
-## License
+- pair menu visibility rules with `TenantTypeAuthorize` or another route-level authorization mechanism
 
-See [LICENSE](../../../../LICENSE) for details.
+## Summary
+
+For current consumers, the practical integration model is:
+
+1. Register `AddUiKit()`
+2. Register `IMenuConfigurationService` if you use `Sidebar`
+3. Optionally register theme configuration through `AddUiKitWithTheme(...)`
+4. Use `Sidebar`, `Header`, and related layout components
+5. Use `TenantTypeAuthorize` for route protection
+6. Use `ThemeService` helpers instead of hardcoded brand classes
+
+This file is now the single source of truth for UiKit usage.

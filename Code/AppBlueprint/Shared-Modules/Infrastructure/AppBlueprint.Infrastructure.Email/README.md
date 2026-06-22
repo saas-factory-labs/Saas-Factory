@@ -621,6 +621,6 @@ Planned features:
 ## Support
 
 For questions or issues:
-- Check [FRAMEWORK-MISSING-SERVICES.md](../../../FRAMEWORK-MISSING-SERVICES.md)
+- Check [FRAMEWORK-MISSING-SERVICES.md](../../../docs/roadmap/FRAMEWORK-MISSING-SERVICES.md)
 - Review example templates in framework
 - Test templates using preview endpoint

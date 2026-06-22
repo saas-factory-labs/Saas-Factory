@@ -11,7 +11,7 @@ namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 public interface IAuthenticationProviderFactory
 {
-    IAuthenticationProvider CreateProvider();
+    IAppAuthenticationProvider CreateProvider();
     AuthenticationProviderType GetConfiguredProviderType();
 }
 
@@ -30,7 +30,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
-    public IAuthenticationProvider CreateProvider()
+    public IAppAuthenticationProvider CreateProvider()
     {
         var providerType = GetConfiguredProviderType();
 
@@ -60,7 +60,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
         return providerType;
     }
 
-    private IAuthenticationProvider CreateAuth0Provider()
+    private IAppAuthenticationProvider CreateAuth0Provider()
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
         var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
@@ -71,7 +71,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
         return new Auth0Provider(tokenStorage, httpClient, _configuration, logger);
     }
 
-    private IAuthenticationProvider CreateLogtoProvider()
+    private IAppAuthenticationProvider CreateLogtoProvider()
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
         var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
@@ -91,7 +91,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
         }
     }
 
-    private IAuthenticationProvider CreateAzureADProvider()
+    private IAppAuthenticationProvider CreateAzureADProvider()
     {
         // TODO: Implement Azure AD B2C provider
         throw new NotImplementedException(
@@ -100,7 +100,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
             "Please set Authentication:Provider to one of these in your configuration.");
     }
 
-    private IAuthenticationProvider CreateCognitoProvider()
+    private IAppAuthenticationProvider CreateCognitoProvider()
     {
         // TODO: Implement AWS Cognito provider
         throw new NotImplementedException(
@@ -109,7 +109,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
             "Please set Authentication:Provider to one of these in your configuration.");
     }
 
-    private IAuthenticationProvider CreateFirebaseProvider()
+    private IAppAuthenticationProvider CreateFirebaseProvider()
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
         var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
@@ -120,7 +120,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
         return new FirebaseProvider(tokenStorage, httpClient, _configuration, logger);
     }
 
-    private IAuthenticationProvider CreateJwtProvider()
+    private IAppAuthenticationProvider CreateJwtProvider()
     {
         // TODO: Implement simple JWT provider for development/testing
         throw new NotImplementedException(
@@ -129,7 +129,7 @@ public class AuthenticationProviderFactory : IAuthenticationProviderFactory
             "Please set Authentication:Provider to one of these in your configuration.");
     }
 
-    private IAuthenticationProvider CreateMockProvider()
+    private IAppAuthenticationProvider CreateMockProvider()
     {
         var tokenStorage = _serviceProvider.GetRequiredService<ITokenStorageService>();
         var logger = _serviceProvider.GetRequiredService<ILogger<MockProvider>>();

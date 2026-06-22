@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 namespace AppBlueprint.DeveloperCli.Commands;
 
@@ -118,8 +118,8 @@ internal static class TestCommand
             .AddColumn(new TableColumn("[cyan]Setting[/]"))
             .AddColumn(new TableColumn("[cyan]Value[/]"));
 
-        configTable.AddRow("Watch Mode", watch ? "[green]âœ“ Enabled[/]" : "[dim]Disabled[/]");
-        configTable.AddRow("Coverage", coverage ? "[green]âœ“ Enabled[/]" : "[dim]Disabled[/]");
+        configTable.AddRow("Watch Mode", watch ? "[green]✓ Enabled[/]" : "[dim]Disabled[/]");
+        configTable.AddRow("Coverage", coverage ? "[green]✓ Enabled[/]" : "[dim]Disabled[/]");
         configTable.AddRow("Filter", !string.IsNullOrEmpty(filter) ? $"[yellow]{filter}[/]" : "[dim]None[/]");
         configTable.AddRow("Project", project ?? "[dim]All test projects[/]");
         configTable.AddRow("Verbosity", verbosity);
@@ -136,7 +136,7 @@ internal static class TestCommand
         if (watch)
         {
             // For watch mode, show a message and run directly
-            AnsiConsole.MarkupLine("[yellow]âš¡ Running tests in watch mode. Press Ctrl+C to exit.[/]");
+            AnsiConsole.MarkupLine("[yellow]⚡ Running tests in watch mode. Press Ctrl+C to exit.[/]");
             AnsiConsole.WriteLine();
 
             await RunTestProcess(command, workingDirectory, watch: true);
@@ -155,7 +155,7 @@ internal static class TestCommand
         if (coverage && !watch)
         {
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[cyan]ðŸ“Š Coverage report generated in: ./coverage/[/]");
+            AnsiConsole.MarkupLine("[cyan]📊 Coverage report generated in: ./coverage/[/]");
         }
     }
 
@@ -176,7 +176,7 @@ internal static class TestCommand
 
         if (process is null)
         {
-            AnsiConsole.MarkupLine("[red]âœ— Failed to start test process[/]");
+            AnsiConsole.MarkupLine("[red]✗ Failed to start test process[/]");
             return;
         }
 
@@ -207,7 +207,7 @@ internal static class TestCommand
             AnsiConsole.WriteLine();
             if (process.ExitCode == 0)
             {
-                var panel = new Panel("[green]âœ“ All tests passed![/]")
+                var panel = new Panel("[green]✓ All tests passed![/]")
                 {
                     Border = BoxBorder.Rounded,
                     BorderStyle = new Style(Color.Green)
@@ -216,7 +216,7 @@ internal static class TestCommand
             }
             else
             {
-                var panel = new Panel($"[red]âœ— Tests failed with exit code: {process.ExitCode}[/]")
+                var panel = new Panel($"[red]✗ Tests failed with exit code: {process.ExitCode}[/]")
                 {
                     Border = BoxBorder.Rounded,
                     BorderStyle = new Style(Color.Red)

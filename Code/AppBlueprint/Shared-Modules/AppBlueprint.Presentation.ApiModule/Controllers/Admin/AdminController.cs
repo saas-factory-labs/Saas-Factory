@@ -75,7 +75,7 @@ public class AdminController : BaseController
         AdminEntity? account = await _adminRepository.GetByIdAsync(id);
         if (account == null)
         {
-            _logger.LogInformation("Admin account with ID {Id} not found", id);
+            _logger.LogInformation("Admin account not found");
             return NotFound(new { Message = $"Admin account with ID {id} not found." });
         }
 

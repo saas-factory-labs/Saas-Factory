@@ -8,11 +8,6 @@ public class CustomerAddressEntity
     public CustomerAddressEntity()
     {
         Customer = new CustomerEntity();
-        var addressEntity = new AddressEntity
-        {
-            Floor = "2",
-            StreetNumber = "2"
-        };
     }
 
     public int Id { get; set; }

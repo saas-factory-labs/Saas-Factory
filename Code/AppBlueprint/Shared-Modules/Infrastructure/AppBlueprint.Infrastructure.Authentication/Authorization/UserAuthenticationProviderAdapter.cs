@@ -5,7 +5,7 @@ namespace AppBlueprint.Infrastructure.Authentication.Authorization;
 
 public class UserAuthenticationProviderAdapter : IUserAuthenticationProvider, IDisposable
 {
-    private readonly Providers.IAuthenticationProvider? _provider;
+    private readonly Providers.IAppAuthenticationProvider? _provider;
     private readonly IAuthenticationProviderFactory _factory;
 
     public UserAuthenticationProviderAdapter(IAuthenticationProviderFactory factory)

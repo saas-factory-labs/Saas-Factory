@@ -67,7 +67,7 @@ internal sealed class AuthenticationDelegatingHandler : DelegatingHandler
                         throw new InvalidOperationException(
                             "Authentication failed: Received opaque access token instead of JWT. " +
                             "Configure LOGTO_RESOURCE environment variable to receive JWT tokens with proper scopes. " +
-                            "See LOGTO-ENVIRONMENT-VARIABLES.md for setup instructions.");
+                            "See Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/LOGTO-ENVIRONMENT-VARIABLES.md for setup instructions.");
                     }
                 }
                 else

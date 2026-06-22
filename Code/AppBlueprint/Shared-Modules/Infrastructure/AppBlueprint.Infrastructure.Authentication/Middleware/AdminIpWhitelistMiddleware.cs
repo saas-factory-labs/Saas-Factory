@@ -125,11 +125,7 @@ public sealed class AdminIpWhitelistMiddleware
         // Guard clause: IP not whitelisted
         if (!isAllowed)
         {
-            _logger.LogWarning(
-                "ADMIN_IP_BLOCKED | AdminUserId={UserId} | IpAddress={IpAddress} | Path={Path} | Reason=IP_NOT_WHITELISTED",
-                context.User.Identity?.Name,
-                remoteIp,
-                context.Request.Path);
+            _logger.LogWarning("ADMIN_IP_BLOCKED | Reason=IP_NOT_WHITELISTED");
 
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             await context.Response.WriteAsJsonAsync(new
@@ -141,11 +137,7 @@ public sealed class AdminIpWhitelistMiddleware
         }
 
         // IP is allowed, log and continue
-        _logger.LogInformation(
-            "ADMIN_IP_ALLOWED | AdminUserId={UserId} | IpAddress={IpAddress} | Path={Path}",
-            context.User.Identity?.Name,
-            remoteIp,
-            context.Request.Path);
+        _logger.LogInformation("ADMIN_IP_ALLOWED");
 
         await _next(context);
     }

@@ -1,0 +1,5 @@
+name: "SaaS Factory CodeQL Config"
+paths-ignore:
+  - "codeql-queries/**"
+  - "**/obj/**"
+  - "**/bin/**"

@@ -26,10 +26,9 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
             case ArgumentNullException argNullEx:
                 logger.LogWarning(
                     exception,
-                    "Null argument validation failed. Parameter: {ParamName}. TraceId: {TraceId}. Path: {Path}",
+                    "Null argument validation failed. Parameter: {ParamName}. TraceId: {TraceId}",
                     argNullEx.ParamName,
-                    traceId,
-                    httpContext.Request.Path);
+                    traceId);
 
                 await WriteValidationErrorResponse(
                     httpContext,
@@ -41,10 +40,9 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
             case ArgumentException argEx:
                 logger.LogWarning(
                     exception,
-                    "Argument validation failed. Parameter: {ParamName}. TraceId: {TraceId}. Path: {Path}",
+                    "Argument validation failed. Parameter: {ParamName}. TraceId: {TraceId}",
                     argEx.ParamName,
-                    traceId,
-                    httpContext.Request.Path);
+                    traceId);
 
                 // SECURITY (OWASP A05): do not echo raw exception messages to the client -
                 // they can leak implementation details. Full message is in the server log above.
@@ -58,10 +56,8 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
             case InvalidOperationException:
                 logger.LogWarning(
                     exception,
-                    "Invalid operation. TraceId: {TraceId}. Path: {Path}. User: {UserId}",
-                    traceId,
-                    httpContext.Request.Path,
-                    httpContext.User?.Identity?.Name ?? "Anonymous");
+                    "Invalid operation. TraceId: {TraceId}",
+                    traceId);
 
                 // SECURITY (OWASP A05): InvalidOperationException messages frequently contain
                 // internal state (EF Core, configuration, DI). Return a generic message; the
@@ -76,9 +72,8 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
             case TimeoutException:
                 logger.LogError(
                     exception,
-                    "Request timeout. TraceId: {TraceId}. Path: {Path}",
-                    traceId,
-                    httpContext.Request.Path);
+                    "Request timeout. TraceId: {TraceId}",
+                    traceId);
 
                 await WriteTimeoutResponse(
                     httpContext,
@@ -89,10 +84,8 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
             case UnauthorizedAccessException:
                 logger.LogWarning(
                     exception,
-                    "Unauthorized access attempt. TraceId: {TraceId}. Path: {Path}. User: {UserId}",
-                    traceId,
-                    httpContext.Request.Path,
-                    httpContext.User?.Identity?.Name ?? "Anonymous");
+                    "Unauthorized access attempt. TraceId: {TraceId}",
+                    traceId);
 
                 await WriteUnauthorizedResponse(
                     httpContext,
@@ -103,12 +96,8 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
             default:
                 logger.LogError(
                     exception,
-                    "Unhandled exception occurred. TraceId: {TraceId}. Path: {Path}. Method: {Method}. User: {UserId}. TenantId: {TenantId}",
-                    traceId,
-                    httpContext.Request.Path,
-                    httpContext.Request.Method,
-                    httpContext.User?.Identity?.Name ?? "Anonymous",
-                    httpContext.Items["TenantId"]?.ToString() ?? "None");
+                    "Unhandled exception occurred. TraceId: {TraceId}",
+                    traceId);
 
                 await WriteInternalServerErrorResponse(
                     httpContext,
