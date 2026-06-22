@@ -1,3 +1,4 @@
+using System.Linq;
 using AppBlueprint.AdminPortalKernel.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -114,7 +115,8 @@ public sealed class AdminAccessGuard : IAdminAccessGuard
             : $"{request.AppSlug}:{request.TenantId}";
         if (!_rateLimiter.TryRegisterTenantAccess(userId, tenantScope))
         {
-            _logger.LogWarning("ADMIN_RATE_LIMIT_EXCEEDED | admin={AdminUserId} scope={TenantScope}", userId, tenantScope);
+            string safeTenantScope = SanitizeForLog(tenantScope);
+            _logger.LogWarning("ADMIN_RATE_LIMIT_EXCEEDED | admin={AdminUserId} scope={TenantScope}", userId, safeTenantScope);
             throw new InvalidOperationException("Admin tenant-access rate limit exceeded. Try again later.");
         }
 
@@ -175,5 +177,19 @@ public sealed class AdminAccessGuard : IAdminAccessGuard
             request.Operation, request.AppSlug, email, userId, request.TenantId, isAutomatedBypass, effectiveReason);
 
         return new AdminAccessDecision(effectiveReason, isAutomatedBypass, fingerprint);
+    }
+
+    private static string SanitizeForLog(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        char[] sanitized = value
+            .Select(ch => char.IsControl(ch) ? ' ' : ch)
+            .ToArray();
+
+        return new string(sanitized);
     }
 }
