@@ -5,6 +5,20 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.25.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.24.2...v1.25.0) (2026-06-22)
+
+
+### Bug Fixes
+
+* harden platform responses and responsive dashboard layouts ([33265a6](https://github.com/saas-factory-labs/Saas-Factory/commit/33265a631a3f0103a39335486505ec58cba4273f))
+
+
+### Features
+
+* add codeql-queries library ([ade2939](https://github.com/saas-factory-labs/Saas-Factory/commit/ade293972e7104fd0d8ef3435fe2616dfa5ce463))
+* add pre-generated knowledge graph ([9c9c388](https://github.com/saas-factory-labs/Saas-Factory/commit/9c9c388b195edd0d92ae2871cbce7df176091ef0))
+* harden auth flows and add CodeQL security coverage ([4fc4afe](https://github.com/saas-factory-labs/Saas-Factory/commit/4fc4afe0c635f3afe5744aafd95a98c37ae591f5))
+
 ## [1.24.2](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.24.1...v1.24.2) (2026-06-16)
 
 
