@@ -1,52 +1,54 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <BuildInParallel>false</BuildInParallel>
   </PropertyGroup>
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" />
+    
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="bunit" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="NSubstitute" />
+    
+    <PackageReference Include="TUnit" />
+    <PackageReference Include="TUnit.Assertions" />
+    <PackageReference Include="NetArchTest.Rules" />
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-        <PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" />
-        <PackageReference Include="Testcontainers.Redis" />
-        <PackageReference Include="bunit" />
-        <PackageReference Include="Testcontainers" />
-        <PackageReference Include="Testcontainers.Container.Abstractions" />
-        <PackageReference Include="Testcontainers.PostgreSql" />
-        <PackageReference Include="Aspire.Hosting.Testing" />
-        <PackageReference Include="coverlet.collector" />
-        <PackageReference Include="Moq" />
-        <PackageReference Include="NSubstitute" />
-        <PackageReference Include="TUnit" />
-        <PackageReference Include="TUnit.Assertions" />
-        <PackageReference Include="NetArchTest.Rules" />
-    </ItemGroup>
+    <PackageReference Include="Testcontainers" />
+    <PackageReference Include="Testcontainers.Redis" />
+    <PackageReference Include="Testcontainers.Container.Abstractions" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Aspire.Hosting.Testing" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\AppBlueprint.DeveloperCli\AppBlueprint.DeveloperCli.csproj" />
-        <ProjectReference Include="..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj" />
-        <ProjectReference Include="..\AppBlueprint.AppHost\AppBlueprint.AppHost.csproj" />
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Presentation.ApiModule\AppBlueprint.Presentation.ApiModule.csproj" />
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
-        <ProjectReference Include="..\AppBlueprint.ApiService\AppBlueprint.ApiService.csproj" />
-        <ProjectReference Include="..\AppBlueprint.Web\AppBlueprint.Web.csproj" />
-        <ProjectReference Include="..\..\SaaSFactory.SharedTestKernel\SaaSFactory.SharedTestKernel.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppBlueprint.DeveloperCli\AppBlueprint.DeveloperCli.csproj" />
+    <ProjectReference Include="..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj" />
+    <ProjectReference Include="..\AppBlueprint.AppHost\AppBlueprint.AppHost.csproj" />
+    <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj" />
+    <ProjectReference Include="..\Shared-Modules\AppBlueprint.Presentation.ApiModule\AppBlueprint.Presentation.ApiModule.csproj" />
+    <ProjectReference Include="..\Shared-Modules\AppBlueprint.UiKit\AppBlueprint.UiKit.csproj" />
+    <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
+    <ProjectReference Include="..\AppBlueprint.ApiService\AppBlueprint.ApiService.csproj" />
+    <ProjectReference Include="..\AppBlueprint.Web\AppBlueprint.Web.csproj" />
+    <ProjectReference Include="..\..\SaaSFactory.SharedTestKernel\SaaSFactory.SharedTestKernel.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <Using Include="Aspire.Hosting.Testing" />
-    </ItemGroup>
+  <ItemGroup>
+    <Using Include="Aspire.Hosting.Testing" />
+  </ItemGroup>
 
 </Project>

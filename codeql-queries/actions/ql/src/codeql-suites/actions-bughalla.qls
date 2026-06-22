@@ -1,6 +1,0 @@
-- description: Bughalla queries for GitHub Actions
-- queries: '.'
-- exclude:
-    tags contain:
-      - debug
-      

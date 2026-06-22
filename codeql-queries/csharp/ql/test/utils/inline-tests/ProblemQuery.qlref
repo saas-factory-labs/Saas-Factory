@@ -1,2 +1,0 @@
-query: utils/inline-tests/queries/ProblemQuery.ql
-postprocess: utils/test/InlineExpectationsTestQuery.ql

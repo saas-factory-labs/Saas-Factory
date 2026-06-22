@@ -51,8 +51,9 @@ public sealed class SignupService : ISignupService
         ValidatedSignupRequest validatedRequest = ValidateAndNormalizeRequest(request, authenticatedIdentity);
 
         _logger.LogInformation(
-            "Calling secure signup stored procedure for email: {Email}",
-            validatedRequest.Email);
+            "Calling secure signup stored procedure for UserId {UserId} and TenantId {TenantId}",
+            validatedRequest.UserId,
+            validatedRequest.TenantId);
 
         try
         {
@@ -98,8 +99,9 @@ public sealed class SignupService : ISignupService
                     : "Unknown error";
 
                 _logger.LogError(
-                    "Signup stored procedure failed for email {Email}: {Error}",
-                    validatedRequest.Email,
+                    "Signup stored procedure failed for UserId {UserId} and TenantId {TenantId}: {Error}",
+                    validatedRequest.UserId,
+                    validatedRequest.TenantId,
                     errorMessage);
 
                 throw new InvalidOperationException($"Signup failed: {errorMessage}");
@@ -116,10 +118,9 @@ public sealed class SignupService : ISignupService
             };
 
             _logger.LogInformation(
-                "Signup successful - TenantId: {TenantId}, UserId: {UserId}, Email: {Email}",
+                "Signup successful - TenantId: {TenantId}, UserId: {UserId}",
                 signupResult.TenantId,
-                signupResult.UserId,
-                signupResult.Email);
+                signupResult.UserId);
 
             return signupResult;
         }
@@ -128,8 +129,9 @@ public sealed class SignupService : ISignupService
             // PostgreSQL exception (validation errors from stored procedure)
             _logger.LogError(
                 pgEx,
-                "PostgreSQL error during signup for email {Email}: {Message}",
-                validatedRequest.Email,
+                "PostgreSQL error during signup for UserId {UserId} and TenantId {TenantId}: {Message}",
+                validatedRequest.UserId,
+                validatedRequest.TenantId,
                 pgEx.MessageText);
 
             throw new InvalidOperationException($"Signup failed: {pgEx.MessageText}", pgEx);
@@ -138,8 +140,9 @@ public sealed class SignupService : ISignupService
         {
             _logger.LogError(
                 ex,
-                "Database error during signup for email {Email}",
-                validatedRequest.Email);
+                "Database error during signup for UserId {UserId} and TenantId {TenantId}",
+                validatedRequest.UserId,
+                validatedRequest.TenantId);
 
             throw new InvalidOperationException("Signup failed due to a database error.", ex);
         }
@@ -147,8 +150,9 @@ public sealed class SignupService : ISignupService
         {
             _logger.LogError(
                 ex,
-                "Failed to parse signup result for email {Email}",
-                validatedRequest.Email);
+                "Failed to parse signup result for UserId {UserId} and TenantId {TenantId}",
+                validatedRequest.UserId,
+                validatedRequest.TenantId);
 
             throw new InvalidOperationException("Signup failed due to an invalid response format.", ex);
         }
@@ -156,8 +160,9 @@ public sealed class SignupService : ISignupService
         {
             _logger.LogError(
                 ex,
-                "Unexpected error during signup for email {Email}",
-                validatedRequest.Email);
+                "Unexpected error during signup for UserId {UserId} and TenantId {TenantId}",
+                validatedRequest.UserId,
+                validatedRequest.TenantId);
 
             throw;
         }

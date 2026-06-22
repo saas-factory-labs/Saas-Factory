@@ -1,4 +1,0 @@
-﻿class SBCS
-{
-    string sbcs = "�";
-}

@@ -7,41 +7,42 @@ namespace SaaSFactory.SharedTestKernel;
 
 public static class CodeQlTestRunner
 {
-    public static void AssertNoCodeQlViolations(string language, string targetProjectOrFolder, string querySuite = "")
+    private const string DefaultCodeQlCliPath = @"D:\Tools\codeql";
+    private const string DefaultCodeQlQueriesPath = @"D:\Tools\codeql-queries";
+
+    public static void AssertNoCodeQlViolations(
+        string language,
+        string targetProjectOrFolder,
+        string querySuite = "",
+        string externalQueryPath = "")
     {
         string sourceRoot = FindSolutionRoot();
+        string normalizedQuerySuite = NormalizeQuerySuite(language, querySuite);
+        string? codeQlQueriesPath = ResolveCodeQlQueriesPath(sourceRoot, normalizedQuerySuite, externalQueryPath);
+        string fullSuitePath = ResolveQuerySuitePath(sourceRoot, normalizedQuerySuite, codeQlQueriesPath);
+        string codeQlExecutablePath = ResolveCodeQlExecutablePath();
+
+        if (!File.Exists(fullSuitePath))
+        {
+            throw new FileNotFoundException($"Could not find the CodeQL query suite '{fullSuitePath}'.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(codeQlQueriesPath))
+        {
+            UpdateCodeQlQueriesRepository(codeQlQueriesPath);
+        }
 
         string testResultsDir = Path.Combine(sourceRoot, "TestResults", "CodeQL");
         Directory.CreateDirectory(testResultsDir);
 
-        string tempId = Guid.NewGuid().ToString("N").Substring(0, 8);
+        string tempId = Guid.NewGuid().ToString("N")[..8];
         string dbPath = Path.Combine(Path.GetTempPath(), $"codeql_db_{language}_{tempId}");
         string sarifPath = Path.Combine(testResultsDir, $"codeql_result_{language}.sarif");
         string absoluteSarifPath = Path.GetFullPath(sarifPath);
-
-        // Opret en midlertidig CodeQL-konfigurationsfil til at ignorere query-mappen
         string configPath = Path.Combine(Path.GetTempPath(), $"codeql_config_{tempId}.yml");
-
-        if (string.IsNullOrEmpty(querySuite))
-        {
-            querySuite = language == "csharp"
-                ? "codeql-queries\\csharp\\ql\\src\\codeql-suites\\csharp-security-and-quality.qls"
-                : "codeql-queries\\javascript\\ql\\src\\codeql-suites\\javascript-security-and-quality.qls";
-        }
-
-        string fullSuitePath = Path.IsPathRooted(querySuite)
-            ? querySuite
-            : Path.GetFullPath(Path.Combine(sourceRoot, querySuite));
-
-        if (!File.Exists(fullSuitePath))
-        {
-            throw new FileNotFoundException(
-                $"[CodeQL Fejl] Kunne ikke finde Query Suite-filen!\nLeder efter den her: {fullSuitePath}");
-        }
 
         try
         {
-            // Generer YAML-konfiguration, der permanent ignorerer codeql-queries mappen og unødig støj
             string yamlConfig =
                 "name: \"SaaS Factory CodeQL Filter\"\n" +
                 "paths-ignore:\n" +
@@ -51,66 +52,304 @@ public static class CodeQlTestRunner
 
             File.WriteAllText(configPath, yamlConfig);
 
+            string resourceArguments = BuildResourceArguments();
             string workingDir = sourceRoot;
-            string createCmd;
+            string createArguments;
 
-            if (language == "csharp")
+            if (string.Equals(language, "csharp", StringComparison.OrdinalIgnoreCase))
             {
-                // Brug --codescanning-config i stedet for det forældede --config
-                createCmd = $"database create \"{dbPath}\" --language=csharp --command=\"dotnet build \"{targetProjectOrFolder}\" --no-incremental\" --codescanning-config=\"{configPath}\" --overwrite --verbose";
-            }
-            else
-            {
-                string fullTargetFolder = Path.IsPathRooted(targetProjectOrFolder)
+                string targetProjectPath = Path.IsPathRooted(targetProjectOrFolder)
                     ? targetProjectOrFolder
                     : Path.GetFullPath(Path.Combine(sourceRoot, targetProjectOrFolder));
 
-                workingDir = fullTargetFolder;
-                // Brug --codescanning-config i stedet for det forældede --config
-                createCmd = $"database create \"{dbPath}\" --language=javascript-typescript --source-root=\"{fullTargetFolder}\" --command=\"cmd /c echo skipping\" --codescanning-config=\"{configPath}\" --overwrite --verbose";
+                createArguments =
+                    $"database create \"{dbPath}\" --language=csharp {resourceArguments} " +
+                    $"--command=\"dotnet build \\\"{targetProjectPath}\\\" --no-incremental\" " +
+                    $"--codescanning-config=\"{configPath}\" --overwrite --verbose";
+            }
+            else
+            {
+                string targetFolderPath = Path.IsPathRooted(targetProjectOrFolder)
+                    ? targetProjectOrFolder
+                    : Path.GetFullPath(Path.Combine(sourceRoot, targetProjectOrFolder));
+
+                workingDir = targetFolderPath;
+                createArguments =
+                    $"database create \"{dbPath}\" --language=javascript-typescript " +
+                    $"--source-root=\"{targetFolderPath}\" {resourceArguments} " +
+                    $"--command=\"cmd /c echo skipping\" --codescanning-config=\"{configPath}\" " +
+                    "--overwrite --verbose";
             }
 
-            // 1. Opret CodeQL Database (Nu med path exclusion sendt korrekt med)
-            RunCodeQlCli(createCmd, workingDir);
+            RunProcess(
+                fileName: codeQlExecutablePath,
+                arguments: createArguments,
+                workingDirectory: workingDir);
 
-            // 2. Analysér databasen
-            var analyzeCmd = $"database analyze \"{dbPath}\" \"{fullSuitePath}\" --format=sarif-latest --output=\"{absoluteSarifPath}\" --verbose";
-            RunCodeQlCli(analyzeCmd, sourceRoot);
+            string analyzeArguments =
+                $"database analyze \"{dbPath}\" \"{fullSuitePath}\" --format=sarif-latest " +
+                $"--output=\"{absoluteSarifPath}\" {resourceArguments} --verbose";
+
+            RunProcess(
+                fileName: codeQlExecutablePath,
+                arguments: analyzeArguments,
+                workingDirectory: sourceRoot);
+
             FilterSarifResults(absoluteSarifPath);
 
-            // 3. Udskriv den færdige rapport-sti med TYDELIG GUL SKRIFT
             LogYellowToLiveConsole(
                 "\n=======================================================================================\n" +
-                $"[CodeQL] RAPPORT GEMT SIKKERT! Inspicer SARIF-filen her:\n" +
+                "[CodeQL] Report written to:\n" +
                 $"--> {absoluteSarifPath}\n" +
                 "=======================================================================================\n");
 
-            // 4. Tjek resultatet
             EvaluateSarifFile(absoluteSarifPath);
         }
         finally
         {
-            // Ryd op i temp-filer og mapper
-            if (Directory.Exists(dbPath)) Directory.Delete(dbPath, true);
-            if (File.Exists(configPath)) File.Delete(configPath);
+            if (Directory.Exists(dbPath))
+            {
+                Directory.Delete(dbPath, recursive: true);
+            }
+
+            if (File.Exists(configPath))
+            {
+                File.Delete(configPath);
+            }
         }
+    }
+
+    private static string NormalizeQuerySuite(string language, string querySuite)
+    {
+        if (!string.IsNullOrWhiteSpace(querySuite))
+        {
+            return querySuite;
+        }
+
+        return string.Equals(language, "csharp", StringComparison.OrdinalIgnoreCase)
+            ? Path.Combine("codeql-queries", "csharp", "ql", "src", "codeql-suites", "csharp-security-and-quality.qls")
+            : Path.Combine("codeql-queries", "javascript", "ql", "src", "codeql-suites", "javascript-security-and-quality.qls");
+    }
+
+    private static string BuildResourceArguments()
+    {
+        int codeQlThreads = ResolveCodeQlThreads();
+        int? codeQlRamMegabytes = ResolveCodeQlRamMegabytes();
+        string ramArgument = codeQlRamMegabytes is null ? string.Empty : $" --ram={codeQlRamMegabytes.Value}";
+
+        return $"--threads={codeQlThreads}{ramArgument}";
+    }
+
+    private static string ResolveCodeQlExecutablePath()
+    {
+        string? configuredCodeQlCliPath = Environment.GetEnvironmentVariable("CODEQL_CLI_PATH");
+        if (!string.IsNullOrWhiteSpace(configuredCodeQlCliPath))
+        {
+            return ResolveConfiguredCodeQlExecutablePath(configuredCodeQlCliPath);
+        }
+
+        if (TryResolveCodeQlExecutablePath(DefaultCodeQlCliPath, out string? defaultExecutablePath))
+        {
+            return defaultExecutablePath!;
+        }
+
+        return "codeql";
+    }
+
+    private static string ResolveConfiguredCodeQlExecutablePath(string configuredCodeQlCliPath)
+    {
+        if (TryResolveCodeQlExecutablePath(configuredCodeQlCliPath, out string? configuredExecutablePath))
+        {
+            return configuredExecutablePath!;
+        }
+
+        throw new FileNotFoundException($"Could not find the CodeQL CLI executable from '{configuredCodeQlCliPath}'.");
+    }
+
+    private static bool TryResolveCodeQlExecutablePath(string configuredCodeQlCliPath, out string? executablePath)
+    {
+        if (File.Exists(configuredCodeQlCliPath))
+        {
+            executablePath = Path.GetFullPath(configuredCodeQlCliPath);
+            return true;
+        }
+
+        if (Directory.Exists(configuredCodeQlCliPath))
+        {
+            string windowsExecutablePath = Path.Combine(configuredCodeQlCliPath, "codeql.exe");
+            if (File.Exists(windowsExecutablePath))
+            {
+                executablePath = windowsExecutablePath;
+                return true;
+            }
+
+            string portableExecutablePath = Path.Combine(configuredCodeQlCliPath, "codeql");
+            if (File.Exists(portableExecutablePath))
+            {
+                executablePath = portableExecutablePath;
+                return true;
+            }
+        }
+
+        executablePath = null;
+        return false;
+    }
+
+    private static string? ResolveCodeQlQueriesPath(string sourceRoot, string querySuite, string externalQueryPath)
+    {
+        if (!string.IsNullOrWhiteSpace(externalQueryPath))
+        {
+            string fullExternalQueryPath = Path.GetFullPath(externalQueryPath);
+            if (Directory.Exists(fullExternalQueryPath))
+            {
+                return fullExternalQueryPath;
+            }
+
+            throw new DirectoryNotFoundException($"Could not find the CodeQL queries path '{fullExternalQueryPath}'.");
+        }
+
+        string sourceRootSuitePath = Path.GetFullPath(Path.Combine(sourceRoot, querySuite));
+        if (File.Exists(sourceRootSuitePath))
+        {
+            return null;
+        }
+
+        string? configuredCodeQlQueriesPath = Environment.GetEnvironmentVariable("CODEQL_QUERIES_PATH");
+        if (TryResolveCodeQlQueriesPath(configuredCodeQlQueriesPath, out string? configuredQueriesPath))
+        {
+            return configuredQueriesPath;
+        }
+
+        if (TryResolveCodeQlQueriesPath(DefaultCodeQlQueriesPath, out string? defaultQueriesPath))
+        {
+            return defaultQueriesPath;
+        }
+
+        return null;
+    }
+
+    private static bool TryResolveCodeQlQueriesPath(string? candidatePath, out string? resolvedPath)
+    {
+        if (!string.IsNullOrWhiteSpace(candidatePath) && Directory.Exists(candidatePath))
+        {
+            resolvedPath = Path.GetFullPath(candidatePath);
+            return true;
+        }
+
+        resolvedPath = null;
+        return false;
+    }
+
+    private static string ResolveQuerySuitePath(string sourceRoot, string querySuite, string? codeQlQueriesPath)
+    {
+        if (Path.IsPathRooted(querySuite))
+        {
+            return Path.GetFullPath(querySuite);
+        }
+
+        string sourceRootCandidate = Path.GetFullPath(Path.Combine(sourceRoot, querySuite));
+        if (File.Exists(sourceRootCandidate))
+        {
+            return sourceRootCandidate;
+        }
+
+        if (!string.IsNullOrWhiteSpace(codeQlQueriesPath))
+        {
+            string relativeQuerySuite = TrimLeadingCodeQlQueriesDirectory(querySuite);
+            return Path.GetFullPath(Path.Combine(codeQlQueriesPath, relativeQuerySuite));
+        }
+
+        return sourceRootCandidate;
+    }
+
+    private static string TrimLeadingCodeQlQueriesDirectory(string querySuite)
+    {
+        string normalizedQuerySuite = querySuite
+            .Replace('/', Path.DirectorySeparatorChar)
+            .Replace('\\', Path.DirectorySeparatorChar);
+
+        string prefix = $"codeql-queries{Path.DirectorySeparatorChar}";
+        return normalizedQuerySuite.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+            ? normalizedQuerySuite[prefix.Length..]
+            : normalizedQuerySuite;
+    }
+
+    private static void UpdateCodeQlQueriesRepository(string codeQlQueriesPath)
+    {
+        string gitDirectoryPath = Path.Combine(codeQlQueriesPath, ".git");
+        if (!Directory.Exists(gitDirectoryPath) && !File.Exists(gitDirectoryPath))
+        {
+            throw new DirectoryNotFoundException($"The CodeQL queries directory '{codeQlQueriesPath}' is not a Git repository.");
+        }
+
+        RunProcess(
+            fileName: "git",
+            arguments: "pull --ff-only",
+            workingDirectory: codeQlQueriesPath,
+            environmentVariables: new Dictionary<string, string>
+            {
+                ["GIT_TERMINAL_PROMPT"] = "0",
+                ["GCM_INTERACTIVE"] = "Never"
+            });
+    }
+
+    private static int ResolveCodeQlThreads()
+    {
+        string? configuredCodeQlThreads = Environment.GetEnvironmentVariable("CODEQL_THREADS");
+        if (string.IsNullOrWhiteSpace(configuredCodeQlThreads))
+        {
+            return 0;
+        }
+
+        if (int.TryParse(configuredCodeQlThreads, out int codeQlThreads))
+        {
+            return codeQlThreads;
+        }
+
+        throw new InvalidOperationException($"The CODEQL_THREADS value '{configuredCodeQlThreads}' is not a valid integer.");
+    }
+
+    private static int? ResolveCodeQlRamMegabytes()
+    {
+        string? configuredCodeQlRamMegabytes = Environment.GetEnvironmentVariable("CODEQL_RAM_MB");
+        if (string.IsNullOrWhiteSpace(configuredCodeQlRamMegabytes))
+        {
+            return null;
+        }
+
+        if (!int.TryParse(configuredCodeQlRamMegabytes, out int codeQlRamMegabytes))
+        {
+            throw new InvalidOperationException($"The CODEQL_RAM_MB value '{configuredCodeQlRamMegabytes}' is not a valid integer.");
+        }
+
+        if (codeQlRamMegabytes < 2048)
+        {
+            throw new InvalidOperationException("The CODEQL_RAM_MB value must be at least 2048.");
+        }
+
+        return codeQlRamMegabytes;
     }
 
     private static string FindSolutionRoot()
     {
-        var dir = new DirectoryInfo(AppContext.BaseDirectory);
-        while (dir != null && !File.Exists(Path.Combine(dir.FullName, "SaaS-Factory.sln")))
+        DirectoryInfo? directory = new(AppContext.BaseDirectory);
+        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "SaaS-Factory.sln")))
         {
-            dir = dir.Parent;
+            directory = directory.Parent;
         }
-        return dir?.FullName ?? throw new DirectoryNotFoundException("Could not locate solution root folder (SaaS-Factory.sln).");
+
+        return directory?.FullName ?? throw new DirectoryNotFoundException("Could not locate the SaaS-Factory solution root.");
     }
 
-    private static void RunCodeQlCli(string arguments, string workingDirectory)
+    private static void RunProcess(
+        string fileName,
+        string arguments,
+        string workingDirectory,
+        IReadOnlyDictionary<string, string>? environmentVariables = null)
     {
         var startInfo = new ProcessStartInfo
         {
-            FileName = "codeql",
+            FileName = fileName,
             Arguments = arguments,
             WorkingDirectory = workingDirectory,
             RedirectStandardOutput = true,
@@ -119,24 +358,42 @@ public static class CodeQlTestRunner
             CreateNoWindow = true
         };
 
-        using var process = new Process { StartInfo = startInfo };
-        var errorBuilder = new StringBuilder();
-        var errorLock = new object();
-
-        process.OutputDataReceived += (sender, e) =>
+        if (environmentVariables is not null)
         {
-            if (!string.IsNullOrEmpty(e.Data)) lock (errorLock) LogToLiveConsole(e.Data);
+            foreach ((string key, string value) in environmentVariables)
+            {
+                startInfo.Environment[key] = value;
+            }
+        }
+
+        using var process = new Process { StartInfo = startInfo };
+        var standardErrorBuilder = new StringBuilder();
+        var outputLock = new object();
+
+        process.OutputDataReceived += (_, args) =>
+        {
+            if (string.IsNullOrEmpty(args.Data))
+            {
+                return;
+            }
+
+            lock (outputLock)
+            {
+                LogToLiveConsole(args.Data);
+            }
         };
 
-        process.ErrorDataReceived += (sender, e) =>
+        process.ErrorDataReceived += (_, args) =>
         {
-            if (!string.IsNullOrEmpty(e.Data))
+            if (string.IsNullOrEmpty(args.Data))
             {
-                lock (errorLock)
-                {
-                    LogToLiveConsole(e.Data);
-                    errorBuilder.AppendLine(e.Data);
-                }
+                return;
+            }
+
+            lock (outputLock)
+            {
+                LogToLiveConsole(args.Data);
+                standardErrorBuilder.AppendLine(args.Data);
             }
         };
 
@@ -147,39 +404,42 @@ public static class CodeQlTestRunner
 
         if (process.ExitCode != 0)
         {
-            throw new Exception($"CodeQL CLI fejlede med exit-kode {process.ExitCode}. Fejllog:\n{errorBuilder}");
+            throw new InvalidOperationException(
+                $"The command '{fileName} {arguments}' failed with exit code {process.ExitCode}.{Environment.NewLine}{standardErrorBuilder}");
         }
     }
 
     private static void LogToLiveConsole(string message)
     {
-        using var realStdOut = new StreamWriter(Console.OpenStandardOutput(), Encoding.UTF8) { AutoFlush = true };
-        realStdOut.WriteLine($"[CodeQL] {message}");
+        using var standardOutputWriter = new StreamWriter(Console.OpenStandardOutput(), Encoding.UTF8) { AutoFlush = true };
+        standardOutputWriter.WriteLine($"[CodeQL] {message}");
     }
 
     private static void LogYellowToLiveConsole(string message)
     {
-        using var realStdOut = new StreamWriter(Console.OpenStandardOutput(), Encoding.UTF8) { AutoFlush = true };
-        realStdOut.WriteLine($"\u001b[1;33m{message}\u001b[0m");
+        using var standardOutputWriter = new StreamWriter(Console.OpenStandardOutput(), Encoding.UTF8) { AutoFlush = true };
+        standardOutputWriter.WriteLine($"\u001b[1;33m{message}\u001b[0m");
     }
 
     private static void EvaluateSarifFile(string sarifPath)
     {
         if (!File.Exists(sarifPath))
-            throw new FileNotFoundException($"CodeQL genererede ikke en SARIF-rapport på den forventede sti: {sarifPath}");
-
-        using var jsonDoc = JsonDocument.Parse(File.ReadAllText(sarifPath));
-        var root = jsonDoc.RootElement;
-
-        if (root.TryGetProperty("runs", out var runs) && runs.GetArrayLength() > 0)
         {
-            if (runs[0].TryGetProperty("results", out var results))
+            throw new FileNotFoundException($"CodeQL did not generate the expected SARIF report '{sarifPath}'.");
+        }
+
+        using var jsonDocument = JsonDocument.Parse(File.ReadAllText(sarifPath));
+        JsonElement rootElement = jsonDocument.RootElement;
+
+        if (rootElement.TryGetProperty("runs", out JsonElement runs)
+            && runs.GetArrayLength() > 0
+            && runs[0].TryGetProperty("results", out JsonElement results))
+        {
+            int alertCount = results.GetArrayLength();
+            if (alertCount > 0)
             {
-                int alertCount = results.GetArrayLength();
-                if (alertCount > 0)
-                {
-                    throw new Exception($"CodeQL Sikkerhedsalert: Fandt {alertCount} sårbarheder i koden!\nFilen er gemt og kan åbnes her: {sarifPath}");
-                }
+                throw new InvalidOperationException(
+                    $"CodeQL found {alertCount} security findings. Review '{sarifPath}' for details.");
             }
         }
     }

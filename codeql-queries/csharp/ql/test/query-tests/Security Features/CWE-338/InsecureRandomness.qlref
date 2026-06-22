@@ -1,2 +1,0 @@
-query: Security Features/InsecureRandomness.ql
-postprocess: utils/test/PrettyPrintModels.ql

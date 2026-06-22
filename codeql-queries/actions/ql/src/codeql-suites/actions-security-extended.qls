@@ -1,4 +1,0 @@
-- description: Security-extended queries for GitHub Actions
-- queries: .
-- apply: security-extended-selectors.yml
-  from: codeql/suite-helpers
