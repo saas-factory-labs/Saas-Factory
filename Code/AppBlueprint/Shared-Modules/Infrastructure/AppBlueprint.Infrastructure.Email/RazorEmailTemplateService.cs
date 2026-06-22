@@ -81,6 +81,7 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
         ArgumentNullException.ThrowIfNull(subject);
         ArgumentNullException.ThrowIfNull(templateName);
         ArgumentNullException.ThrowIfNull(model);
+        string maskedRecipient = MaskEmailForLogging(to);
 
         if (_resend is null)
         {
@@ -110,7 +111,7 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
                 _logger.LogInformation(
                     "Sent templated email {TemplateName} to {Recipient} with ID {EmailId}",
                     templateName,
-                    to,
+                    maskedRecipient,
                     response.Content);
 
                 return response.Content;
@@ -125,7 +126,7 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
                 ex,
                 "Network error sending templated email {TemplateName} to {Recipient}",
                 templateName,
-                to);
+                maskedRecipient);
             throw;
         }
         catch (TaskCanceledException ex)
@@ -134,7 +135,7 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
                 ex,
                 "Timeout sending templated email {TemplateName} to {Recipient}",
                 templateName,
-                to);
+                maskedRecipient);
             throw;
         }
         catch (RazorLightException ex)
@@ -145,5 +146,28 @@ public sealed class RazorEmailTemplateService : IEmailTemplateService
                 templateName);
             throw;
         }
+    }
+
+    private static string MaskEmailForLogging(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return "[redacted]";
+        }
+
+        int atIndex = email.IndexOf('@');
+        if (atIndex <= 0 || atIndex == email.Length - 1)
+        {
+            return "[redacted]";
+        }
+
+        string localPart = email[..atIndex];
+        string domainPart = email[(atIndex + 1)..];
+
+        string maskedLocalPart = localPart.Length <= 2
+            ? new string('*', localPart.Length)
+            : $"{localPart[0]}***{localPart[^1]}";
+
+        return $"{maskedLocalPart}@{domainPart}";
     }
 }
