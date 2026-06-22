@@ -39,11 +39,13 @@ public sealed class AdminAlertingService : IAdminAlertingService
     {
         ArgumentNullException.ThrowIfNull(alert);
 
+        string redactedAdminEmail = string.IsNullOrWhiteSpace(alert.AdminEmail) ? "n/a" : "redacted";
+
         _logger.LogWarning(
             "ADMIN_ACCESS_ALERT | admin={AdminUserId} ({AdminEmail}) app={AppSlug} tenant={TenantId} " +
             "bypass={IsAutomatedBypass} reason={Reason} at={OccurredAtUtc:O}",
             alert.AdminUserId,
-            alert.AdminEmail,
+            redactedAdminEmail,
             alert.AppSlug,
             alert.TenantId,
             alert.IsAutomatedBypass,
