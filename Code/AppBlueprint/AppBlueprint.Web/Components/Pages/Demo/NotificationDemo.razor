@@ -4,6 +4,7 @@
 @using AppBlueprint.Application.Interfaces
 @using AppBlueprint.Domain.Entities.Notifications
 @using Microsoft.AspNetCore.Components.Authorization
+@using AppBlueprint.Infrastructure.Realtime.SignalR
 @using Microsoft.AspNetCore.SignalR.Client
 @inject INotificationService NotificationService
 @inject IPushNotificationService PushNotificationService
@@ -277,7 +278,7 @@
         try
         {
             // Pass userId and tenantId as query parameters for Blazor Server authentication
-            string hubUrl = $"/hubs/notifications?userId={Uri.EscapeDataString(userId)}&tenantId={Uri.EscapeDataString(tenantId)}";
+            string hubUrl = $"{NotificationHub.HubPath}?userId={Uri.EscapeDataString(userId)}&tenantId={Uri.EscapeDataString(tenantId)}";
             
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(Navigation.ToAbsoluteUri(hubUrl))
