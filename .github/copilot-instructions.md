@@ -222,6 +222,139 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
   - Before adding a package reference, check if it's already available transitively
 - **Keep packages updated and secure (NU1902)**: Regularly check for and fix security vulnerabilities in NuGet packages. Use `Nuget MCP server` to find latest stable versions without known vulnerabilities. Upgrade to patch security issues promptly, ensuring all packages in a family use consistent versions (e.g., all OpenTelemetry packages at 1.11.1).
 - **Prefer stable package versions over prerelease**: For production code, always use stable (non-RC, non-preview) package versions when available. Use `Nuget MCP server` with `allow_prerelease=false` to find stable releases. Only use prerelease packages when no stable version exists or when explicitly required for bleeding-edge framework features.
+- **SonarCloud Code Quality Rules** (mandatory to prevent code smells):
+  - **Mark fields as `readonly` (S2933)**: Always mark fields as `readonly` if they are only assigned in the constructor or field initializer. Use `dotnet format --diagnostics IDE0044` to auto-fix.
+    ```csharp
+    // ✅ Correct
+    private readonly ILogger<MyService> _logger;
+
+    // ❌ Incorrect
+    private ILogger<MyService> _logger;
+    ```
+  - **Avoid duplicate method calls (S2325)**: Do not create methods that simply call identical methods. Extract shared logic to a common method or use inheritance/composition to avoid duplication.
+    ```csharp
+    // ❌ Incorrect - duplicate method
+    public void MethodA() => SharedLogic();
+    public void MethodB() => SharedLogic();
+
+    // ✅ Correct - use single method or polymorphism
+    public void ExecuteLogic() => SharedLogic();
+    ```
+  - **Seal private classes (S3260)**: Mark non-derived private classes as `sealed` for performance optimization and to communicate intent that the class is not designed for inheritance.
+    ```csharp
+    // ✅ Correct
+    private sealed class InternalHelper { }
+
+    // ❌ Incorrect
+    private class InternalHelper { }
+    ```
+  - **Log or rethrow exceptions (S2139)**: Never swallow exceptions. Either log them with context or rethrow with additional information. Do not catch exceptions only to rethrow the same exception without adding context.
+    ```csharp
+    // ✅ Correct - log and handle
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Failed to process user {UserId}", userId);
+        throw new ProcessingException($"Failed to process user {userId}", ex);
+    }
+
+    // ❌ Incorrect - swallows exception
+    catch (Exception ex) { }
+
+    // ❌ Incorrect - rethrows without context
+    catch (Exception ex) { throw ex; }
+    ```
+  - **Complete or remove TODO comments (S1135)**: Do not leave TODO comments in code without tracking them. Either implement the TODO immediately, create a GitHub issue and reference it in the comment, or remove the TODO.
+    ```csharp
+    // ✅ Correct - linked to issue
+    // TODO: Implement retry logic (tracked in #1234)
+
+    // ✅ Correct - actionable
+    // TODO: Add validation for email format before next release
+
+    // ❌ Incorrect - vague and untracked
+    // TODO: fix this later
+    ```
+  - **Remove unused method parameters (S1172)**: If a method parameter is not used, remove it. If it must exist for interface compliance or virtual method override, prefix with underscore to indicate intentional non-use.
+    ```csharp
+    // ✅ Correct - parameter used
+    public void Process(string userId) => _repository.Get(userId);
+
+    // ✅ Correct - intentionally unused (interface requirement)
+    public override void OnEvent(object _sender, EventArgs _e) => ProcessEvent();
+
+    // ❌ Incorrect - unused parameter
+    public void Process(string userId) => _repository.GetAll();
+    ```
+  - **Extract duplicate string literals to constants (S1192)**: When a string literal is used 3+ times, extract it to a named constant. This improves maintainability and prevents typos.
+    ```csharp
+    // ✅ Correct
+    private const string UserNotFoundMessage = "User not found";
+    throw new NotFoundException(UserNotFoundMessage);
+    _logger.LogWarning(UserNotFoundMessage);
+
+    // ❌ Incorrect - duplicated 3+ times
+    throw new NotFoundException("User not found");
+    _logger.LogWarning("User not found");
+    return new ErrorResult("User not found");
+    ```
+  - **Remove unused private members (S1144)**: Delete unused private methods, properties, and fields. If keeping for future use, move to a separate feature branch or document with a GitHub issue reference.
+    ```csharp
+    // ❌ Incorrect - unused private method
+    private void HelperMethod() { /* never called */ }
+
+    // ✅ Correct - remove it or make it public if needed elsewhere
+    ```
+  - **Always specify DateTimeKind for DateTime (S6562)**: When creating DateTime instances, always specify `DateTimeKind.Utc` or `DateTimeKind.Local` to avoid timezone ambiguity. Prefer UTC for storage and business logic.
+    ```csharp
+    // ✅ Correct
+    var now = DateTime.UtcNow;
+    var specific = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+    // ❌ Incorrect - ambiguous kind
+    var now = DateTime.Now;
+    var specific = new DateTime(2024, 1, 1, 0, 0, 0);
+    ```
+  - **Cognitive Complexity limit (S3776)**: Keep method cognitive complexity below 15. If a method exceeds this, refactor by extracting complex conditions into named methods, breaking into smaller methods, or simplifying logic.
+  - **Method parameter limit (S107)**: Limit methods to 7 or fewer parameters. If more are needed, create a DTO, use builder pattern, or reconsider the design.
+    ```csharp
+    // ✅ Correct - use DTO
+    public void SendNotification(NotificationRequest request) { }
+
+    // ❌ Incorrect - too many parameters
+    public void SendNotification(string to, string from, string subject, string body, bool isHtml, int priority, DateTime scheduledTime, string templateId) { }
+    ```
+  - **Docker digest pinning (SECURITY REQUIREMENT)**: ALWAYS use SHA256 digest-only pinning in Dockerfiles for supply chain security. Include the tag as a comment for human readability and Dependabot compatibility. This prevents tag-mutation attacks where attackers push malicious images with the same tag.
+    ```dockerfile
+    # ✅ Correct - digest pinning with tag comment (REQUIRED for security)
+    # mcr.microsoft.com/dotnet/aspnet:10.0
+    FROM mcr.microsoft.com/dotnet/aspnet@sha256:ddcf70ad1ab963a4fcd41fbd722a6b660e404e87567cfbd46fd2809c21b02088 AS base
+
+    # ❌ Incorrect - tag-only (vulnerable to supply chain attacks)
+    FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+
+    # ❌ Incorrect - tag AND digest in FROM statement
+    FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:ddcf... AS base
+    ```
+    **Security Rationale**: Digest pinning provides cryptographic verification of image integrity per SLSA framework and NIST SP 800-190. SonarCloud S8431 is suppressed in `sonar-project.properties` with security justification. NEVER remove digest pinning - it is a deliberate security hardening measure.
+  - **PowerShell formatting (S8620)**: Remove trailing whitespace from PowerShell scripts. Use `dotnet format` or configure your editor to trim trailing whitespace on save.
+  - **SQL explicit sort order**: Always specify `ASC` or `DESC` explicitly in `ORDER BY` clauses to make sort direction clear and prevent ambiguity.
+    ```sql
+    -- ✅ Correct
+    SELECT * FROM Users ORDER BY CreatedAt DESC
+
+    -- ❌ Incorrect - implicit ascending
+    SELECT * FROM Users ORDER BY CreatedAt
+    ```
+  - **ASP.NET typed header properties (ASP0015)**: Use typed header properties instead of string literals for common HTTP headers.
+    ```csharp
+    // ✅ Correct
+    context.Response.Headers.ContentType = "application/json";
+    context.Response.Headers.CacheControl = "no-cache";
+
+    // ❌ Incorrect - string literals
+    context.Response.Headers["Content-Type"] = "application/json";
+    context.Response.Headers["Cache-Control"] = "no-cache";
+    ```
 - Use `dotnet format` to format the code according to the `.editorconfig` file. If you are unable to do so, please inform the user and ask for assistance.
 - Read the `.editorconfig` file to understand the coding style that need to be followed
 - Do not remove commented out code unless explicitly asked to do so. If you are unsure, please ask the user for clarification.
