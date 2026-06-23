@@ -21,10 +21,10 @@
 
 |File|Line|Issue|Status|
 |----|----|-----|------|
-|`ApiEndpoints.cs`|180, 181|Field shadows outer class member — rename it (`S3218`)|Open|
-|`AdminPortalModuleRegistry.cs`|63, 78|Properties `Modules` / `RouterAssemblies` copy collections — convert to methods (`S2365`)|Open|
+|~~`ApiEndpoints.cs`~~|180, 181|Field shadows outer class member — rename it (`S3218`)|✅ Fixed — `Search.Tenants/Users` renamed to `TenantsPath/UsersPath`; `SearchController.cs` updated|
+|`AdminPortalModuleRegistry.cs`|63, 78|Properties `Modules` / `RouterAssemblies` copy collections — convert to methods (`S2365`)|Open — many callers across services and tests; needs dedicated refactoring pass|
 |~~`CommandPalette.razor`~~|137, 148|Properties `AllCommands` / `FilteredCommands` copy collections — convert to methods (`S2365`)|✅ Fixed — converted to `GetAllCommands()` / `GetFilteredCommands()`|
-|`GlobalSearch.razor`|184|Property `FilteredResults` copies collection — convert to method (`S2365`)|Open|
+|~~`GlobalSearch.razor`~~|184|Property `FilteredResults` copies collection — convert to method (`S2365`)|✅ Fixed — converted to `GetFilteredResults()`; template and `HandleKeyDown` / `GetResultIndex` updated|
 |`FileValidationService.cs`|100|Cognitive Complexity 20 > 15 — refactor (`S3776`)|Open|
 |`Extensions.cs`|76|Cognitive Complexity 20 > 15 — refactor (`S3776`)|Open|
 |`AdminDependencies.razor`|82|Cognitive Complexity 30 > 15 — refactor (`S3776`)|Open|
@@ -33,8 +33,8 @@
 |~~`DashboardCard05.razor`~~|31|Unread private field `counter` — remove or use it (`S4487`)|✅ Fixed — field and `counter++` removed|
 |~~`ModalBlank.razor`~~|40|Unread private field `modalContentRef` (`S4487`)|✅ Fixed — `@ref`, field, `@using`, and `@inject` removed|
 |~~`ModalBasic.razor`~~|53|Unread private field `modalContentRef` (`S4487`)|✅ Fixed — `@ref`, field, `@using`, and `@inject` removed|
-|`DropdownFilter.razor`|83|Empty method — add comment, throw `NotSupportedException`, or implement (`S1186`)|Open|
-|`Datepicker.razor`|28|Empty method — add comment, throw `NotSupportedException`, or implement (`S1186`)|Open|
+|~~`DropdownFilter.razor`~~|83|Empty method — add comment, throw `NotSupportedException`, or implement (`S1186`)|✅ Already implemented — `OnAfterRenderAsync` has JS interop; likely stale scan result|
+|~~`Datepicker.razor`~~|28|Empty method — add comment, throw `NotSupportedException`, or implement (`S1186`)|✅ Already implemented — `OnAfterRenderAsync` has JS interop; likely stale scan result|
 
 ---
 
@@ -84,11 +84,12 @@
 7. ✅ ~~**`Dispose` naming confusion**~~ — `Popover.razor` and `MegaMenu.razor` both have `@implements IDisposable`
 8. ✅ ~~**Unread private fields**~~ — `DashboardCard05.razor` (`counter`), `ModalBlank.razor` and `ModalBasic.razor` (`modalContentRef`) all removed
 9. ✅ ~~**`ConfigurationValidator.cs`**~~ — example connection strings removed from error message
-10. **Unreachable code bug** in `Program.cs:583`
-11. **Empty methods** — `DropdownFilter.razor`, `Datepicker.razor`
-12. **Collection-copying properties** — `AdminPortalModuleRegistry.cs`, `GlobalSearch.razor`
-13. **Cognitive Complexity** — `AdminDependencies.razor`, `FileValidationService.cs`, `Extensions.cs`, `PostgresConnectionString.cs`, `CliProcessRunner.cs`
-14. **Unused private accessors** (`S1144`) — ~10+ instances
-15. **`StringBuilder` locale** (`CA1305`) — mark as Won't Fix in SonarCloud UI
-16. **SQL injection** in `AdminPortalDiagnostics.cs:128` (`S3649`)
-17. **Field shadowing** in `ApiEndpoints.cs:180,181` (`S3218`)
+10. ✅ ~~**Field shadowing** in `ApiEndpoints.cs:180,181`~~ — `Search.Tenants/Users` renamed to `TenantsPath/UsersPath`
+11. ✅ ~~**Collection-copying property** in `GlobalSearch.razor`~~ — converted to `GetFilteredResults()`
+12. ✅ ~~**Empty methods** in `DropdownFilter.razor`, `Datepicker.razor`~~ — already implemented; stale SonarCloud result
+13. **Unreachable code bug** in `Program.cs:583`
+14. **Collection-copying properties** — `AdminPortalModuleRegistry.cs` (many callers; dedicated refactoring pass needed)
+15. **Cognitive Complexity** — `AdminDependencies.razor`, `FileValidationService.cs`, `Extensions.cs`, `PostgresConnectionString.cs`, `CliProcessRunner.cs`
+16. **Unused private accessors** (`S1144`) — ~10+ instances; needs SonarCloud UI to see exact list
+17. **`StringBuilder` locale** (`CA1305`) — mark as Won't Fix in SonarCloud UI
+18. **SQL injection** in `AdminPortalDiagnostics.cs:128` (`S3649`)

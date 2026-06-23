@@ -47,10 +47,10 @@
                         <div class="animate-spin rounded-full h-8 w-8 border-4 border-violet-500 border-t-transparent"></div>
                     </div>
                 }
-                else if (!string.IsNullOrEmpty(searchQuery) && FilteredResults.Any())
+                else if (!string.IsNullOrEmpty(searchQuery) && GetFilteredResults().Any())
                 {
                     @* Search results *@
-                    @foreach (var group in FilteredResults.GroupBy(r => r.Category))
+                    @foreach (var group in GetFilteredResults().GroupBy(r => r.Category))
                     {
                         <div class="px-4 py-2 bg-gray-50 dark:bg-gray-700/30">
                             <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">@group.Key</h3>
@@ -174,20 +174,17 @@
 
     private List<SearchResult> AllItems => SearchableItems ?? DefaultSearchableItems;
 
-    private List<SearchResult> FilteredResults
+    private List<SearchResult> GetFilteredResults()
     {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(searchQuery)) return new();
+        if (string.IsNullOrWhiteSpace(searchQuery)) return new();
 
-            var query = searchQuery.ToLower();
-            return AllItems
-                .Where(r => r.Title.ToLower().Contains(query) ||
-                            (r.Description?.ToLower().Contains(query) ?? false))
-                .OrderByDescending(r => r.Title.ToLower().StartsWith(query))
-                .ThenBy(r => r.Category)
-                .ToList();
-        }
+        var query = searchQuery.ToLower();
+        return AllItems
+            .Where(r => r.Title.ToLower().Contains(query) ||
+                        (r.Description?.ToLower().Contains(query) ?? false))
+            .OrderByDescending(r => r.Title.ToLower().StartsWith(query))
+            .ThenBy(r => r.Category)
+            .ToList();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -207,7 +204,7 @@
 
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {
-        var results = FilteredResults;
+        var results = GetFilteredResults();
         switch (e.Key)
         {
             case "Escape":
@@ -231,7 +228,7 @@
 
     private int GetResultIndex(SearchResult result)
     {
-        return FilteredResults.IndexOf(result);
+        return GetFilteredResults().IndexOf(result);
     }
 
     private async Task ExecuteQuickAction(QuickAction action)

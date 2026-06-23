@@ -39,7 +39,7 @@ public class SearchController : BaseController
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Paged search results for tenants.</returns>
     /// <response code="200">Returns the matching tenants.</response>
-    [HttpPost(ApiEndpoints.Search.Tenants)]
+    [HttpPost(ApiEndpoints.Search.TenantsPath)]
     [ProducesResponseType(typeof(TenantSearchResponse), StatusCodes.Status200OK)]
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult<TenantSearchResponse>> SearchTenants(
@@ -77,7 +77,7 @@ public class SearchController : BaseController
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Paged search results for users.</returns>
     /// <response code="200">Returns the matching users.</response>
-    [HttpPost(ApiEndpoints.Search.Users)]
+    [HttpPost(ApiEndpoints.Search.UsersPath)]
     [ProducesResponseType(typeof(UserSearchResponse), StatusCodes.Status200OK)]
     [MapToApiVersion(ApiVersions.V1)]
     public async Task<ActionResult<UserSearchResponse>> SearchUsers(

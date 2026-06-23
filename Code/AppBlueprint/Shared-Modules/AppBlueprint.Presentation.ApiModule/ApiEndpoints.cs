@@ -177,7 +177,7 @@ public static class ApiEndpoints
 
     internal static class Search
     {
-        public const string Tenants = "tenants";
-        public const string Users = "users";
+        public const string TenantsPath = "tenants";
+        public const string UsersPath = "users";
     }
 }
