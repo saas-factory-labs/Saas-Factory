@@ -137,7 +137,7 @@ else
 // is created by DeploymentManager.ApiService's migrations. Required as soon as any
 // admin portal module is loaded - audit is a security control, not best-effort.
 string? deploymentManagerDb = builder.Configuration.GetConnectionString("DefaultConnection");
-if (string.IsNullOrWhiteSpace(deploymentManagerDb) && adminPortal.Registry.Modules.Count > 0)
+if (string.IsNullOrWhiteSpace(deploymentManagerDb) && adminPortal.Registry.GetModules().Count > 0)
 {
     throw new InvalidOperationException(
         "Admin portal modules are loaded but ConnectionStrings:DefaultConnection " +

@@ -58,7 +58,7 @@ internal sealed partial class CloudflareIpFilterMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<CloudflareIpFilterMiddleware> _logger;
     private readonly bool _enabled;
-    private readonly IReadOnlyList<(IPAddress Network, int PrefixLength)> _allowedRanges;
+    private readonly List<(IPAddress Network, int PrefixLength)> _allowedRanges;
 
     public CloudflareIpFilterMiddleware(
         RequestDelegate next,
@@ -183,14 +183,14 @@ internal sealed partial class CloudflareIpFilterMiddleware
     }
 
     [LoggerMessage(Level = LogLevel.Information,
-        Message = "CloudflareIpFilter initialized – enabled: {Enabled}, ranges: {Count}")]
+        Message = "CloudflareIpFilter initialized - enabled: {Enabled}, ranges: {Count}")]
     private static partial void LogFilterInitialized(ILogger logger, bool enabled, int count);
 
     [LoggerMessage(Level = LogLevel.Warning,
-        Message = "Blocked request from {RemoteIp} – not a Cloudflare IP or missing CF-Ray/CF-Connecting-IP headers. Path: {Path}")]
+        Message = "Blocked request from {RemoteIp} - not a Cloudflare IP or missing CF-Ray/CF-Connecting-IP headers. Path: {Path}")]
     private static partial void LogBlockedRequest(ILogger logger, string? remoteIp, string? path);
 
-    private static IReadOnlyList<(IPAddress Network, int PrefixLength)> ParseCidrRanges(
+    private static List<(IPAddress Network, int PrefixLength)> ParseCidrRanges(
         string[] ranges)
     {
         var result = new List<(IPAddress, int)>(ranges.Length);

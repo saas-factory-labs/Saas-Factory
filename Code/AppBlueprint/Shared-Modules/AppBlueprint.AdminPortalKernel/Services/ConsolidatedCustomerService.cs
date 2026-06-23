@@ -62,7 +62,7 @@ public sealed class ConsolidatedCustomerService : IConsolidatedCustomerService
         var customers = new List<ConsolidatedCustomer>();
         var errors = new List<string>();
 
-        foreach (IAdminPortalModule module in _registry.Modules)
+        foreach (IAdminPortalModule module in _registry.GetModules())
         {
             try
             {

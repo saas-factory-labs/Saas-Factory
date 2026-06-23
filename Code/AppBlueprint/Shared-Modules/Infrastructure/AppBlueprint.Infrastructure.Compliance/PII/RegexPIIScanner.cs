@@ -6,14 +6,14 @@ using FluentRegex;
 
 namespace AppBlueprint.Infrastructure.Compliance.PII;
 
-public partial class RegexPIIScanner : IPIIScanner
+public partial class RegexPiiScanner : IPiiScanner
 {
     public string Name => "Regex+Luhn";
 
-    private readonly List<PIIRegexDefinition> _definitions = new()
+    private readonly List<PiiRegexDefinition> _definitions = new()
     {
         // [a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,20}
-        new PIIRegexDefinition("Email", new Regex(Pattern.With
+        new PiiRegexDefinition("Email", new Regex(Pattern.With
             .Set(Pattern.With.Letter.Digit.Literal("._%+-")).Repeat.OneOrMore
             .Literal("@")
             .Set(Pattern.With.Letter.Digit.Literal(".-")).Repeat.OneOrMore
@@ -22,7 +22,7 @@ public partial class RegexPIIScanner : IPIIScanner
             .ToString(), RegexOptions.Compiled)),
 
         // (?:\+45|0045)?\s?[2-9][0-9][\s-]?[0-9]{2}[\s-]?[0-9]{2}[\s-]?[0-9]{2}
-        new PIIRegexDefinition("DanishPhone", new Regex(Pattern.With
+        new PiiRegexDefinition("DanishPhone", new Regex(Pattern.With
             .Group(Pattern.With.Choice(Pattern.With.Literal("+45"), Pattern.With.Literal("0045"))).Repeat.Optional
             .Whitespace.Repeat.Optional
             .Set(Pattern.With.RegEx("2-9"))
@@ -36,14 +36,14 @@ public partial class RegexPIIScanner : IPIIScanner
             .ToString(), RegexOptions.Compiled)),
 
         // \+(?:[0-9]\ ?){6,14}[0-9]
-        new PIIRegexDefinition("InternationalPhone", new Regex(Pattern.With
+        new PiiRegexDefinition("InternationalPhone", new Regex(Pattern.With
             .Literal("+")
             .Group(Pattern.With.Digit.Whitespace.Repeat.Optional).Repeat.Times(6, 14)
             .Digit
             .ToString(), RegexOptions.Compiled)),
 
         // \b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b
-        new PIIRegexDefinition("IPv4", new Regex(Pattern.With
+        new PiiRegexDefinition("IPv4", new Regex(Pattern.With
             .WordBoundary
             .Group(Pattern.With
                 .Choice(
@@ -62,7 +62,7 @@ public partial class RegexPIIScanner : IPIIScanner
             .ToString(), RegexOptions.Compiled)),
 
         // \b(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}\b
-        new PIIRegexDefinition("IPv6", new Regex(Pattern.With
+        new PiiRegexDefinition("IPv6", new Regex(Pattern.With
             .WordBoundary
             .Group(Pattern.With.Set(Pattern.With.UppercaseLetter.Digit).Repeat.Times(1, 4).Literal(":")).Repeat.Times(7)
             .Set(Pattern.With.UppercaseLetter.Digit).Repeat.Times(1, 4)
@@ -70,7 +70,7 @@ public partial class RegexPIIScanner : IPIIScanner
             .ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled)),
 
         // \b[A-Z]{2}[0-9]{2}(?:[ ]?[A-Z0-9]){12,30}\b
-        new PIIRegexDefinition("IBAN", new Regex(Pattern.With
+        new PiiRegexDefinition("IBAN", new Regex(Pattern.With
             .WordBoundary
             .Set(Pattern.With.UppercaseLetter).Repeat.Times(2)
             .Digit.Repeat.Times(2)
@@ -79,14 +79,14 @@ public partial class RegexPIIScanner : IPIIScanner
             .ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled)),
 
         // \b(?:\d[ -]*?){13,16}\b
-        new PIIRegexDefinition("CreditCard", new Regex(Pattern.With
+        new PiiRegexDefinition("CreditCard", new Regex(Pattern.With
             .WordBoundary
             .Group(Pattern.With.Digit.Set(Pattern.With.Literal(" -")).Repeat.ZeroOrMore.Repeat.Optional).Repeat.Times(13, 16)
             .WordBoundary
             .ToString(), RegexOptions.Compiled), ValidationFunc: ValidateLuhn),
 
         // \b-?(?:90(?:\.0+)?|[1-8]?\d(?:\.\d+)?),\s*-?(?:180(?:\.0+)?|(?:1[0-7]\d|\d{1,2})(?:\.\d+)?)\b
-        new PIIRegexDefinition("GeoCoordinates", new Regex(Pattern.With
+        new PiiRegexDefinition("GeoCoordinates", new Regex(Pattern.With
             .WordBoundary
             .Literal("-").Repeat.Optional
             .Choice(
@@ -107,7 +107,7 @@ public partial class RegexPIIScanner : IPIIScanner
             .ToString(), RegexOptions.Compiled)),
 
         // \b(?:[a-z0-9]{32,}|[A-Z0-9]{32,})\b
-        new PIIRegexDefinition("APIKey", new Regex(Pattern.With
+        new PiiRegexDefinition("APIKey", new Regex(Pattern.With
             .WordBoundary
             .Choice(
                 Pattern.With.Set(Pattern.With.LowercaseLetter.Digit).Repeat.AtLeast(32),
@@ -117,7 +117,7 @@ public partial class RegexPIIScanner : IPIIScanner
             .ToString(), RegexOptions.Compiled)),
 
         // \b(?:[0-3][0-9][0-1][0-9][0-9]{2}-?[0-9]{4})\b
-        new PIIRegexDefinition("DanishCPR", new Regex(Pattern.With
+        new PiiRegexDefinition("DanishCPR", new Regex(Pattern.With
             .WordBoundary
             .Set(Pattern.With.RegEx("0-3")).Digit
             .Set(Pattern.With.RegEx("0-1")).Digit
@@ -128,14 +128,14 @@ public partial class RegexPIIScanner : IPIIScanner
             .ToString(), RegexOptions.Compiled)),
 
         // \b\d{14,15}\b
-        new PIIRegexDefinition("IMEI", new Regex(Pattern.With
+        new PiiRegexDefinition("IMEI", new Regex(Pattern.With
             .WordBoundary
             .Digit.Repeat.Times(14, 15)
             .WordBoundary
             .ToString(), RegexOptions.Compiled), ValidationFunc: ValidateLuhn),
 
         // (?i)(?:password|passwd|pwd|secret|api_key|apikey|token)\s*[:=]\s*[^\s\""']{8,64}
-        new PIIRegexDefinition("PotentialPasswordOrKey", new Regex(Pattern.With
+        new PiiRegexDefinition("PotentialPasswordOrKey", new Regex(Pattern.With
             .Choice(
                 Pattern.With.Literal("password"),
                 Pattern.With.Literal("passwd"),
@@ -152,14 +152,14 @@ public partial class RegexPIIScanner : IPIIScanner
             .ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled))
     };
 
-    public Task<IEnumerable<PIITag>> ScanAsync(string text, CancellationToken cancellationToken = default)
+    public Task<IEnumerable<PiiTag>> ScanAsync(string text, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
-            return Task.FromResult(Enumerable.Empty<PIITag>());
+            return Task.FromResult(Enumerable.Empty<PiiTag>());
         }
 
-        List<PIITag> tags = [];
+        List<PiiTag> tags = [];
 
         foreach (var def in _definitions)
         {
@@ -171,9 +171,9 @@ public partial class RegexPIIScanner : IPIIScanner
                     continue;
                 }
 
-                var definition = PIITypeRegistry.GetDefinition(def.Label);
+                var definition = PiiTypeRegistry.GetDefinition(def.Label);
 
-                tags.Add(new PIITag
+                tags.Add(new PiiTag
                 {
                     Type = def.Label,
                     Value = match.Value,
@@ -193,7 +193,7 @@ public partial class RegexPIIScanner : IPIIScanner
         return LuhnValidator.IsValid(value);
     }
 
-    private sealed record PIIRegexDefinition(
+    private sealed record PiiRegexDefinition(
         string Label,
         Regex Regex,
         Func<string, bool>? ValidationFunc = null);

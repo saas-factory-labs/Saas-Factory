@@ -6,7 +6,7 @@
 @* AdditionalAssemblies: the admin portal kernel's generic pages (/apps/{slug}/admin...)
    plus every runtime-loaded plugin module's pages. *@
 <Router AppAssembly="@typeof(Program).Assembly"
-        AdditionalAssemblies="@AdminPortalRegistry.RouterAssemblies">
+        AdditionalAssemblies="@AdminPortalRegistry.GetRouterAssemblies()">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <NotAuthorized Context="authContext">

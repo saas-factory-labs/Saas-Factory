@@ -9,6 +9,8 @@ namespace AppBlueprint.Infrastructure.Realtime.SignalR;
 // [Authorize] // Temporarily removed for debugging authentication
 public sealed class NotificationHub : TenantScopedHub<NotificationHub>
 {
+    public const string HubPath = "/hubs/notifications";
+
     public NotificationHub(ILogger<NotificationHub> logger)
     {
         SetLogger(logger);

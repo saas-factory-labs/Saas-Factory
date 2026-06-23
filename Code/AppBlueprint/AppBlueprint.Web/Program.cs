@@ -6,6 +6,7 @@ using AppBlueprint.Infrastructure.Authentication.Extensions;
 using AppBlueprint.Infrastructure.Email.Extensions;
 using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.Infrastructure.Realtime.Extensions;
+using AppBlueprint.Infrastructure.Realtime.SignalR;
 using AppBlueprint.ServiceDefaults;
 using AppBlueprint.UiKit;
 using AppBlueprint.UiKit.Models;
@@ -411,10 +412,10 @@ app.MapAuthenticationEndpoints(builder.Configuration);
 // Map SignalR hubs - authentication validated in hub's OnConnectedAsync
 // Note: Do NOT use .RequireAuthorization() here as it causes OIDC redirect (302)
 // instead of allowing cookie auth to flow through. Hub validates auth manually.
-app.MapHub<AppBlueprint.Infrastructure.Realtime.SignalR.DemoChatHub>("/hubs/demochat").AllowAnonymous();
-app.MapHub<AppBlueprint.Infrastructure.Realtime.SignalR.NotificationHub>("/hubs/notifications").AllowAnonymous();
-Console.WriteLine("[Web] SignalR hub mapped: /hubs/demochat (auth validated in hub)");
-Console.WriteLine("[Web] SignalR hub mapped: /hubs/notifications (auth validated in hub)");
+app.MapHub<DemoChatHub>(DemoChatHub.HubPath).AllowAnonymous();
+app.MapHub<NotificationHub>(NotificationHub.HubPath).AllowAnonymous();
+Console.WriteLine($"[Web] SignalR hub mapped: {DemoChatHub.HubPath} (auth validated in hub)");
+Console.WriteLine($"[Web] SignalR hub mapped: {NotificationHub.HubPath} (auth validated in hub)");
 
 app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(_Imports).Assembly)

@@ -11,6 +11,8 @@ namespace AppBlueprint.Infrastructure.Realtime.SignalR;
 /// </summary>
 public class DemoChatHub : TenantScopedHub<DemoChatHub>
 {
+    public const string HubPath = "/hubs/demochat";
+
     // Track online users per tenant: TenantId -> Dictionary<UserId, UserName>
     private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _onlineUsersByTenant = new();
 

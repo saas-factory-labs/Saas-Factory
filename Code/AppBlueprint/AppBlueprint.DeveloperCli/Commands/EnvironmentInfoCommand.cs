@@ -9,6 +9,8 @@ namespace AppBlueprint.DeveloperCli.Commands;
 /// </summary>
 internal static class EnvironmentInfoCommand
 {
+    private const string NotInstalled = "Not installed";
+
     public static Command Create()
     {
         var command = new Command("env:info", "Show development environment information and status");
@@ -171,7 +173,7 @@ internal static class EnvironmentInfoCommand
 
         // Docker Version
         string dockerVersion = GetDockerVersion();
-        if (dockerVersion != "Not installed")
+        if (dockerVersion != NotInstalled)
         {
             table.AddRow("Docker Version", $"[dim]{dockerVersion}[/]");
         }
@@ -364,16 +366,16 @@ internal static class EnvironmentInfoCommand
 
             using var process = Process.Start(psi);
             if (process is null)
-                return "Not installed";
+                return NotInstalled;
 
             string version = process.StandardOutput.ReadToEnd().Trim();
             process.WaitForExit();
 
-            return string.IsNullOrWhiteSpace(version) ? "Not installed" : version;
+            return string.IsNullOrWhiteSpace(version) ? NotInstalled : version;
         }
         catch
         {
-            return "Not installed";
+            return NotInstalled;
         }
 #pragma warning restore CA1031
     }

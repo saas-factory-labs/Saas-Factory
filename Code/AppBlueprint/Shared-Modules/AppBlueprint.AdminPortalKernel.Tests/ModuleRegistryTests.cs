@@ -59,8 +59,8 @@ internal sealed class ModuleRegistryTests
         registry.Register(new FixtureAdminModule());
         registry.Register(new SecondFixtureAdminModule());
 
-        registry.Modules.Should().HaveCount(2);
-        registry.Modules.Select(m => m.Slug).Should().BeEquivalentTo("fixture-app", "second-app");
+        registry.GetModules().Should().HaveCount(2);
+        registry.GetModules().Select(m => m.Slug).Should().BeEquivalentTo("fixture-app", "second-app");
         await Task.CompletedTask;
     }
 
@@ -72,9 +72,9 @@ internal sealed class ModuleRegistryTests
         registry.Register(new FixtureAdminModule());
         registry.Register(new SecondFixtureAdminModule());
 
-        registry.RouterAssemblies.Should().Contain(typeof(IAdminPortalModule).Assembly);
-        registry.RouterAssemblies.Should().Contain(typeof(FixtureAdminModule).Assembly);
-        registry.RouterAssemblies.Should().OnlyHaveUniqueItems();
+        registry.GetRouterAssemblies().Should().Contain(typeof(IAdminPortalModule).Assembly);
+        registry.GetRouterAssemblies().Should().Contain(typeof(FixtureAdminModule).Assembly);
+        registry.GetRouterAssemblies().Should().OnlyHaveUniqueItems();
         await Task.CompletedTask;
     }
 

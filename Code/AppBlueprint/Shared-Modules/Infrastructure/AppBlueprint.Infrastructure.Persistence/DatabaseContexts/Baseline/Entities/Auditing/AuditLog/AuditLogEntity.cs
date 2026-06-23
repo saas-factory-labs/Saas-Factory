@@ -44,11 +44,11 @@ public class AuditLogEntity : BaseEntity, ITenantScoped
     public string? Category { get; set; }
 
     [Required]
-    [PIIRisk]
+    [PiiRisk]
     public required string NewValue { get; set; }
 
     [Required]
-    [PIIRisk]
+    [PiiRisk]
     public required string OldValue { get; set; }
 
     /// <summary>

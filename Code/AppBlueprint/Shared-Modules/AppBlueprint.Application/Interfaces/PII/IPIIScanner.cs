@@ -2,8 +2,8 @@ using AppBlueprint.SharedKernel.SharedModels.PII;
 
 namespace AppBlueprint.Application.Interfaces.PII;
 
-public interface IPIIScanner
+public interface IPiiScanner
 {
     string Name { get; }
-    Task<IEnumerable<PIITag>> ScanAsync(string text, CancellationToken cancellationToken = default);
+    Task<IEnumerable<PiiTag>> ScanAsync(string text, CancellationToken cancellationToken = default);
 }

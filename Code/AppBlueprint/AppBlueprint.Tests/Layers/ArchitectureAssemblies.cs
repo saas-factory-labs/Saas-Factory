@@ -27,7 +27,7 @@ internal static class ArchitectureAssemblies
     [
         typeof(AppBlueprint.Infrastructure.Extensions.ServiceCollectionExtensions).Assembly,            // facade
         typeof(AppBlueprint.Infrastructure.Authentication.WebAuthenticationExtensions).Assembly,        // Authentication
-        typeof(AppBlueprint.Infrastructure.Compliance.PII.PIIEngine).Assembly,                          // Compliance
+        typeof(AppBlueprint.Infrastructure.Compliance.PII.PiiEngine).Assembly,                          // Compliance
         typeof(AppBlueprint.Infrastructure.Email.TransactionEmailService).Assembly,                     // Email
         typeof(AppBlueprint.Infrastructure.Notifications.NotificationService).Assembly,                 // Notifications
         typeof(AppBlueprint.Infrastructure.Payments.StripeSubscriptionService).Assembly,                // Payments

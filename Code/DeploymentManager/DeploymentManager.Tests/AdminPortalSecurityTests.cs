@@ -65,8 +65,8 @@ internal sealed class AdminPortalSecurityTests
                 .AddAdminPortalPlugins(pluginsFolder);
 
             builder.Registry.TryGet("sample", out _).Should().BeTrue();
-            builder.Registry.RouterAssemblies.Should().Contain(SampleModuleAssembly);
-            builder.Registry.RouterAssemblies.Should().Contain(KernelAssembly);
+            builder.Registry.GetRouterAssemblies().Should().Contain(SampleModuleAssembly);
+            builder.Registry.GetRouterAssemblies().Should().Contain(KernelAssembly);
         }
         finally
         {

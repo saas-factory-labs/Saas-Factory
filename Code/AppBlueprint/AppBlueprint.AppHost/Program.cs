@@ -2,9 +2,15 @@
 using System.Net;
 using System.Net.Sockets;
 
+const string DatabaseConnectionStringKey = "DATABASE_CONNECTIONSTRING";
+const string LogtoEndpointKey = "LOGTO_ENDPOINT";
+const string LogtoAppIdKey = "LOGTO_APPID";
+const string LogtoAppSecretKey = "LOGTO_APPSECRET";
 const string LogtoApiResourceKey = "LOGTO_APIRESOURCE";
+const string AuthenticationProviderKey = "AUTHENTICATION_PROVIDER";
 const string DatabaseContextTypeKey = "DATABASECONTEXT_TYPE";
 const string DatabaseContextEnableHybridModeKey = "DATABASECONTEXT_ENABLEHYBRIDMODE";
+const string AspNetCoreUrlsKey = "ASPNETCORE_URLS";
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -46,7 +52,7 @@ static bool HasPassword(string connectionString)
 
 // --- DATABASE CONFIGURATION (Doppler & Railway) ---
 // Database connection string must be set as DATABASE_CONNECTIONSTRING environment variable
-var databaseConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING")
+var databaseConnectionString = Environment.GetEnvironmentVariable(DatabaseConnectionStringKey)
     ?? throw new InvalidOperationException(
         "Database connection string not found. Set DATABASE_CONNECTIONSTRING environment variable. Ensure Doppler is running (doppler run).");
 
@@ -59,35 +65,35 @@ if (!hasPassword)
 }
 
 // Read Logto configuration from environment variables (Doppler)
-string? logtoEndpoint = Environment.GetEnvironmentVariable("LOGTO_ENDPOINT");
-string? logtoAppId = Environment.GetEnvironmentVariable("LOGTO_APPID");
-string? logtoAppSecret = Environment.GetEnvironmentVariable("LOGTO_APPSECRET");
+string? logtoEndpoint = Environment.GetEnvironmentVariable(LogtoEndpointKey);
+string? logtoAppId = Environment.GetEnvironmentVariable(LogtoAppIdKey);
+string? logtoAppSecret = Environment.GetEnvironmentVariable(LogtoAppSecretKey);
 string? logtoApiResource = Environment.GetEnvironmentVariable(LogtoApiResourceKey);
-string? authenticationProvider = Environment.GetEnvironmentVariable("AUTHENTICATION_PROVIDER");
+string? authenticationProvider = Environment.GetEnvironmentVariable(AuthenticationProviderKey);
 string? databaseContextType = Environment.GetEnvironmentVariable(DatabaseContextTypeKey);
 string? databaseContextEnableHybridMode = Environment.GetEnvironmentVariable(DatabaseContextEnableHybridModeKey) ?? "true";
 
 builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
     .WithHttpEndpoint(port: 9000, name: "gateway", isProxied: false)
-    .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:9000");
+    .WithEnvironment(AspNetCoreUrlsKey, "http://0.0.0.0:9000");
 
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
     .WithHttpEndpoint(port: 9100, name: "api", isProxied: false)
-    .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:9100")
+    .WithEnvironment(AspNetCoreUrlsKey, "http://0.0.0.0:9100")
     .WithEnvironment("SWAGGER_PATH", "/swagger")
-    .WithEnvironment("DATABASE_CONNECTIONSTRING", databaseConnectionString);
+    .WithEnvironment(DatabaseConnectionStringKey, databaseConnectionString);
 
 // Add Logto configuration if provided via Doppler
 if (!string.IsNullOrWhiteSpace(logtoEndpoint))
-    apiService = apiService.WithEnvironment("LOGTO_ENDPOINT", logtoEndpoint);
+    apiService = apiService.WithEnvironment(LogtoEndpointKey, logtoEndpoint);
 if (!string.IsNullOrWhiteSpace(logtoAppId))
-    apiService = apiService.WithEnvironment("LOGTO_APPID", logtoAppId);
+    apiService = apiService.WithEnvironment(LogtoAppIdKey, logtoAppId);
 if (!string.IsNullOrWhiteSpace(logtoAppSecret))
-    apiService = apiService.WithEnvironment("LOGTO_APPSECRET", logtoAppSecret);
+    apiService = apiService.WithEnvironment(LogtoAppSecretKey, logtoAppSecret);
 if (!string.IsNullOrWhiteSpace(logtoApiResource))
     apiService = apiService.WithEnvironment(LogtoApiResourceKey, logtoApiResource);
 if (!string.IsNullOrWhiteSpace(authenticationProvider))
-    apiService = apiService.WithEnvironment("AUTHENTICATION_PROVIDER", authenticationProvider);
+    apiService = apiService.WithEnvironment(AuthenticationProviderKey, authenticationProvider);
 if (!string.IsNullOrWhiteSpace(databaseContextType))
     apiService = apiService.WithEnvironment(DatabaseContextTypeKey, databaseContextType);
 if (!string.IsNullOrWhiteSpace(databaseContextEnableHybridMode))
@@ -96,20 +102,20 @@ if (!string.IsNullOrWhiteSpace(databaseContextEnableHybridMode))
 var webFrontend = builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithHttpEndpoint(port: 9200, name: "web-http", isProxied: false)
     .WithReference(apiService)
-    .WithEnvironment("ASPNETCORE_URLS", "http://0.0.0.0:9200")
+    .WithEnvironment(AspNetCoreUrlsKey, "http://0.0.0.0:9200")
     // Using dynamic IP so mobile devices can reach the API on this host machine
     .WithEnvironment("API_BASE_URL", $"http://{localIp}:9100")
-    .WithEnvironment("DATABASE_CONNECTIONSTRING", databaseConnectionString);
+    .WithEnvironment(DatabaseConnectionStringKey, databaseConnectionString);
 
 // Add Logto configuration if provided via Doppler
 if (!string.IsNullOrWhiteSpace(logtoEndpoint))
-    webFrontend = webFrontend.WithEnvironment("LOGTO_ENDPOINT", logtoEndpoint);
+    webFrontend = webFrontend.WithEnvironment(LogtoEndpointKey, logtoEndpoint);
 if (!string.IsNullOrWhiteSpace(logtoAppId))
-    webFrontend = webFrontend.WithEnvironment("LOGTO_APPID", logtoAppId);
+    webFrontend = webFrontend.WithEnvironment(LogtoAppIdKey, logtoAppId);
 if (!string.IsNullOrWhiteSpace(logtoAppSecret))
-    webFrontend = webFrontend.WithEnvironment("LOGTO_APPSECRET", logtoAppSecret);
+    webFrontend = webFrontend.WithEnvironment(LogtoAppSecretKey, logtoAppSecret);
 if (!string.IsNullOrWhiteSpace(authenticationProvider))
-    webFrontend = webFrontend.WithEnvironment("AUTHENTICATION_PROVIDER", authenticationProvider);
+    webFrontend = webFrontend.WithEnvironment(AuthenticationProviderKey, authenticationProvider);
 if (!string.IsNullOrWhiteSpace(databaseContextType))
     webFrontend = webFrontend.WithEnvironment(DatabaseContextTypeKey, databaseContextType);
 if (!string.IsNullOrWhiteSpace(databaseContextEnableHybridMode))

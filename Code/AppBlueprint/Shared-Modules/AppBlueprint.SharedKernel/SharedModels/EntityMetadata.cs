@@ -10,7 +10,7 @@ public record EntityMetadata
     /// <summary>
     /// PII detection results for this entity.
     /// </summary>
-    public PIIMetadata? Pii { get; init; }
+    public PiiMetadata? Pii { get; init; }
 
     // Future metadata properties can be added here
 }

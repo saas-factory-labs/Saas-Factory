@@ -1,9 +1,9 @@
 namespace AppBlueprint.SharedKernel.SharedModels.PII;
 
-public record PIIMetadata
+public record PiiMetadata
 {
     public bool PiiDetected { get; init; }
-    public List<PIITag> PiiTags { get; init; } = new();
+    public List<PiiTag> PiiTags { get; init; } = new();
     public ScannerInfo ScannerInfo { get; init; } = default!;
 }
 

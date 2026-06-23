@@ -16,5 +16,3 @@ using System.Runtime.CompilerServices;
 // [assembly: AssemblyVersion("1.0.0.0")]
 // [assembly: AssemblyFileVersion("1.0.0.0")]
 
-// Namespace declaration (if required for other code in the file)
-namespace AppBlueprint.SharedKernel;

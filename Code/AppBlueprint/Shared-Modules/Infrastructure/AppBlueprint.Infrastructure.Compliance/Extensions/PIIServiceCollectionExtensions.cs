@@ -7,7 +7,7 @@ namespace AppBlueprint.Infrastructure.Compliance.Extensions;
 /// <summary>
 /// Extension methods for registering AppBlueprint PII detection services.
 /// </summary>
-public static class PIIServiceCollectionExtensions
+public static class PiiServiceCollectionExtensions
 {
     /// <summary>
     /// Registers PII detection engine and scanners.
@@ -15,13 +15,13 @@ public static class PIIServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <returns>The service collection for chaining.</returns>
-    public static IServiceCollection AddPIIDetection(this IServiceCollection services)
+    public static IServiceCollection AddPiiDetection(this IServiceCollection services)
     {
-        services.AddScoped<IPIIScanner, RegexPIIScanner>();
-        services.AddScoped<IPIIScanner, NerPIIScannerPlaceholder>();
-        services.AddScoped<IPIIScanner, LlmPIIScannerPlaceholder>();
-        services.AddScoped<IPIIEngine, PIIEngine>();
-        services.AddScoped<PIITaggingService>();
+        services.AddScoped<IPiiScanner, RegexPiiScanner>();
+        services.AddScoped<IPiiScanner, NerPiiScannerPlaceholder>();
+        services.AddScoped<IPiiScanner, LlmPiiScannerPlaceholder>();
+        services.AddScoped<IPiiEngine, PiiEngine>();
+        services.AddScoped<PiiTaggingService>();
 
         Console.WriteLine("[AppBlueprint.Infrastructure] PII detection services registered (Regex, NER/LLM Placeholders)");
 

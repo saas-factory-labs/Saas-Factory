@@ -54,14 +54,11 @@ public sealed partial class AdminPortalModuleRegistry
     }
 
     /// <summary>All registered modules, ordered by display name for stable navigation rendering.</summary>
-    public IReadOnlyList<IAdminPortalModule> Modules
+    public IReadOnlyList<IAdminPortalModule> GetModules()
     {
-        get
+        lock (_lock)
         {
-            lock (_lock)
-            {
-                return _modulesBySlug.Values.OrderBy(m => m.DisplayName, StringComparer.OrdinalIgnoreCase).ToList();
-            }
+            return _modulesBySlug.Values.OrderBy(m => m.DisplayName, StringComparer.OrdinalIgnoreCase).ToList();
         }
     }
 
@@ -69,17 +66,14 @@ public sealed partial class AdminPortalModuleRegistry
     /// Assemblies the shell Router needs for route discovery:
     /// the kernel assembly (generic admin pages) plus every module's router assembly.
     /// </summary>
-    public IReadOnlyList<Assembly> RouterAssemblies
+    public IReadOnlyList<Assembly> GetRouterAssemblies()
     {
-        get
+        lock (_lock)
         {
-            lock (_lock)
-            {
-                return new[] { typeof(IAdminPortalModule).Assembly }
-                    .Concat(_modulesBySlug.Values.Select(m => m.RouterAssembly))
-                    .Distinct()
-                    .ToList();
-            }
+            return new[] { typeof(IAdminPortalModule).Assembly }
+                .Concat(_modulesBySlug.Values.Select(m => m.RouterAssembly))
+                .Distinct()
+                .ToList();
         }
     }
 }

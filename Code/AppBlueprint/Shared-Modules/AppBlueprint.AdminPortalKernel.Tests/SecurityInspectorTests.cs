@@ -85,7 +85,7 @@ internal sealed class SecurityInspectorTests
             Action act = () => builder.AddAdminPortalPlugins(pluginsFolder);
 
             act.Should().Throw<InvalidOperationException>().WithMessage("*security violations*");
-            builder.Registry.Modules.Should().BeEmpty();
+            builder.Registry.GetModules().Should().BeEmpty();
         }
         finally
         {

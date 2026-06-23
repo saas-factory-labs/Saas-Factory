@@ -89,4 +89,3 @@
 //     public string Message { get; set; }
 // }
 
-namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;

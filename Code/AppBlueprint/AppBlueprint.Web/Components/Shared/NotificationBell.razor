@@ -1,6 +1,7 @@
 @using AppBlueprint.Application.Interfaces
 @using AppBlueprint.Domain.Entities.Notifications
 @using Microsoft.AspNetCore.Components.Authorization
+@using AppBlueprint.Infrastructure.Realtime.SignalR
 @using Microsoft.AspNetCore.SignalR.Client
 @inject INotificationService NotificationService
 @inject NavigationManager Navigation
@@ -140,7 +141,7 @@
         try
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl(Navigation.ToAbsoluteUri("/hubs/notifications"))
+                .WithUrl(Navigation.ToAbsoluteUri(NotificationHub.HubPath))
                 .WithAutomaticReconnect()
                 .Build();
 

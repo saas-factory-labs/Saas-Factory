@@ -61,7 +61,7 @@ public static class ServiceCollectionExtensions
         services.AddExternalServices(configuration);
         services.AddHealthChecksServices(configuration);
         services.AddNotificationServices();
-        services.AddPIIServices();
+        services.AddPiiServices();
 
         return services;
     }
@@ -100,7 +100,7 @@ public static class ServiceCollectionExtensions
         services.AddExternalServices(configuration);
         services.AddHealthChecksServices(configuration);
         services.AddNotificationServices();
-        services.AddPIIServices();
+        services.AddPiiServices();
 
         return services;
     }
@@ -469,9 +469,9 @@ public static class ServiceCollectionExtensions
     /// Registers PII detection engine and scanners (delegates to AppBlueprint.Infrastructure.PII)
     /// plus the EF Core PII interceptor owned by this project.
     /// </summary>
-    private static IServiceCollection AddPIIServices(this IServiceCollection services)
+    private static IServiceCollection AddPiiServices(this IServiceCollection services)
     {
-        services.AddPIIDetection();
+        services.AddPiiDetection();
 
         // Register the EF Core interceptor
         services.AddScoped<PiiSaveChangesInterceptor>();

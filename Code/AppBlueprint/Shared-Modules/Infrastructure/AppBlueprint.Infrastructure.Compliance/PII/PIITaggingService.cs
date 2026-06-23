@@ -3,14 +3,14 @@ using AppBlueprint.Application.Interfaces.PII;
 
 namespace AppBlueprint.Infrastructure.Compliance.PII;
 
-public interface IPIITaggingService
+public interface IPiiTaggingService
 {
     Task<string> ProcessTextAndCreateMetadataAsync(string text, string existingMetadataJson = "{}", CancellationToken cancellationToken = default);
 }
 
-public class PIITaggingService : IPIITaggingService
+public class PiiTaggingService : IPiiTaggingService
 {
-    private readonly IPIIEngine _piiEngine;
+    private readonly IPiiEngine _piiEngine;
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
@@ -18,7 +18,7 @@ public class PIITaggingService : IPIITaggingService
         Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
     };
 
-    public PIITaggingService(IPIIEngine piiEngine)
+    public PiiTaggingService(IPiiEngine piiEngine)
     {
         _piiEngine = piiEngine;
     }
