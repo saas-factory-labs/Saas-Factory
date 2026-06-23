@@ -13,7 +13,7 @@ internal sealed class WebhookUrlValidatorTests
     [Arguments("gopher://example.com")]
     public async Task TryValidate_ShouldRejectNonHttpSchemes(string url)
     {
-        bool ok = WebhookUrlValidator.TryValidate(url, out string? error);
+        bool ok = WebhookUrlValidator.TryValidate(ParseUri(url), out string? error);
 
         ok.Should().BeFalse();
         await Assert.That(error).IsNotNull();
@@ -28,7 +28,7 @@ internal sealed class WebhookUrlValidatorTests
     [Arguments("http://172.16.5.4/hook")]
     public async Task TryValidate_ShouldRejectInternalAndMetadataTargets(string url)
     {
-        bool ok = WebhookUrlValidator.TryValidate(url, out string? error);
+        bool ok = WebhookUrlValidator.TryValidate(ParseUri(url), out string? error);
 
         ok.Should().BeFalse(because: $"{url} targets an internal or metadata address");
         await Assert.That(error).IsNotNull();
@@ -40,7 +40,7 @@ internal sealed class WebhookUrlValidatorTests
     [Arguments("//relative/path")]
     public async Task TryValidate_ShouldRejectMalformedUrls(string url)
     {
-        bool ok = WebhookUrlValidator.TryValidate(url, out _);
+        bool ok = WebhookUrlValidator.TryValidate(ParseUri(url), out _);
 
         await Assert.That(ok).IsFalse();
     }
@@ -50,7 +50,7 @@ internal sealed class WebhookUrlValidatorTests
     [Arguments("https://8.8.8.8/callback")]
     public async Task TryValidate_ShouldAcceptPublicHttpsTargets(string url)
     {
-        bool ok = WebhookUrlValidator.TryValidate(url, out string? error);
+        bool ok = WebhookUrlValidator.TryValidate(ParseUri(url), out string? error);
 
         ok.Should().BeTrue(because: error);
         await Assert.That(error).IsNull();
@@ -70,5 +70,20 @@ internal sealed class WebhookUrlValidatorTests
         bool blocked = WebhookUrlValidator.IsBlockedIpAddress(IPAddress.Parse(ip));
 
         await Assert.That(blocked).IsEqualTo(expectedBlocked);
+    }
+
+    private static Uri? ParseUri(string url)
+    {
+        if (Uri.TryCreate(url, UriKind.Absolute, out Uri? absoluteUri))
+        {
+            return absoluteUri;
+        }
+
+        if (Uri.TryCreate(url, UriKind.Relative, out Uri? relativeUri))
+        {
+            return relativeUri;
+        }
+
+        return null;
     }
 }

@@ -72,7 +72,7 @@ public class WebhookController : BaseController
 
         // SECURITY (OWASP A10/SSRF): reject internal, loopback, metadata and non-http(s) targets
         // before persisting, so the delivery service can never be pointed at internal resources.
-        if (!WebhookUrlValidator.TryValidate(request.Url.ToString(), out string? urlError))
+        if (!WebhookUrlValidator.TryValidate(request.Url, out string? urlError))
             return BadRequest(new { Message = urlError });
 
         string tenantId = GetCurrentTenantId();
@@ -103,7 +103,7 @@ public class WebhookController : BaseController
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        if (!WebhookUrlValidator.TryValidate(request.Url.ToString(), out string? urlError))
+        if (!WebhookUrlValidator.TryValidate(request.Url, out string? urlError))
             return BadRequest(new { Message = urlError });
 
         WebhookEntity? webhook = await _webhookRepository.GetByIdAsync(id, cancellationToken);
