@@ -15,21 +15,21 @@ public static class WebhookUrlValidator
     /// Returns false and sets <paramref name="error"/> when the URL is malformed, uses a
     /// disallowed scheme, or points at an internal/metadata address.
     /// </summary>
-    public static bool TryValidate(string? url, out string? error)
+    public static bool TryValidate(Uri? uri, out string? error)
     {
-        if (string.IsNullOrWhiteSpace(url))
+        if (uri == null)
         {
             error = "Webhook URL is required.";
             return false;
         }
 
-        if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
+        if (!Uri.TryCreate(uri.ToString(), UriKind.Absolute, out Uri? validatedUri))
         {
             error = "Webhook URL must be an absolute URL.";
             return false;
         }
 
-        if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+        if (validatedUri.Scheme != Uri.UriSchemeHttp && validatedUri.Scheme != Uri.UriSchemeHttps)
         {
             error = "Webhook URL must use http or https.";
             return false;
@@ -41,9 +41,9 @@ public static class WebhookUrlValidator
         IPAddress[] addresses;
         try
         {
-            addresses = uri.HostNameType is UriHostNameType.IPv4 or UriHostNameType.IPv6
-                ? [IPAddress.Parse(uri.Host)]
-                : Dns.GetHostAddresses(uri.Host);
+            addresses = validatedUri.HostNameType is UriHostNameType.IPv4 or UriHostNameType.IPv6
+                ? new[] { IPAddress.Parse(validatedUri.Host) }
+                : Dns.GetHostAddresses(validatedUri.Host);
         }
         catch (SocketException)
         {

@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 # configure-aspire-telemetry.ps1
 # A unified script to configure telemetry for Aspire applications
 
@@ -19,7 +19,7 @@ $env:OTEL_EXPORTER_OTLP_PROTOCOL = $otlpProtocol
 $env:OTEL_EXPORTER_OTLP_HEADERS = ""
 $env:ASPIRE_ALLOW_UNSECURED_TRANSPORT = "true"
 
-Write-Host "  ✅ Process environment variables set" -ForegroundColor Green
+Write-Host "  âœ… Process environment variables set" -ForegroundColor Green
 Write-Host "    OTEL_EXPORTER_OTLP_ENDPOINT: $otlpEndpoint" -ForegroundColor Gray
 Write-Host "    DOTNET_DASHBOARD_OTLP_ENDPOINT_URL: $otlpEndpoint" -ForegroundColor Gray
 Write-Host "    ASPIRE_DASHBOARD_PORT: $dashboardPort" -ForegroundColor Gray
@@ -35,7 +35,7 @@ Write-Host "`nSetting telemetry environment variables at user level..." -Foregro
 [System.Environment]::SetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL", $otlpProtocol, "User")
 [System.Environment]::SetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS", "", "User")
 [System.Environment]::SetEnvironmentVariable("ASPIRE_ALLOW_UNSECURED_TRANSPORT", "true", "User")
-Write-Host "  ✅ User environment variables set" -ForegroundColor Green
+Write-Host "  âœ… User environment variables set" -ForegroundColor Green
 
 # 3. Stop any running services
 Write-Host "`nStopping any running AppBlueprint services..." -ForegroundColor Magenta
@@ -46,7 +46,7 @@ if ($appProcesses) {
         Write-Host "  Stopping $($proc.ProcessName) (PID: $($proc.Id))" -ForegroundColor Yellow
         Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
     }
-    Write-Host "  ✅ All AppBlueprint processes stopped" -ForegroundColor Green
+    Write-Host "  âœ… All AppBlueprint processes stopped" -ForegroundColor Green
     # Give processes time to fully stop
     Start-Sleep -Seconds 2
 } else {
@@ -59,25 +59,25 @@ $dashboardPortInUse = Get-NetTCPConnection -LocalPort $dashboardPort -ErrorActio
 $otlpPortInUse = Get-NetTCPConnection -LocalPort 18889 -ErrorAction SilentlyContinue
 
 if ($dashboardPortInUse) {
-    Write-Host "  ⚠️ Warning: Dashboard port $dashboardPort is already in use" -ForegroundColor Yellow
+    Write-Host "  âš ï¸ Warning: Dashboard port $dashboardPort is already in use" -ForegroundColor Yellow
     Write-Host "     Process ID: $($dashboardPortInUse.OwningProcess)" -ForegroundColor Yellow
     $processName = (Get-Process -Id $dashboardPortInUse.OwningProcess -ErrorAction SilentlyContinue).ProcessName
     if ($processName) {
         Write-Host "     Process Name: $processName" -ForegroundColor Yellow
     }
 } else {
-    Write-Host "  ✅ Dashboard port $dashboardPort is available" -ForegroundColor Green
+    Write-Host "  âœ… Dashboard port $dashboardPort is available" -ForegroundColor Green
 }
 
 if ($otlpPortInUse) {
-    Write-Host "  ⚠️ Warning: OTLP port 18889 is already in use" -ForegroundColor Yellow
+    Write-Host "  âš ï¸ Warning: OTLP port 18889 is already in use" -ForegroundColor Yellow
     Write-Host "     Process ID: $($otlpPortInUse.OwningProcess)" -ForegroundColor Yellow
     $processName = (Get-Process -Id $otlpPortInUse.OwningProcess -ErrorAction SilentlyContinue).ProcessName
     if ($processName) {
         Write-Host "     Process Name: $processName" -ForegroundColor Yellow
     }
 } else {
-    Write-Host "  ✅ OTLP port 18889 is available" -ForegroundColor Green
+    Write-Host "  âœ… OTLP port 18889 is available" -ForegroundColor Green
 }
 
 # 5. Build the solution
@@ -86,12 +86,12 @@ try {
     Push-Location "C:\Development\Development-Projects\SaaS-Factory\Code\AppBlueprint"
     dotnet build
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "  ✅ Solution built successfully" -ForegroundColor Green
+        Write-Host "  âœ… Solution built successfully" -ForegroundColor Green
     } else {
-        Write-Host "  ❌ Error building solution (Exit code: $LASTEXITCODE)" -ForegroundColor Red
+        Write-Host "  âŒ Error building solution (Exit code: $LASTEXITCODE)" -ForegroundColor Red
     }
 } catch {
-    Write-Host "  ❌ Error building solution: $_" -ForegroundColor Red
+    Write-Host "  âŒ Error building solution: $_" -ForegroundColor Red
 } finally {
     Pop-Location
 }
@@ -101,7 +101,7 @@ Write-Host "`nStarting AppHost with proper environment variables..." -Foreground
 try {
     # Create a temporary script to run the AppHost with the correct environment variables
     $tempScript = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "start-apphost-with-vars.ps1")
-    
+
     @"
 Write-Host "Starting AppHost with following variables:"
 Write-Host "OTEL_EXPORTER_OTLP_ENDPOINT: $otlpEndpoint"
@@ -116,13 +116,13 @@ dotnet run --project AppBlueprint.AppHost
 
     Write-Host "  Created temporary startup script at $tempScript" -ForegroundColor Gray
     Write-Host "  Starting PowerShell with AppHost script..." -ForegroundColor Gray
-    
+
     # Start PowerShell with the script, ensuring environment variables are set
     $startInfo = New-Object System.Diagnostics.ProcessStartInfo
     $startInfo.FileName = "pwsh.exe"
     $startInfo.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$tempScript`""
     $startInfo.UseShellExecute = $false
-    
+
     # Set environment variables for the new process
     $startInfo.EnvironmentVariables["OTEL_EXPORTER_OTLP_ENDPOINT"] = $otlpEndpoint
     $startInfo.EnvironmentVariables["DOTNET_DASHBOARD_OTLP_ENDPOINT_URL"] = $otlpEndpoint
@@ -130,11 +130,11 @@ dotnet run --project AppBlueprint.AppHost
     $startInfo.EnvironmentVariables["OTEL_EXPORTER_OTLP_PROTOCOL"] = $otlpProtocol
     $startInfo.EnvironmentVariables["OTEL_EXPORTER_OTLP_HEADERS"] = ""
     $startInfo.EnvironmentVariables["ASPIRE_ALLOW_UNSECURED_TRANSPORT"] = "true"
-    
+
     $process = [System.Diagnostics.Process]::Start($startInfo)
-    Write-Host "  ✅ Started AppHost process with PID: $($process.Id)" -ForegroundColor Green
+    Write-Host "  âœ… Started AppHost process with PID: $($process.Id)" -ForegroundColor Green
 } catch {
-    Write-Host "  ❌ Error starting AppHost: $_" -ForegroundColor Red
+    Write-Host "  âŒ Error starting AppHost: $_" -ForegroundColor Red
 }
 
 Write-Host "`nSetup complete!" -ForegroundColor Cyan
