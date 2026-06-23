@@ -304,9 +304,9 @@
     private string _connectionStatus = "Disconnected";
     private string? _errorMessage;
     
-    private List<ChatMessageDisplay> _messages = new();
-    private List<string> _connectedUsers = new();
-    private HashSet<string> _typingUsers = new();
+    private readonly List<ChatMessageDisplay> _messages = new();
+    private readonly List<string> _connectedUsers = new();
+    private readonly HashSet<string> _typingUsers = new();
     
     private string _messageInput = string.Empty;
     private string _currentUserName = "Anonymous";

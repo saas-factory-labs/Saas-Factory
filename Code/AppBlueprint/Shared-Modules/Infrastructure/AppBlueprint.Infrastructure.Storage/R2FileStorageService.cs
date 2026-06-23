@@ -18,6 +18,8 @@ namespace AppBlueprint.Infrastructure.Storage;
 /// </summary>
 public sealed class R2FileStorageService : IFileStorageService, IDisposable
 {
+    private const string TenantContextNotAvailableError = "Tenant context not available";
+
     private readonly CloudflareR2Options _options;
     private readonly ILogger<R2FileStorageService> _logger;
     private readonly AmazonS3Client _s3Client;
@@ -56,7 +58,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(request.FileName);
         ArgumentException.ThrowIfNullOrWhiteSpace(request.ContentType);
 
-        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException("Tenant context not available");
+        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException(TenantContextNotAvailableError);
         string userId = GetCurrentUserId();
 
         // Generate unique file key: tenant_xxx/folder/guid-filename
@@ -140,7 +142,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileKey);
 
-        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException("Tenant context not available");
+        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException(TenantContextNotAvailableError);
 
         // Verify tenant ownership
         FileMetadataEntity? metadata = await _dbContext.Set<FileMetadataEntity>()
@@ -225,7 +227,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileKey);
 
-        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException("Tenant context not available");
+        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException(TenantContextNotAvailableError);
 
         // Verify tenant ownership
         bool exists = await _dbContext.Set<FileMetadataEntity>()
@@ -290,7 +292,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException("Tenant context not available");
+        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException(TenantContextNotAvailableError);
 
         IQueryable<FileMetadataEntity> queryable = _dbContext.Set<FileMetadataEntity>()
             .Where(f => f.TenantId == tenantId);
@@ -340,7 +342,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
         if (tenantId is null)
         {
             _logger.LogError("Tenant context not available for delete operation");
-            throw new InvalidOperationException("Tenant context not available");
+            throw new InvalidOperationException(TenantContextNotAvailableError);
         }
 
         _logger.LogInformation("Proceeding with delete operation");
@@ -388,7 +390,7 @@ public sealed class R2FileStorageService : IFileStorageService, IDisposable
     {
         ArgumentNullException.ThrowIfNull(fileKeys);
 
-        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException("Tenant context not available");
+        string tenantId = _tenantContextAccessor.TenantId ?? throw new InvalidOperationException(TenantContextNotAvailableError);
         List<string>? fileKeysList = fileKeys.ToList();
 
         if (fileKeysList.Count == 0)

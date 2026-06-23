@@ -11,6 +11,8 @@ namespace AppBlueprint.AppHost;
 
 internal static class SslCertificateManager
 {
+    private const string CertificatePasswordKey = "CERTIFICATE_PASSWORD";
+
     /// <summary>
     /// Generates a stable password based on the key and machine-specific information.
     /// This creates a deterministic but unique password for development certificates.
@@ -100,7 +102,7 @@ internal static class SslCertificateManager
                 CreateNewSelfSignedDeveloperCertificate(certificateLocation, certificatePassword);
 
                 // Also set the password as an environment variable for other services to use
-                Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
+                Environment.SetEnvironmentVariable(CertificatePasswordKey, certificatePassword);
                 Console.WriteLine("Certificate password set as environment variable CERTIFICATE_PASSWORD");
 
                 return certificatePassword;
@@ -134,7 +136,7 @@ internal static class SslCertificateManager
             }
 
             // Set the certificate password as an environment variable so it can be accessed by other services
-            Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
+            Environment.SetEnvironmentVariable(CertificatePasswordKey, certificatePassword);
             Console.WriteLine("Certificate password set as environment variable CERTIFICATE_PASSWORD");
         }
         catch (CryptographicException ex)
@@ -144,7 +146,7 @@ internal static class SslCertificateManager
             CreateNewSelfSignedDeveloperCertificate(certificateLocation, certificatePassword);
 
             // Set the password as environment variable even after errors
-            Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
+            Environment.SetEnvironmentVariable(CertificatePasswordKey, certificatePassword);
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -153,7 +155,7 @@ internal static class SslCertificateManager
             CreateNewSelfSignedDeveloperCertificate(certificateLocation, certificatePassword);
 
             // Set the password as environment variable even after errors
-            Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
+            Environment.SetEnvironmentVariable(CertificatePasswordKey, certificatePassword);
         }
         catch (FileNotFoundException ex)
         {
@@ -162,7 +164,7 @@ internal static class SslCertificateManager
             CreateNewSelfSignedDeveloperCertificate(certificateLocation, certificatePassword);
 
             // Set the password as environment variable even after errors
-            Environment.SetEnvironmentVariable("CERTIFICATE_PASSWORD", certificatePassword);
+            Environment.SetEnvironmentVariable(CertificatePasswordKey, certificatePassword);
         }
 
         return certificatePassword;

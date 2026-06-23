@@ -13,15 +13,15 @@
 </ChartCard>
 
 @code {
-    private List<string> labels = new() { "Males", "Females", "Unknown" };
-    private List<double> data = new() { 500, 326, 242 };
-    private List<string> backgroundColors = new()
+    private readonly List<string> labels = new() { "Males", "Females", "Unknown" };
+    private readonly List<double> data = new() { 500, 326, 242 };
+    private readonly List<string> backgroundColors = new()
     {
         "rgba(139, 92, 246, 0.8)",   // violet-500
         "rgba(56, 189, 248, 0.8)",   // sky-400
         "rgba(34, 197, 94, 0.8)"     // green-500
     };
-    private List<string> hoverBackgroundColors = new()
+    private readonly List<string> hoverBackgroundColors = new()
     {
         "rgba(124, 58, 237, 0.8)",   // violet-600
         "rgba(14, 165, 233, 0.8)",   // sky-500

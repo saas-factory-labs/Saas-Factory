@@ -139,16 +139,16 @@
         { "Yesterday", (DateTime.Today.AddDays(-1), DateTime.Today.AddDays(-1)) },
         { "Last 7 Days", (DateTime.Today.AddDays(-6), DateTime.Today) },
         { "Last 30 Days", (DateTime.Today.AddDays(-29), DateTime.Today) },
-        { "This Month", (new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1), DateTime.Today) },
-        { "Last Month", (new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-1), new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddDays(-1)) },
+        { "This Month", (new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1, 0, 0, 0, DateTimeKind.Utc), DateTime.Today) },
+        { "Last Month", (new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1, 0, 0, 0, DateTimeKind.Utc).AddMonths(-1), new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1, 0, 0, 0, DateTimeKind.Utc).AddDays(-1)) },
         { "This Quarter", (GetQuarterStart(DateTime.Today), DateTime.Today) },
-        { "This Year", (new DateTime(DateTime.Today.Year, 1, 1), DateTime.Today) }
+        { "This Year", (new DateTime(DateTime.Today.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc), DateTime.Today) }
     };
 
     private static DateTime GetQuarterStart(DateTime date)
     {
         var quarter = (date.Month - 1) / 3;
-        return new DateTime(date.Year, quarter * 3 + 1, 1);
+        return new DateTime(date.Year, quarter * 3 + 1, 1, 0, 0, 0, DateTimeKind.Utc);
     }
 
     private string DisplayText
@@ -170,7 +170,7 @@
         get
         {
             var days = new List<CalendarDay>();
-            var firstOfMonth = new DateTime(CurrentMonth.Year, CurrentMonth.Month, 1);
+            var firstOfMonth = new DateTime(CurrentMonth.Year, CurrentMonth.Month, 1, 0, 0, 0, DateTimeKind.Utc);
             var startDay = firstOfMonth.AddDays(-(int)firstOfMonth.DayOfWeek);
 
             for (int i = 0; i < 42; i++)

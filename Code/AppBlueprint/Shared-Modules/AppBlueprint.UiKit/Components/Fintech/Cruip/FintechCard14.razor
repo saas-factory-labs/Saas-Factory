@@ -109,7 +109,7 @@
 </div>
 
 @code {
-    private List<string> labels = Enumerable.Range(0, 26).Select(i => $"Point {i}").ToList();
+    private readonly List<string> labels = Enumerable.Range(0, 26).Select(i => $"Point {i}").ToList();
 
     private class MarketItem
     {

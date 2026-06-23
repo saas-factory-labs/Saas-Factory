@@ -3,19 +3,14 @@ using System.Globalization;
 using System.Net.Sockets;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
-using AppBlueprint.CliKit;
-using AppBlueprint.CliKit.Commands;
-using AppBlueprint.DeveloperCli.Commands;
-using AppBlueprint.DeveloperCli.Utilities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Spectre.Console.Rendering;
 
 namespace AppBlueprint.DeveloperCli;
 
 [SupportedOSPlatform("windows")]
 internal static class Program
 {
+    private const string AppblueprintName= "AppBlueprint";
+    
     private const string AccentOrange = "#F26522";
     private const string AccentRed = "#FA4655";
     private const string AccentMagenta = "#FF2A85";
@@ -696,7 +691,7 @@ internal static class Program
 
         while (current is not null)
         {
-            string appBlueprintPath = Path.Combine(current, "Code", "AppBlueprint");
+            string appBlueprintPath = Path.Combine(current, "Code", AppblueprintName);
             if (Directory.Exists(appBlueprintPath))
             {
                 return current;
@@ -715,11 +710,11 @@ internal static class Program
         [
             Path.Combine(projectRoot, ".env"),
             Path.Combine(projectRoot, ".env.local"),
-            Path.Combine(projectRoot, "Code", "AppBlueprint", ".env"),
-            Path.Combine(projectRoot, "Code", "AppBlueprint", ".env.local"),
-            Path.Combine(projectRoot, "Code", "AppBlueprint", "AppBlueprint.AppHost", ".env"),
-            Path.Combine(projectRoot, "Code", "AppBlueprint", "AppBlueprint.ApiService", ".env"),
-            Path.Combine(projectRoot, "Code", "AppBlueprint", "AppBlueprint.Web", ".env")
+            Path.Combine(projectRoot, "Code", AppblueprintName, ".env"),
+            Path.Combine(projectRoot, "Code", AppblueprintName, ".env.local"),
+            Path.Combine(projectRoot, "Code", AppblueprintName, "AppBlueprint.AppHost", ".env"),
+            Path.Combine(projectRoot, "Code", AppblueprintName, "AppBlueprint.ApiService", ".env"),
+            Path.Combine(projectRoot, "Code", AppblueprintName, "AppBlueprint.Web", ".env")
         ];
 
         return candidates.Where(File.Exists).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();

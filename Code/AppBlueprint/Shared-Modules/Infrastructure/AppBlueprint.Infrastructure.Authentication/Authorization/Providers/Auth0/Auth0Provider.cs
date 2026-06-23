@@ -6,6 +6,9 @@ namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Aut
 
 public class Auth0Provider : BaseAuthenticationProvider
 {
+    private const string TokenRefreshFailedError = "Token refresh failed";
+    private const string ErrorDuringTokenRefreshLog = "Error during token refresh";
+
     private readonly HttpClient _httpClient;
     private readonly Auth0Configuration _configuration;
     private readonly ILogger<Auth0Provider> _logger;
@@ -145,44 +148,44 @@ public class Auth0Provider : BaseAuthenticationProvider
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
 #pragma warning disable CA1031 // Generic catch returns error result instead of throwing - consider catching specific HttpRequestException/TaskCanceledException
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Error during token refresh");
+            _logger.LogError(ex, ErrorDuringTokenRefreshLog);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
         catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
         {
-            _logger.LogError(ex, "Error during token refresh");
+            _logger.LogError(ex, ErrorDuringTokenRefreshLog);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
         catch (JsonException ex)
         {
-            _logger.LogError(ex, "Error during token refresh");
+            _logger.LogError(ex, ErrorDuringTokenRefreshLog);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "Error during token refresh");
+            _logger.LogError(ex, ErrorDuringTokenRefreshLog);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
 #pragma warning restore CA1031

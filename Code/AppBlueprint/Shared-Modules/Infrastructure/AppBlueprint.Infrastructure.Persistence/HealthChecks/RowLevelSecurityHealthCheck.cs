@@ -10,6 +10,8 @@ namespace AppBlueprint.Infrastructure.Persistence.HealthChecks;
 /// </summary>
 public sealed class RowLevelSecurityHealthCheck : IHealthCheck
 {
+    private const string RlsHealthCheckLogPrefix = "[RLS Health Check] {ErrorMessage}";
+
     private readonly string _connectionString;
     private readonly ILogger<RowLevelSecurityHealthCheck> _logger;
 
@@ -49,7 +51,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
             if (!functionsExist)
             {
                 const string errorMessage = "Row-Level Security functions (set_current_tenant, get_current_tenant) are missing. Run SetupRowLevelSecurity.sql.";
-                _logger.LogCritical("[RLS Health Check] {ErrorMessage}", errorMessage);
+                _logger.LogCritical(RlsHealthCheckLogPrefix, errorMessage);
                 return HealthCheckResult.Unhealthy(errorMessage);
             }
 
@@ -81,7 +83,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
             {
                 string errorMessage = $"CRITICAL: Row-Level Security NOT enabled on tables: {string.Join(", ", missingRls)}. " +
                                     "Run SetupRowLevelSecurity.sql immediately to prevent tenant data leakage.";
-                _logger.LogCritical("[RLS Health Check] {ErrorMessage}", errorMessage);
+                _logger.LogCritical(RlsHealthCheckLogPrefix, errorMessage);
                 return HealthCheckResult.Unhealthy(errorMessage);
             }
 
@@ -89,7 +91,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
             {
                 string errorMessage = $"CRITICAL: RLS policies missing on tables: {string.Join(", ", missingPolicies)}. " +
                                     "Tables have RLS enabled but no policies defined. Run SetupRowLevelSecurity.sql.";
-                _logger.LogCritical("[RLS Health Check] {ErrorMessage}", errorMessage);
+                _logger.LogCritical(RlsHealthCheckLogPrefix, errorMessage);
                 return HealthCheckResult.Unhealthy(errorMessage);
             }
 
@@ -99,7 +101,7 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
                 // This is degraded status, not unhealthy
                 string warningMessage = $"Tables not yet created: {string.Join(", ", missingTables)}. " +
                                       "RLS will be checked after migrations are applied.";
-                _logger.LogWarning("[RLS Health Check] {WarningMessage}", warningMessage);
+                _logger.LogWarning(RlsHealthCheckLogPrefix, warningMessage);
                 return HealthCheckResult.Degraded(warningMessage);
             }
 
@@ -113,19 +115,19 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
         catch (NpgsqlException ex)
         {
             string errorMessage = $"Database error verifying Row-Level Security: {ex.Message}";
-            _logger.LogError(ex, "[RLS Health Check] {ErrorMessage}", errorMessage);
+            _logger.LogError(ex, RlsHealthCheckLogPrefix, errorMessage);
             return HealthCheckResult.Unhealthy(errorMessage, ex);
         }
         catch (InvalidOperationException ex)
         {
             string errorMessage = $"Invalid operation during RLS verification: {ex.Message}";
-            _logger.LogError(ex, "[RLS Health Check] {ErrorMessage}", errorMessage);
+            _logger.LogError(ex, RlsHealthCheckLogPrefix, errorMessage);
             return HealthCheckResult.Unhealthy(errorMessage, ex);
         }
         catch (TimeoutException ex)
         {
             string errorMessage = $"Timeout verifying Row-Level Security: {ex.Message}";
-            _logger.LogError(ex, "[RLS Health Check] {ErrorMessage}", errorMessage);
+            _logger.LogError(ex, RlsHealthCheckLogPrefix, errorMessage);
             return HealthCheckResult.Degraded(errorMessage, ex);
         }
     }
