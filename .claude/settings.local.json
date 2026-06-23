@@ -133,7 +133,10 @@
       "Bash(dotnet add:*)",
       "WebFetch(domain:www.nuget.org)",
       "WebFetch(domain:spectreconsole.net)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(Get-ChildItem -Path \".github\\\\workflows\" -Filter \"*.yml\" -Recurse)",
+      "Bash(Select-String -Pattern \"SonarQube|SonarCloud|sonarscanner\" -List)",
+      "Bash(Select-Object -ExpandProperty Path)"
     ],
     "deny": [],
     "ask": [],

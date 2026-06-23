@@ -335,7 +335,8 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
     # ❌ Incorrect - tag AND digest in FROM statement
     FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:ddcf... AS base
     ```
-    **Security Rationale**: Digest pinning provides cryptographic verification of image integrity per SLSA framework and NIST SP 800-190. SonarCloud S8431 is suppressed in `sonar-project.properties` with security justification. NEVER remove digest pinning - it is a deliberate security hardening measure.
+    **Security Rationale**: Digest pinning provides cryptographic verification of image integrity per SLSA framework and NIST SP 800-190. SonarCloud S8431 is suppressed in `.github/workflows/sonarcloud-analysis.yaml` via `/d:sonar.issue.ignore.multicriteria` parameters. NEVER remove digest pinning - it is a deliberate security hardening measure.
+  - **SonarCloud Configuration for .NET Projects**: SonarScanner for .NET does NOT support `sonar-project.properties` files. All SonarCloud configuration MUST be specified via command-line `/d:` parameters in the GitHub workflow (`.github/workflows/sonarcloud-analysis.yaml`). The presence of a `sonar-project.properties` file will cause the scanner to fail with exit code 1. All exclusions, issue suppressions, and other settings are configured in the workflow's `dotnet-sonarscanner begin` step.
   - **PowerShell formatting (S8620)**: Remove trailing whitespace from PowerShell scripts. Use `dotnet format` or configure your editor to trim trailing whitespace on save.
   - **SQL explicit sort order**: Always specify `ASC` or `DESC` explicitly in `ORDER BY` clauses to make sort direction clear and prevent ambiguity.
     ```sql
