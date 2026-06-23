@@ -17,7 +17,7 @@ internal static class InstallCommand
             Description = "Force reinstall even if already installed",
             DefaultValueFactory = _ => false
         };
-        command.AddOption(forceOption);
+        command.Add(forceOption);
 
         command.SetHandler((bool force) =>
         {

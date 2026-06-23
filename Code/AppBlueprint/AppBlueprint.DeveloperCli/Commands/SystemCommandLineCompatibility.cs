@@ -5,10 +5,6 @@ namespace AppBlueprint.DeveloperCli.Commands;
 
 internal static class SystemCommandLineCompatibility
 {
-    public static void AddCommand(this Command command, Command subcommand) => command.Add(subcommand);
-    public static void AddOption(this Command command, Option option) => command.Add(option);
-    public static void AddArgument(this Command command, Argument argument) => command.Add(argument);
-
     public static void SetHandler(this Command command, Action handler)
         => command.SetAction(_ => handler());
 

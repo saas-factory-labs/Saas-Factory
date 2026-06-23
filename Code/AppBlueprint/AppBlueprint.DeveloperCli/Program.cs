@@ -775,8 +775,14 @@ internal static class Program
             client.EndConnect(connectTask);
             return true;
         }
-        catch
+        catch (SocketException)
         {
+            // Port is not in use or connection refused - this is expected behavior
+            return false;
+        }
+        catch (ObjectDisposedException)
+        {
+            // TcpClient was disposed - port check failed
             return false;
         }
     }
@@ -808,8 +814,14 @@ internal static class Program
             process.WaitForExit(800);
             return process.ExitCode == 0;
         }
-        catch
+        catch (InvalidOperationException)
         {
+            // Docker command not found or failed to start - Docker is not running
+            return false;
+        }
+        catch (System.ComponentModel.Win32Exception)
+        {
+            // Docker executable not found in PATH - Docker is not installed or not running
             return false;
         }
     }
@@ -828,6 +840,7 @@ internal static class Program
         catch (IOException)
         {
             // VS Code and other hosts can reject cursor operations mid-session.
+            // This is expected behavior and safe to ignore - the console just won't be cleared.
         }
     }
 

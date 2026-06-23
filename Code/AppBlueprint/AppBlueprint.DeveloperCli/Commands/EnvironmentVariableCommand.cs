@@ -12,19 +12,19 @@ internal static class EnvironmentVariableCommand
 
         // List subcommand
         Command listCommand = CreateListCommand();
-        command.AddCommand(listCommand);
+        command.Add(listCommand);
 
         // Get subcommand
         Command getCommand = CreateGetCommand();
-        command.AddCommand(getCommand);
+        command.Add(getCommand);
 
         // Set subcommand
         Command setCommand = CreateSetCommand();
-        command.AddCommand(setCommand);
+        command.Add(setCommand);
 
         // Delete subcommand
         Command deleteCommand = CreateDeleteCommand();
-        command.AddCommand(deleteCommand);
+        command.Add(deleteCommand);
 
         return command;
     }
@@ -37,8 +37,8 @@ internal static class EnvironmentVariableCommand
 
         var scopeOption = new Option<string>(ScopeOption) { Description = ScopeDescription, DefaultValueFactory = _ => "User" };
 
-        command.AddOption(prefixOption);
-        command.AddOption(scopeOption);
+        command.Add(prefixOption);
+        command.Add(scopeOption);
 
         command.SetHandler((prefix, scopeStr) =>
         {
@@ -61,8 +61,8 @@ internal static class EnvironmentVariableCommand
         var nameArgument = new Argument<string>("name") { Description = "Environment variable name" };
         var scopeOption = new Option<string>(ScopeOption) { Description = ScopeDescription, DefaultValueFactory = _ => "User" };
 
-        command.AddArgument(nameArgument);
-        command.AddOption(scopeOption);
+        command.Add(nameArgument);
+        command.Add(scopeOption);
 
         command.SetHandler((name, scopeStr) =>
         {
@@ -86,9 +86,9 @@ internal static class EnvironmentVariableCommand
         var valueArgument = new Argument<string>("value") { Description = "Environment variable value" };
         var scopeOption = new Option<string>(ScopeOption) { Description = ScopeDescription, DefaultValueFactory = _ => "User" };
 
-        command.AddArgument(nameArgument);
-        command.AddArgument(valueArgument);
-        command.AddOption(scopeOption);
+        command.Add(nameArgument);
+        command.Add(valueArgument);
+        command.Add(scopeOption);
 
         command.SetHandler([System.Runtime.Versioning.SupportedOSPlatform("windows")] (name, value, scopeStr) =>
         {
@@ -111,8 +111,8 @@ internal static class EnvironmentVariableCommand
         var nameArgument = new Argument<string>("name") { Description = "Environment variable name" };
         var scopeOption = new Option<string>(ScopeOption) { Description = ScopeDescription, DefaultValueFactory = _ => "User" };
 
-        command.AddArgument(nameArgument);
-        command.AddOption(scopeOption);
+        command.Add(nameArgument);
+        command.Add(scopeOption);
 
         command.SetHandler([System.Runtime.Versioning.SupportedOSPlatform("windows")] (name, scopeStr) =>
         {

@@ -30,13 +30,13 @@ internal static class TestCommand
 
         var noBuildOption = new Option<bool>("--no-build") { Description = "Do not build the project before running tests", DefaultValueFactory = _ => false };
 
-        command.AddOption(watchOption);
-        command.AddOption(coverageOption);
-        command.AddOption(filterOption);
-        command.AddOption(projectOption);
-        command.AddOption(verbosityOption);
-        command.AddOption(noRestoreOption);
-        command.AddOption(noBuildOption);
+        command.Add(watchOption);
+        command.Add(coverageOption);
+        command.Add(filterOption);
+        command.Add(projectOption);
+        command.Add(verbosityOption);
+        command.Add(noRestoreOption);
+        command.Add(noBuildOption);
 
         command.SetHandler(async (watch, coverage, filter, project, verbosity, noRestore, noBuild) =>
         {
