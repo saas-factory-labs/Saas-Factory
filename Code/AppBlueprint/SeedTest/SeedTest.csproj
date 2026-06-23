@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared-Modules\Infrastructure\AppBlueprint.Infrastructure\AppBlueprint.Infrastructure.csproj" />
-    <ProjectReference Include="..\AppBlueprint.TodoAppKernel\AppBlueprint.TodoAppKernel.csproj" />
   </ItemGroup>
 
   <ItemGroup>
