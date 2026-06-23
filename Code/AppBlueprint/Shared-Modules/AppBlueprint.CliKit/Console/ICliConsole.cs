@@ -1,4 +1,4 @@
-﻿namespace AppBlueprint.CliKit.Console;
+namespace AppBlueprint.CliKit.Console;
 
 public interface ICliConsole
 {

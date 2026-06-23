@@ -1,13 +1,13 @@
-using Microsoft.Kiota.Abstractions.Extensions;
-using Microsoft.Kiota.Abstractions.Serialization;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System;
+using Microsoft.Kiota.Abstractions.Extensions;
+using Microsoft.Kiota.Abstractions.Serialization;
 namespace AppBlueprint.Api.Client.Sdk.Models
 {
-    #pragma warning disable CS1591
+#pragma warning disable CS1591
     public partial class UserSearchResponseDto : IParsable
-    #pragma warning restore CS1591
+#pragma warning restore CS1591
     {
         /// <summary>The items property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER

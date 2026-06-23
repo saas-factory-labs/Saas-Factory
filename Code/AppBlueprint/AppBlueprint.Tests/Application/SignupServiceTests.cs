@@ -1,6 +1,6 @@
 using AppBlueprint.Application.Interfaces;
-using AppBlueprint.Application.Signup;
 using AppBlueprint.Application.Services;
+using AppBlueprint.Application.Signup;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;

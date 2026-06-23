@@ -61,8 +61,11 @@ RUN dotnet build "DeploymentManager.Web.csproj" -c "$BUILD_CONFIGURATION" -o /ap
 
 # Plugins dir: populated by download-admin-plugins.ps1 in CI before docker build.
 # Empty on Railway/git builds (no admin portals); contains plugin DLLs in CI builds.
-RUN mkdir -p /app/plugins
-COPY Code/DeploymentManager/plugins/ /app/plugins/
+# Safe conditional copy: only copies if source directory exists and contains files
+RUN mkdir -p /app/plugins && \
+    if [ -d "Code/DeploymentManager/plugins" ] && [ -n "$(ls -A Code/DeploymentManager/plugins 2>/dev/null)" ]; then \
+        cp -r Code/DeploymentManager/plugins/* /app/plugins/ || true; \
+    fi
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
@@ -80,7 +83,7 @@ COPY --from=publish --chown=$APP_UID:$APP_UID /app/publish .
 
 # Copy plugins dir from build stage (empty on Railway/git builds; contains DLLs for CI builds).
 COPY --from=build --chown=$APP_UID:$APP_UID /app/plugins ./plugins/
-ENV AdminPortal__PluginsPath=/app/plugins
+ENV ADMIN_PORTAL_PLUGINS_PATH=/app/plugins
 
 ENV ASPNETCORE_URLS=http://+:8080 \
     DOTNET_GENERATE_ASPNET_CERTIFICATE=false \

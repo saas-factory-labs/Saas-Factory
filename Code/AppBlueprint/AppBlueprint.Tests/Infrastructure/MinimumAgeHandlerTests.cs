@@ -9,8 +9,8 @@ internal sealed class MinimumAgeHandlerTests
     public async Task CalculateAge_WhenBirthdayHasNotOccurredThisYear_ShouldNotCountCurrentYear()
     {
         // Born Dec 31 2006; evaluated Jan 1 2025 -> still 18, not 19.
-        var birth = new DateTime(2006, 12, 31);
-        var today = new DateTime(2025, 1, 1);
+        var birth = new DateTime(2006, 12, 31, 0, 0, 0, DateTimeKind.Utc);
+        var today = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         int age = MinimumAgeHandler.CalculateAge(birth, today);
 
@@ -22,8 +22,8 @@ internal sealed class MinimumAgeHandlerTests
     {
         // The classic age-gate bypass: turns 18 later this year but the naive
         // year-subtraction would already report 18.
-        var birth = new DateTime(2007, 6, 13);
-        var today = new DateTime(2025, 6, 12);
+        var birth = new DateTime(2007, 6, 13, 0, 0, 0, DateTimeKind.Utc);
+        var today = new DateTime(2025, 6, 12, 0, 0, 0, DateTimeKind.Utc);
 
         int age = MinimumAgeHandler.CalculateAge(birth, today);
 
@@ -33,8 +33,8 @@ internal sealed class MinimumAgeHandlerTests
     [Test]
     public async Task CalculateAge_OnExactBirthday_ShouldCountThatYear()
     {
-        var birth = new DateTime(2007, 6, 12);
-        var today = new DateTime(2025, 6, 12);
+        var birth = new DateTime(2007, 6, 12, 0, 0, 0, DateTimeKind.Utc);
+        var today = new DateTime(2025, 6, 12, 0, 0, 0, DateTimeKind.Utc);
 
         int age = MinimumAgeHandler.CalculateAge(birth, today);
 
@@ -44,8 +44,8 @@ internal sealed class MinimumAgeHandlerTests
     [Test]
     public async Task CalculateAge_AfterBirthdayThisYear_ShouldCountCurrentYear()
     {
-        var birth = new DateTime(2007, 1, 1);
-        var today = new DateTime(2025, 12, 31);
+        var birth = new DateTime(2007, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var today = new DateTime(2025, 12, 31, 0, 0, 0, DateTimeKind.Utc);
 
         int age = MinimumAgeHandler.CalculateAge(birth, today);
 

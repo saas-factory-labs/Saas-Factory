@@ -29,7 +29,7 @@ in front of the container (ops layer, out of code scope).
      shell with `dotnet watch`.
    - **Production:** add `<App>.Admin:<version>` to the `ADMIN_PLUGIN_PACKAGES` GitHub
      Actions variable; the deploy pipeline downloads it into the image `plugins/` folder
-     (`AdminPortal__PluginsPath=/app/plugins`).
+     (`ADMIN_PORTAL_PLUGINS_PATH=/app/plugins`).
 3. Configure the app's database connection string (see below).
 4. The portal appears automatically under **Admin Portals** in the sidebar.
 
@@ -41,7 +41,7 @@ module has no connection string — an internal admin tool must refuse to boot m
 
 | Variable | Purpose |
 |---|---|
-| `AdminPortal__PluginsPath` | Folder scanned for plugin dlls (`/app/plugins` in the image) |
+| `ADMIN_PORTAL_PLUGINS_PATH` | Folder scanned for plugin dlls (`/app/plugins` in the image). Local dev can use `AdminPortal:PluginsPath` in appsettings. |
 | `AdminPortal__Modules__{slug}__ConnectionString` | The app's own Postgres (Neon/Railway); dedicated per-app DB user with SELECT on Users/Tenants and UPDATE on Users |
 | `ConnectionStrings__DefaultConnection` | DeploymentManager's own database — hosts the `dm_admin_audit` log |
 | `Security__AdminIpWhitelist__Enabled` / `__AllowedIps__0…` | Production admin IP whitelist (localhost always allowed) |

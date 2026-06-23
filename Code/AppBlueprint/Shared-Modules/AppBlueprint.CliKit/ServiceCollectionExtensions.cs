@@ -1,4 +1,4 @@
-﻿using AppBlueprint.CliKit.Ci;
+using AppBlueprint.CliKit.Ci;
 using AppBlueprint.CliKit.Commands;
 using AppBlueprint.CliKit.Configuration;
 using AppBlueprint.CliKit.Console;

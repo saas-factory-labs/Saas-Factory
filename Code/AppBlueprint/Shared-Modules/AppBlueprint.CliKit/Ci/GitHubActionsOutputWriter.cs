@@ -1,4 +1,4 @@
-﻿namespace AppBlueprint.CliKit.Ci;
+namespace AppBlueprint.CliKit.Ci;
 
 public interface IGitHubActionsOutputWriter
 {

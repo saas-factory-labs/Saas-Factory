@@ -50,25 +50,9 @@ public static class ConfigurationValidator
                 : "DATABASE_CONNECTIONSTRING, appblueprintdb, postgres-server, DefaultConnection";
 
             throw new InvalidOperationException(
-                "Database connection string is required but not configured.\n" +
-                "\n" +
-                "To fix this, set the connection string using one of these methods:\n" +
-                "\n" +
-                "1. Environment Variable (recommended for production):\n" +
-                "   Key-Value Format:\n" +
-                "   DATABASE_CONNECTIONSTRING=Host=localhost;Database=appblueprint;Username=postgres;Password=yourpassword\n" +
-                "\n" +
-                "   PostgreSQL URI Format (Railway/Cloud):\n" +
-                "   DATABASE_CONNECTIONSTRING=postgresql://postgres:yourpassword@host:5432/appblueprint\n" +
-                "\n" +
-                "2. Configuration file (appsettings.json):\n" +
-                "   {\n" +
-                "     \"ConnectionStrings\": {\n" +
-                "       \"appblueprintdb\": \"Host=localhost;Database=appblueprint;Username=postgres;Password=yourpassword\"\n" +
-                "     }\n" +
-                "   }\n" +
-                "\n" +
-                $"Fallback keys checked: {keysChecked}");
+                $"Database connection string is required but not configured. " +
+                $"Set it via the DATABASE_CONNECTIONSTRING environment variable or ConnectionStrings section in appsettings.json. " +
+                $"Keys checked: {keysChecked}");
         }
     }
 

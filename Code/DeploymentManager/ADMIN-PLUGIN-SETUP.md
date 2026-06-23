@@ -136,7 +136,7 @@ RUN dotnet publish "DeploymentManager.Web.csproj" \
 
 # Final stage — copy plugins alongside the published app
 COPY --from=build --chown=$APP_UID:$APP_UID /app/plugins ./plugins/
-ENV AdminPortal__PluginsPath=/app/plugins
+ENV ADMIN_PORTAL_PLUGINS_PATH=/app/plugins
 ```
 
 ### 2.4 `railway.toml` (repo root)

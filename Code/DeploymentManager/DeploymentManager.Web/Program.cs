@@ -108,7 +108,9 @@ builder.Services.AddScoped<IMenuConfigurationService, MenuConfigurationService>(
 // startup is aborted.
 AdminPortalBuilder adminPortal = builder.Services.AddAdminPortalKernel(builder.Configuration);
 
-string? pluginsPath = builder.Configuration["AdminPortal:PluginsPath"];
+// Read from ADMIN_PORTAL_PLUGINS_PATH env var (production/Docker) or AdminPortal:PluginsPath config key (local dev)
+string? pluginsPath = builder.Configuration["ADMIN_PORTAL_PLUGINS_PATH"]
+    ?? builder.Configuration["AdminPortal:PluginsPath"];
 if (!string.IsNullOrWhiteSpace(pluginsPath))
 {
     string resolvedPluginsPath = Path.GetFullPath(pluginsPath, builder.Environment.ContentRootPath);
@@ -128,7 +130,7 @@ if (!string.IsNullOrWhiteSpace(pluginsPath))
 }
 else
 {
-    Console.WriteLine("[AdminPortal] AdminPortal:PluginsPath not configured - no admin portal modules loaded");
+    Console.WriteLine("[AdminPortal] ADMIN_PORTAL_PLUGINS_PATH or AdminPortal:PluginsPath not configured - no admin portal modules loaded");
 }
 
 // The audit log (dm_admin_audit) lives in DeploymentManager's own database; the table

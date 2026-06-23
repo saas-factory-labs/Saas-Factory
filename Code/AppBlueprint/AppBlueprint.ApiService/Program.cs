@@ -1,12 +1,12 @@
 using System.Threading.RateLimiting;
+using AppBlueprint.Application.Interfaces;
+using AppBlueprint.Infrastructure.Extensions;
+using AppBlueprint.Infrastructure.Payments.Extensions;
 using AppBlueprint.Infrastructure.Persistence;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
-using AppBlueprint.Infrastructure.Extensions;
-using AppBlueprint.Infrastructure.Payments.Extensions;
 using AppBlueprint.Infrastructure.Search;
-using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.Presentation.ApiModule.Middleware;
 using AppBlueprint.ServiceDefaults;

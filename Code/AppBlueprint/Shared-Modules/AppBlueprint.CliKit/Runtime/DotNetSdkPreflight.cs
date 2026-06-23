@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using AppBlueprint.CliKit.Processes;
 using Microsoft.Extensions.Logging;
 

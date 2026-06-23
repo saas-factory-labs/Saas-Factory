@@ -1,4 +1,4 @@
-﻿namespace AppBlueprint.DeveloperCli.Commands;
+namespace AppBlueprint.DeveloperCli.Commands;
 
 internal static class EnvironmentVariableCommand
 {

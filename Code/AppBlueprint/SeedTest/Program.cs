@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,9 @@ internal static class Program
         Console.WriteLine("🌱 Starting Database Seeding Test...");
 
         var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING")
-                              ?? "Host=localhost;Port=63408;Database=appblueprintdb;Username=postgres;Password=password";
+            ?? throw new InvalidOperationException("DATABASE_CONNECTIONSTRING environment variable is not set.");
 
-        Console.WriteLine($"Using connection string: {connectionString.Replace("Password=password", "Password=***", StringComparison.Ordinal)}");
+        Console.WriteLine($"Using connection string: {Regex.Replace(connectionString, "Password=[^;]+", match => match.Value[..match.Value.IndexOf('=')] + "=***", RegexOptions.IgnoreCase)}");
 
         // Create host and services
         var host = Host.CreateDefaultBuilder(args)
