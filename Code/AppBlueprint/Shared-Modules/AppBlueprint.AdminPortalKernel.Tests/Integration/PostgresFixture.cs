@@ -93,8 +93,7 @@ internal static class PostgresFixture
         {
             if (_container is null)
             {
-                PostgreSqlContainer container = new PostgreSqlBuilder()
-                    .WithImage("postgres:17-alpine")
+                PostgreSqlContainer container = new PostgreSqlBuilder("postgres:17-alpine")
                     .Build();
 
                 await container.StartAsync();
