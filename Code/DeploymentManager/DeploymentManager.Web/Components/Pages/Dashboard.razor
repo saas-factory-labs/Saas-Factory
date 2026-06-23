@@ -14,6 +14,15 @@
         <p class="text-sm text-gray-500 dark:text-gray-400">Aggregated overview across your entire SaaS portfolio.</p>
     </div>
 
+    <!-- Platform overview service error -->
+    @if (!string.IsNullOrWhiteSpace(_overviewError))
+    {
+        <div class="bg-red-500/20 text-red-700 px-4 py-3 rounded-lg mb-8 text-sm">
+            <p class="font-semibold mb-1">Platform Overview Service Error</p>
+            <p>@_overviewError</p>
+        </div>
+    }
+
     <!-- Aggregated metric cards -->
     <div class="dashboard-metrics-grid mb-8">
         <div class="dashboard-metric-card bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-xs rounded-xl p-5">
@@ -49,12 +58,21 @@
 
     <!-- Core Infrastructure Status -->
     <h2 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold mb-3">Core Infrastructure Status</h2>
+
+    @if (!string.IsNullOrWhiteSpace(_healthError))
+    {
+        <div class="bg-red-500/20 text-red-700 px-4 py-3 rounded-lg mb-8 text-sm">
+            <p class="font-semibold mb-1">Infrastructure Health Service Error</p>
+            <p>@_healthError</p>
+        </div>
+    }
+
     <div class="dashboard-health-grid mb-8">
-        @if (_health is null)
+        @if (_health is null && string.IsNullOrWhiteSpace(_healthError))
         {
             <div class="dashboard-health-loading text-sm text-gray-500 dark:text-gray-400">Checking connectivity...</div>
         }
-        else
+        else if (_health is not null)
         {
             @foreach (InfrastructureComponentHealth component in _health.Components)
             {
@@ -86,6 +104,8 @@
 @code {
     private PlatformOverview? _overview;
     private InfrastructureHealth? _health;
+    private string? _overviewError;
+    private string? _healthError;
 
     private string MrrDisplay => _overview is null
         ? "..."
@@ -95,8 +115,27 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _overview = await PlatformOverview.GetAsync();
-        _health = await InfrastructureHealth.CheckAsync();
+        // Isolate platform overview service call with fault tolerance
+        try
+        {
+            _overview = await PlatformOverview.GetAsync();
+        }
+        catch (Exception ex)
+        {
+            _overviewError = $"Failed to load platform overview: {ex.Message}";
+            Console.Error.WriteLine($"[Dashboard] Platform overview service error: {ex}");
+        }
+
+        // Isolate infrastructure health service call with fault tolerance
+        try
+        {
+            _health = await InfrastructureHealth.CheckAsync();
+        }
+        catch (Exception ex)
+        {
+            _healthError = $"Failed to check infrastructure health: {ex.Message}";
+            Console.Error.WriteLine($"[Dashboard] Infrastructure health service error: {ex}");
+        }
     }
 
     private static string Metric(int? value) =>
