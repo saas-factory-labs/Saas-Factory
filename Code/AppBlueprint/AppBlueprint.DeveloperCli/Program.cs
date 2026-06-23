@@ -753,7 +753,7 @@ internal static class Program
         return Regex.Replace(
             connectionString,
             "Password=[^;]+",
-            "Password=***",
+            match => match.Value[..match.Value.IndexOf('=')] + "=***",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     }
 

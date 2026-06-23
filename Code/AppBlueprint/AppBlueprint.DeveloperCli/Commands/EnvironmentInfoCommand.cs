@@ -213,14 +213,14 @@ internal static class EnvironmentInfoCommand
         if (connectionString == "Not set")
             return connectionString;
 
-        // Mask password in PostgreSQL connection string
         var regex = new System.Text.RegularExpressions.Regex(Pattern.With
             .Literal("Password=")
             .Group(Pattern.With.NegatedSet(Pattern.With.Literal(";")).Repeat.OneOrMore)
             .ToString(),
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
-        return regex.Replace(connectionString, "Password=***");
+        return regex.Replace(connectionString, match =>
+            match.Value[..match.Value.IndexOf('=')] + "=***");
     }
 
     private static bool CheckDockerRunning()

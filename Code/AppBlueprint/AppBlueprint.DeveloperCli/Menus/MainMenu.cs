@@ -334,6 +334,7 @@ internal static class MainMenu
             .ToString(),
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
-        return regex.Replace(connectionString, "Password=***");
+        return regex.Replace(connectionString, match =>
+            match.Value[..match.Value.IndexOf('=')] + "=***");
     }
 }

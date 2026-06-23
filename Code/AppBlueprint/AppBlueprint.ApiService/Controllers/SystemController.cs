@@ -76,21 +76,15 @@ internal class SystemController : ControllerBase
         try
         {
             var canConnect = await _dbContext.Database.CanConnectAsync();
-            var connectionString = _dbContext.Database.GetConnectionString();
-
-            // Mask the password in the connection string for security
-            var maskedConnectionString = connectionString?.Replace(";Password=", ";Password=*****", StringComparison.OrdinalIgnoreCase);
 
             object response;
 
             if (canConnect)
             {
-                // Check if there are pending migrations
                 var pendingMigrations = await _dbContext.Database.GetPendingMigrationsAsync();
                 response = new
                 {
                     canConnect,
-                    connectionString = maskedConnectionString,
                     migrationsPending = pendingMigrations.Any(),
                     pendingMigrationCount = pendingMigrations.Count()
                 };
@@ -100,7 +94,6 @@ internal class SystemController : ControllerBase
                 response = new
                 {
                     canConnect,
-                    connectionString = maskedConnectionString,
                     migrationsPending = false
                 };
             }
