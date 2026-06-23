@@ -23,11 +23,7 @@
     public string? Align { get; set; }
 
     private readonly string _inputId = $"datepicker-{Guid.NewGuid():N}";
-    private ElementReference inputRef;
-
-    protected override void OnInitialized()
-    {
-    }
+    private ElementReference inputRef;    
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

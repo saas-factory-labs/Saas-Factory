@@ -1,4 +1,4 @@
-﻿using AppBlueprint.CliKit.Processes;
+using AppBlueprint.CliKit.Processes;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace AppBlueprint.DeveloperCli.Utilities;

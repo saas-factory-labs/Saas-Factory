@@ -72,14 +72,14 @@ public class WebhookController : BaseController
 
         // SECURITY (OWASP A10/SSRF): reject internal, loopback, metadata and non-http(s) targets
         // before persisting, so the delivery service can never be pointed at internal resources.
-        if (!WebhookUrlValidator.TryValidate(request.Url, out string? urlError))
+        if (!WebhookUrlValidator.TryValidate(request.Url.ToString(), out string? urlError))
             return BadRequest(new { Message = urlError });
 
         string tenantId = GetCurrentTenantId();
 
         var webhook = new WebhookEntity
         {
-            Url = new Uri(request.Url),
+            Url = request.Url,
             Secret = request.Secret,
             Description = request.Description,
             EventTypes = request.EventTypes,
@@ -103,7 +103,7 @@ public class WebhookController : BaseController
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        if (!WebhookUrlValidator.TryValidate(request.Url, out string? urlError))
+        if (!WebhookUrlValidator.TryValidate(request.Url.ToString(), out string? urlError))
             return BadRequest(new { Message = urlError });
 
         WebhookEntity? webhook = await _webhookRepository.GetByIdAsync(id, cancellationToken);
@@ -112,7 +112,7 @@ public class WebhookController : BaseController
         string tenantId = GetCurrentTenantId();
         if (webhook.TenantId != tenantId) return NotFound();
 
-        webhook.Url = new Uri(request.Url);
+        webhook.Url = request.Url;
         webhook.Secret = request.Secret;
         webhook.Description = request.Description;
         webhook.EventTypes = request.EventTypes;
@@ -146,7 +146,7 @@ public class WebhookController : BaseController
     private static WebhookResponse MapToResponse(WebhookEntity webhook) => new()
     {
         Id = webhook.Id,
-        Url = webhook.Url.ToString(),
+        Url = webhook.Url,
         Description = webhook.Description,
         EventTypes = webhook.EventTypes,
         TenantId = webhook.TenantId

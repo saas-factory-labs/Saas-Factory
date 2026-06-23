@@ -64,10 +64,10 @@ internal sealed class FirebaseErrorDetail
 {
     [JsonPropertyName("message")]
     public string Message { get; init; } = string.Empty;
-    
+
     [JsonPropertyName("domain")]
     public string Domain { get; init; } = string.Empty;
-    
+
     [JsonPropertyName("reason")]
     public string Reason { get; init; } = string.Empty;
 }

@@ -28,7 +28,6 @@
 @code {
     private System.Timers.Timer? timer;
     private bool _initialized;
-    private int counter;
     private int range = 35;
 
     // Sample data to be looped (same as Vue template)
@@ -129,7 +128,6 @@
         {
             if (!_initialized) return;
 
-            counter++;
             range++;
             if (range >= sampleData.Length)
             {

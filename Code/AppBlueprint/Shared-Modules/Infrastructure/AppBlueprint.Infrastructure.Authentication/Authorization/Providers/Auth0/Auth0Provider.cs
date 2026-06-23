@@ -193,7 +193,7 @@ public class Auth0Provider : BaseAuthenticationProvider
         try
         {
             AccessToken = storedToken;
-            
+
             DateTime? extractedExpiration = ExtractExpirationFromJwt(storedToken);
             TokenExpiration = extractedExpiration ?? DateTime.UtcNow.AddHours(1);
 

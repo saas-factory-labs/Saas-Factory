@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.CliKit.Processes;
@@ -39,9 +39,9 @@ public sealed class CliProcessRunner : ICliProcessRunner
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrWhiteSpace(request.FileName);
 
-        #pragma warning disable CA2000 // Disposed by using var; analyzer does not follow nullable factory here.
+#pragma warning disable CA2000 // Disposed by using var; analyzer does not follow nullable factory here.
         using var timeoutCts = CreateTimeoutTokenSource(request.Timeout);
-        #pragma warning restore CA2000
+#pragma warning restore CA2000
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
             cancellationToken,
             timeoutCts?.Token ?? CancellationToken.None);

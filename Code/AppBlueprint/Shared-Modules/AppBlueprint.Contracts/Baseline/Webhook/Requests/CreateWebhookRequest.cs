@@ -2,7 +2,7 @@ namespace AppBlueprint.Contracts.Baseline.Webhook.Requests;
 
 public sealed class CreateWebhookRequest
 {
-    public required string Url { get; init; }
+    public required Uri Url { get; init; }
     public required string Secret { get; init; }
     public string? Description { get; init; }
 

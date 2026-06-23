@@ -1,4 +1,4 @@
-﻿using System.CommandLine;
+using System.CommandLine;
 using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.CliKit.Commands;

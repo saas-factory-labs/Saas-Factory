@@ -1,4 +1,4 @@
-﻿using System.CommandLine;
+using System.CommandLine;
 
 namespace AppBlueprint.CliKit.Commands;
 

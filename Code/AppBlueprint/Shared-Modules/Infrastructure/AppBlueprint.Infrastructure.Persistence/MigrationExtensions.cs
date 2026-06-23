@@ -374,7 +374,7 @@ public static class MigrationExtensions
             }
 
             return builder.ToString().TrimEnd(';');
-            
+
             // RETTET: Omdøbt logtekst og metode-kald til HasCredential for at tilfredsstille statisk analyse
         }
         catch (UriFormatException ex)

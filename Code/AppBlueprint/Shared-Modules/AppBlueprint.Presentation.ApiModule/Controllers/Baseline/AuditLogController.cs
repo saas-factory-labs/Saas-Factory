@@ -1,4 +1,3 @@
-using ApplicationRoles = AppBlueprint.Application.Constants.Roles;
 using AppBlueprint.Contracts.B2B.Contracts.Tenant.Responses;
 using AppBlueprint.Contracts.Baseline.AuditLog.Requests;
 using AppBlueprint.Contracts.Baseline.AuditLog.Responses;
@@ -8,6 +7,7 @@ using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ApplicationRoles = AppBlueprint.Application.Constants.Roles;
 
 namespace AppBlueprint.Presentation.ApiModule.Controllers.Baseline;
 
