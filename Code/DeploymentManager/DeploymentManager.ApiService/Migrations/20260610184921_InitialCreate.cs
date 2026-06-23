@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AppBlueprint.SharedKernel.SharedModels;
 using Microsoft.EntityFrameworkCore.Migrations;

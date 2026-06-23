@@ -11,6 +11,7 @@ internal static class RouteScanner
 
     private const string DefaultBaseUrl = "https://localhost:7001";
     private const string TodoControllerName = "TodoController";
+    private const string UnknownValue = "UNKNOWN";
 
     public static async Task<List<RouteInfo>> GetAllRoutesAsync(string? baseUrl = null)
     {
@@ -31,9 +32,9 @@ internal static class RouteScanner
 
                 return routes?.Select(r => new RouteInfo
                 {
-                    Method = r.Method ?? "UNKNOWN",
-                    Path = r.Route ?? "UNKNOWN",
-                    Controller = r.Handler ?? "UNKNOWN"
+                    Method = r.Method ?? UnknownValue,
+                    Path = r.Route ?? UnknownValue,
+                    Controller = r.Handler ?? UnknownValue
                 }).ToList() ?? [];
             }
             else

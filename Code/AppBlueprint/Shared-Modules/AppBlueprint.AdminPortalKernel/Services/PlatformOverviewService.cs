@@ -48,7 +48,7 @@ public sealed class PlatformOverviewService : IPlatformOverviewService
         int activeTenants = 0;
         var errors = new List<string>();
 
-        foreach (IAdminPortalModule module in _registry.Modules)
+        foreach (IAdminPortalModule module in _registry.GetModules())
         {
             try
             {

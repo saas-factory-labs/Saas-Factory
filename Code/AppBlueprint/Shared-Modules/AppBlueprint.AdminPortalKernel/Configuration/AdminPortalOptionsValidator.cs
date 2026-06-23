@@ -24,7 +24,7 @@ public sealed class AdminPortalOptionsValidator : IValidateOptions<AdminPortalOp
 
         List<string> failures = new();
 
-        foreach (IAdminPortalModule module in _registry.Modules)
+        foreach (IAdminPortalModule module in _registry.GetModules())
         {
             if (!options.Modules.TryGetValue(module.Slug, out AdminPortalModuleOptions? moduleOptions)
                 || string.IsNullOrWhiteSpace(moduleOptions.ConnectionString))

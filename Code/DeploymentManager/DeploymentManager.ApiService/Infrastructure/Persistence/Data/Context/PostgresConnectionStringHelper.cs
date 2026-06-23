@@ -39,17 +39,17 @@ internal static class PostgresConnectionStringHelper
                         // Npgsql requires specific capitalisation — "require" won't be recognised
                         var sslMode = Uri.UnescapeDataString(parts[1]).ToLowerInvariant() switch
                         {
-                            "require"     => "Require",
-                            "verify-ca"   => "VerifyCA",
+                            "require" => "Require",
+                            "verify-ca" => "VerifyCA",
                             "verify-full" => "VerifyFull",
-                            "prefer"      => "Prefer",
-                            "allow"       => "Allow",
-                            "disable"     => "Disable",
-                            var other     => other
+                            "prefer" => "Prefer",
+                            "allow" => "Allow",
+                            "disable" => "Disable",
+                            var other => other
                         };
                         sb.Append($";SSL Mode={sslMode}");
                         break;
-                    // channel_binding is not a recognised Npgsql keyword — skip it
+                        // channel_binding is not a recognised Npgsql keyword — skip it
                 }
             }
         }

@@ -4,22 +4,26 @@ using AppBlueprint.ServiceDefaults;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 
+const string otelExporterOtlpEndpointEnvVar = "OTEL_EXPORTER_OTLP_ENDPOINT";
+const string otelExporterOtlpProtocolEnvVar = "OTEL_EXPORTER_OTLP_PROTOCOL";
+const string dotnetDashboardOtlpEndpointUrlEnvVar = "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL";
+
 // Configure telemetry - must come before CreateBuilder and AddServiceDefaults
 // Use environment variable from AppHost; fall back to Aspire default only if unset
-string? otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
-string? dashboardEndpoint = Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL");
+string? otlpEndpoint = Environment.GetEnvironmentVariable(otelExporterOtlpEndpointEnvVar);
+string? dashboardEndpoint = Environment.GetEnvironmentVariable(dotnetDashboardOtlpEndpointUrlEnvVar);
 const string otlpDefaultEndpoint = "http://localhost:21250";
 
 // Set OTLP endpoint with priority: DOTNET_DASHBOARD_OTLP_ENDPOINT_URL > OTEL_EXPORTER_OTLP_ENDPOINT > default
 #pragma warning disable CA1303 // Do not pass literals as localized parameters - using resource constants
 if (!string.IsNullOrEmpty(dashboardEndpoint))
 {
-    Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", dashboardEndpoint);
+    Environment.SetEnvironmentVariable(otelExporterOtlpEndpointEnvVar, dashboardEndpoint);
     Console.WriteLine(ConfigurationMessages.DashboardEndpointMessage, dashboardEndpoint);
 }
 else if (string.IsNullOrEmpty(otlpEndpoint))
 {
-    Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT", otlpDefaultEndpoint);
+    Environment.SetEnvironmentVariable(otelExporterOtlpEndpointEnvVar, otlpDefaultEndpoint);
     Console.WriteLine(ConfigurationMessages.DefaultEndpointMessage, otlpDefaultEndpoint);
 }
 else
@@ -29,15 +33,15 @@ else
 #pragma warning restore CA1303
 
 // Set OTLP protocol if not already set
-if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")))
+if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(otelExporterOtlpProtocolEnvVar)))
 {
-    Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
+    Environment.SetEnvironmentVariable(otelExporterOtlpProtocolEnvVar, "http/protobuf");
 }
 
 // Print final configuration
 #pragma warning disable CA1303 // Do not pass literals as localized parameters - using resource constants
-Console.WriteLine(ConfigurationMessages.FinalOtlpEndpointMessage, Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT"));
-Console.WriteLine(ConfigurationMessages.FinalOtlpProtocolMessage, Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL"));
+Console.WriteLine(ConfigurationMessages.FinalOtlpEndpointMessage, Environment.GetEnvironmentVariable(otelExporterOtlpEndpointEnvVar));
+Console.WriteLine(ConfigurationMessages.FinalOtlpProtocolMessage, Environment.GetEnvironmentVariable(otelExporterOtlpProtocolEnvVar));
 #pragma warning restore CA1303
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -177,5 +181,4 @@ app.UseRateLimiter();
 
 app.MapReverseProxy();
 
-// Start the application.
-app.Run();
+await app.RunAsync();

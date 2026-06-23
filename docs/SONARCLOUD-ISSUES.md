@@ -22,7 +22,7 @@
 |File|Line|Issue|Status|
 |----|----|-----|------|
 |~~`ApiEndpoints.cs`~~|180, 181|Field shadows outer class member — rename it (`S3218`)|✅ Fixed — `Search.Tenants/Users` renamed to `TenantsPath/UsersPath`; `SearchController.cs` updated|
-|`AdminPortalModuleRegistry.cs`|63, 78|Properties `Modules` / `RouterAssemblies` copy collections — convert to methods (`S2365`)|Open — many callers across services and tests; needs dedicated refactoring pass|
+|~~`AdminPortalModuleRegistry.cs`~~|63, 78|Properties `Modules` / `RouterAssemblies` copy collections — convert to methods (`S2365`)|✅ Fixed — converted to `GetModules()` / `GetRouterAssemblies()`; 9 callers updated across 5 files|
 |~~`CommandPalette.razor`~~|137, 148|Properties `AllCommands` / `FilteredCommands` copy collections — convert to methods (`S2365`)|✅ Fixed — converted to `GetAllCommands()` / `GetFilteredCommands()`|
 |~~`GlobalSearch.razor`~~|184|Property `FilteredResults` copies collection — convert to method (`S2365`)|✅ Fixed — converted to `GetFilteredResults()`; template and `HandleKeyDown` / `GetResultIndex` updated|
 |`FileValidationService.cs`|100|Cognitive Complexity 20 > 15 — refactor (`S3776`)|Open|
@@ -88,7 +88,7 @@
 11. ✅ ~~**Collection-copying property** in `GlobalSearch.razor`~~ — converted to `GetFilteredResults()`
 12. ✅ ~~**Empty methods** in `DropdownFilter.razor`, `Datepicker.razor`~~ — already implemented; stale SonarCloud result
 13. **Unreachable code bug** in `Program.cs:583`
-14. **Collection-copying properties** — `AdminPortalModuleRegistry.cs` (many callers; dedicated refactoring pass needed)
+14. ✅ ~~**Collection-copying properties** in `AdminPortalModuleRegistry.cs`~~ — converted to `GetModules()` / `GetRouterAssemblies()`
 15. **Cognitive Complexity** — `AdminDependencies.razor`, `FileValidationService.cs`, `Extensions.cs`, `PostgresConnectionString.cs`, `CliProcessRunner.cs`
 16. **Unused private accessors** (`S1144`) — ~10+ instances; needs SonarCloud UI to see exact list
 17. **`StringBuilder` locale** (`CA1305`) — mark as Won't Fix in SonarCloud UI
