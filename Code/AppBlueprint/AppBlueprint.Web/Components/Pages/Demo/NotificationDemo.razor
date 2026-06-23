@@ -190,7 +190,7 @@
     private string? _tenantId;
     private bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
 
-    private NotificationFormModel _notificationModel = new();
+    private readonly NotificationFormModel _notificationModel = new();
     private bool _sendInApp = true;
     private bool _sendPush;
     private bool _isSending;
@@ -200,7 +200,7 @@
     private bool _isRegistering;
     private bool _isRequestingToken;
 
-    private List<ReceivedNotification> _receivedNotifications = new();
+    private readonly List<ReceivedNotification> _receivedNotifications = new();
     private string? _statusMessage;
     private string? _errorMessage;
     private bool _scriptLoaded;

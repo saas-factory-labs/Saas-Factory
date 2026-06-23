@@ -37,7 +37,7 @@
     private List<string> selectedMultiOptions = new();
     private int? selectedMinRating;
 
-    private List<CategoryFilter.CategoryItem> categories = new()
+    private readonly List<CategoryFilter.CategoryItem> categories = new()
     {
         new() { Label = "View All", Value = "all", Url = "#0" },
         new() { Label = "Apps / Software", Value = "apps-software", Url = "#0" },
@@ -47,7 +47,7 @@
         new() { Label = "Drawing / Painting", Value = "drawing-painting", Url = "#0" }
     };
 
-    private List<PriceRangeFilter.PriceRangeItem> priceRanges = new()
+    private readonly List<PriceRangeFilter.PriceRangeItem> priceRanges = new()
     {
         new() { Label = "Less than $20", Value = "0-20", MinValue = 0, MaxValue = 20 },
         new() { Label = "$20 - $40", Value = "20-40", MinValue = 20, MaxValue = 40 },
@@ -55,7 +55,7 @@
         new() { Label = "More than $80", Value = "80+", MinValue = 80, MaxValue = null }
     };
 
-    private List<MultiSelectFilter.MultiSelectOption> multiSelectOptions = new()
+    private readonly List<MultiSelectFilter.MultiSelectOption> multiSelectOptions = new()
     {
         new() { Label = "Apps / Software", Value = "apps-software" },
         new() { Label = "Education", Value = "education" },

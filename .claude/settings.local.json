@@ -123,7 +123,8 @@
       "Bash(dotnet format:*)",
       "Bash(while read proj)",
       "Bash(do echo \"Formatting $proj...\")",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": [],

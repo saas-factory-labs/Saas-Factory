@@ -20,11 +20,11 @@
 </div>
 
 @code {
-    private List<string> labels = new() { "Cash", "Commodities", "Bonds", "Stock" };
-    private List<double> data = new() { 12, 13, 10, 65 };
+    private readonly List<string> labels = new() { "Cash", "Commodities", "Bonds", "Stock" };
+    private readonly List<double> data = new() { 12, 13, 10, 65 };
 
     // Using custom colors from app.css
-    private List<string> backgroundColors = new()
+    private readonly List<string> backgroundColors = new()
     {
         "rgb(75, 211, 125)", // green-400
         "rgb(247, 205, 76)", // yellow-400
@@ -32,7 +32,7 @@
         "rgb(132, 112, 255)" // violet-500
     };
 
-    private List<string> hoverBackgroundColors = new()
+    private readonly List<string> hoverBackgroundColors = new()
     {
         "rgb(62, 201, 114)", // green-500
         "rgb(240, 187, 51)", // yellow-500

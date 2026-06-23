@@ -17,7 +17,7 @@
 </div>
 
 @code {
-    private List<string> labels = Enumerable.Range(0, 41).Select(i => $"Point {i}").ToList();
+    private readonly List<string> labels = Enumerable.Range(0, 41).Select(i => $"Point {i}").ToList();
 
     private List<LineChart.ChartDataset> datasets = new();
 
