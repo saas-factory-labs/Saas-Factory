@@ -1,70 +1,33 @@
 # Local Development Setup
 
-Run PostgreSQL and Logto locally using Docker so you don't need cloud services during development.
+The AppHost uses cloud services (Railway PostgreSQL, Clerk) configured via Doppler. No local Docker containers are required.
 
 ## Prerequisites
 
-1. Docker Desktop installed and running
-2. .NET 10 SDK
+1. .NET 10 SDK
+2. Doppler CLI installed and authenticated
 
 ## Quick Start
 
 ```bash
-cd Code/AppBlueprint
-docker compose -f docker-compose.local.yml up -d
+cd Code/AppBlueprint/AppBlueprint.AppHost
+doppler run -- dotnet run
 ```
 
-This starts:
+Doppler injects the required secrets at runtime:
 
-| Service    | URL                      | Credentials                                    |
-|------------|--------------------------|------------------------------------------------|
-| PostgreSQL | localhost:5432           | User: appblueprint / Pass: localdev123 / DB: appblueprint |
-| Logto API  | http://localhost:3001    | (configure via Admin Console)                  |
-| Logto Admin| http://localhost:3002    | (create admin account on first visit)          |
+|Variable|Description|
+|--------|-----------|
+|`DATABASE_CONNECTIONSTRING`|Railway PostgreSQL connection string|
+|`CLERK_PUBLISHABLE_KEY`|Clerk publishable key|
+|`CLERK_SECRET_KEY`|Clerk secret key|
+|`AUTHENTICATION_PROVIDER`|Set to `Clerk`|
 
-## Configure the App to Use Local Services
+## Run EF Core Migrations
 
-Set these environment variables before running the AppHost:
-
-```bash
-DATABASE_CONNECTIONSTRING=Host=localhost;Port=5432;Database=appblueprint;Username=appblueprint;Password=localdev123
-LOGTO_ENDPOINT=http://localhost:3001
-AUTHENTICATION_PROVIDER=Logto
-```
-
-Or for Firebase:
-
-```bash
-AUTHENTICATION_PROVIDER=Firebase
-Authentication__Firebase__ApiKey=your-firebase-api-key
-```
-
-## First Time Logto Setup
-
-1. Open http://localhost:3002 in your browser
-2. Create an admin account
-3. Create a new "Traditional Web" application
-4. Copy the App ID and App Secret
-5. Set LOGTO_APPID and LOGTO_APPSECRET environment variables
-
-## Run EF Core Migration
-
-After the database is running, apply the migration:
+With Doppler providing the connection string:
 
 ```bash
 cd Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure
-dotnet ef migrations add AddUserExternalIdentities --startup-project ../../AppBlueprint.ApiService/AppBlueprint.ApiService.csproj
-dotnet ef database update --startup-project ../../AppBlueprint.ApiService/AppBlueprint.ApiService.csproj
-```
-
-## Stop Services
-
-```bash
-docker compose -f docker-compose.local.yml down
-```
-
-To also remove the database data:
-
-```bash
-docker compose -f docker-compose.local.yml down -v
+doppler run -- dotnet ef database update --startup-project ../../AppBlueprint.ApiService/AppBlueprint.ApiService.csproj
 ```
