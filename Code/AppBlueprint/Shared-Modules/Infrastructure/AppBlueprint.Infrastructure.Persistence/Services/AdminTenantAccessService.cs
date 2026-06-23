@@ -39,6 +39,8 @@ namespace AppBlueprint.Infrastructure.Persistence.Services;
 /// </summary>
 public sealed class AdminTenantAccessService : IAdminTenantAccessService
 {
+    private const string AdminTenantAccessLogTemplate = "ADMIN_TENANT_ACCESS | AdminUserId={AdminUserId} | TenantId={TenantId} | Operation=ReadOnly | Reason={Reason} | Status={Status}";
+
     private readonly ApplicationDbContext _dbContext;
     private readonly ILogger<AdminTenantAccessService> _logger;
     private readonly ICurrentUserService _currentUserService;
@@ -105,11 +107,11 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
 
         // Log admin access attempt
         _logger.LogWarning(
-            "ADMIN_TENANT_ACCESS | AdminUserId={AdminUserId} | TenantId={TenantId} | " +
-            "Operation=ReadOnly | Reason={Reason} | Status=Attempting",
+            AdminTenantAccessLogTemplate,
             adminUserId,
             tenantId,
-            reason);
+            reason,
+            "Attempting");
 
         try
         {
@@ -125,11 +127,11 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
 
             // Log successful access
             _logger.LogWarning(
-                "ADMIN_TENANT_ACCESS | AdminUserId={AdminUserId} | TenantId={TenantId} | " +
-                "Operation=ReadOnly | Reason={Reason} | Status=Success",
+                AdminTenantAccessLogTemplate,
                 adminUserId,
                 tenantId,
-                reason);
+                reason,
+                "Success");
 
             return result;
         }
@@ -137,11 +139,11 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
         {
             // Log failed access due to database error
             _logger.LogError(ex,
-                "ADMIN_TENANT_ACCESS | AdminUserId={AdminUserId} | TenantId={TenantId} | " +
-                "Operation=ReadOnly | Reason={Reason} | Status=Failed | Error={ErrorMessage}",
+                AdminTenantAccessLogTemplate + " | Error={ErrorMessage}",
                 adminUserId,
                 tenantId,
                 reason,
+                "Failed",
                 ex.Message);
 
             throw;
@@ -150,11 +152,11 @@ public sealed class AdminTenantAccessService : IAdminTenantAccessService
         {
             // Log failed access due to invalid operation
             _logger.LogError(ex,
-                "ADMIN_TENANT_ACCESS | AdminUserId={AdminUserId} | TenantId={TenantId} | " +
-                "Operation=ReadOnly | Reason={Reason} | Status=Failed | Error={ErrorMessage}",
+                AdminTenantAccessLogTemplate + " | Error={ErrorMessage}",
                 adminUserId,
                 tenantId,
                 reason,
+                "Failed",
                 ex.Message);
 
             throw;

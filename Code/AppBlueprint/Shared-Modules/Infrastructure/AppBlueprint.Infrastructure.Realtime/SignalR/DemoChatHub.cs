@@ -12,6 +12,7 @@ namespace AppBlueprint.Infrastructure.Realtime.SignalR;
 public class DemoChatHub : TenantScopedHub<DemoChatHub>
 {
     public const string HubPath = "/hubs/demochat";
+    private const string AnonymousUserName = "Anonymous";
 
     // Track online users per tenant: TenantId -> Dictionary<UserId, UserName>
     private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _onlineUsersByTenant = new();
@@ -41,7 +42,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
 
         string tenantId = GetCurrentTenantId();
         string userId = GetCurrentUserId();
-        string? userName = GetCurrentUserName() ?? "Anonymous";
+        string? userName = GetCurrentUserName() ?? AnonymousUserName;
 
         _logger.LogInformation("Tenant chat message received");
 
@@ -72,7 +73,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
 
         string senderTenantId = GetCurrentTenantId();
         string senderUserId = GetCurrentUserId();
-        string? senderName = GetCurrentUserName() ?? "Anonymous";
+        string? senderName = GetCurrentUserName() ?? AnonymousUserName;
 
         // In a production system, you'd verify recipientUserId is in the same tenant
         // For this demo, we trust the tenant isolation provided by the base class
@@ -109,7 +110,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
 
         string tenantId = GetCurrentTenantId();
         string userId = GetCurrentUserId();
-        string? userName = GetCurrentUserName() ?? "Anonymous";
+        string? userName = GetCurrentUserName() ?? AnonymousUserName;
 
         // SECURITY: Validate user has permission to join this conversation
         if (_authorizationService is null)
@@ -161,7 +162,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
 
         string tenantId = GetCurrentTenantId();
         string userId = GetCurrentUserId();
-        string? userName = GetCurrentUserName() ?? "Anonymous";
+        string? userName = GetCurrentUserName() ?? AnonymousUserName;
 
         // SECURITY: Validate user has permission to send messages in this conversation
         if (_authorizationService is not null)
@@ -205,7 +206,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
         ArgumentNullException.ThrowIfNull(conversationId);
 
         string userId = GetCurrentUserId();
-        string? userName = GetCurrentUserName() ?? "Anonymous";
+        string? userName = GetCurrentUserName() ?? AnonymousUserName;
         string tenantId = GetCurrentTenantId();
 
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"conversation:{conversationId}");
@@ -247,7 +248,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
 
         string tenantId = GetCurrentTenantId();
         string userId = GetCurrentUserId();
-        string? userName = GetCurrentUserName() ?? "Anonymous";
+        string? userName = GetCurrentUserName() ?? AnonymousUserName;
 
         _logger.LogInformation("DemoChatHub connection established");
 
@@ -270,7 +271,7 @@ public class DemoChatHub : TenantScopedHub<DemoChatHub>
     {
         string tenantId = GetCurrentTenantId();
         string userId = GetCurrentUserId();
-        string? userName = GetCurrentUserName() ?? "Anonymous";
+        string? userName = GetCurrentUserName() ?? AnonymousUserName;
 
         _logger.LogInformation("DemoChatHub connection closed");
 

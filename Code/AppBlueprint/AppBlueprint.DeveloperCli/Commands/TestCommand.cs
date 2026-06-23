@@ -9,6 +9,7 @@ namespace AppBlueprint.DeveloperCli.Commands;
 internal static class TestCommand
 {
     private const string DefaultTestProjectPath = @"C:\Development\Development-Projects\SaaS-Factory\Code\AppBlueprint";
+    private const string NormalVerbosity = "normal";
 
     public static Command Create()
     {
@@ -23,7 +24,7 @@ internal static class TestCommand
 
         var projectOption = new Option<string?>("--project") { Description = "Path to specific test project (default: all test projects)", DefaultValueFactory = _ => null };
 
-        var verbosityOption = new Option<string>("--verbosity") { Description = "Logging verbosity (quiet, minimal, normal, detailed, diagnostic)", DefaultValueFactory = _ => "normal" };
+        var verbosityOption = new Option<string>("--verbosity") { Description = "Logging verbosity (quiet, minimal, normal, detailed, diagnostic)", DefaultValueFactory = _ => NormalVerbosity };
 
         var noRestoreOption = new Option<bool>("--no-restore") { Description = "Do not restore dependencies before running tests", DefaultValueFactory = _ => false };
 
@@ -273,11 +274,11 @@ internal static class TestCommand
         switch (choice)
         {
             case "Run all tests":
-                ExecuteTests(watch: false, coverage: false, filter: null, project: null, verbosity: "normal", noRestore: false, noBuild: false).Wait();
+                ExecuteTests(watch: false, coverage: false, filter: null, project: null, verbosity: NormalVerbosity, noRestore: false, noBuild: false).Wait();
                 break;
 
             case "Run tests with coverage":
-                ExecuteTests(watch: false, coverage: true, filter: null, project: null, verbosity: "normal", noRestore: false, noBuild: false).Wait();
+                ExecuteTests(watch: false, coverage: true, filter: null, project: null, verbosity: NormalVerbosity, noRestore: false, noBuild: false).Wait();
                 break;
 
             case "Run tests in watch mode":
@@ -286,12 +287,12 @@ internal static class TestCommand
 
             case "Run specific test project":
                 string projectPath = AnsiConsole.Ask<string>("[green]Enter test project path:[/]");
-                ExecuteTests(watch: false, coverage: false, filter: null, project: projectPath, verbosity: "normal", noRestore: false, noBuild: false).Wait();
+                ExecuteTests(watch: false, coverage: false, filter: null, project: projectPath, verbosity: NormalVerbosity, noRestore: false, noBuild: false).Wait();
                 break;
 
             case "Run filtered tests":
                 string filter = AnsiConsole.Ask<string>("[green]Enter test filter (e.g., 'FullyQualifiedName~UnitTests'):[/]");
-                ExecuteTests(watch: false, coverage: false, filter: filter, project: null, verbosity: "normal", noRestore: false, noBuild: false).Wait();
+                ExecuteTests(watch: false, coverage: false, filter: filter, project: null, verbosity: NormalVerbosity, noRestore: false, noBuild: false).Wait();
                 break;
 
             case "Back to main menu":

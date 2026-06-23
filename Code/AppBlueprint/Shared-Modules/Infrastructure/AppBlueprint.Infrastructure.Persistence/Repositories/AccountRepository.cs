@@ -9,6 +9,9 @@ namespace AppBlueprint.Infrastructure.Persistence.Repositories;
 
 public class AccountRepository : IAccountRepository
 {
+    private const string NotFoundText = "Not Found";
+    private const string NotFoundTenantId = "not-found";
+
     private readonly ApplicationDbContext _context;
 
     public AccountRepository(ApplicationDbContext context)
@@ -25,12 +28,12 @@ public class AccountRepository : IAccountRepository
     {
         return await _context.Accounts.FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken) ?? new AccountEntity
         {
-            Name = "Not Found",
+            Name = NotFoundText,
             IsActive = false,
             CreatedAt = DateTime.Now,
-            Email = "Not Found",
-            TenantId = "not-found",
-            UserId = "not-found",
+            Email = NotFoundText,
+            TenantId = NotFoundTenantId,
+            UserId = NotFoundTenantId,
             Owner = CreateNotFoundUserEntity()
         };
     }
@@ -38,12 +41,12 @@ public class AccountRepository : IAccountRepository
     {
         return await _context.Accounts.FindAsync(new object?[] { slug, cancellationToken }, cancellationToken: cancellationToken) ?? new AccountEntity
         {
-            Name = "Not Found",
+            Name = NotFoundText,
             IsActive = false,
             CreatedAt = DateTime.Now,
-            Email = "Not Found",
-            TenantId = "not-found",
-            UserId = "not-found",
+            Email = NotFoundText,
+            TenantId = NotFoundTenantId,
+            UserId = NotFoundTenantId,
             Owner = CreateNotFoundUserEntity()
         };
     }
@@ -85,10 +88,10 @@ public class AccountRepository : IAccountRepository
         var profile = new ProfileEntity { User = tempUser };
 
         // Update the user with correct values and profile
-        tempUser.FirstName = "Not Found";
-        tempUser.LastName = "Not Found";
-        tempUser.Email = "Not Found";
-        tempUser.UserName = "Not Found";
+        tempUser.FirstName = NotFoundText;
+        tempUser.LastName = NotFoundText;
+        tempUser.Email = NotFoundText;
+        tempUser.UserName = NotFoundText;
         tempUser.IsActive = false;
         tempUser.CreatedAt = DateTime.Now;
         tempUser.Profile = profile;

@@ -10,30 +10,32 @@ namespace AppBlueprint.Application.Services.DataExport;
 /// </summary>
 public sealed class DataExportService : IDataExportService
 {
+    private const string ImplementationMovedMessage = "Implementation moved to Infrastructure layer";
+
     // Implementation moved to Infrastructure layer to maintain Clean Architecture principles
     // This file serves as a placeholder and will be moved
     public Task<DataExportResponse> CreateDataExportAsync(CreateDataExportRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException("Implementation moved to Infrastructure layer");
+        throw new NotImplementedException(ImplementationMovedMessage);
     }
 
     public Task<IEnumerable<DataExportResponse>> GetAllDataExportsAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException("Implementation moved to Infrastructure layer");
+        throw new NotImplementedException(ImplementationMovedMessage);
     }
 
     public Task<DataExportResponse?> GetDataExportByIdAsync(string id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException("Implementation moved to Infrastructure layer");
+        throw new NotImplementedException(ImplementationMovedMessage);
     }
 
     public Task<bool> UpdateDataExportAsync(string id, UpdateDataExportRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException("Implementation moved to Infrastructure layer");
+        throw new NotImplementedException(ImplementationMovedMessage);
     }
 
     public Task<bool> DeleteDataExportAsync(string id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException("Implementation moved to Infrastructure layer");
+        throw new NotImplementedException(ImplementationMovedMessage);
     }
 }

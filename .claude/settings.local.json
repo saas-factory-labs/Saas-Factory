@@ -124,7 +124,8 @@
       "Bash(while read proj)",
       "Bash(do echo \"Formatting $proj...\")",
       "Bash(git checkout:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(Select-Object -First 100)"
     ],
     "deny": [],
     "ask": [],

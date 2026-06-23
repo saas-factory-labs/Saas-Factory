@@ -10,6 +10,7 @@ namespace AppBlueprint.DeveloperCli.Commands;
 internal static class EnvironmentInfoCommand
 {
     private const string NotInstalled = "Not installed";
+    private const string NotSet = "Not set";
 
     public static Command Create()
     {
@@ -60,14 +61,14 @@ internal static class EnvironmentInfoCommand
         // Database
         string dbConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING")
             ?? Environment.GetEnvironmentVariable("CONNECTIONSTRINGS_DATABASE")
-            ?? "Not set";
+            ?? NotSet;
 
         // Mask password in connection string for display
         string displayDbConnection = MaskPassword(dbConnectionString);
 
         table.AddRow(
             "Database Connection",
-            dbConnectionString == "Not set" ? "[yellow]Not set[/]" : $"[dim]{displayDbConnection}[/]"
+            dbConnectionString == NotSet ? "[yellow]Not set[/]" : $"[dim]{displayDbConnection}[/]"
         );
 
         // Authentication
@@ -78,21 +79,21 @@ internal static class EnvironmentInfoCommand
         string aspnetEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
         table.AddRow("ASP.NET Environment", $"[green]{aspnetEnv}[/]");
 
-        string dotnetEnv = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Not set";
-        if (dotnetEnv != "Not set")
+        string dotnetEnv = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? NotSet;
+        if (dotnetEnv != NotSet)
         {
             table.AddRow("DOTNET Environment", $"[dim]{dotnetEnv}[/]");
         }
 
         // Logto Configuration (if exists)
-        string logtoEndpoint = Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_ENDPOINT") ?? "Not set";
-        if (logtoEndpoint != "Not set")
+        string logtoEndpoint = Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_ENDPOINT") ?? NotSet;
+        if (logtoEndpoint != NotSet)
         {
             table.AddRow("Logto Endpoint", $"[dim]{logtoEndpoint}[/]");
         }
 
-        string logtoClientId = Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_CLIENTID") ?? "Not set";
-        if (logtoClientId != "Not set")
+        string logtoClientId = Environment.GetEnvironmentVariable("AUTHENTICATION_LOGTO_CLIENTID") ?? NotSet;
+        if (logtoClientId != NotSet)
         {
             table.AddRow("Logto Client ID", $"[dim]{logtoClientId[..Math.Min(20, logtoClientId.Length)]}...[/]");
         }
@@ -212,7 +213,7 @@ internal static class EnvironmentInfoCommand
 
     private static string MaskPassword(string connectionString)
     {
-        if (connectionString == "Not set")
+        if (connectionString == NotSet)
             return connectionString;
 
         var regex = new System.Text.RegularExpressions.Regex(Pattern.With

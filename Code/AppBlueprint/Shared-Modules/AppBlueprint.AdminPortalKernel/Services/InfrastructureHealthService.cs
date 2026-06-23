@@ -34,6 +34,8 @@ public interface IInfrastructureHealthService
 /// </summary>
 public sealed class InfrastructureHealthService : IInfrastructureHealthService
 {
+    private const string NeonPostgreSqlName = "Neon PostgreSQL";
+
     private readonly IConfiguration _configuration;
     private readonly ISaasBillingProvider _billing;
     private readonly IServiceProvider _serviceProvider;
@@ -78,7 +80,7 @@ public sealed class InfrastructureHealthService : IInfrastructureHealthService
 
         if (factory is null)
         {
-            return new InfrastructureComponentHealth("Neon PostgreSQL", InfrastructureStatus.Unknown, "Audit store not registered");
+            return new InfrastructureComponentHealth(NeonPostgreSqlName, InfrastructureStatus.Unknown, "Audit store not registered");
         }
 
         try
@@ -86,12 +88,12 @@ public sealed class InfrastructureHealthService : IInfrastructureHealthService
             await using AdminPortalAuditDbContext db = await factory.CreateDbContextAsync(cancellationToken);
             bool canConnect = await db.Database.CanConnectAsync(cancellationToken);
             return canConnect
-                ? new InfrastructureComponentHealth("Neon PostgreSQL", InfrastructureStatus.Healthy, "Connection OK")
-                : new InfrastructureComponentHealth("Neon PostgreSQL", InfrastructureStatus.Degraded, "Cannot connect");
+                ? new InfrastructureComponentHealth(NeonPostgreSqlName, InfrastructureStatus.Healthy, "Connection OK")
+                : new InfrastructureComponentHealth(NeonPostgreSqlName, InfrastructureStatus.Degraded, "Cannot connect");
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return new InfrastructureComponentHealth("Neon PostgreSQL", InfrastructureStatus.Degraded, ex.Message);
+            return new InfrastructureComponentHealth(NeonPostgreSqlName, InfrastructureStatus.Degraded, ex.Message);
         }
     }
 

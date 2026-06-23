@@ -174,31 +174,31 @@
         var now = DateTime.Now;
         events = new List<CalendarEvent>
         {
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 1), Name = "Meeting w/ Patrick Lin", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 1), Name = "Reservation at La Ginestre", Color = "indigo", StartTime = new TimeSpan(19, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 3), Name = "New Project", Color = "yellow", StartTime = new TimeSpan(9, 0, 0), EndTime = new TimeSpan(10, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 7), Name = "2024 - Semi-final", Color = "red", StartTime = new TimeSpan(21, 0, 0), EndTime = new TimeSpan(22, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 9), Name = "Meeting w/Carolyn", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 9), Name = "Pick up Marta at school", Color = "emerald", StartTime = new TimeSpan(13, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 9), Name = "Meeting w/ Patrick Lin", Color = "emerald", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(15, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 9), Name = "Reservation at La Ginestre", Color = "indigo", StartTime = new TimeSpan(19, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 11), Name = "Relax for 2 at Marienbad", Color = "indigo", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 14), Name = "Team Catch-up", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 21), Name = "Pick up Marta at school", Color = "emerald", StartTime = new TimeSpan(14, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 21), Name = "New Project (2)", Color = "yellow", StartTime = new TimeSpan(15, 0, 0), EndTime = new TimeSpan(19, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 22), Name = "Team Catch-up", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 22), Name = "2024 - Semi-final", Color = "red", StartTime = new TimeSpan(19, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 25), Name = "Meeting w/ Kylie Joh", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
-            new() { Date = new DateTime(currentYear, currentMonth + 1, 28), Name = "Call Request", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 1, 0, 0, 0, DateTimeKind.Utc), Name = "Meeting w/ Patrick Lin", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 1, 0, 0, 0, DateTimeKind.Utc), Name = "Reservation at La Ginestre", Color = "indigo", StartTime = new TimeSpan(19, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 3, 0, 0, 0, DateTimeKind.Utc), Name = "New Project", Color = "yellow", StartTime = new TimeSpan(9, 0, 0), EndTime = new TimeSpan(10, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 7, 0, 0, 0, DateTimeKind.Utc), Name = "2024 - Semi-final", Color = "red", StartTime = new TimeSpan(21, 0, 0), EndTime = new TimeSpan(22, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 9, 0, 0, 0, DateTimeKind.Utc), Name = "Meeting w/Carolyn", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 9, 0, 0, 0, DateTimeKind.Utc), Name = "Pick up Marta at school", Color = "emerald", StartTime = new TimeSpan(13, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 9, 0, 0, 0, DateTimeKind.Utc), Name = "Meeting w/ Patrick Lin", Color = "emerald", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(15, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 9, 0, 0, 0, DateTimeKind.Utc), Name = "Reservation at La Ginestre", Color = "indigo", StartTime = new TimeSpan(19, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 11, 0, 0, 0, DateTimeKind.Utc), Name = "Relax for 2 at Marienbad", Color = "indigo", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 14, 0, 0, 0, DateTimeKind.Utc), Name = "Team Catch-up", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 21, 0, 0, 0, DateTimeKind.Utc), Name = "Pick up Marta at school", Color = "emerald", StartTime = new TimeSpan(14, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 21, 0, 0, 0, DateTimeKind.Utc), Name = "New Project (2)", Color = "yellow", StartTime = new TimeSpan(15, 0, 0), EndTime = new TimeSpan(19, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 22, 0, 0, 0, DateTimeKind.Utc), Name = "Team Catch-up", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 22, 0, 0, 0, DateTimeKind.Utc), Name = "2024 - Semi-final", Color = "red", StartTime = new TimeSpan(19, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 25, 0, 0, 0, DateTimeKind.Utc), Name = "Meeting w/ Kylie Joh", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
+            new() { Date = new DateTime(currentYear, currentMonth + 1, 28, 0, 0, 0, DateTimeKind.Utc), Name = "Call Request", Color = "sky", StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(11, 0, 0) },
         };
     }
 
     private void CalculateDays()
     {
         daysInMonth = DateTime.DaysInMonth(currentYear, currentMonth + 1);
-        var firstDayOfMonth = new DateTime(currentYear, currentMonth + 1, 1);
+        var firstDayOfMonth = new DateTime(currentYear, currentMonth + 1, 1, 0, 0, 0, DateTimeKind.Utc);
         startingBlankDays = (int)firstDayOfMonth.DayOfWeek;
-        var lastDayOfMonth = new DateTime(currentYear, currentMonth + 1, daysInMonth);
+        var lastDayOfMonth = new DateTime(currentYear, currentMonth + 1, daysInMonth, 0, 0, 0, DateTimeKind.Utc);
         endingBlankDays = 6 - (int)lastDayOfMonth.DayOfWeek;
     }
 

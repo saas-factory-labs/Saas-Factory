@@ -6,12 +6,14 @@ namespace AppBlueprint.Infrastructure.Authentication.Authorization.Providers.Fir
 
 public class FirebaseProvider : BaseAuthenticationProvider
 {
+    private const string SignInUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword";
+    private const string RefreshUrl = "https://securetoken.googleapis.com/v1/token";
+    private const string TokenRefreshFailedError = "Token refresh failed";
+    private const string ErrorDuringFirebaseTokenRefreshLog = "Error during Firebase token refresh";
+
     private readonly HttpClient _httpClient;
     private readonly FirebaseConfiguration _configuration;
     private readonly ILogger<FirebaseProvider> _logger;
-
-    private const string SignInUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword";
-    private const string RefreshUrl = "https://securetoken.googleapis.com/v1/token";
 
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
@@ -157,44 +159,44 @@ public class FirebaseProvider : BaseAuthenticationProvider
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
 #pragma warning disable CA1031 // Generic catch returns error result instead of throwing
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Error during Firebase token refresh");
+            _logger.LogError(ex, ErrorDuringFirebaseTokenRefreshLog);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
         catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
         {
-            _logger.LogError(ex, "Error during Firebase token refresh");
+            _logger.LogError(ex, ErrorDuringFirebaseTokenRefreshLog);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
         catch (JsonException ex)
         {
-            _logger.LogError(ex, "Error during Firebase token refresh");
+            _logger.LogError(ex, ErrorDuringFirebaseTokenRefreshLog);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "Error during Firebase token refresh");
+            _logger.LogError(ex, ErrorDuringFirebaseTokenRefreshLog);
             return new AuthenticationResult
             {
                 IsSuccess = false,
-                Error = "Token refresh failed"
+                Error = TokenRefreshFailedError
             };
         }
 #pragma warning restore CA1031
