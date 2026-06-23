@@ -125,7 +125,15 @@
       "Bash(do echo \"Formatting $proj...\")",
       "Bash(git checkout:*)",
       "Bash(find:*)",
-      "Bash(Select-Object -First 100)"
+      "Bash(Select-Object -First 100)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet list:*)",
+      "Bash(git stash:*)",
+      "Bash(git restore:*)",
+      "Bash(dotnet add:*)",
+      "WebFetch(domain:www.nuget.org)",
+      "WebFetch(domain:spectreconsole.net)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": [],
