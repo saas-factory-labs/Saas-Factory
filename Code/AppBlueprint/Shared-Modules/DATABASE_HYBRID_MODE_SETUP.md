@@ -128,21 +128,21 @@ public class UnitOfWorkImplementation : IUnitOfWork
 }
 ```
 
-### TodoAppKernel Integration
+### Custom B2B Module Integration
 
 ```csharp
-// TodoDbContext inherits from B2BDbContext
-public class TodoDbContext : B2BDbContext  // ✅ Works because B2BDbContext is registered
+// FeatureModuleDbContext inherits from B2BDbContext
+public class FeatureModuleDbContext : B2BDbContext  // ✅ Works because B2BDbContext is registered
 {
-    public TodoDbContext(
+    public FeatureModuleDbContext(
         DbContextOptions<B2BDbContext> options,
         IConfiguration configuration,
-        ILogger<TodoDbContext> logger)
+        ILogger<FeatureModuleDbContext> logger)
         : base(options, configuration, logger)
     {
     }
     
-    public DbSet<TodoEntity> Todos => Set<TodoEntity>();
+    public DbSet<FeatureEntity> Features => Set<FeatureEntity>();
 }
 ```
 
@@ -338,6 +338,6 @@ The AppBlueprint demo app now uses **Hybrid Mode** to:
 ✅ Allow all repositories and services to access needed contexts  
 ✅ Maintain single codebase and database  
 ✅ Demonstrate both consumer and enterprise features  
-✅ Work with feature modules like TodoAppKernel that extend B2BDbContext  
+✅ Work with feature modules that extend B2BDbContext  
 
 **Configuration is complete and active in both Web and ApiService projects.**

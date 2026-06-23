@@ -15,5 +15,4 @@ Stub documentation for `Code\AppBlueprint\SeedTest\SeedTest.csproj`.
 ## Dependencies
 
 - `AppBlueprint.Infrastructure`
-- `AppBlueprint.TodoAppKernel`
 - TODO: Add external packages, configuration, and execution notes.

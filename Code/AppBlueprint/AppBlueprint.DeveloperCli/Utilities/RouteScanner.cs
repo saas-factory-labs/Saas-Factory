@@ -10,7 +10,6 @@ internal static class RouteScanner
     };
 
     private const string DefaultBaseUrl = "https://localhost:7001";
-    private const string TodoControllerName = "TodoController";
     private const string UnknownValue = "UNKNOWN";
 
     public static async Task<List<RouteInfo>> GetAllRoutesAsync(string? baseUrl = null)
@@ -68,13 +67,7 @@ internal static class RouteScanner
 
     private static List<RouteInfo> GetFallbackRoutes()
     {
-        return
-        [
-            new RouteInfo { Method = "GET", Path = "/api/todo", Controller = TodoControllerName },
-            new RouteInfo { Method = "POST", Path = "/api/todo", Controller = TodoControllerName },
-            new RouteInfo { Method = "PUT", Path = "/api/todo/{id}", Controller = TodoControllerName },
-            new RouteInfo { Method = "DELETE", Path = "/api/todo/{id}", Controller = TodoControllerName }
-        ];
+        return [];
     }
 }
 

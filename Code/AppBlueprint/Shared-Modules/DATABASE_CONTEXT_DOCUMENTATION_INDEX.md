@@ -137,7 +137,7 @@ DatabaseContext__BaselineOnly="true"
 **Use cases enabled:**
 - ✅ B2C user signup flow → Personal dashboard
 - ✅ B2B user signup flow → Organization dashboard with Teams/API Keys
-- ✅ TodoAppKernel (extends B2BDbContext)
+- ✅ Feature modules that extend B2BDbContext
 - ✅ UnitOfWork (requires both contexts)
 - ✅ Dynamic UI based on user account type
 

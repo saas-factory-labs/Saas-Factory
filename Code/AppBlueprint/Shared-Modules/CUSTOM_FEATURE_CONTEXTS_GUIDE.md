@@ -680,5 +680,4 @@ dotnet ef migrations add InitialCreate \
 ## Examples in Repository
 
 See these real examples in the codebase:
-- `AppBlueprint.TodoAppKernel/Infrastructure/TodoDbContext.cs` - Todo app extending B2B
 - More examples coming soon...

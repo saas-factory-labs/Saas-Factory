@@ -21,5 +21,4 @@ Stub documentation for `Code\AppBlueprint\AppBlueprint.Web\AppBlueprint.Web.cspr
 - `AppBlueprint.Infrastructure`
 - `AppBlueprint.SharedKernel`
 - `AppBlueprint.UiKit`
-- `AppBlueprint.TodoAppKernel`
 - TODO: Add external services, configuration, and runtime assumptions.

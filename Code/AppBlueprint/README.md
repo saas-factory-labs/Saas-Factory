@@ -58,7 +58,6 @@ dotnet run
 | [📡 API Service](./AppBlueprint.ApiService/README.md) | REST API documentation |
 | [📦 Shared Kernel](./AppBlueprint.SharedKernel/README.md) | Common types and utilities |
 | [📄 Contracts](./Shared-Modules/AppBlueprint.Contracts/README.md) | DTOs and API contracts |
-| [📦 TodoApp Module](./AppBlueprint.TodoAppKernel/) | Example feature module |
 | [🎨 UI Kit](./Shared-Modules/AppBlueprint.UiKit/) | Reusable Blazor components |
 
 
