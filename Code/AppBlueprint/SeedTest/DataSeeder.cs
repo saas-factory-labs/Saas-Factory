@@ -149,7 +149,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         // B2B Entities
         await SeedOrganizationsAsync(cancellationToken);
         await SeedApiKeysAsync(cancellationToken);
-        // Note: Todos are seeded separately via TodoDbContext in TodoAppKernel module
+        // Todo entities are intentionally excluded from the shared seed data set
         await SeedTeamMembersAsync(cancellationToken);
         await SeedTeamInvitesAsync(cancellationToken);
 
@@ -1142,7 +1142,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         }
     }
 
-    // Note: SeedTodosAsync removed - Todos are managed by TodoDbContext in TodoAppKernel module
+    // Todo seeding is intentionally excluded from this project
 
     private async Task SeedTeamMembersAsync(CancellationToken cancellationToken)
     {

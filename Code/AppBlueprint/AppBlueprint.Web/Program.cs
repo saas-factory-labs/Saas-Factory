@@ -218,8 +218,7 @@ builder.Services.AddScoped<IRequestAdapter>(sp =>
     });
 builder.Services.AddScoped<ApiClient>(sp => new ApiClient(sp.GetRequiredService<IRequestAdapter>()));
 
-// Register authentication handler for TodoService as Scoped (not Transient)
-// Must be Scoped to work with ITokenStorageService which requires HttpContext
+// Register authentication handler as Scoped so dependent HTTP services can access HttpContext-backed auth state
 builder.Services.AddScoped<AppBlueprint.Web.Services.AuthenticationDelegatingHandler>();
 
 // Add SignalR with tenant-aware authentication

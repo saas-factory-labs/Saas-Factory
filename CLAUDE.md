@@ -105,7 +105,6 @@ Code/AppBlueprint/
 ├── AppBlueprint.AppGateway/       # YARP reverse proxy/gateway
 ├── AppBlueprint.DeveloperCli/     # CLI tools for developers
 ├── AppBlueprint.ServiceDefaults/  # Shared service configuration
-├── AppBlueprint.TodoAppKernel/    # Todo feature module
 ├── AppBlueprint.Tests/            # Test project
 └── Shared-Modules/                # Clean Architecture layers
     ├── AppBlueprint.Domain/           # Entities, Value Objects, Aggregates

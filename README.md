@@ -173,7 +173,6 @@ A monorepo is a powerful way to organize a codebase, used by Google, Facebook, U
 │     ├─ AppBlueprint.Web             # Blazor Server app utilizing MudBlazor components
 │     ├─ AppBlueprint.ApiService      # .NET REST API
 │     ├─ AppBlueprint.ServiceDefaults # Shared Aspire service configuration
-│     ├─ AppBlueprint.TodoAppKernel   # Todo feature module
 │     ├─ AppBlueprint.DeveloperCli    # CLI tools for scaffolding and management
 │     ├─ AppBlueprint.Tests           # Tests for all projects
 │     ├─ Shared-Modules               # Clean Architecture shared modules

@@ -5,7 +5,7 @@ namespace AppBlueprint.AdminPortalKernel.Infrastructure;
 
 /// <summary>
 /// Hook for the host's DbContext (DeploymentManagerDbContext) to own the admin portal
-/// kernel tables, following the TodoAppKernel ConfigureTodoAppKernel() pattern.
+/// kernel tables, following the shared kernel model-builder extension pattern.
 /// </summary>
 public static class AdminPortalKernelModelBuilderExtensions
 {
