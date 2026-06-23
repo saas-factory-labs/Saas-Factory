@@ -16,14 +16,14 @@ internal static class RunCommand
             Description = "Port for the Aspire dashboard",
             DefaultValueFactory = _ => DefaultDashboardPort
         };
-        command.AddOption(portOption);
+        command.Add(portOption);
 
         var watchOption = new Option<bool>("--watch", "-w")
         {
             Description = "Enable hot reload (watch mode)",
             DefaultValueFactory = _ => false
         };
-        command.AddOption(watchOption);
+        command.Add(watchOption);
 
         command.SetHandler((int port, bool watch) =>
         {

@@ -16,7 +16,7 @@ internal static class JwtTokenCommand
 
         var configPathOption = new Option<string>("--config") { Description = "Path to appsettings.json to read authentication configuration", DefaultValueFactory = _ => "" };
 
-        command.AddOption(configPathOption);
+        command.Add(configPathOption);
 
         command.SetHandler(async (configPath) =>
         {

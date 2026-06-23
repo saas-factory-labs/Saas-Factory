@@ -16,7 +16,7 @@ public sealed class AdminPortalAuditDbContext : DbContext
     {
     }
 
-    public DbSet<AdminAuditEntryEntity> AuditEntries => Set<AdminAuditEntryEntity>();
+    public DbSet<AdminAuditEntryEntity> AuditEntries { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

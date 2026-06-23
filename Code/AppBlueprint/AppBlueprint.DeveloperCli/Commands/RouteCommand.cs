@@ -1,3 +1,4 @@
+using System.CommandLine;
 using AppBlueprint.DeveloperCli.Utilities;
 
 namespace AppBlueprint.DeveloperCli.Commands;
@@ -16,14 +17,14 @@ internal static class RouteCommand
             DefaultValueFactory = _ => "https://localhost:7001"
         };
 
-        listCommand.AddOption(urlOption);
+        listCommand.Add(urlOption);
 
         listCommand.SetHandler(async (string baseUrl) =>
         {
             await DisplayRoutesAsync(baseUrl);
         }, urlOption);
 
-        routeCommand.AddCommand(listCommand);
+        routeCommand.Add(listCommand);
 
         return routeCommand;
     }

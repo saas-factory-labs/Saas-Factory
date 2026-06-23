@@ -16,9 +16,9 @@ public sealed class AdminPortalAppDbContext : DbContext
     {
     }
 
-    public DbSet<AdminUserRecord> Users => Set<AdminUserRecord>();
+    public DbSet<AdminUserRecord> Users { get; set; } = null!;
 
-    public DbSet<AdminTenantRecord> Tenants => Set<AdminTenantRecord>();
+    public DbSet<AdminTenantRecord> Tenants { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -325,6 +325,8 @@ internal static class SslCertificateManager
         }
         catch (Exception ex)
         {
+            // Log to console for developer visibility during AppHost startup
+            // This is infrastructure setup code where Console output is appropriate
             Console.WriteLine($"Error checking certificate trust: {ex.Message}");
             return false;
         }
@@ -408,6 +410,8 @@ internal static class SslCertificateManager
         }
         catch (Exception ex)
         {
+            // Non-critical failure - log to console for developer visibility
+            // Certificate may already be trusted in another store
             Console.WriteLine($"Failed to add certificate to {storeName}/{storeLocation} store: {ex.Message}");
         }
     }
@@ -469,6 +473,8 @@ internal static class SslCertificateManager
             }
             catch (Exception ex)
             {
+                // Non-critical failure - inform developer via console during AppHost startup
+                // The certificate will still work for HTTPS even if browser trust fails
                 Console.WriteLine($"Warning: Couldn't complete browser trust operations: {ex.Message}");
                 Console.WriteLine("This is not critical - the certificate will still work for HTTPS, but browsers might show a warning.");
                 Console.WriteLine("If you see certificate warnings in your browser, you may need to manually trust the certificate.");
@@ -522,6 +528,8 @@ internal static class SslCertificateManager
             }
             catch (Exception ex)
             {
+                // Non-critical failure - inform developer via console during AppHost startup
+                // The certificate will still work even if macOS keychain trust fails
                 Console.WriteLine($"Warning: Couldn't complete macOS keychain trust operations: {ex.Message}");
                 Console.WriteLine("This is not critical - the certificate should still work, but may show security warnings.");
             }

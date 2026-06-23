@@ -20,6 +20,5 @@
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Application\AppBlueprint.Application.csproj"/>
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj"/>
     </ItemGroup>
-
-
+    
 </Project>
