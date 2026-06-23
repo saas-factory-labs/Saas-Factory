@@ -1,6 +1,7 @@
 # Base runtime image (ASP.NET Core for API) - Includes ICU for globalization
-# SECURITY: SHA256 hash pinning prevents supply chain attacks via compromised base images
-FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:ddcf70ad1ab963a4fcd41fbd722a6b660e404e87567cfbd46fd2809c21b02088 AS base
+# SECURITY: Digest-only pinning — tag removed to prevent tag-mutation supply chain attacks
+# mcr.microsoft.com/dotnet/aspnet:10.0
+FROM mcr.microsoft.com/dotnet/aspnet@sha256:ddcf70ad1ab963a4fcd41fbd722a6b660e404e87567cfbd46fd2809c21b02088 AS base
 USER $APP_UID
 WORKDIR /app
 
@@ -8,8 +9,8 @@ WORKDIR /app
 EXPOSE 8080
 
 # Build stage - Microsoft SDK
-# SECURITY: SHA256 hash pinning
-FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:548d93f8a18a1acbe6cc127bc4f47281430d34a9e35c18afa80a8d6741c2adc3 AS build
+# mcr.microsoft.com/dotnet/sdk:10.0
+FROM mcr.microsoft.com/dotnet/sdk@sha256:548d93f8a18a1acbe6cc127bc4f47281430d34a9e35c18afa80a8d6741c2adc3 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 

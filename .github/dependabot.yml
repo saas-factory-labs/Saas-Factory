@@ -1,0 +1,99 @@
+version: 2
+
+# open-pull-requests-limit: 0 disables routine version bump PRs for all ecosystems.
+# Dependabot security updates bypass this limit and still open PRs automatically
+# whenever a CVE fix is available. Zero maintenance noise, full security coverage.
+
+updates:
+  # ── NuGet ────────────────────────────────────────────────────────────────────
+  - package-ecosystem: nuget
+    directory: /Code/AppBlueprint
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, nuget]
+
+  - package-ecosystem: nuget
+    directory: /Code/DeploymentManager
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, nuget]
+
+  # ── Docker base images ────────────────────────────────────────────────────────
+  - package-ecosystem: docker
+    directory: /Code/AppBlueprint/AppBlueprint.ApiService
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, docker]
+
+  - package-ecosystem: docker
+    directory: /Code/AppBlueprint/AppBlueprint.AppGateway
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, docker]
+
+  - package-ecosystem: docker
+    directory: /Code/AppBlueprint/AppBlueprint.AppHost
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, docker]
+
+  - package-ecosystem: docker
+    directory: /Code/AppBlueprint/AppBlueprint.Tests
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, docker]
+
+  - package-ecosystem: docker
+    directory: /Code/AppBlueprint/AppBlueprint.Web
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, docker]
+
+  - package-ecosystem: docker
+    directory: /Code/DeploymentManager/DeploymentManager.ApiService
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, docker]
+
+  - package-ecosystem: docker
+    directory: /Code/DeploymentManager/DeploymentManager.Web
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, docker]
+
+  # ── GitHub Actions ────────────────────────────────────────────────────────────
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, github-actions]

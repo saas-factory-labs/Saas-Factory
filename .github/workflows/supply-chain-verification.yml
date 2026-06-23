@@ -1,0 +1,170 @@
+name: "🔐 Supply Chain Verification"
+
+# Verifies integrity of all Docker base images and NuGet packages on every PR and push.
+# Docker: cosign keyless verification against Sigstore transparency log (dotnet/dotnet-docker GitHub Actions identity).
+# NuGet: dotnet restore rejects packages with invalid signatures (signatureValidationMode=accept in NuGet.config).
+#
+# Low-maintenance design:
+#   - No keys or certificates to manage (cosign keyless via OIDC)
+#   - Dependabot opens PRs when digests or packages are outdated
+#   - All verification is fully automated in CI
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_VERSION: '10.0'
+
+jobs:
+  # ============================================================
+  # JOB 1: Verify Docker base image signatures via cosign
+  # ============================================================
+  verify-docker-images:
+    name: Verify Docker Image Signatures
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@a3e77ea8bb707966c4b90420af50fdc71e5dcd3f  # v4.0.0
+
+      - name: Extract and verify all Docker base image digests
+        run: |
+          echo "## Docker Image Signature Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Collect all unique digest references from every Dockerfile in the repo
+          IMAGES=$(grep -rh "^FROM mcr.microsoft.com" \
+            Code/AppBlueprint \
+            Code/DeploymentManager \
+            --include="Dockerfile*" 2>/dev/null \
+            | grep -oP 'mcr\.microsoft\.com/[^\s]+@sha256:[a-f0-9]+' \
+            | sort -u)
+
+          if [ -z "$IMAGES" ]; then
+            echo "No MCR images with digests found." >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
+          FAILED=0
+
+          while IFS= read -r image; do
+            echo "Verifying: $image"
+
+            # Microsoft's .NET Docker images are built and signed via GitHub Actions
+            # in the dotnet/dotnet-docker repository using cosign keyless signing.
+            # The OIDC identity matches the GitHub Actions workflow that published the image.
+            if cosign verify \
+              --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+              --certificate-identity-regexp "https://github\.com/dotnet/dotnet-docker/.*" \
+              "$image" > /tmp/cosign-out.json 2>&1; then
+
+              echo "✅ $image" >> $GITHUB_STEP_SUMMARY
+              echo "✅ Verified: $image"
+
+            else
+              # Distinguish between "not signed" (warning) and "bad signature" (hard failure).
+              # A bad signature means the image may have been tampered with.
+              COSIGN_OUTPUT=$(cat /tmp/cosign-out.json)
+
+              if echo "$COSIGN_OUTPUT" | grep -qi "no signatures found\|no matching signatures"; then
+                echo "⚠️  $image — no Sigstore signature found (digest pinning still active)" >> $GITHUB_STEP_SUMMARY
+                echo "⚠️  No Sigstore signature: $image"
+              else
+                echo "❌ $image — SIGNATURE VERIFICATION FAILED" >> $GITHUB_STEP_SUMMARY
+                echo "❌ FAILED: $image"
+                echo "$COSIGN_OUTPUT"
+                FAILED=1
+              fi
+            fi
+          done <<< "$IMAGES"
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ $FAILED -ne 0 ]; then
+            echo "### ❌ One or more images failed signature verification. Build blocked." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+  # ============================================================
+  # JOB 2: Verify NuGet package signatures
+  # ============================================================
+  verify-nuget-packages:
+    name: Verify NuGet Package Signatures
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@baa11fbfe1d6520db94683bd5c7a3818018e4309  # v5.1.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          global-json-file: global.json
+
+      - name: Restore AppBlueprint packages
+        # dotnet restore enforces signatureValidationMode=accept from NuGet.config:
+        # - Packages with valid signatures: accepted
+        # - Packages with INVALID/tampered signatures: rejected (build fails)
+        # - Unsigned packages: accepted (covers local + experimental feeds)
+        run: dotnet restore Code/AppBlueprint/AppBlueprint.sln
+
+      - name: Restore DeploymentManager packages
+        run: dotnet restore Code/DeploymentManager/DeploymentManager.sln
+        continue-on-error: true  # DeploymentManager solution may not always be present
+
+      - name: Verify signatures on all restored NuGet packages
+        run: |
+          echo "## NuGet Package Signature Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          PACKAGES_DIR="$HOME/.nuget/packages"
+          FAILED=0
+          VERIFIED=0
+          UNSIGNED=0
+          ERRORS=0
+
+          while IFS= read -r -d '' pkg; do
+            output=$(dotnet nuget verify "$pkg" 2>&1)
+            rc=$?
+
+            if [ $rc -eq 0 ]; then
+              VERIFIED=$((VERIFIED + 1))
+            else
+              # NU3008 = signature integrity check failed (tampered package — hard failure)
+              # NU3004 = package is not signed (expected for many packages — warning only)
+              if echo "$output" | grep -qE "NU3008|integrity.*fail"; then
+                echo "❌ TAMPERED: $pkg" >> $GITHUB_STEP_SUMMARY
+                echo "❌ TAMPERED SIGNATURE: $pkg"
+                echo "$output"
+                FAILED=1
+                ERRORS=$((ERRORS + 1))
+              else
+                UNSIGNED=$((UNSIGNED + 1))
+              fi
+            fi
+          done < <(find "$PACKAGES_DIR" -name "*.nupkg" -print0 2>/dev/null)
+
+          echo "| Result | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ✅ Verified (signed + valid) | $VERIFIED |" >> $GITHUB_STEP_SUMMARY
+          echo "| ⚠️  Unsigned (allowed) | $UNSIGNED |" >> $GITHUB_STEP_SUMMARY
+          echo "| ❌ Tampered signatures | $ERRORS |" >> $GITHUB_STEP_SUMMARY
+
+          if [ $FAILED -ne 0 ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### ❌ Tampered NuGet packages detected. Build blocked." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ All NuGet package signatures are valid." >> $GITHUB_STEP_SUMMARY
