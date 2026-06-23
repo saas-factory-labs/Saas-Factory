@@ -4,9 +4,9 @@ using FluentAssertions;
 
 namespace AppBlueprint.Tests.Infrastructure;
 
-internal sealed class RegexPIIScannerTests
+internal sealed class RegexPiiScannerTests
 {
-    private readonly RegexPIIScanner _scanner = new();
+    private readonly RegexPiiScanner _scanner = new();
 
     [Test]
     public async Task ScanAsync_ShouldDetectEmail()

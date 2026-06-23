@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 namespace AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Interceptors;
 
 /// <summary>
-/// Interceptor that automatically scans entity properties marked with [PIIRisk] 
+/// Interceptor that automatically scans entity properties marked with [PiiRisk]
 /// and populates the Metadata.Pii property before saving.
 /// </summary>
 public class PiiSaveChangesInterceptor : SaveChangesInterceptor
 {
-    private readonly IPIIEngine _piiEngine;
+    private readonly IPiiEngine _piiEngine;
 
-    public PiiSaveChangesInterceptor(IPIIEngine piiEngine)
+    public PiiSaveChangesInterceptor(IPiiEngine piiEngine)
     {
         _piiEngine = piiEngine;
     }
@@ -44,12 +44,12 @@ public class PiiSaveChangesInterceptor : SaveChangesInterceptor
 
         var entityType = entry.Entity.GetType();
         var propertiesToScan = entityType.GetProperties()
-            .Where(p => p.GetCustomAttribute<PIIRiskAttribute>() is not null)
+            .Where(p => p.GetCustomAttribute<PiiRiskAttribute>() is not null)
             .ToList();
 
         if (propertiesToScan.Count == 0) return;
 
-        List<PIITag> allTags = [];
+        List<PiiTag> allTags = [];
         foreach (string value in propertiesToScan
                      .Select(prop => prop.GetValue(entry.Entity)?.ToString())
                      .Where(value => !string.IsNullOrWhiteSpace(value))!)
@@ -67,7 +67,7 @@ public class PiiSaveChangesInterceptor : SaveChangesInterceptor
         }
     }
 
-    private void UpdateEntityMetadata(object entity, List<PIITag> allTags)
+    private void UpdateEntityMetadata(object entity, List<PiiTag> allTags)
     {
         var entityType = entity.GetType();
         var metadataProp = entityType.GetProperty("Metadata");
@@ -77,7 +77,7 @@ public class PiiSaveChangesInterceptor : SaveChangesInterceptor
 
             var newMetadata = existingMetadata with
             {
-                Pii = new PIIMetadata
+                Pii = new PiiMetadata
                 {
                     PiiDetected = true,
                     PiiTags = allTags.DistinctBy(t => new { t.Type, t.Value, t.Start, t.End }).ToList(),

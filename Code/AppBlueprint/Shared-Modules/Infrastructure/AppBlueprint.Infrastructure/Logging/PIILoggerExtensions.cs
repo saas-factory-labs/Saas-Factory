@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AppBlueprint.Infrastructure.Logging;
 
-public static class PIILoggerExtensions
+public static class PiiLoggerExtensions
 {
     /// <summary>
     /// Logs a message replacing potential PII with a reference ID.

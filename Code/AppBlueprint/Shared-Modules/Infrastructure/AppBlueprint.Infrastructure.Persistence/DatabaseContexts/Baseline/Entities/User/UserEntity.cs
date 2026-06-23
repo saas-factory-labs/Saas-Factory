@@ -37,18 +37,18 @@ public sealed class UserEntity : BaseEntity, ITenantScoped
         TenantId = string.Empty;
     }
 
-    [PIIRisk]
+    [PiiRisk]
     public required string FirstName { get; set; }
 
-    [PIIRisk]
+    [PiiRisk]
     public required string LastName { get; set; }
 
-    [PIIRisk]
+    [PiiRisk]
     public required string UserName { get; set; }
 
     public bool IsActive { get; set; }
 
-    [PIIRisk]
+    [PiiRisk]
     [DataClassification(GDPRType.DirectlyIdentifiable)]
     public required string? Email { get; set; }
 

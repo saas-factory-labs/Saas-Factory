@@ -3,27 +3,27 @@ using AppBlueprint.SharedKernel.SharedModels.PII;
 
 namespace AppBlueprint.Infrastructure.Compliance.PII;
 
-public class PIIEngine : IPIIEngine
+public class PiiEngine : IPiiEngine
 {
-    private readonly IEnumerable<IPIIScanner> _scanners;
+    private readonly IEnumerable<IPiiScanner> _scanners;
 
-    public PIIEngine(IEnumerable<IPIIScanner> scanners)
+    public PiiEngine(IEnumerable<IPiiScanner> scanners)
     {
         _scanners = scanners;
     }
 
-    public async Task<PIIMetadata> ScanAndTagAsync(string text, CancellationToken cancellationToken = default)
+    public async Task<PiiMetadata> ScanAndTagAsync(string text, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
-            return new PIIMetadata
+            return new PiiMetadata
             {
                 PiiDetected = false,
                 ScannerInfo = new ScannerInfo { Engine = GetEngineSummary() }
             };
         }
 
-        List<PIITag> allTags = [];
+        List<PiiTag> allTags = [];
         foreach (var scanner in _scanners)
         {
             var results = await scanner.ScanAsync(text, cancellationToken);
@@ -37,7 +37,7 @@ public class PIIEngine : IPIIEngine
             .Select(g => g.First())
             .ToList();
 
-        return new PIIMetadata
+        return new PiiMetadata
         {
             PiiDetected = distinctTags.Count > 0,
             PiiTags = distinctTags,

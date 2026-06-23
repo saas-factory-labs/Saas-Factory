@@ -2,7 +2,7 @@ using AppBlueprint.SharedKernel.SharedModels.PII;
 
 namespace AppBlueprint.Application.Interfaces.PII;
 
-public interface IPIIEngine
+public interface IPiiEngine
 {
-    Task<PIIMetadata> ScanAndTagAsync(string text, CancellationToken cancellationToken = default);
+    Task<PiiMetadata> ScanAndTagAsync(string text, CancellationToken cancellationToken = default);
 }

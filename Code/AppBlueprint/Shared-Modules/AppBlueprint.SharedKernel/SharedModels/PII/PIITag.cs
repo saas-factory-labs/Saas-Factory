@@ -2,7 +2,7 @@ using AppBlueprint.SharedKernel.Enums;
 
 namespace AppBlueprint.SharedKernel.SharedModels.PII;
 
-public record PIITag
+public record PiiTag
 {
     /// <summary>
     /// The category or label of the detected PII (e.g., "Email", "Phone", "CreditCard", "DanishCPR").
