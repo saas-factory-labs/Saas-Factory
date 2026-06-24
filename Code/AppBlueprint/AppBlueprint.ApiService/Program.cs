@@ -1,3 +1,5 @@
+// ReSharper disable LocalizableElement
+
 using System.Threading.RateLimiting;
 using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Infrastructure.Extensions;
@@ -12,8 +14,6 @@ using AppBlueprint.Presentation.ApiModule.Middleware;
 using AppBlueprint.ServiceDefaults;
 using NSwag;
 using NSwag.Generation.Processors.Security;
-
-// ReSharper disable LocalizableElement
 
 namespace AppBlueprint.ApiService;
 

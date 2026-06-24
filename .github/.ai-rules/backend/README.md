@@ -1,3 +1,11 @@
+---
+description: Backend development rules and guidelines index
+globs:
+  - "**/Infrastructure/**/*.cs"
+  - "**/ApiModule/**/*.cs"
+  - "**/Services/**/*.cs"
+---
+
 # Backend
 
 When working with C# code, follow these rules very carefully.

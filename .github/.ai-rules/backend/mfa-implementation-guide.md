@@ -1,3 +1,11 @@
+---
+description: TOTP-based multi-factor authentication implementation guide
+globs:
+  - "**/Authentication/**/*.cs"
+  - "**/Mfa/**/*.cs"
+  - "**/TwoFactor/**/*.cs"
+---
+
 # Multi-Factor Authentication (MFA) Implementation Guide
 
 ## Overview

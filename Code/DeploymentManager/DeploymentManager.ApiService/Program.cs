@@ -70,6 +70,7 @@ app.UseAuthorization();
 
 // Health checks remain anonymous (mapped by MapDefaultEndpoints); all controllers
 // require the DeploymentManagerAdmin role via their [Authorize] attributes.
+app.MapGet("/ping", () => Results.Ok("ok")).AllowAnonymous();
 app.MapControllers();
 
 app.MapDefaultEndpoints();
@@ -101,3 +102,4 @@ namespace DeploymentManager.ApiService
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
     }
 }
+

@@ -1,3 +1,11 @@
+---
+description: Defense-in-depth tenant isolation architecture (RLS + Query Filters)
+globs:
+  - "**/DatabaseContexts/**/*.cs"
+  - "**/Infrastructure/Persistence/**/*.cs"
+  - "**/*.sql"
+---
+
 # Tenant Isolation: Defense-in-Depth Architecture
 
 **Rules consulted:** This document defines our dual-layer tenant isolation security architecture.

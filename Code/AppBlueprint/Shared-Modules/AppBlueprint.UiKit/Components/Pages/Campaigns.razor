@@ -1,4 +1,4 @@
-@page "/campaigns"
+﻿@page "/campaigns"
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Authorization
 @inject ThemeService ThemeService
@@ -121,7 +121,7 @@
         return ids.Select(id => new CampaignsCard.MemberInfo
         {
             Name = $"User {id:D2}",
-            Image = $"_content/AppBlueprint.UiKit/images/user-28-{id:D2}.jpg",
+            Image = $"AppBlueprint.UiKit/images/user-28-{id:D2}.jpg",
             Link = "#0"
         }).ToList();
     }

@@ -4,6 +4,8 @@
 # Build outputs
 **/bin
 **/obj
+**/bin_verify
+**/obj_verify
 **/out
 **/*.dll
 **/*.exe
@@ -90,3 +92,12 @@ azure.yaml
 **/temp/
 **/*.tmp
 **/*.bak
+
+**/bin/
+**/obj/
+**/bin_verify/
+**/obj_verify/
+**/.vs/
+**/.vscode/
+**/.idea/
+.git/

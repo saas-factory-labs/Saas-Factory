@@ -1,3 +1,11 @@
+---
+description: Patterns for secure admin access to tenant data with audit logging
+globs:
+  - "**/Services/Admin*.cs"
+  - "**/Controllers/Admin*.cs"
+  - "**/Infrastructure/Services/*Access*.cs"
+---
+
 # Admin Access to Tenant Data
 
 This document describes secure patterns for administrators to access tenant data for support, debugging, and operational purposes without compromising the multi-tenant security architecture.

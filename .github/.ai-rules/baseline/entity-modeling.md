@@ -1,3 +1,12 @@
+---
+description: DDD patterns for aggregates, entities, and value objects
+globs:
+  - "**/Domain/**/*.cs"
+  - "**/Entities/**/*.cs"
+  - "**/ValueObjects/**/*.cs"
+  - "**/Aggregates/**/*.cs"
+---
+
 <!-- # Entity Modeling
 
 When implementing Domain-Driven Design (DDD) patterns, follow these rules very carefully.

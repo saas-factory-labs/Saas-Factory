@@ -1,0 +1,33 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "deployment-manager"
+main = "Code/Cloudflare-Workers/gateway.ts"
+compatibility_date = "2026-06-22"
+
+[secrets]
+required = ["AUTHENTICATION_PROVIDER", "LOGTO_APPID", "LOGTO_APPSECRET", "LOGTO_ENDPOINT", "AdminPortal__Security__RequireMfaClaim", "AdminPortal__Modules__boligportal__ConnectionString", "CONNECTIONSTRINGS__DEFAULTCONNECTION"]
+[observability]
+enabled = true
+
+[[durable_objects.bindings]]
+name = "WEB_CONTAINER"
+class_name = "Web"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Web", "Api"]
+
+[[durable_objects.bindings]]
+name = "API_CONTAINER"
+class_name = "Api"
+
+[[containers]]
+class_name = "Web"
+image = "Code/DeploymentManager/DeploymentManager.Web/Dockerfile"
+instance_type = "lite"
+image_build_context = "."
+
+[[containers]]
+class_name = "Api"
+image = "Code/DeploymentManager/DeploymentManager.ApiService/Dockerfile"
+instance_type = "lite"
+image_build_context = "."

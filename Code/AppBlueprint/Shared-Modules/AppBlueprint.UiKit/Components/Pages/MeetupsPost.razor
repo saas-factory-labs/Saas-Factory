@@ -1,4 +1,4 @@
-@page "/community/meetups-post"
+﻿@page "/community/meetups-post"
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Authorization
 @using AppBlueprint.SharedKernel.Enums
@@ -22,7 +22,7 @@
             <div class="text-sm font-semibold text-violet-500 uppercase mb-2">Mon 27 Dec, 2024 - 9:00 PM -&gt; 10:00 PM</div>
             <header class="mb-4">
                 <!-- Title -->
-                <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold mb-2">The World of AI and Machine Learning — Open Chat</h1>
+                <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold mb-2">The World of AI and Machine Learning â€” Open Chat</h1>
                 <p>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts.</p>
             </header>
 
@@ -31,7 +31,7 @@
                 <!-- Author -->
                 <div class="flex items-center sm:mr-4">
                     <a class="block mr-2 shrink-0" href="#0">
-                        <img class="rounded-full" src="_content/AppBlueprint.UiKit/images/user-32-07.jpg" width="32" height="32" alt="User 04" />
+                        <img class="rounded-full" src="AppBlueprint.UiKit/images/user-32-07.jpg" width="32" height="32" alt="User 04" />
                     </a>
                     <div class="text-sm whitespace-nowrap">Hosted by <a class="font-semibold text-gray-800 dark:text-gray-100" href="#0">Monica Fishkin</a></div>
                 </div>
@@ -50,7 +50,7 @@
 
             <!-- Image -->
             <figure class="mb-6">
-                <img class="w-full rounded-xs" src="_content/AppBlueprint.UiKit/images/meetup-image.jpg" width="640" height="360" alt="Meetup" />
+                <img class="w-full rounded-xs" src="AppBlueprint.UiKit/images/meetup-image.jpg" width="640" height="360" alt="Meetup" />
             </figure>
 
             <!-- Post content -->
@@ -67,9 +67,9 @@
             <div>
                 <h2 class="text-xl leading-snug text-gray-800 dark:text-gray-100 font-bold mb-2">Photos (3)</h2>
                 <div class="grid grid-cols-3 gap-4 my-6">
-                    <MeetupPhoto ImageUrl="_content/AppBlueprint.UiKit/images/meetup-photo-01.jpg" AltText="Meetup photo 01" />
-                    <MeetupPhoto ImageUrl="_content/AppBlueprint.UiKit/images/meetup-photo-02.jpg" AltText="Meetup photo 02" />
-                    <MeetupPhoto ImageUrl="_content/AppBlueprint.UiKit/images/meetup-photo-03.jpg" AltText="Meetup photo 03" />
+                    <MeetupPhoto ImageUrl="AppBlueprint.UiKit/images/meetup-photo-01.jpg" AltText="Meetup photo 01" />
+                    <MeetupPhoto ImageUrl="AppBlueprint.UiKit/images/meetup-photo-02.jpg" AltText="Meetup photo 02" />
+                    <MeetupPhoto ImageUrl="AppBlueprint.UiKit/images/meetup-photo-03.jpg" AltText="Meetup photo 03" />
                 </div>
             </div>
 
@@ -80,13 +80,13 @@
                 <h2 class="text-xl leading-snug text-gray-800 dark:text-gray-100 font-bold mb-2">Comments (3)</h2>
                 <ul class="space-y-5 my-6">
                     <MeetupComment UserName="Taylor Nieman" 
-                                   AvatarUrl="_content/AppBlueprint.UiKit/images/user-32-07.jpg" 
+                                   AvatarUrl="AppBlueprint.UiKit/images/user-32-07.jpg" 
                                    CommentText="&quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.&quot;" />
                     <MeetupComment UserName="Meagan Loyst" 
-                                   AvatarUrl="_content/AppBlueprint.UiKit/images/user-32-08.jpg" 
+                                   AvatarUrl="AppBlueprint.UiKit/images/user-32-08.jpg" 
                                    CommentText="&quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.&quot;" />
                     <MeetupComment UserName="Frank Malik" 
-                                   AvatarUrl="_content/AppBlueprint.UiKit/images/user-32-02.jpg" 
+                                   AvatarUrl="AppBlueprint.UiKit/images/user-32-02.jpg" 
                                    CommentText="&quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.&quot;" />
                 </ul>
             </div>
@@ -101,7 +101,7 @@
                     <article class="flex bg-white dark:bg-gray-800 shadow-xs rounded-xl overflow-hidden">
                         <!-- Image -->
                         <a class="relative block w-24 sm:w-56 lg:sidebar-expanded:w-20 xl:sidebar-expanded:w-56 shrink-0" href="#0">
-                            <img class="absolute object-cover object-center w-full h-full" src="_content/AppBlueprint.UiKit/images/meetups-thumb-02.jpg" width="220" height="236" alt="Meetup 02" />
+                            <img class="absolute object-cover object-center w-full h-full" src="AppBlueprint.UiKit/images/meetups-thumb-02.jpg" width="220" height="236" alt="Meetup 02" />
                             <!-- Like button -->
                             <button class="absolute top-0 right-0 mt-4 mr-4">
                                 <div class="text-gray-100 bg-gray-900/60 rounded-full">
@@ -133,9 +133,9 @@
                                 <!-- Avatars -->
                                 <div class="flex items-center space-x-2">
                                     <div class="flex -space-x-3 -ml-0.5">
-                                        <img class="rounded-full border-2 border-white dark:border-gray-800 box-content" src="_content/AppBlueprint.UiKit/images/avatar-02.jpg" width="28" height="28" alt="User 02" />
-                                        <img class="rounded-full border-2 border-white dark:border-gray-800 box-content" src="_content/AppBlueprint.UiKit/images/avatar-03.jpg" width="28" height="28" alt="User 03" />
-                                        <img class="rounded-full border-2 border-white dark:border-gray-800 box-content" src="_content/AppBlueprint.UiKit/images/avatar-04.jpg" width="28" height="28" alt="User 04" />
+                                        <img class="rounded-full border-2 border-white dark:border-gray-800 box-content" src="AppBlueprint.UiKit/images/avatar-02.jpg" width="28" height="28" alt="User 02" />
+                                        <img class="rounded-full border-2 border-white dark:border-gray-800 box-content" src="AppBlueprint.UiKit/images/avatar-03.jpg" width="28" height="28" alt="User 03" />
+                                        <img class="rounded-full border-2 border-white dark:border-gray-800 box-content" src="AppBlueprint.UiKit/images/avatar-04.jpg" width="28" height="28" alt="User 04" />
                                     </div>
                                     <div class="text-xs font-medium text-gray-400 dark:text-gray-500 italic">+132</div>
                                 </div>
@@ -211,18 +211,18 @@
     {
         attendees = new List<Attendee>
         {
-            new() { Name = "Carolyn McNeail", Image = "_content/AppBlueprint.UiKit/images/user-32-08.jpg" },
-            new() { Name = "Dominik Lamakani", Image = "_content/AppBlueprint.UiKit/images/user-32-01.jpg" },
-            new() { Name = "Ivan Mesaros", Image = "_content/AppBlueprint.UiKit/images/user-32-03.jpg" },
-            new() { Name = "Maria Martinez", Image = "_content/AppBlueprint.UiKit/images/user-32-05.jpg" }
+            new() { Name = "Carolyn McNeail", Image = "AppBlueprint.UiKit/images/user-32-08.jpg" },
+            new() { Name = "Dominik Lamakani", Image = "AppBlueprint.UiKit/images/user-32-01.jpg" },
+            new() { Name = "Ivan Mesaros", Image = "AppBlueprint.UiKit/images/user-32-03.jpg" },
+            new() { Name = "Maria Martinez", Image = "AppBlueprint.UiKit/images/user-32-05.jpg" }
         };
 
         friends = new List<Friend>
         {
-            new() { Name = "Haruki Masuno", Image = "_content/AppBlueprint.UiKit/images/user-32-02.jpg" },
-            new() { Name = "Joe Huang", Image = "_content/AppBlueprint.UiKit/images/user-32-04.jpg" },
-            new() { Name = "Carolyn McNeail", Image = "_content/AppBlueprint.UiKit/images/user-32-06.jpg" },
-            new() { Name = "Lisa Sitwala", Image = "_content/AppBlueprint.UiKit/images/user-32-08.jpg" }
+            new() { Name = "Haruki Masuno", Image = "AppBlueprint.UiKit/images/user-32-02.jpg" },
+            new() { Name = "Joe Huang", Image = "AppBlueprint.UiKit/images/user-32-04.jpg" },
+            new() { Name = "Carolyn McNeail", Image = "AppBlueprint.UiKit/images/user-32-06.jpg" },
+            new() { Name = "Lisa Sitwala", Image = "AppBlueprint.UiKit/images/user-32-08.jpg" }
         };
     }
 

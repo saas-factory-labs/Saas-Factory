@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
+        <!-- Native AOT is not appropriate here because this app uses Blazor Server and MVC controllers. -->
+        <PublishAot>false</PublishAot>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>

@@ -1,3 +1,8 @@
+---
+description: Pull request conventions and commit message guidelines
+globs: []
+---
+
 # Pull Request Conventions
 
 This guide defines clear and actionable rules for writing commit descriptions (commonly used in pull requests), optimized for readability, precision, and downstream integration in the PlatformPlatform project. This guide is intended for use by AI coding assistants or automation tools generating descriptions.

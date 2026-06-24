@@ -1,3 +1,11 @@
+---
+description: Security hardening patterns for admin access to tenant data
+globs:
+  - "**/Infrastructure/Services/Admin*.cs"
+  - "**/Infrastructure/Middleware/Admin*.cs"
+  - "**/Authentication/**/*.cs"
+---
+
 # Admin Access Security Hardening
 
 ## Overview

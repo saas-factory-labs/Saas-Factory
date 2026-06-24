@@ -1,3 +1,12 @@
+---
+description: TypeScript and JavaScript coding standards
+globs:
+  - "**/*.js"
+  - "**/*.ts"
+  - "**/*.mjs"
+  - "**/*.mts"
+---
+
 # TypeScript/JavaScript Coding Standards
 
 When working with TypeScript and JavaScript files in the frontend, follow these coding standards:

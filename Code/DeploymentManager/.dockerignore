@@ -101,3 +101,11 @@ README.md
 **/temp/
 **/*.tmp
 **/*.bak
+
+
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.idea/
+**/.git/

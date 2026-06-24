@@ -30,6 +30,11 @@ namespace AppBlueprint.Infrastructure.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    // Database connection string constants
+    private const string DatabaseConnectionStringEnvVar = "DATABASE_CONNECTIONSTRING";
+    private const string AppBlueprintDbConnectionName = "appblueprintdb";
+    private const string PostgresServerConnectionName = "postgres-server";
+
     // Static readonly arrays for health check tags (CA1861)
     private static readonly string[] PostgreSqlHealthCheckTags = new[] { "db", "postgresql" };
     private static readonly string[] RlsHealthCheckTags = new[] { "db", "security", "rls", "critical" };
@@ -145,7 +150,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         // Priority 1: Environment variable (our standard name, then Railway's default DATABASE_URL fallback)
-        string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
+        string? connectionString = Environment.GetEnvironmentVariable(DatabaseConnectionStringEnvVar);
         if (connectionString is null)
         {
             connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
@@ -154,12 +159,12 @@ public static class ServiceCollectionExtensions
         // Priority 2: Configuration fallback
         if (string.IsNullOrEmpty(connectionString))
         {
-            connectionString = configuration.GetConnectionString("appblueprintdb") ??
-                             configuration.GetConnectionString("postgres-server") ??
+            connectionString = configuration.GetConnectionString(AppBlueprintDbConnectionName) ??
+                             configuration.GetConnectionString(PostgresServerConnectionName) ??
                              configuration.GetConnectionString("DefaultConnection");
         }
 
-        var connectionSource = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") != null
+        var connectionSource = Environment.GetEnvironmentVariable(DatabaseConnectionStringEnvVar) != null
             ? "Environment Variable"
             : "Configuration";
 
@@ -168,8 +173,8 @@ public static class ServiceCollectionExtensions
         // Validate connection string with helpful error message
         ConfigurationValidator.ValidateDatabaseConnectionString(
             connectionString,
-            "appblueprintdb",
-            "postgres-server",
+            AppBlueprintDbConnectionName,
+            PostgresServerConnectionName,
             "DefaultConnection");
 
         // Create NpgsqlDataSource with EnableDynamicJson for JSONB support (required since Npgsql 8.0)
@@ -335,18 +340,18 @@ public static class ServiceCollectionExtensions
             using var scope = services.BuildServiceProvider().CreateScope();
             var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-            string? connString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING");
+            string? connString = Environment.GetEnvironmentVariable(DatabaseConnectionStringEnvVar);
             if (connString is null)
             {
                 connString = Environment.GetEnvironmentVariable("DATABASE_URL");
             }
             if (connString is null)
             {
-                connString = config.GetConnectionString("appblueprintdb");
+                connString = config.GetConnectionString(AppBlueprintDbConnectionName);
             }
             if (connString is null)
             {
-                connString = config.GetConnectionString("postgres-server");
+                connString = config.GetConnectionString(PostgresServerConnectionName);
             }
 
             if (string.IsNullOrEmpty(connString))
@@ -387,9 +392,9 @@ public static class ServiceCollectionExtensions
             using var scope = services.BuildServiceProvider().CreateScope();
             var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-            string? connString = Environment.GetEnvironmentVariable("DATABASE_CONNECTIONSTRING") ??
-                               config.GetConnectionString("appblueprintdb") ??
-                               config.GetConnectionString("postgres-server");
+            string? connString = Environment.GetEnvironmentVariable(DatabaseConnectionStringEnvVar) ??
+                               config.GetConnectionString(AppBlueprintDbConnectionName) ??
+                               config.GetConnectionString(PostgresServerConnectionName);
 
             if (string.IsNullOrEmpty(connString))
             {

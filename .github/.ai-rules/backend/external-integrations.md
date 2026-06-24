@@ -1,3 +1,11 @@
+---
+description: Rules for integrating with external services (APIs, third-party services)
+globs:
+  - "**/Infrastructure/Services/**/*.cs"
+  - "**/Infrastructure/Clients/**/*.cs"
+  - "**/ExternalServices/**/*.cs"
+---
+
 # External Integrations
 
 When implementing integration to external services, follow these rules very carefully.

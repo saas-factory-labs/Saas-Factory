@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Serve static web assets from referenced Razor class libraries in published/container deployments.
+builder.WebHost.UseStaticWebAssets();
+
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
@@ -53,7 +56,7 @@ if (builder.Environment.IsDevelopment())
 {
     builder.Services.Configure<CookiePolicyOptions>(options =>
     {
-        // Unspecified = don't enforce a minimum — lets SameSite=None on OIDC correlation/nonce
+        // Unspecified = don't enforce a minimum - lets SameSite=None on OIDC correlation/nonce
         // cookies pass through unchanged. Setting Lax here would downgrade SameSite=None back
         // to Lax, breaking the cross-site form_post callback from Logto.
         options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
@@ -100,7 +103,7 @@ builder.Services.AddScoped<IMenuConfigurationService, MenuConfigurationService>(
 // builder.Services.AddHttpClient<ILogtoImpersonationTokenService, LogtoImpersonationTokenService>();
 // builder.Services.AddScoped<ImpersonationService>();
 
-// ── Admin portal shell ─────────────────────────────────────────────────────────
+// -- Admin portal shell ---------------------------------------------------------
 // The shell hosts one admin portal per deployed SaaS app. Per-app modules are
 // runtime-loaded plugin dlls (e.g. SaaSFactory.Dating.Admin.dll) from the plugins
 // folder - never compile-time references, so this public repo stays free of private
@@ -156,7 +159,7 @@ if (adminPortal.LastPluginLoadResult is not null)
         adminPortalMvc.AddApplicationPart(pluginAssembly);
     }
 }
-// ───────────────────────────────────────────────────────────────────────────────
+// ------------------------------------------------------------------------------
 
 var app = builder.Build();
 
@@ -190,13 +193,14 @@ app.UseOutputCache();
 app.MapAuthenticationEndpoints(builder.Configuration);
 
 // The shared AppBlueprint authentication endpoints redirect post-login/post-signout users
-// to /dashboard, /onboarding and /login — AppBlueprint.Web's page structure. DeploymentManager
+// to /dashboard, /onboarding and /login - AppBlueprint.Web's page structure. DeploymentManager
 // has no onboarding, its dashboard IS "/", and it has no separate login page, so bounce those
 // shared targets to "/" (host-specific shim, like NullCurrentTenantService/NullApiKeyRepository).
-// Without this, login lands on /onboarding → 404.
+// Without this, login lands on /onboarding -> 404.
 app.MapGet("/dashboard", () => Results.LocalRedirect("/")).AllowAnonymous();
 app.MapGet("/onboarding", () => Results.LocalRedirect("/")).AllowAnonymous();
 app.MapGet("/login", () => Results.LocalRedirect("/")).AllowAnonymous();
+app.MapGet("/ping", () => Results.Ok("ok")).AllowAnonymous();
 
 // API controllers contributed by admin portal plugin modules (role-gated).
 app.MapControllers();
@@ -210,3 +214,4 @@ app.MapRazorComponents<App>()
 app.MapDefaultEndpoints();
 
 await app.RunAsync();
+

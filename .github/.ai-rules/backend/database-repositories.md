@@ -1,3 +1,10 @@
+---
+description: DDD repository patterns and implementation rules
+globs:
+  - "**/Repositories/**/*.cs"
+  - "**/Domain/**/*Repository*.cs"
+---
+
 <!-- # DDD Repositories
 
 When implementing a Domain-Driven Design (DDD) Repository, follow these rules very carefully.

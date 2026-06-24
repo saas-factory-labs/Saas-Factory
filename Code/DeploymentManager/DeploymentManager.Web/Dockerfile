@@ -63,8 +63,8 @@ RUN dotnet build "DeploymentManager.Web.csproj" -c "$BUILD_CONFIGURATION" -o /ap
 # Empty on Railway/git builds (no admin portals); contains plugin DLLs in CI builds.
 # Safe conditional copy: only copies if source directory exists and contains files
 RUN mkdir -p /app/plugins && \
-    if [ -d "Code/DeploymentManager/plugins" ] && [ -n "$(ls -A Code/DeploymentManager/plugins 2>/dev/null)" ]; then \
-        cp -r Code/DeploymentManager/plugins/* /app/plugins/ || true; \
+    if [ -d "/src/Code/DeploymentManager/plugins" ] && [ -n "$(ls -A /src/Code/DeploymentManager/plugins 2>/dev/null)" ]; then \
+        cp -r /src/Code/DeploymentManager/plugins/* /app/plugins/ || true; \
     fi
 
 FROM build AS publish
