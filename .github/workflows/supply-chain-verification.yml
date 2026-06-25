@@ -116,7 +116,7 @@ jobs:
         # - Packages with valid signatures: accepted
         # - Packages with INVALID/tampered signatures: rejected (build fails)
         # - Unsigned packages: accepted (covers local + experimental feeds)
-        run: dotnet restore Code/AppBlueprint/AppBlueprint.sln
+        run: dotnet restore SaaS-Factory.sln
 
       - name: Restore DeploymentManager packages
         run: dotnet restore Code/DeploymentManager/DeploymentManager.sln
