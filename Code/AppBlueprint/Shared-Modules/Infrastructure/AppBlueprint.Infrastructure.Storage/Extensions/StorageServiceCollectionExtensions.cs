@@ -6,6 +6,7 @@ using AppBlueprint.Application.Services;
 using AppBlueprint.Infrastructure.Persistence.Repositories;
 using AppBlueprint.Infrastructure.Persistence.Repositories.Interfaces;
 using AppBlueprint.Infrastructure.Storage;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -58,6 +59,76 @@ public static class StorageServiceCollectionExtensions
         else
         {
             Console.WriteLine("[AppBlueprint.Infrastructure] Cloudflare R2 not configured (optional)");
+        }
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers the generic S3-compatible object storage service.
+    /// Works with Cloudflare R2, AWS S3, MinIO, or any S3-compatible provider.
+    /// </summary>
+    public static IServiceCollection AddObjectStorageService(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        string? endpoint = Environment.GetEnvironmentVariable("STORAGE_ENDPOINT")
+                        ?? configuration["Storage:Endpoint"];
+
+        if (!string.IsNullOrWhiteSpace(endpoint))
+        {
+            services.Configure<ObjectStorageOptions>(options =>
+            {
+                options.Endpoint = endpoint;
+                options.BucketName = Environment.GetEnvironmentVariable("STORAGE_BUCKET_NAME")
+                                  ?? configuration["Storage:BucketName"]
+                                  ?? string.Empty;
+                options.AccessKey = Environment.GetEnvironmentVariable("STORAGE_ACCESS_KEY")
+                                 ?? configuration["Storage:AccessKey"]
+                                 ?? string.Empty;
+                options.SecretKey = Environment.GetEnvironmentVariable("STORAGE_SECRET_KEY")
+                                 ?? configuration["Storage:SecretKey"]
+                                 ?? string.Empty;
+            });
+
+            services.AddSingleton<IObjectStorageService, ObjectStorageService>();
+            Console.WriteLine("[AppBlueprint.Infrastructure] S3-compatible object storage service registered");
+        }
+        else
+        {
+            Console.WriteLine("[AppBlueprint.Infrastructure] Object storage not configured (optional)");
+        }
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers the secure S3-compatible document storage service (<see cref="IStorageService"/>).
+    /// Performs PDF magic bytes validation, filename sanitization, and security header injection.
+    /// Works with Cloudflare R2, AWS S3, MinIO, or any S3-compatible provider.
+    /// Reads configuration from STORAGE_ENDPOINT / STORAGE_ACCESS_KEY / STORAGE_SECRET_KEY / STORAGE_BUCKET_NAME.
+    /// </summary>
+    public static IServiceCollection AddS3StorageService(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        string? endpoint = Environment.GetEnvironmentVariable("STORAGE_ENDPOINT")
+                        ?? configuration["STORAGE_ENDPOINT"];
+
+        if (!string.IsNullOrWhiteSpace(endpoint))
+        {
+            services.AddSingleton<IStorageService, S3StorageService>();
+            Console.WriteLine("[AppBlueprint.Infrastructure] S3 secure document storage service registered");
+        }
+        else
+        {
+            Console.WriteLine("[AppBlueprint.Infrastructure] S3 secure document storage not configured (optional)");
         }
 
         return services;

@@ -176,6 +176,14 @@ app.UseStatusCodePagesWithReExecute("/not-found");
 app.UseForwardedHeaders();
 app.UseRouting();
 app.UseStaticFiles();
+
+// Alpha phase: instruct crawlers not to index or follow links
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Robots-Tag"] = "noindex, nofollow, noarchive, nosnippet";
+    await next();
+});
+
 app.UseAntiforgery();
 app.UseCookiePolicy();
 app.UseAuthentication();

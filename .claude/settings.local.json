@@ -149,7 +149,9 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(Select-String -Pattern \"fill-violet-500|\\\\.fill-violet\" -Path \"D:\\\\Development\\\\Development-Projects\\\\Saas-Factory\\\\Code\\\\AppBlueprint\\\\Shared-Modules\\\\AppBlueprint.UiKit\\\\wwwroot\\\\css\\\\app.css\")",
       "WebFetch(domain:developers.cloudflare.com)",
-      "WebFetch(domain:www.npmjs.com)"
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(xargs grep -l \"SmtpOptions\\\\|IEmailService\")",
+      "Bash(xargs grep -l \"IFileStorageService\\\\|CloudflareR2Options\\\\|IObjectStorageService\")"
     ],
     "deny": [],
     "ask": [],

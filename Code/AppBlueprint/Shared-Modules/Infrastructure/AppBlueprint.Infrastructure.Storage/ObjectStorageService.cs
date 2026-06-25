@@ -1,98 +1,99 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
+using AppBlueprint.Application.Interfaces;
 using AppBlueprint.Application.Options;
-using AppBlueprint.Infrastructure.Storage.Resources;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace AppBlueprint.Infrastructure.Storage;
 
-// Cloudflare R2 Object Storage
-internal sealed class ObjectStorageService : IDisposable
+public sealed class ObjectStorageService(
+    IOptions<ObjectStorageOptions> options,
+    ILogger<ObjectStorageService> logger) : IObjectStorageService, IDisposable
 {
-    private readonly CloudflareR2Options _options;
-    private readonly ILogger<ObjectStorageService> _logger;
-    private readonly AmazonS3Client _s3Client;
-
-    public ObjectStorageService(IOptions<CloudflareR2Options> options, ILogger<ObjectStorageService> logger)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-        ArgumentNullException.ThrowIfNull(logger);
-
-        _options = options.Value;
-        _logger = logger;
-
-        var credentials = new BasicAWSCredentials(_options.AccessKeyId, _options.SecretAccessKey);
-        _s3Client = new AmazonS3Client(credentials, new AmazonS3Config
+    private readonly ObjectStorageOptions _options = options.Value;
+    private readonly AmazonS3Client _s3Client = new(
+        new BasicAWSCredentials(options.Value.AccessKey, options.Value.SecretKey),
+        new AmazonS3Config
         {
-            ServiceURL = _options.EndpointUrl, // R2-specific endpoint
-            ForcePathStyle = true // Required for R2 compatibility
+            ServiceURL = options.Value.Endpoint,
+            ForcePathStyle = true
         });
-    }
 
-    public async Task DownloadObjectAsync(string bucketName, string filePath, string key)
+    public async Task UploadAsync(string objectKey, Stream fileStream, string contentType, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(bucketName);
-        ArgumentNullException.ThrowIfNull(filePath);
-        ArgumentNullException.ThrowIfNull(key);
+        ArgumentException.ThrowIfNullOrEmpty(objectKey);
+        ArgumentNullException.ThrowIfNull(fileStream);
+        ArgumentException.ThrowIfNullOrEmpty(contentType);
 
-        if (filePath.Contains(".."))
+        var request = new PutObjectRequest
         {
-            throw new ArgumentException("Invalid file path");
-        }
+            BucketName = _options.BucketName,
+            Key = objectKey,
+            InputStream = fileStream,
+            ContentType = contentType,
+            AutoCloseStream = false,
+            DisablePayloadSigning = true,
+            DisableDefaultChecksumValidation = true
+        };
 
         try
         {
-            var request = new GetObjectRequest
-            {
-                BucketName = bucketName,
-                Key = key
-            };
-
-            using (GetObjectResponse? response = await _s3Client.GetObjectAsync(request))
-            using (Stream? responseStream = response.ResponseStream)
-            using (FileStream fileStream = File.Create(filePath))
-            {
-                await responseStream.CopyToAsync(fileStream);
-            }
-
-            _logger.LogInformation(ObjectStorageMessages.FileDownloadedSuccessfully, filePath);
+            PutObjectResponse response = await _s3Client.PutObjectAsync(request, cancellationToken);
+            logger.LogInformation("Object uploaded. Key: {Key}, ETag: {ETag}", objectKey, response.ETag);
         }
-        catch (AmazonS3Exception e)
+        catch (AmazonS3Exception ex)
         {
-            _logger.LogError(e, ObjectStorageMessages.ErrorReadingObject);
+            logger.LogError(ex, "Failed to upload object. Key: {Key}", objectKey);
+            throw new InvalidOperationException($"Failed to upload object '{objectKey}': {ex.Message}", ex);
         }
     }
 
-    public async Task UploadObjectAsync(string bucketName, string filePath, string key)
+    public async Task<Stream> DownloadAsync(string objectKey, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(bucketName);
-        ArgumentNullException.ThrowIfNull(filePath);
-        ArgumentNullException.ThrowIfNull(key);
+        ArgumentException.ThrowIfNullOrEmpty(objectKey);
+
+        var request = new GetObjectRequest
+        {
+            BucketName = _options.BucketName,
+            Key = objectKey
+        };
 
         try
         {
-            var request = new PutObjectRequest
-            {
-                FilePath = filePath,
-#pragma warning disable CS0618 // Type or member is obsolete
-                BucketName = _options.BucketName,
-#pragma warning restore CS0618 // Type or member is obsolete
-                Key = key
-            };
-
-            PutObjectResponse? response = await _s3Client.PutObjectAsync(request);
-            _logger.LogInformation(ObjectStorageMessages.ETagFormat, response.ETag);
+            GetObjectResponse response = await _s3Client.GetObjectAsync(request, cancellationToken);
+            logger.LogInformation("Object downloaded. Key: {Key}", objectKey);
+            return response.ResponseStream;
         }
-        catch (AmazonS3Exception e)
+        catch (AmazonS3Exception ex)
         {
-            _logger.LogError(e, ObjectStorageMessages.ErrorWritingObject);
+            logger.LogError(ex, "Failed to download object. Key: {Key}", objectKey);
+            throw new InvalidOperationException($"Failed to download object '{objectKey}': {ex.Message}", ex);
         }
     }
 
-    public void Dispose()
+    public async Task DeleteAsync(string objectKey, CancellationToken cancellationToken = default)
     {
-        _s3Client?.Dispose();
+        ArgumentException.ThrowIfNullOrEmpty(objectKey);
+
+        var request = new DeleteObjectRequest
+        {
+            BucketName = _options.BucketName,
+            Key = objectKey
+        };
+
+        try
+        {
+            await _s3Client.DeleteObjectAsync(request, cancellationToken);
+            logger.LogInformation("Object deleted. Key: {Key}", objectKey);
+        }
+        catch (AmazonS3Exception ex)
+        {
+            logger.LogError(ex, "Failed to delete object. Key: {Key}", objectKey);
+            throw new InvalidOperationException($"Failed to delete object '{objectKey}': {ex.Message}", ex);
+        }
     }
+
+    public void Dispose() => _s3Client.Dispose();
 }

@@ -331,6 +331,9 @@ app.Use(async (context, next) =>
         return Task.CompletedTask;
     }, context.Response);
 
+    // Instruct crawlers not to index or follow links (alpha phase)
+    context.Response.Headers["X-Robots-Tag"] = "noindex, nofollow, noarchive, nosnippet";
+
     // Prevent MIME-sniffing attacks
     context.Response.Headers["X-Content-Type-Options"] = "nosniff";
 

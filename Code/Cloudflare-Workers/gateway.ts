@@ -72,9 +72,9 @@ export class Web extends Container<Env> {
     this.envVars = getWebContainerEnvVars(env);
   }
 
-  override async onActivityExpired(): Promise<void> {
-    // Keep the web container always running — do not stop on inactivity.
-  }
+  // override async onActivityExpired(): Promise<void> {
+  //   // Keep the web container always running — do not stop on inactivity.
+  // }
 }
 
 export class Api extends Container<Env> {

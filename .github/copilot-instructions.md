@@ -376,7 +376,7 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
 
 
 It is **EXTREMELY** important that you follow the instructions very carefully.
-Only do work on the AppBlueprint directory and related projects.
+Only do work on the AppBlueprint directory and related projects and that the Github Action workflows and Docker builds still work after the code changes.
 
 **Read the following additional instructions:**
 

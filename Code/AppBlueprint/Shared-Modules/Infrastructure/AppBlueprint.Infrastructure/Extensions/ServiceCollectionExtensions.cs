@@ -280,6 +280,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddStripeService();
         services.AddCloudflareR2Service();
+        services.AddObjectStorageService(configuration);
+        services.AddS3StorageService(configuration);
         services.AddResendEmailService(configuration);
 
         return services;
