@@ -226,7 +226,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
 
       - name: Download SBOM Artifacts
-        uses: actions/download-artifact@cc203ea7da49e1277dac6e293dc96e0e0e6d33e0  # v4.2.0
+        uses: actions/download-artifact@b14cf4c92620c250e1c074ab0a5800e37df86765  # v4.2.0
         with:
           name: sbom-all-formats-${{ github.sha }}
           path: sbom-outputs/
@@ -259,7 +259,7 @@ jobs:
       # Trivy Vulnerability Scanning
       # ========================================
       - name: Run Trivy Scanner
-        uses: aquasecurity/trivy-action@8f3c7c0e64da9699fd5c98e01f0f5df9fbb4054e  # v0.31.0
+        uses: aquasecurity/trivy-action@76071ef0d7ec797419534a183b498b4d6366cf37  # v0.31.0
         with:
           scan-type: 'fs'
           scan-ref: 'sbom-outputs/'
@@ -277,7 +277,7 @@ jobs:
       # OSV Scanner
       # ========================================
       - name: Run OSV Scanner
-        uses: google/osv-scanner-action@7b8c24287ad92fcd99fc1dea88e322d4d5f64654  # v2.0.0
+        uses: google/osv-scanner-action@98b584ee2ed2da3935ccce10e06739d54cdcd20b  # v2.0.0
         with:
           scan-args: |-
             --lockfile=Code/AppBlueprint/package-lock.json
@@ -310,7 +310,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
 
       - name: Download SBOM Artifacts
-        uses: actions/download-artifact@cc203ea7da49e1277dac6e293dc96e0e0e6d33e0  # v4.2.0
+        uses: actions/download-artifact@b14cf4c92620c250e1c074ab0a5800e37df86765  # v4.2.0
         with:
           name: sbom-all-formats-${{ github.sha }}
           path: sbom-outputs/
@@ -383,7 +383,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
 
       - name: Download SBOM Artifacts
-        uses: actions/download-artifact@cc203ea7da49e1277dac6e293dc96e0e0e6d33e0  # v4.2.0
+        uses: actions/download-artifact@b14cf4c92620c250e1c074ab0a5800e37df86765  # v4.2.0
         with:
           name: sbom-all-formats-${{ github.sha }}
           path: sbom-outputs/
@@ -423,7 +423,7 @@ jobs:
       # Sign SBOMs with Cosign
       # ========================================
       - name: Install Cosign
-        uses: sigstore/cosign-installer@a3e77ea8bb707966c4b90420af50fdc71e5dcd3f  # v4.0.0
+        uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad  # v4.0.0
 
       - name: Sign SBOMs (Keyless with GitHub OIDC)
         run: |
@@ -443,7 +443,7 @@ jobs:
       # Generate Attestations
       # ========================================
       - name: Attest SBOM
-        uses: actions/attest-sbom@6bc90c03821e3f28e8a795cc4a20c0e4ab606fb6  # v2.1.1
+        uses: actions/attest-sbom@bd218ad0dbcb3e146bd073d1d9c6d78e08aa8a0b  # v2.4.0
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           subject-path: 'sbom-outputs/sbom-dotnet.json'
@@ -461,13 +461,13 @@ jobs:
 
     steps:
       - name: Download Vulnerability Reports
-        uses: actions/download-artifact@cc203ea7da49e1277dac6e293dc96e0e0e6d33e0  # v4.2.0
+        uses: actions/download-artifact@b14cf4c92620c250e1c074ab0a5800e37df86765  # v4.2.0
         with:
           name: vulnerability-reports-${{ github.sha }}
           path: vulnerability-reports/
 
       - name: Download License Reports
-        uses: actions/download-artifact@cc203ea7da49e1277dac6e293dc96e0e0e6d33e0  # v4.2.0
+        uses: actions/download-artifact@b14cf4c92620c250e1c074ab0a5800e37df86765  # v4.2.0
         with:
           name: license-reports-${{ github.sha }}
           path: license-reports/
@@ -534,7 +534,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
 
       - name: Download SBOM Artifacts
-        uses: actions/download-artifact@cc203ea7da49e1277dac6e293dc96e0e0e6d33e0  # v4.2.0
+        uses: actions/download-artifact@b14cf4c92620c250e1c074ab0a5800e37df86765  # v4.2.0
         with:
           name: sbom-all-formats-${{ github.sha }}
           path: sbom-outputs/
