@@ -1,3 +1,13 @@
+---
+description: Frontend development rules for Blazor, HTML, CSS, and JavaScript
+globs:
+  - "**/*.razor"
+  - "**/*.razor.cs"
+  - "**/*.css"
+  - "**/*.js"
+  - "**/*.ts"
+---
+
 # Frontend
 
 When working with C# Blazor razor and code behind code as well as HTML, CSS and Javascript, follow these rules very carefully. 

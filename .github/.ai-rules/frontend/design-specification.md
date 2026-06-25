@@ -1,3 +1,10 @@
+---
+description: Design specifications and MudBlazor component guidelines
+globs:
+  - "**/*.razor"
+  - "**/Components/**/*.razor.cs"
+---
+
 # Design specification
 
 - Only use CSS if Mudblazor components can't implement the visual functionality

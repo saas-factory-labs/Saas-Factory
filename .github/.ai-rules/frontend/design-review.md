@@ -1,3 +1,11 @@
+---
+description: Design review process and visual QA guidelines
+globs:
+  - "**/*.razor"
+  - "**/*.css"
+  - "**/wwwroot/**/*.css"
+---
+
 # Design Review
 
 After implementing changes in the frontend you need to visualize and review the render of the website using the Playwright MCP server integration to interact with and test actual UI components in real-time, not just static code analysis. To ensure the design adhere to the design specifications.

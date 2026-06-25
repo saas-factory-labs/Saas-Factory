@@ -1,3 +1,10 @@
+---
+description: C# coding standards and conventions
+globs:
+  - "**/*.cs"
+alwaysApply: true
+---
+
 # Code Style
 
 - Always use these features:

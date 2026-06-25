@@ -1,3 +1,10 @@
+---
+description: Baseline rules for B2C and B2B shared features
+globs:
+  - "**/*.cs"
+alwaysApply: true
+---
+
 # Baseline
 
 When working with baseline features that apply to both B2C and B2B, follow these rules very carefully.

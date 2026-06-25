@@ -1,3 +1,13 @@
+---
+description: Infrastructure rules for cloud hosting, deployment, and DevOps
+globs:
+  - "**/*.yml"
+  - "**/*.yaml"
+  - "**/Dockerfile"
+  - "**/*.bicep"
+  - "**/Pulumi.*.yaml"
+---
+
 # Infrastructure Rules
 
 When implementing infrastructure code, follow these rules very carefully.

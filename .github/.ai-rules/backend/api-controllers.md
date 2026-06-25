@@ -1,3 +1,11 @@
+---
+description: Rules for implementing API controllers and endpoints
+globs:
+  - "**/Controllers/**/*.cs"
+  - "**/ApiModule/**/*.cs"
+  - "**/Endpoints/**/*.cs"
+---
+
 # API Controllers
 
 When implementing API Controllers, follow these rules very carefully.

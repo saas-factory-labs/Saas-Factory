@@ -51,7 +51,9 @@ foreach ($package in $packageList) {
 
     $extractDir = Join-Path ([IO.Path]::GetTempPath()) "adminplugin-$packageId-$version"
     if (Test-Path $extractDir) { Remove-Item -Recurse -Force $extractDir }
-    Expand-Archive -Path $nupkgPath -DestinationPath $extractDir
+    $zipPath = $nupkgPath -replace '\.nupkg$', '.zip'
+    Rename-Item -Path $nupkgPath -NewName $zipPath
+    Expand-Archive -Path $zipPath -DestinationPath $extractDir
 
     $libDir = Join-Path $extractDir "lib\$TargetFramework"
     if (-not (Test-Path $libDir)) {
@@ -61,7 +63,7 @@ foreach ($package in $packageList) {
     Copy-Item (Join-Path $libDir '*.dll') $OutputDir -Force
     Copy-Item (Join-Path $libDir '*.pdb') $OutputDir -Force -ErrorAction SilentlyContinue
 
-    Remove-Item $nupkgPath -Force
+    Remove-Item $zipPath -Force
     Remove-Item -Recurse -Force $extractDir
 }
 

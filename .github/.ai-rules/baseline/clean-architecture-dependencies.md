@@ -1,3 +1,11 @@
+---
+description: Strict dependency flow rules for clean architecture layers
+globs:
+  - "**/*.cs"
+  - "**/*.csproj"
+alwaysApply: true
+---
+
 # Clean Architecture - Dependency Flow
 
 This document defines the strict dependency rules for clean architecture layers in this codebase. **Violations of these rules must be prevented at all costs.**

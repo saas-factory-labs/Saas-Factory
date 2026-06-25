@@ -1,3 +1,11 @@
+---
+description: Security-critical multi-tenancy rules and tenant resolution
+globs:
+  - "**/Infrastructure/**/*.cs"
+  - "**/Middleware/**/*.cs"
+  - "**/Services/**/*Tenant*.cs"
+---
+
 # Multi-Tenancy Rules
 
 ## Tenant Resolution - SECURITY CRITICAL

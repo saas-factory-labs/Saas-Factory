@@ -9,6 +9,7 @@
 
     <!-- NuGet Package Configuration -->
     <PackageId>SaaS-Factory.AppBlueprint.UiKit</PackageId>
+    <StaticWebAssetBasePath>AppBlueprint.UiKit</StaticWebAssetBasePath>
     <Version>$(GITVERSION_SemVer)</Version>
 
     <Authors>Casper Rubæk</Authors>

@@ -39,6 +39,11 @@ internal static class Program
     private const int PostgresPort = 5432;
     private const string BannerWordSeparator = "   ";
 
+    // Status signal constants
+    private const string StatusRunning = "RUNNING";
+    private const string StatusCheck = "CHECK";
+    private const string StatusPending = "PENDING";
+
     private static readonly string[] SaaSBannerLines =
     [
         @"███████╗  █████╗   █████╗ ███████╗",
@@ -632,45 +637,45 @@ internal static class Program
         bool webRunning = CheckPortInUse(WebPort) || CheckPortInUse(8092) || CheckPortInUse(5000);
 
         state.DockerSignal = dockerRunning
-            ? new StatusSignal("RUNNING", SignalStyle.Running)
-            : new StatusSignal("CHECK", SignalStyle.Check);
+            ? new StatusSignal(StatusRunning, SignalStyle.Running)
+            : new StatusSignal(StatusCheck, SignalStyle.Check);
 
         state.ApiGatewaySignal = gatewayRunning
-            ? new StatusSignal("RUNNING", SignalStyle.Running)
-            : new StatusSignal("PENDING", SignalStyle.Pending);
+            ? new StatusSignal(StatusRunning, SignalStyle.Running)
+            : new StatusSignal(StatusPending, SignalStyle.Pending);
 
         state.ApiServiceSignal = apiRunning
-            ? new StatusSignal("RUNNING", SignalStyle.Running)
-            : new StatusSignal("PENDING", SignalStyle.Pending);
+            ? new StatusSignal(StatusRunning, SignalStyle.Running)
+            : new StatusSignal(StatusPending, SignalStyle.Pending);
 
         state.DashboardSignal = dashboardRunning
-            ? new StatusSignal("RUNNING", SignalStyle.Running)
-            : new StatusSignal("CHECK", SignalStyle.Check);
+            ? new StatusSignal(StatusRunning, SignalStyle.Running)
+            : new StatusSignal(StatusCheck, SignalStyle.Check);
 
         state.PostgreSqlSignal = postgresRunning
-            ? new StatusSignal("RUNNING", SignalStyle.Running)
-            : new StatusSignal("CHECK", SignalStyle.Check);
+            ? new StatusSignal(StatusRunning, SignalStyle.Running)
+            : new StatusSignal(StatusCheck, SignalStyle.Check);
 
         state.WebSignal = webRunning
-            ? new StatusSignal("RUNNING", SignalStyle.Running)
-            : new StatusSignal("PENDING", SignalStyle.Pending);
+            ? new StatusSignal(StatusRunning, SignalStyle.Running)
+            : new StatusSignal(StatusPending, SignalStyle.Pending);
 
         string[] envFiles = FindEnvFiles(state.ProjectRoot);
         state.EnvFilesSignal = envFiles.Length > 0
             ? new StatusSignal("LOADED", SignalStyle.Running)
-            : new StatusSignal("CHECK", SignalStyle.Check);
+            : new StatusSignal(StatusCheck, SignalStyle.Check);
 
         state.JwtTokenSignal = state.JwtTokenGenerated
             ? new StatusSignal("READY", SignalStyle.Accent)
-            : new StatusSignal("PENDING", SignalStyle.Pending);
+            : new StatusSignal(StatusPending, SignalStyle.Pending);
 
         state.PostgreSqlPasswordSignal = state.PostgreSqlPasswordValidated
             ? new StatusSignal("VALID", SignalStyle.Running)
-            : new StatusSignal("PENDING", SignalStyle.Pending);
+            : new StatusSignal(StatusPending, SignalStyle.Pending);
 
         string? connectionString = TryGetConnectionString();
         state.DatabaseConnectionSignal = string.IsNullOrWhiteSpace(connectionString)
-            ? new StatusSignal("CHECK", SignalStyle.Check)
+            ? new StatusSignal(StatusCheck, SignalStyle.Check)
             : new StatusSignal("CONFIG", SignalStyle.Accent);
     }
 
@@ -877,16 +882,16 @@ internal static class Program
         public string? LastAction { get; set; }
         public bool JwtTokenGenerated { get; set; }
         public bool PostgreSqlPasswordValidated { get; set; }
-        public StatusSignal DockerSignal { get; set; } = new("CHECK", SignalStyle.Check);
-        public StatusSignal ApiGatewaySignal { get; set; } = new("PENDING", SignalStyle.Pending);
-        public StatusSignal ApiServiceSignal { get; set; } = new("PENDING", SignalStyle.Pending);
-        public StatusSignal DashboardSignal { get; set; } = new("CHECK", SignalStyle.Check);
-        public StatusSignal PostgreSqlSignal { get; set; } = new("CHECK", SignalStyle.Check);
-        public StatusSignal WebSignal { get; set; } = new("PENDING", SignalStyle.Pending);
-        public StatusSignal JwtTokenSignal { get; set; } = new("PENDING", SignalStyle.Pending);
-        public StatusSignal EnvFilesSignal { get; set; } = new("CHECK", SignalStyle.Check);
-        public StatusSignal PostgreSqlPasswordSignal { get; set; } = new("PENDING", SignalStyle.Pending);
-        public StatusSignal DatabaseConnectionSignal { get; set; } = new("CHECK", SignalStyle.Check);
+        public StatusSignal DockerSignal { get; set; } = new(StatusCheck, SignalStyle.Check);
+        public StatusSignal ApiGatewaySignal { get; set; } = new(StatusPending, SignalStyle.Pending);
+        public StatusSignal ApiServiceSignal { get; set; } = new(StatusPending, SignalStyle.Pending);
+        public StatusSignal DashboardSignal { get; set; } = new(StatusCheck, SignalStyle.Check);
+        public StatusSignal PostgreSqlSignal { get; set; } = new(StatusCheck, SignalStyle.Check);
+        public StatusSignal WebSignal { get; set; } = new(StatusPending, SignalStyle.Pending);
+        public StatusSignal JwtTokenSignal { get; set; } = new(StatusPending, SignalStyle.Pending);
+        public StatusSignal EnvFilesSignal { get; set; } = new(StatusCheck, SignalStyle.Check);
+        public StatusSignal PostgreSqlPasswordSignal { get; set; } = new(StatusPending, SignalStyle.Pending);
+        public StatusSignal DatabaseConnectionSignal { get; set; } = new(StatusCheck, SignalStyle.Check);
         public List<DashboardLogEntry> LogEntries { get; } = [];
     }
 

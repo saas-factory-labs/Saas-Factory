@@ -41,12 +41,14 @@ COPY Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure
 
 RUN dotnet restore "Code/DeploymentManager/DeploymentManager.ApiService/DeploymentManager.ApiService.csproj"
 
+# Kopier den fulde kildekode ind
 COPY Code/DeploymentManager/ Code/DeploymentManager/
 COPY Code/AppBlueprint/ Code/AppBlueprint/
 
 WORKDIR /src/Code/DeploymentManager/DeploymentManager.ApiService
-RUN dotnet build "DeploymentManager.ApiService.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
+# Her springer vi direkte til publish for at undgå det mellemliggende 'dotnet build -o' flag,
+# som fik dine overordnede moduler til at kollidere og kaste CS0579-fejl.
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "DeploymentManager.ApiService.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false

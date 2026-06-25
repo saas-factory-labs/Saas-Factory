@@ -2,6 +2,28 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Behavioral Guidelines
+
+Follow the behavioral guidelines in [AGENTS.md](AGENTS.md).
+
+### Core Principles
+
+1. **Preserve existing code** - Prefer editing over creating new files
+2. **Follow established patterns** - Match existing code style in the codebase
+3. **Test-first development** - Write tests before implementation (TDD)
+4. **Verify changes** - Run `dotnet build` after modifications
+5. **No over-engineering** - Stay within scope of the task
+
+### Primary Rule Sources
+
+| Category | Location |
+|----------|----------|
+| **Comprehensive rules** | `.github/copilot-instructions.md` |
+| **Backend patterns** | `.github/.ai-rules/backend/` |
+| **Architecture rules** | `.github/.ai-rules/baseline/` |
+| **Claude rules** | `.github/.claude/rules/` |
+| **Claude agents** | `.github/.claude/agents/` |
+
 ## Project Overview
 
 SaaS Factory is a B2B/B2C SaaS blueprint for massively accelerating development of new SaaS web applications. The project uses .NET 10, .NET Aspire for orchestration, Clean Architecture with Domain-Driven Design principles, and targets rapid deployment with minimal boilerplate.

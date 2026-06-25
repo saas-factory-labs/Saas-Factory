@@ -1,3 +1,11 @@
+---
+description: Exception handling patterns and global error handling
+globs:
+  - "**/Middleware/**/*.cs"
+  - "**/Handlers/**/*.cs"
+  - "**/Services/**/*.cs"
+---
+
 # Exception Handling
 
 **Philosophy**: Avoid try-catch blocks. Rely on global exception handling for consistency and simplicity.

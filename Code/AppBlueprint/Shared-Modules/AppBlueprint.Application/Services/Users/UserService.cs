@@ -15,6 +15,7 @@ public class UserService(
 {
     private const string EmailFromAddress = "noreply@saas-factory.com";
     private const string SiteName = "SaaS Factory";
+    private const string UserNotFoundMessage = "User not found";
     private static readonly TimeSpan EmailTokenValidity = TimeSpan.FromHours(24);
     private static readonly TimeSpan ResetTokenValidity = TimeSpan.FromHours(1);
 
@@ -66,7 +67,7 @@ public class UserService(
     public async Task UpdateProfileAsync(string userId, string firstName, string lastName, string? phoneNumber, string? bio, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken)
-            ?? throw new InvalidOperationException("User not found");
+            ?? throw new InvalidOperationException(UserNotFoundMessage);
 
         user.FirstName = firstName;
         user.LastName = lastName;
@@ -85,7 +86,7 @@ public class UserService(
     public async Task DeactivateUserAsync(string userId, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken)
-            ?? throw new InvalidOperationException("User not found");
+            ?? throw new InvalidOperationException(UserNotFoundMessage);
 
         user.IsActive = false;
         await _userRepository.UpdateAsync(user, cancellationToken);
@@ -95,7 +96,7 @@ public class UserService(
     public async Task<string> GenerateEmailVerificationTokenAsync(string userId, CancellationToken cancellationToken)
     {
         UserEntity? user = await _userRepository.GetByIdAsync(userId, cancellationToken)
-            ?? throw new InvalidOperationException("User not found");
+            ?? throw new InvalidOperationException(UserNotFoundMessage);
 
         // Generate a secure random token
         byte[] tokenBytes = new byte[32];
@@ -146,7 +147,7 @@ public class UserService(
     public async Task<bool> VerifyEmailAsync(string userId, string token, CancellationToken cancellationToken)
     {
         _ = await _userRepository.GetByIdAsync(userId, cancellationToken)
-            ?? throw new InvalidOperationException("User not found");
+            ?? throw new InvalidOperationException(UserNotFoundMessage);
 
         // Find the verification record
         EmailVerificationEntity? verification = await _emailVerificationRepository

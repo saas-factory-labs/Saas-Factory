@@ -300,6 +300,14 @@ app.UseStatusCodePagesWithReExecute("/not-found");
 // This ensures redirect URIs use HTTPS when behind Railway's proxy
 app.UseForwardedHeaders();
 
+// Serve static files BEFORE UseRouting so they bypass endpoint routing and authorization.
+// In .NET 7+, SetFallbackPolicy(RequireAuthenticatedUser) applies even to requests with no
+// matched endpoint. If UseStaticFiles ran after UseRouting and a file wasn't found, the
+// request would hit UseAuthorization with no endpoint and get an OIDC challenge → Logto
+// redirect instead of a 404. Placing UseStaticFiles first short-circuits the pipeline for
+// found assets (including _content/AppBlueprint.UiKit/* RCL assets) before routing runs.
+app.UseStaticFiles();
+
 app.UseRouting();
 // HTTPS redirection is intentionally disabled: Railway handles SSL termination at the proxy
 // level and forwards plain HTTP to the container. Enabling UseHttpsRedirection() here would
@@ -307,9 +315,6 @@ app.UseRouting();
 // causing 502 errors. ForwardedHeaders (X-Forwarded-Proto: https) already ensures that
 // redirect URIs and auth callbacks use the correct public HTTPS URL.
 Console.WriteLine("[Web] HTTPS redirection disabled (Railway handles SSL termination)");
-
-// Serve static files FIRST - before security headers to ensure proper Content-Type is set
-app.UseStaticFiles();
 
 // Security Headers Middleware - Add security headers to all responses
 app.Use(async (context, next) =>
