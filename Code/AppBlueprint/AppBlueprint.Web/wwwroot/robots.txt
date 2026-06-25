@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Alpha phase — indexing disabled for all crawlers
+# Remove this file and the X-Robots-Tag header when ready to go public

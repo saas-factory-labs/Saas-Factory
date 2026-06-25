@@ -9,6 +9,7 @@ using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Search;
+using AppBlueprint.Presentation.ApiModule.Endpoints;
 using AppBlueprint.Presentation.ApiModule.Extensions;
 using AppBlueprint.Presentation.ApiModule.Middleware;
 using AppBlueprint.ServiceDefaults;
@@ -158,6 +159,7 @@ internal static class Program // Make class static
 
         app.MapDefaultEndpoints();
         app.MapControllers();
+        app.MapDocumentUploadEndpoints();
 
         await app.RunAsync();
     }

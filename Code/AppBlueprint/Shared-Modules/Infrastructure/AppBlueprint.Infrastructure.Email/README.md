@@ -46,6 +46,95 @@ The fastest way to test the email system:
 
 ---
 
+## SMTP Email Service (MailKit)
+
+A lightweight, provider-agnostic SMTP client built on [MailKit](https://github.com/jstedfast/MailKit). Use this when you need direct SMTP delivery (e.g. self-hosted mail servers, SMTP relays, or any provider that exposes an SMTP endpoint) rather than a REST API like Resend.
+
+### Interface
+
+```csharp
+// AppBlueprint.Infrastructure.Email.IEmailService
+public interface IEmailService
+{
+    Task SendHtmlEmailAsync(string fromEmail, string toEmail, string subject, string htmlBody);
+}
+```
+
+### Registration
+
+```csharp
+// Program.cs
+builder.Services.AddMailKitEmailService(builder.Configuration);
+```
+
+The service registers only when `SMTP_HOST` (env var) or `Smtp:Host` (config) is present. If neither is set it logs a skipped message and moves on — no exception at startup.
+
+### Configuration
+
+**Environment variables (recommended for production):**
+
+```bash
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587                    # defaults to 587
+SMTP_USERNAME=user@example.com
+SMTP_PASSWORD=secret
+SMTP_SENDER_NAME=SaaS Factory    # optional, defaults to "SaaS Factory"
+```
+
+**appsettings.json / user secrets:**
+
+```json
+{
+  "Smtp": {
+    "Host": "smtp.example.com",
+    "Port": 587,
+    "Username": "user@example.com",
+    "Password": "secret",
+    "SenderName": "SaaS Factory"
+  }
+}
+```
+
+**User secrets (local development):**
+
+```bash
+dotnet user-secrets set "Smtp:Host" "smtp.example.com"
+dotnet user-secrets set "Smtp:Port" "587"
+dotnet user-secrets set "Smtp:Username" "user@example.com"
+dotnet user-secrets set "Smtp:Password" "secret"
+```
+
+### Usage
+
+```csharp
+public class NotificationService(IEmailService emailService)
+{
+    public async Task SendInvoiceAsync(string toEmail, string invoiceHtml)
+    {
+        await emailService.SendHtmlEmailAsync(
+            fromEmail: "billing@yourdomain.com",
+            toEmail: toEmail,
+            subject: "Your invoice is ready",
+            htmlBody: invoiceHtml);
+    }
+}
+```
+
+### Connection behaviour
+
+The client connects using `STARTTLS` on the configured port (default 587). For providers that require implicit TLS (port 465) you will need to adjust `SecureSocketOptions` in `EmailService.cs`.
+
+### When to use MailKit vs Resend
+
+| | MailKit SMTP (`IEmailService`) | Resend (`TransactionEmailService`) |
+|---|---|---|
+| **Best for** | Self-hosted, SMTP relay, Office 365, Gmail SMTP | Cloud-first, high deliverability, REST API |
+| **Auth** | Username + password | API key |
+| **HTML support** | Yes | Yes |
+| **Template system** | Bring your own | Pairs with `IEmailTemplateService` |
+
+---
+
 ## Overview
 
 The email template system provides:

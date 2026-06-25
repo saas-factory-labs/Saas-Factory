@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Alpha phase — indexing disabled for all crawlers
+# Remove this file and the noindex meta tag when ready to go public
