@@ -1,13 +1,13 @@
 name: "🤖 Generate: Kiota API Client SDK"
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - "Code/AppBlueprint/AppBlueprint.ApiService/**"
-      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/**"
-      - ".github/workflows/generate-kiota-sdk.yml"
+#on:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - "Code/AppBlueprint/AppBlueprint.ApiService/**"
+#      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/**"
+#      - ".github/workflows/generate-kiota-sdk.yml"
   workflow_dispatch:
 
 permissions:
