@@ -277,7 +277,7 @@ jobs:
       # OSV Scanner
       # ========================================
       - name: Run OSV Scanner
-        uses: google/osv-scanner-action@98b584ee2ed2da3935ccce10e06739d54cdcd20b  # v2.0.0
+        uses: google/osv-scanner-action/osv-scanner-action@98b584ee2ed2da3935ccce10e06739d54cdcd20b  # v2.0.0
         with:
           scan-args: |-
             --lockfile=Code/AppBlueprint/package-lock.json
@@ -442,9 +442,19 @@ jobs:
       # ========================================
       # Generate Attestations
       # ========================================
+      - name: Check SBOM file for attestation
+        id: check-sbom
+        run: |
+          if [ -f "sbom-outputs/sbom-dotnet.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Warning: sbom-dotnet.json not found, skipping attestation"
+          fi
+
       - name: Attest SBOM
         uses: actions/attest-sbom@bd218ad0dbcb3e146bd073d1d9c6d78e08aa8a0b  # v2.4.0
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check-sbom.outputs.exists == 'true'
         with:
           subject-path: 'sbom-outputs/sbom-dotnet.json'
           sbom-path: 'sbom-outputs/sbom-dotnet.json'
@@ -555,7 +565,7 @@ jobs:
 
             ## Changed Dependencies
             See detailed analysis in artifacts.
-            EOF
+          EOF
           else
             echo "No baseline SBOM found. This will be the new baseline."
           fi
