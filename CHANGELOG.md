@@ -5,6 +5,29 @@ All notable changes to the AppBlueprint NuGet packages will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.26.0](https://github.com/saas-factory-labs/SaaS-Factory/compare/v1.25.0...v1.26.0) (2026-06-25)
+
+
+### Bug Fixes
+
+* add hashFiles guard to Snyk Docker SARIF upload step ([7133831](https://github.com/saas-factory-labs/SaaS-Factory/commit/7133831247cbc701a6571d5ca4e94300bf29d24a))
+* add PackageId prefix to AppBlueprint.UiKit NuGet package ([1844bb9](https://github.com/saas-factory-labs/SaaS-Factory/commit/1844bb9ce237b110b0aac3734df3b2d27d06f5a5))
+* **security:** autofix Path traversal attack possible ([5e3cbba](https://github.com/saas-factory-labs/SaaS-Factory/commit/5e3cbbadcbe03a6e9977770da9f4ba63cf47b61d))
+* correct solution file path in supply chain verification workflow ([794288d](https://github.com/saas-factory-labs/SaaS-Factory/commit/794288d4fc58d0bb6e0041850497f7b17405e9de))
+* fix 3 failing jobs in SBOM Enhanced workflow ([a6041dd](https://github.com/saas-factory-labs/SaaS-Factory/commit/a6041dd5970a19c70e20b4fa35d97171891f665c))
+* remove invalid local CodeQL query path causing Analyze (csharp) CI failure ([afe635c](https://github.com/saas-factory-labs/SaaS-Factory/commit/afe635caa824f52fd4e7d32c116bd25467690286))
+
+
+### Features
+
+* Add additional Bash commands and WebFetch domains in settings.local.json ([2c2b6d3](https://github.com/saas-factory-labs/SaaS-Factory/commit/2c2b6d31cbd5fc8110ec57c2c526df814ec7e397))
+* Add enhanced Docker Scout and SBOM guides with comprehensive workflows ([3d563ff](https://github.com/saas-factory-labs/SaaS-Factory/commit/3d563ff0c3b41c639b6c7e7a1a90747a7f7e01b5))
+* **security:** Add Enhanced SBOM Implementation and Security Enhancements Index ([6c88b63](https://github.com/saas-factory-labs/SaaS-Factory/commit/6c88b632295b6ffc7162c17bfad478264d98c1cc))
+* Add Git LFS hooks and improve plugin path configuration in Dockerfile and documentation ([16b68e2](https://github.com/saas-factory-labs/SaaS-Factory/commit/16b68e2d69853127147a982ae8e0b738eda7cbd2))
+* Add site-wide JavaScript interop module for UI components ([3bf8854](https://github.com/saas-factory-labs/SaaS-Factory/commit/3bf885414e7f3c2798db53e427e886ebd4f5842d))
+* Enhance configuration for SonarCloud and improve path handling in Program.cs ([be3abca](https://github.com/saas-factory-labs/SaaS-Factory/commit/be3abca99d084a84a7832fe6a02d4601c7035a7e))
+* Update settings.local.json with additional Bash commands and WebFetch domains; enhance SonarCloud configuration in workflows ([e0a33bd](https://github.com/saas-factory-labs/SaaS-Factory/commit/e0a33bde0ed109ed7d7edfef5947c3c2126e6b3a))
+
 # [1.25.0](https://github.com/saas-factory-labs/Saas-Factory/compare/v1.24.2...v1.25.0) (2026-06-22)
 
 
