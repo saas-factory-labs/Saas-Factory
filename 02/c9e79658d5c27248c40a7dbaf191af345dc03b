@@ -1,0 +1,197 @@
+.dockerignore
+  s_c20e8a8be75486::t_b23a10a624b87b 2
+  s_c20e8a8be75486::t_1bf8e1878259c5 44-49,60-63,71-74,78-79,92-93,112-117
+.github/GitVersion.yml
+  s_eae1de7b903c88::t_c1b991498a4452 1-6
+Code/AppBlueprint/AppBlueprint.Web/Dockerfile
+  s_eae1de7b903c88::t_690f8aaecedb00 39-48
+  s_c20e8a8be75486::t_97caac4ddf304a 7,29-30,33-38,49-50,56,68,77-78,82-85
+.github/workflows/open-telemetry-tracing.yml
+  s_1c3cec52115e33::t_0bd1cdd8f8032a 6-14
+  s_1c3cec52115e33::t_07d4f7df766ea6 15-17
+  s_1c3cec52115e33::t_c753f337cd6479 18-19
+.github/workflows/docker-scout-vulnerability-scan.yml
+  s_4c9bb155929335::t_446b57796ede55 1-4,7-22,25-34,37,39-46,49-54,56-73,80,84-85,89-90,96,99,101-103,105-108,111-114,117-159,163-171,173-291,293-296,298-349,351-365,367-400,402-560
+.github/workflows/supply-chain-verification.yml
+  s_775b8c8a51a7fb::t_2ff02f7cabc52d 114
+  s_775b8c8a51a7fb::t_7a782bc753464a 119
+Code/AppBlueprint/Cloudflare-Workers/tsconfig.json
+  s_eae1de7b903c88::t_fefd1d298e986f 1-13
+docs/architecture/cloudflare-gateway-npm-package.md
+  s_eae1de7b903c88::t_a77b8de22c5b98 1-62
+.github/workflows/generate-sbom.yml
+  s_4c9bb155929335::t_07bb166e7964f8 1,4-13,16-34,37-286,288-289,291-305,307-322,324-326,328,330-336,338-344,347-358,360-361,367-504,506-519,521-530,532-549,552-569,571,573-579,581-605,607-608
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Migrations/20260626130000_AddTenantRlsAutomationTrigger.cs
+  s_1c3cec52115e33::t_033b29b09087f2 1-85
+Code/AppBlueprint/AppBlueprint.AppHost/Program.cs
+  s_5f671db5c32883::t_dda1f247933f9b 53,55-65,67-70,89-94,116-121
+  s_5f671db5c32883::t_7941bca94292dd 54
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/DatabaseContexts/Baseline/Migrations/20260626120000_EnableRowLevelSecurity.cs
+  s_1c3cec52115e33::t_80e7e2d7e3fd95 1-104
+Code/DeploymentManager/Cloudflare-Workers/package.json
+  s_eae1de7b903c88::t_149e3ddb70e64f 1-18
+Code/SaaSFactory.Testing/CodeQlTestRunner.cs
+  s_6606b4785d5f6e::t_79d67956bb927f 6,336,421
+Code/AppBlueprint/Cloudflare-Workers/package.json
+  s_eae1de7b903c88::t_5f307ae15b4cb5 1-19
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/HealthChecks/RlsStartupValidator.cs
+  s_1c3cec52115e33::t_cfe581f35df9d8 1-123
+Code/DeploymentManager/wrangler.toml
+  s_eae1de7b903c88::t_1c6c21a0373122 3
+  s_eae1de7b903c88::t_7065d367aaca10 24,30
+  s_eae1de7b903c88::t_38b8a2d4886cab 26,32
+  s_eae1de7b903c88::t_2b9f40eddaec73 6,18-21
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/HealthChecks/RowLevelSecurityHealthCheck.cs
+  s_1c3cec52115e33::t_6b63ca74234393 30,32-34,37,39,41-42,45-47,51-52,56-57,61,65-68
+Code/SaaSFactory.Testing/SaaSFactory.Testing.csproj
+  s_6606b4785d5f6e::t_3564a00b06951c 1-13
+Code/DeploymentManager/DeploymentManager.AppHost/Program.cs
+  s_5f671db5c32883::t_b8d6dd91516bf6 9-16
+  s_5f671db5c32883::t_6c0d6a06bdf6f2 17-19
+  s_5f671db5c32883::t_622a32ca64047f 20-21,24-26
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/Migrations/20260626120000_EnableRowLevelSecurity.cs
+  s_1c3cec52115e33::t_83c5fff0b00c2d 1-106
+Code/AppBlueprint/Cloudflare-Workers/src/index.ts
+  s_eae1de7b903c88::t_f4eb0dd04ea4a9 6-84
+  s_eae1de7b903c88::t_bbd3783c0e124a 3-5
+  s_eae1de7b903c88::t_0403808e620a40 1,87-88,91,95-97,100,104-107,109,113,115
+Code/DeploymentManager/Cloudflare-Workers/tsconfig.json
+  s_eae1de7b903c88::t_b835bab6536a7f 1-13
+Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/DatabaseContexts/B2B/Migrations/20260626120000_EnableRowLevelSecurity.cs
+  s_1c3cec52115e33::t_215dfb537fd99f 1-112
+package.json
+  s_eae1de7b903c88::t_357c0c1387ddea 2-61
+  s_eae1de7b903c88::t_673f9bacfc0be4 62
+.github/workflows/qodana.yaml
+  h_aa722e8ed10195 1-50
+Code/AppBlueprint/wrangler.toml
+  h_aa722e8ed10195 2
+  s_eae1de7b903c88::t_78c5e878fb676e 12,16,22-32
+  s_eae1de7b903c88::t_239b7f5fad5650 3
+  s_eae1de7b903c88::t_4b7885f02cd672 20
+  s_eae1de7b903c88::t_87a46ff8b0f53a 4-6,9-11
+  s_eae1de7b903c88::t_dc682d3386cf46 13-15
+  s_eae1de7b903c88::t_adab1239c4375e 17-19
+  s_eae1de7b903c88::t_16809b22848b8a 21
+  s_eae1de7b903c88::t_a6d16b5c0a19d1 33-35
+  s_eae1de7b903c88::t_5ff6396eaad3a0 1,7-8,36-44
+.claude/settings.local.json
+  s_eae1de7b903c88::t_840ee4798622e5 154-162
+.github/workflows/azimutt-database-analysis.yml
+  s_1c3cec52115e33::t_0219d69ed71284 9,58
+.github/workflows/generate-sql-schema-docs.yml
+  s_1c3cec52115e33::t_d597b62d9d0fce 61,79-80,83-84,112
+.github/workflows/publish-adminportalkernel-github-packages.yml
+  s_eae1de7b903c88::t_ce246da6388154 38
+.github/workflows/publish-nuget-packages.yml
+  s_eae1de7b903c88::t_20fcc6f883c89e 76,79-80
+.github/workflows/snyk-analysis.yaml
+  s_775b8c8a51a7fb::t_9ee0a47d684505 35
+.gitignore
+  s_eae1de7b903c88::t_13d90ccbad09dc 440-441
+.vscode/tasks.json
+  s_775b8c8a51a7fb::t_c81a8aecaa3bdf 10,22,36
+.wrangler/cache/wrangler-account.json
+  s_eae1de7b903c88::t_3acf584d06f356 2-4
+Code/AppBlueprint/AppBlueprint.ApiService/Dockerfile
+  s_eae1de7b903c88::t_b84751949e10ee 27-36
+Code/AppBlueprint/AppBlueprint.ApiService/Program.cs
+  s_1c3cec52115e33::t_c488987ab9b501 9,145-148
+Code/AppBlueprint/AppBlueprint.Tests/AppBlueprint.Tests.csproj
+  s_6606b4785d5f6e::t_933ab8c32c0fe0 46
+Code/AppBlueprint/AppBlueprint.Tests/SecurityScanningTests.cs
+  s_6606b4785d5f6e::t_fa2b0a87146036 2
+Code/Cloudflare-Workers/diagram-hosting-proxy/wrangler.toml
+  s_eae1de7b903c88::t_373e9f73229fe9 2,4,10
+Code/DeploymentManager/Cloudflare-Workers/src/index.ts
+  s_eae1de7b903c88::t_24f8a27afd8c7a 100
+Code/DeploymentManager/DeploymentManager.AppHost/DeploymentManager.AppHost.csproj
+  s_5f671db5c32883::t_ae34f1bf63683e 17,20
+Code/DeploymentManager/DeploymentManager.Tests/CodeQlSecurityTests.cs
+  s_6606b4785d5f6e::t_ede7b23cbe2e41 2
+Code/DeploymentManager/DeploymentManager.Tests/DeploymentManager.Tests.csproj
+  s_6606b4785d5f6e::t_b87303f641a061 26
+Code/FutureImprovements.cs
+  s_eac409187205db::t_14227434c1d444 398,426
+README.md
+  s_1c3cec52115e33::t_a716aba8921ac2 10
+SaaS-Factory.slnx
+  s_6606b4785d5f6e::t_0fcd88d79d4796 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "02c9e79658d5c27248c40a7dbaf191af345dc03b",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_1c3cec52115e33": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "39a69d5c-eb72-4380-aeb5-27a78cac6deb",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_4c9bb155929335": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fee0e97-b092-4032-b152-7008b2dfcf71",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_5f671db5c32883": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "32be8232-191e-422d-8544-c0de6ef75f94",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_6606b4785d5f6e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cb09d3c6-2e91-4668-884b-5af6541aa5aa",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_775b8c8a51a7fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ae986764-17ba-4ffb-95ac-d16bb29cb608",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_c20e8a8be75486": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4be5303d-c603-496c-bc05-dca0ee2ea907",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_eac409187205db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a7d45f09c45814ac2",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_eae1de7b903c88": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9443857f-815f-483e-9e52-4048d4888203",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
