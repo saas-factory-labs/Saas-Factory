@@ -1,0 +1,117 @@
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Providers/Cloudflare/CloudflareProvider.cs
+  s_0a562b76ba0a6d::t_cceaebd53f650f 25
+  s_0a562b76ba0a6d::t_fc4587ebef44d4 1-24,27-52
+  s_0a562b76ba0a6d::t_7160e916c7b04e 26
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/InfraUpRunner.cs
+  s_0a562b76ba0a6d::t_b2eb33f8386525 1-15,17-25,27-44,62-95,111-125
+  s_0a562b76ba0a6d::t_ec5f8f56bcc0c6 16,26,45-61
+  s_0a562b76ba0a6d::t_f8bad9e70cfea1 96-110
+PLAN.md
+  s_0a562b76ba0a6d::t_596eec1444c32e 44-46
+  s_0a562b76ba0a6d::t_6f97902e9d98a9 78-81
+  s_0a562b76ba0a6d::t_1d2f11d8276a85 14-19
+  s_0a562b76ba0a6d::t_b4304ff0ff678f 35-38
+  s_0a562b76ba0a6d::t_616783a0484186 88-93
+  s_0a562b76ba0a6d::t_c82d1a7da38a5b 39-43
+  s_0a562b76ba0a6d::t_7144e4d38a0301 47-50
+  s_0a562b76ba0a6d::t_f4b953f166d6fc 56-59
+  s_0a562b76ba0a6d::t_fb6de8309ddcec 32-34,60,67-68,76
+  s_0a562b76ba0a6d::t_3f7d464a37ce5a 13
+  s_0a562b76ba0a6d::t_a7ef9d37dbc632 69-75
+  s_0a562b76ba0a6d::t_3e86053ec2b5dd 51-55
+  s_0a562b76ba0a6d::t_0215ded92dc384 62-66
+  s_0a562b76ba0a6d::t_45d5deafd1123c 1-12,20-29,31,61,77,82-83
+  s_0a562b76ba0a6d::t_4c1e945b27a1d8 84-87
+  s_0a562b76ba0a6d::t_8c22be64ec3ad0 30
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/AppStackFactory.cs
+  s_0a562b76ba0a6d::t_92e09655c31c76 1-41
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/InfraCommand.cs
+  s_0a562b76ba0a6d::t_6f5d49e1b313d4 84-86
+  s_0a562b76ba0a6d::t_3249c86d3099c2 61-65,70-71,74,79,89
+  s_0a562b76ba0a6d::t_7f62f360ddc2fb 75-78,80-83,87-88
+  s_0a562b76ba0a6d::t_61c5f83cd1828f 93-101,107-109,112-116,118
+  s_0a562b76ba0a6d::t_412820419f1cb1 24-30,33-48
+  s_0a562b76ba0a6d::t_17e77d6d711d50 1-23,31-32,49-60,66-69,72-73,90-92,119
+  s_0a562b76ba0a6d::t_55ffdc41cc7715 102-106,110-111,117
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Providers/Cloudflare/CloudflareProvider.Compute.cs
+  s_0a562b76ba0a6d::t_e282fc9cdfdb20 1-44
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Abstractions/AppDeploymentOutputs.cs
+  s_0a562b76ba0a6d::t_89ca93dfdad1e8 1-48
+Code/AppBlueprint/AppBlueprint.Tests/Infrastructure/WranglerConfigParserTests.cs
+  s_0a562b76ba0a6d::t_34ac23887a82b9 1-62
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Abstractions/IInfrastructureProvider.cs
+  s_0a562b76ba0a6d::t_e1ec5d1f335bed 1-23
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Providers/Cloudflare/Wrangler/WranglerConfigParser.cs
+  s_0a562b76ba0a6d::t_73b2dc3508e980 1-21,23-29,35-96
+  s_0a562b76ba0a6d::t_a18ef69c79b0a4 22,30-34
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/AppBlueprint.Infrastructure.Core.csproj
+  s_0a562b76ba0a6d::t_7c8a368594b605 1-9,17
+  s_0a562b76ba0a6d::t_f29ad08a79a6f5 14
+  s_0a562b76ba0a6d::t_5c0f899ce47c35 10,12,15-16
+  s_0a562b76ba0a6d::t_12aa7515f662e4 11,13
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Providers/Cloudflare/Wrangler/WranglerConfig.cs
+  s_0a562b76ba0a6d::t_05e4105b8091d1 1-40
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/InfraSchemaGenerator.cs
+  s_0a562b76ba0a6d::t_0c2a485450911d 1-23
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Providers/ProviderBase.cs
+  s_0a562b76ba0a6d::t_2305e51f357b8f 1-61
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Configuration/CloudProvider.cs
+  s_0a562b76ba0a6d::t_9394c412e9896c 1-20
+Code/AppBlueprint/AppBlueprint.Tests/Infrastructure/AppInfrastructureConfigLoaderTests.cs
+  s_0a562b76ba0a6d::t_6fbc9734b56e26 1-72
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Configuration/AppInfrastructureConfigLoader.cs
+  s_0a562b76ba0a6d::t_b29619f901653a 2
+  s_0a562b76ba0a6d::t_f67651d437a961 1,3-19,24-121
+  s_0a562b76ba0a6d::t_919e394c5156fc 20-23
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Configuration/DatabaseArgs.cs
+  s_0a562b76ba0a6d::t_5063e168e767dc 4-8,12-13
+  s_0a562b76ba0a6d::t_53e851f8f23f68 1-3,9-11,20
+  s_0a562b76ba0a6d::t_34ae12c9ed5a85 14-19
+Code/AppBlueprint/AppBlueprint.Tests/Infrastructure/InfraSchemaGeneratorTests.cs
+  s_0a562b76ba0a6d::t_7fd0515e7c6615 15
+  s_0a562b76ba0a6d::t_39204ece6ddf27 1-14,16-26
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Providers/Cloudflare/CloudflareProvider.Storage.cs
+  s_0a562b76ba0a6d::t_5fbda0bb9a1794 1-54
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Configuration/AppInfrastructureConfig.cs
+  s_0a562b76ba0a6d::t_e238a32d9452c5 1-37
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Configuration/StorageArgs.cs
+  s_0a562b76ba0a6d::t_2fa7e7d7ea7ad6 1-14
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Providers/Cloudflare/CloudflareProvider.Database.cs
+  s_0a562b76ba0a6d::t_9bc53e2af5b336 56
+  s_0a562b76ba0a6d::t_d23fb02b38b7a1 1-55,57-107
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure.Core/Configuration/ComputeArgs.cs
+  s_0a562b76ba0a6d::t_fb673f08e848d5 1-26
+.claude/settings.local.json
+  s_0a562b76ba0a6d::t_98e1bf8c3477b6 162-165
+Code/AppBlueprint/AppBlueprint.DeveloperCli/AppBlueprint.DeveloperCli.csproj
+  s_0a562b76ba0a6d::t_4671edcf65c9cf 11-12,30-31,36
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/CommandFactory.cs
+  s_0a562b76ba0a6d::t_447ec068876140 49
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Program.cs
+  s_0a562b76ba0a6d::t_7b89f2d117340b 100-106,411,517-531,953-955
+Code/AppBlueprint/AppBlueprint.Tests/AppBlueprint.Tests.csproj
+  s_0a562b76ba0a6d::t_5bc98eb5d3597b 39
+Code/AppBlueprint/Directory.Packages.props
+  s_0a562b76ba0a6d::t_ca28b4c2559e95 93-95,97,161-162,242-243
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "27f7cae01641fb70a6144c149bba9c07ee84dc7d",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_0a562b76ba0a6d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9127838c-f6ab-4db6-a2b5-f827c60e93c5",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
