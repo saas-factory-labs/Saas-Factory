@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- TargetFramework, ImplicitUsings, Nullable and analyzer settings are inherited from
+         Code/AppBlueprint/Directory.Build.props. Keep this file minimal. -->
+    <PropertyGroup>
+        <!-- Emit XML docs so NJsonSchema can surface property descriptions in app-infra-schema.json -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Versions pinned centrally in Directory.Packages.props. Pulumi includes Pulumi.Automation. -->
+        <PackageReference Include="Pulumi" />
+        <PackageReference Include="Pulumi.Cloudflare" />
+        <PackageReference Include="Tomlyn" />
+    </ItemGroup>
+
+</Project>

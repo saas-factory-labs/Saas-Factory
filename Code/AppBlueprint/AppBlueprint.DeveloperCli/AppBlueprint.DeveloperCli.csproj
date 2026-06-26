@@ -8,6 +8,8 @@
         <PublishSingleFile>true</PublishSingleFile>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <NoWarn>$(NoWarn);NU5104</NoWarn>
+        <!-- NJsonSchema serializes enum values via System.Text.Json reflection (infra generate-schema). -->
+        <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
     </PropertyGroup>
 
     <ItemGroup>
@@ -25,10 +27,13 @@
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="Microsoft.Playwright" />
         <PackageReference Include="Fluent-Regex" />
+        <PackageReference Include="NJsonSchema" />
+        <PackageReference Include="Pulumi.Automation" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.CliKit\AppBlueprint.CliKit.csproj" />
+        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure.Core\AppBlueprint.Infrastructure.Core.csproj" />
     </ItemGroup>
 
 </Project>

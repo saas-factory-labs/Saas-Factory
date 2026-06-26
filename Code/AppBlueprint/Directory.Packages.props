@@ -90,9 +90,11 @@
     <PackageVersion Include="AWSSDK.SecurityToken" Version="4.0.7.3" />
     <PackageVersion Include="Azure.Security.KeyVault.Secrets" Version="4.8.0" />
     <PackageVersion Include="Azure.Storage.Blobs" Version="12.24.0" />
-    <PackageVersion Include="Pulumi" Version="3.145.0" />
+    <PackageVersion Include="Pulumi" Version="3.107.2" />
+    <!-- Automation API (infra up). Must track the Pulumi SDK version exactly. -->
+    <PackageVersion Include="Pulumi.Automation" Version="3.107.2" />
     <PackageVersion Include="Pulumi.AzureNative" Version="3.10.0" />
-    <PackageVersion Include="Pulumi.Cloudflare" Version="5.49.0" />
+    <PackageVersion Include="Pulumi.Cloudflare" Version="6.17.0" />
     <PackageVersion Include="Scrutor" Version="5.0.1" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="10.0.9" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.9" />
@@ -156,6 +158,8 @@
     <PackageVersion Include="MessagePack" Version="2.5.301" />
     <PackageVersion Include="MessagePack.Annotations" Version="2.5.301" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <!-- JSON Schema generation for infra.json IntelliSense (CLI: infra generate-schema). v11 is System.Text.Json-native. -->
+    <PackageVersion Include="NJsonSchema" Version="11.6.1" />
     <PackageVersion Include="System.Text.Json" Version="10.0.9" />
   </ItemGroup>
   <!-- ═══════════ UI & FRONT-END ══════════════════════════════════════ -->
@@ -235,6 +239,8 @@
     <PackageVersion Include="NetArchTest.Rules" Version="1.3.2" />
     <PackageVersion Include="RazorConsole.Core" Version="0.5.0" />
     <PackageVersion Include="Spectre.Console" Version="0.57.0" />
+    <!-- TOML parser for bridging an existing wrangler.toml into the infra deploy (infra up). -->
+    <PackageVersion Include="Tomlyn" Version="2.9.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
     <PackageVersion Include="System.CommandLine" Version="3.0.0-preview.5.26302.115" />
     <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0-alpha.25306.1" />

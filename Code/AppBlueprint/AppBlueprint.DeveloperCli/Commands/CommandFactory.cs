@@ -46,6 +46,7 @@ internal static class DeveloperCliServiceCollectionExtensions
         services.AddTransient<ICliCommand>(_ => new StaticCliCommand(EnvironmentVariableCommand.Create));
         services.AddTransient<ICliCommand>(_ => new StaticCliCommand(EnvironmentInfoCommand.Create));
         services.AddTransient<ICliCommand>(_ => new StaticCliCommand(TestCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(InfraCommand.Create));
 
         return services;
     }

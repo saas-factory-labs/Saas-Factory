@@ -159,7 +159,10 @@
       "PowerShell(git *)",
       "Bash(grep -v \"//\")",
       "PowerShell(Get-ChildItem -Path \"D:\\\\Development\\\\Development-Projects\\\\Saas-Factory\" -Recurse -Directory | Where-Object { \\(Get-ChildItem $_.FullName -Force | Measure-Object\\).Count -eq 0 } | Select-Object -ExpandProperty FullName)",
-      "PowerShell(Get-ChildItem -Path \"D:\\\\Development\\\\Development-Projects\\\\Saas-Factory\\\\Code\\\\Cloudflare-Workers\" -Recurse -Force | Select-Object FullName, PSIsContainer | Where-Object { -not $_.FullName.Contains\\(\"node_modules\"\\) })"
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Development\\\\Development-Projects\\\\Saas-Factory\\\\Code\\\\Cloudflare-Workers\" -Recurse -Force | Select-Object FullName, PSIsContainer | Where-Object { -not $_.FullName.Contains\\(\"node_modules\"\\) })",
+      "PowerShell(dotnet build *)",
+      "WebFetch(domain:neon.com)",
+      "PowerShell(dotnet test *)"
     ],
     "deny": [],
     "ask": [],

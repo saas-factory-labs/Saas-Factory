@@ -98,6 +98,13 @@ internal static class Program
                 ActionLabels.CloneGitHubRepository
             ]),
         new(
+            "☁️ Infrastructure",
+            [
+                ActionLabels.GenerateInfraSchema,
+                ActionLabels.PreviewInfra,
+                ActionLabels.DeployInfra
+            ]),
+        new(
             "🛠️ CLI Management",
             [
                 ActionLabels.InstallCli,
@@ -401,6 +408,7 @@ internal static class Program
             "🤖 AI & Agent Tools" => $"[bold {AccentMagenta}]{header}[/]",
             "🏗️ Scaffolding" => $"[bold {AccentOrange}]{header}[/]",
             "⚙️ Database, Tools & Security" => $"[bold {SectionGold}]{header}[/]",
+            "☁️ Infrastructure" => $"[bold {AccentCyan}]{header}[/]",
             "🛠️ CLI Management" => $"[bold {LightGrey}]{header}[/]",
             "❌ Exit" => $"[bold {AlertColor}]{header}[/]",
             _ => $"[bold {LightGrey}]{header}[/]"
@@ -505,6 +513,21 @@ internal static class Program
                 case ActionLabels.UninstallCli:
                     UninstallCommand.ExecuteInteractive();
                     AppendLog(state, "CLI uninstall flow completed.");
+                    break;
+
+                case ActionLabels.GenerateInfraSchema:
+                    InfraCommand.ExecuteGenerateSchemaInteractive();
+                    AppendLog(state, "Infra schema generated.");
+                    break;
+
+                case ActionLabels.PreviewInfra:
+                    await InfraCommand.ExecuteUpInteractive(dryRun: true);
+                    AppendLog(state, "Infra dry run (preview) completed.");
+                    break;
+
+                case ActionLabels.DeployInfra:
+                    await InfraCommand.ExecuteUpInteractive();
+                    AppendLog(state, "Infra deploy flow completed.");
                     break;
             }
         }
@@ -927,6 +950,9 @@ internal static class Program
         public const string CloneGitHubRepository = "Clone a GitHub repository";
         public const string InstallCli = "Install CLI globally (saas)";
         public const string UninstallCli = "Uninstall CLI from system";
+        public const string GenerateInfraSchema = "Generate infra schema (infra)";
+        public const string PreviewInfra = "Preview infrastructure (dry run)";
+        public const string DeployInfra = "Deploy infrastructure (infra up)";
         public const string Exit = "Exit";
     }
 }
