@@ -32,7 +32,7 @@ jobs:
           node-version: '22'
 
       - name: Restore .NET dependencies
-        run: dotnet restore SaaS-Factory.sln
+        run: dotnet restore SaaS-Factory.slnx
 
       - name: Install Cloudflare worker dependencies
         working-directory: Code/AppBlueprint/cloudflare-worker

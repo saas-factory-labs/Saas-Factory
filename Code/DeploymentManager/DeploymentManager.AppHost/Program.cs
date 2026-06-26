@@ -2,12 +2,27 @@ using Projects;
 
 // Aspire projects
 
-
 IDistributedApplicationBuilder? builder = DistributedApplication.CreateBuilder(args);
 
 IResourceBuilder<RedisResource>? cache = builder.AddRedis("cache");
 
+// --- DATABASE CONFIGURATION ---
+// Use Neon.tech DATABASE_URL if set; otherwise start local Docker PostgreSQL.
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+IResourceBuilder<PostgresDatabaseResource>? localDb = null;
+
+if (string.IsNullOrEmpty(databaseUrl))
+{
+    Console.WriteLine("[AppHost] DATABASE_URL not set — starting local Docker PostgreSQL");
+    var postgres = builder.AddPostgres("postgres")
+        .WithPgAdmin();
+    localDb = postgres.AddDatabase("DefaultConnection");
+}
+
 IResourceBuilder<ProjectResource>? apiService = builder.AddProject<DeploymentManager_ApiService>("apiservice");
+
+if (localDb is not null)
+    apiService = apiService.WithReference(localDb).WaitFor(localDb);
 
 builder.AddProject<DeploymentManager_Web>("webfrontend")
     .WithExternalHttpEndpoints()

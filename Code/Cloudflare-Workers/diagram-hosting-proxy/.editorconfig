@@ -1,6 +1,0 @@
-# http://editorconfig.org
-root = false
-
-# Inherit from root .editorconfig file
-# JavaScript/TypeScript and YAML rules have been consolidated to the root .editorconfig
-# This file is kept for future project-specific overrides if needed

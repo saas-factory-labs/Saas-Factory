@@ -3,18 +3,20 @@ name: "📊 Logging: Export OpenTelemetry Trace for Github Action workflows"
 on:
   workflow_run:
     workflows:
-      - "Create diagram"      
-      - "Bytebase SQL Review"
-      - "Codespaces Prebuilds"
-      - "Dependabot Updates"
-      - "Docker Scout Vulnerability scan"
-      - "Generate PostgreSQL Schema Dump"
-      - "Generate SBOM"
-      - "GitGuardian secret scan"
-      - "Manual Database Migration with Rollback"
-      - "Publish Container Image to GitHub Registry"
-      - "Publish NuGet Package to GitHub Packages"
-      - "SonarQube Cloud"      
+      - "🛡️ Security: Bytebase SQL Review"
+      - "🛡️ Security: Docker Scout Vulnerability Scan"
+      - "📑 Quality: SQL Schema Documentation"
+      - "🛡️ Security: Generate SBOM"
+      - "🛡️ Security: Secret Scanning (GitGuardian)"
+      - "🚀 Deploy: Manual Database Migration & Rollback"
+      - "📦 Container: Publish Container Image to GitHub Registry"
+      - "📦 Nuget: Publish NuGet Packages to NuGet.org"
+      - "💎 Quality: Sonarcloud"
+      - "🚀 Release: Automated Semantic Versioning"
+      - "💎 Quality: Azimutt Database Analysis"
+      - "💎 Quality: CodeQL advanced analysis"
+      - "🚀 Deploy: Railway.app"
+      - "🤖 Generate: Kiota API Client SDK"
     types: [completed] # Exports the Github Action workflow steps as a trace to a remote Open Telemetry collector
 
 jobs:

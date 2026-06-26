@@ -1,0 +1,50 @@
+# version: "1.0"
+# linter: jetbrains/qodana-dotnet:2025.3
+
+# dotnet:
+#   solution: "SaaS-Factory.slnx"
+#   configuration: Release  # Tvinger Qodana til at analysere Release-output
+
+# # Aktiver parallel behandling af rapporter
+# # (Dette flag er en del af Ultimate-funktionaliteten vi aktiverer lokalt)
+# properties:
+#   qodana.dotnet.project.structure.parallel: true
+#   qodana.analysis.threads: 16 # Sæt den til halvdelen af dine tråde (32/2)
+
+# profile:
+#   name: qodana.recommended
+
+# include:
+#   - name: TaintAnalysis         # Tracks untrusted user input to prevent security holes like SQL injection or XSS.
+#   - name: VulnerableLibraries   # Scans NuGet and NPM packages for known security vulnerabilities (CVEs).
+#   - name: LicenseAudit          # Identifies dependency licenses to ensure compliance with your project's legal requirements.
+#   - name: OwaspTopTen           # Specifically maps code issues to the top 10 most critical web security risks.
+#   - name: CheckQuickFix         # Highlights issues where Qodana can automatically apply a code fix for you.
+#   - name: CodeUsageInspection   # Detects "dead code" such as unused classes, methods, or properties to keep the framework lean.
+
+# exclude:
+#   - name: All
+#     paths:
+#       - "wwwroot/lib"
+#       - "bin"
+#       - "obj"
+#       - "Migrations"
+#       - "node_modules"
+
+#   # Suppress false positive for email template layouts - the _Layout.cshtml exists and works at runtime
+#   - name: Razor.LayoutNotResolved
+#     paths: ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/Email/Templates"]
+    
+#   # Suppress false positive for Blazor RCL static asset paths - _content/{LibraryName}/ is a runtime virtual path
+#   - name: Html.PathError
+#     paths: ["Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit"]
+  
+#   # Suppress AutoPropertyCanBeMadeGetOnly for EF entities, DTOs, and configuration classes
+#   # These require { get; set; } for EF Core materialization, JSON serialization, and config binding
+#   - name: AutoPropertyCanBeMadeGetOnly.Global
+#     paths:
+#       - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts"
+#       - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts"
+#       - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/Entities"
+#       - "Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Configuration"
+#       - "Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel"

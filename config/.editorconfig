@@ -1,6 +1,0 @@
-root = false
-
-# Inherit from root .editorconfig file
-# All configuration rules have been consolidated to the root .editorconfig
-# This file is kept for future config-specific overrides if needed
-

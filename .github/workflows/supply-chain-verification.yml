@@ -111,16 +111,12 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           global-json-file: global.json
 
-      - name: Restore AppBlueprint packages
+      - name: Restore solution packages
         # dotnet restore enforces signatureValidationMode=accept from NuGet.config:
         # - Packages with valid signatures: accepted
         # - Packages with INVALID/tampered signatures: rejected (build fails)
         # - Unsigned packages: accepted (covers local + experimental feeds)
-        run: dotnet restore Code/AppBlueprint/AppBlueprint.sln
-
-      - name: Restore DeploymentManager packages
-        run: dotnet restore Code/DeploymentManager/DeploymentManager.sln
-        continue-on-error: true  # DeploymentManager solution may not always be present
+        run: dotnet restore SaaS-Factory.slnx
 
       - name: Verify signatures on all restored NuGet packages
         run: |

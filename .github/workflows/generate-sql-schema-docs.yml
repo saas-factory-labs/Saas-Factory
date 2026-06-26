@@ -58,7 +58,7 @@ jobs:
             if pg_dump --schema-only \
                        --no-owner \
                        --no-privileges \
-                       --file=schema.sql; then
+                       --file=scripts/schema.sql; then
               echo "Schema dump generated successfully"
               break
             else
@@ -76,12 +76,12 @@ jobs:
           done
           
           # Verify the file was created
-          if [ ! -f schema.sql ]; then
-            echo "Error: schema.sql was not generated"
+          if [ ! -f scripts/schema.sql ]; then
+            echo "Error: scripts/schema.sql was not generated"
             exit 1
           fi
-          
-          ls -lh schema.sql
+
+          ls -lh scripts/schema.sql
 
       # Step 4: Create PR with schema file changes
       - name: Create Pull Request
@@ -109,7 +109,7 @@ jobs:
             documentation
             automated
           add-paths: |
-            schema.sql
+            scripts/schema.sql
 
       # Step 5: Enable auto-merge on the PR
       - name: Enable auto-merge

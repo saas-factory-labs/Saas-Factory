@@ -437,8 +437,8 @@ firebase-service-account.json
 # Codeql (Generated locally by developers manually)
 codeql-saas-factory-db/
 
-# Graphify (Ignore cache, but output graph is preserved)
-graphify-out/cache
+# Graphify
+graphify-out/
 
 # Ignore nul windows system file
 nul

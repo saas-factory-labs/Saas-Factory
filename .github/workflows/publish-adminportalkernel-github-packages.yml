@@ -35,7 +35,7 @@ jobs:
         id: version
         run: |
           export PATH="$PATH:/root/.dotnet/tools"
-          VERSION=$(dotnet-gitversion /output json 2>/dev/null | jq -r '.SemVer // "0.1.0"')
+          VERSION=$(dotnet-gitversion /config .github/GitVersion.yml /output json 2>/dev/null | jq -r '.SemVer // "0.1.0"')
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 

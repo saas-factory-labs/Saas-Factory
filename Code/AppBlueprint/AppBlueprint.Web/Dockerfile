@@ -4,11 +4,8 @@ FROM mcr.microsoft.com/dotnet/aspnet@sha256:ddcf70ad1ab963a4fcd41fbd722a6b660e40
 USER $APP_UID
 WORKDIR /app
 
-# Ensure the container listens on port 8080 (non-privileged port)
-ENV ASPNETCORE_URLS="http://+:8080"
-
+# Expose default port (Railway overrides via PORT env var at runtime)
 EXPOSE 8080
-
 
 # Build stage - Microsoft SDK
 # mcr.microsoft.com/dotnet/sdk:10.0
@@ -29,25 +26,34 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy package management files
-COPY Directory.Packages.props ./
-COPY NuGet.Config /root/.nuget/NuGet.Config
+COPY Code/AppBlueprint/Directory.Packages.props ./
+COPY Code/AppBlueprint/NuGet.Config /root/.nuget/NuGet.Config
 
 # Copy project files for Web and all dependencies
-COPY ["AppBlueprint.Web/AppBlueprint.Web.csproj", "AppBlueprint.Web/"]
-COPY ["AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj", "AppBlueprint.ServiceDefaults/"]
-COPY ["Shared-Modules/AppBlueprint.Api.Client.Sdk/AppBlueprint.Api.Client.Sdk.csproj", "Shared-Modules/AppBlueprint.Api.Client.Sdk/"]
-COPY ["Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj", "Shared-Modules/AppBlueprint.Application/"]
-COPY ["Shared-Modules/AppBlueprint.Contracts/AppBlueprint.Contracts.csproj", "Shared-Modules/AppBlueprint.Contracts/"]
-COPY ["Shared-Modules/AppBlueprint.Domain/AppBlueprint.Domain.csproj", "Shared-Modules/AppBlueprint.Domain/"]
-COPY ["Shared-Modules/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj", "Shared-Modules/AppBlueprint.Infrastructure/"]
-COPY ["Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj", "Shared-Modules/AppBlueprint.SharedKernel/"]
-COPY ["Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj", "Shared-Modules/AppBlueprint.UiKit/"]
+COPY ["Code/AppBlueprint/AppBlueprint.Web/AppBlueprint.Web.csproj", "AppBlueprint.Web/"]
+COPY ["Code/AppBlueprint/AppBlueprint.ServiceDefaults/AppBlueprint.ServiceDefaults.csproj", "AppBlueprint.ServiceDefaults/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Api.Client.Sdk/AppBlueprint.Api.Client.Sdk.csproj", "Shared-Modules/AppBlueprint.Api.Client.Sdk/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Application/AppBlueprint.Application.csproj", "Shared-Modules/AppBlueprint.Application/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts/AppBlueprint.Contracts.csproj", "Shared-Modules/AppBlueprint.Contracts/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/AppBlueprint.Domain.csproj", "Shared-Modules/AppBlueprint.Domain/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure/AppBlueprint.Infrastructure.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/AppBlueprint.Infrastructure.Authentication.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Authentication/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Compliance/AppBlueprint.Infrastructure.Compliance.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Compliance/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Email/AppBlueprint.Infrastructure.Email.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Email/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Notifications/AppBlueprint.Infrastructure.Notifications.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Notifications/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Payments/AppBlueprint.Infrastructure.Payments.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Payments/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/AppBlueprint.Infrastructure.Persistence.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Persistence/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Realtime/AppBlueprint.Infrastructure.Realtime.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Realtime/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Search/AppBlueprint.Infrastructure.Search.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Search/"]
+COPY ["Code/AppBlueprint/Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/AppBlueprint.Infrastructure.Storage.csproj", "Shared-Modules/Infrastructure/AppBlueprint.Infrastructure.Storage/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/AppBlueprint.SharedKernel.csproj", "Shared-Modules/AppBlueprint.SharedKernel/"]
+COPY ["Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj", "Shared-Modules/AppBlueprint.UiKit/"]
 
 # Restore dependencies
 RUN dotnet restore "AppBlueprint.Web/AppBlueprint.Web.csproj"
 
 # Copy the rest of the source code
-COPY . .
+COPY Code/AppBlueprint/ .
 
 WORKDIR "/src/AppBlueprint.Web"
 
@@ -59,7 +65,7 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "AppBlueprint.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
-# Final runtime image - Hardened distroless
+# Final runtime image
 FROM base AS final
 USER $APP_UID
 WORKDIR /app
@@ -68,13 +74,12 @@ WORKDIR /app
 COPY --from=publish --chown=$APP_UID:$APP_UID /app/publish .
 
 # Security hardening environment variables
-ENV ASPNETCORE_URLS=http://+:8080 \
-    DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
+# ASPNETCORE_HTTP_PORTS is NOT set here - it is resolved at runtime from Railway's PORT variable
+ENV DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
     DOTNET_EnableDiagnostics=0 \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-# Note: Health checks should be configured in orchestration layer (Kubernetes/Docker Compose)
-# Chiseled images don't include curl/wget for minimal attack surface
-
-# Start the Web service
-ENTRYPOINT ["dotnet", "AppBlueprint.Web.dll"]
+# Start the Web service.
+# Railway injects PORT at runtime. We use shell form to expand ${PORT:-8080} so the app
+# always binds on the port Railway expects.
+ENTRYPOINT ["/bin/sh", "-c", "ASPNETCORE_HTTP_PORTS=${PORT:-8080} exec dotnet AppBlueprint.Web.dll"]

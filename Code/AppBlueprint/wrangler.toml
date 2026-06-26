@@ -1,0 +1,44 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "appblueprint"
+main = "Cloudflare-Workers/src/index.ts"
+compatibility_date = "2025-06-26"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+[[durable_objects.bindings]]
+name = "WEB_CONTAINER"
+class_name = "Web"
+
+[[durable_objects.bindings]]
+name = "API_CONTAINER"
+class_name = "Api"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Web", "Api"]
+
+[[containers]]
+class_name = "Web"
+image = "AppBlueprint.Web/Dockerfile"
+instance_type = "lite"
+image_build_context = "../.."
+
+[[containers]]
+class_name = "Api"
+image = "AppBlueprint.ApiService/Dockerfile"
+instance_type = "lite"
+image_build_context = "../.."
+
+# Secrets — set via: wrangler secret put <NAME>
+# LOGTO_ENDPOINT
+# LOGTO_APPID
+# LOGTO_APPSECRET
+# LOGTO_APIRESOURCE
+# LOGTO_RESOURCE
+# DATABASE_URL
+# CONNECTIONSTRINGS__DEFAULTCONNECTION
+# AdminPortal__Security__RequireMfaClaim
+# AdminPortal__Modules__boligportal__ConnectionString
+# OTEL_EXPORTER_OTLP_ENDPOINT

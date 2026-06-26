@@ -6,6 +6,7 @@ using AppBlueprint.Infrastructure.Extensions;
 using AppBlueprint.Infrastructure.Payments.Extensions;
 using AppBlueprint.Infrastructure.Persistence;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts;
+using AppBlueprint.Infrastructure.Persistence.HealthChecks;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.Tenant;
 using AppBlueprint.Infrastructure.Persistence.DatabaseContexts.Baseline.Entities.User;
 using AppBlueprint.Infrastructure.Search;
@@ -140,6 +141,10 @@ internal static class Program // Make class static
             await MigrationExtensions.ApplyMigrationsAsync(app);
             await MigrationExtensions.ApplyDatabaseSeedingAsync(app);
         }
+
+        // Fail fast if RLS migrations were not applied — runs in all environments.
+        // In Development, migrations are applied above; in Production they are applied via CI/CD.
+        await RlsStartupValidator.ValidateOrThrowAsync(app.Services);
 
         // Add TenantMiddleware AFTER authentication middleware
         app.UseMiddleware<TenantMiddleware>();

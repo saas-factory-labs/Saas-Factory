@@ -1,5 +1,5 @@
 # Build context: repo root (used by Railway and local builds from repo root)
-# Applies to all Dockerfiles that use the repo root as build context.
+# Single source of truth — all per-project .dockerignore files have been consolidated here.
 
 # Build outputs
 **/bin
@@ -41,6 +41,12 @@ doppler.yaml
 **/.gitignore
 **/.gitattributes
 **/.github
+# Git metadata exceptions (needed for .NET Aspire source info)
+!**/.gitignore
+!.git/HEAD
+!.git/config
+!.git/packed-refs
+!.git/refs/heads/**
 
 # IDE and editor files
 **/.vs
@@ -51,6 +57,10 @@ doppler.yaml
 **/*~
 **/.DS_Store
 **/*.*proj.user
+**/.classpath
+**/.project
+**/.settings
+**/.toolstarget
 
 # Docker files
 **/Dockerfile*
@@ -58,9 +68,15 @@ doppler.yaml
 **/compose*
 **/.dockerignore
 
+# DevContainer files
+.devcontainer
+.devcontainer.json
+
 # Dependencies
 **/node_modules
 **/npm-debug.log
+**/.pnp
+**/.pnp.js
 
 # Test results
 **/TestResults
@@ -73,6 +89,8 @@ doppler.yaml
 **/*.sqlite
 **/*.mdf
 **/*.ldf
+**/*.dbmdl
+**/*.jfm
 
 # Logs
 **/*.log
@@ -91,17 +109,14 @@ azure.yaml
 **/*.bicep
 **/Diagrams/
 
+# Documentation
+LICENSE
+README.md
+**/*.md
+!**/README.md
+
 # Temporary files
 **/tmp/
 **/temp/
 **/*.tmp
 **/*.bak
-
-**/bin/
-**/obj/
-**/bin_verify/
-**/obj_verify/
-**/.vs/
-**/.vscode/
-**/.idea/
-**/.git/

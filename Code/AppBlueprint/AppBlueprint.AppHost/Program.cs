@@ -50,18 +50,24 @@ static bool HasPassword(string connectionString)
     return false;
 }
 
-// --- DATABASE CONFIGURATION (Doppler & Railway) ---
-// Database connection string must be set as DATABASE_CONNECTIONSTRING environment variable
-var databaseConnectionString = Environment.GetEnvironmentVariable(DatabaseConnectionStringKey)
-    ?? throw new InvalidOperationException(
-        "Database connection string not found. Set DATABASE_CONNECTIONSTRING environment variable. Ensure Doppler is running (doppler run).");
+// --- DATABASE CONFIGURATION ---
+// Use Neon.tech/Doppler DATABASE_CONNECTIONSTRING if set; otherwise start local Docker PostgreSQL.
+var databaseConnectionString = Environment.GetEnvironmentVariable(DatabaseConnectionStringKey);
+IResourceBuilder<PostgresDatabaseResource>? localDb = null;
 
-// Diagnostic: Verify password is present (security: don't log actual value)
-bool hasPassword = HasPassword(databaseConnectionString);
-Console.WriteLine($"[AppHost] DATABASE_CONNECTIONSTRING loaded - Contains Password: {hasPassword}");
-if (!hasPassword)
+if (string.IsNullOrEmpty(databaseConnectionString))
 {
-    Console.WriteLine("[AppHost] WARNING: Database connection string is missing password! Check Doppler secrets.");
+    Console.WriteLine("[AppHost] DATABASE_CONNECTIONSTRING not set — starting local Docker PostgreSQL");
+    var postgres = builder.AddPostgres("postgres")
+        .WithPgAdmin();
+    localDb = postgres.AddDatabase("appblueprintdb");
+}
+else
+{
+    bool hasPassword = HasPassword(databaseConnectionString);
+    Console.WriteLine($"[AppHost] DATABASE_CONNECTIONSTRING loaded - Contains Password: {hasPassword}");
+    if (!hasPassword)
+        Console.WriteLine("[AppHost] WARNING: Database connection string is missing password! Check Doppler secrets.");
 }
 
 // Read Logto configuration from environment variables (Doppler)
@@ -80,10 +86,13 @@ builder.AddProject<Projects.AppBlueprint_AppGateway>("appgw")
 var apiService = builder.AddProject<Projects.AppBlueprint_ApiService>("apiservice")
     .WithHttpEndpoint(port: 9100, name: "api", isProxied: false)
     .WithEnvironment(AspNetCoreUrlsKey, "http://0.0.0.0:9100")
-    .WithEnvironment("SWAGGER_PATH", "/swagger")
-    .WithEnvironment(DatabaseConnectionStringKey, databaseConnectionString);
+    .WithEnvironment("SWAGGER_PATH", "/swagger");
 
-// Add Logto configuration if provided via Doppler
+if (localDb is not null)
+    apiService = apiService.WithReference(localDb).WaitFor(localDb);
+else
+    apiService = apiService.WithEnvironment(DatabaseConnectionStringKey, databaseConnectionString!);
+
 if (!string.IsNullOrWhiteSpace(logtoEndpoint))
     apiService = apiService.WithEnvironment(LogtoEndpointKey, logtoEndpoint);
 if (!string.IsNullOrWhiteSpace(logtoAppId))
@@ -104,10 +113,13 @@ var webFrontend = builder.AddProject<Projects.AppBlueprint_Web>("webfrontend")
     .WithReference(apiService)
     .WithEnvironment(AspNetCoreUrlsKey, "http://0.0.0.0:9200")
     // Using dynamic IP so mobile devices can reach the API on this host machine
-    .WithEnvironment("API_BASE_URL", $"http://{localIp}:9100")
-    .WithEnvironment(DatabaseConnectionStringKey, databaseConnectionString);
+    .WithEnvironment("API_BASE_URL", $"http://{localIp}:9100");
 
-// Add Logto configuration if provided via Doppler
+if (localDb is not null)
+    webFrontend = webFrontend.WithReference(localDb).WaitFor(localDb);
+else
+    webFrontend = webFrontend.WithEnvironment(DatabaseConnectionStringKey, databaseConnectionString!);
+
 if (!string.IsNullOrWhiteSpace(logtoEndpoint))
     webFrontend = webFrontend.WithEnvironment(LogtoEndpointKey, logtoEndpoint);
 if (!string.IsNullOrWhiteSpace(logtoAppId))
@@ -122,7 +134,5 @@ if (!string.IsNullOrWhiteSpace(databaseContextEnableHybridMode))
     webFrontend = webFrontend.WithEnvironment(DatabaseContextEnableHybridModeKey, databaseContextEnableHybridMode);
 if (!string.IsNullOrWhiteSpace(logtoApiResource))
     webFrontend = webFrontend.WithEnvironment(LogtoApiResourceKey, logtoApiResource);
-if (!string.IsNullOrWhiteSpace(databaseContextType))
-    _ = webFrontend.WithEnvironment(DatabaseContextTypeKey, databaseContextType);
 
 await builder.Build().RunAsync();

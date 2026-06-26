@@ -4,29 +4,10 @@ using Npgsql;
 
 namespace AppBlueprint.Infrastructure.Persistence.HealthChecks;
 
-/// <summary>
-/// Health check that verifies PostgreSQL Row-Level Security (RLS) is enabled on all tenant-scoped tables.
-/// CRITICAL: The application must NOT start if RLS is not properly configured to prevent tenant data leakage.
-/// </summary>
 public sealed class RowLevelSecurityHealthCheck : IHealthCheck
 {
-    private const string RlsHealthCheckLogPrefix = "[RLS Health Check] {ErrorMessage}";
-
     private readonly string _connectionString;
     private readonly ILogger<RowLevelSecurityHealthCheck> _logger;
-
-    // Tables that MUST have RLS enabled for tenant isolation
-    private static readonly string[] RequiredRlsTables =
-    [
-        "Users",
-        "Teams",
-        "Organizations",
-        "ContactPersons",
-        "EmailAddresses",
-        "PhoneNumbers",
-        "Addresses",
-        "Todos"
-    ];
 
     public RowLevelSecurityHealthCheck(string connectionString, ILogger<RowLevelSecurityHealthCheck> logger)
     {
@@ -46,156 +27,48 @@ public sealed class RowLevelSecurityHealthCheck : IHealthCheck
             await using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync(cancellationToken);
 
-            // Step 1: Verify required functions exist
-            bool functionsExist = await VerifyRlsFunctionsExistAsync(connection, cancellationToken);
-            if (!functionsExist)
+            if (!await RlsFunctionsExistAsync(connection, cancellationToken))
             {
-                const string errorMessage = "Row-Level Security functions (set_current_tenant, get_current_tenant) are missing. Run SetupRowLevelSecurity.sql.";
-                _logger.LogCritical(RlsHealthCheckLogPrefix, errorMessage);
-                return HealthCheckResult.Unhealthy(errorMessage);
+                const string msg = "RLS setup functions are missing — EnableRowLevelSecurity migration has not been applied.";
+                _logger.LogCritical("[RLS] {Message}", msg);
+                return HealthCheckResult.Unhealthy(msg);
             }
 
-            // Step 2: Check RLS status on required tables
-            var rlsStatus = await GetRlsStatusAsync(connection, cancellationToken);
+            List<string> violations = await RlsStartupValidator.CollectViolationsAsync(connection, cancellationToken);
 
-            List<string> missingRls = [];
-            List<string> missingTables = [];
-
-            foreach (string table in RequiredRlsTables)
+            if (violations.Count == 0)
             {
-                if (!rlsStatus.TryGetValue(table, out bool hasRls))
-                {
-                    // Table doesn't exist yet - might be before migrations
-                    missingTables.Add(table);
-                }
-                else if (!hasRls)
-                {
-                    // Table exists but RLS not enabled - CRITICAL security issue
-                    missingRls.Add(table);
-                }
+                _logger.LogInformation("[RLS] Row-Level Security healthy on all tenant-scoped tables.");
+                return HealthCheckResult.Healthy("RLS enabled and configured on all tenant-scoped tables.");
             }
 
-            // Step 3: Verify policies exist on tables with RLS enabled
-            var missingPolicies = await GetTablesWithoutPoliciesAsync(connection, RequiredRlsTables, cancellationToken);
-
-            // Step 4: Determine health status
-            if (missingRls.Count > 0)
-            {
-                string errorMessage = $"CRITICAL: Row-Level Security NOT enabled on tables: {string.Join(", ", missingRls)}. " +
-                                    "Run SetupRowLevelSecurity.sql immediately to prevent tenant data leakage.";
-                _logger.LogCritical(RlsHealthCheckLogPrefix, errorMessage);
-                return HealthCheckResult.Unhealthy(errorMessage);
-            }
-
-            if (missingPolicies.Count > 0)
-            {
-                string errorMessage = $"CRITICAL: RLS policies missing on tables: {string.Join(", ", missingPolicies)}. " +
-                                    "Tables have RLS enabled but no policies defined. Run SetupRowLevelSecurity.sql.";
-                _logger.LogCritical(RlsHealthCheckLogPrefix, errorMessage);
-                return HealthCheckResult.Unhealthy(errorMessage);
-            }
-
-            if (missingTables.Count > 0)
-            {
-                // Tables don't exist yet - might be initial setup
-                // This is degraded status, not unhealthy
-                string warningMessage = $"Tables not yet created: {string.Join(", ", missingTables)}. " +
-                                      "RLS will be checked after migrations are applied.";
-                _logger.LogWarning(RlsHealthCheckLogPrefix, warningMessage);
-                return HealthCheckResult.Degraded(warningMessage);
-            }
-
-            // All checks passed
-            var enabledTables = rlsStatus.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
-            string successMessage = $"Row-Level Security enabled and configured on {enabledTables.Count} tables: {string.Join(", ", enabledTables)}";
-            _logger.LogInformation("[RLS Health Check] ✅ {SuccessMessage}", successMessage);
-
-            return HealthCheckResult.Healthy(successMessage);
+            string detail = string.Join("; ", violations);
+            _logger.LogCritical("[RLS] {Detail}", detail);
+            return HealthCheckResult.Unhealthy($"RLS misconfigured — {detail}");
         }
         catch (NpgsqlException ex)
         {
-            string errorMessage = $"Database error verifying Row-Level Security: {ex.Message}";
-            _logger.LogError(ex, RlsHealthCheckLogPrefix, errorMessage);
-            return HealthCheckResult.Unhealthy(errorMessage, ex);
-        }
-        catch (InvalidOperationException ex)
-        {
-            string errorMessage = $"Invalid operation during RLS verification: {ex.Message}";
-            _logger.LogError(ex, RlsHealthCheckLogPrefix, errorMessage);
-            return HealthCheckResult.Unhealthy(errorMessage, ex);
+            _logger.LogError(ex, "[RLS] Database error during health check.");
+            return HealthCheckResult.Unhealthy($"Database error: {ex.Message}", ex);
         }
         catch (TimeoutException ex)
         {
-            string errorMessage = $"Timeout verifying Row-Level Security: {ex.Message}";
-            _logger.LogError(ex, RlsHealthCheckLogPrefix, errorMessage);
-            return HealthCheckResult.Degraded(errorMessage, ex);
+            _logger.LogError(ex, "[RLS] Timeout during RLS health check.");
+            return HealthCheckResult.Degraded($"Timeout: {ex.Message}", ex);
         }
     }
 
-    private static async Task<bool> VerifyRlsFunctionsExistAsync(
+    private static async Task<bool> RlsFunctionsExistAsync(
         NpgsqlConnection connection,
         CancellationToken cancellationToken)
     {
-        const string query = @"
-            SELECT COUNT(*) 
-            FROM pg_proc 
-            WHERE proname IN ('set_current_tenant', 'get_current_tenant')";
+        const string query = """
+            SELECT COUNT(*) FROM pg_proc
+            WHERE proname IN ('set_current_tenant', 'get_current_tenant')
+            """;
 
         await using var command = new NpgsqlCommand(query, connection);
         var result = await command.ExecuteScalarAsync(cancellationToken);
-
-        // Should return 2 (both functions exist)
         return Convert.ToInt32(result, System.Globalization.CultureInfo.InvariantCulture) == 2;
-    }
-
-    private static async Task<Dictionary<string, bool>> GetRlsStatusAsync(
-        NpgsqlConnection connection,
-        CancellationToken cancellationToken)
-    {
-        const string query = @"
-            SELECT tablename, rowsecurity 
-            FROM pg_tables 
-            WHERE schemaname = 'public'";
-
-        var rlsStatus = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
-
-        await using var command = new NpgsqlCommand(query, connection);
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-
-        while (await reader.ReadAsync(cancellationToken))
-        {
-            string tableName = reader.GetString(0);
-            bool rlsEnabled = reader.GetBoolean(1);
-            rlsStatus[tableName] = rlsEnabled;
-        }
-
-        return rlsStatus;
-    }
-
-    private static async Task<List<string>> GetTablesWithoutPoliciesAsync(
-        NpgsqlConnection connection,
-        string[] requiredTables,
-        CancellationToken cancellationToken)
-    {
-        const string query = @"
-            SELECT DISTINCT tablename 
-            FROM pg_policies 
-            WHERE schemaname = 'public' 
-                AND policyname = 'tenant_isolation_policy'";
-
-        var tablesWithPolicies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        await using var command = new NpgsqlCommand(query, connection);
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-
-        while (await reader.ReadAsync(cancellationToken))
-        {
-            tablesWithPolicies.Add(reader.GetString(0));
-        }
-
-        var rlsStatus = await GetRlsStatusAsync(connection, cancellationToken);
-        return requiredTables
-            .Where(table => rlsStatus.TryGetValue(table, out bool hasRls) && hasRls && !tablesWithPolicies.Contains(table))
-            .ToList();
     }
 }

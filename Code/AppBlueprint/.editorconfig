@@ -1,5 +1,0 @@
-root = false
-
-# Inherit from root .editorconfig file
-# All AppBlueprint rules have been consolidated to the root .editorconfig
-# This file is kept for future project-specific overrides if needed

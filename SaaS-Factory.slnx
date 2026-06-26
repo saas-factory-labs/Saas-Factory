@@ -22,7 +22,7 @@
     <Project Path="Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/AppBlueprint.UiKit.csproj" />
   </Folder>
   <Folder Name="/Code/">
-    <Project Path="Code/SaaSFactory.SharedTestKernel/SaaSFactory.SharedTestKernel.csproj" />
+    <Project Path="Code/SaaSFactory.Testing/SaaSFactory.Testing.csproj" />
   </Folder>
   <Folder Name="/Code/AppBlueprint/">
     <File Path="Code/AppBlueprint/.railwayignore" />

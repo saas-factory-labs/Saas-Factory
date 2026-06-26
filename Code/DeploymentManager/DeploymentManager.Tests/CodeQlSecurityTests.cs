@@ -1,5 +1,5 @@
 using System.IO;
-using SaaSFactory.SharedTestKernel;
+using SaaSFactory.Testing;
 using TUnit.Core;
 
 namespace DeploymentManager.Tests;

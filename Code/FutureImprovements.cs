@@ -255,8 +255,6 @@
 
 
 
-// nswag til at genere sdk til at kalde api via frontend
-
 // builder.Services.ConfigureHttpJsonOptions(options =>
 // {
 //     options.SerializerOptions.MaxDepth =
@@ -397,39 +395,7 @@
 //     });
 // });
 //
-// builder.Services.AddAuthentication(options =>
-//     {
-//         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//     })
-//     .AddJwtBearer(options =>
-//     {
-//         options.TokenValidationParameters = new TokenValidationParameters
-//         {
-//             ValidateIssuer = true,
-//             ValidateAudience = true,
-//             ValidateLifetime = true,
-//             ValidateIssuerSigningKey = true,
-//             ValidIssuer = "https://nnihwwacvgqfbkxzjnvx.supabase.co/auth/v1",
-//             ValidAudience = "authenticated",
-//             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretSigningKey))
-//         };
-//         options.Events = new JwtBearerEvents
-//         {
-//             OnMessageReceived = context =>
-//             {
-//                 string authHeader = context.Request.Headers["Authorization"].ToString();
-//
-//                 if (!string.IsNullOrEmpty(authHeader) &&
-//                     !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-//                 {
-//                     context.Request.Headers["Authorization"] = $"Bearer {authHeader}";
-//                 }
-//
-//                 return Task.CompletedTask;
-//             }
-//         };
-//     });
+
 //
 // builder.Services.AddAuthorization(options =>
 // {
@@ -457,8 +423,7 @@
 //     // options.Conventions.Add(new CustomRouteConvention());
 // });
 //
-// WebApplication app = builder.Build();
-//
+
 // app.Use(async (context, next) =>
 // {
 //     Console.WriteLine("Request started: " + context.Request.Path);
@@ -543,10 +508,6 @@
 // //         return HealthCheckResult.Unhealthy(e.Message);
 // //     }
 // // }
-
-
-
-// DISCARDED
 
 
 

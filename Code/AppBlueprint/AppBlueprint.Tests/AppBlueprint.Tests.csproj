@@ -43,7 +43,7 @@
     <ProjectReference Include="..\Shared-Modules\AppBlueprint.Domain\AppBlueprint.Domain.csproj" />
     <ProjectReference Include="..\AppBlueprint.ApiService\AppBlueprint.ApiService.csproj" />
     <ProjectReference Include="..\AppBlueprint.Web\AppBlueprint.Web.csproj" />
-    <ProjectReference Include="..\..\SaaSFactory.SharedTestKernel\SaaSFactory.SharedTestKernel.csproj" />
+    <ProjectReference Include="..\..\SaaSFactory.Testing\SaaSFactory.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

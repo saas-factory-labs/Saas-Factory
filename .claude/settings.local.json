@@ -151,7 +151,15 @@
       "WebFetch(domain:developers.cloudflare.com)",
       "WebFetch(domain:www.npmjs.com)",
       "Bash(xargs grep -l \"SmtpOptions\\\\|IEmailService\")",
-      "Bash(xargs grep -l \"IFileStorageService\\\\|CloudflareR2Options\\\\|IObjectStorageService\")"
+      "Bash(xargs grep -l \"IFileStorageService\\\\|CloudflareR2Options\\\\|IObjectStorageService\")",
+      "Bash(grep -iE '\\\\.\\(bak|old|new|orig|tmp|backup|copy\\)$|~$| - copy|copy\\\\.')",
+      "Bash(grep -iE '\\\\.\\(sln|slnx\\)$')",
+      "Bash(dotnet --version)",
+      "Bash(git -C \"D:\\\\Development\\\\Development-Projects\\\\Saas-Factory\" status --short)",
+      "PowerShell(git *)",
+      "Bash(grep -v \"//\")",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Development\\\\Development-Projects\\\\Saas-Factory\" -Recurse -Directory | Where-Object { \\(Get-ChildItem $_.FullName -Force | Measure-Object\\).Count -eq 0 } | Select-Object -ExpandProperty FullName)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Development\\\\Development-Projects\\\\Saas-Factory\\\\Code\\\\Cloudflare-Workers\" -Recurse -Force | Select-Object FullName, PSIsContainer | Where-Object { -not $_.FullName.Contains\\(\"node_modules\"\\) })"
     ],
     "deny": [],
     "ask": [],

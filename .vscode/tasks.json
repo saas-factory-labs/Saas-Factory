@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/SaaS-Factory.sln",
+                "${workspaceFolder}/SaaS-Factory.slnx",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/SaaS-Factory.sln",
+                "${workspaceFolder}/SaaS-Factory.slnx",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/SaaS-Factory.sln"
+                "${workspaceFolder}/SaaS-Factory.slnx"
             ],
             "problemMatcher": "$msCompile"
         }
