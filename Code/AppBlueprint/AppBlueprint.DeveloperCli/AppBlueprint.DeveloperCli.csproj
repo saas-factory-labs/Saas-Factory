@@ -33,7 +33,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Shared-Modules\AppBlueprint.CliKit\AppBlueprint.CliKit.csproj" />
-        <ProjectReference Include="..\Shared-Modules\AppBlueprint.Infrastructure.Core\AppBlueprint.Infrastructure.Core.csproj" />
+        <ProjectReference Include="..\Shared-Modules\Infrastructure\AppBlueprint.Infrastructure.Core\AppBlueprint.Infrastructure.Core.csproj" />
     </ItemGroup>
 
 </Project>
