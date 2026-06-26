@@ -1,0 +1,36 @@
+.claude/settings.local.json
+  s_8eb5e1067fb227::t_a8ccef0e95f3f4 165-168
+Code/AppBlueprint/AppBlueprint.DeveloperCli/AppBlueprint.DeveloperCli.csproj
+  s_86b7182e4a20cb::t_396897b98c062f 36
+Code/AppBlueprint/AppBlueprint.Tests/AppBlueprint.Tests.csproj
+  s_86b7182e4a20cb::t_f3babc58544015 39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "569a1bc3265024d7c3837749793fbe34247aa4c3",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_86b7182e4a20cb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dee85dbc-6954-47a1-9fd0-2bdcc9a9b749",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_8eb5e1067fb227": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a42d328c3a599a55a",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
