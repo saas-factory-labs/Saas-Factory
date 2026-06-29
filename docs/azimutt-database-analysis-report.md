@@ -1,8 +1,8 @@
 # 🔍 Azimutt Database Analysis Report
 
 > **Database:** `appblueprintdb`
-> **Report Date:** 2026-02-23
-> **Azimutt CLI Version:** 0.1.38
+> **Report Date:** 2026-06-29
+> **Azimutt CLI Version:** 0.1.39
 > **Tool:** [Azimutt](https://azimutt.app/) — Next-Gen ERD & Database Linter
 > **Workflow:** [View latest run](https://github.com/saas-factory-labs/Saas-Factory/actions/workflows/azimutt-database-analysis.yml)
 
@@ -13,10 +13,10 @@
 | Severity | Count |
 |----------|------:|
 | 🔴 High   | 53 |
-| 🟠 Medium | 30 |
+| 🟠 Medium | 26 |
 | 🔵 Low    | 1 |
 | 💡 Hint   | 21 |
-| **Total** | **105** |
+| **Total** | **101** |
 
 > Scanned **49 entities**, **55 relations**, **0 queries**, **0 types**.
 
@@ -40,14 +40,7 @@
 
 ---
 
-## 🟠 Medium Severity (30 violations)
-
-### Entity With Too Heavy Indexes — 4 violations
-
-- Entity public.Tenants has too heavy indexes (11x data size, 12 indexes).
-- Entity public.FileMetadata has too heavy indexes (6x data size, 6 indexes).
-- Entity public.WebhookEvents has too heavy indexes (6x data size, 6 indexes).
-- _+ 1 more_
+## 🟠 Medium Severity (26 violations)
 
 ### Missing Relation — 26 violations
 
