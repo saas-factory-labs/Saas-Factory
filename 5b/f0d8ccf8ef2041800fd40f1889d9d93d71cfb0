@@ -1,0 +1,160 @@
+.github/.ai-rules/development-workflow/README.md
+  s_973c2ac614a22f::t_8522ccbbb26ddd 6,8-16
+  s_973c2ac614a22f::t_cf15169224aa3e 17-19
+  s_973c2ac614a22f::t_584c1304ce49ea 20-22
+.github/.ai-rules/baseline/sonarcloud-quality.md
+  s_973c2ac614a22f::t_dc834c2af50458 1-157
+.github/.ai-rules/backend/database-repositories.md
+  s_973c2ac614a22f::t_dc367b3a05d00d 8-18
+  s_973c2ac614a22f::t_5a245b977497a2 19-21
+  s_973c2ac614a22f::t_3025a0cd7ddd7f 22-25
+README.md
+  s_00ae87dc33c32d::t_d23ecb75261774 56
+  s_d35f763ca8c45f::t_2cc0018bb29bbc 6-46
+  s_d35f763ca8c45f::t_b6c8dbccbbef80 47
+  s_d35f763ca8c45f::t_a2f414c4df5a05 48-49,51
+  h_aa722e8ed10195 50
+  s_00ae87dc33c32d::t_8565511e7f2e55 111-114,197,214,217-267
+.github/.ai-rules/baseline/code-style.md
+  s_973c2ac614a22f::t_fd8c73e64668b0 10-11,13,19-25,30-133,142,148
+  s_973c2ac614a22f::t_d6a6416d3b6378 134-136,139-141
+  s_973c2ac614a22f::t_a2684471d1d859 143-147
+  s_973c2ac614a22f::t_ac89f3a16421a8 149-151
+  s_d93693a9832774::t_4a25b3272f19a5 137-138,152
+docs/CONTRIBUTING.md
+  s_d35f763ca8c45f::t_2137d87d35a454 3-5,12,14-16
+  s_d35f763ca8c45f::t_33b246f74fe01e 17-19
+  s_d35f763ca8c45f::t_f7b0c0c624bfa6 21,26,31,33,36,41
+.github/.ai-rules/development-workflow/package-management.md
+  s_973c2ac614a22f::t_781c9e1fe2bf1f 1-37
+.github/.ai-rules/backend/api-controllers.md
+  s_973c2ac614a22f::t_72960cc11411aa 13-27,30-31,38
+  s_973c2ac614a22f::t_7b5b7f0e1ce480 28-29
+  s_973c2ac614a22f::t_6ca368cfba91c1 32-37
+  s_973c2ac614a22f::t_0674c4f44f029d 39
+Code/Landingpage/Landingpage.csproj
+  s_ce403292049b72::t_519fdadffb5623 30-35
+  s_ce403292049b72::t_f4dfd690a5611c 9,20
+  s_ce403292049b72::t_017206129cba4f 8,17-19,21-29,36-37
+  s_ce403292049b72::t_e94f15be55b479 38-40
+  s_ce403292049b72::t_4c055912e67e0e 41-51
+Code/Landingpage/Components/Pages/Home.razor
+  s_ce403292049b72::t_2b31fa21dea7fc 230
+  s_ce403292049b72::t_d81847a55dd6be 115
+  s_ce403292049b72::t_99841051540463 289-303
+  h_aa722e8ed10195 120,129,138,160,219,250,257,264-265,272-273,280,287,314,317,320,377-381
+  s_ce403292049b72::t_de3ccdb1345cf8 92-114,116-119,121-128,130-137,139-159,161-218,220-229,231-249,251-256,258-263,266-271,274-279,281-286,288,304-313,315-316,318-319,321-376,383,386-388,391,394-396,398,406,409,412-415,422,431,434,440,443,449,452,458,461-464
+  s_ce403292049b72::t_b664aaf99fdcf3 382,384-385,389-390,392-393,397,399-405,407-408,410-411,416-421,423-430,432-433,435-439,441-442,444-448,450-451,453-457,459-460,465-467,689,1049,1107,1114,1397
+qodana.yaml
+  s_fae16380212e56::t_a535e15c43a574 1-46
+.github/workflows/qodana-analysis.yaml
+  s_fae16380212e56::t_9eebe2a6cf1d1a 4
+  s_fae16380212e56::t_cb60fb9ce3c211 5-7
+Code/Landingpage/wwwroot/output.css
+  s_ce403292049b72::t_3561d01b73eda2 1
+.github/.ai-rules/infrastructure/docker-security.md
+  s_973c2ac614a22f::t_f7723dc092a2b5 1-33
+.github/copilot-instructions.md
+  s_973c2ac614a22f::t_f7a6024efdb37a 34,37-43,46,54,72-73
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/DataSeeding/DataSeeder.cs
+  s_fae16380212e56::t_cd713565f1b4a2 1-953
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/SeedCommand.cs
+  s_fae16380212e56::t_5cec89b5705c20 1-17,19,21-57,59-66,68-95
+  s_fae16380212e56::t_b9551fa1d86778 58,67
+  s_fae16380212e56::t_fcd0027756a235 18,20
+.claude/settings.local.json
+  s_ce403292049b72::t_1a82ee2697ed76 168-180
+.github/.ai-rules/backend/README.md
+  s_973c2ac614a22f::t_4d925c1784d1a9 24-26
+.github/.ai-rules/baseline/README.md
+  s_973c2ac614a22f::t_596c5f6d75abe6 16-17
+.github/.ai-rules/infrastructure/README.md
+  s_973c2ac614a22f::t_fcbaa5b1622585 19-23
+.gitignore
+  s_b7d27aab6e15d7::t_62760f8381f000 19
+Code/AppBlueprint/AppBlueprint.DeveloperCli/AppBlueprint.DeveloperCli.csproj
+  s_fae16380212e56::t_f079ccbcfce133 29,38
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Commands/CommandFactory.cs
+  s_fae16380212e56::t_c44d00bab15dcf 42
+Code/AppBlueprint/AppBlueprint.DeveloperCli/Program.cs
+  s_fae16380212e56::t_76fabfc98043ee 94,481-485,952
+Code/Landingpage/wwwroot/app.css
+  s_ce403292049b72::t_734433a3a45020 54-97
+Code/Landingpage/wwwroot/index.html
+  s_ce403292049b72::t_e66e32c20efa82 13-22
+package.json
+  s_fae16380212e56::t_ec65990305d5c3 6,37,43
+scripts/test_ulid.sql
+  s_b7d27aab6e15d7::t_f0b36c66874f55 5-6
+scripts/truncate-signup-tables.sql
+  s_b7d27aab6e15d7::t_02b6368b062c52 8-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "5bf0d8ccf8ef2041800fd40f1889d9d93d71cfb0",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_00ae87dc33c32d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "78a5930d-73ad-4f3e-aada-eacb1af106dc",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_973c2ac614a22f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0e0b2763-fe8d-4ea0-8914-84af99b23bad",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_b7d27aab6e15d7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "839a71b2-8e03-46a3-b895-e22471fc573a",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_ce403292049b72": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3a091b34-6b81-4b80-8d56-f33b2b9634e7",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_d35f763ca8c45f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3f2053f0-9900-4f75-9d06-3276fc78e5ff",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_d93693a9832774": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a68e9f8f-ba45-451d-85de-db28272a4021",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    },
+    "s_fae16380212e56": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7ae0abd-ddf5-4912-9414-8ef533b1ec8e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
