@@ -3,6 +3,8 @@
 <h4> A comprehensive platform framework that combines opinionated architecture, production-ready infrastructure, and developer-friendly tooling to deploy enterprise-grade B2B/B2C SaaS applications in minutes instead of months.
  </h4>
 
+ ![alt text](image.png)
+
 ### 🚗 The Vision: A Modern Automotive Factory for SaaS Development and Deployment
 
 To understand the core of **SaaS Factory**, imagine a modern, high-tech automotive manufacturing plant.
