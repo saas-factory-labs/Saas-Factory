@@ -189,7 +189,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         {
             _logger.LogError(ex, "SignalR hub not available for tenant broadcast to {TenantId}", tenantId);
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
         {
             _logger.LogWarning(ex, "SignalR tenant broadcast timed out for {TenantId}", tenantId);
         }
@@ -221,7 +221,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         {
             _logger.LogError(ex, "Push service not configured or available for user {UserId}", userId);
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
         {
             _logger.LogWarning(ex, "Push notification request timed out for user {UserId}", userId);
         }
@@ -247,7 +247,7 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
         {
             _logger.LogError(ex, "Push service not configured for tenant {TenantId}", tenantId);
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
         {
             _logger.LogWarning(ex, "Tenant push notification timed out for {TenantId}", tenantId);
         }
