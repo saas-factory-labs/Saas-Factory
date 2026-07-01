@@ -87,7 +87,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
         }
     }
 
-    public async Task SendAsync(PushNotificationRequest request)
+    public async Task SendAsync(PushNotificationRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -97,7 +97,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
             return;
         }
 
-        List<PushNotificationTokenEntity> tokens = await _tokenRepository.GetActiveByUserIdAsync(request.UserId);
+        List<PushNotificationTokenEntity> tokens = await _tokenRepository.GetActiveByUserIdAsync(request.UserId, cancellationToken);
 
         _logger.LogInformation("Found {Count} active tokens for user {UserId}", tokens.Count, request.UserId);
 
@@ -122,12 +122,12 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
             request.Data,
             tokens.Select(t => t.Token).ToList());
 
-        BatchResponse response = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(message);
+        BatchResponse response = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(message, cancellationToken);
 
         _logger.LogInformation("FCM batch send completed. Success: {SuccessCount}, Failure: {FailureCount}",
             response.SuccessCount, response.FailureCount);
 
-        await HandleFailedTokensAsync(response, tokens);
+        await HandleFailedTokensAsync(response, tokens, cancellationToken);
     }
 
     public async Task<int> SendToTenantAsync(string tenantId, string title, string body, Dictionary<string, string>? data = null, CancellationToken cancellationToken = default)
@@ -163,28 +163,28 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
         _logger.LogInformation("FCM tenant batch send completed. Success: {SuccessCount}, Failure: {FailureCount}",
             response.SuccessCount, response.FailureCount);
 
-        await HandleFailedTokensAsync(response, tokens);
+        await HandleFailedTokensAsync(response, tokens, cancellationToken);
 
         return response.SuccessCount;
     }
 
-    public async Task RegisterTokenAsync(RegisterPushTokenRequest request)
+    public async Task RegisterTokenAsync(RegisterPushTokenRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        PushNotificationTokenEntity? existingToken = await _tokenRepository.GetByTokenAsync(request.Token);
+        PushNotificationTokenEntity? existingToken = await _tokenRepository.GetByTokenAsync(request.Token, cancellationToken);
 
         if (existingToken is not null)
         {
             if (!existingToken.IsActive)
             {
                 existingToken.Reactivate();
-                await _tokenRepository.UpdateAsync(existingToken);
+                await _tokenRepository.UpdateAsync(existingToken, cancellationToken);
             }
             else
             {
                 existingToken.UpdateLastUsed();
-                await _tokenRepository.UpdateAsync(existingToken);
+                await _tokenRepository.UpdateAsync(existingToken, cancellationToken);
             }
         }
         else
@@ -195,18 +195,18 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
                 request.Token,
                 request.Platform);
 
-            await _tokenRepository.AddAsync(token);
+            await _tokenRepository.AddAsync(token, cancellationToken);
         }
 
         _logger.LogInformation("Registered push token for user {UserId} on platform {Platform}",
             request.UserId, request.Platform);
     }
 
-    public async Task UnregisterTokenAsync(string token)
+    public async Task UnregisterTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
 
-        await _tokenRepository.DeactivateByTokenAsync(token);
+        await _tokenRepository.DeactivateByTokenAsync(token, cancellationToken);
 
         _logger.LogInformation("Unregistered push token");
     }
@@ -261,7 +261,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
         };
     }
 
-    private async Task HandleFailedTokensAsync(BatchResponse response, List<PushNotificationTokenEntity> tokens)
+    private async Task HandleFailedTokensAsync(BatchResponse response, List<PushNotificationTokenEntity> tokens, CancellationToken cancellationToken)
     {
         if (response.FailureCount == 0)
             return;
@@ -281,7 +281,7 @@ public sealed class FirebasePushNotificationService : IPushNotificationService
             {
                 PushNotificationTokenEntity token = tokens[i];
                 token.Deactivate();
-                await _tokenRepository.UpdateAsync(token);
+                await _tokenRepository.UpdateAsync(token, cancellationToken);
 
                 _logger.LogWarning("Deactivated invalid push token due to error: {ErrorCode}", errorCode);
             }

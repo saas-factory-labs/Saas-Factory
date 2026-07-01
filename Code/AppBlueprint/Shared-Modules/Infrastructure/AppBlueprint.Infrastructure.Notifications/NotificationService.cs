@@ -13,14 +13,14 @@ public sealed class NotificationService(
     IInAppNotificationService inAppService,
     IPushNotificationService pushService) : INotificationService
 {
-    public async Task SendAsync(SendNotificationRequest request)
+    public async Task SendAsync(SendNotificationRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
         Console.WriteLine($"[NotificationService] SendAsync - TenantId: '{request.TenantId}', UserId: '{request.UserId}', Channels: {request.Channels}");
 
         // Get user preferences
-        NotificationPreferencesEntity? preferences = await preferencesRepository.GetByUserIdAsync(request.UserId);
+        NotificationPreferencesEntity? preferences = await preferencesRepository.GetByUserIdAsync(request.UserId, cancellationToken);
 
         // Create default preferences if none exist
         if (preferences is null)
@@ -28,7 +28,7 @@ public sealed class NotificationService(
             preferences = NotificationPreferencesEntity.CreateDefault(
                 request.TenantId,
                 request.UserId);
-            await preferencesRepository.AddAsync(preferences);
+            await preferencesRepository.AddAsync(preferences, cancellationToken);
         }
 
         // Check quiet hours
@@ -42,7 +42,7 @@ public sealed class NotificationService(
 
         if (request.Channels.HasFlag(NotificationChannels.InApp) && preferences.InAppEnabled)
         {
-            tasks.Add(inAppService.SendAsync(request));
+            tasks.Add(inAppService.SendAsync(request, cancellationToken));
         }
 
         if (request.Channels.HasFlag(NotificationChannels.Push) && preferences.PushEnabled)
@@ -56,41 +56,41 @@ public sealed class NotificationService(
                 Data: new Dictionary<string, string>
                 {
                     ["type"] = request.Type.ToString()
-                })));
+                }), cancellationToken));
         }
 
         await Task.WhenAll(tasks);
     }
 
-    public async Task<IEnumerable<UserNotificationEntity>> GetUserNotificationsAsync(string userId, int count = 20)
+    public async Task<IEnumerable<UserNotificationEntity>> GetUserNotificationsAsync(string userId, int count = 20, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
 
-        List<UserNotificationEntity> notifications = await notificationRepository.GetByUserIdAsync(userId);
+        List<UserNotificationEntity> notifications = await notificationRepository.GetByUserIdAsync(userId, cancellationToken);
         return notifications.Take(count);
     }
 
-    public async Task<int> GetUnreadCountAsync(string userId)
+    public async Task<int> GetUnreadCountAsync(string userId, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
-        return await notificationRepository.CountUnreadAsync(userId);
+        return await notificationRepository.CountUnreadAsync(userId, cancellationToken);
     }
 
-    public async Task MarkAsReadAsync(string notificationId)
+    public async Task MarkAsReadAsync(string notificationId, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(notificationId);
 
-        UserNotificationEntity? notification = await notificationRepository.GetByIdAsync(notificationId);
+        UserNotificationEntity? notification = await notificationRepository.GetByIdAsync(notificationId, cancellationToken);
         if (notification is not null)
         {
             notification.MarkAsRead();
-            await notificationRepository.UpdateAsync(notification);
+            await notificationRepository.UpdateAsync(notification, cancellationToken);
         }
     }
 
-    public async Task MarkAllAsReadAsync(string userId)
+    public async Task MarkAllAsReadAsync(string userId, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
-        await notificationRepository.MarkAllAsReadAsync(userId);
+        await notificationRepository.MarkAllAsReadAsync(userId, cancellationToken);
     }
 }

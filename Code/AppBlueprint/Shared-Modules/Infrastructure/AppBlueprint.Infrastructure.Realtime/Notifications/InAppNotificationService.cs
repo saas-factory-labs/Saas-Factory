@@ -13,7 +13,7 @@ public sealed class InAppNotificationService(
     INotificationRepository notificationRepository,
     IHubContext<NotificationHub> hubContext) : IInAppNotificationService
 {
-    public async Task SendAsync(SendNotificationRequest request)
+    public async Task SendAsync(SendNotificationRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -28,7 +28,7 @@ public sealed class InAppNotificationService(
             request.Type,
             request.ActionUrl);
 
-        await notificationRepository.AddAsync(notification);
+        await notificationRepository.AddAsync(notification, cancellationToken);
 
         // Send real-time notification via SignalR
         await hubContext.Clients
@@ -41,6 +41,6 @@ public sealed class InAppNotificationService(
                 type = notification.Type,
                 actionUrl = notification.ActionUrl?.ToString(),
                 timestamp = notification.CreatedAt
-            });
+            }, cancellationToken);
     }
 }

@@ -10,27 +10,27 @@ public interface INotificationService
     /// <summary>
     /// Sends a notification through specified channels.
     /// </summary>
-    Task SendAsync(SendNotificationRequest request);
+    Task SendAsync(SendNotificationRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets recent notifications for the current user.
     /// </summary>
-    Task<IEnumerable<UserNotificationEntity>> GetUserNotificationsAsync(string userId, int count = 20);
+    Task<IEnumerable<UserNotificationEntity>> GetUserNotificationsAsync(string userId, int count = 20, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets unread notification count for the current user.
     /// </summary>
-    Task<int> GetUnreadCountAsync(string userId);
+    Task<int> GetUnreadCountAsync(string userId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Marks a notification as read.
     /// </summary>
-    Task MarkAsReadAsync(string notificationId);
+    Task MarkAsReadAsync(string notificationId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Marks all notifications as read for the current user.
     /// </summary>
-    Task MarkAllAsReadAsync(string userId);
+    Task MarkAllAsReadAsync(string userId, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
