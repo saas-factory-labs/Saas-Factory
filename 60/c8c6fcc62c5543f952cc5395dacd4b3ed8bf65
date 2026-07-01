@@ -1,0 +1,24 @@
+README.md
+  s_00ae87dc33c32d::t_5f30727fcd207b 6-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "60c8c6fcc62c5543f952cc5395dacd4b3ed8bf65",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_00ae87dc33c32d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "78a5930d-73ad-4f3e-aada-eacb1af106dc",
+        "model": "unknown"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
