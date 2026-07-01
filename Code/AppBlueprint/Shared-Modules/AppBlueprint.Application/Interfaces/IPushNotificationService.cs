@@ -10,7 +10,7 @@ public interface IPushNotificationService
     /// <summary>
     /// Sends a push notification to all user devices.
     /// </summary>
-    Task SendAsync(PushNotificationRequest request);
+    Task SendAsync(PushNotificationRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Sends a push notification to all users in a tenant.
@@ -20,12 +20,12 @@ public interface IPushNotificationService
     /// <summary>
     /// Registers a push notification token for the current user.
     /// </summary>
-    Task RegisterTokenAsync(RegisterPushTokenRequest request);
+    Task RegisterTokenAsync(RegisterPushTokenRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Unregisters a push notification token.
     /// </summary>
-    Task UnregisterTokenAsync(string token);
+    Task UnregisterTokenAsync(string token, CancellationToken cancellationToken = default);
 }
 
 /// <summary>

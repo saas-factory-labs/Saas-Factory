@@ -147,8 +147,8 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
                 Message: message,
                 Type: type,
                 ActionUrl: actionUrl,
-                Channels: NotificationChannels.InApp
-            ));
+                Channels: NotificationChannels.InApp),
+                cancellationToken);
             _logger.LogDebug("Saved in-app notification for user {UserId}", userId);
         }
         catch (DbUpdateException ex)
@@ -209,7 +209,8 @@ public sealed class MultiChannelNotificationService : IMultiChannelNotificationS
                 Title: title,
                 Body: message,
                 Data: data
-            ));
+            ),
+            cancellationToken);
             _logger.LogDebug("Sent push notification to user {UserId}", userId);
         }
         catch (HttpRequestException ex)
