@@ -3,6 +3,8 @@
 <h4> A comprehensive platform framework that combines opinionated architecture, production-ready infrastructure, and developer-friendly tooling to deploy enterprise-grade B2B/B2C SaaS applications in minutes instead of months.
  </h4>
 
+ <h5> An analogy of the solution is similar to a modern automotive factory in the real world in the sense that standard modular components such as engine, battery, chassis and other similar components can be easily deployed to a new version of a car or in this case a B2C, B2B/Enterprise SaaS app where the components can for example be the foundational authentication service, database schema, Apis and so on and just like with a modern car the software can be altered and configured via the internet, which in the case of software would be NuGet packages for a SaaS app built with the .Net framework </h5>
+
  <h5 align="center">
 
 <p> Database schema diagram for appblueprintdb </p>
