@@ -16,6 +16,7 @@
 # Build artifacts
 build-artifacts/*
 !build-artifacts/README.md
+.wrangler/
 
 # custom files
 *\Debug

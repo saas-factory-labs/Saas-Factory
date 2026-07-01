@@ -91,6 +91,7 @@ internal static class Program
             "⚙️ Database, Tools & Security",
             [
                 ActionLabels.MigrateDatabase,
+                ActionLabels.SeedDatabase,
                 ActionLabels.ScanApiRoutes,
                 ActionLabels.GenerateJwtToken,
                 ActionLabels.ValidatePostgreSqlPassword,
@@ -475,6 +476,11 @@ internal static class Program
                 case ActionLabels.MigrateDatabase:
                     DatabaseCommand.ExecuteInteractive();
                     AppendLog(state, "Database migration flow completed.");
+                    break;
+
+                case ActionLabels.SeedDatabase:
+                    await SeedCommand.ExecuteInteractive();
+                    AppendLog(state, "Database seed flow completed.");
                     break;
 
                 case ActionLabels.ScanApiRoutes:
@@ -943,6 +949,7 @@ internal static class Program
         public const string CreateProject = "Create a new project in sol";
         public const string CreateItem = "Create a new item (API, DTO)";
         public const string MigrateDatabase = "Migrate database";
+        public const string SeedDatabase = "Seed database with test data";
         public const string ScanApiRoutes = "Scan API routes";
         public const string GenerateJwtToken = "Generate JWT Token (test)";
         public const string ValidatePostgreSqlPassword = "Validate PostgreSQL Password";

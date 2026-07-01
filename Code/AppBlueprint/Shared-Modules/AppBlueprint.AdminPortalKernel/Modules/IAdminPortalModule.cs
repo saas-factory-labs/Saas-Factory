@@ -32,14 +32,14 @@ public interface IAdminPortalModule
     /// surfaced as a "Visit site" link in the shell's per-app header. Null hides the link
     /// when the shell runs in a non-development environment.
     /// </summary>
-    string? SiteUrl => null;
+    Uri? SiteUrl => null;
 
     /// <summary>
     /// Local development URL of the SaaS app (e.g. <c>https://localhost:7247</c>), used instead of
     /// <see cref="SiteUrl"/> when the DeploymentManager shell itself runs in the Development
     /// environment. Null falls back to <see cref="SiteUrl"/>.
     /// </summary>
-    string? LocalSiteUrl => null;
+    Uri? LocalSiteUrl => null;
 
     /// <summary>
     /// Optional brand tokens (colors, button radius) applied to this app's pages in the shell so
@@ -54,7 +54,7 @@ public interface IAdminPortalModule
     /// URL is configured, in which case the shell hides the link.
     /// </summary>
     /// <param name="isDevelopment">Whether the DeploymentManager shell runs in the Development environment.</param>
-    string? ResolveSiteUrl(bool isDevelopment)
+    Uri? ResolveSiteUrl(bool isDevelopment)
     {
         if (isDevelopment && LocalSiteUrl is not null)
         {

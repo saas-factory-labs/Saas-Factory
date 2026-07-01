@@ -5,9 +5,8 @@
 -- Use this to reset your test environment between signup tests
 --
 -- USAGE:
---   docker run --rm -i -e PGPASSWORD="<password>" postgres:17 psql \
---     -h switchyard.proxy.rlwy.net -p 58225 -U postgres -d appblueprintdb \
---     < truncate-signup-tables.sql
+--   psql "<neon-connection-string>" -f truncate-signup-tables.sql
+--   Example connection string: postgres://<user>:<password>@<host>.neon.tech/<dbname>?sslmode=require
 -- ========================================
 
 -- Disable triggers temporarily to avoid FK constraint issues

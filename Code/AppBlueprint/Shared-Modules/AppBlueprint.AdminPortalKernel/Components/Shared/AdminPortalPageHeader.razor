@@ -57,7 +57,7 @@
     private string? ModuleIcon =>
         Registry.TryGet(AppSlug, out IAdminPortalModule? module) && module is not null ? module.Icon : null;
 
-    private string? SiteUrl =>
+    private Uri? SiteUrl =>
         Registry.TryGet(AppSlug, out IAdminPortalModule? module) && module is not null
             ? module.ResolveSiteUrl(Environment.IsDevelopment())
             : null;

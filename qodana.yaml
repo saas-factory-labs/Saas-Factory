@@ -1,0 +1,46 @@
+version: "1.0"
+linter: jetbrains/qodana-dotnet:2025.3
+
+dotnet:
+  solution: "SaaS-Factory.slnx"
+  configuration: Release
+
+properties:
+  qodana.dotnet.project.structure.parallel: true
+
+profile:
+  name: qodana.recommended
+
+include:
+  - name: TaintAnalysis
+  - name: VulnerableLibraries
+  - name: LicenseAudit
+  - name: OwaspTopTen
+  - name: CheckQuickFix
+  - name: CodeUsageInspection
+
+exclude:
+  - name: All
+    paths:
+      - "wwwroot/lib"
+      - "bin"
+      - "obj"
+      - "Migrations"
+      - "node_modules"
+
+  # Suppress false positive for email template layouts - the _Layout.cshtml exists and works at runtime
+  - name: Razor.LayoutNotResolved
+    paths: ["Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/Services/Email/Templates"]
+
+  # Suppress false positive for Blazor RCL static asset paths - _content/{LibraryName}/ is a runtime virtual path
+  - name: Html.PathError
+    paths: ["Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit"]
+
+  # EF entities, DTOs, and config classes require { get; set; } for materialization and binding
+  - name: AutoPropertyCanBeMadeGetOnly.Global
+    paths:
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Infrastructure/DatabaseContexts"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Contracts"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/Entities"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.UiKit/Configuration"
+      - "Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel"

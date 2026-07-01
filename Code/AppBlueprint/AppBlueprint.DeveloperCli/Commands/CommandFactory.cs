@@ -39,6 +39,7 @@ internal static class DeveloperCliServiceCollectionExtensions
         services.AddTransient<ICliCommand>(_ => new StaticCliCommand(ProjectCommand.Create));
         services.AddTransient<ICliCommand>(_ => new StaticCliCommand(ItemCommand.Create));
         services.AddTransient<ICliCommand>(_ => new StaticCliCommand(DatabaseCommand.Create));
+        services.AddTransient<ICliCommand>(_ => new StaticCliCommand(SeedCommand.Create));
         services.AddTransient<ICliCommand>(_ => new StaticCliCommand(GitHubCommand.Create));
         services.AddTransient<ICliCommand>(_ => new StaticCliCommand(GithubActionWorkflowCommand.Create));
         services.AddTransient<ICliCommand>(_ => new StaticCliCommand(RouteCommand.Create));

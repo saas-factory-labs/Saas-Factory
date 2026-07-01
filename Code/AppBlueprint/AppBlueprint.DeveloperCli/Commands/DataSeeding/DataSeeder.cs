@@ -33,59 +33,9 @@ using FluentRegex;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-/// <summary>
-/// Comprehensive database seeder that populates all application tables with realistic test data.
-///
-/// ENTITIES SEEDED (22 types, 1000+ records):
-///
-/// Core Reference Data:
-/// - Languages (24 entries) - World languages with ISO codes
-/// - GlobalRegions (6 entries) - Continental regions
-/// - CountryRegions (3 per country) - Regional subdivisions
-/// - Cities (5 per region) - Major cities worldwide
-/// - Streets (5 per city) - Street addresses
-/// - Countries (195 entries) - All world countries
-/// - Addresses (50 realistic addresses) - Complete address records
-///
-/// Authorization & Access Control:
-/// - Roles (4 standard roles) - Admin, User, Manager, Owner
-/// - Permissions (6 core permissions) - CRUD and management permissions
-/// - UserRoles (50 assignments) - User-to-role mappings with realistic distribution
-///
-/// Business & Payment:
-/// - Subscriptions (20 plans) - Various subscription tiers
-/// - Accounts (50 accounts) - Customer account records
-/// - PaymentProviders (6 providers) - Stripe, PayPal, Square, etc.
-/// - Credits (2 per tenant) - Credit balance tracking
-///
-/// User Management & Multi-tenancy:
-/// - Tenants (10 organizations) - Tenant organizations
-/// - Users (50 users) - Users with realistic profiles
-/// - Customers (30 customers) - Business/Personal/Government types
-/// - ContactPersons (50 contacts) - Customer contact persons
-///
-/// Communication & Files:
-/// - EmailAddresses (100 emails) - Linked to users/customers
-/// - PhoneNumbers (80 numbers) - With country codes and verification
-/// - Notifications (200 notifications) - User notification records
-/// - Files (100 files) - File metadata with various extensions
-///
-/// Collaboration & Integration:
-/// - Teams (15 teams) - Organizational teams within tenants
-/// - Integrations (30 integrations) - Third-party service connections
-///
-/// Uses Bogus library for realistic fake data generation.
-/// Implements proper dependency ordering for foreign key constraints.
-/// Includes comprehensive error handling and logging.
-/// </summary>
+namespace AppBlueprint.DeveloperCli.Commands.DataSeeding;
 
-
-namespace AppBlueprint.SeedTest;
-
-// CA1515 suppressed: DataSeeder is intentionally public for use by ApiService.SystemController
-#pragma warning disable CA1515
-public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContext, ILogger<DataSeeder> logger)
-#pragma warning restore CA1515
+internal sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bDbContext, ILogger<DataSeeder> logger)
 {
     public async Task SeedDatabaseAsync(CancellationToken cancellationToken = default)
     {
@@ -97,43 +47,32 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             return;
         }
 
-        // Clear the change tracker to avoid tracking conflicts after checking for seeded data
         dbContext.ChangeTracker.Clear();
         b2bDbContext.ChangeTracker.Clear();
 
-        // Correct dependency order
         await SeedLanguagesAsync(cancellationToken);
         await SeedGlobalRegionsAsync(cancellationToken);
-        await SeedCountriesAsync(cancellationToken); // After GlobalRegions
-        await SeedCountryRegionsAsync(cancellationToken); // After Countries
-        await SeedCitiesAsync(cancellationToken); // After CountryRegions
-        await SeedStreetsAsync(cancellationToken); // After Cities
-        await SeedAddressesAsync(cancellationToken); // After Streets
+        await SeedCountriesAsync(cancellationToken);
+        await SeedCountryRegionsAsync(cancellationToken);
+        await SeedCitiesAsync(cancellationToken);
+        await SeedStreetsAsync(cancellationToken);
+        await SeedAddressesAsync(cancellationToken);
 
-        // Authorization and permissions
         await SeedRolesAsync(cancellationToken);
         await SeedPermissionsAsync(cancellationToken);
-
         await SeedRolePermissionsAsync(cancellationToken);
-        // await SeedResourcePermissionTypesAsync(cancellationToken);
-        // await SeedResourcePermissionsAsync(cancellationToken);
 
-        // Payment and billing
         await SeedPaymentProvidersAsync(cancellationToken);
         await SeedSubscriptionsAsync(cancellationToken);
-        // await SeedCreditsAsync(cancellationToken);
 
-        // Customers and accounts
         await SeedAccountsAsync(cancellationToken);
 
-        // User management - fixing entity structures
         await SeedTenantsAsync(cancellationToken);
         await SeedUsersAsync(cancellationToken);
         await SeedCustomersAsync(cancellationToken);
         await SeedCreditsAsync(cancellationToken);
         await SeedEmailAddressesAsync(cancellationToken);
 
-        // Additional entities
         await SeedContactPersonsAsync(cancellationToken);
         await SeedPhoneNumbersAsync(cancellationToken);
         await SeedPaymentProvidersAsync(cancellationToken);
@@ -142,27 +81,15 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         await SeedFilesAsync(cancellationToken);
         await SeedIntegrationsAsync(cancellationToken);
 
-        // Auditing & Sessions
         await SeedSessionsAsync(cancellationToken);
         await SeedAuditLogsAsync(cancellationToken);
 
-        // B2B Entities
         await SeedOrganizationsAsync(cancellationToken);
         await SeedApiKeysAsync(cancellationToken);
-        // Todo entities are intentionally excluded from the shared seed data set
         await SeedTeamMembersAsync(cancellationToken);
         await SeedTeamInvitesAsync(cancellationToken);
 
-        // Authorization Relations
         await SeedUserRolesAsync(cancellationToken);
-        // TODO: Add these when available in ApplicationDbContext
-        // await SeedAdminsAsync(cancellationToken);
-
-        // Data Management
-        // TODO: Add these when available in ApplicationDbContext
-        // await SeedDataExportsAsync(cancellationToken);
-        // await SeedWebhooksAsync(cancellationToken);
-        // await SeedSearchesAsync(cancellationToken);
 
         logger.LogInformation(DataSeederMessages.DatabaseSeedingCompleted);
     }
@@ -173,33 +100,28 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             .Select(t => t.GetTableName())
             .Distinct()
             .Where(name => !string.IsNullOrEmpty(name))
-            .Cast<string>() // Ensure non-nullable
+            .Cast<string>()
             .ToList();
 
         foreach (string tableName in tableNames)
         {
             try
             {
-                // Validate table name against EF Core schema (defense-in-depth)
                 if (!IsValidPostgreSqlIdentifier(tableName))
                 {
                     logger.LogWarning("Skipping invalid table name: {TableName}", tableName);
                     continue;
                 }
 
-                // Use EF Core's ExecuteSqlRaw with validated table name from schema
-                // Table names cannot be parameterized, but we validate it comes from EF schema
-#pragma warning disable CA2100 // Table name is validated from EF Core schema metadata
-#pragma warning disable EF1002 // Table name is validated from EF Core schema metadata
+#pragma warning disable CA2100, EF1002
                 await dbContext.Database.ExecuteSqlRawAsync(
                     $"TRUNCATE TABLE \"{tableName}\" RESTART IDENTITY CASCADE",
                     cancellationToken);
-#pragma warning restore EF1002
-#pragma warning restore CA2100
+#pragma warning restore EF1002, CA2100
 
                 logger.LogInformation("Successfully truncated table: {TableName}", tableName);
             }
-            catch (Npgsql.PostgresException ex) when (ex.SqlState == "42P01") // Table does not exist
+            catch (Npgsql.PostgresException ex) when (ex.SqlState == "42P01")
             {
                 logger.LogWarning("Table '{TableName}' does not exist, skipping truncation", tableName);
             }
@@ -214,8 +136,6 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
 
     private static bool IsValidPostgreSqlIdentifier(string identifier)
     {
-        // PostgreSQL identifier validation: alphanumeric, underscore, max 63 chars
-        // Must start with letter or underscore
         return !string.IsNullOrWhiteSpace(identifier) &&
                identifier.Length <= 63 &&
                System.Text.RegularExpressions.Regex.IsMatch(identifier, Pattern.With
@@ -418,17 +338,14 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
     {
         if (await dbContext.RolePermissions.AnyAsync(cancellationToken)) return;
 
-        // Get all roles and permissions from database
         var roles = await dbContext.Roles.ToListAsync(cancellationToken);
         var permissions = await dbContext.Permissions.ToListAsync(cancellationToken);
 
-        // Find specific roles
         var adminRole = roles.FirstOrDefault(r => r.Name == "Admin");
         var managerRole = roles.FirstOrDefault(r => r.Name == "Manager");
         var userRole = roles.FirstOrDefault(r => r.Name == "User");
         var ownerRole = roles.FirstOrDefault(r => r.Name == "Owner");
 
-        // Find specific permissions
         var createPerm = permissions.FirstOrDefault(p => p.Name == "Create");
         var readPerm = permissions.FirstOrDefault(p => p.Name == "Read");
         var updatePerm = permissions.FirstOrDefault(p => p.Name == "Update");
@@ -438,7 +355,6 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
 
         List<RolePermissionEntity> rolePermissions = [];
 
-        // Admin Role - Full permissions
         if (adminRole is not null)
         {
             if (createPerm is not null) rolePermissions.Add(new() { RoleId = adminRole.Id, PermissionId = createPerm.Id, Role = adminRole, Permission = createPerm });
@@ -449,7 +365,6 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (manageRolesPerm is not null) rolePermissions.Add(new() { RoleId = adminRole.Id, PermissionId = manageRolesPerm.Id, Role = adminRole, Permission = manageRolesPerm });
         }
 
-        // Owner Role - Full permissions (same as Admin)
         if (ownerRole is not null)
         {
             if (createPerm is not null) rolePermissions.Add(new() { RoleId = ownerRole.Id, PermissionId = createPerm.Id, Role = ownerRole, Permission = createPerm });
@@ -460,7 +375,6 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (manageRolesPerm is not null) rolePermissions.Add(new() { RoleId = ownerRole.Id, PermissionId = manageRolesPerm.Id, Role = ownerRole, Permission = manageRolesPerm });
         }
 
-        // Manager Role - CRUD + ManageUsers (no ManageRoles)
         if (managerRole is not null)
         {
             if (createPerm is not null) rolePermissions.Add(new() { RoleId = managerRole.Id, PermissionId = createPerm.Id, Role = managerRole, Permission = createPerm });
@@ -470,7 +384,6 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (manageUsersPerm is not null) rolePermissions.Add(new() { RoleId = managerRole.Id, PermissionId = manageUsersPerm.Id, Role = managerRole, Permission = manageUsersPerm });
         }
 
-        // User Role - Basic CRUD only (for their own resources)
         if (userRole is not null)
         {
             if (createPerm is not null) rolePermissions.Add(new() { RoleId = userRole.Id, PermissionId = createPerm.Id, Role = userRole, Permission = createPerm });
@@ -493,95 +406,49 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var roles = await dbContext.Roles.ToListAsync(cancellationToken);
 
             if (users.Count == 0 || roles.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed UserRoles - Users or Roles not found. Ensure SeedUsersAsync and SeedRolesAsync are called first.");
-            }
+                throw new InvalidOperationException("Cannot seed UserRoles - Users or Roles not found.");
 
-            // Find specific roles
             var adminRole = roles.FirstOrDefault(r => r.Name == "Admin");
             var managerRole = roles.FirstOrDefault(r => r.Name == "Manager");
             var userRole = roles.FirstOrDefault(r => r.Name == "User");
             var ownerRole = roles.FirstOrDefault(r => r.Name == "Owner");
 
             List<UserRoleEntity> userRoles = [];
-
-            // Distribute roles realistically:
-            // - Owner: first 2 users
-            // - Admin: next 4 users
-            // - Manager: ~15% of remaining users
-            // - User: rest of users
-
             var userIndex = 0;
-#pragma warning disable CA5394 // Random is used for non-cryptographic test data generation, not security
+#pragma warning disable CA5394
             var random = new Random();
 
-            // Assign Owner role to first 2-3 users
             if (ownerRole is not null && users.Count > 0)
             {
-                var ownerCount = Math.Min(random.Next(2, 4), users.Count); // Random between 2 and 3
+                var ownerCount = Math.Min(random.Next(2, 4), users.Count);
                 for (int i = 0; i < ownerCount; i++)
-                {
-                    userRoles.Add(new UserRoleEntity
-                    {
-                        UserId = users[userIndex].Id,
-                        RoleId = ownerRole.Id
-                    });
-                    userIndex++;
-                }
+                    userRoles.Add(new UserRoleEntity { UserId = users[userIndex++].Id, RoleId = ownerRole.Id });
             }
 
-            // Assign Admin role to next 3-5 users
             if (adminRole is not null && userIndex < users.Count)
             {
-#pragma warning disable CA5394 // Random is used for non-cryptographic test data generation, not security
-                var adminCount = Math.Min(random.Next(3, 6), users.Count - userIndex); // Random between 3 and 5
-#pragma warning restore CA5394
+                var adminCount = Math.Min(random.Next(3, 6), users.Count - userIndex);
                 for (int i = 0; i < adminCount; i++)
-                {
-                    userRoles.Add(new UserRoleEntity
-                    {
-                        UserId = users[userIndex].Id,
-                        RoleId = adminRole.Id
-                    });
-                    userIndex++;
-                }
+                    userRoles.Add(new UserRoleEntity { UserId = users[userIndex++].Id, RoleId = adminRole.Id });
             }
 
-            // Assign Manager role to ~15% of remaining users
             if (managerRole is not null && userIndex < users.Count)
             {
-                var remainingUsers = users.Count - userIndex;
-                var managerCount = Math.Max(1, (int)(remainingUsers * 0.15));
-                managerCount = Math.Min(managerCount, remainingUsers);
-
+                var managerCount = Math.Max(1, (int)((users.Count - userIndex) * 0.15));
+                managerCount = Math.Min(managerCount, users.Count - userIndex);
                 for (int i = 0; i < managerCount; i++)
-                {
-                    userRoles.Add(new UserRoleEntity
-                    {
-                        UserId = users[userIndex].Id,
-                        RoleId = managerRole.Id
-                    });
-                    userIndex++;
-                }
+                    userRoles.Add(new UserRoleEntity { UserId = users[userIndex++].Id, RoleId = managerRole.Id });
             }
 
-            // Assign User role to all remaining users
             if (userRole is not null && userIndex < users.Count)
             {
                 for (int i = userIndex; i < users.Count; i++)
-                {
-                    userRoles.Add(new UserRoleEntity
-                    {
-                        UserId = users[i].Id,
-                        RoleId = userRole.Id
-                    });
-                }
+                    userRoles.Add(new UserRoleEntity { UserId = users[i].Id, RoleId = userRole.Id });
             }
+#pragma warning restore CA5394
 
             await dbContext.UserRoles.AddRangeAsync(userRoles, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-#pragma warning restore CA5394
-
             logger.LogInformation("Successfully seeded {Count} user roles", userRoles.Count);
         }
         catch (Exception ex)
@@ -595,7 +462,6 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
     {
         try
         {
-            // Use AnyAsync for better performance when checking existence
             return await dbContext.Languages.AnyAsync(cancellationToken)
                    && await dbContext.GlobalRegions.AnyAsync(cancellationToken)
                    && await dbContext.Countries.AnyAsync(cancellationToken)
@@ -620,18 +486,16 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
         }
         catch (InvalidOperationException ex)
         {
-            logger.LogWarning(ex, "Unable to check if entities are seeded due to database schema mismatch. Assuming no data exists");
+            logger.LogWarning(ex, "Unable to check if entities are seeded. Assuming no data exists");
             return false;
         }
-
         catch (Npgsql.PostgresException ex)
         {
-            logger.LogWarning(ex, "Unable to check if entities are seeded due to PostgreSQL error. Assuming no data exists");
+            logger.LogWarning(ex, "PostgreSQL error checking seeded state. Assuming no data exists");
             return false;
         }
     }
 
-    // --- Additional entity seeding methods ---
     private async Task SeedUsersAsync(CancellationToken cancellationToken)
     {
         try
@@ -639,7 +503,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (await dbContext.Users.AnyAsync(cancellationToken)) return;
 
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
-            if (tenants.Count == 0) throw new InvalidOperationException("Cannot seed Users - no Tenants found. Ensure SeedTenantsAsync is called first.");
+            if (tenants.Count == 0) throw new InvalidOperationException("Cannot seed Users - no Tenants found.");
 
             var faker = new Faker<UserEntity>()
                 .RuleFor(u => u.FirstName, f => f.Person.FirstName)
@@ -652,14 +516,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var users = faker.Generate(50);
             await dbContext.Users.AddRangeAsync(users, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} users", users.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Users");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Users"); throw; }
     }
 
     private async Task SeedTenantsAsync(CancellationToken cancellationToken)
@@ -677,14 +536,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var tenants = faker.Generate(10);
             await dbContext.Tenants.AddRangeAsync(tenants, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} tenants", tenants.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Tenants");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Tenants"); throw; }
     }
 
     private async Task SeedCustomersAsync(CancellationToken cancellationToken)
@@ -694,7 +548,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (await dbContext.Customers.AnyAsync(cancellationToken)) return;
 
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
-            if (tenants.Count == 0) throw new InvalidOperationException("Cannot seed Customers - no Tenants found. Ensure SeedTenantsAsync is called first.");
+            if (tenants.Count == 0) throw new InvalidOperationException("Cannot seed Customers - no Tenants found.");
 
             var faker = new Faker<CustomerEntity>()
                 .RuleFor(c => c.CustomerType, f => f.PickRandom<CustomerType>())
@@ -706,14 +560,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var customers = faker.Generate(30);
             await dbContext.Customers.AddRangeAsync(customers, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} customers", customers.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Customers");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Customers"); throw; }
     }
 
     private async Task SeedCreditsAsync(CancellationToken cancellationToken)
@@ -723,23 +572,18 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (await dbContext.Credits.AnyAsync(cancellationToken)) return;
 
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
-            if (tenants.Count == 0) throw new InvalidOperationException("Cannot seed Credits - no Tenants found. Ensure SeedTenantsAsync is called first.");
+            if (tenants.Count == 0) throw new InvalidOperationException("Cannot seed Credits - no Tenants found.");
 
             var faker = new Faker<CreditEntity>()
                 .RuleFor(c => c.CreditRemaining, f => f.Random.Decimal(0, 10000))
                 .RuleFor(c => c.TenantId, f => f.PickRandom(tenants).Id);
 
-            var credits = faker.Generate(tenants.Count * 2); // 2 credit records per tenant
+            var credits = faker.Generate(tenants.Count * 2);
             await dbContext.Credits.AddRangeAsync(credits, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} credits", credits.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Credits");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Credits"); throw; }
     }
 
     private async Task SeedEmailAddressesAsync(CancellationToken cancellationToken)
@@ -753,9 +597,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
 
             if (users.Count == 0 || customers.Count == 0 || tenants.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed EmailAddresses - Users, Customers, or Tenants not found. Ensure related entities are seeded first.");
-            }
+                throw new InvalidOperationException("Cannot seed EmailAddresses - prerequisite entities missing.");
 
             var faker = new Faker<EmailAddressEntity>()
                 .RuleFor(e => e.Address, f => f.Internet.Email())
@@ -766,14 +608,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var emailAddresses = faker.Generate(100);
             await dbContext.EmailAddresses.AddRangeAsync(emailAddresses, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} email addresses", emailAddresses.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding EmailAddresses");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding EmailAddresses"); throw; }
     }
 
     private async Task SeedContactPersonsAsync(CancellationToken cancellationToken)
@@ -786,9 +623,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
 
             if (customers.Count == 0 || tenants.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed ContactPersons - Customers or Tenants not found. Ensure related entities are seeded first.");
-            }
+                throw new InvalidOperationException("Cannot seed ContactPersons - prerequisite entities missing.");
 
             var faker = new Faker<ContactPersonEntity>()
                 .RuleFor(cp => cp.FirstName, f => f.Person.FirstName)
@@ -801,14 +636,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var contactPersons = faker.Generate(50);
             await dbContext.ContactPersons.AddRangeAsync(contactPersons, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} contact persons", contactPersons.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding ContactPersons");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding ContactPersons"); throw; }
     }
 
     private async Task SeedPhoneNumbersAsync(CancellationToken cancellationToken)
@@ -823,9 +653,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
 
             if (users.Count == 0 || customers.Count == 0 || contactPersons.Count == 0 || tenants.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed PhoneNumbers - Users, Customers, ContactPersons, or Tenants not found. Ensure related entities are seeded first.");
-            }
+                throw new InvalidOperationException("Cannot seed PhoneNumbers - prerequisite entities missing.");
 
             var faker = new Faker<PhoneNumberEntity>()
                 .RuleFor(pn => pn.Number, f => f.Phone.PhoneNumber("##########"))
@@ -840,14 +668,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var phoneNumbers = faker.Generate(80);
             await dbContext.PhoneNumbers.AddRangeAsync(phoneNumbers, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} phone numbers", phoneNumbers.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding PhoneNumbers");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding PhoneNumbers"); throw; }
     }
 
     private async Task SeedPaymentProvidersAsync(CancellationToken cancellationToken)
@@ -868,14 +691,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
 
             await dbContext.PaymentProviders.AddRangeAsync(paymentProviders, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} payment providers", paymentProviders.Length);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding PaymentProviders");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding PaymentProviders"); throw; }
     }
 
     private async Task SeedTeamsAsync(CancellationToken cancellationToken)
@@ -888,9 +706,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
             if (tenants.Count == 0 || users.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed Teams - Tenants or Users not found. Ensure related entities are seeded first.");
-            }
+                throw new InvalidOperationException("Cannot seed Teams - prerequisite entities missing.");
 
             var faker = new Faker<TeamEntity>()
                 .RuleFor(t => t.Name, f => f.Commerce.Department())
@@ -901,14 +717,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var teams = faker.Generate(15);
             await b2bDbContext.Teams.AddRangeAsync(teams, cancellationToken);
             await b2bDbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} teams", teams.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Teams");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Teams"); throw; }
     }
 
     private async Task SeedNotificationsAsync(CancellationToken cancellationToken)
@@ -918,11 +729,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (await dbContext.Notifications.AnyAsync(cancellationToken)) return;
 
             var users = await dbContext.Users.ToListAsync(cancellationToken);
-
-            if (users.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed Notifications - Users not found. Ensure SeedUsersAsync is called first.");
-            }
+            if (users.Count == 0) throw new InvalidOperationException("Cannot seed Notifications - no Users found.");
 
             var faker = new Faker<NotificationEntity>()
                 .RuleFor(n => n.Title, f => f.Lorem.Sentence(3))
@@ -934,14 +741,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var notifications = faker.Generate(200);
             await dbContext.Notifications.AddRangeAsync(notifications, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} notifications", notifications.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Notifications");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Notifications"); throw; }
     }
 
     private async Task SeedFilesAsync(CancellationToken cancellationToken)
@@ -951,31 +753,22 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (await dbContext.Files.AnyAsync(cancellationToken)) return;
 
             var users = await dbContext.Users.ToListAsync(cancellationToken);
-
-            if (users.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed Files - Users not found. Ensure SeedUsersAsync is called first.");
-            }
+            if (users.Count == 0) throw new InvalidOperationException("Cannot seed Files - no Users found.");
 
             var fileExtensions = new[] { ".pdf", ".docx", ".xlsx", ".png", ".jpg", ".mp4", ".csv", ".txt" };
             var faker = new Faker<FileEntity>()
                 .RuleFor(f => f.FileName, faker => faker.System.FileName())
                 .RuleFor(f => f.FileExtension, faker => faker.PickRandom(fileExtensions))
-                .RuleFor(f => f.FileSize, faker => faker.Random.Long(1024, 50000000)) // 1KB to 50MB
+                .RuleFor(f => f.FileSize, faker => faker.Random.Long(1024, 50000000))
                 .RuleFor(f => f.FilePath, faker => faker.System.DirectoryPath())
                 .RuleFor(f => f.OwnerId, faker => faker.PickRandom(users).Id);
 
             var files = faker.Generate(100);
             await dbContext.Files.AddRangeAsync(files, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} files", files.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Files");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Files"); throw; }
     }
 
     private async Task SeedIntegrationsAsync(CancellationToken cancellationToken)
@@ -985,15 +778,11 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (await dbContext.Integrations.AnyAsync(cancellationToken)) return;
 
             var users = await dbContext.Users.ToListAsync(cancellationToken);
-
-            if (users.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed Integrations - Users not found. Ensure SeedUsersAsync is called first.");
-            }
+            if (users.Count == 0) throw new InvalidOperationException("Cannot seed Integrations - no Users found.");
 
             var serviceNames = new[] { "Stripe", "SendGrid", "Twilio", "Slack", "Discord", "GitHub", "GitLab", "Zoom", "Teams", "AWS S3" };
             var faker = new Faker<IntegrationEntity>()
-                .RuleFor(i => i.Name, (f, i) => $"{f.PickRandom(serviceNames)} Integration")
+                .RuleFor(i => i.Name, (f, _) => $"{f.PickRandom(serviceNames)} Integration")
                 .RuleFor(i => i.ServiceName, f => f.PickRandom(serviceNames))
                 .RuleFor(i => i.Description, f => f.Lorem.Sentence())
                 .RuleFor(i => i.ApiKeySecretReference, f => f.Random.AlphaNumeric(32))
@@ -1002,17 +791,11 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var integrations = faker.Generate(30);
             await dbContext.Integrations.AddRangeAsync(integrations, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} integrations", integrations.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Integrations");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Integrations"); throw; }
     }
 
-    // --- Auditing & Sessions ---
     private async Task SeedSessionsAsync(CancellationToken cancellationToken)
     {
         try
@@ -1027,14 +810,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var sessions = faker.Generate(50);
             await dbContext.Sessions.AddRangeAsync(sessions, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} sessions", sessions.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Sessions");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Sessions"); throw; }
     }
 
     private async Task SeedAuditLogsAsync(CancellationToken cancellationToken)
@@ -1047,9 +825,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
 
             if (users.Count == 0 || tenants.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed AuditLogs - Users or Tenants not found. Ensure related entities are seeded first.");
-            }
+                throw new InvalidOperationException("Cannot seed AuditLogs - prerequisite entities missing.");
 
             var actions = new[] { "CREATE", "UPDATE", "DELETE", "LOGIN", "LOGOUT", "EXPORT", "IMPORT" };
             var categories = new[] { "User", "Customer", "Tenant", "Role", "Permission", "Account", "File" };
@@ -1066,17 +842,11 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var auditLogs = faker.Generate(300);
             await dbContext.AuditLogs.AddRangeAsync(auditLogs, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} audit logs", auditLogs.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding AuditLogs");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding AuditLogs"); throw; }
     }
 
-    // --- B2B Entities ---
     private async Task SeedOrganizationsAsync(CancellationToken cancellationToken)
     {
         try
@@ -1084,11 +854,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             if (await b2bDbContext.Organizations.AnyAsync(cancellationToken)) return;
 
             var users = await dbContext.Users.ToListAsync(cancellationToken);
-
-            if (users.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed Organizations - Users not found. Ensure SeedUsersAsync is called first.");
-            }
+            if (users.Count == 0) throw new InvalidOperationException("Cannot seed Organizations - no Users found.");
 
             var faker = new Faker<AppBlueprint.Infrastructure.Persistence.DatabaseContexts.B2B.Entities.Organization.OrganizationEntity>()
                 .RuleFor(o => o.Name, f => f.Company.CompanyName())
@@ -1098,14 +864,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var organizations = faker.Generate(20);
             await b2bDbContext.Organizations.AddRangeAsync(organizations, cancellationToken);
             await b2bDbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} organizations", organizations.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding Organizations");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding Organizations"); throw; }
     }
 
     private async Task SeedApiKeysAsync(CancellationToken cancellationToken)
@@ -1118,9 +879,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var tenants = await dbContext.Tenants.ToListAsync(cancellationToken);
 
             if (users.Count == 0 || tenants.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed ApiKeys - Users or Tenants not found. Ensure related entities are seeded first.");
-            }
+                throw new InvalidOperationException("Cannot seed ApiKeys - prerequisite entities missing.");
 
             var faker = new Faker<ApiKeyEntity>()
                 .RuleFor(a => a.Name, f => f.Hacker.Noun() + " API Key")
@@ -1132,17 +891,10 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var apiKeys = faker.Generate(40);
             await b2bDbContext.ApiKeys.AddRangeAsync(apiKeys, cancellationToken);
             await b2bDbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} API keys", apiKeys.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding ApiKeys");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding ApiKeys"); throw; }
     }
-
-    // Todo seeding is intentionally excluded from this project
 
     private async Task SeedTeamMembersAsync(CancellationToken cancellationToken)
     {
@@ -1154,9 +906,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
             if (teams.Count == 0 || users.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed TeamMembers - Teams or Users not found. Ensure related entities are seeded first.");
-            }
+                throw new InvalidOperationException("Cannot seed TeamMembers - prerequisite entities missing.");
 
             var aliases = new[] { "TheLeader", "Coder", "Designer", "Coordinator", "Helper", "Ninja", "Wizard", "Guru" };
             var faker = new Faker<TeamMemberEntity>()
@@ -1169,14 +919,9 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var teamMembers = faker.Generate(60);
             await b2bDbContext.TeamMembers.AddRangeAsync(teamMembers, cancellationToken);
             await b2bDbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} team members", teamMembers.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding TeamMembers");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding TeamMembers"); throw; }
     }
 
     private async Task SeedTeamInvitesAsync(CancellationToken cancellationToken)
@@ -1189,9 +934,7 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var users = await dbContext.Users.ToListAsync(cancellationToken);
 
             if (teams.Count == 0 || users.Count == 0)
-            {
-                throw new InvalidOperationException("Cannot seed TeamInvites - Teams or Users not found. Ensure related entities are seeded first.");
-            }
+                throw new InvalidOperationException("Cannot seed TeamInvites - prerequisite entities missing.");
 
             var faker = new Faker<TeamInviteEntity>()
                 .RuleFor(ti => ti.OwnerId, f => f.PickRandom(users).Id)
@@ -1203,13 +946,8 @@ public sealed class DataSeeder(ApplicationDbContext dbContext, B2BDbContext b2bD
             var teamInvites = faker.Generate(25);
             await b2bDbContext.TeamInvites.AddRangeAsync(teamInvites, cancellationToken);
             await b2bDbContext.SaveChangesAsync(cancellationToken);
-
             logger.LogInformation("Successfully seeded {Count} team invites", teamInvites.Count);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error seeding TeamInvites");
-            throw;
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error seeding TeamInvites"); throw; }
     }
 }

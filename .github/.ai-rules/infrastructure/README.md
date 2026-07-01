@@ -16,4 +16,8 @@ When implementing infrastructure code, follow these rules very carefully.
 
   - Pulumi
 
-*No specific rules defined yet. Future rules will cover cloud hosting infrastructure using docker, deployment patterns, database migration strategy, Github Action workflows and cloud services configuration using Pulumi.*
+## Rules Files
+
+- **[Docker Security](./docker-security.md) - CRITICAL: SHA256 digest pinning requirement and SonarCloud configuration for .NET projects.**
+
+*Additional rules will cover cloud hosting infrastructure using Docker, deployment patterns, database migration strategy, GitHub Action workflows, and cloud services configuration using Pulumi.*

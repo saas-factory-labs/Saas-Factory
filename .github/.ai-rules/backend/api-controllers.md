@@ -10,6 +10,33 @@ globs:
 
 When implementing API Controllers, follow these rules very carefully.
 
+## HttpClient — Use Uri Objects (CA2234)
+
+When calling `HttpClient` methods (`GetAsync`, `PostAsync`, `PutAsync`, `DeleteAsync`), use `new Uri(url, UriKind.Relative)` or `new Uri(url, UriKind.Absolute)` instead of passing strings directly.
+
+```csharp
+// ✅ Correct
+var response = await _httpClient.GetAsync(new Uri($"api/todos/{tenantId}", UriKind.Relative));
+var result = await _httpClient.PostAsync(new Uri("https://auth.example.com/token", UriKind.Absolute), content);
+
+// ❌ Incorrect
+var response = await _httpClient.GetAsync($"api/todos/{tenantId}");
+```
+
+## Typed Header Properties (ASP0015)
+
+Use typed header properties instead of string literals for HTTP headers.
+
+```csharp
+// ✅ Correct
+context.Response.Headers.ContentType = "application/json";
+context.Response.Headers.CacheControl = "no-cache";
+
+// ❌ String literals
+context.Response.Headers["Content-Type"] = "application/json";
+context.Response.Headers["Cache-Control"] = "no-cache";
+```
+
 ## Implementation
 
 API controllers should be created in the `/Code/AppBlueprint/Shared-Modules/AppBlueprint.Presentation.ApiModule/Controllers` directory.

@@ -21,9 +21,9 @@ IMPORTANT: Always follow these steps very carefully when implementing changes:
 
 ## Backend Rules Files
 
-- [API Controllers](./api-controllers.md) - Guidelines for API controller implementation.
-- [Database Repositories](./database-repositories.md) - Database access patterns and repository implementations.
-- [Exception Handling](./exception-handling.md) - **CRITICAL: When to use try-catch vs global exception handling.**
+- [API Controllers](./api-controllers.md) - Guidelines for API controller implementation, HttpClient URI usage (CA2234), and typed header properties (ASP0015).
+- [Database Repositories](./database-repositories.md) - Database access patterns, repository implementations, and SQL sort order rules.
+- [Exception Handling](./exception-handling.md) - **CRITICAL: When to use try-catch vs global exception handling. Never swallow exceptions (S2139).**
 - [External Integrations](./external-integrations.md) - Implementation of integration to external services.
 - **[Multi-Tenancy](./multi-tenancy.md) - CRITICAL: Tenant resolution security rules (JWT-only policy).**
 - **[Tenant Isolation: Defense-in-Depth](./tenant-isolation-defense-in-depth.md) - CRITICAL: Named Query Filters + RLS implementation guide.**

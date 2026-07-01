@@ -10,8 +10,16 @@
     <!-- Alpha phase: block all search engine indexing -->
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet"/>
 
-    <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+    <!-- Content Security Policy.
+         The ws://localhost:* / wss://localhost:* entries in connect-src let the
+         `dotnet watch` browser-refresh / hot-reload WebSocket connect during local
+         development. They are harmless in production (a page can only open a socket
+         to the visitor's own machine).
+         NOTE: frame-ancestors is intentionally NOT set here - it is ignored when
+         delivered via a <meta> tag. Enforce clickjacking protection with a
+         'Content-Security-Policy: frame-ancestors ...' (or 'X-Frame-Options: DENY')
+         HTTP response header at the host/edge (e.g. Cloudflare/Railway) instead. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https: ws://localhost:* wss://localhost:*; base-uri 'self'; form-action 'self';">
     
     <!-- Self-hosted fonts with SRI -->
     <link rel="stylesheet" href="fonts.css" />

@@ -5,11 +5,48 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <!-- Set to false to skip the Tailwind CSS build (e.g. CI agents without Node.js/npx). -->
+    <RunTailwindBuild Condition="'$(RunTailwindBuild)' == ''">true</RunTailwindBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
   </ItemGroup>
+
+  <!--
+    Compile Tailwind (wwwroot/output.css) from input.css before building.
+    Incremental: only runs when input.css, the Tailwind config, or any scanned
+    .razor/.html file is newer than output.css. Uses npx so no global install is
+    needed; pinned to tailwindcss@3.4.1 to match tailwind.config.js (v3 syntax).
+    A failure (e.g. no Node.js) warns rather than breaking the .NET build.
+    Inputs are declared as items so the ** globs expand reliably.
+  -->
+  <ItemGroup>
+    <TailwindInput Include="wwwroot/input.css;tailwind.config.js" />
+    <TailwindInput Include="Components/**/*.razor" />
+    <TailwindInput Include="wwwroot/**/*.html" />
+  </ItemGroup>
+
+  <Target Name="BuildTailwindCss"
+          BeforeTargets="BeforeBuild"
+          Condition="'$(RunTailwindBuild)' != 'false'"
+          Inputs="@(TailwindInput)"
+          Outputs="wwwroot/output.css">
+    <Message Importance="high" Text="Building Tailwind CSS -> wwwroot/output.css" />
+    <Exec Command="npx --yes tailwindcss@3.4.1 -i ./wwwroot/input.css -o ./wwwroot/output.css --minify"
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="TailwindExitCode" />
+    </Exec>
+    <Warning Condition="'$(TailwindExitCode)' != '0'"
+             Text="Tailwind CSS build failed (exit $(TailwindExitCode)); wwwroot/output.css was NOT regenerated. Install Node.js/npx, run 'npm run build:css' manually, or set RunTailwindBuild=false to silence this." />
+    <!--
+      Tailwind skips the disk write when the compiled CSS is byte-identical, leaving
+      output.css older than the inputs so this target would never go up-to-date.
+      Touch it on success so incremental builds can skip when nothing changed.
+    -->
+    <Touch Condition="'$(TailwindExitCode)' == '0'" Files="wwwroot/output.css" />
+  </Target>
 
 </Project>

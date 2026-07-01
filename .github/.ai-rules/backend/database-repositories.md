@@ -5,6 +5,24 @@ globs:
   - "**/Domain/**/*Repository*.cs"
 ---
 
+# Database Repositories
+
+## SQL — Always Specify Sort Order
+
+Always specify `ASC` or `DESC` explicitly in `ORDER BY` clauses to make sort direction unambiguous.
+
+```sql
+-- ✅ Correct
+SELECT * FROM Users ORDER BY CreatedAt DESC;
+
+-- ❌ Implicit ascending (avoid)
+SELECT * FROM Users ORDER BY CreatedAt;
+```
+
+## Entity Framework Verification
+
+Use the `PostgreSQL MCP server` to query the database for schema verification and data validation when assessing Entity Framework code and migrations.
+
 <!-- # DDD Repositories
 
 When implementing a Domain-Driven Design (DDD) Repository, follow these rules very carefully.

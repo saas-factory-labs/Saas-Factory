@@ -13,4 +13,5 @@ When working with baseline features that apply to both B2C and B2B, follow these
 
 - **[Clean Architecture Dependencies](./clean-architecture-dependencies.md) - CRITICAL: Strict dependency flow rules for layered architecture.**
 - [Entity Modeling](./entity-modeling.md) - DDD patterns for aggregates, entities, and value objects.
-- [Code Style](./code-style.md) - C# coding standards and conventions.
+- [Code Style](./code-style.md) - C# coding standards and conventions including null checks, async rules, string operations, and environment variables.
+- [SonarCloud Quality](./sonarcloud-quality.md) - Mandatory SonarCloud rules to prevent code smells (S2933, S2139, S1192, S6562, ASP0015, and more).
