@@ -1,0 +1,72 @@
+docs/content/development/Code-Structure.md
+  s_d35f763ca8c45f::t_d7c982e973a64c 1-3,5,7-8,10,12-64
+Code/AppBlueprint/Shared-Modules/AppBlueprint.SharedKernel/README.md
+  s_d35f763ca8c45f::t_d20eca21836a53 1,3-4,6,8,10,12-17,19,21-23,25,27,29-70
+.devcontainer/Dockerfile
+  s_d35f763ca8c45f::t_bd889a38d7ad97 2
+  s_d35f763ca8c45f::t_c2b4ca8509dde2 74-75
+docs/content/getting-started/Quick-start.md
+  s_d35f763ca8c45f::t_9ace4d681d4dfa 13,15,17,19,21,23,25-34,36-58,60-63,65-81,83,87,90,92,94-98
+  s_d35f763ca8c45f::t_d05d958ada4a3c 82
+  s_d35f763ca8c45f::t_b489e1d9150cb7 84-86
+  s_d35f763ca8c45f::t_ca012283e01323 88-89
+  s_d35f763ca8c45f::t_44b984b8a4160c 91
+  s_d35f763ca8c45f::t_a3e8555bdc121c 93
+  s_d35f763ca8c45f::t_6e19a805f94a1d 99-100
+  s_d35f763ca8c45f::t_1a28f2b3d30ad1 110,112
+README.md
+  s_d35f763ca8c45f::t_e915a74de744d0 22
+  s_d35f763ca8c45f::t_4a5cafbdac5677 6-8,10
+  s_d35f763ca8c45f::t_70173886e3f116 74-78,86,88-91,93,95,99,102-111,114-115
+.github/workflows/build-and-test.yml
+  s_d35f763ca8c45f::t_a5dedae7de4b7e 41-43
+  s_d35f763ca8c45f::t_d2452ab8aad0ed 1-40
+Code/AppBlueprint/Shared-Modules/AppBlueprint.Domain/README.md
+  s_d35f763ca8c45f::t_b7754104f32f41 1-80
+docs/content/architecture/vision.md
+  s_d35f763ca8c45f::t_56a1e9db6b83b2 1-79
+.devcontainer/devcontainer.json
+  s_d35f763ca8c45f::t_e2fc5a6e6379d4 3
+  s_d35f763ca8c45f::t_fa78427264fd3d 8,11-15
+.claude/settings.local.json
+  s_d35f763ca8c45f::t_9d5d379e3df84f 180-195
+Code/Landingpage/Components/Pages/Home.razor
+  s_d35f763ca8c45f::t_09c0c961ce7eec 26
+.github/ISSUE_TEMPLATE/bug_report.yml
+  s_d35f763ca8c45f::t_2a97f1aaaaccd4 99
+.github/ISSUE_TEMPLATE/config.yml
+  s_d35f763ca8c45f::t_d95f18b075364e 6
+.github/ISSUE_TEMPLATE/feature_request.yml
+  s_d35f763ca8c45f::t_5505ffd16053f2 73
+.github/workflows/codeql-analysis.yml
+  s_d35f763ca8c45f::t_dd9e7e8cce29b3 18
+.github/workflows/git-guardian.yml
+  s_d35f763ca8c45f::t_b8b5eb10ee773d 3,8
+.github/workflows/snyk-analysis.yaml
+  s_d35f763ca8c45f::t_39f12a3e87f92a 7
+docs/CONTRIBUTING.md
+  s_d35f763ca8c45f::t_30ac9b89b3bef1 5
+global.json
+  s_d35f763ca8c45f::t_8032d2dd00bdf1 8-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "c361f5aff2b9b698479a9b300fe25e24ebfa0e1f",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_d35f763ca8c45f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3f2053f0-9900-4f75-9d06-3276fc78e5ff",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
