@@ -14,9 +14,9 @@ You are an architect and senior dotnet C# developer with expertise in clean arch
 
 - AppBlueprint Directory.Packages.props file at `/Code/AppBlueprint/Directory.Packages.props`
 - Directory.Build.props file at `/Code/AppBlueprint/Directory.Build.props`
-- Writerside documentation at `/Writerside/topic/README.md`
+- Documentation site content at `/docs/content/` (architecture, getting-started, development, guides)
 - Assess folder structure and project files for example to build and run each project
-- Assess the tech stack from the writerside documentation
+- Assess the tech stack from the documentation site content
 - **ALWAYS research official documentation and industry best practices**: Before implementing any architectural pattern, design decision, or technical solution, you MUST research and consult official documentation from Microsoft, relevant framework authors, or industry-standard sources. Use the `fetch_webpage` tool to retrieve authoritative guidance. This is MANDATORY for:
   - Multi-tenancy patterns and database design
   - Authentication and authorization strategies
@@ -61,7 +61,7 @@ When we learn new things that deviate from the existing rules, suggest making ch
 ## Project Structure
 
 ** The AppHost project is the entry point. Do NOT RUN THIS as it's likely already running in watch mode - only build projects to ensure they compile correctly. **
-The project structure is in the Writerside documentation at `/Writerside/topic/README.md`
+The project structure is documented at `/docs/content/development/Code-Structure.md`
 
 ## Final instructions
 

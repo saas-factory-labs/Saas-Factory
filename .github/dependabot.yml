@@ -88,6 +88,34 @@ updates:
     open-pull-requests-limit: 0
     labels: [security, docker]
 
+  # ── npm ──────────────────────────────────────────────────────────────────────
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, npm]
+
+  - package-ecosystem: npm
+    directory: /Code/Landingpage
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, npm]
+
+  - package-ecosystem: npm
+    directory: /Code/Cloudflare-Workers
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 0
+    labels: [security, npm]
+
   # ── GitHub Actions ────────────────────────────────────────────────────────────
   - package-ecosystem: github-actions
     directory: /

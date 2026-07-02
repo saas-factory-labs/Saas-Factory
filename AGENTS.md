@@ -18,27 +18,26 @@ Follow the instructions at `CLAUDE.md`
 
 ## Build, Test, and Format
 
+Run these from the repository root — there is no project/solution file directly inside `Code\AppBlueprint`, so `cd`-ing there and running a bare `dotnet build`/`dotnet test` fails with `MSB1003: Specify a project or solution file`.
+
 ```powershell
 # Build (verify compilation)
-cd Code\AppBlueprint
-dotnet build
+dotnet build SaaS-Factory.slnx
 
 # Build specific project
-cd Code\AppBlueprint\AppBlueprint.Web
-dotnet build
+dotnet build Code\AppBlueprint\AppBlueprint.Web
 
 # Test (run all tests)
-cd Code\AppBlueprint
-dotnet test
+dotnet test --solution SaaS-Factory.slnx
 
 # Test specific project
-cd Code\AppBlueprint\AppBlueprint.Tests
-dotnet test
+dotnet test --project Code\AppBlueprint\AppBlueprint.Tests\AppBlueprint.Tests.csproj
 
 # Format code
-cd Code\AppBlueprint
-dotnet format
+dotnet format SaaS-Factory.slnx
 ```
+
+`global.json` pins the `Microsoft.Testing.Platform` test runner (required on .NET 10 SDK, which dropped the legacy VSTest `dotnet test` bridge), which is why `dotnet test` takes `--solution`/`--project` flags instead of a positional path.
 
 ## Source of Truth
 
