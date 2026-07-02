@@ -1,0 +1,31 @@
+.github/dependabot.yml
+  s_d35f763ca8c45f::t_1b79b1dea11e46 91-118
+.github/copilot-instructions.md
+  s_d35f763ca8c45f::t_2a8ce4614b0ae6 64
+  s_d35f763ca8c45f::t_05e87d6817b8db 17,19
+AGENTS.md
+  s_d35f763ca8c45f::t_da14f420a02dee 21-22,25,28,31,34,37,40-41
+Code/Landingpage/Components/Pages/Home.razor
+  s_d35f763ca8c45f::t_760d8223eab21d 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "57e3d9a711c15bd09912bea7acbf32e8f61b4986",
+  "prompts": {},
+  "humans": {
+    "h_aa722e8ed10195": {
+      "author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_d35f763ca8c45f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3f2053f0-9900-4f75-9d06-3276fc78e5ff",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Casper Rubæk <9870550+Trubador@users.noreply.github.com>"
+    }
+  }
+}
