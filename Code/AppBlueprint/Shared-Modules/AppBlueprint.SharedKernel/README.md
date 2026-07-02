@@ -1,21 +1,70 @@
-http://localhost/console/data/saas-template-dev-db/schema/public/tables/Country/browse
+# AppBlueprint.SharedKernel
 
-http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login
+[![NuGet Version](https://img.shields.io/nuget/v/SaaS-Factory.AppBlueprint.SharedKernel)](https://www.nuget.org/packages/SaaS-Factory.AppBlueprint.SharedKernel)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-https://www.hostinger.dk/?ppc_campaign=google_search_brand&bidkw=hostinger&gad_source=1&gclid=CjwKCAiAgeeqBhBAEiwAoDDhnxNJ3s5lXJ6VjkeRQr4W3EteEFT0Vol1F5Arjlvvy8PGZ7XETCh-wBoCPQgQAvD_BwE
+## Overview
 
-https://www.youtube.com/watch?v=Y8qDjZPMvzI&list=PLb3u2COZqWYOhgvhdUwizS0yJoYlzjQ3R&index=5&ab_channel=PsychologyRefresh
+AppBlueprint.SharedKernel is the foundational package referenced by every other AppBlueprint module (Domain, Application, Infrastructure, Contracts, etc.). It has no dependencies on the rest of the framework, so it can also be pulled into unrelated .NET projects that just want its base entity, ID, and validation primitives.
 
-https://www.courses.milanjovanovic.tech/courses/pragmatic-clean-architecture/lectures/48428084
+## Features
 
-https://www.courses.milanjovanovic.tech/courses/pragmatic-clean-architecture/lectures/48428081
+- **`BaseEntity` / `IEntity`** - Base entity type with `Id`, `CreatedAt`, `LastUpdatedAt`, and soft-delete (`IsSoftDeleted`) tracking
+- **`PrefixedUlid`** - Generates sortable, prefixed string identifiers (e.g. `user_...`, `tenant_...`) instead of raw GUIDs
+- **`ITenantScoped`** - Marker interface for multi-tenant entity filtering
+- **`Role`** - Shared role enumeration used across the auth and authorization modules
+- **PII annotations** (`SharedModels/PII`) - Attributes for marking properties that require GDPR-aware handling (export/redaction)
+- **Validation helpers** (`Validations/`) - Shared validation utilities used across layers
 
-https://www.youtube.com/shorts/Z2Ys4eysjmY
+## Installation
 
-https://www.courses.milanjovanovic.tech/courses/pragmatic-clean-architecture/lectures/48451455
+```bash
+dotnet add package SaaS-Factory.AppBlueprint.SharedKernel
+```
 
-https://www.courses.milanjovanovic.tech/courses/pragmatic-clean-architecture/lectures/48367486
+## Dependencies
 
-https://www.courses.milanjovanovic.tech/courses/pragmatic-clean-architecture/lectures/48428081
+None. This is the innermost package in the dependency graph - every other AppBlueprint package depends on it, and it depends on nothing else in the framework.
 
-https://www.youtube.com/watch?v=gEJ7jx1-oOQ&ab_channel=LifeyHealth
+## Usage
+
+```csharp
+using AppBlueprint.SharedKernel;
+
+public sealed class UserEntity : BaseEntity, ITenantScoped
+{
+    public string TenantId { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+
+    public static UserEntity Create(string email, string tenantId)
+    {
+        return new UserEntity
+        {
+            Id = PrefixedUlid.Generate("user"),
+            Email = email,
+            TenantId = tenantId
+        };
+    }
+}
+```
+
+## Related Packages
+
+This package is part of the AppBlueprint ecosystem:
+- **AppBlueprint.Domain** - Entities, aggregates, and value objects built on top of `BaseEntity`
+- **AppBlueprint.Contracts** - Request/response DTOs
+- **AppBlueprint.Application** - Use cases and application services
+
+## Contributing
+
+This package is part of the SaaS Factory Labs AppBlueprint template. Contributions are welcome - see the [Contributing Guide](https://github.com/saas-factory-labs/Saas-Factory/blob/main/docs/CONTRIBUTING.md).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/saas-factory-labs/Saas-Factory/blob/main/LICENSE) file for details.
+
+## Support
+
+- 📚 [Documentation](https://github.com/saas-factory-labs/Saas-Factory)
+- 🐛 [Issues](https://github.com/saas-factory-labs/Saas-Factory/issues)
+- 💬 [Discussions](https://github.com/saas-factory-labs/Saas-Factory/discussions)

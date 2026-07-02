@@ -1,0 +1,43 @@
+name: "🧪 Build & Test"
+
+# Gives every pull request an automated signal that the solution actually builds
+# and its tests pass, instead of relying on a manual local build by a reviewer.
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_VERSION: '10.0'
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@baa11fbfe1d6520db94683bd5c7a3818018e4309  # v5.1.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          global-json-file: global.json
+
+      - name: Restore solution packages
+        run: dotnet restore SaaS-Factory.slnx
+
+      - name: Build solution
+        run: dotnet build SaaS-Factory.slnx --no-restore --configuration Release
+
+      - name: Run tests
+        # global.json pins the "Microsoft.Testing.Platform" dotnet-test runner (required on
+        # .NET 10 SDK, which dropped the legacy VSTest bridge), so paths are passed via --solution.
+        run: dotnet test --solution SaaS-Factory.slnx --no-build --configuration Release

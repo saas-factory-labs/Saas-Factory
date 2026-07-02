@@ -10,40 +10,94 @@ Get up and running in three simple steps:
 
 ## Prerequisites
 
-### Windows Development Setup
+<details>
 
-#### Step 1: Install WSL (Windows Subsystem for Linux)
+<summary>Install prerequisites for development on Windows</summary>
 
-Open PowerShell as Administrator and run:
+1.	Open a PowerShell terminal as Administrator and run the following command to install Windows Subsystem for Linux (required for Docker):
 
-```bash
-wsl --install
-```
+    `wsl --install`
 
-**Important:** Restart your computer after installation.
+2. Restart your computer if prompted.
 
-#### Step 2: Install Required Development Tools
+3. Install .NET, Git, Docker Desktop, Node.js, Azure CLI, and GitHub CLI using winget (available only on Windows 11):
 
-Run the following command in PowerShell (as Administrator):
+    ```powershell
+    @(
+        "Microsoft.DotNet.SDK.10",
+        "Git.Git",
+        "Docker.DockerDesktop",
+        "OpenJS.NodeJS",
+        "Microsoft.AzureCLI",
+        "GitHub.cli"
+    ) | ForEach-Object { winget install --accept-package-agreements --accept-source-agreements --id $_ }
+    ```
 
-```bash
-@(
-    "Microsoft.DotNet.SDK.9",
-    "Git.Git",
-    "Docker.DockerDesktop",
-    "OpenJS.NodeJS",
-    "GitHub.cli"
-) | ForEach-Object { winget install --accept-package-agreements --accept-source-agreements --id $_ }
-```
+4. Install the Wrangler CLI and the `gh-act` extension:
 
-This will use Winget to install:
-- **.NET 10 SDK** - Runtime and development tools
-- **Git** - Version control
-- **Docker Desktop** - Container runtime
-- **Node.js** - JavaScript runtime for tooling
-- **GitHub CLI** - GitHub integration
+    ```powershell
+    npm install -g wrangler
+    gh extension install https://github.com/nektos/gh-act
+    ```
+</details>
 
-#### Step 3: Verify Installation
+<details>
+
+<summary>Install prerequisites for development on macOS</summary>
+
+1. Install [Homebrew](https://brew.sh) if you don't already have it.
+
+2. Install .NET, Git, Docker Desktop, Node.js, Azure CLI, and GitHub CLI:
+
+    ```bash
+    brew install --cask dotnet-sdk
+    brew install git node azure-cli gh
+    brew install --cask docker
+    ```
+
+3. Install the Wrangler CLI and the `gh-act` extension:
+
+    ```bash
+    npm install -g wrangler
+    gh extension install https://github.com/nektos/gh-act
+    ```
+
+4. Start Docker Desktop from Spotlight/Applications before running the AppHost.
+</details>
+
+<details>
+
+<summary>Install prerequisites for development on Linux</summary>
+
+1. Install the .NET SDK using the official install script (works across distros; see [Microsoft's Linux install docs](https://learn.microsoft.com/dotnet/core/install/linux) for distro package managers):
+
+    ```bash
+    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 10.0
+    ```
+
+2. Install Git, Node.js, and Docker Engine (Debian/Ubuntu example — see [Docker's Linux install docs](https://docs.docker.com/engine/install/) for other distros):
+
+    ```bash
+    sudo apt update
+    sudo apt install git nodejs npm docker.io docker-compose-plugin
+    ```
+
+3. Install Azure CLI and GitHub CLI (Debian/Ubuntu example — see their official docs for other distros):
+
+    ```bash
+    curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+    curl -sS https://webi.sh/gh | sh
+    ```
+
+4. Install the Wrangler CLI and the `gh-act` extension:
+
+    ```bash
+    npm install -g wrangler
+    gh extension install https://github.com/nektos/gh-act
+    ```
+</details>
+
+### Verify Installation
 
 ```bash
 dotnet --version
@@ -53,9 +107,9 @@ node --version
 gh --version
 ```
 
-### Recommended Optional Tools
+### Recommended Optional Tools (Windows)
 
-```bash
+```powershell
 @(
     "Microsoft.VisualStudioCode",
     "JetBrains.Rider",

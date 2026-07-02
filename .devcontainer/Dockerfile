@@ -1,5 +1,5 @@
 # Start from the official .NET image
-FROM mcr.microsoft.com/devcontainers/dotnet:9.0@sha256:50e256fb12dabcd1f89dc65b1d917b7a0242aacf1b1733fa3652150179a63ebd AS base
+FROM mcr.microsoft.com/devcontainers/dotnet:10.0@sha256:be5bd898d964c0d081cb22285c2318e488882103702c8831418fdd59218fd5dd AS base
 
 # RUN chmod +x setup-dev-env.sh
 
@@ -15,7 +15,6 @@ RUN apt-get update && \
         python3-pip && \
     npm install -g typescript && \
     npm install -g tailwindcss && \
-    dotnet workload install aspire && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -72,11 +71,8 @@ RUN apt-get update && \
 # ENV SA_PASSWORD="YourStrong!Passw0rd"
 # ENV ACCEPT_EULA="Y"
 
-# Expose other ports if necessary (3000 for Node.js, 5000 for .NET, etc.)
-EXPOSE 3000 5000 8000 1433
-
-# Run SQL Server
-CMD ["/opt/mssql/bin/sqlservr"]
+# Expose the actual AppBlueprint AppHost ports (gateway, API, web) plus Postgres
+EXPOSE 9000 9100 9200 5432
 
 # Set the working directory for the DevContainer
 WORKDIR /workspace

@@ -3,32 +3,13 @@
 <h4> A comprehensive platform framework that combines opinionated architecture, production-ready infrastructure, and developer-friendly tooling to deploy enterprise-grade B2B/B2C SaaS applications in minutes instead of months.
  </h4>
 
- ![alt text](image.png)
+<p align="center">
+  <img src="concept.png" alt="Concept diagram: your SaaS application built on centrally-updated NuGet packages, core building blocks, shared infrastructure modules, and cloud-agnostic hosting" width="600"/>
+</p>
 
-### 🚗 The Vision: A Modern Automotive Factory for SaaS Development and Deployment
-
-To understand the core of **SaaS Factory**, imagine a modern, high-tech automotive manufacturing plant.
-
-When a car manufacturer launches a new model whether a compact city car (B2C) or an advanced SUV (B2B/Enterprise) they don't reinvent the wheel. Instead, they rely on a **universal, modular platform**. Standardized components like the chassis, battery pack, and drivetrain are seamlessly redeployed, combined, and adapted for the new vehicle variant.
-
-**SaaS Factory brings this exact level of precision and manufacturing efficiency to the software world for the .NET Ecosystem.**
-
-#### 🛠️ Modular Architecture (The Building Blocks)
-Instead of physical mechanical parts, SaaS Factory provides production-ready, foundational building blocks required by any modern SaaS application. You can configure and assemble these components to build for B2C, B2B, or Enterprise needs:
-* **The Chassis:** A unified, robust database schema optimized for either B2C or B2B/Enterprise setups, ensuring clean, consistent, and multi-tenant-ready data structures.
-* **The Engine:** Centralized, high-performance API layers, background workers, and core business logic.
-* **The Safety System:** Deeply integrated, solid authentication and authorization services.
-
-#### 📶 "Over the Air" Updates via NuGet packages
-Just as a modern electric vehicle receives continuous over the air software updates to enhance security, performance or unlock new features without a trip to the mechanic, the architecture behind SaaS Factory is dynamically updatable.
-
-Leveraging the power of the **.NET framework**, all core platform components are engineered, distributed, and maintained as centralized **NuGet packages**.
-
-This allows you to ship bug fixes, security patches, and structural optimizations to the foundation of all your deployed SaaS products simultaneously without rewriting boilerplate or fracturing your application-specific logic. The result is a drastically reduced *Time-to-Market*, minimal technical debt, and a perfectly streamlined engineering lifecycle.
+SaaS Factory is a **Platform Framework**, not a clone-and-forget boilerplate: the core ships as versioned **NuGet packages**, so you pull in bug fixes, security patches, and new features the way an EV receives over-the-air updates — without losing your application-specific customizations.
 
 ## ⚖️ SaaS Factory vs. Alternatives
-
-While there are many SaaS starter kits (boilerplates) on the market, SaaS Factory is built as a **Platform Framework**. Instead of cloning a snapshot of code and losing touch with future updates, the core of SaaS Factory is distributed via packages, keeping your underlying architecture maintainable over time.
 
 | Framework / Platform | Ecosystem | Core Update Model | Architecture Philosophy | Infrastructure & Deployment |
 | :--- | :--- | :--- | :--- | :--- |
@@ -38,16 +19,7 @@ While there are many SaaS starter kits (boilerplates) on the market, SaaS Factor
 | **Laravel Spark / Jetstream** | PHP | **Composer Packages** (Billing & Auth decoupled as packages) | Highly expressive, rapid application development | Traditional or serverless PHP, optimized for single-app instances |
 | **SaaS Pegasus** | Python (Django) | **Boilerplate / Scaffolding** (One-time generation, manual upgrades) | Clean Django architecture, batteries included | Traditional Python stack, heavy emphasis on recent AI/LLM tooling |
 
-### Why Choose SaaS Factory?
-
-#### 🛠️ Updatable Core vs. Boilerplate Fatigue
-Most SaaS starter kits are "clone-and-forget" boilerplates. Once you customize the code, pulling upstream security patches or features from the original template becomes a git-merge nightmare. SaaS Factory decouples the platform core into versioned **NuGet packages**, allowing you to update your underlying SaaS infrastructure seamlessly without breaking your unique business logic.
-
-#### ⚡ Pragmatic Clean Architecture vs. Enterprise Bloat
-While alternatives like *ABP Framework* offer package-based architectures, they often enforce a heavy "Enterprise Tax"—requiring extreme boilerplate abstractions, deep layered architectures, and heavy tooling that slows down startup velocity. SaaS Factory combines the structural integrity of **Clean Architecture / DDD** with the pragmatic developer joy of **Laravel**, driven by a powerful **Developer CLI** to keep you moving fast.
-
-#### 💸 Local Orchestration & Low-Cost Production (.NET Aspire + YARP)
-Instead of forcing you into vendor lock-in with expensive cloud providers (like Azure Container Apps or Azure AKS) or managing complex infrastructure YAMLs, SaaS Factory utilizes **.NET Aspire** for flawless local service discovery and orchestration. Paired with **YARP (Yet Another Reverse Proxy)** as a native C# API Gateway, the entire stack remains lightweight and cloud-agnostic—ready to be deployed cost-effectively on modern providers like **Railway, Hetzner, or DigitalOcean** for a fraction of traditional enterprise hosting costs and it is easy to add other cloud providers.
+Read the full [Vision & Positioning](docs/content/architecture/vision.md) doc for the automotive-factory metaphor behind the architecture, the reasoning for each design choice, and a deeper comparison against ABP, Bullet Train, Laravel Spark, and SaaS Pegasus.
 
 ---
 
@@ -99,16 +71,11 @@ Instead of forcing you into vendor lock-in with expensive cloud providers (like 
 
 ## 📚 Documentation
 
-<!-- **[📖 View Complete Documentation](https://saas-factory-labs.github.io/Saas-Factory/docs/)** -->
-
-The comprehensive documentation includes:
-
-- 🚀 **Getting Started Guide** - Quick setup and installation
-- 🏗️ **Architecture Overview** - System design and patterns
-- 📝 **Development Workflow** - Building and deploying
-- 🔧 **Configuration Guide** - Environment setup and customization
-- 📦 **Shared Modules** - Reusable components and libraries
-- 🎯 **Use Cases** - User flows and feature guides
+- 🚀 **[Getting Started / Quick Start](docs/content/getting-started/Quick-start.md)** - Prerequisites, running the app, and day-to-day dev commands
+- 🏗️ **[Vision & Positioning](docs/content/architecture/vision.md)** - Why the platform is built this way, and how it compares to alternatives
+- 🗂️ **[Code Structure](docs/content/development/Code-Structure.md)** - Full repository and module breakdown
+- 📝 **[Feature Development Guide](docs/content/development/Feature-Development-Guide.md)** - Adding domain entities, repositories, and API endpoints
+- 🎯 **[Use Cases](docs/content/guides/Use-Cases.md)** - User flows and feature guides
 
 ## 🤝 Contributing
 
@@ -116,158 +83,35 @@ Contributions are highly welcome and much appreciated. See [CONTRIBUTING.md](doc
 
 ---
 
- ## 🎯 Project Overview
+### 🛠️  Quick Start
 
-<summary><h4>Vision</h4></summary>
+```powershell
+cd Code\AppBlueprint\AppBlueprint.AppHost
+dotnet run
+```
 
-Deploy a fully functional, production-ready SaaS application in under 30 minutes using a single command via the Developer CLI, with all foundational features already in place - ready for you to add your application-specific features.
+This starts the .NET Aspire AppHost, which orchestrates the Web, API, Gateway, and their dependencies (PostgreSQL, mail server, etc.) in Docker with a single command.
 
-Inspired by Laravel's approach to developer experience and opinionated best practices, SaaS Factory brings the same philosophy to .NET - purpose-built for multi-tenant B2C and B2B SaaS application.
-
-* Some of the key features inspired by Laravel and other modern frameworks that will be included out of the box: 
-
-- Developer CLI for scaffolding and management
-- Payment integration with Stripe
-- Full text search with PostgreSQL
-- Social authentication with OAuth providers
-- Email verification and password reset flows
-- Team management, user roles and permissions and profiles
-- Multitenancy support out of the box
-- Background job processing with workers and a dashboard for monitoring and managing jobs centrally instead of per application such as Laravel Horizon
-- Feature flag management system for gradual rollouts and A/B testing
-- Comprehensive audit logging and monitoring tools
-- GDPR compliance features like data export and deletion requests
-
-
-<summary><h4>Purpose</h4></summary>
-
-Provide a production-ready platform framework that eliminates months of foundational development work. This isn't just a boilerplate - it's an integrated, battle-tested system with proven security patterns, comprehensive multi-tenancy, enterprise DevOps, and deployment automation that lets you focus on building unique features that differentiate your product.
-
-
-<summary><h4>Objectives</h4></summary>
-
-**Development Experience**
-- Enjoyable and productive development workflow
-- Familiar tech stack (C# wherever possible)
-- Minimal technical debt through standardized implementations
-
-**Infrastructure & Deployment**
-- Consolidated shared infrastructure across all SaaS projects
-- Fast continuous deployment (automatic deployment after passing automated QA)
-- Cloud-agnostic architecture (easily migrate to Digital Ocean, Hetzner, Linode, Render, Railway, etc.)
-
-**Architecture & Quality**
-- Monorepo structure for deployment manager and SaaS application boilerplate
-- Modular, flexible structure with proper tracking of code and database migrations
-- Automated processes for testing, documentation, and deployment
-- Multiple environments: Dev, QA (automated), Staging, and Production
-
-**Operations**
-- Cost-effective infrastructure management
-- Enterprise-grade security implementation
-- Disaster recovery capabilities
-- Comprehensive audit logging
-
-<summary><h4>Challenges & Considerations</h4></summary>
-
-**Technical Challenges**
-- Maintaining consistency across multiple deployed SaaS applications to minimize technical debt
-- Balancing high-level architectural vision with detailed low-level implementation
-
-**Strategic Decisions**
-- **MVP Readiness**: Defining criteria for the first production SaaS Factory deployment
-- **Deployment Manager**: Should this be deferred to version 2.0? How to consolidate and migrate existing deployed applications?
-
----
-
-### 🛠️  Prerequisites
-
-<details>
-
-<summary>Install prerequisites for development on Windows</summary>
-	
-1.	Open a PowerShell terminal as Administrator and run the following command to install Windows Subsystem for Linux (required for Docker):
-  
-    `wsl --install`
-
-2. Restart your computer if prompted.
-
-3. Install .NET, Git, Docker Desktop, Node.js, Azure CLI, and GitHub CLI using winget (available only on Windows 11):
-
-    ```powershell
-    @(
-        "Microsoft.DotNet.SDK.10",
-        "Git.Git",
-        "Docker.DockerDesktop",
-        "OpenJS.NodeJS",
-        "npm install wrangler --save-dev"
-        "GitHub.cli"    	
-    ) | ForEach-Object { winget install --accept-package-agreements --accept-source-agreements --id $_ }
-    
-    "gh extension install https://github.com/nektos/gh-act"
-    ```
-</details>
+Requires the .NET 10 SDK, Docker, Node.js, and the GitHub CLI. Full prerequisite install steps for **Windows, macOS, and Linux** are in the [Quick Start guide](docs/content/getting-started/Quick-start.md).
 
 # 🗂️ File structure in the git repository
 
-SaaS-Factory is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) containing all application code, infrastructure, tools, libraries, documentation, etc. 
-A monorepo is a powerful way to organize a codebase, used by Google, Facebook, Uber, Microsoft, etc.
-
-The monorepo hosts three deployable apps that share the platform core: **AppBlueprint** (the reusable SaaS blueprint itself), **DeploymentManager** (an internal tool that deploys and centrally manages every SaaS Factory-based app, and hosts their per-app admin portals as plugins), and **Landingpage** (the public marketing/landing site).
+SaaS-Factory is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) hosting three deployable apps that share the platform core: **AppBlueprint** (the reusable SaaS blueprint itself), **DeploymentManager** (an internal tool that deploys and centrally manages every SaaS Factory-based app, and hosts their per-app admin portals as plugins), and **Landingpage** (the public marketing/landing site).
 
 ```bash
-├─ .github                                  # GitHub workflows, CI/CD, and Copilot instructions
-├─ build-artifacts                          # Build output, logs, and temporary files (gitignored)
-├─ docs                                     # Cross-repo documentation, guides, and diagrams
-│  ├─ content                               # Docs site content (architecture, getting-started, guides, specs)
-│  └─ search-server                         # Typesense search server + scraper powering the docs site
-├─ scripts                                  # Utility scripts (SQL setup/maintenance, PowerShell helpers)
-├─ Code                                     # Application source code
-│  ├─ AppBlueprint                          # The reusable SaaS blueprint (product code)
-│  │  ├─ AppBlueprint.AppHost               # .NET Aspire project orchestrating the app and its dependencies
-│  │  ├─ AppBlueprint.AppGateway            # YARP reverse proxy / API gateway
-│  │  ├─ AppBlueprint.Web                   # Blazor Server app utilizing MudBlazor components
-│  │  ├─ AppBlueprint.ApiService            # .NET REST API
-│  │  ├─ AppBlueprint.ServiceDefaults       # Shared Aspire service configuration
-│  │  ├─ AppBlueprint.DeveloperCli          # CLI tools for scaffolding and management
-│  │  ├─ AppBlueprint.Tests                 # Tests for all AppBlueprint projects
-│  │  ├─ Cloudflare-Workers                 # Edge worker(s) supporting the AppBlueprint app
-│  │  ├─ docs                               # AppBlueprint-specific architecture/operations/security/troubleshooting docs
-│  │  └─ Shared-Modules                     # Clean Architecture shared modules, published as NuGet packages
-│  │     ├─ AppBlueprint.Domain                  # Entities, value objects, aggregates, domain logic
-│  │     ├─ AppBlueprint.Application             # Use cases, commands, queries, DTOs (CQRS)
-│  │     ├─ AppBlueprint.Infrastructure          # Composition root wiring up the Infrastructure.* modules below
-│  │     ├─ Infrastructure                       # Infrastructure split into focused, independently versioned modules
-│  │     │  ├─ AppBlueprint.Infrastructure.Core           # Cross-cutting infrastructure abstractions
-│  │     │  ├─ AppBlueprint.Infrastructure.Persistence    # EF Core DbContext, repositories, migrations (PostgreSQL)
-│  │     │  ├─ AppBlueprint.Infrastructure.Authentication # Logto integration and auth handlers
-│  │     │  ├─ AppBlueprint.Infrastructure.Payments       # Stripe integration
-│  │     │  ├─ AppBlueprint.Infrastructure.Email          # Resend integration
-│  │     │  ├─ AppBlueprint.Infrastructure.Notifications  # Notification delivery
-│  │     │  ├─ AppBlueprint.Infrastructure.Storage        # Cloudflare R2 / Azure Blob storage
-│  │     │  ├─ AppBlueprint.Infrastructure.Search         # Full-text search integration
-│  │     │  ├─ AppBlueprint.Infrastructure.Realtime       # Realtime/SignalR services
-│  │     │  └─ AppBlueprint.Infrastructure.Compliance     # GDPR export/deletion and audit logging
-│  │     ├─ AppBlueprint.Presentation.ApiModule  # Minimal API endpoints and versioning
-│  │     ├─ AppBlueprint.Contracts               # Shared contracts and interfaces
-│  │     ├─ AppBlueprint.SharedKernel            # Shared kernel code across all projects
-│  │     ├─ AppBlueprint.UiKit                   # Reusable Tailwind/Cruip UI components
-│  │     ├─ AppBlueprint.CliKit                  # Shared CLI building blocks used by DeveloperCli
-│  │     ├─ AppBlueprint.AdminPortalKernel       # Generic admin-portal plugin host, consumed by DeploymentManager
-│  │     └─ AppBlueprint.Api.Client.Sdk          # Kiota-generated API client SDK
-│  ├─ DeploymentManager                     # Internal tool: deploys/manages SaaS Factory apps and their admin portals
-│  │  ├─ DeploymentManager.AppHost          # .NET Aspire orchestrator
-│  │  ├─ DeploymentManager.Web              # Blazor Server shell that loads per-app admin-portal plugins
-│  │  ├─ DeploymentManager.ApiService       # REST API backend
-│  │  ├─ DeploymentManager.CloudInfrastructure # Pulumi infrastructure-as-code
-│  │  ├─ DeploymentManager.Codeflow         # GraphQL/DGraph-based code dependency graph tooling
-│  │  ├─ DeploymentManager.Tests            # Tests for all DeploymentManager projects
-│  │  ├─ Samples                            # Reference admin-portal plugin implementation
-│  │  └─ plugins                            # Runtime folder for downloaded/copied admin-portal plugin dlls
-│  ├─ Landingpage                           # Blazor WebAssembly marketing/landing page (static hosting)
-│  ├─ Cloudflare-Workers                    # Standalone Cloudflare Worker(s) (OpenAPI/Hono), independent of AppBlueprint
-│  └─ SaaSFactory.Testing                   # Cross-cutting test helpers (e.g. CodeQL test runner)
+├─ .github            # GitHub workflows, CI/CD, and Copilot instructions
+├─ build-artifacts    # Build output, logs, and temporary files (gitignored)
+├─ docs               # Documentation site content, guides, and diagrams
+├─ scripts            # Utility scripts (SQL setup/maintenance, PowerShell helpers)
+├─ Code               # Application source code
+│  ├─ AppBlueprint         # The reusable SaaS blueprint (product code)
+│  ├─ DeploymentManager    # Internal tool: deploys/manages SaaS Factory apps and their admin portals
+│  ├─ Landingpage          # Blazor WebAssembly marketing/landing page (static hosting)
+│  ├─ Cloudflare-Workers   # Standalone Cloudflare Worker(s) (OpenAPI/Hono), independent of AppBlueprint
+│  └─ SaaSFactory.Testing  # Cross-cutting test helpers (e.g. CodeQL test runner)
 ```
+
+See the [full code structure breakdown](docs/content/development/Code-Structure.md) for the complete module tree, including all Shared-Modules and their NuGet packages.
 
 <!--
 ## 👥 Maintainers

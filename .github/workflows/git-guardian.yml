@@ -1,11 +1,11 @@
 name: "🛡️ Security: Secret Scanning (GitGuardian)"
 
-on:  
+on:
   push:
     branches: ["main"]
     tags: ["v*.*.*"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "development"]
   workflow_dispatch:
   
 jobs:

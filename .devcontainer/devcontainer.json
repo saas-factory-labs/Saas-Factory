@@ -1,31 +1,19 @@
 {
   "name": "Fullstack Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:10.0",
   "build": {
     "dockerfile": "Dockerfile",
     "context": "."
   },
-  "postCreateCommand": [
-    // "dotnet restore",∏
-    // "npm run build"
-  ],
+  "postCreateCommand": "dotnet restore SaaS-Factory.slnx",
   "remoteUser": "vscode",
   "forwardPorts": [
-    3000, // JavaScript/TypeScript frontend default port 
-    5000, // .NET Core backend default HTTP port
-    5001, // .NET Core backend default HTTPS port
-    1433, // SQL Server default port
-    5432, // PostGreSQL default port 5432
-    10000, // Blob service (Azurite) default port
-    10001, // Queue service (Azurite) default port
-    10002 // Table service (Azurite) default port
+    18889, // .NET Aspire dashboard
+    9000, // AppGateway (YARP)
+    9100, // ApiService
+    9200, // Web (Blazor)
+    5432 // PostgreSQL (Aspire-managed container)
   ],
-  "remoteEnv": {
-    "ASPNETCORE_URLS": [
-      "http://+:5000",
-      "https://+:5001"
-    ],
-  },
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "ghcr.io/devcontainers/features/node:1": {

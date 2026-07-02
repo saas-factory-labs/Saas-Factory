@@ -2,7 +2,7 @@
 
 We welcome contributions from the community. Here are some guidelines to help you get started.
 
-Before starting on a large or non-obvious change, please [open an issue or discussion](https://github.com/saas-factory-labs/Saas-Factory/issues) first. The project is still under active foundational development, so aligning on approach up front avoids wasted effort on work that may be superseded by an in-progress refactor.
+The project's architecture is still actively evolving, but we take the utmost care to review and land contributions rather than let them stall — most reasonable pull requests get implemented. Before starting on a large or non-obvious change, please [open an issue or discussion](https://github.com/saas-factory-labs/Saas-Factory/issues) first, so we can align on approach and make sure your effort doesn't collide with an in-progress refactor.
 
 ## Commit Message Convention
 
